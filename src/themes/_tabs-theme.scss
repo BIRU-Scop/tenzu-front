@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-tab-body-content > *, .mat-mdc-tab-body-content > .mdc-list {
+  @apply mt-4;
+}
+
+@mixin color-and-typo($theme) {
+  .mat-mdc-tab-nav-bar, .mat-mdc-tab-group {
+    @include mat.tabs-overrides((
+      divider-color: mat.get-theme-color($theme, neutral, 90),
+      active-indicator-color: mat.get-theme-color($theme, primary, 80),
+      active-focus-indicator-color: mat.get-theme-color($theme, primary, 60),
+      active-ripple-color: mat.get-theme-color($theme, primary, 60),
+      inactive-ripple-color: mat.get-theme-color($theme, neutral-variant, 60),
+      inactive-label-text-color: mat.get-theme-color($theme, neutral-variant, 40),
+      active-label-text-color: mat.get-theme-color($theme, primary, 20),
+      label-text-weight: mat.get-theme-typography($theme, 'body-medium', 'font-weight'),
+      container-height: '40px'
+    ));
+  }
+}

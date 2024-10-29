@@ -1,0 +1,41 @@
+@use '@angular/material' as mat;
+
+.mat-icon {
+  &.icon-sm {
+    line-height: 16px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
+  &.icon-md {
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+  }
+
+  &.icon-lg {
+    line-height: 32px;
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+  }
+
+  &.icon-xl {
+    line-height: 40px;
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
+  }
+
+  &.icon-full {
+      width: 100%;
+      height: 100%;
+  }
+}
+
+@mixin color-and-typo($theme) {
+
+}
+

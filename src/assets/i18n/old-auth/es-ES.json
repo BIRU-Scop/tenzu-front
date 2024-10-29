@@ -1,0 +1,134 @@
+{
+  "social": {
+    "github": "Continuar con Github",
+    "google": "Continuar con Google",
+    "gitlab": "Continuar con Gitlab",
+    "separator": "o",
+    "errors": {
+      "config": "Algo salió mal con tu autenticación, contacta con <a class='link' href='mailto:{{email}}'>soporte.</a>",
+      "server": "No podemos conectar con {{social}}, inténtalo de nuevo en unos minutos."
+    }
+  },
+  "signup": {
+    "title": "Crea una cuenta Tenzu",
+    "subtitle": "Gratis para todos",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "full_name": "Nombre completo",
+    "create_account": "Crear una cuenta",
+    "create_account_email": "Crea una cuenta con tu correo electrónico",
+    "terms_and_privacy": "Al crear la cuenta, aceptas nuestros <a href='{{ termsOfService }}' target='_blank'>términos de servicio</a> y <a href='{{ privacyPolicy }}' target='_blank'>política de privacidad</a>.",
+    "already_account": "¿Ya tienes una cuenta? <a href='{{ login }}'>Inicia sesión aquí</a>",
+    "all_options": "Todas las opciones",
+    "resend_email_label": "Te acabamos de enviar un correo",
+    "resend_email_message": "¡El correo de verificación está en camino!",
+    "sent_email_label": "¿No recibiste el correo?",
+    "sent_email_message": "Revisa tu carpeta de spam y, si no está allí, intenta reenviar el correo en unos minutos.",
+    "join": "Crea una cuenta para unirte al proyecto <strong>{{ project }}</strong>",
+    "in_progress": "Creando cuenta",
+    "success": "Cuenta creada",
+    "errors": {
+      "email_required": "Introduce tu dirección de correo electrónico",
+      "full_name_required": "Introduce un nombre completo",
+      "password_required": "Introduce una contraseña",
+      "invalid_email": "Dirección de correo electrónico no válida",
+      "email_exists": "El correo electrónico ya está en uso",
+      "register": "Hubo un problema al registrar tu cuenta",
+      "please_refresh": "Por favor, actualiza la página o inténtalo de nuevo en unos minutos",
+      "resend_email_label": "Lo sentimos, algo salió mal al enviar el correo",
+      "resend_email_message": "Espera unos minutos e inténtalo de nuevo"
+    },
+    "warnings": {
+      "only_emojis": "Algunas personas podrían no entender correctamente tu nombre completo si solo tiene emojis."
+    },
+    "delete_account_success_title": "Tu cuenta se eliminó con éxito.",
+    "delete_account_success_subtitle": "👋 ¡Lamentamos verte partir!"
+  },
+  "login": {
+    "title": "Inicia sesión en tu cuenta Tenzu",
+    "username": "Correo electrónico o nombre de usuario",
+    "password": "Contraseña",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "login": "Iniciar sesión",
+    "in_progress": "Iniciando sesión",
+    "success": "Sesión iniciada",
+    "not_registered_yet": "¿Aún no estás registrado?",
+    "create_free_account": "Crea una cuenta gratis",
+    "errors": {
+      "username_required": "Introduce tu correo electrónico o nombre de usuario",
+      "password_required": "Introduce una contraseña",
+      "submited_error": "Tu correo electrónico, nombre de usuario o contraseña son incorrectos. Revísalos e inténtalo de nuevo"
+    }
+  },
+  "verify": {
+    "title": "Revisa tu bandeja de entrada para completar tu registro",
+    "verification_link_sent": "Haz clic en el enlace de verificación en el correo que te enviamos para:",
+    "mail_not_received": "¿No recibiste el correo?",
+    "resend_button": "Reenviar correo",
+    "footer_text": "¿Quieres usar un correo diferente?",
+    "footer_button": "Crear una nueva cuenta",
+    "resend_toast_label": "Te acabamos de enviar un correo",
+    "resend_toast_message": "¡El correo de verificación está en camino!",
+    "errors": {
+      "invalid_token_label": "Lo sentimos, tu enlace de validación no es válido",
+      "invalid_token_message": "Verifica que tu enlace sea correcto.",
+      "expired_token_label": "Lo sentimos, tu enlace de validación ha expirado",
+      "expired_token_message": "Intenta crear tu cuenta de nuevo.",
+      "used_token_label": "Lo sentimos, tu enlace de validación ya se ha utilizado",
+      "used_token_message": "Intenta crear tu cuenta de nuevo."
+    }
+  },
+  "password": {
+    "weak": "Débil",
+    "medium": "Medio",
+    "strong": "Fuerte",
+    "help_weak": "Al menos {{number}} caracteres, incluyendo una mayúscula y un número o un símbolo",
+    "help_medium": "Para una contraseña más fuerte, intenta usar al menos 15 caracteres o un carácter especial",
+    "help_strong": "¡Tu contraseña es genial!",
+    "show": "Mostrar contraseña",
+    "hide": "Ocultar contraseña",
+    "num_characters": "{{number}} caracteres",
+    "validation": "1 {{characterType}}",
+    "validation_multiple": "1 {{characterType1}} o {{characterType2}}",
+    "password_help": "Introduce una contraseña con al menos:",
+    "character": {
+      "uppercase": "mayúscula",
+      "lowercase": "minúscula",
+      "symbol": "símbolo",
+      "number": "número"
+    }
+  },
+  "logout": {
+    "logged_out": "Has cerrado sesión",
+    "see_you_soon": "¡Esperamos verte pronto!"
+  },
+  "reset_password": {
+    "title": "Restablece tu contraseña de Tenzu",
+    "description": "Introduce tu correo electrónico y te enviaremos un enlace para restablecerla.",
+    "submit": "Enviar enlace de restablecimiento",
+    "send_in_progress": "Enviando",
+    "send_success": "Enviado",
+    "go_back": "No, ya recuerdo la contraseña. <a href='{{ login }}'>Llévame de vuelta.</a>",
+    "reset_success": "Contraseña restablecida con éxito",
+    "confirm": {
+      "title": "Revisa tu bandeja de entrada",
+      "description": "Si hay una cuenta asociada con esta dirección de correo electrónico, recibirás un correo con instrucciones para restablecer tu contraseña en:",
+      "back": "Volver al inicio de sesión",
+      "new_email": "¿Quieres usar un correo diferente?",
+      "create_account": "Crear una nueva cuenta"
+    },
+    "expired_invitation": {
+      "title": "Tu enlace de restablecimiento ha expirado.",
+      "description": "Por favor, introduce tu dirección de correo electrónico y te enviaremos un nuevo enlace de restablecimiento a tu bandeja de entrada."
+    },
+    "new_password": {
+      "title": "Elige una nueva contraseña",
+      "password_label": "Nueva contraseña",
+      "repeat_password": "Repite la contraseña",
+      "submit": "Restablecer contraseña",
+      "submit_in_progress": "Restableciendo",
+      "submit_success": "Restablecida",
+      "password_match": "Las contraseñas no coinciden"
+    }
+  }
+}

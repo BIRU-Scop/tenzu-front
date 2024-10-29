@@ -1,0 +1,72 @@
+{
+  "create_workflow": {
+    "dialog": {
+      "aria_label": "Create kanban",
+      "create_workflow": "Create new kanban",
+      "name_required": "Kanban name can’t be empty",
+      "name_placeholder": "Add kanban name"
+    }
+  },
+  "edit_status": {
+    "aria_label": "Edit status",
+    "edit_name": "Edit status name",
+    "delete": "Delete status",
+    "move_left": "Move left",
+    "move_right": "Move right"
+  },
+  "add_status": "Add status",
+  "add_story": "Add story",
+  "create_story": {
+    "create_story": "Create story",
+    "story_name": "Story name",
+    "name_required": "Story name can’t be empty",
+    "name_placeholder": "Add story name"
+  },
+  "create_status": {
+    "create_status": "Create status",
+    "status_name": "Status name",
+    "name_required": "Status name can’t be empty",
+    "name_placeholder": "Add status name"
+  },
+  "edit_status_name": {
+    "edit_status_name": "Edit status name",
+    "status_name": "Status name",
+    "name_required": "Status name can’t be empty"
+  },
+  "delete_status": {
+    "title": "Delete {{ statusName }} status?",
+    "what_to_do_stories": "What do you want to do with the stories in this status?",
+    "stories_will_be_deleted": "The stories from this status will be automatically deleted.",
+    "cancel": "Never mind, keep status",
+    "confirm": "Yes, delete status",
+    "move_stories_another_status": "Move them to another status",
+    "delete_stories": "Delete the stories too",
+    "stories_placed_below": "The stories will be placed below the existing ones.",
+    "status": "Status"
+  },
+  "detail_story": {
+    "label": "Story",
+    "title": "Title",
+    "description": "Description",
+    "edit_assignees": "Edit assignees",
+    "add_assignees": "Add assignees",
+    "edit_title": "Edit title",
+    "edit_description": "Edit description",
+    "empty_description": "Add a description to your story",
+    "created_by": "Created by",
+    "assigned_to": "Assigned to",
+    "status": "Status",
+    "save": "Save",
+    "cancel": "Cancel",
+    "attachments": {
+      "attach_file": "Attach file",
+      "name": "Name",
+      "size": "Size (bytes)",
+      "date": "Date",
+      "exceed_size": "{var} exceed the size of 100 MB",
+      "deleted_attachment": "{var} has been deleted"
+    },
+    "confirm_delete_story": "Are you sure you want to delete this story",
+    "confirm_delete_story_message": "All story information will be permanently deleted. There is no undo."
+  }
+}

@@ -1,0 +1,15 @@
+.cdk-drag {
+  @apply cursor-move;
+}
+.cdk-drag-placeholder {
+  opacity: 50%;
+}
+.cdk-drag-preview {
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+}
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drop-list-dragging {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

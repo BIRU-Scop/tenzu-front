@@ -1,0 +1,47 @@
+@use '@angular/material' as mat;
+
+html {
+  .mat-expansion-panel {
+    border-style: solid;
+    border-width: 1px;
+    border-bottom-width: 2px;
+    &:not([class*=mat-elevation-z]) {
+      box-shadow:  1px 1px 1px rgba(0, 0, 0, 0.3);
+    }
+  }
+  .mdc-dialog__content {
+    .mat-expansion-panel:first-child {
+      margin-top: 4px;
+    }
+  }
+}
+
+@mixin color-and-typo($theme) {
+  .mat-expansion-panel {
+    border-color:  mat.get-theme-color($theme, neutral, 95);
+    &:focus-within {
+      outline: mat.get-theme-color($theme, neutral-variant, 95) solid 4px;
+      border-color:  mat.get-theme-color($theme, neutral-variant, 95);
+    }
+    &:hover {
+      border-color:  mat.get-theme-color($theme, neutral-variant, 90);
+    }
+    @include mat.expansion-overrides((
+      container-background-color: mat.get-theme-color($theme, neutral, 100),
+      container-shape: 4px,
+      header-hover-state-layer-color: transparent,
+      header-focus-state-layer-color: transparent,
+      header-disabled-state-text-color: mat.get-theme-color($theme, neutral, 60),
+      header-text-color: mat.get-theme-color($theme, neutral-variant, 20),
+      container-text-color:  mat.get-theme-color($theme, neutral-variant, 30),
+      header-description-color: mat.get-theme-color($theme, neutral-variant, 40),
+      header-indicator-color: mat.get-theme-color($theme, neutral-variant, 60),
+      header-text-size: mat.get-theme-typography($theme, body-large, font-size),
+      header-text-weight: mat.get-theme-typography($theme, body-large, font-weight),
+      header-text-line-height: mat.get-theme-typography($theme, body-large, line-height),
+      container-text-line-height: mat.get-theme-typography($theme, body-large, line-height),
+      container-text-size: mat.get-theme-typography($theme, body-large, font-size),
+      container-text-weight:mat.get-theme-typography($theme, body-large, font-weight),
+    ));
+  }
+}

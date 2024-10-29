@@ -1,0 +1,45 @@
+@use "@angular/material" as mat;
+
+  .mdc-radio {
+    .mat-mdc-radio-touch-target {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+
+@mixin color-and-typo($theme) {
+  .mat-mdc-radio-button {
+    .mdc-radio {
+      @include mat.radio-overrides((
+        state-layer-size: 32px,
+        selected-icon-color: mat.get-theme-color($theme, primary, 80),
+        selected-focus-icon-color: mat.get-theme-color($theme, primary, 80),
+        selected-hover-icon-color: mat.get-theme-color($theme, primary, 60),
+        selected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
+        unselected-icon-color: mat.get-theme-color($theme, primary, 80),
+        unselected-hover-icon-color: mat.get-theme-color($theme, primary, 60),
+        unselected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
+        label-text-size: mat.get-theme-typography($theme, label-large, font-size),
+        label-text-color: mat.get-theme-color($theme, primary, 25),
+        label-text-line-height: mat.get-theme-typography($theme, label-large, line-height),
+        ripple-color: mat.get-theme-color($theme, primary, 40),
+        checked-ripple-color: mat.get-theme-color($theme, primary, 40)
+      ));
+      .mdc-radio__outer-circle {
+        box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+      }
+      .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__inner-circle {
+        box-shadow: 0 0 6px mat.get-theme-color($theme, primary, 60);
+        @include mat.radio-overrides((
+          selected-icon-color: mat.get-theme-color($theme, primary, 60),
+          selected-focus-icon-color: mat.get-theme-color($theme, primary, 60),
+          selected-hover-icon-color: mat.get-theme-color($theme, primary, 50),
+          selected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
+        ));      }
+      .mdc-radio__native-control:focus:enabled:not(:checked) ~ .mdc-radio__background .mdc-radio__outer-circle {
+        border-color: mat.get-theme-color($theme, primary, 60);
+      }
+    }
+  }
+}

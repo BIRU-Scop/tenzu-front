@@ -1,0 +1,31 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-menu-panel {
+  .mat-mdc-menu-item {
+    min-height: 32px;
+  }
+}
+@mixin color-and-typo($theme) {
+  .mat-mdc-menu-panel {
+    border-style: solid;
+    border-color:  mat.get-theme-color($theme, neutral, 94);
+    border-width: 1px;
+    color:  mat.get-theme-color($theme, neutral, 20);
+    a {
+      text-decoration: none;
+    }
+    @include mat.menu-overrides((
+      container-color: mat.get-theme-color($theme, neutral, 100),
+      item-label-text-size : mat.get-theme-typography($theme, label-large, font-size),
+      item-label-text-line-height : mat.get-theme-typography($theme, label-large, line-height),
+      item-label-text-color:  mat.get-theme-color($theme, neutral-variant, 20),
+      item-icon-color:  mat.get-theme-color($theme, neutral-variant, 60),
+      item-hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 99),
+      item-focus-state-layer-color: mat.get-theme-color($theme, neutral-variant, 99),
+      item-icon-size: mat.get-theme-typography($theme, body-medium, font-size)
+     ));
+    .mat-icon {
+      font-size: mat.get-theme-typography($theme, body-medium, font-size);
+    }
+  }
+}

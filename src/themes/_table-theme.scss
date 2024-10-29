@@ -1,0 +1,23 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-table {
+  mat-header-row {
+    min-height: 48px;
+  }
+}
+
+@mixin color-and-typo($theme) {
+  .mat-mdc-table {
+    @include mat.table-overrides((
+        background-color: mat.get-theme-color($theme, neutral, 99),
+        row-item-label-text-color:  mat.get-theme-color($theme, neutral, 20),
+        header-container-height: 48px
+    ));
+    .mat-mdc-cell {
+      border-bottom-color: mat.get-theme-color($theme, neutral, 80);
+    }
+    .mat-mdc-header-cell {
+      border-bottom-color: mat.get-theme-color($theme, neutral, 70);
+    }
+  }
+}

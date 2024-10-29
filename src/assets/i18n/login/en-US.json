@@ -1,0 +1,12 @@
+{
+  "action": "Log in",
+  "title": "Log in to your Tenzu account",
+  "email_or_username": "Email or username",
+  "not_registered_yet": "Not registered yet?",
+  "create_free_account": "Create a free account",
+  "forgot_password": "Forgot your password?",
+  "errors": {
+    "401": "Your email, username or password are incorrect. Check them and try again",
+    "username_required": "Enter your email or username"
+  }
+}

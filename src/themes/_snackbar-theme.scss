@@ -1,0 +1,41 @@
+@use '@angular/material' as mat;
+
+.mdc-snackbar {
+  &.mat-mdc-snack-bar-container {
+    margin: var(--mat-toolbar-mobile-height) 8px 8px 8px;
+  }
+  .mat-mdc-snackbar-surface {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+  }
+  .mat-mdc-simple-snack-bar {
+    @apply items-center;
+  }
+  .mdc-snackbar__label {
+    padding: 0 0 0 12px;
+  }
+}
+@mixin color-and-typo($theme) {
+  .mdc-snackbar {
+    @include mat.snack-bar-overrides((
+      container-shape: 4px
+    ));
+    &.snackbar-success {
+      @include mat.snack-bar-overrides((
+        container-color: mat.get-theme-color($theme, tertiary, 90),
+        supporting-text-color: mat.get-theme-color($theme, tertiary, 20)
+      ));
+    }
+    &.snackbar-info {
+      @include mat.snack-bar-overrides((
+        container-color: mat.get-theme-color($theme, primary, 90),
+        supporting-text-color: mat.get-theme-color($theme, primary, 20)
+      ));
+    }
+    &.snackbar-error {
+      @include mat.snack-bar-overrides((
+        container-color: mat.get-theme-color($theme, error, 90),
+        supporting-text-color: mat.get-theme-color($theme, error, 20)
+      ));
+    }
+  }
+}

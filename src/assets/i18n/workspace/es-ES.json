@@ -1,0 +1,45 @@
+{
+  "general_title": {
+    "workspace": "Espacio de trabajo",
+    "workspaceListProjects": "Proyectos",
+    "workspaceSettings": "Configuraciones",
+    "workspacePeople": "Personas",
+    "project": "Proyecto",
+    "kanban": "Kanban",
+    "projectMembers": "Miembros",
+    "projectSettings": "Configuraciones"
+  },
+  "create": {
+    "create_workspace": "Crear espacio de trabajo",
+    "workspace_name": "Nombre del espacio de trabajo",
+    "name_required": "El nombre del espacio de trabajo no puede estar vacío",
+    "name_placeholder": "Añadir nombre del espacio de trabajo"
+  },
+  "list_projects": {
+    "title": "Lista de proyectos"
+  },
+  "settings": {
+    "title": "Configuraciones del espacio de trabajo",
+    "edit_profile": "Editar perfil",
+    "delete_workspace": "Eliminar espacio de trabajo",
+    "delete": {
+      "delete": "Eliminar",
+      "error": "No puedes eliminar un espacio de trabajo que tiene proyectos. </br> Este espacio de trabajo tiene { totalProjects, plural, one {<strong class='number-projects'>#</strong> proyecto} other {<strong class='number-projects'>#</strong> proyectos} }. Elimina primero el/los { totalProjects, plural, one {proyecto} other {proyectos} }.",
+      "deleted_workspace": "El espacio de trabajo {{ var }} ha sido eliminado"
+    },
+    "edit": {
+      "title": "Editar espacio de trabajo",
+      "name": "Nombre",
+      "name_required": "El nombre del espacio de trabajo no puede estar vacío",
+      "name_placeholder": "Añadir nombre del espacio de trabajo"
+    }
+  },
+  "people": {
+    "description_modal": "<p>Una vez que acepten la invitación, podrán invitar a nuevos miembros, crear nuevos proyectos y editar otros ajustes del espacio de trabajo.</p><br><p>Empieza a escribir un correo electrónico o ingresa varias direcciones separadas por una coma.</p>"
+  },
+  "placeholder": {
+    "placeholder_title": "Aún no eres miembro de ningún espacio de trabajo",
+    "placeholder_text": "Agrupa tus proyectos en espacios de trabajo. Tú decides si coinciden con algo tan grande como una organización o tan personal como tus proyectos de mascotas.",
+    "placeholder_button": "Crear espacio de trabajo"
+  }
+}

@@ -1,0 +1,36 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-select-panel {
+  .mat-mdc-option {
+    min-height: 32px;
+  }
+}
+@mixin color-and-typo($theme) {
+  .mat-mdc-select {
+    @include mat.select-overrides((
+      trigger-text-size: mat.get-theme-typography($theme, body-medium, font-size),
+      trigger-text-line-height: mat.get-theme-typography($theme, body-medium, line-height),
+    ));
+  }
+  .mat-mdc-select-panel {
+    --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-color:  mat.get-theme-color($theme, neutral, 94);
+    border-width: 1px;
+    @include mat.select-overrides((
+      panel-background-color: mat.get-theme-color($theme, neutral, 100),
+     ));
+    @include mat.option-overrides((
+      label-text-size : mat.get-theme-typography($theme, body-medium, font-size),
+      label-text-line-height : mat.get-theme-typography($theme, body-medium, line-height),
+      label-text-color:  mat.get-theme-color($theme, neutral-variant, 20),
+      selected-state-layer-color: mat.get-theme-color($theme, neutral-variant, 98),
+      hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 98),
+      focus-state-layer-color: mat.get-theme-color($theme, neutral-variant, 95),
+    ));
+    @include mat.pseudo-checkbox-overrides((
+      selected-checkmark-color: mat.get-theme-color($theme, tertiary, 20),
+    ));
+
+  }
+}

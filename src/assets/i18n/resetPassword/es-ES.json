@@ -1,0 +1,18 @@
+{
+  "title": "Restablece tu contraseña de Tenzu",
+  "subtitle": "Introduce tu correo electrónico y te enviaremos un enlace para restablecerla.",
+  "submit": "Enviar enlace de restablecimiento",
+  "remember_the_password": "No, ya recuerdo la contraseña.",
+  "go_back": "Llévame de vuelta.",
+  "confirm": {
+    "title": "Revisa tu bandeja de entrada",
+    "subtitle": "Si hay una cuenta asociada con esta dirección de correo electrónico, recibirás un correo con instrucciones para restablecer tu contraseña en:",
+    "back": "Volver al inicio de sesión",
+    "new_email": "¿Quieres usar un correo diferente?",
+    "create_account": "Crear una nueva cuenta"
+  },
+  "expired_invitation": {
+    "title": "Tu enlace de restablecimiento ha expirado.",
+    "description": "Por favor, introduce tu dirección de correo electrónico y te enviaremos un nuevo enlace de restablecimiento a tu bandeja de entrada."
+  }
+}

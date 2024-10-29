@@ -1,0 +1,94 @@
+include:
+  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.16
+    inputs:
+      dev-branch: master
+      token: $DEV_TOKEN
+  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.18
+    inputs:
+      project-name: tenzu
+      application-name: front
+      build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG SENTRY_ENVIRONMENT=$CI_COMMIT_REF_SLUG SENTRY_DSN=$SENTRY_DSN BASE_DOMAIN=$BASE_DOMAIN'
+      needs:
+        - job: get-released-tag
+        - job: get-base-domain
+  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.16
+    inputs:
+      token: $DEV_TOKEN
+  # deploy demo
+  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.5.1
+    inputs:
+      stage: deploy-demo
+      prefix: demo-
+      build-arg: 'RELEASE_VERSION=$DEMO_VERSION CONFIGURATION=production SENTRY_ENVIRONMENT=demo SENTRY_DSN=$SENTRY_DSN BASE_DOMAIN=demo-api.tenzu.app'
+      destination: ${CI_REGISTRY_IMAGE}:${DEMO_VERSION}
+      needs:
+        - job: launch-demo-deploy
+      rules:
+        - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+
+stages:
+  - release
+  - build-deploy
+  - merge
+  - deploy-demo
+
+
+get-base-domain:
+  stage: .pre
+  script:
+    - BASE_DOMAIN=tenzu-api.biru.sh
+    - if [ "${CI_COMMIT_REF_SLUG}" = "staging" ]; then BASE_DOMAIN="tenzu-api-staging.biru.sh"; fi
+    - echo "BASE_DOMAIN=$BASE_DOMAIN" > build.env
+    - cat build.env
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_BRANCH == "production" && $CI_COMMIT_MESSAGE =~ /^chore\(release\)[^-]+$/'
+  artifacts:
+    reports:
+      dotenv: build.env
+
+launch-demo-deploy:
+  stage: merge
+  needs:
+    - job: get-released-tag
+  script:
+    - DEMO_VERSION="${NEXT_VERSION//staging/demo}"
+    - echo "DEMO_VERSION=$DEMO_VERSION" > demo.env
+    - cat demo.env
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+      when: manual
+  artifacts:
+    reports:
+      dotenv: demo.env
+
+deploy-demo:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+  variables:
+    GIT_STRATEGY: none
+    GIT_DISCOVERY_ACROSS_FILESYSTEM: 1
+  needs:
+    - job: launch-demo-deploy
+    - job: demo-build-image-and-push
+  before_script:
+    - git clone https://oauth2:$DEPLOY_TOKEN@${CI_SERVER_HOST}/biru/sre/argocd -b main
+    - cd argocd
+    - git config --local user.email "bot@biru.sh"
+    - git config --local user.name "Bot Biru"
+    - git fetch --all
+  script:
+    # construct the values path with the inputs value
+    - PROJECT_NAME="tenzu"
+    - APP_NAME="front"
+    - ENV_NAME="demo"
+    - VALUES_FOLDER="values"
+    - FILE="$VALUES_FOLDER/$PROJECT_NAME/$APP_NAME/values-$ENV_NAME.yaml"
+    - echo $FILE $VALUE $DEMO_VERSION
+    - yq -i ".image.tag=\"$DEMO_VERSION\"" "$FILE"
+    - git add $FILE
+    - git commit -m "deploy($PROJECT_NAME/$APP_NAME) $DEMO_VERSION on $ENV_NAME"
+    - git push origin HEAD:main
+  stage: deploy-demo
+  environment:
+    name: demo

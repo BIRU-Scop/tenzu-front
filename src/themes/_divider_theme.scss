@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+
+
+@mixin color-and-typo($theme) {
+
+  .mat-divider {
+    @include mat.divider-overrides((
+      color: mat.get-theme-color($theme, neutral, 90)
+    ))
+  }
+}

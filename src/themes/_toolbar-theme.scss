@@ -1,0 +1,20 @@
+@use '@angular/material' as mat;
+
+@mixin color-and-typo($theme) {
+  --mat-toolbar-mobile-height: 48px;
+  @include mat.toolbar-overrides((
+    standard-height: 48px,
+  ));
+  .mat-toolbar {
+    border-color: mat.get-theme-color($theme, primary, 80);
+    box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+    @apply border-b;
+    @apply border-x-0;
+    @apply border-t-0;
+    @apply border-solid;
+    @include mat.toolbar-overrides((
+      container-background-color: mat.get-theme-color($theme, neutral, 100),
+      container-text-color: mat.get-theme-color($theme, primary, 40),
+    ))
+  }
+}

@@ -1,0 +1,226 @@
+@use '@angular/material' as mat;
+
+.mdc-button {
+  --mdc-icon-button-icon-size: 24px;
+  --mdc-icon-button-state-layer-size: 32px;
+  --mdc-filled-button-container-shape: 4px;
+  --mdc-outlined-button-container-shape: 4px;
+  --mdc-protected-button-container-shape: 4px;
+  --mdc-text-button-container-shape: 4px;
+  --mdc-filled-button-container-height: 32px;
+  --mdc-outlined-button-container-height: 32px;
+  --mdc-protected-button-container-height: 32px;
+  --mdc-text-button-container-height: 32px;
+  --mat-outlined-button-horizontal-padding: 12px;
+  --mat-filled-button-horizontal-padding: 12px;
+  --mat-text-button-horizontal-padding: 12px;
+  --mat-protected-button-horizontal-padding: 12px;
+  --mat-outlined-button-with-icon-horizontal-padding: 12px;
+  --mat-filled-button-with-icon-horizontal-padding: 12px;
+  --mat-protected-button-with-icon-horizontal-padding: 12px;
+  --mat-text-button-with-icon-horizontal-padding: 12px;
+  --mat-outlined-button-icon-spacing: 4px;
+  --mat-filled-button-icon-spacing: 4px;
+  --mat-text-button-icon-spacing: 4px;
+  --mat-protected-button-icon-spacing: 4px;
+  &.primary-button .mdc-button__label, &.secondary-button .mdc-button__label, &.tertiary-button .mdc-button__label {
+    z-index: 0;
+  }
+}
+
+.mat-mdc-icon-button {
+  --mdc-icon-button-icon-size: 24px;
+  --mdc-icon-button-state-layer-size: 32px;
+  line-height: 24px;
+  mat-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+  }
+  &.mat-mdc-button-base .mat-mdc-button-persistent-ripple::before {
+    opacity: 0.1;
+  }
+  &.icon-sm {
+    --mdc-icon-button-icon-size: 16px;
+    --mdc-icon-button-state-layer-size: 24px;
+    line-height: 16px;
+    mat-icon {
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+    }
+  }
+
+  &.icon-md {
+    --mdc-icon-button-icon-size: 24px;
+    --mdc-icon-button-state-layer-size: 32px;
+    line-height: 24px;
+    mat-icon {
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+    }
+  }
+
+  &.icon-lg {
+    --mdc-icon-button-icon-size: 32px;
+    --mdc-icon-button-state-layer-size: 40px;
+    line-height: 32px;
+    mat-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 32px;
+    }
+  }
+
+  &.icon-xl {
+    --mdc-icon-button-icon-size: 48px;
+    --mdc-icon-button-state-layer-size: 56px;
+    line-height: 48px;
+    mat-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 48px;
+    }
+  }
+}
+
+@mixin color-and-typo($theme) {
+  @include mat.button-overrides((
+    hover-state-layer-opacity: 0.75,
+    focus-state-layer-opacity: 0.75,
+    disabled-container-color: mat.get-theme-color($theme, neutral, 95),
+    disabled-label-text-color: mat.get-theme-color($theme, neutral, 80),
+    disabled-outline-color: mat.get-theme-color($theme, neutral, 90),
+    label-text-size : mat.get-theme-typography($theme, label-large, font-size),
+  ));
+  .mat-mdc-icon-button {
+    @include mat.icon-button-overrides((
+      state-layer-color: mat.get-theme-color($theme, neutral-variant, 60),
+      hover-state-layer-opacity: 0.2,
+      focus-state-layer-opacity: 0.1
+    ));
+      &:focus {
+        outline: solid mat.get-theme-color($theme, neutral-variant, 80) 3px;
+      }
+      .mat-icon {
+        @include mat.icon-overrides((color: mat.get-theme-color($theme, neutral-variant, 60)));
+      }
+  }
+
+  .primary-button {
+    &.mat-mdc-outlined-button {
+      box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+    }
+    &.mdc-button--unelevated {
+      box-shadow: 0 0 6px mat.get-theme-color($theme, primary, 80);
+      margin: 3px;
+    }
+    @include mat.button-color($theme, $color-variant: primary);
+    @include mat.button-overrides((
+      outline-color: mat.get-theme-color($theme, primary, 80),
+      state-layer-color: mat.get-theme-color($theme, primary, 60),
+      container-color: mat.get-theme-color($theme, primary, 90),
+      label-text-color: mat.get-theme-color($theme, primary, 40)
+    ));
+    @include mat.icon-button-overrides((
+      state-layer-color: mat.get-theme-color($theme, primary, 60),
+      ripple-color: mat.get-theme-color($theme, primary, 40)
+    ));
+    .mat-icon {
+      @include mat.icon-overrides((color: mat.get-theme-color($theme, primary, 50)));
+    }
+    &:focus {
+      outline: solid mat.get-theme-color($theme, primary, 80) 3px;
+    }
+  }
+
+  .secondary-button {
+    &.mat-mdc-outlined-button {
+      box-shadow: 0 0 3px mat.get-theme-color($theme, secondary, 80);
+    }
+    &.mdc-button--unelevated {
+      box-shadow: 0 0 6px mat.get-theme-color($theme, secondary, 80);
+      margin: 3px;
+    }
+    @include mat.button-color($theme, $color-variant: secondary);
+    @include mat.button-overrides((
+        outline-color: mat.get-theme-color($theme, secondary, 80),
+        state-layer-color: mat.get-theme-color($theme, secondary, 60),
+        container-color: mat.get-theme-color($theme, secondary, 90),
+        label-text-color: mat.get-theme-color($theme, secondary, 30)
+    ));
+    @include mat.icon-button-overrides((
+      state-layer-color: mat.get-theme-color($theme, secondary, 60),
+      ripple-color: mat.get-theme-color($theme, secondary, 30)
+    ));
+    .mat-icon {
+      @include mat.icon-overrides((color: mat.get-theme-color($theme, secondary, 40)));
+    }
+    &:focus {
+      outline: solid mat.get-theme-color($theme, secondary, 80) 3px;
+    }
+  }
+
+  .tertiary-button {
+    &.mat-mdc-outlined-button {
+      box-shadow: 0 0 3px mat.get-theme-color($theme, tertiary, 70);
+    }
+    &.mdc-button--unelevated {
+      box-shadow: 0 0 6px mat.get-theme-color($theme, tertiary, 70);
+      margin: 3px;
+    }
+    @include mat.button-color($theme, $color-variant: tertiary);
+    @include mat.button-overrides((
+      outline-color: mat.get-theme-color($theme, tertiary, 70),
+      state-layer-color: mat.get-theme-color($theme, tertiary, 50),
+      container-color: mat.get-theme-color($theme, tertiary, 90),
+      label-text-color: mat.get-theme-color($theme, tertiary, 30)
+    ));
+    @include mat.icon-button-overrides((
+      state-layer-color: mat.get-theme-color($theme, tertiary, 50),
+      ripple-color: mat.get-theme-color($theme, tertiary, 30)
+    ));
+    .mat-icon {
+      @include mat.icon-overrides((color: mat.get-theme-color($theme, tertiary, 30)));
+    }
+    &:focus {
+      outline: solid mat.get-theme-color($theme, tertiary, 70) 3px;
+    }
+  }
+
+  .error-button {
+    &.mat-mdc-outlined-button {
+      box-shadow: 0 0 3px mat.get-theme-color($theme, error, 80);
+    }
+    &.mdc-button--unelevated {
+      box-shadow: 0 0 6px mat.get-theme-color($theme, error, 80);
+      margin: 3px;
+    }
+    @include mat.button-color($theme, $color-variant: error);
+    @include mat.button-overrides((
+      outline-color: mat.get-theme-color($theme, error, 80),
+      state-layer-color: mat.get-theme-color($theme, error, 60),
+      container-color: mat.get-theme-color($theme, error, 90),
+      label-text-color: mat.get-theme-color($theme, error, 30)
+    ));
+    @include mat.icon-button-overrides((
+      state-layer-color: mat.get-theme-color($theme, error, 60),
+      ripple-color: mat.get-theme-color($theme, error, 30)
+    ));
+    .mat-icon {
+      @include mat.icon-overrides((color: mat.get-theme-color($theme, error, 40)));
+    }
+    &:focus {
+      outline: solid mat.get-theme-color($theme, error, 80) 3px;
+    }
+  }
+
+  .mat-mdc-button[disabled], .mat-mdc-button:disabled, .mat-mdc-button-disabled {
+    box-shadow: none;
+    .mat-icon {
+      @include mat.icon-overrides((color: mat.get-theme-color($theme, neutral, 80)));
+    }
+  }
+}
+

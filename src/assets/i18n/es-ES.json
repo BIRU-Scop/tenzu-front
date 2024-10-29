@@ -1,0 +1,88 @@
+{
+  "component": {
+    "password": {
+      "label": "Contraseña",
+      "show": "Mostrar contraseña",
+      "hide": "Ocultar contraseña",
+      "placeholder": "Introduce tu contraseña",
+      "hints": {
+        "minLength": "Tu contraseña debe tener al menos {{ minLength }} de longitud.",
+        "diversity": "Tu contraseña debe tener al menos {{ diversityDifference }} de estos tipos:",
+        "diversityType": "1 {{ diversityType }}"
+      },
+      "errors": {
+        "required": "El campo de contraseña es <strong>obligatorio</strong>",
+        "minLength": "La contraseña debe tener al menos <strong>{{ number }} caracteres</strong>.",
+        "maxLength": "La contraseña no puede tener más de <strong>{{ number }} caracteres</strong>.",
+        "diversity": "Requiere al menos <strong>{{ diversityDifference }}</strong> de los siguientes tipos:",
+        "diversityType": "1 carácter <strong>{{ diversityType }}</strong>"
+      },
+      "password-strength": {
+        "security_level": {
+          "weak": "Débil",
+          "medium": "Medio",
+          "strong": "Fuerte"
+        }
+      }
+    },
+    "email": {
+      "label": "Correo electrónico",
+      "errors": {
+        "required": "El correo electrónico es <strong>obligatorio</strong>",
+        "email": "Por favor, introduce una dirección de correo electrónico válida"
+      }
+    },
+    "assign": {
+      "label": "Agregar cesionarios",
+      "not_assigned": "La historia no está asignada.",
+      "no_members": "Este proyecto no tiene miembros para elegir.",
+      "search_placeholder": "Buscar miembros"
+    },
+    "project_card": {
+      "create_first_project": "Crea tu primer proyecto"
+    },
+    "description": {
+      "label": "Descripción",
+      "placeholder": "Agrega una breve descripción para ayudar a otros a comprender mejor tu proyecto."
+    },
+    "user_card": {
+      "your_user": "Tú"
+    },
+    "primary_side_nav": {
+      "collapse": "Colapsar"
+    }
+  },
+  "commons": {
+    "project": "Proyecto",
+    "projects": "Proyectos",
+    "workspace": "Espacio de trabajo",
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  },
+  "general": {
+    "identity": {
+      "fullname": "Nombre completo",
+      "lang": "Idioma",
+      "email": "Correo electrónico"
+    }
+  },
+  "invitations": {
+    "pending": "Pendiente",
+    "non_members": "No miembros",
+    "invite_to_workspace": "Invitar al espacio de trabajo",
+    "invite_to_project": "Invitar al proyecto",
+    "to": "a",
+    "add": "Agregar",
+    "invite_peoples": "Invitar personas",
+    "at_least_one_invalid_email": "La entrada tiene al menos un correo electrónico incorrecto"
+  },
+  "directives": {
+    "confirmPopupComponent": {
+      "textDelete": "Esta acción es irreversible.",
+      "textConfirm": "¿Estás seguro?",
+      "cancelAction": "Cancelar",
+      "deleteAction": "Eliminar",
+      "confirmAction": "Confirmar"
+    }
+  }
+}

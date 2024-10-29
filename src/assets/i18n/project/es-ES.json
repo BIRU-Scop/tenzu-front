@@ -1,0 +1,32 @@
+{
+  "new_project": {
+    "title": "Nuevo proyecto",
+    "create_project": "Crear proyecto",
+    "name": "Nombre",
+    "name_required": "Por favor, introduce un nombre",
+    "workspace_required": "Por favor, elige un espacio de trabajo"
+  },
+  "settings": {
+    "title": "Configuración del proyecto",
+    "name": "Nombre del proyecto",
+    "description": "Descripción del proyecto",
+    "delete_project_title": "Eliminar proyecto",
+    "delete_project_warning": "Esta acción eliminará el proyecto, junto con todas las historias y archivos adjuntos en él.",
+    "buttons": {
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "delete": "Eliminar"
+    },
+    "errors": {
+      "name_required": "El nombre del proyecto no puede estar vacío"
+    },
+    "messages": {
+      "deleted": "Tu proyecto ha sido eliminado",
+      "saved": "La información de tu proyecto ha sido guardada"
+    }
+  },
+  "people": {
+    "title": "Personas",
+    "description_modal": "<p>Empieza a escribir un correo electrónico o ingresa varias direcciones separadas por una coma.</p>"
+  }
+}

@@ -1,0 +1,243 @@
+@use "themes/m3-theme" as themes;
+@use "@angular/material" as mat;
+@use "themes/icon-theme" as icon;
+@use "themes/button-theme" as button;
+@use "themes/toolbar-theme" as toolbar;
+@use "themes/skeleton-theme" as skeleton;
+@use "themes/avatar-theme" as avatar;
+@use "themes/card-theme" as card;
+@use "themes/form-field-theme" as form-field;
+@use "themes/select-theme" as select;
+@use "themes/radio-theme" as radio;
+@use "themes/checkbox-theme" as checkbox;
+@use "themes/password-strength-theme" as password-strength;
+@use "themes/menu-theme" as menu;
+@use "themes/dialog-theme" as dialog;
+@use "themes/list-theme" as list;
+@use "themes/side-nav-theme" as side-nav;
+@use "themes/divider_theme" as divider;
+@use "themes/tabs-theme" as tabs;
+@use "themes/expansion-theme" as expansion;
+@use "themes/snackbar-theme" as snackbar;
+@use "themes/table-theme" as table;
+@use "themes/editor-theme" as editor;
+@use "themes/cdk-drag-theme" as cdk-drag;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: "Lexend", sans-serif;
+  font-optical-sizing: auto;
+  color: mat.get-theme-color(themes.$light-theme, neutral, 17);
+  @include mat.core;
+  @include mat.all-component-themes(themes.$light-theme);
+  @include mat.typography-hierarchy(themes.$light-theme);
+  @include button.color-and-typo(themes.$light-theme);
+  @include icon.color-and-typo(themes.$light-theme);
+  @include toolbar.color-and-typo(themes.$light-theme);
+  @include skeleton.color-and-typo(themes.$light-theme);
+  @include avatar.color-and-typo(themes.$light-theme);
+  @include card.color-and-typo(themes.$light-theme);
+  @include form-field.color-and-typo(themes.$light-theme);
+  @include select.color-and-typo(themes.$light-theme);
+  @include radio.color-and-typo(themes.$light-theme);
+  @include checkbox.color-and-typo(themes.$light-theme);
+  @include password-strength.color-and-typo(themes.$light-theme);
+  @include dialog.color-and-typo(themes.$light-theme);
+  @include menu.color-and-typo(themes.$light-theme);
+  @include list.color-and-typo(themes.$light-theme);
+  @include side-nav.color-and-typo(themes.$light-theme);
+  @include divider.color-and-typo(themes.$light-theme);
+  @include tabs.color-and-typo(themes.$light-theme);
+  @include expansion.color-and-typo(themes.$light-theme);
+  @include snackbar.color-and-typo(themes.$light-theme);
+  @include table.color-and-typo(themes.$light-theme);
+  @include editor.color-and-typo(themes.$light-theme);
+  ::selection {
+    background-color: mat.get-theme-color(themes.$light-theme, primary, 90);
+  }
+}
+
+.mat-headline-small,
+.mat-headline-large,
+.mat-headline-medium {
+  color: mat.get-theme-color(themes.$light-theme, neutral, 10);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: mat.get-theme-color(themes.$light-theme, neutral, 10);
+  font-weight: mat.get-theme-typography(themes.$light-theme, title-large, font-weight);
+}
+
+.mat-elevation-z2 {
+  @include mat.core-overrides(
+    (
+      elevation-shadow-level-1:
+        "1px 1px 1px rgba(0, 0, 0, 0.3)",
+      elevation-shadow-level-2:
+        "2px 2px 2px rgba(0, 0, 0, 0.2)",
+      elevation-shadow-level-3:
+        "4px 4px 4px rgba(0, 0, 0, 0.1)",
+    )
+  );
+}
+
+a {
+  color: mat.get-theme-color(themes.$light-theme, primary, 40);
+  text-decoration-color: mat.get-theme-color(themes.$light-theme, primary, 80);
+  &:hover {
+    text-decoration-line: underline;
+    text-decoration-color: mat.get-theme-color(themes.$light-theme, primary, 40);
+  }
+  &:focus {
+    background-color: mat.get-theme-color(themes.$light-theme, primary, 90);
+    outline: none;
+  }
+}
+
+strong {
+  @apply font-bold;
+}
+
+small {
+  font-size: mat.get-theme-typography(themes.$light-theme, body-small, font-size);
+}
+
+/************************ COLOR CLASSES *************************/
+
+//Primary
+@for $i from 0 through 9 {
+  .text-primary-#{$i*10} {
+    color: mat.get-theme-color(themes.$light-theme, primary, $i * 10);
+  }
+}
+
+//Secondary
+@for $i from 0 through 9 {
+  .text-secondary-#{$i*10} {
+    color: mat.get-theme-color(themes.$light-theme, secondary, $i * 10);
+  }
+}
+
+//Tertiary
+@for $i from 0 through 9 {
+  .text-tertiary-#{$i*10} {
+    color: mat.get-theme-color(themes.$light-theme, tertiary, $i * 10);
+  }
+}
+
+//Neutral
+@for $i from 0 through 9 {
+  .text-neutral-#{$i*10} {
+    color: mat.get-theme-color(themes.$light-theme, neutral, $i * 10);
+  }
+  .border-neutral-#{$i*10} {
+    border-color: mat.get-theme-color(themes.$light-theme, neutral, $i * 10);
+  }
+  .bg-neutral-#{$i*10} {
+    background-color: mat.get-theme-color(themes.$light-theme, neutral, $i * 10);
+  }
+}
+@for $i from 1 through 4 {
+  .text-neutral-#{90+$i*2} {
+    color: mat.get-theme-color(themes.$light-theme, neutral, 90+$i*2);
+  }
+  .border-neutral-#{90+$i*2} {
+    border-color: mat.get-theme-color(themes.$light-theme, neutral, 90+$i*2);
+  }
+  .bg-neutral-#{90+$i*2} {
+    background-color: mat.get-theme-color(themes.$light-theme, neutral, 90+$i*2);
+  }
+}
+//Neutral-variant
+@for $i from 0 through 9 {
+  .text-neutral-variant-#{$i*10} {
+    color: mat.get-theme-color(themes.$light-theme, neutral-variant, $i * 10);
+  }
+}
+
+//Error
+@for $i from 0 through 9 {
+  .text-error-#{$i*10} {
+    color: mat.get-theme-color(themes.$light-theme, error, $i * 10);
+  }
+}
+
+/************************ RESET CSS *************************/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+ol,
+ul,
+menu,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input:where([type="button"]),
+input:where([type="reset"]),
+input:where([type="submit"]) {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+  border: 0;
+}
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+:disabled {
+  cursor: default;
+}
+
+button,
+select {
+  text-transform: none;
+}

@@ -1,0 +1,54 @@
+{
+  "general_title": {
+    "workspace": "Workspace",
+    "workspaces": "Workspaces",
+    "workspaceListProjects": "Projects",
+    "workspaceSettings": "Settings",
+    "workspacePeople": "People",
+    "project": "Project",
+    "projects": "Projects",
+    "kanban": "Kanban",
+    "projectMembers": "Members",
+    "projectSettings": "Settings"
+  },
+  "create": {
+    "create_workspace": "Create workspace",
+    "workspace_name": "Workspace name",
+    "name_required": "Workspace name can’t be empty",
+    "name_placeholder": "Add workspace name"
+  },
+  "list_projects": {
+    "title": "Projects list"
+  },
+  "settings": {
+    "title": "Workspace settings",
+    "edit_profile": "Edit profile",
+    "delete_workspace": "Delete workspace",
+    "delete": {
+      "delete": "Delete",
+      "error": "You cannot delete a workspace that has projects in it. </br> This workspace has { totalProjects, plural, one {<strong class='number-projects'>#</strong> project} other {<strong class='number-projects'>#</strong> projects} }. Delete the { totalProjects, plural, one {project} other {projects} } first.",
+      "deleted_workspace": "The workspace {{ var }} has been deleted"
+    },
+    "edit": {
+      "title": "Edit workspace",
+      "name": "Name",
+      "name_required": "Workspace name can’t be empty",
+      "name_placeholder": "Add workspace name"
+    }
+  },
+  "people": {
+    "title": "People",
+    "invite_to_workspace": "Invite to workspace",
+    "description_modal": "<p>Once they accept the invitation, they will be able to invite new members, create new projects and edit other workspace settings.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
+    "guests_tab": "Guests",
+    "members_tab": "Members",
+    "pending_tab": "Pending",
+    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them.",
+    "guest_description": "People that are part of the projects but not workspace members."
+  },
+  "placeholder": {
+    "placeholder_title": "You are not member of any Workspace yet",
+    "placeholder_text": "Group your projects into workspaces. You decide if they match something as big as an organization or as personal as your pet projects.",
+    "placeholder_button": "Create workspace"
+  }
+}

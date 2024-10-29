@@ -1,0 +1,25 @@
+{
+  "title": "Crea una cuenta Tenzu",
+  "subtitle": "Gratis para todos",
+  "create_account_email": "Crea una cuenta con tu correo electrónico",
+  "create_account": "Crear una cuenta",
+  "all_options": "Todas las opciones",
+  "terms_and_privacy": "Al crear la cuenta, aceptas nuestros <a href='{{ termsOfService }}' target='_blank'>términos de servicio</a> y <a href='{{ privacyPolicy }}' target='_blank'>política de privacidad</a>.",
+  "validation": {
+    "full_name_required": "Introduce un nombre completo"
+  },
+  "verify": {
+    "title": "Revisa tu bandeja de entrada para completar tu registro",
+    "verification_link_sent": "Haz clic en el enlace de verificación en el correo que te enviamos para:",
+    "mail_not_received": "¿No recibiste el correo?",
+    "resend_button": "Reenviar correo",
+    "footer_text": "¿Quieres usar un correo diferente?",
+    "footer_button": "Crear una nueva cuenta",
+    "resend_toast_label": "Te acabamos de enviar un correo",
+    "resend_toast_message": "¡El correo de verificación está en camino!"
+  },
+  "footer": {
+    "already_account": "¿Ya tienes una cuenta?",
+    "login": "Inicia sesión aquí"
+  }
+}

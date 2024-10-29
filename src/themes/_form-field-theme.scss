@@ -1,0 +1,110 @@
+@use "@angular/material" as mat;
+
+.mat-mdc-form-field {
+  @apply w-full;
+  .mat-form-field-appearance-outline {
+    margin-top: 6.75px;
+  }
+  .mat-mdc-form-field-infix {
+    @apply min-w-52;
+    @apply w-full;
+    textarea {
+      min-width: 480px;
+    }
+  }
+  .mat-mdc-form-field-hint-wrapper,
+  .mat-mdc-form-field-error-wrapper {
+    position: relative;
+  }
+  .mat-mdc-form-field-bottom-align:before {
+    display: none;
+  }
+}
+
+@mixin color-and-typo($theme) {
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    &.mat-form-field-disabled {
+      .mdc-text-field--outlined {
+        box-shadow: none;
+      }
+    }
+
+    @include mat.form-field-overrides(
+      (
+        outline-color: mat.get-theme-color($theme, primary, 80),
+        hover-outline-color: mat.get-theme-color($theme, primary, 70),
+        focus-outline-color: mat.get-theme-color($theme, primary, 80),
+        error-outline-color: mat.get-theme-color($theme, error, 80),
+        error-hover-outline-color: mat.get-theme-color($theme, error, 70),
+        error-focus-outline-color: mat.get-theme-color($theme, error, 80),
+        container-text-size: mat.get-theme-typography($theme, label-large, font-size),
+        container-text-line-height: mat.get-theme-typography($theme, label-large, line-height),
+        container-height: 36px,
+        container-vertical-padding: 8px,
+        container-color: transparent,
+        label-text-size: mat.get-theme-typography($theme, label-large, font-size),
+        label-text-color: mat.get-theme-color($theme, primary, 25),
+        focus-label-text-color: mat.get-theme-color($theme, primary, 10),
+        hover-label-text-color: mat.get-theme-color($theme, primary, 10),
+        error-hover-label-text-color: mat.get-theme-color($theme, error, 10),
+        error-focus-label-text-color: mat.get-theme-color($theme, error, 10),
+        error-label-text-color: mat.get-theme-color($theme, error, 25),
+        filled-with-label-container-padding-top: 16px,
+        filled-with-label-container-padding-bottom: 4px,
+        hover-state-layer-opacity: 0,
+        focus-state-layer-opacity: 0,
+        active-indicator-color: mat.get-theme-color($theme, neutral, 90),
+        disabled-active-indicator-color: mat.get-theme-color($theme, neutral, 90),
+        hover-active-indicator-color:mat.get-theme-color($theme, primary, 80),
+        focus-active-indicator-color: mat.get-theme-color($theme, primary, 80),
+        error-active-indicator-color: mat.get-theme-color($theme, error, 80),
+        error-focus-active-indicator-color: mat.get-theme-color($theme, error, 70),
+        error-hover-active-indicator-color: mat.get-theme-color($theme, error, 80),
+      )
+    );
+
+    .mat-mdc-form-field-error {
+      color: mat.get-theme-color($theme, error, 40);
+    }
+
+    &.mat-form-field-invalid {
+      .mdc-text-field--outlined {
+        box-shadow: 0 0 3px mat.get-theme-color($theme, error, 80);
+      }
+    }
+
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+      .mdc-line-ripple::before, .mdc-line-ripple::after {
+        margin-bottom: 3px;
+      }
+    }
+    &:hover, &:focus-within {
+      .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+      .mdc-line-ripple::before {
+        box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+      }
+    }
+  }
+    &.title-field {
+      @include mat.form-field-overrides(
+        (
+          container-text-size: mat.get-theme-typography($theme, headline-small, font-size),
+          container-text-line-height: mat.get-theme-typography($theme, headline-small, line-height),
+          container-text-weight: mat.get-theme-typography($theme, headline-small, font-weight),
+          container-text-tracking: 0px,
+          input-text-color: mat.get-theme-color($theme, neutral, 10),
+          container-vertical-padding: 0px
+        )
+      );
+      .mat-mdc-form-field-flex {
+        padding-bottom: 8px;
+      }
+    }
+  }
+}

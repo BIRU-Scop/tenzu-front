@@ -1,0 +1,111 @@
+{
+  "notification": {
+    "server_errors": {
+      "http500": {
+        "title": "Something went wrong!",
+        "message": "Try again in a few minutes."
+      },
+      "http403": {
+        "title": "Permission denied",
+        "message": "You don't have permission to do that."
+      }
+    },
+    "login": {
+        "logout": "You are signed out"
+    },
+    "action": {
+      "changes_saved": "Changes saved"
+    }
+  },
+  "component": {
+    "password": {
+      "label": "Password",
+      "show": "Show password",
+      "hide": "Hide password",
+      "placeholder": "Enter your password",
+      "hints": {
+        "minLength": "Your password needs to be at least {{ minLength }} long.",
+        "diversity": "Your password needs to have at least {{ diversityDifference }} of these kinds:",
+        "diversityType": "1 {{ diversityType }}"
+      },
+      "errors": {
+        "required": "{{ label }} is <strong>required</strong>",
+        "minLength": "Password needs to be at least <strong>{{ number }} characters long</strong>.",
+        "maxLength": "Password cannot be longer than <strong>{{ number }} characters</strong>.",
+        "diversity": "Requires at least <strong>{{ diversityDifference }}</strong> the following types:",
+        "diversityType": "1 <strong>{{ diversityType }}</strong> character"
+      },
+      "password-strength": {
+        "security_level": {
+          "weak": "Weak",
+          "medium": "Medium",
+          "strong": "Strong"
+        }
+      }
+    },
+    "email": {
+      "label": "Email",
+      "errors": {
+        "required": "Email is <strong>required</strong>",
+        "email": "Please enter a valid email address"
+      }
+    },
+    "assign": {
+      "label": "Add assignees",
+      "assigned_to": "Assigned to:",
+      "not_assigned": "Card is not assigned.",
+      "no_members": "This project has no members to choose from.",
+      "search_placeholder": "Search members"
+    },
+    "project_card": {
+      "create_first_project": "Create your first project"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Add a short description to help others better understand your project."
+    },
+    "user_card": {
+      "your_user": "You"
+    },
+    "primary_side_nav": {
+      "collapse": "Collapse",
+      "main_nav": "Main navigation",
+      "secondary_nav": "Secondary navigation"
+    },
+    "invite_dialog": {
+      "pending": "Pending",
+      "non_members": "Non-members",
+      "add": "Add",
+      "invite_peoples": "Invite peoples",
+      "to": "to",
+      "at_least_one_invalid_email": "The input have at least one incorrect mail",
+      "mailing_list": "Mailing list"
+    }
+  },
+  "commons": {
+    "project": "Project",
+    "projects": "Projects",
+    "workspace": "Workspace",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "general": {
+    "identity": {
+      "fullname": "Full name",
+      "lang": "Language",
+      "email": "Email"
+    }
+  },
+  "directives": {
+    "confirmPopupComponent": {
+      "textDelete": "This action is irreversible.",
+      "textConfirm": "Are you sure ?",
+      "cancelAction": "Cancel",
+      "deleteAction": "Delete",
+      "confirmAction": "Confirm"
+    }
+  },
+  "form_errors": {
+    "max_length": "Characters limit is {{length}}"
+  }
+}

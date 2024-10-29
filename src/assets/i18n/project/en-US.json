@@ -1,0 +1,36 @@
+{
+  "new_project": {
+    "title": "New Project",
+    "create_project": "Create project",
+    "name": "Name",
+    "name_required": "Please enter a name",
+    "workspace_required": "Please choose a workspace"
+  },
+  "settings": {
+    "title": "Project settings",
+    "name": "Project name",
+    "description": "Project description",
+    "delete_project_title": "Delete project",
+    "delete_project_warning": "This action will delete the project, along with all the stories and attachments in it.",
+    "buttons":
+    {
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete"
+    },
+    "errors": {
+      "name_required": "Project name cannot be empty"
+    },
+    "messages": {
+      "deleted": "Your project has been deleted",
+      "saved": "Your project information has been saved"
+    }
+  },
+  "members": {
+    "title": "Members",
+    "description_modal": "Start typing a email or enter multiple addresses separated by a comma.",
+    "invite_to_project": "Invite to project",
+    "members_tab": "Members",
+    "pending_tab": "Pending"
+  }
+}

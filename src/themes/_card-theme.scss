@@ -1,0 +1,64 @@
+@use '@angular/material' as mat;
+
+.mat-mdc-card {
+  --mdc-outlined-card-container-shape: 4px;
+  &.mat-mdc-card-outlined {
+    @apply border-b-2;
+  }
+  @apply gap-2;
+  .mat-mdc-card-header {
+    @apply px-3 pt-2;
+    .mat-mdc-card-header-text {
+      @apply line-clamp-2;
+      @apply grow;
+    }
+    @apply items-center;
+    @apply gap-2;
+  }
+  .mat-mdc-card-content {
+    @apply px-3 pb-2;
+    p {
+      @apply line-clamp-2;
+    }
+  }
+
+    &.heading-card {
+    --mdc-outlined-card-container-shape: 0;
+    @apply border-t-0;
+    @apply border-r-0;
+    @apply border-l-0;
+    .mat-mdc-card-header {
+      @apply px-0;
+      @apply pt-0;
+      @apply pb-2;
+    }
+  }
+}
+
+@mixin color-and-typo($theme) {
+  .mat-mdc-card {
+    @include mat.card-overrides((
+      outline-color: mat.get-theme-color($theme, neutral, 95),
+      container-color:  mat.get-theme-color($theme, neutral, 100),
+      title-text-size: mat.get-theme-typography($theme, body-medium, font-size),
+      title-text-line-height: mat.get-theme-typography($theme, body-medium, line-height),
+      container-elevation:  1px 1px 1px rgba(0, 0, 0, 0.2)
+    ));
+    .mat-mdc-card-header {
+      color: mat.get-theme-color($theme, neutral-variant, 20);
+    }
+    .mat-mdc-card-content {
+      font-size: mat.get-theme-typography($theme, body-small, font-size);
+      line-height: mat.get-theme-typography($theme, body-small, line-height);
+      color: mat.get-theme-color($theme, neutral, 30);
+    }
+
+    &.heading-card {
+      @include mat.card-overrides((
+        title-text-size: mat.get-theme-typography($theme, body-large, font-size),
+        outline-color: mat.get-theme-color($theme, neutral, 90),
+        container-elevation: none
+      ));
+    }
+  }
+}

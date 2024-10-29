@@ -1,0 +1,59 @@
+{
+  "edit_status": {
+    "aria_label": "Editar estado",
+    "edit_name": "Editar nombre del estado",
+    "delete": "Eliminar estado"
+  },
+  "add_status": "Agregar estado",
+  "add_story": "Agregar historia",
+  "create_story": {
+    "create_story": "Crear historia",
+    "story_name": "Nombre de la historia",
+    "name_required": "El nombre de la historia no puede estar vacío",
+    "name_placeholder": "Agregar nombre de la historia"
+  },
+  "create_status": {
+    "create_status": "Crear estado",
+    "status_name": "Nombre del estado",
+    "name_required": "El nombre del estado no puede estar vacío",
+    "name_placeholder": "Agregar nombre del estado"
+  },
+  "edit_status_name": {
+    "edit_status_name": "Editar nombre del estado",
+    "status_name": "Nombre del estado",
+    "name_required": "El nombre del estado no puede estar vacío"
+  },
+  "delete_status": {
+    "title": "¿Eliminar el estado {{ statusName }}?",
+    "what_to_do_stories": "¿Qué quieres hacer con las historias en este estado?",
+    "stories_will_be_deleted": "Las historias de este estado se eliminarán automáticamente.",
+    "cancel": "No importa, conservar estado",
+    "confirm": "Sí, eliminar estado",
+    "move_stories_another_status": "Moverlas a otro estado",
+    "delete_stories": "Eliminar también las historias",
+    "stories_placed_below": "Las historias se colocarán debajo de las existentes.",
+    "status": "Estado"
+  },
+  "detail_story": {
+    "label": "Historia de usuario",
+    "edit_title": "Editar título",
+    "edit_description": "Editar descripción",
+    "created_by": "Creado por",
+    "assigned_to": "Asignado a",
+    "status": "Estado",
+    "title": "Título",
+    "description": "Descripción",
+    "save": "Guardar",
+    "add_assignees": "Agregar cesionarios",
+    "confirm_delete_story": "¿Estás seguro de que quieres eliminar esta historia?",
+    "confirm_delete_story_message": "Toda la información de la historia se eliminará permanentemente. No hay forma de deshacer esta acción.",
+    "attachments": {
+      "attach_file": "Adjuntar archivo",
+      "name": "Nombre",
+      "size": "Tamaño (bytes)",
+      "date": "Fecha",
+      "exceed_size": "{var} supera el tamaño de 100 MB",
+      "deleted_attachment": "{var} ha sido eliminado"
+    }
+  }
+}

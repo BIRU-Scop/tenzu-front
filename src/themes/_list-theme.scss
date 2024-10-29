@@ -1,0 +1,89 @@
+@use "@angular/material" as mat;
+
+$list-item-spacing: 12px;
+
+.mat-mdc-selection-list.mat-mdc-list-base .mdc-list-item {
+  @apply py-1;
+}
+
+@mixin color-and-typo($theme) {
+  .mdc-list {
+    padding: 0;
+  }
+  @include mat.list-overrides((
+    list-item-one-line-container-height: 32px,
+  ));
+  .mdc-list {
+    @include mat.list-overrides(
+      (
+        list-item-container-shape: 4px,
+        active-indicator-shape: 4px,
+        list-item-label-text-size: mat.get-theme-typography($theme, label-large, font-size),
+        list-item-label-text-line-height: mat.get-theme-typography($theme, label-large, line-height),
+        list-item-leading-icon-start-space: $list-item-spacing,
+        list-item-leading-icon-end-space: $list-item-spacing,
+      )
+    );
+    .mdc-list-item {
+      &.resized {
+        padding-left: $list-item-spacing;
+        padding-right: $list-item-spacing;
+      }
+    }
+  }
+  .mat-mdc-nav-list {
+    @apply flex flex-col gap-1;
+    .mdc-list-item  {
+      --mat-ripple-color: rgba(0,0,0,0.12);
+      @include mat.list-overrides((
+        list-item-container-shape: 0px,
+        active-indicator-shape: 0px,
+        list-item-container-color: mat.get-theme-color($theme, primary, 20),
+        active-indicator-color: mat.get-theme-color($theme, primary, 10),
+        list-item-hover-state-layer-opacity: 0,
+        list-item-focus-state-layer-opacity: 0,
+        list-item-label-text-color: mat.get-theme-color($theme, primary, 90),
+        list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 90),
+        list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 90),
+        list-item-leading-icon-color: mat.get-theme-color($theme, primary, 60),
+        list-item-hover-leading-icon-color:  mat.get-theme-color($theme, primary, 60),
+      ));
+      .mat-icon {
+        color: mat.get-theme-color($theme, primary, 60);
+      }
+      &:hover {
+        background-color: mat.get-theme-color($theme, primary, 10);
+      }
+      &:focus {
+        outline: 1px solid mat.get-theme-color($theme, primary, 70);
+        background-color: mat.get-theme-color($theme, primary, 10);
+      }
+      &.mdc-list-item--activated {
+        @include mat.list-overrides(
+          (
+            list-item-label-text-color: mat.get-theme-color($theme, primary, 100),
+            list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 100),
+            list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 100),
+            list-item-leading-icon-color: mat.get-theme-color($theme, primary, 70),
+            list-item-hover-leading-icon-color: mat.get-theme-color($theme, primary, 70),
+          )
+        );
+      }
+    }
+  }
+  .mat-mdc-selection-list {
+    @include mat.list-overrides((
+      active-indicator-color: mat.get-theme-color($theme, primary, 10),
+      list-item-hover-state-layer-opacity: 0.15,
+      list-item-focus-state-layer-opacity: 0.15,
+      list-item-hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 60),
+      list-item-focus-state-layer-color: mat.get-theme-color($theme, neutral-variant, 80),
+      list-item-label-text-color: mat.get-theme-color($theme, neutral-variant, 20),
+      list-item-hover-label-text-color: mat.get-theme-color($theme, neutral-variant, 10),
+      list-item-focus-label-text-color: mat.get-theme-color($theme, neutral-variant, 10),
+      list-item-leading-icon-color: mat.get-theme-color($theme, primary, 60),
+      list-item-hover-leading-icon-color:  mat.get-theme-color($theme, primary, 60),
+            list-item-one-line-container-height: auto,
+    ));
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "navigation": {
+    "profile": "Perfil",
+    "security": "Seguridad",
+    "delete": "Eliminar"
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "save": "Guardar"
+  },
+  "security": {
+    "save": "Guardar",
+    "current_password": "Contraseña actual",
+    "new_password": "Nueva contraseña",
+    "repeat_password": "Repetir contraseña",
+    "password_not_match": "Las contraseñas no coinciden",
+    "invalid_current_password": "Esta no es tu contraseña actual",
+    "change_password": "Cambiar contraseña"
+  },
+  "delete": {
+    "delete_account": "Eliminar mi cuenta",
+    "keep_my_account": "Conservar mi cuenta",
+    "delete": "Eliminar cuenta",
+    "consequences": {
+      "sorry": "Lamentamos verte partir",
+      "what": "Qué pasará",
+      "item1": "Perderás el acceso a Tenzu.",
+      "item2": "Eliminaremos tus datos personales y tu nombre desaparecerá de la plataforma.",
+      "item3": "El contenido que has creado y compartido con otras personas permanecerá en la plataforma."
+    },
+    "consent": "Entiendo que la eliminación es definitiva y no habrá forma de restaurar mi cuenta.",
+    "confirm_consent": "Por favor, confirma que entiendes las consecuencias de eliminar tu cuenta.",
+    "confirm_dialog": {
+      "title": "Antes de eliminar tu cuenta",
+      "only_member_workspace": "Eres el único miembro en algunos espacios de trabajo",
+      "info_delete_workspace": "Esos espacios de trabajo serán eliminados, junto con los proyectos dentro de ellos. Puedes invitar a alguien para que sea miembro del espacio de trabajo.",
+      "only_admin_projects": "Eres el único administrador en algunos proyectos",
+      "info_admin_projects": "Tu rol como administrador de proyectos se transferirá a otro miembro del espacio de trabajo."
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": ["*.html", "*.ts", "*.scss"],
+      "options": {
+        "printWidth": 120
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "html"
+      }
+    },
+    {
+      "files": "*.component.html",
+      "options": {
+        "parser": "angular"
+      }
+    },
+    {
+      "files": "*.scss",
+      "options": {
+        "parser": "scss"
+      }
+    }
+  ]
+}

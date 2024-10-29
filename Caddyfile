@@ -1,0 +1,6 @@
+:80 {
+  try_files {path} /
+  root * /usr/share/caddy
+  file_server
+  encode gzip
+}

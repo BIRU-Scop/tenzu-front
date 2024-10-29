@@ -1,0 +1,135 @@
+@use '@angular/material' as mat;
+.avatar {
+  @apply tracking-widest;
+
+  &.avatar-sm {
+    @apply text-xs;
+    @apply w-6;
+    @apply h-6;
+  }
+
+  &.avatar-md {
+    @apply text-sm;
+    @apply w-8;
+    @apply h-8;
+  }
+
+  &.avatar-lg {
+    @apply text-lg;
+    @apply w-12;
+    @apply h-12;
+  }
+
+  &.avatar-xl {
+    @apply text-lg;
+    @apply w-16;
+    @apply h-16;
+  }
+}
+
+button {
+  .avatar {
+    @apply cursor-pointer;
+    @apply border;
+    @apply border-solid;
+  }
+}
+
+@mixin color-and-typo($theme) {
+  // API color id range: 1-8
+  .avatar {
+    &.color-0 {
+      color: mat.get-theme-color($theme, neutral, 20);
+      background-color: mat.get-theme-color($theme, neutral, 95);
+    }
+    &.color-1,&.color-5 {
+      color: mat.get-theme-color($theme, primary, 30);
+      background-color: mat.get-theme-color($theme, primary, 98);
+    }
+    &.color-2,&.color-6 {
+      color: mat.get-theme-color($theme, secondary, 20);
+      background-color: mat.get-theme-color($theme, secondary, 95);
+    }
+    &.color-3,&.color-7 {
+      color: mat.get-theme-color($theme, tertiary, 20);
+      background-color: mat.get-theme-color($theme, tertiary, 95);
+    }
+    &.color-4,&.color-8 {
+      color: mat.get-theme-color($theme, error, 20);
+      background-color: mat.get-theme-color($theme, error, 95);
+    }
+  }
+
+  button {
+    .avatar {
+      &.color-0 {
+        background-color: transparent;
+        border-color: mat.get-theme-color($theme, neutral, 80);
+      }
+      &.color-1,&.color-5 {
+        background-color: transparent;
+        border-color: mat.get-theme-color($theme, primary, 90);
+        box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 90);
+      }
+      &.color-2,&.color-6 {
+        background-color: transparent;
+        border-color: mat.get-theme-color($theme, secondary, 80);
+        box-shadow: 0 0 3px mat.get-theme-color($theme, secondary, 80);
+      }
+      &.color-3,&.color-7 {
+        background-color: transparent;
+        border-color: mat.get-theme-color($theme, tertiary, 80);
+        box-shadow: 0 0 3px mat.get-theme-color($theme, tertiary, 80);
+      }
+      &.color-4,&.color-8 {
+        background-color: transparent;
+        border-color: mat.get-theme-color($theme, error, 80);
+        box-shadow: 0 0 3px mat.get-theme-color($theme, error, 80);
+      }
+
+      &:hover {
+        &.color-0 {
+          background-color: mat.get-theme-color($theme, neutral, 95);
+        }
+        &.color-1,&.color-5 {
+          background-color: mat.get-theme-color($theme, primary, 95);
+        }
+        &.color-2,&.color-6 {
+          background-color: mat.get-theme-color($theme, secondary, 95);
+        }
+        &.color-3,&.color-7 {
+          background-color: mat.get-theme-color($theme, tertiary, 95);
+        }
+        &.color-4,&.color-8 {
+          background-color: mat.get-theme-color($theme, error, 95);
+        }
+      }
+    }
+    outline: 0;
+    &:focus {
+      .avatar {
+        outline: solid 3px;
+        &.color-0 {
+          background-color: mat.get-theme-color($theme, neutral, 95);
+          outline-color: mat.get-theme-color($theme, neutral, 80);
+        }
+        &.color-1,&.color-5 {
+          background-color: mat.get-theme-color($theme, primary, 95);
+          outline-color: mat.get-theme-color($theme, primary, 80);
+        }
+        &.color-2,&.color-6 {
+          background-color: mat.get-theme-color($theme, secondary, 95);
+          outline-color: mat.get-theme-color($theme, secondary, 80);
+        }
+        &.color-3,&.color-7 {
+          background-color: mat.get-theme-color($theme, tertiary, 95);
+          outline-color: mat.get-theme-color($theme, tertiary, 80);
+        }
+        &.color-4,&.color-8 {
+          background-color: mat.get-theme-color($theme, error, 95);
+          outline-color: mat.get-theme-color($theme, error, 80);
+        }
+      }
+    }
+  }
+}

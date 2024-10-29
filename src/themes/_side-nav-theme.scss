@@ -1,0 +1,62 @@
+@use '@angular/material' as mat;
+
+$sidenav-width: 250px;
+
+.mat-drawer-container {
+  height: calc(100vh - var(--mat-toolbar-standard-height));
+  .mat-sidenav {
+    transition-duration: 400ms;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-property: width;
+  }
+  .mat-sidenav-content {
+    transition-duration: 400ms;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-property: margin-left;
+    @apply px-4;
+    @apply py-4;
+    margin-left: $sidenav-width;
+  }
+}
+
+@mixin color-and-typo($theme) {
+  .mat-drawer-container {
+    @include mat.sidenav-overrides((
+        content-background-color: transparent
+    ));
+    .mat-sidenav {
+      @include mat.sidenav-overrides((
+        container-background-color: mat.get-theme-color($theme, primary, 20),
+        container-text-color: mat.get-theme-color($theme, neutral, 100),
+        container-shape: 0px,
+        container-divider-color: mat.get-theme-color($theme, primary, 20),
+        container-width: $sidenav-width,
+      ));
+      .nav-button {
+        @apply cursor-pointer;
+        color: mat.get-theme-color($theme, neutral-variant, 90);
+        height: var(--mdc-list-list-item-one-line-container-height);
+        min-width: var(--mdc-list-list-item-one-line-container-height);
+        border: solid 1px transparent;
+        &:focus {
+          background-color: mat.get-theme-color($theme, neutral-variant, 10);
+          border-top: mat.get-theme-color($theme, neutral-variant, 70) solid 1px;
+          border-bottom: mat.get-theme-color($theme, neutral-variant, 70) solid 1px;
+        }
+        &:hover {
+          background-color: mat.get-theme-color($theme, neutral-variant, 10);
+        }
+        .mat-icon {
+          color: mat.get-theme-color($theme, neutral-variant, 60);
+        }
+      }
+      .mat-divider {
+        box-shadow: 0 0 4px mat.get-theme-color($theme, primary, 80);
+        @include mat.divider-overrides((
+          color: mat.get-theme-color($theme, primary, 80)
+        ))
+      }
+    }
+
+  }
+}
