@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.1-staging.3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.2...v0.0.1-staging.3) (2024-10-31)
+
+
+### Bug Fixes
+
+* add tenzu as favicon ([9963716](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/99637167f677f5ca5624108ab1df801fcd976d3e))
+
 ## [0.0.1-staging.2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.1...v0.0.1-staging.2) (2024-10-31)
 
 
