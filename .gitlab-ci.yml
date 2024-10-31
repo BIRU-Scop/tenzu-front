@@ -1,7 +1,7 @@
 include:
   - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.16
     inputs:
-      dev-branch: master
+      dev-branch: main
       token: $DEV_TOKEN
   - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.18
     inputs:

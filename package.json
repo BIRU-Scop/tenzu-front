@@ -13,7 +13,6 @@
     "build-storybook": "ng run tenzu:build-storybook",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
-    "prepare": "husky",
     "transloco:optimize": "transloco-optimize dist/tenzu/browser/assets/i18n",
     "build:staging": "ng build --configuration staging && npm run transloco:optimize",
     "build:production": "ng build --configuration production && npm run transloco:optimize"
@@ -81,7 +80,6 @@
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "husky": "^9.1.4",
     "jsdom": "^22.0.0",
     "lint-staged": "^15.2.7",
     "postcss": "^8.4.38",
