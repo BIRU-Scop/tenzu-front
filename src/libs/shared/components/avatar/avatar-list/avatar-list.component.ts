@@ -39,12 +39,17 @@ import { UserMinimal, UserStore } from "@tenzu/data/user";
         ></app-avatar>
       }
       @if (filteredUsernames().length > userOverflowThreshold()) {
-        <app-avatar
+        @let hiddenNamesCount = filteredUsernames().length - userOverflowThreshold();
+        @if (hiddenNamesCount < 10) {
+          <app-avatar
           [matTooltip]="hiddenUsersNames()"
-          [name]="'+ ' + (filteredUsernames().length - userOverflowThreshold())"
+          [name]="'+ ' + hiddenNamesCount"
           [rounded]="true"
           [color]="0"
-        ></app-avatar>
+        ></app-avatar>}
+        @else {
+          <app-avatar [matTooltip]="hiddenUsersNames()" name="&hellip;" [rounded]="true" [color]="0"></app-avatar>
+        }
       }
     </div>
   `,
