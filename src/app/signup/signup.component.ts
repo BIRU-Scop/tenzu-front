@@ -108,36 +108,31 @@ import { NotificationService } from "@tenzu/utils/services";
             </form>
           }
         } @else {
-          <span>
-            <p class="mat-title-medium">{{ t("signup.verify.title") }}</p>
-            <p class="mat-body-medium">
-              {{ t("signup.verify.verification_link_sent") }}
-              <strong data-testid="sentEmail-block">{{ form.value.email }}</strong>
-            </p>
-            <p class="mat-body-medium">
-              {{ t("signup.verify.mail_not_received") }}
-            </p>
-            <button
-              data-testid="resendMail-button"
-              mat-stroked-button
-              tabindex="1"
-              (keydown.enter)="resendEmail()"
-              (click)="resendEmail()"
-            >
-              {{ t("signup.verify.resend_button") }}
-            </button>
-          </span>
+          <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
+          <p class="mat-body-medium">
+            {{ t("signup.verify.verification_link_sent") }}
+            <strong data-testid="sentEmail-block">{{ form.value.email }}</strong>
+          </p>
+          <p class="mat-body-medium">
+            {{ t("signup.verify.mail_not_received") }}
+          </p>
+          <button
+            data-testid="resendMail-button"
+            mat-stroked-button
+            tabindex="1"
+            (keydown.enter)="resendEmail()"
+            (click)="resendEmail()"
+            class="primary-button"
+          >
+            {{ t("signup.verify.resend_button") }}
+          </button>
         }
       </div>
     </div>
     <footer class="text-center">
-      @if (!emailSent()) {
-        <p class="mat-body-medium">
-          {{ t("signup.footer.already_account") }} <a [routerLink]="['/login']">{{ t("signup.footer.login") }}</a>
-        </p>
-      } @else {
-        <p class="mat-body-medium">{{ t("") }}</p>
-      }
+      <p class="mat-body-medium">
+        {{ t("signup.footer.already_account") }} <a [routerLink]="['/login']">{{ t("signup.footer.login") }}</a>
+      </p>
     </footer>
   </div>`,
 
@@ -172,10 +167,10 @@ export class SignupComponent {
   resendEmail(): void {
     this.submit();
     this.notificationService.open({
-      type: "info",
-      title: "verify.resent_email_label",
+      type: "success",
+      title: "signup.verify.resend_email_label",
       translocoTitle: true,
-      detail: "verify.resent_email_message",
+      detail: "signup.verify.resend_email_message",
       translocoDetail: true,
     });
   }

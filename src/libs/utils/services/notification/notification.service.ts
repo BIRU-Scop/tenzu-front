@@ -24,8 +24,10 @@ import { MatSnackBar, MatSnackBarConfig } from "@angular/material/snack-bar";
 import {
   NotificationMessage,
   NotificationMessageError,
+  NotificationMessageInfo,
   NotificationMessageModel,
   NotificationMessageSuccess,
+  NotificationMessageWarning,
 } from "./notification-message.model";
 import { NotificationComponent } from "./notification.component";
 
@@ -52,5 +54,11 @@ export class NotificationService {
   }
   error(message: NotificationMessageModel, config?: MatSnackBarConfig) {
     this.open(new NotificationMessageError(message), config);
+  }
+  warning(message: NotificationMessageModel, config?: MatSnackBarConfig) {
+    this.open(new NotificationMessageWarning(message), config);
+  }
+  info(message: NotificationMessageModel, config?: MatSnackBarConfig) {
+    this.open(new NotificationMessageInfo(message), config);
   }
 }

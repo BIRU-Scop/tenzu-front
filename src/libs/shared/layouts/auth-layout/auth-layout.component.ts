@@ -30,7 +30,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   imports: [RouterOutlet, MatIcon],
   template: `
     <main class="h-dvh flex flex-col items-center">
-      <div class="w-[200px] mt-8"><mat-icon class="icon-full" svgIcon="logo-full"></mat-icon></div>
+      <div class="w-[200px] mt-8"><mat-icon class="icon-full" svgIcon="logo-full-animated"></mat-icon></div>
       <router-outlet></router-outlet>
     </main>
   `,
@@ -41,6 +41,9 @@ export class AuthLayoutComponent {
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
   constructor() {
-    this.iconRegistry.addSvgIcon("logo-full", this.sanitizer.bypassSecurityTrustResourceUrl("logo-full-tenzu.svg"));
+    this.iconRegistry.addSvgIcon(
+      "logo-full-animated",
+      this.sanitizer.bypassSecurityTrustResourceUrl("logo-full-tenzu-animated.svg"),
+    );
   }
 }

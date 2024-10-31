@@ -23,16 +23,17 @@
 
 .mdc-snackbar {
   &.mat-mdc-snack-bar-container {
-    margin: var(--mat-toolbar-mobile-height) 8px 8px 8px;
+   @apply m-4;
   }
   .mat-mdc-snackbar-surface {
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+    @apply pr-1;
   }
   .mat-mdc-simple-snack-bar {
     @apply items-center;
   }
   .mdc-snackbar__label {
-    padding: 0 0 0 12px;
+    @apply py-1.5 px-2;
   }
 }
 @mixin color-and-typo($theme) {
@@ -56,6 +57,12 @@
       @include mat.snack-bar-overrides((
         container-color: mat.get-theme-color($theme, error, 90),
         supporting-text-color: mat.get-theme-color($theme, error, 20)
+      ));
+    }
+    &.snackbar-warning {
+      @include mat.snack-bar-overrides((
+        container-color: mat.get-theme-color($theme, secondary, 90),
+        supporting-text-color: mat.get-theme-color($theme, secondary, 20)
       ));
     }
   }
