@@ -23,6 +23,7 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
+import { NotificationService } from "@tenzu/utils/services";
 
 @Component({
   selector: "app-auth-layout",
@@ -38,12 +39,21 @@ import { DomSanitizer } from "@angular/platform-browser";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthLayoutComponent {
+  notificationService = inject(NotificationService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
   constructor() {
     this.iconRegistry.addSvgIcon(
       "logo-full-animated",
       this.sanitizer.bypassSecurityTrustResourceUrl("logo-full-tenzu-animated.svg"),
+    );
+    this.notificationService.warning(
+      { title: "notification.login.preview_warning" },
+      {
+        duration: undefined,
+        verticalPosition: "bottom",
+        horizontalPosition: "center",
+      },
     );
   }
 }

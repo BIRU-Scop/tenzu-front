@@ -57,9 +57,8 @@ import { NotificationService } from "@tenzu/utils/services";
       <div class="grid grid-cols-1 place-items-center place-content-center gap-y-4">
         @if (!emailSent()) {
           <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
-          <p class="mat-body-medium">{{ t("signup.subtitle") }}</p>
           @if (!displayForm()) {
-            <div data-testid="allOptions-div">
+            <div data-testid="allOptions-div" class="flex flex-col gap-4">
               <button
                 data-testid="showEmailSignupForm-button"
                 class="primary-button"
@@ -67,6 +66,9 @@ import { NotificationService } from "@tenzu/utils/services";
                 (click)="displayForm.set(true)"
               >
                 {{ t("signup.create_account_email") }}
+              </button>
+              <button class="primary-button" disabled mat-stroked-button>
+                {{ t("signup.social_connect") }}
               </button>
             </div>
           } @else if (displayForm()) {
