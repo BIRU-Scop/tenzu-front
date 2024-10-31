@@ -60,6 +60,10 @@ export class NotificationMessageError extends NotificationMessage {
   type: TypeMessageModel = "error";
 }
 
-export class NotificationInfoError extends NotificationMessage {
+export class NotificationMessageInfo extends NotificationMessage {
   type: TypeMessageModel = "info";
+}
+
+export class NotificationMessageWarning extends NotificationMessage {
+  type: TypeMessageModel = "warning";
 }

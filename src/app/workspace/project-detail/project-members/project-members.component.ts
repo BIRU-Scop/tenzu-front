@@ -48,12 +48,12 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
         </button>
       </div>
       <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
-        @if (membershipStore.projectEntities().length > 0) {
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon class="icon-sm mr-1">group</mat-icon>
-              {{ t("members_tab") }}
-            </ng-template>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="icon-sm mr-1">group</mat-icon>
+            {{ t("members_tab") }}
+          </ng-template>
+          @if (membershipStore.projectEntities().length > 0) {
             <mat-list>
               @for (member of membershipStore.projectEntities(); track member.user.username) {
                 <app-user-card
@@ -61,21 +61,25 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
                   [username]="member.user.username"
                   [color]="member.user.color"
                 ></app-user-card>
-              }</mat-list
-          ></mat-tab>
-        }
-        @if (membershipStore.projectInvitationsEntities().length > 0) {
-          <mat-tab [label]="t('pending_tab')">
-            <ng-template mat-tab-label>
-              <mat-icon class="icon-sm mr-1">schedule</mat-icon>
-              {{ t("pending_tab") }}
-            </ng-template>
+              }
+            </mat-list>
+          }
+        </mat-tab>
+        <mat-tab [label]="t('pending_tab')">
+          <ng-template mat-tab-label>
+            <mat-icon class="icon-sm mr-1">schedule</mat-icon>
+            {{ t("pending_tab") }}
+          </ng-template>
+          @if (membershipStore.projectInvitationsEntities().length > 0) {
             <mat-list [@newItemsFlyIn]="membershipStore.projectInvitationsEntities().length">
               @for (pendingMember of membershipStore.projectInvitationsEntities(); track pendingMember.id) {
                 <app-user-card [fullName]="pendingMember.email!"></app-user-card>
-              }</mat-list
-          ></mat-tab>
-        }
+              }
+            </mat-list>
+          } @else {
+            <p class="mat-body-medium text-neutral-60">{{ t("pending_empty") }}</p>
+          }
+        </mat-tab>
       </mat-tab-group>
     </div>
   `,

@@ -48,14 +48,14 @@ import { NgTemplateOutlet } from "@angular/common";
   template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
     <ng-template #content let-data="data">
       <div matSnackBarLabel>
-        <p>
+        <p class="mat-title-small">
           @if (data.translocoTitle) {
             {{ t(data.title, data.translocoTitleParams) }}
           } @else {
             {{ data.title }}
           }
         </p>
-        <p>
+        <p class="mat-body-medium">
           @if (data.translocoDetail && data.detail) {
             {{ t(data.detail, data.translocoDetailParams) }}
           } @else if (data.detail) {
@@ -74,6 +74,12 @@ import { NgTemplateOutlet } from "@angular/common";
         <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{ data: data }"></ng-container>
       }
       @case ("success") {
+        <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{ data: data }"></ng-container>
+      }
+      @case ("warning") {
+        <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{ data: data }"></ng-container>
+      }
+      @case ("info") {
         <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{ data: data }"></ng-container>
       }
     }
