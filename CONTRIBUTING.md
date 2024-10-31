@@ -37,9 +37,14 @@ launch the test, etc.
 
 ## Coding style
 
-We use [husky](https://typicode.github.io/husky/) to check for and automatically fix
-issues in coding style. It is one of the dev dependencies
-For more information on how it works, see the [precommit configuration file](.husky/pre-commit).
+We use [precommit](https://pre-commit.com/) to check for and automatically fix
+issues in coding style.
+[Install precommit](https://pre-commit.com/#install) the run the following command to 
+add pre-commit into your git hooks and have it run on every commit:
+```shell
+pre-commit install
+```
+For more information on how it works, see the [precommit configuration file](.pre-commit-config.yaml).
 
 ## Commit format
 
