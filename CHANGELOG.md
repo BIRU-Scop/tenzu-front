@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.1-staging.4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.3...v0.0.1-staging.4) (2024-11-06)
+
+
+### Bug Fixes
+
+* hidden create acccount link ([a2fc152](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a2fc1520703c967366d6ea42999a56b1b99c3466))
+* usability quickwins ([e98549a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e98549a6a3d5a98184edee65281065b11103eeef))
+
 ## [0.0.1-staging.3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.2...v0.0.1-staging.3) (2024-10-31)
 
 
