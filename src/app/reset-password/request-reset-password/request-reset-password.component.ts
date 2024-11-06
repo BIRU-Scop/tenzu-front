@@ -27,6 +27,7 @@ import { MatError, MatFormField } from "@angular/material/form-field";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/data/user";
+import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-request-reset-password",
@@ -40,40 +41,38 @@ import { UserStore } from "@tenzu/data/user";
     ReactiveFormsModule,
     TranslocoDirective,
     RouterLink,
+    MatDivider,
   ],
   host: {
     class: "grow",
   },
   template: `
-    <div *transloco="let t; prefix: 'resetPassword'" class="h-full flex flex-col justify-center">
-      <main class="basis-11/12">
-        <div class="grid grid-cols-1 place-items-center place-content-center gap-y-4">
-          <h1 class="mat-headline-medium">
-            {{ t(!showConfirmation() ? "title" : "confirm.title") }}
-          </h1>
-          @if (!showConfirmation()) {
-            <p class="mat-body-medium">
-              {{ t("subtitle") }}
-            </p>
-            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
-              <app-email-field formControlName="email"></app-email-field>
-              <button data-testid="submitCreateAccount-button" mat-flat-button class="primary-button" type="submit">
-                {{ t("submit") }}
-              </button>
-            </form>
-          } @else {
-            <div class="max-w-2xl flex flex-col items-center gap-y-4">
-              <p class="mat-body-medium text-center">
-                {{ t("confirm.subtitle") }}
-              </p>
-              <p class="mat-body-large font-bold">{{ form.value.email }}</p>
-              <button mat-stroked-button class="primary-button" [routerLink]="['/login']" type="button">
-                {{ t("confirm.back") }}
-              </button>
-            </div>
-          }
+    <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-4">
+      <h1 class="mat-headline-medium">
+        {{ t(!showConfirmation() ? "title" : "confirm.title") }}
+      </h1>
+      @if (!showConfirmation()) {
+        <p class="mat-body-medium">
+          {{ t("subtitle") }}
+        </p>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+          <app-email-field formControlName="email"></app-email-field>
+          <button data-testid="submitCreateAccount-button" mat-flat-button class="primary-button" type="submit">
+            {{ t("submit") }}
+          </button>
+        </form>
+      } @else {
+        <div class="max-w-2xl flex flex-col items-center gap-y-4">
+          <p class="mat-body-medium text-center">
+            {{ t("confirm.subtitle") }}
+          </p>
+          <p class="mat-body-large font-bold">{{ form.value.email }}</p>
+          <button mat-stroked-button class="primary-button" [routerLink]="['/login']" type="button">
+            {{ t("confirm.back") }}
+          </button>
         </div>
-      </main>
+      }
+      <mat-divider></mat-divider>
       <footer class="text-center">
         @if (!showConfirmation()) {
           <p class="mat-body-medium">
