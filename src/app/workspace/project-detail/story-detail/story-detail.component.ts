@@ -78,7 +78,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
   template: `
     @if (this.selectedStory(); as story) {
       <div class="flex flex-row gap-8" *transloco="let t; prefix: 'workflow.detail_story'">
-        <div class="grow flex flex-col gap-y-6">
+        <div class="basis-2/3 flex flex-col gap-y-6">
           <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
             <mat-form-field appearance="fill" class="title-field">
               <input matInput data-testid="title-input" formControlName="title" />
@@ -190,7 +190,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
                 (click)="openAssignStoryDialog($event)"
                 [attr.aria-label]="t('add_assignees')"
               >
-                <mat-icon>add</mat-icon>
+                <mat-icon>person_add</mat-icon>
               </button>
             }
           </div>

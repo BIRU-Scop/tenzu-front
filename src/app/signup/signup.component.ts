@@ -31,6 +31,7 @@ import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { UserCreation, UserService } from "../../libs/data/user";
 import { NotificationService } from "@tenzu/utils/services";
+import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-signup",
@@ -48,89 +49,84 @@ import { NotificationService } from "@tenzu/utils/services";
     MatIcon,
     RouterLink,
     MatError,
+    MatDivider,
   ],
-  host: {
-    class: "grow",
-  },
-  template: ` <div *transloco="let t" class="h-full flex flex-col justify-center">
-    <div class="basis-11/12">
-      <div class="grid grid-cols-1 place-items-center place-content-center gap-y-4">
-        @if (!emailSent()) {
-          <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
-          @if (!displayForm()) {
-            <div data-testid="allOptions-div" class="flex flex-col gap-4">
-              <button
-                data-testid="showEmailSignupForm-button"
-                class="primary-button"
-                mat-stroked-button
-                (click)="displayForm.set(true)"
-              >
-                {{ t("signup.create_account_email") }}
-              </button>
-              <button class="primary-button" disabled mat-stroked-button>
-                {{ t("signup.social_connect") }}
-              </button>
-            </div>
-          } @else if (displayForm()) {
-            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
-              <mat-form-field>
-                <mat-label>{{ t("general.identity.fullname") }}</mat-label>
-                <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
-                @if (form.controls.fullName.hasError("required")) {
-                  <mat-error
-                    data-testid="fullName-required-error"
-                    [innerHTML]="t('signup.validation.full_name_required')"
-                  ></mat-error>
-                }
-              </mat-form-field>
-              <app-email-field formControlName="email"></app-email-field>
-              <app-password-field
-                formControlName="password"
-                [settings]="{
-                  strength: { enabled: true, showBar: true },
-                }"
-              ></app-password-field>
-              <div class="min-w-full w-min">
-                <small class="mat-body-small" [innerHTML]="t('signup.terms_and_privacy')"></small>
-              </div>
-              <button data-testid="submitCreateAccount-button" mat-flat-button class="primary-button" type="submit">
-                {{ t("signup.create_account") }}
-              </button>
-              <div class="flex justify-center">
-                <button
-                  data-testid="allOptions-button"
-                  mat-button
-                  class="secondary-button"
-                  (click)="displayForm.set(false)"
-                >
-                  <mat-icon class="align-middle">arrow_back_ios</mat-icon>
-                  {{ t("signup.all_options") }}
-                </button>
-              </div>
-            </form>
-          }
-        } @else {
-          <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
-          <p class="mat-body-medium">
-            {{ t("signup.verify.verification_link_sent") }}
-            <strong data-testid="sentEmail-block">{{ form.value.email }}</strong>
-          </p>
-          <p class="mat-body-medium">
-            {{ t("signup.verify.mail_not_received") }}
-          </p>
+  template: ` <div *transloco="let t" class="flex flex-col gap-y-4">
+    @if (!emailSent()) {
+      <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
+      @if (!displayForm()) {
+        <div data-testid="allOptions-div" class="flex flex-col gap-y-4">
           <button
-            data-testid="resendMail-button"
-            mat-stroked-button
-            tabindex="1"
-            (keydown.enter)="resendEmail()"
-            (click)="resendEmail()"
+            data-testid="showEmailSignupForm-button"
             class="primary-button"
+            mat-stroked-button
+            (click)="displayForm.set(true)"
           >
-            {{ t("signup.verify.resend_button") }}
+            {{ t("signup.create_account_email") }}
           </button>
-        }
-      </div>
-    </div>
+          <button class="primary-button" disabled mat-stroked-button>
+            {{ t("signup.social_connect") }}
+          </button>
+        </div>
+      } @else if (displayForm()) {
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+          <mat-form-field>
+            <mat-label>{{ t("general.identity.fullname") }}</mat-label>
+            <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
+            @if (form.controls.fullName.hasError("required")) {
+              <mat-error
+                data-testid="fullName-required-error"
+                [innerHTML]="t('signup.validation.full_name_required')"
+              ></mat-error>
+            }
+          </mat-form-field>
+          <app-email-field formControlName="email"></app-email-field>
+          <app-password-field
+            formControlName="password"
+            [settings]="{
+              strength: { enabled: true, showBar: true },
+            }"
+          ></app-password-field>
+          <div class="min-w-full w-min">
+            <small class="mat-body-small" [innerHTML]="t('signup.terms_and_privacy')"></small>
+          </div>
+          <button data-testid="submitCreateAccount-button" mat-flat-button class="primary-button" type="submit">
+            {{ t("signup.create_account") }}
+          </button>
+          <div class="flex justify-center">
+            <button
+              data-testid="allOptions-button"
+              mat-button
+              class="secondary-button"
+              (click)="displayForm.set(false)"
+            >
+              <mat-icon class="align-middle">arrow_back_ios</mat-icon>
+              {{ t("signup.all_options") }}
+            </button>
+          </div>
+        </form>
+      }
+    } @else {
+      <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
+      <p class="mat-body-medium">
+        {{ t("signup.verify.verification_link_sent") }}
+        <strong data-testid="sentEmail-block">{{ form.value.email }}</strong>
+      </p>
+      <p class="mat-body-medium">
+        {{ t("signup.verify.mail_not_received") }}
+      </p>
+      <button
+        data-testid="resendMail-button"
+        mat-stroked-button
+        tabindex="1"
+        (keydown.enter)="resendEmail()"
+        (click)="resendEmail()"
+        class="primary-button"
+      >
+        {{ t("signup.verify.resend_button") }}
+      </button>
+    }
+    <mat-divider></mat-divider>
     <footer class="text-center">
       <p class="mat-body-medium">
         {{ t("signup.footer.already_account") }} <a [routerLink]="['/login']">{{ t("signup.footer.login") }}</a>

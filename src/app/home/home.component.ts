@@ -53,11 +53,11 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
         <mat-icon class="icon-full" svgIcon="logo-text"></mat-icon>
       </a>
-      @if (userStore.myUser().username; as username) {
+      @if (userStore.myUser(); as myUser) {
         <button>
           <app-avatar
             [matMenuTriggerFor]="userMenu"
-            [name]="username"
+            [name]="myUser.fullName"
             [color]="userStore.myUser().color"
             [rounded]="true"
           />
@@ -65,9 +65,9 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
         <mat-menu #userMenu="matMenu">
           <div class="px-3 py-1.5">
             <app-user-card
-              [username]="userStore.myUser().email"
-              [fullName]="userStore.myUser().fullName"
-              [color]="userStore.myUser().color"
+              [username]="myUser.email"
+              [fullName]="myUser.fullName"
+              [color]="myUser.color"
             ></app-user-card>
           </div>
           <button mat-menu-item [routerLink]="'settings'" [attr.aria-label]="t('settings')">

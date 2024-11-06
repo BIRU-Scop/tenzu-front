@@ -71,7 +71,7 @@ import { MatIcon } from "@angular/material/icon";
             (click)="openAssignStoryDialog($event)"
             [attr.aria-label]="t('add_assignees')"
           >
-            <mat-icon>add</mat-icon>
+            <mat-icon>person_add</mat-icon>
           </button>
         }
       </mat-card-content>
