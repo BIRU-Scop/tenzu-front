@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.1-staging.5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.4...v0.0.1-staging.5) (2024-11-07)
+
+
+### Bug Fixes
+
+* split on undefined ([d174ebd](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d174ebd934df86326ec236694ef63631dfccc78c))
+
 ## [0.0.1-staging.4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.3...v0.0.1-staging.4) (2024-11-06)
 
 
