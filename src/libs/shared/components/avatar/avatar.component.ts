@@ -31,10 +31,14 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarComponent {
-  name = input("");
+  name = input("", {
+    transform: (value: undefined | string) => value ?? "?",
+  });
+  color = input(0, {
+    transform: (value: undefined | number) => value ?? 0,
+  });
   rounded = input(false);
   size = input<"sm" | "md" | "lg" | "xl">("md");
-  color = input<number>(0);
   class = computed(() => [
     "avatar",
     "flex",

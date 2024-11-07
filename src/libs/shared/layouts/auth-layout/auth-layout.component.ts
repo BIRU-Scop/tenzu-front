@@ -30,8 +30,8 @@ import { NotificationService } from "@tenzu/utils/services";
   standalone: true,
   imports: [RouterOutlet, MatIcon],
   template: `
-    <main class="h-dvh flex flex-col items-center justify-center">
-      <div class="w-[200px]"><mat-icon class="icon-full" svgIcon="logo-full-animated"></mat-icon></div>
+    <main class="h-dvh flex flex-col items-center justify-center gap-4">
+      <div class="h-[200px]"><mat-icon class="icon-full" svgIcon="logo-full-animated"></mat-icon></div>
       <router-outlet></router-outlet>
     </main>
   `,
