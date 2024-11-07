@@ -53,12 +53,12 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
         <mat-icon class="icon-full" svgIcon="logo-text"></mat-icon>
       </a>
-      @if (userStore.myUser(); as myUser) {
+      @let myUser = userStore.myUser();
         <button>
           <app-avatar
             [matMenuTriggerFor]="userMenu"
             [name]="myUser.fullName"
-            [color]="userStore.myUser().color"
+            [color]="myUser.color"
             [rounded]="true"
           />
         </button>
@@ -79,7 +79,6 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
             <span>{{ t("logout") }}</span>
           </button>
         </mat-menu>
-      }
     </mat-toolbar>
     <main>
       <router-outlet />
