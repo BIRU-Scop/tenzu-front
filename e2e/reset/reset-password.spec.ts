@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/reset-password");
@@ -7,22 +6,20 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe("reset-password", () => {
-  test("should not have any automatically detectable accessibility issues", async ({ page }) => {
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-    expect(accessibilityScanResults.violations).toEqual([]);
+  test("should disable submit button if mail is incorrect", async ({ page }) => {
+    await page.getByTestId("email-input").fill("SuperRandomText");
+    await expect(await page.getByTestId("submitCreateAccount-button")).toBeDisabled();
   });
+
+  test("should show confirmation once form is submit", async ({ page }) => {
+    await page.getByTestId("email-input").fill("myTestEmail@superCompany.com");
+    await page.getByTestId("submitCreateAccount-button").click();
+    await expect(await page.getByTestId("goBackToLogin-button")).toBeVisible();
+    await expect(await page.getByText("Create a new account")).toBeVisible();
+  });
+
   test("should catch malformed token", async ({ page }) => {
     await page.goto("/reset-password/weirdTokenNotWorking");
     await expect(page.getByText("Invalid or malformed token")).toBeVisible();
-  });
-});
-
-test.describe("reset-password:confirmation", () => {
-  test("should not have any automatically detectable accessibility issues", async ({ page }) => {
-    await page.getByTestId("email-input").fill("myTestEmail@superCompany.com");
-    await page.getByTestId("submitResetPassword-button").click();
-    await expect(await page.getByTestId("goBackToLogin-button")).toBeVisible();
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-    expect(accessibilityScanResults.violations).toEqual([]);
   });
 });

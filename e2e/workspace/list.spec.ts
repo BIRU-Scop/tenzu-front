@@ -4,6 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("css=.mat-mdc-card").nth(0)).toBeVisible();
+  await expect(page.locator("css=.mat-mdc-card").nth(1)).toBeVisible();
 });
 
 test.describe("workspace list", () => {

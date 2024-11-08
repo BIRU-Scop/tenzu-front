@@ -59,7 +59,6 @@ import { RouterLink } from "@angular/router";
     RouterLink,
   ],
   template: `
-    <h1 class="mat-headline-small text-neutral-40">{{ workflowStore.selectedEntity()?.name}}</h1>
     @if (!storyStore.isLoading()){
       @if (workflowStore.listStatusesOrdered(); as statuses) {
         <ul

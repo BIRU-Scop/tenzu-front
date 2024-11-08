@@ -31,7 +31,6 @@ import { UserService, UserStore } from "@tenzu/data/user";
 import { HttpErrorResponse } from "@angular/common/http";
 import { AuthService, Tokens } from "@tenzu/data/auth";
 import { passwordsMustMatch } from "@tenzu/utils";
-import { NotificationService } from "@tenzu/utils/services";
 
 @Component({
   selector: "app-reset-password-form",
@@ -46,41 +45,49 @@ import { NotificationService } from "@tenzu/utils/services";
     MatError,
   ],
   template: `
-    <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-4">
-      <h1 class="mat-headline-medium">
-        {{ t("choose_new_password") }}
-      </h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
-        @if (form.hasError("passwordNotMatch")) {
-          <mat-error class="mat-body-medium">
-            {{ t("password_not_match") }}
-          </mat-error>
-        }
-        <app-password-field
-          formControlName="newPassword"
-          [settings]="{
-            strength: { enabled: true, showBar: true },
-            label: t('new_password'),
-          }"
-        ></app-password-field>
-        <app-password-field
-          formControlName="repeatPassword"
-          [settings]="{
-            strength: { enabled: false },
-            label: t('repeat_password'),
-          }"
-        >
-        </app-password-field>
-        <button
-          data-testid="submitChangePassword-button"
-          mat-flat-button
-          class="primary-button"
-          type="submit"
-          [disabled]="form.invalid"
-        >
-          {{ t("change_password") }}
-        </button>
-      </form>
+    <div *transloco="let t; prefix: 'resetPassword'" class="h-full flex flex-col justify-center">
+      <main class="basis-11/12">
+        <div class="grid grid-cols-1 place-items-center place-content-center gap-y-4">
+          @if (!token_expired()) {
+            <h1 class="mat-headline-medium">
+              {{ t("choose_new_password") }}
+            </h1>
+            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+              @if (form.hasError("passwordNotMatch")) {
+                <mat-error class="mat-body-medium">
+                  {{ t("password_not_match") }}
+                </mat-error>
+              }
+              <app-password-field
+                formControlName="newPassword"
+                [settings]="{
+                  strength: { enabled: true, showBar: true },
+                  label: t('new_password'),
+                }"
+              ></app-password-field>
+              <app-password-field
+                formControlName="repeatPassword"
+                [settings]="{
+                  strength: { enabled: false },
+                  label: t('repeat_password'),
+                }"
+              >
+              </app-password-field>
+              <button
+                data-testid="submitChangePassword-button"
+                mat-flat-button
+                class="primary-button"
+                type="submit"
+                [disabled]="form.invalid"
+              >
+                {{ t("change_password") }}
+              </button>
+            </form>
+          } @else {
+            <h3>{{ t("token_error." + error()) }}</h3>
+          }
+        </div>
+      </main>
     </div>
   `,
   styles: ``,
@@ -97,9 +104,9 @@ export class ResetPasswordFormComponent {
   );
   token: string | null = "";
   token_expired = model(false);
+  error = model("");
   userService = inject(UserService);
   userStore = inject(UserStore);
-  notificationService = inject(NotificationService);
   authService = inject(AuthService);
   router = inject(Router);
 
@@ -109,8 +116,7 @@ export class ResetPasswordFormComponent {
       if (this.token) {
         this.userService.verifyResetTokenPassword(this.token).subscribe({
           error: (err: HttpErrorResponse) => {
-            this.router.navigateByUrl("/reset-password");
-            this.notificationService.error({ title: "resetPassword.token_error." + err.error.error.detail, translocoTitle: true });
+            this.error.set(err.error.error.detail);
             this.token_expired.set(true);
           },
           next: (value1) => {
@@ -129,8 +135,7 @@ export class ResetPasswordFormComponent {
     if (this.token && this.form.value.newPassword) {
       this.userService.resetPassword(this.token, this.form.value.newPassword).subscribe({
         error: (err: HttpErrorResponse) => {
-          this.router.navigateByUrl("/reset-password");
-          this.notificationService.error({ title: "resetPassword.token_error." + err.error.error.detail, translocoTitle: true });
+          this.error.set(err.error.error.detail);
           this.token_expired.set(true);
         },
         next: (value: Tokens) => {

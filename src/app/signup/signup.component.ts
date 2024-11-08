@@ -55,7 +55,7 @@ import { MatDivider } from "@angular/material/divider";
     @if (!emailSent()) {
       <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
       @if (!displayForm()) {
-        <div class="flex flex-col gap-y-4">
+        <div data-testid="allOptions-div" class="flex flex-col gap-y-4">
           <button
             data-testid="showEmailSignupForm-button"
             class="primary-button"
@@ -95,6 +95,7 @@ import { MatDivider } from "@angular/material/divider";
           </button>
           <div class="flex justify-center">
             <button
+              data-testid="allOptions-button"
               mat-button
               class="secondary-button"
               (click)="displayForm.set(false)"

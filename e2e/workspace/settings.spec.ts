@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   await expect(firstProjectLink).toBeVisible();
   await firstProjectLink.click();
   await page.getByTestId("settings-link").click();
-  await expect(page.locator("button[type=submit]")).toBeVisible();
+  await expect(page.getByRole("heading")).toBeVisible();
 });
 
 test.describe("Workspace settings", () => {

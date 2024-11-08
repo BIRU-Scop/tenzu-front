@@ -65,7 +65,7 @@ import { NgTemplateOutlet } from "@angular/common";
       </div>
     </ng-template>
     <div class="flex" matSnackBarActions>
-      <button mat-icon-button matSnackBarAction [attr.aria-label]="t('commons.close')" (click)="close()">
+      <button mat-icon-button matSnackBarAction (click)="close()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
