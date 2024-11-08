@@ -66,6 +66,7 @@
       "exceed_size": "{var} exceed the size of 100 MB",
       "deleted_attachment": "{var} has been deleted"
     },
+    "delete_story": "Delete this story",
     "confirm_delete_story": "Are you sure you want to delete this story",
     "confirm_delete_story_message": "All story information will be permanently deleted. There is no undo."
   }

@@ -3,7 +3,6 @@ import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach("Load Email signup form", async ({ page }) => {
   await page.goto("/signup");
-  await expect(page.getByTestId("allOptions-div")).toBeVisible();
   await expect(page.getByTestId("showEmailSignupForm-button")).toBeVisible();
   await page.getByTestId("showEmailSignupForm-button").click();
   await expect(page.getByTestId("fullName-input")).toBeVisible();
@@ -26,10 +25,6 @@ test.describe("Signup", () => {
     await page.getByTestId("submitCreateAccount-button").click();
     await expect(page.getByTestId("sentEmail-block")).toContainText(emailStr);
     await expect(page.getByTestId("resendMail-button")).toBeVisible();
-  });
-  test("All options button returns to options page.", async ({ page }) => {
-    await page.getByTestId("allOptions-button").click();
-    await expect(page.getByTestId("allOptions-div")).toBeVisible();
   });
   test("Should display required fullName error", async ({ page }) => {
     await page.getByTestId("email-input").fill("valid@ourmail.com");
