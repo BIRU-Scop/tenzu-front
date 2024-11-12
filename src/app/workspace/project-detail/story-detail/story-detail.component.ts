@@ -75,13 +75,14 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     MatLabel,
     MatOption,
   ],
-  template: `
+  template: `<ng-container *transloco="let t; prefix: 'workflow.detail_story'">
     @if (this.selectedStory(); as story) {
-      <div class="flex flex-row gap-8" *transloco="let t; prefix: 'workflow.detail_story'">
+      <h1 class="mat-headline-small text-neutral-40">{{ t("label") }} #{{ story.ref }}</h1>
+      <div class="flex flex-row gap-8">
         <div class="basis-2/3 flex flex-col gap-y-6">
           <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
             <mat-form-field appearance="fill" class="title-field">
-              <input matInput data-testid="title-input" formControlName="title" />
+              <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
             </mat-form-field>
             <app-editor #editorContainer [data]="storyStore.selectedStoryDetails().description"></app-editor>
             <div class="flex flex-row gap-2">
@@ -206,12 +207,13 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
               message: t('confirm_delete_story_message'),
             }"
             (popupConfirm)="onDelete()"
+            [attr.aria-label]="t('delete_story')"
           >
             <mat-icon>delete</mat-icon>
           </button>
         </div>
-      </div>
-    }
+      </div> 
+    }</ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

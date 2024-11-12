@@ -42,6 +42,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
           [routerLink]="link.href"
           routerLinkActive
           #routerLinkActive="routerLinkActive"
+          [attr.data-testid]="link.name"
         >
           {{ t(link.name) }}
         </a>

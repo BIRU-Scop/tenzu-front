@@ -7,7 +7,7 @@ setup("authenticate", async ({ page }) => {
   const responsePromise = page.waitForResponse("/api/v2/auth/token");
   await page.getByTestId("username-input").fill("1user");
   await page.getByTestId("password-input").fill("123123");
-  await page.getByRole("button").click();
+  await page.locator("button[type=submit]").click();
   const response = await responsePromise;
   expect(response.status()).toEqual(200);
   await expect(page).toHaveURL("/");
