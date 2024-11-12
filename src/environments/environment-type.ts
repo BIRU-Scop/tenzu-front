@@ -28,6 +28,7 @@ export interface EnvironmentConfig {
   appVersion: string;
   production: boolean;
   env: "dev" | "staging" | "production";
+  wsUrl: string;
   api: {
     prefix: string;
     baseDomain: string;
