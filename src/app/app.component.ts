@@ -22,6 +22,7 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatIconRegistry } from "@angular/material/icon";
+import { DOCUMENT } from "@angular/common";
 
 @Component({
   selector: "app-root",
@@ -32,7 +33,9 @@ import { MatIconRegistry } from "@angular/material/icon";
 export class AppComponent implements OnInit {
   title = "tenzu";
   iconRegistry = inject(MatIconRegistry);
+  document = inject(DOCUMENT);
   ngOnInit(): void {
     this.iconRegistry.setDefaultFontSetClass("material-symbols-outlined");
+    this.document.body.classList.add("dark");
   }
 }
