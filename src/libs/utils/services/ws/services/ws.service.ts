@@ -78,6 +78,7 @@ export class WsService {
     }
 
     switch (message.event.type) {
+      // TODO implements the event
       case "stories.create": {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const stories = message.event.content as StoryDetail;
