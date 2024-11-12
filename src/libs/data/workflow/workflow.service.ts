@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { Workflow, WorkflowReorderPayload } from "./workflow.model";
+import { Workflow, WorkflowStatusReorderPayload } from "./workflow.model";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { Status } from "@tenzu/data/status";
@@ -61,7 +61,7 @@ export class WorkflowService {
   get(projectId: string, workflowSlug: string) {
     return this.http.get<Workflow>(`${this.getUrl(projectId)}/${workflowSlug}`);
   }
-  reorderStatus(projectId: string, workflowSlug: string, payload: WorkflowReorderPayload) {
+  reorderStatus(projectId: string, workflowSlug: string, payload: WorkflowStatusReorderPayload) {
     return this.http.post(`${this.getUrl(projectId)}/${workflowSlug}/statuses/reorder`, payload);
   }
 }

@@ -23,7 +23,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from "@
 import { computed, inject } from "@angular/core";
 import { addEntity, setAllEntities, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { setSelectedEntity, withLoadingStatus, withSelectedEntity } from "../../utils/store/store-features";
-import { Workflow, WorkflowReorderPayload } from "@tenzu/data/workflow/workflow.model";
+import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow/workflow.model";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { lastValueFrom } from "rxjs";
 import { Status } from "@tenzu/data/status";
@@ -92,7 +92,7 @@ export const WorkflowStore = signalStore(
       patchState(store, { selectedEntityStatusesOrder: [...selectedEntityStatusOrder] });
       const statuses = store.listStatusesOrdered();
       const status = statuses[newPosition];
-      let payload: WorkflowReorderPayload | null = null;
+      let payload: WorkflowStatusReorderPayload | null = null;
       if (newPosition < oldPosition) {
         payload = {
           statuses: [status.id],
