@@ -86,7 +86,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
             </mat-form-field>
             <app-editor #editorContainer [data]="storyStore.selectedStoryDetails().description"></app-editor>
             <div class="flex flex-row gap-2">
-              <button class="primary-button" mat-flat-button type="submit">{{ t("save") }}</button>
+              <button class="tertiary-button" mat-flat-button type="submit">{{ t("save") }}</button>
               <button class="secondary-button" mat-flat-button type="button" (click)="cancel()">
                 {{ t("cancel") }}
               </button>
@@ -94,7 +94,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           </form>
           <mat-divider></mat-divider>
           <div class="flex flex-col gap-y-4">
-            <button class="tertiary-button w-fit" mat-flat-button type="button" (click)="selectFile()">
+            <button class="primary-button w-fit" mat-flat-button type="button" (click)="selectFile()">
               <mat-icon class="icon-full">attach_file</mat-icon>
               {{ t("attachments.attach_file") }}
             </button>

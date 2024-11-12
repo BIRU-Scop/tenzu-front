@@ -97,7 +97,7 @@ export type NameDialogData = {
         </div>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button data-testid="enter-name-submit" mat-flat-button class="primary-button" (click)="submit()">
+        <button data-testid="enter-name-submit" mat-flat-button class="tertiary-button" (click)="submit()">
           {{ t(data.action) }}
         </button>
         <button

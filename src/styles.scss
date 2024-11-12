@@ -49,12 +49,7 @@
 @tailwind utilities;
 
 @mixin apply-theme($theme) {
-  font-family: "Lexend", sans-serif;
-  font-optical-sizing: auto;
-  background-color:  mat.get-theme-color($theme, neutral, 100);
-  color: mat.get-theme-color($theme, neutral, 17);
-  @include mat.core;
-  @include mat.all-component-themes($theme);
+  @include mat.all-component-colors($theme);
   @include mat.typography-hierarchy($theme);
   @include button.color-and-typo($theme);
   @include icon.color-and-typo($theme);
@@ -77,7 +72,7 @@
   @include snackbar.color-and-typo($theme);
   @include table.color-and-typo($theme);
   @include editor.color-and-typo($theme);
-  
+
   ::selection {
     background-color: mat.get-theme-color($theme, primary, 90);
   }
@@ -173,26 +168,46 @@
 }
 
 body {
-  &.light{
+  @include mat.core;
+  @include mat.all-component-bases(themes.$light-theme);
+  @include mat.all-component-densities(themes.$light-theme);
+  @include mat.all-component-typographies(themes.$light-theme);
+  font-family: "Lexend", sans-serif;
+  font-optical-sizing: auto;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
     @include apply-theme(themes.$light-theme);
-  }
-  &.dark{
-    @include apply-theme(themes.$dark-theme);
+    color: mat.get-theme-color(themes.$light-theme, neutral, 17);
+    background-color: mat.get-theme-color(themes.$light-theme, neutral, 100);
+    @include mat.core-overrides((
+            background-color: mat.get-theme-color(themes.$light-theme, neutral, 100),
+            text-color: mat.get-theme-color(themes.$light-theme, neutral, 17),
+            elevation-shadow-level-1: "1px 1px 1px rgba(0, 0, 0, 0.3)",
+            elevation-shadow-level-2: "2px 2px 2px rgba(0, 0, 0, 0.2)",
+            elevation-shadow-level-3: "4px 4px 4px rgba(0, 0, 0, 0.1)",
+    ));
+    --mdc-outlined-card-container-elevation: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
   }
 }
 
-
-.mat-elevation-z2 {
-  @include mat.core-overrides(
-    (
-      elevation-shadow-level-1:
-        "1px 1px 1px rgba(0, 0, 0, 0.3)",
-      elevation-shadow-level-2:
-        "2px 2px 2px rgba(0, 0, 0, 0.2)",
-      elevation-shadow-level-3:
-        "4px 4px 4px rgba(0, 0, 0, 0.1)",
-    )
-  );
+@media (prefers-color-scheme: dark) {
+  body {
+    @include apply-theme(themes.$dark-theme);
+    color: mat.get-theme-color(themes.$dark-theme, neutral, 17);
+    background-color: mat.get-theme-color(themes.$dark-theme, neutral, 98);
+    @include mat.core-overrides((
+      background-color: mat.get-theme-color(themes.$dark-theme, neutral, 98),
+      text-color: mat.get-theme-color(themes.$dark-theme, neutral, 17),
+      elevation-shadow-level-1: "1px 1px 1px rgba(0, 0, 0, 0.9)",
+      elevation-shadow-level-2: "2px 2px 2px rgba(0, 0, 0, 0.8)",
+      elevation-shadow-level-3: "4px 4px 4px rgba(0, 0, 0, 0.7)",
+    ));
+    --mdc-outlined-card-container-elevation: 1px 1px 1px rgba(0, 0, 0, 0.9);
+    --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+  }
 }
 
 strong {

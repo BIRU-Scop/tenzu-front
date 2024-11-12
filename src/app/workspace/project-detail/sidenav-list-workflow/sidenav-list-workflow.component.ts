@@ -88,7 +88,7 @@ import { SideNavStore } from "@tenzu/data/sidenav";
                                     #routerLinkActive="routerLinkActive"
                                     [activated]="routerLinkActive.isActive"
                             >
-                                <mat-icon>view_column</mat-icon>
+                                <mat-icon class="pt-1">view_column</mat-icon>
                             </a>
                         }
                     }

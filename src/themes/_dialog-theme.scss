@@ -40,25 +40,34 @@
   &.above-anchor {
     @apply -translate-y-full;
   }
-  .mat-mdc-dialog-surface {
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
-  }
 }
 
 @mixin color-and-typo($theme) {
   .cdk-overlay-dark-backdrop {
-    background-color: rgba(mat.get-theme-color($theme, neutral, 80), 0.50);
+    background-color: rgba(0, 0, 0, 0.50);
   }
   .mat.get-theme-typography {
     font-size: mat.get-theme-typography($theme, title-large, font-size);
   }
   .mat-mdc-dialog-surface {
+    @media (prefers-color-scheme: dark) {
+      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+      @include mat.dialog-overrides((
+        container-color: mat.get-theme-color($theme, neutral, 98),
+      ));
+    }
+    @media (prefers-color-scheme: light) {
+      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+      @include mat.dialog-overrides((
+        container-color: mat.get-theme-color($theme, neutral, 100),
+      ));
+    }
     @include mat.dialog-overrides((
-      container-color: mat.get-theme-color($theme, neutral, 100),
-      supporting-text-color: mat.get-theme-color($theme, neutral, 17)
+      supporting-text-color: mat.get-theme-color($theme, neutral, 17),
+      subhead-color: mat.get-theme-color($theme, neutral, 10)
     ));
     border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 94);
+    border-color:  mat.get-theme-color($theme, neutral, 90);
     border-width: 1px;
   }
 }

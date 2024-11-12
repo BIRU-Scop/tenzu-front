@@ -130,13 +130,13 @@ export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): Vali
       <mat-dialog-actions>
         <button
           mat-flat-button
-          class="primary-button"
+          class="tertiary-button"
           [mat-dialog-close]="peoplesList()"
           [disabled]="!peoplesList().length"
         >
           {{ t("invite_peoples") }}
         </button>
-        <button mat-button mat-dialog-close class="secondary-button">Cancel</button>
+        <button mat-flat-button mat-dialog-close class="secondary-button">Cancel</button>
       </mat-dialog-actions>
     </ng-container>
   `,

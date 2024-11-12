@@ -26,25 +26,25 @@
 @use 'sass:color';
 @use '@angular/material' as mat;
 
-// Note: Color palettes are generated from primary: #00277f, secondary: #fbc257, tertiary: #0eb188, neutral: #88959d
+// Note: Color palettes are generated from primary: #2a3c96, secondary: #fbc259, tertiary: #0eb188, neutral: #88959d
 $_light_palettes: (
   primary: (
-    0: #04030b,
-    10: #090c1e,
-    20: #141c46,
-    25: #19245a,
-    30: #1f2c6e,
-    35: #243482,
-    40: #2a3c96,
-    50: #354cbe,
-    60: #566ad0,
-    70: #7e8edb,
-    80: #a6b1e6,
-    90: #ced4f1,
-    95: #e2e5f7,
-    98: #eef0fa,
-    99: #f2f3fb,
-    100: #f6f7fc,
+    0: #03050c,
+    10: #070a18,
+    20: #0e1330,
+    25: #11183c,
+    30: #141d48,
+    35: #182254,
+    40: #1b2660,
+    50: #223078,
+    60: #4e5993,
+    70: #7f8ac0,
+    80: #a7acc9,
+    90: #d3d6e4,
+    95: #e9eaf2,
+    98: #f3f3f9,
+    99: #f4f5fa,
+    100: #f6f7fb,
   ),
   secondary: (
     0: #150e03,
@@ -222,6 +222,6 @@ $dark-theme: mat.define-theme((
     tertiary: $_tertiary_dark,
   ),
   typography: (
-    plain-family: 'Arial',
+    plain-family: 'Lexend',
   ),
 ));
