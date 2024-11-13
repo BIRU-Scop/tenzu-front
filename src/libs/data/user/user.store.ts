@@ -28,6 +28,7 @@ import { UserService } from "./user.service";
 import { User, UserEdition } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { AuthService } from "@tenzu/data/auth";
+import { WsService } from "@tenzu/utils/services";
 
 export const UserStore = signalStore(
   { providedIn: "root" },
@@ -40,6 +41,7 @@ export const UserStore = signalStore(
       userService = inject(UserService),
       translocoService = inject(TranslocoService),
       authService = inject(AuthService),
+      wsService = inject(WsService),
     ) => ({
       getMe: rxMethod<void>(
         pipe(
@@ -53,6 +55,7 @@ export const UserStore = signalStore(
                       translocoService.setActiveLang(myUser.lang);
                     }
                     localStorage.setItem("user", JSON.stringify(myUser));
+                    wsService.command({ command: "signin", token: localStorage.getItem("token") || "" });
                   },
                   error: console.error,
                 }),

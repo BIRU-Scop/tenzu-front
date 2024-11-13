@@ -31,5 +31,6 @@ export const environment: EnvironmentConfig = {
     suffixDomain: "api",
     scheme: "https",
   },
+  wsUrl: "wss://local-tenzu.biru.ovh/events/",
   sentry: {},
 };

@@ -24,11 +24,19 @@ import { inject } from "@angular/core";
 import { AuthService } from "../auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services";
+import { ConfigServiceService } from "../../utils/services/config-service/config-service.service";
 
 export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   const authService = inject(AuthService);
   const tokens = authService.getToken();
   const notificationService = inject(NotificationService);
+  const configService = inject(ConfigServiceService);
+  request = request.clone({
+    setHeaders: {
+      "correlation-id": configService.correlationId,
+    },
+  });
+
   return next(request).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse && !request.url.includes("login") && error.status === 401) {

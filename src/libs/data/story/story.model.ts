@@ -48,7 +48,7 @@ export interface createdBy {
 }
 
 export interface StoryDetail extends Story {
-  workflow: Pick<Workflow, "id" | "name" | "slug">;
+  workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
   prev: null | {
     ref: Story["ref"];
     title: Story["title"];
