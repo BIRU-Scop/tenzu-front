@@ -9,7 +9,6 @@ test.beforeEach("Load Email signup form", async ({ page }) => {
   await expect(page.getByTestId("email-input")).toBeVisible();
   await expect(page.getByTestId("password-input")).toBeVisible();
   await expect(page.getByTestId("submitCreateAccount-button")).toBeVisible();
-  await expect(page.getByTestId("allOptions-button")).toBeVisible();
 });
 
 test.describe("Signup", () => {

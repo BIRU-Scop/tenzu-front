@@ -22,6 +22,11 @@ test.describe("Create from workspace page", () => {
     await page.getByTestId("new-project-submit").click();
     const response = await responsePromise;
     expect(response.status()).toEqual(200);
+    // should delete created project
+    await page.getByTestId("settings-link").click();
+    await page.locator("css=.error-button").click();
+    await page.getByRole("dialog").locator("css=.error-button").click();
+    await expect(page).toHaveURL("/");
   });
   test("should display required name error", async ({ page }) => {
     await page.getByTestId("new-project-submit").click();
