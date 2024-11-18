@@ -13,8 +13,10 @@ import { catchError, filter } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseEvent } from "../ws.model";
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
-import { StoryDetail, StoryReorderPayload } from "@tenzu/data/story";
+import { StoryDetail, StoryReorderPayload, StoryStore } from "@tenzu/data/story";
 import { StatusDetail } from "@tenzu/data/status";
+import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
+import { WorkflowEventType } from "./event-type.enum";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -41,6 +43,8 @@ export class WsService {
     repeat({ count: MAX_RETRY, delay: RETRY_TIME }),
     share(),
   );
+  workflowStore = inject(WorkflowStore);
+  storyStore = inject(StoryStore);
   constructor() {
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
   }
@@ -81,7 +85,7 @@ export class WsService {
       // TODO implements the event
       case "stories.create": {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const stories = message.event.content as StoryDetail;
+        const story = message.event.content as StoryDetail;
         break;
       }
       case "stories.reorder": {
@@ -89,9 +93,27 @@ export class WsService {
         const reorder = message.event.content as StoryReorderPayload;
         break;
       }
-      case "workflowstatuses.create": {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const status = message.event.content as StatusDetail;
+      case WorkflowEventType.CreateWorkflowStatus: {
+        const content = message.event.content as { workflowStatus: StatusDetail };
+        this.workflowStore.addStatus(content.workflowStatus);
+        break;
+      }
+      case WorkflowEventType.UpdateWorkflowStatus: {
+        const content = message.event.content as { workflowStatus: StatusDetail };
+        this.workflowStore.updateStatus(content.workflowStatus);
+        break;
+      }
+      case WorkflowEventType.DeleteWorkflowStatus: {
+        const content = message.event.content as { workflowStatus: StatusDetail; targetStatus: StatusDetail };
+        this.workflowStore.removeStatus(content.workflowStatus.id);
+        this.storyStore.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
+        break;
+      }
+      case WorkflowEventType.ReorderWorkflowStatus: {
+        const content = message.event.content as {
+          reorder: WorkflowStatusReorderPayload & { workflow: Workflow };
+        };
+        this.workflowStore.refreshWorkflow(content.reorder.workflow);
         break;
       }
     }
