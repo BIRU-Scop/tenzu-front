@@ -111,7 +111,7 @@ export const WorkflowStore = signalStore(
       }
       await lastValueFrom(workflowService.reorderStatus(projectId, workflowId, payload));
     },
-    async removeStatus(statusId: string) {
+    removeStatus(statusId: string) {
       const selectedWorkflow = store.selectedEntity();
       if (selectedWorkflow) {
         const statusIndex = selectedWorkflow.statuses.findIndex((curr) => statusId === curr.id);
@@ -134,7 +134,7 @@ export const WorkflowStore = signalStore(
         }
       }
     },
-    async updateStatus(status: Status) {
+    updateStatus(status: Status) {
       const selectedWorkflow = store.selectedEntity();
       if (selectedWorkflow) {
         const statusIndex = selectedWorkflow.statuses.findIndex((curr) => status.id === curr.id);

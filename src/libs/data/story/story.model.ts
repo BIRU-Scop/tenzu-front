@@ -30,6 +30,9 @@ export type StoryReorderPayload = {
   status: string;
   stories: number[];
 };
+export type StoryReorderPayloadEvent = StoryReorderPayload & {
+  status: Status;
+};
 
 export type Story = {
   ref: number;
