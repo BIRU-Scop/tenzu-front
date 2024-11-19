@@ -66,6 +66,11 @@ export function withSelectedEntity<Entity>() {
         return selectedId ? entityMap()[selectedId] : null;
       }),
     })),
+    withMethods((store) => ({
+      resetSelectedEntity() {
+        patchState(store, { selectedEntityId: null });
+      },
+    })),
   );
 }
 

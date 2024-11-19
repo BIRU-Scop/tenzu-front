@@ -68,6 +68,7 @@ export class WorkspaceProjectListComponent {
   breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
+    this.projectStore.resetSelectedEntity();
     this.breadcrumbStore.setThirdLevel({
       label: "workspace.general_title.workspaceListProjects",
       link: "",

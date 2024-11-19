@@ -39,6 +39,7 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
+import { ProjectStore } from "@tenzu/data/project";
 
 @Component({
   selector: "app-workspace-list",
@@ -129,6 +130,7 @@ import { Validators } from "@angular/forms";
 })
 export class WorkspaceListComponent {
   readonly workspaceStore = inject(WorkspaceStore);
+  readonly projectStore = inject(ProjectStore);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -148,6 +150,8 @@ export class WorkspaceListComponent {
   };
 
   constructor() {
+    this.projectStore.resetSelectedEntity();
+    this.workspaceStore.resetSelectedEntity();
     this.init();
   }
 
