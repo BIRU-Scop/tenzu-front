@@ -100,11 +100,11 @@ export class StoryCardComponent {
         teamMembers: teamMembers,
       },
     });
-    dialogRef.componentInstance.memberAssigned.subscribe((username) =>
-      this.projectKanbanService.assignStory(username, null, this.ref()),
+    dialogRef.componentInstance.memberAssigned.subscribe(
+      async (username) => await this.projectKanbanService.assignStory(username, null, this.ref()),
     );
-    dialogRef.componentInstance.memberUnassigned.subscribe((username) =>
-      this.projectKanbanService.removeAssignStory(username, null, this.ref()),
+    dialogRef.componentInstance.memberUnassigned.subscribe(
+      async (username) => await this.projectKanbanService.removeAssignStory(username, null, this.ref()),
     );
   }
 }
