@@ -19,15 +19,29 @@
  *
  */
 
-import { signalStoreFeature, type, withComputed, withState } from "@ngrx/signals";
+import { patchState, signalStoreFeature, type, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed } from "@angular/core";
 import { EntityId, EntityState } from "@ngrx/signals/entities";
+import { Command } from "@tenzu/utils/services";
 
 export function withLoadingStatus() {
   return signalStoreFeature(
     withState({ loading: false }),
     withComputed(({ loading }) => ({
       isLoading: computed(() => loading()),
+    })),
+  );
+}
+
+export function withWsCommand() {
+  return signalStoreFeature(
+    withState({
+      command: undefined as Command | undefined,
+    }),
+    withMethods((store) => ({
+      sendCommand(command: Command) {
+        patchState(store, { command: command });
+      },
     })),
   );
 }

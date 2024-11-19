@@ -31,15 +31,16 @@ import {
   setSelectedEntity,
   withLoadingStatus,
   withSelectedEntity,
+  withWsCommand,
 } from "../../utils/store/store-features";
-import { WsService } from "../../utils/services/ws";
 
 export const WorkspaceStore = signalStore(
   { providedIn: "root" },
   withEntities<Workspace>(),
   withSelectedEntity(),
   withLoadingStatus(),
-  withMethods((store, workspaceService = inject(WorkspaceService), wsService = inject(WsService)) => ({
+  withWsCommand(),
+  withMethods((store, workspaceService = inject(WorkspaceService)) => ({
     async list() {
       patchState(store, setLoadingBegin());
       const workspaces = await lastValueFrom(workspaceService.list());
@@ -54,14 +55,14 @@ export const WorkspaceStore = signalStore(
     async get(id: string) {
       const oldSelectedEntityId = store.selectedEntityId();
       if (oldSelectedEntityId) {
-        wsService.command({ command: "unsubscribe_to_workspace_events", workspace: oldSelectedEntityId as string });
+        store.sendCommand({ command: "unsubscribe_to_workspace_events", workspace: oldSelectedEntityId as string });
       }
       patchState(store, setLoadingBegin());
       const workspace = await lastValueFrom(workspaceService.get(id));
       patchState(store, setLoadingEnd());
       patchState(store, setEntity(workspace));
       patchState(store, setSelectedEntity(id));
-      wsService.command({ command: "subscribe_to_workspace_events", workspace: workspace.id });
+      store.sendCommand({ command: "subscribe_to_workspace_events", workspace: workspace.id });
       return workspace;
     },
     async patchSelectedEntity(workspace: WorkspaceEdition) {
@@ -75,7 +76,7 @@ export const WorkspaceStore = signalStore(
       const selectedEntityId = store.selectedEntityId();
       const selectedEntity = store.selectedEntity();
       if (selectedEntityId && selectedEntity) {
-        wsService.command({ command: "unsubscribe_to_workspace_events", workspace: selectedEntityId as string });
+        store.sendCommand({ command: "unsubscribe_to_workspace_events", workspace: selectedEntityId as string });
         await lastValueFrom(workspaceService.delete(selectedEntity.id));
         patchState(store, removeEntity(selectedEntityId));
         return selectedEntity;
