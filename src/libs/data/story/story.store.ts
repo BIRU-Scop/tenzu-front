@@ -135,28 +135,31 @@ export const StoryStore = signalStore(
       }
       store.reorder();
     },
-    async createAssign(projectId: string, ref: number, username: string) {
-      const storyAssign: StoryAssign = await lastValueFrom(storyService.createAssignee(projectId, ref, username));
-      const newAssignees = [storyAssign.user, ...store.entityMap()[ref].assignees];
-      patchState(store, updateEntity({ id: ref, changes: { assignees: newAssignees } }, { selectId }));
-      if (store.selectedStoryDetails().ref === ref) {
-        patchState(store, (state) => ({
-          selectedStoryDetails: {
-            ...state.selectedStoryDetails,
-            assignees: newAssignees,
-          },
-        }));
+    addAssign(storyAssign: StoryAssign, ref: number) {
+      const currentAssignees = store.entityMap()[ref].assignees;
+      // avoid the double event from user event channel and project event channel
+      if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
+        const newAssignees = [storyAssign.user, ...store.entityMap()[ref].assignees];
+        patchState(store, updateEntity({ id: ref, changes: { assignees: newAssignees } }, { selectId }));
+        console.log(newAssignees);
+        if (store.selectedStoryDetails().ref === ref) {
+          patchState(store, (state) => ({
+            selectedStoryDetails: {
+              ...state.selectedStoryDetails,
+              assignees: newAssignees,
+            },
+          }));
+        }
       }
     },
-    async deleteAssign(projectId: string, ref: number, username: string) {
-      await lastValueFrom(storyService.deleteAssignee(projectId, ref, username));
-      const newAssignees = [...store.entityMap()[ref].assignees].filter((assignee) => assignee.username != username);
-      patchState(store, updateEntity({ id: ref, changes: { assignees: newAssignees } }, { selectId }));
+    removeAssign(ref: number, username: string) {
+      const removedAssign = [...store.entityMap()[ref].assignees].filter((assignee) => assignee.username != username);
+      patchState(store, updateEntity({ id: ref, changes: { assignees: removedAssign } }, { selectId }));
       if (store.selectedStoryDetails().ref === ref) {
         patchState(store, (state) => ({
           selectedStoryDetails: {
             ...state.selectedStoryDetails,
-            assignees: newAssignees,
+            assignees: removedAssign,
           },
         }));
       }
@@ -235,6 +238,14 @@ export const StoryStore = signalStore(
     async deleteStory(projectId: string, ref: number) {
       await lastValueFrom(storyService.deleteStory(projectId, ref));
       store.removeStory(ref);
+    },
+    async createAssign(projectId: string, ref: number, username: string) {
+      const storyAssign: StoryAssign = await lastValueFrom(storyService.createAssignee(projectId, ref, username));
+      store.addAssign(storyAssign, ref);
+    },
+    async deleteAssign(projectId: string, ref: number, username: string) {
+      await lastValueFrom(storyService.deleteAssignee(projectId, ref, username));
+      store.removeAssign(ref, username);
     },
   })),
 );

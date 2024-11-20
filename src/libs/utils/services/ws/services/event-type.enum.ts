@@ -17,9 +17,14 @@ export enum StoryEventType {
   ReorderStory = "stories.reorder",
   DeleteStory = "stories.delete",
 }
+export enum StoryAssignmentEventType {
+  CreateStoryAssignment = "storiesassignments.create",
+  DeleteStoryAssignment = "storiesassignments.delete",
+}
 
 export enum FamilyEventType {
   Story = "stories",
   Workflow = "workflows",
   WorkflowStatuses = "workflowstatuses",
+  StoryAssignment = "storiesassignments",
 }

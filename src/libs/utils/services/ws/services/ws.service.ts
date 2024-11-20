@@ -13,10 +13,16 @@ import { catchError, filter } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseEvent } from "../ws.model";
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
-import { StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
+import { StoryAssign, StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
 import { StatusDetail } from "@tenzu/data/status";
 import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
-import { FamilyEventType, StoryEventType, WorkflowEventType, WorkflowStatusEventType } from "./event-type.enum";
+import {
+  FamilyEventType,
+  StoryAssignmentEventType,
+  StoryEventType,
+  WorkflowEventType,
+  WorkflowStatusEventType,
+} from "./event-type.enum";
 import { ProjectStore } from "@tenzu/data/project";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
@@ -181,6 +187,20 @@ export class WsService {
       }
     }
   }
+  async doStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
+    switch (message.event.type) {
+      case StoryAssignmentEventType.CreateStoryAssignment: {
+        const content = message.event.content as { storyAssignment: StoryAssign };
+        this.storyStore.addAssign(content.storyAssignment, content.storyAssignment.story.ref);
+        break;
+      }
+      case StoryAssignmentEventType.DeleteStoryAssignment: {
+        const content = message.event.content as { storyAssignment: StoryAssign };
+        this.storyStore.removeAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
+        break;
+      }
+    }
+  }
   async dispatchEvent(message: WSResponseEvent<unknown>) {
     if (message.event.correlationId === this.config.correlationId) {
       return;
@@ -201,6 +221,10 @@ export class WsService {
       }
       case FamilyEventType.WorkflowStatuses: {
         await this.doWorkflowStatusEvent(message);
+        break;
+      }
+      case FamilyEventType.StoryAssignment: {
+        await this.doStoryAssignmentEvent(message);
         break;
       }
     }
