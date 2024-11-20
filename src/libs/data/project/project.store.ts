@@ -20,7 +20,7 @@
  */
 
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
-import { addEntity, removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
+import { addEntity, removeEntity, setAllEntities, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { Project, ProjectBase } from "./project.model";
 import { inject } from "@angular/core";
 import { WorkspaceService } from "@tenzu/data/workspace";
@@ -54,6 +54,11 @@ export const ProjectStore = signalStore(
       },
       async createWorkflow(projectId: string, workflow: Pick<Workflow, "name">) {
         await lastValueFrom(workflowService.create(projectId, workflow));
+      },
+      addWorkflow(workflow: Workflow) {
+        const project = store.entityMap()[workflow.projectId];
+        project.workflows.push(workflow);
+        patchState(store, updateEntity({ id: project.id, changes: { workflows: project.workflows } }));
       },
       async getProjectsByWorkspaceId(workspaceId: string) {
         patchState(store, setLoadingBegin());

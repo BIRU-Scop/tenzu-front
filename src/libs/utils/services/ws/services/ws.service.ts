@@ -23,7 +23,6 @@ import { Router } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils";
 import { NotificationService } from "../../notification";
-
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
 
@@ -142,6 +141,9 @@ export class WsService {
   doWorkflowEvent(message: WSResponseEvent<unknown>) {
     switch (message.event.type) {
       case WorkflowEventType.CreateWorkflow: {
+        const content = message.event.content as { workflow: Workflow };
+        this.projectStore.addWorkflow(content.workflow);
+
         break;
       }
       case WorkflowEventType.UpdateWorkflow: {
