@@ -25,7 +25,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatIconButton } from "@angular/material/button";
 import { MatInput } from "@angular/material/input";
 import { AbstractControl, ReactiveFormsModule, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { injectNgControl } from "@tenzu/utils";
+import { injectNgControl, SYMBOLS } from "@tenzu/utils";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordStrengthComponent } from "./password-strength/password-strength.component";
 import {
@@ -37,7 +37,7 @@ import {
   PasswordSeverity,
   stringDiversity,
 } from "./password-strength/_utils";
-import { AuthService } from "../../../../data/auth";
+import { AuthService } from "@tenzu/data/auth";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor-directive.directive";
 
 type PasswordStrengthSignature = {
@@ -134,6 +134,7 @@ const DEFAULT_REQUIREMENTS: PasswordRequirements = {
                 </li>
               }
             }
+            <li [innerHTML]="t('hints.symbolCharacters', { symbols: SYMBOLS })"></li>
           </ul>
         </mat-hint>
       }
@@ -183,6 +184,7 @@ const DEFAULT_REQUIREMENTS: PasswordRequirements = {
                 </ul>
               </li>
             }
+            <li [innerHTML]="t('hints.symbolCharacters', { symbols: SYMBOLS })"></li>
           </ul>
         </mat-error>
       }
@@ -302,4 +304,5 @@ export class PasswordFieldComponent implements OnInit {
   }
 
   protected readonly Object = Object;
+  protected readonly SYMBOLS = SYMBOLS;
 }

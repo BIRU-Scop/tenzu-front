@@ -27,7 +27,8 @@
       "hints": {
         "minLength": "Your password needs to be at least {{ minLength }} long.",
         "diversity": "Your password needs to have at least {{ diversityDifference }} of these kinds:",
-        "diversityType": "1 {{ diversityType }}"
+        "diversityType": "1 {{ diversityType }}",
+        "symbolCharacters": "Note: Only <strong>{{ symbols }}</strong> symbols count toward strength."
       },
       "errors": {
         "required": "{{ label }} is <strong>required</strong>",

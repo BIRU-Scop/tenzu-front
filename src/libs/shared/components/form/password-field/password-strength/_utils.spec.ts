@@ -176,8 +176,12 @@ describe("PasswordStrengthUtils", () => {
     expect(characterCounts).toEqual(expectedCounts);
   });
 
-  test("CountCharacters: Unhandled characters should throw error.", () => {
-    expect(() => countCharacters("£")).toThrowError("[CHARACTER_COUNTS]");
+  test("CountCharacters: Unhandled characters should simply be ignored", () => {
+    const toBeCountedCharacters = "azazAZ12345&@";
+    const toBeIgnoredCharacters = "£ùéà学中カタカナ";
+    const characterCounts = countCharacters(toBeCountedCharacters + toBeIgnoredCharacters);
+    const expectedCounts = { lowercase: 4, uppercase: 2, numeric: 5, symbol: 2 };
+    expect(characterCounts).toEqual(expectedCounts);
   });
 
   test.each([

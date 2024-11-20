@@ -66,8 +66,6 @@ export function countCharacters(input: string): CharacterCountsType {
       numeric++;
     } else if (RE_SYMBOLS.test(char)) {
       symbol++;
-    } else {
-      throw new Error(`[PASSWORD][CHARACTER_COUNTS] Unhandled character: ${char}`, { cause: char });
     }
   }
 
