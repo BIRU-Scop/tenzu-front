@@ -200,8 +200,8 @@ export class ProjectKanbanComponent {
     };
     const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
       ...matDialogConfig,
-      relativeXPosition: "center",
-      relativeYPosition: "above",
+      relativeXPosition: "auto",
+      relativeYPosition: "auto",
       data: data,
     });
     dialogRef.afterClosed().subscribe(async (name?: string) => {

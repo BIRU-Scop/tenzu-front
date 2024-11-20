@@ -25,12 +25,30 @@ import { ComponentType, NoopScrollStrategy } from "@angular/cdk/overlay";
 import { fromEvent, map, take } from "rxjs";
 
 type Config = MatDialogConfig & {
-  relativeXPosition?: "left" | "center" | "right";
-  relativeYPosition?: "above" | "below";
+  relativeXPosition?: "left" | "center" | "right" | "auto";
+  relativeYPosition?: "above" | "below" | "auto";
 };
 /**
  * This service create a modal positioned relatively to its trigger button
  */
+
+const calculateHorizontalAutoPosition = (right: number) => {
+  if (right < window.innerWidth * 0.25) {
+    return "right";
+  }
+  if (right >= window.innerWidth * 0.25 && right <= window.innerWidth * 0.75) {
+    return "center";
+  }
+  return "left";
+};
+
+const calculateVerticalAutoPosition = (bottom: number) => {
+  if (bottom < window.innerHeight * 0.5) {
+    return "below";
+  }
+  return "above";
+};
+
 @Injectable({
   providedIn: "root",
 })
@@ -49,7 +67,14 @@ export class RelativeDialogService {
       });
     }
     const { top, bottom, left, right } = buttonElem.getBoundingClientRect();
-    const { relativeXPosition = "center", relativeYPosition = "below", ...restConfig } = config || {};
+    // eslint-disable-next-line prefer-const
+    let { relativeXPosition = "center", relativeYPosition = "below", ...restConfig } = config || {};
+    if (relativeXPosition === "auto") {
+      relativeXPosition = calculateHorizontalAutoPosition(right);
+    }
+    if (relativeYPosition === "auto") {
+      relativeYPosition = calculateVerticalAutoPosition(bottom);
+    }
     const relativeDialogRef = this.dialog.open(template, {
       ...restConfig,
       position: {

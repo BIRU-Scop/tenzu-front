@@ -118,7 +118,7 @@ export class StatusCardComponent {
     };
     const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
       ...matDialogConfig,
-      relativeXPosition: "left",
+      relativeXPosition: "auto",
       data: data,
     });
     dialogRef.afterClosed().subscribe(async (name?: string) => {
