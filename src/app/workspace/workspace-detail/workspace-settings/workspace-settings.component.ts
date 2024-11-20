@@ -99,6 +99,7 @@ import { MatIcon } from "@angular/material/icon";
             mat-flat-button
             class="error-button w-fit"
             appConfirm
+            [data]="{ deleteAction: true }"
             (popupConfirm)="onDelete()"
           >
             {{ t("delete") }}

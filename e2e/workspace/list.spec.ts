@@ -29,16 +29,22 @@ test.describe("workspace create", () => {
     // should open the dialog
     await page.getByTestId("create-workspace-open").click();
     // should fill and submit form
-    const dialog = page.getByRole("dialog");
-    await expect(dialog).toBeVisible();
-    await page.getByTestId("name-input").fill(workspaceName);
-    await page.getByTestId("enter-name-submit").click();
+    const dialogName = page.getByRole("dialog");
+    await expect(dialogName).toBeVisible();
+    await dialogName.getByTestId("name-input").fill(workspaceName);
+    await dialogName.getByTestId("enter-name-submit").click();
     // should close the dialog
-    await expect(dialog).not.toBeVisible();
+    await expect(dialogName).not.toBeVisible();
     // should display the new workspace in list
     const firstCard = page.locator("css=.mat-mdc-card").first();
     await expect(firstCard.locator("css=.mat-mdc-card-title")).toHaveText(workspaceName);
     await expect(firstCard.locator("css=.avatar").first()).toHaveText(workspaceInitials);
+    // delete the created workspace
+    await firstCard.getByRole("link").click();
+    await page.getByTestId("settings-link").click();
+    await page.locator("css=.error-button").click();
+    await page.getByRole("dialog").locator("css=.error-button").click();
+    await expect(page).toHaveURL("/");
   });
   test("should display required name error", async ({ page }) => {
     await page.getByTestId("create-workspace-open").click();
