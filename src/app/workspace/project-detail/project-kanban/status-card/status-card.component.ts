@@ -121,16 +121,16 @@ export class StatusCardComponent {
       relativeXPosition: "left",
       data: data,
     });
-    dialogRef.afterClosed().subscribe((name?: string) => {
+    dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        this.projectKanbanService.editStatus({ name, id: this.id() });
+        await this.projectKanbanService.editStatus({ name, id: this.id() });
       }
     });
   }
 
-  onDelete() {
+  async onDelete() {
     if (this.isEmpty()) {
-      this.projectKanbanService.deleteStatus(this.id());
+      await this.projectKanbanService.deleteStatus(this.id());
     } else {
       this.openDeleteDialog();
     }
@@ -149,10 +149,10 @@ export class StatusCardComponent {
         statusId: this.id(),
       },
     });
-    dialogRef.afterClosed().subscribe((formValue?: { stories: "delete" | "move"; status: string }) => {
+    dialogRef.afterClosed().subscribe(async (formValue?: { stories: "delete" | "move"; status: string }) => {
       if (formValue) {
         const moveToStatus: string | undefined = formValue.stories === "move" ? formValue.status : undefined;
-        this.projectKanbanService.deleteStatus(this.id(), moveToStatus);
+        await this.projectKanbanService.deleteStatus(this.id(), moveToStatus);
       }
     });
   }

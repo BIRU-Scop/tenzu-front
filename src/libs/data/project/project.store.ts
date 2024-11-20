@@ -31,23 +31,23 @@ import {
   setSelectedEntity,
   withLoadingStatus,
   withSelectedEntity,
+  withWsCommand,
 } from "../../utils/store/store-features";
 import { ProjectService } from "@tenzu/data/project/project.service";
 import { Workflow, WorkflowService } from "@tenzu/data/workflow";
-import { WsService } from "@tenzu/utils/services";
 
 export const ProjectStore = signalStore(
   { providedIn: "root" },
   withEntities<Project>(),
   withLoadingStatus(),
   withSelectedEntity(),
+  withWsCommand(),
   withMethods(
     (
       store,
       workspaceService = inject(WorkspaceService),
       projectService = inject(ProjectService),
       workflowService = inject(WorkflowService),
-      wsService = inject(WsService),
     ) => ({
       addProject(project: Project) {
         patchState(store, addEntity(project));
@@ -65,14 +65,14 @@ export const ProjectStore = signalStore(
       async getProject(projectId: string) {
         const oldSelectedEntityId = store.selectedEntityId() as string;
         if (oldSelectedEntityId) {
-          wsService.command({ command: "unsubscribe_from_project_events", project: oldSelectedEntityId });
+          store.sendCommand({ command: "unsubscribe_from_project_events", project: oldSelectedEntityId });
         }
         patchState(store, setLoadingBegin());
         const project = await lastValueFrom(projectService.get(projectId));
         patchState(store, setLoadingEnd());
         patchState(store, setEntity(project));
         patchState(store, setSelectedEntity(projectId));
-        wsService.command({ command: "subscribe_to_project_events", project: projectId });
+        store.sendCommand({ command: "subscribe_to_project_events", project: projectId });
         return project;
       },
       async patchSelectedEntity(project: Partial<ProjectBase>) {
@@ -86,7 +86,7 @@ export const ProjectStore = signalStore(
         const selectedEntityId = store.selectedEntityId();
         const selectedEntity = store.selectedEntity();
         if (selectedEntityId && selectedEntity) {
-          wsService.command({ command: "unsubscribe_from_project_events", project: selectedEntityId as string });
+          store.sendCommand({ command: "unsubscribe_from_project_events", project: selectedEntityId as string });
           await lastValueFrom(projectService.delete(selectedEntity.id));
           patchState(store, removeEntity(selectedEntityId));
           return selectedEntity;

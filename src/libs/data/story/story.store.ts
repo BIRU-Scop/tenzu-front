@@ -27,6 +27,7 @@ import {
   removeAllEntities,
   removeEntity,
   SelectEntityId,
+  setAllEntities,
   setEntity,
   updateEntity,
   withEntities,
@@ -39,6 +40,7 @@ import {
   StoryCreate,
   StoryDetail,
   StoryReorderPayload,
+  StoryReorderPayloadEvent,
 } from "@tenzu/data/story/story.model";
 import { StoryService } from "@tenzu/data/story/story.service";
 import { lastValueFrom } from "rxjs";
@@ -92,9 +94,8 @@ export const StoryStore = signalStore(
       return stories;
     },
 
-    async create(projectId: string, workflowSlug: string, Story: StoryCreate) {
-      const newStory = await lastValueFrom(storyService.create(projectId, workflowSlug, Story));
-      patchState(store, setEntity(newStory, { selectId }));
+    add(story: Story) {
+      patchState(store, setEntity(story, { selectId }));
       store.reorder();
     },
     async get(projectId: string, ref: number) {
@@ -104,14 +105,14 @@ export const StoryStore = signalStore(
       patchState(store, { selectedStoryDetails: story, selectedStoryAttachments: attachments });
       return story;
     },
-    async patch(projectId: string, story: StoryDetail, data: Partial<StoryDetail>) {
-      const storyPatched = await lastValueFrom(storyService.patch(projectId, { ...story, ...data }));
-      patchState(store, updateEntity({ id: story.ref, changes: data }, { selectId }));
+    update(story: StoryDetail) {
+      const { ref, ...change } = story;
+      patchState(store, updateEntity({ id: ref, changes: { ...change } }, { selectId }));
       if (store.selectedStoryDetails().ref === story.ref) {
-        patchState(store, { selectedStoryDetails: storyPatched });
+        patchState(store, { selectedStoryDetails: story });
       }
       store.reorder();
-      return storyPatched;
+      return story;
     },
     async addAttachment(projectId: string, ref: number, attachment: Blob) {
       const newAttachment = await lastValueFrom(storyService.addStoryAttachments(projectId, ref, attachment));
@@ -126,15 +127,13 @@ export const StoryStore = signalStore(
           .filter((attachment) => attachment.id !== attachmentId),
       });
     },
-    async deleteStory(projectId: string, ref: number) {
-      const deleteStory = storyService.deleteStory(projectId, ref).subscribe();
+    removeStory(ref: number) {
       patchState(store, removeEntity(ref));
       patchState(store, { selectedStoryAttachments: [] });
       if (ref === store.selectedStoryDetails().ref) {
         patchState(store, { selectedStoryDetails: {} as StoryDetail });
       }
       store.reorder();
-      return deleteStory;
     },
     async createAssign(projectId: string, ref: number, username: string) {
       const storyAssign: StoryAssign = await lastValueFrom(storyService.createAssignee(projectId, ref, username));
@@ -170,6 +169,30 @@ export const StoryStore = signalStore(
       });
       store.reorder();
     },
+    reorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
+      const storyRef = reorder.stories[0];
+      if (storyRef) {
+        const stories = store.entities();
+        const currentStatusIndex = stories.findIndex((story) => story.ref === storyRef);
+        const siblingStoryRef = reorder.reorder?.ref;
+        if (siblingStoryRef) {
+          const siblingStoryIndex = stories.findIndex((story) => story.ref === siblingStoryRef);
+          if (reorder.reorder?.place === "after") {
+            moveItemInArray(stories, currentStatusIndex, siblingStoryIndex + 1);
+          } else if (reorder.reorder?.place === "before") {
+            moveItemInArray(stories, currentStatusIndex, siblingStoryIndex - 1);
+          }
+          // if no place, nothing to do
+        }
+        patchState(store, setAllEntities(stories, { selectId }));
+        patchState(store, updateEntity({ id: storyRef, changes: { status: reorder.status } }, { selectId }));
+        store.reorder();
+        const selectedStoryDetails = store.selectedStoryDetails();
+        if (selectedStoryDetails.ref === storyRef) {
+          patchState(store, { selectedStoryDetails: { ...selectedStoryDetails, status: reorder.status } });
+        }
+      }
+    },
 
     async dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
       const story = event.item.data;
@@ -198,6 +221,20 @@ export const StoryStore = signalStore(
       story.status = nextStatus;
       patchState(store, updateEntity({ id: story.ref, changes: { status: { ...nextStatus } } }, { selectId }));
       await lastValueFrom(storyService.reorder(projectId, workflowSlug, payload));
+    },
+  })),
+  withMethods((store, storyService = inject(StoryService)) => ({
+    async create(projectId: string, workflowSlug: string, Story: StoryCreate) {
+      const newStory = await lastValueFrom(storyService.create(projectId, workflowSlug, Story));
+      store.add(newStory);
+    },
+    async patch(projectId: string, story: StoryDetail, data: Partial<StoryDetail>) {
+      const storyPatched = await lastValueFrom(storyService.patch(projectId, { ...story, ...data }));
+      store.update(storyPatched);
+    },
+    async deleteStory(projectId: string, ref: number) {
+      await lastValueFrom(storyService.deleteStory(projectId, ref));
+      store.removeStory(ref);
     },
   })),
 );
