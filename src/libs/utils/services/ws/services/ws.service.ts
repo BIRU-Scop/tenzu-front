@@ -246,6 +246,28 @@ export class WsService {
         this.doSStoryAttachmentEvent(message);
         break;
       }
+      case FamilyEventType.Project: {
+        break;
+      }
+      case FamilyEventType.Workspace: {
+        break;
+      }
+      case FamilyEventType.ProjectInvitation: {
+        // Add handling logic if required
+        break;
+      }
+      case FamilyEventType.ProjectMembership: {
+        // Add handling logic if required
+        break;
+      }
+      case FamilyEventType.WorkspaceInvitation: {
+        // Add handling logic if required
+        break;
+      }
+      case FamilyEventType.WorkspaceMembership: {
+        // Add handling logic if required
+        break;
+      }
     }
   }
 
@@ -261,7 +283,7 @@ export class WsService {
           filter((loggedIn) => loggedIn),
           switchMap(() => {
             this.subject.next(command);
-            return of();
+            return of(null);
           }),
         )
         .subscribe();
