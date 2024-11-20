@@ -69,7 +69,7 @@ type AssignDialogData = {
   template: `
     <ng-container *transloco="let t; prefix: 'component.assign'">
       <mat-dialog-content>
-        <div class="flex flex-col gap-4 max-h-[50vh] overflow-y-hidden">
+        <div class="flex flex-col gap-4 max-h-[45vh] overflow-y-hidden">
           @if ((assignedMembers.value?.length || 0) > 0) {
             <div class="flex flex-row items-center">
               <p class="pr-2">{{ t("assigned_to") }}</p>

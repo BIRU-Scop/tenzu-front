@@ -94,7 +94,8 @@ export class StoryCardComponent {
     const teamMembers = this.membershipStore.projectEntities();
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
-      relativeXPosition: "left",
+      relativeXPosition: "auto",
+      relativeYPosition: "auto",
       data: {
         assigned: this.users(),
         teamMembers: teamMembers,
