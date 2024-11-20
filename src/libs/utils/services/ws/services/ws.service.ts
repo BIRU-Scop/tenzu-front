@@ -16,7 +16,7 @@ import { webSocket } from "rxjs/webSocket";
 import { StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
 import { StatusDetail } from "@tenzu/data/status";
 import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
-import { StoryEventType, WorkflowEventType, WorkflowStatusEventType } from "./event-type.enum";
+import { FamilyEventType, StoryEventType, WorkflowEventType, WorkflowStatusEventType } from "./event-type.enum";
 import { ProjectStore } from "@tenzu/data/project";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
@@ -89,24 +89,9 @@ export class WsService {
         break;
     }
   }
-  async dispatchEvent(message: WSResponseEvent<unknown>) {
-    if (message.event.correlationId === this.config.correlationId) {
-      return;
-    }
-    if (!this.config.environment.production) {
-      console.log("received event websocket", message);
-    }
 
+  async doStoryEvent(message: WSResponseEvent<unknown>) {
     switch (message.event.type) {
-      case WorkflowEventType.CreateWorkflow: {
-        break;
-      }
-      case WorkflowEventType.UpdateWorkflow: {
-        break;
-      }
-      case WorkflowEventType.DeleteWorkflow: {
-        break;
-      }
       case StoryEventType.CreateStory: {
         const content = message.event.content as { story: StoryDetail };
         this.storyStore.add(content.story);
@@ -151,6 +136,24 @@ export class WsService {
         }
         break;
       }
+    }
+  }
+
+  doWorkflowEvent(message: WSResponseEvent<unknown>) {
+    switch (message.event.type) {
+      case WorkflowEventType.CreateWorkflow: {
+        break;
+      }
+      case WorkflowEventType.UpdateWorkflow: {
+        break;
+      }
+      case WorkflowEventType.DeleteWorkflow: {
+        break;
+      }
+    }
+  }
+  async doWorkflowStatusEvent(message: WSResponseEvent<unknown>) {
+    switch (message.event.type) {
       case WorkflowStatusEventType.CreateWorkflowStatus: {
         const content = message.event.content as { workflowStatus: StatusDetail };
         this.workflowStore.addStatus(content.workflowStatus);
@@ -172,6 +175,30 @@ export class WsService {
           reorder: WorkflowStatusReorderPayload & { workflow: Workflow };
         };
         await this.workflowStore.refreshWorkflow(content.reorder.workflow);
+        break;
+      }
+    }
+  }
+  async dispatchEvent(message: WSResponseEvent<unknown>) {
+    if (message.event.correlationId === this.config.correlationId) {
+      return;
+    }
+    if (!this.config.environment.production) {
+      console.log("received event websocket", message);
+    }
+
+    const family = message.event.type.split(".")[0];
+    switch (family) {
+      case FamilyEventType.Story: {
+        await this.doStoryEvent(message);
+        break;
+      }
+      case FamilyEventType.Workflow: {
+        this.doWorkflowEvent(message);
+        break;
+      }
+      case FamilyEventType.WorkflowStatuses: {
+        await this.doWorkflowStatusEvent(message);
         break;
       }
     }
