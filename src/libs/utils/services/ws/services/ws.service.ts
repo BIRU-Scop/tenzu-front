@@ -22,6 +22,7 @@ import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils";
+import { NotificationService } from "../../notification";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -48,6 +49,7 @@ export class WsService {
     repeat({ count: MAX_RETRY, delay: RETRY_TIME }),
     share(),
   );
+  notificationService = inject(NotificationService);
   workspaceStore = inject(WorkspaceStore);
   projectStore = inject(ProjectStore);
   workflowStore = inject(WorkflowStore);
@@ -116,12 +118,21 @@ export class WsService {
         break;
       }
       case StoryEventType.ReorderStory: {
-        const content = message.event.content as { reorder: StoryReorderPayloadEvent };
+        const content = message.event.content as {
+          reorder: StoryReorderPayloadEvent;
+        };
         this.storyStore.reorderStoryByEvent(content.reorder);
         break;
       }
       case StoryEventType.DeleteStory: {
-        const content = message.event.content as { ref: number };
+        const content = message.event.content as {
+          ref: number;
+          deletedBy: {
+            color: number;
+            fullName: string;
+            username: string;
+          };
+        };
         const project = this.projectStore.selectedEntity();
         const workflow = this.workflowStore.selectedEntity();
         const workspace = this.workspaceStore.selectedEntity();
@@ -130,6 +141,13 @@ export class WsService {
           await this.router.navigateByUrl(
             `/workspace/${workspace!.id}/project/${project!.id}/kanban/${workflow!.slug}`,
           );
+          this.notificationService.warning({
+            title: "notification.events.delete_story",
+            translocoTitleParams: {
+              username: content.deletedBy.username,
+              ref: content.ref,
+            },
+          });
         }
         break;
       }
