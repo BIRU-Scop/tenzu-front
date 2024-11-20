@@ -13,12 +13,13 @@ import { catchError, filter } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseEvent } from "../ws.model";
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
-import { StoryAssign, StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
+import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
 import { StatusDetail } from "@tenzu/data/status";
 import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
 import {
   FamilyEventType,
   StoryAssignmentEventType,
+  StoryAttachmentEventType,
   StoryEventType,
   WorkflowEventType,
   WorkflowStatusEventType,
@@ -187,7 +188,7 @@ export class WsService {
       }
     }
   }
-  async doStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
+  doStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
     switch (message.event.type) {
       case StoryAssignmentEventType.CreateStoryAssignment: {
         const content = message.event.content as { storyAssignment: StoryAssign };
@@ -197,6 +198,20 @@ export class WsService {
       case StoryAssignmentEventType.DeleteStoryAssignment: {
         const content = message.event.content as { storyAssignment: StoryAssign };
         this.storyStore.removeAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
+        break;
+      }
+    }
+  }
+  doSStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
+    switch (message.event.type) {
+      case StoryAttachmentEventType.CreateStoryAttachment: {
+        const content = message.event.content as { attachment: StoryAttachment; ref: number };
+        this.storyStore.addAttachment(content.attachment, content.ref);
+        break;
+      }
+      case StoryAttachmentEventType.DeleteStoryAttachment: {
+        const content = message.event.content as { attachment: StoryAttachment; ref: number };
+        this.storyStore.removeAttachment(content.attachment.id);
         break;
       }
     }
@@ -224,7 +239,11 @@ export class WsService {
         break;
       }
       case FamilyEventType.StoryAssignment: {
-        await this.doStoryAssignmentEvent(message);
+        this.doStoryAssignmentEvent(message);
+        break;
+      }
+      case FamilyEventType.StoryAttachment: {
+        this.doSStoryAttachmentEvent(message);
         break;
       }
     }

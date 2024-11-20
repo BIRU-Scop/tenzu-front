@@ -114,13 +114,13 @@ export const StoryStore = signalStore(
       store.reorder();
       return story;
     },
-    async addAttachment(projectId: string, ref: number, attachment: Blob) {
-      const newAttachment = await lastValueFrom(storyService.addStoryAttachments(projectId, ref, attachment));
-      patchState(store, { selectedStoryAttachments: [...store.selectedStoryAttachments(), newAttachment] });
+    addAttachment(newAttachment: StoryAttachment, ref: number) {
+      if (store.selectedStoryDetails().ref === ref) {
+        patchState(store, { selectedStoryAttachments: [...store.selectedStoryAttachments(), newAttachment] });
+      }
       return newAttachment;
     },
-    async deleteAttachment(projectId: string, ref: number, attachmentId: string) {
-      storyService.deleteStoryAttachment(projectId, ref, attachmentId).subscribe();
+    removeAttachment(attachmentId: string) {
       patchState(store, {
         selectedStoryAttachments: store
           .selectedStoryAttachments()
@@ -246,6 +246,14 @@ export const StoryStore = signalStore(
     async deleteAssign(projectId: string, ref: number, username: string) {
       await lastValueFrom(storyService.deleteAssignee(projectId, ref, username));
       store.removeAssign(ref, username);
+    },
+    async createAttachment(projectId: string, ref: number, attachment: Blob) {
+      const newAttachment = await lastValueFrom(storyService.addStoryAttachments(projectId, ref, attachment));
+      store.addAttachment(newAttachment, ref);
+    },
+    async deleteAttachment(projectId: string, ref: number, attachmentId: string) {
+      await lastValueFrom(storyService.deleteStoryAttachment(projectId, ref, attachmentId));
+      store.removeAttachment(attachmentId);
     },
   })),
 );

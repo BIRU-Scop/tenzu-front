@@ -22,9 +22,14 @@ export enum StoryAssignmentEventType {
   DeleteStoryAssignment = "storiesassignments.delete",
 }
 
+export enum StoryAttachmentEventType {
+  CreateStoryAttachment = "storiesattachments.create",
+  DeleteStoryAttachment = "storiesattachments.delete",
+}
 export enum FamilyEventType {
   Story = "stories",
   Workflow = "workflows",
   WorkflowStatuses = "workflowstatuses",
   StoryAssignment = "storiesassignments",
+  StoryAttachment = "storiesattachments",
 }

@@ -57,7 +57,7 @@ export class StoryDetailService {
   }
 
   public async addAttachment(file: File) {
-    await this.storyStore.addAttachment(
+    await this.storyStore.createAttachment(
       this.projectStore.selectedEntity()!.id,
       this.storyStore.selectedStoryDetails().ref,
       file,
