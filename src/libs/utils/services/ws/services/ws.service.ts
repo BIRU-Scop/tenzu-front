@@ -13,25 +13,21 @@ import { catchError, filter } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseEvent } from "../ws.model";
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
-import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
-import { StatusDetail } from "@tenzu/data/status";
-import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
-import {
-  FamilyEventType,
-  ProjectEventType,
-  StoryAssignmentEventType,
-  StoryAttachmentEventType,
-  StoryEventType,
-  WorkflowEventType,
-  WorkflowStatusEventType,
-} from "./event-type.enum";
+import { FamilyEventType } from "./event-type.enum";
 import { ProjectStore } from "@tenzu/data/project";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils";
-import { NotificationService } from "../../notification";
-import { UserMinimal } from "@tenzu/data/user";
+import {
+  applyProjectEvent,
+  applyStoryAssignmentEvent,
+  applyStoryAttachmentEvent,
+  applyStoryEvent,
+  applyWorkflowEvent,
+  applyWorkflowStatusEvent,
+} from "./apply-event.function";
+
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
 
@@ -57,12 +53,10 @@ export class WsService {
     repeat({ count: MAX_RETRY, delay: RETRY_TIME }),
     share(),
   );
-  notificationService = inject(NotificationService);
   workspaceStore = inject(WorkspaceStore);
   projectStore = inject(ProjectStore);
-  workflowStore = inject(WorkflowStore);
-  storyStore = inject(StoryStore);
   router = inject(Router);
+
   constructor() {
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
     toObservable(this.workspaceStore.command)
@@ -98,153 +92,6 @@ export class WsService {
     }
   }
 
-  async doStoryEvent(message: WSResponseEvent<unknown>) {
-    switch (message.event.type) {
-      case StoryEventType.CreateStory: {
-        const content = message.event.content as { story: StoryDetail };
-        this.storyStore.add(content.story);
-        break;
-      }
-      case StoryEventType.UpdateStory: {
-        const content = message.event.content as { story: StoryDetail };
-        this.storyStore.update(content.story);
-        break;
-      }
-      case StoryEventType.ReorderStory: {
-        const content = message.event.content as {
-          reorder: StoryReorderPayloadEvent;
-        };
-        this.storyStore.reorderStoryByEvent(content.reorder);
-        break;
-      }
-      case StoryEventType.DeleteStory: {
-        const content = message.event.content as {
-          ref: number;
-          deletedBy: {
-            color: number;
-            fullName: string;
-            username: string;
-          };
-        };
-        const project = this.projectStore.selectedEntity();
-        const workflow = this.workflowStore.selectedEntity();
-        const workspace = this.workspaceStore.selectedEntity();
-        this.storyStore.removeStory(content.ref);
-        if (this.router.url === `/workspace/${workspace!.id}/project/${project!.id}/story/${content.ref}`) {
-          await this.router.navigateByUrl(
-            `/workspace/${workspace!.id}/project/${project!.id}/kanban/${workflow!.slug}`,
-          );
-          this.notificationService.warning({
-            title: "notification.events.delete_story",
-            translocoTitleParams: {
-              username: content.deletedBy.username,
-              ref: content.ref,
-            },
-          });
-        }
-        break;
-      }
-    }
-  }
-
-  doWorkflowEvent(message: WSResponseEvent<unknown>) {
-    switch (message.event.type) {
-      case WorkflowEventType.CreateWorkflow: {
-        const content = message.event.content as { workflow: Workflow };
-        this.projectStore.addWorkflow(content.workflow);
-
-        break;
-      }
-      case WorkflowEventType.UpdateWorkflow: {
-        break;
-      }
-      case WorkflowEventType.DeleteWorkflow: {
-        break;
-      }
-    }
-  }
-  async doWorkflowStatusEvent(message: WSResponseEvent<unknown>) {
-    switch (message.event.type) {
-      case WorkflowStatusEventType.CreateWorkflowStatus: {
-        const content = message.event.content as { workflowStatus: StatusDetail };
-        this.workflowStore.addStatus(content.workflowStatus);
-        break;
-      }
-      case WorkflowStatusEventType.UpdateWorkflowStatus: {
-        const content = message.event.content as { workflowStatus: StatusDetail };
-        this.workflowStore.updateStatus(content.workflowStatus);
-        break;
-      }
-      case WorkflowStatusEventType.DeleteWorkflowStatus: {
-        const content = message.event.content as { workflowStatus: StatusDetail; targetStatus: StatusDetail };
-        this.workflowStore.removeStatus(content.workflowStatus.id);
-        this.storyStore.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
-        break;
-      }
-      case WorkflowStatusEventType.ReorderWorkflowStatus: {
-        const content = message.event.content as {
-          reorder: WorkflowStatusReorderPayload & { workflow: Workflow };
-        };
-        await this.workflowStore.refreshWorkflow(content.reorder.workflow);
-        break;
-      }
-    }
-  }
-  doStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
-    switch (message.event.type) {
-      case StoryAssignmentEventType.CreateStoryAssignment: {
-        const content = message.event.content as { storyAssignment: StoryAssign };
-        this.storyStore.addAssign(content.storyAssignment, content.storyAssignment.story.ref);
-        break;
-      }
-      case StoryAssignmentEventType.DeleteStoryAssignment: {
-        const content = message.event.content as { storyAssignment: StoryAssign };
-        this.storyStore.removeAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
-        break;
-      }
-    }
-  }
-  doSStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
-    switch (message.event.type) {
-      case StoryAttachmentEventType.CreateStoryAttachment: {
-        const content = message.event.content as { attachment: StoryAttachment; ref: number };
-        this.storyStore.addAttachment(content.attachment, content.ref);
-        break;
-      }
-      case StoryAttachmentEventType.DeleteStoryAttachment: {
-        const content = message.event.content as { attachment: StoryAttachment; ref: number };
-        this.storyStore.removeAttachment(content.attachment.id);
-        break;
-      }
-    }
-  }
-  async doProjectEvent(message: WSResponseEvent<unknown>) {
-    switch (message.event.type) {
-      case ProjectEventType.ProjectDelete: {
-        const content = message.event.content as {
-          deletedBy: UserMinimal;
-          project: string;
-          workspace: string;
-          name: string;
-        };
-        const currentProject = this.projectStore.selectedEntity();
-        this.projectStore.removeEntity(content.project);
-        if (currentProject && currentProject.id === content.project) {
-          await this.router.navigateByUrl("/");
-          this.projectStore.resetSelectedEntity();
-        }
-
-        this.notificationService.warning({
-          title: "notification.events.delete_project",
-          translocoTitleParams: {
-            username: content.deletedBy.username,
-            name: content.name,
-          },
-        });
-        break;
-      }
-    }
-  }
   async dispatchEvent(message: WSResponseEvent<unknown>) {
     if (message.event.correlationId === this.config.correlationId) {
       return;
@@ -256,27 +103,27 @@ export class WsService {
     const family = message.event.type.split(".")[0];
     switch (family) {
       case FamilyEventType.Story: {
-        await this.doStoryEvent(message);
+        await applyStoryEvent(message);
         break;
       }
       case FamilyEventType.Workflow: {
-        this.doWorkflowEvent(message);
+        applyWorkflowEvent(message);
         break;
       }
       case FamilyEventType.WorkflowStatuses: {
-        await this.doWorkflowStatusEvent(message);
+        await applyWorkflowStatusEvent(message);
         break;
       }
       case FamilyEventType.StoryAssignment: {
-        this.doStoryAssignmentEvent(message);
+        applyStoryAssignmentEvent(message);
         break;
       }
       case FamilyEventType.StoryAttachment: {
-        this.doSStoryAttachmentEvent(message);
+        applyStoryAttachmentEvent(message);
         break;
       }
       case FamilyEventType.Project: {
-        await this.doProjectEvent(message);
+        await applyProjectEvent(message);
         break;
       }
       case FamilyEventType.Workspace: {
