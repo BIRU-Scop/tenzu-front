@@ -23,7 +23,6 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ProjectStore } from "@tenzu/data/project";
-import { JsonPipe } from "@angular/common";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -40,7 +39,6 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
   selector: "app-project-settings",
   standalone: true,
   imports: [
-    JsonPipe,
     MatError,
     MatFormField,
     MatInput,
@@ -61,7 +59,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           <app-avatar
             size="xl"
             [name]="form.controls.name.value!"
-            [color]="projectStore.selectedEntity()!.color || 0"
+            [color]="projectStore.selectedEntity()?.color || 0"
           ></app-avatar>
           <mat-form-field>
             <mat-label>{{ t("name") }}</mat-label>
@@ -140,16 +138,15 @@ export class ProjectSettingsComponent {
     }
   }
 
-  onDelete() {
-    this.projectStore.deleteSelectedEntity().then((deleted) => {
-      this.router.navigateByUrl("/");
-      this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-        duration: 3000,
-        data: {
-          message: "settings.project.messages.deleted",
-          var: deleted.name,
-        },
-      });
+  async onDelete() {
+    const deletedProject = await this.projectStore.deleteSelectedEntity();
+    await this.router.navigateByUrl("/");
+    this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
+      duration: 3000,
+      data: {
+        message: "settings.project.messages.deleted",
+        var: deletedProject.name,
+      },
     });
   }
 
