@@ -22,7 +22,6 @@
       "name_required": "Project name cannot be empty"
     },
     "messages": {
-      "deleted": "Your project has been deleted",
       "saved": "Your project information has been saved"
     }
   },

@@ -28,12 +28,11 @@ import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { MatButton } from "@angular/material/button";
-import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
 import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { NotificationService } from "@tenzu/utils/services";
 
 @Component({
   selector: "app-project-settings",
@@ -106,7 +105,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSettingsComponent {
-  _snackBar = inject(MatSnackBar);
+  notificationService = inject(NotificationService);
   breadcrumbStore = inject(BreadcrumbStore);
   projectStore = inject(ProjectStore);
   router = inject(Router);
@@ -128,12 +127,8 @@ export class ProjectSettingsComponent {
     this.form.reset(this.form.value);
     if (this.form.valid) {
       await this.projectStore.patchSelectedEntity(this.form.getRawValue());
-      this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-        duration: 3000,
-        data: {
-          message: "settings.project.messages.saved",
-          var: "",
-        },
+      this.notificationService.success({
+        title: "settings.project.messages.saved",
       });
     }
   }
@@ -141,12 +136,9 @@ export class ProjectSettingsComponent {
   async onDelete() {
     const deletedProject = await this.projectStore.deleteSelectedEntity();
     await this.router.navigateByUrl("/");
-    this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-      duration: 3000,
-      data: {
-        message: "settings.project.messages.deleted",
-        var: deletedProject.name,
-      },
+    this.notificationService.warning({
+      title: "notification.project.deleted",
+      translocoTitleParams: { name: deletedProject.name },
     });
   }
 
