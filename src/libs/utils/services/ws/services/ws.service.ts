@@ -6,7 +6,7 @@
  * Copyright (c) 2023-present Kaleidos INC
  */
 
-import { inject, Injectable } from "@angular/core";
+import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from "@angular/core";
 
 import { BehaviorSubject, of, repeat, retry, share, switchMap, throwError } from "rxjs";
 import { catchError, filter } from "rxjs/operators";
@@ -56,6 +56,7 @@ export class WsService {
   workspaceStore = inject(WorkspaceStore);
   projectStore = inject(ProjectStore);
   router = inject(Router);
+  private environmentInjector = inject(EnvironmentInjector);
 
   constructor() {
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
@@ -101,51 +102,53 @@ export class WsService {
     }
 
     const family = message.event.type.split(".")[0];
-    switch (family) {
-      case FamilyEventType.Story: {
-        await applyStoryEvent(message);
-        break;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      switch (family) {
+        case FamilyEventType.Story: {
+          await applyStoryEvent(message);
+          break;
+        }
+        case FamilyEventType.Workflow: {
+          applyWorkflowEvent(message);
+          break;
+        }
+        case FamilyEventType.WorkflowStatuses: {
+          await applyWorkflowStatusEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryAssignment: {
+          applyStoryAssignmentEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryAttachment: {
+          applyStoryAttachmentEvent(message);
+          break;
+        }
+        case FamilyEventType.Project: {
+          await applyProjectEvent(message);
+          break;
+        }
+        case FamilyEventType.Workspace: {
+          break;
+        }
+        case FamilyEventType.ProjectInvitation: {
+          // Add handling logic if required
+          break;
+        }
+        case FamilyEventType.ProjectMembership: {
+          // Add handling logic if required
+          break;
+        }
+        case FamilyEventType.WorkspaceInvitation: {
+          // Add handling logic if required
+          break;
+        }
+        case FamilyEventType.WorkspaceMembership: {
+          // Add handling logic if required
+          break;
+        }
       }
-      case FamilyEventType.Workflow: {
-        applyWorkflowEvent(message);
-        break;
-      }
-      case FamilyEventType.WorkflowStatuses: {
-        await applyWorkflowStatusEvent(message);
-        break;
-      }
-      case FamilyEventType.StoryAssignment: {
-        applyStoryAssignmentEvent(message);
-        break;
-      }
-      case FamilyEventType.StoryAttachment: {
-        applyStoryAttachmentEvent(message);
-        break;
-      }
-      case FamilyEventType.Project: {
-        await applyProjectEvent(message);
-        break;
-      }
-      case FamilyEventType.Workspace: {
-        break;
-      }
-      case FamilyEventType.ProjectInvitation: {
-        // Add handling logic if required
-        break;
-      }
-      case FamilyEventType.ProjectMembership: {
-        // Add handling logic if required
-        break;
-      }
-      case FamilyEventType.WorkspaceInvitation: {
-        // Add handling logic if required
-        break;
-      }
-      case FamilyEventType.WorkspaceMembership: {
-        // Add handling logic if required
-        break;
-      }
-    }
+    });
   }
 
   public command(command: Command) {
