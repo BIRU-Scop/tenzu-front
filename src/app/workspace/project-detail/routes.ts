@@ -45,9 +45,9 @@ export async function storyResolver(route: ActivatedRouteSnapshot) {
 }
 export async function workflowResolver(route: ActivatedRouteSnapshot) {
   const workflowStore = inject(WorkflowStore);
+  const router = inject(Router);
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
-  const router = inject(Router);
   try {
     const workflow = await workflowStore.refreshWorkflow({ projectId: projectId, slug: workflowSLug });
     workflowStore.selectWorkflow(workflow.id);

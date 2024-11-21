@@ -31,11 +31,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 export async function workspaceResolver(route: ActivatedRouteSnapshot) {
   const workspaceStore = inject(WorkspaceStore);
   const membershipStore = inject(MembershipStore);
-  await membershipStore.listWorkspaceMembership(route.paramMap.get("id")!);
-  await membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!);
-  await membershipStore.listWorkspaceGuest(route.paramMap.get("id")!);
   const router = inject(Router);
   try {
+    await membershipStore.listWorkspaceMembership(route.paramMap.get("id")!);
+    await membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!);
+    await membershipStore.listWorkspaceGuest(route.paramMap.get("id")!);
+
     return await workspaceStore.get(route.paramMap.get("id")!);
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {

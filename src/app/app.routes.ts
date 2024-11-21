@@ -90,4 +90,9 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: "**",
+    loadComponent: () => import("./page404/page404.component"),
+    providers: [provideTranslocoScope("errorPages")],
+  },
 ];
