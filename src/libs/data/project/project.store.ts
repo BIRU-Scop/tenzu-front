@@ -20,7 +20,15 @@
  */
 
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
-import { addEntity, removeEntity, setAllEntities, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
+import {
+  addEntity,
+  EntityId,
+  removeEntity,
+  setAllEntities,
+  setEntity,
+  updateEntity,
+  withEntities,
+} from "@ngrx/signals/entities";
 import { Project, ProjectBase } from "./project.model";
 import { inject } from "@angular/core";
 import { WorkspaceService } from "@tenzu/data/workspace";
@@ -87,17 +95,23 @@ export const ProjectStore = signalStore(
           patchState(store, setEntity(editedProject));
         }
       },
-      async deleteSelectedEntity() {
-        const selectedEntityId = store.selectedEntityId();
-        const selectedEntity = store.selectedEntity();
-        if (selectedEntityId && selectedEntity) {
-          store.sendCommand({ command: "unsubscribe_from_project_events", project: selectedEntityId as string });
-          await lastValueFrom(projectService.delete(selectedEntity.id));
-          patchState(store, removeEntity(selectedEntityId));
-          return selectedEntity;
-        }
-        throw Error(`No entity to delete`);
+      removeEntity(entityId: EntityId) {
+        patchState(store, removeEntity(entityId));
       },
     }),
   ),
+  withMethods((store, projectService = inject(ProjectService)) => ({
+    async deleteSelectedEntity() {
+      const selectedEntityId = store.selectedEntityId();
+      const selectedEntity = store.selectedEntity();
+      if (selectedEntityId && selectedEntity) {
+        store.sendCommand({ command: "unsubscribe_from_project_events", project: selectedEntityId as string });
+        await lastValueFrom(projectService.delete(selectedEntity.id));
+        store.removeEntity(selectedEntityId);
+        store.resetSelectedEntity();
+        return selectedEntity;
+      }
+      throw Error(`No entity to delete`);
+    },
+  })),
 );

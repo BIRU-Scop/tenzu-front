@@ -18,7 +18,8 @@
       "changes_saved": "Changes saved"
     },
     "events": {
-      "delete_story": "{{username}} has deleted the story #{{ref}}"
+      "delete_story": "{{username}} has deleted the story #{{ref}}",
+      "delete_project": "{{username}} has deleted the project {{name}}"
     }
   },
   "component": {

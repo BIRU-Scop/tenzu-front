@@ -18,6 +18,7 @@ import { StatusDetail } from "@tenzu/data/status";
 import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
 import {
   FamilyEventType,
+  ProjectEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
   StoryEventType,
@@ -30,6 +31,7 @@ import { Router } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils";
 import { NotificationService } from "../../notification";
+import { UserMinimal } from "@tenzu/data/user";
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
 
@@ -216,6 +218,33 @@ export class WsService {
       }
     }
   }
+  async doProjectEvent(message: WSResponseEvent<unknown>) {
+    switch (message.event.type) {
+      case ProjectEventType.ProjectDelete: {
+        const content = message.event.content as {
+          deletedBy: UserMinimal;
+          project: string;
+          workspace: string;
+          name: string;
+        };
+        const currentProject = this.projectStore.selectedEntity();
+        this.projectStore.removeEntity(content.project);
+        if (currentProject && currentProject.id === content.project) {
+          await this.router.navigateByUrl("/");
+          this.projectStore.resetSelectedEntity();
+        }
+
+        this.notificationService.warning({
+          title: "notification.events.delete_project",
+          translocoTitleParams: {
+            username: content.deletedBy.username,
+            name: content.name,
+          },
+        });
+        break;
+      }
+    }
+  }
   async dispatchEvent(message: WSResponseEvent<unknown>) {
     if (message.event.correlationId === this.config.correlationId) {
       return;
@@ -247,6 +276,7 @@ export class WsService {
         break;
       }
       case FamilyEventType.Project: {
+        await this.doProjectEvent(message);
         break;
       }
       case FamilyEventType.Workspace: {
