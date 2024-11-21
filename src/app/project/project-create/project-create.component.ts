@@ -116,7 +116,7 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectCreateComponent {
+export default class ProjectCreateComponent {
   projectService = inject(ProjectService);
   projectStore = inject(ProjectStore);
   workspaceStore = inject(WorkspaceStore);

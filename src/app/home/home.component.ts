@@ -89,7 +89,7 @@ import { darkModeOn$ } from "@tenzu/utils";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
+export default class HomeComponent {
   userStore = inject(UserStore);
   authService = inject(AuthService);
   iconRegistry = inject(MatIconRegistry);
