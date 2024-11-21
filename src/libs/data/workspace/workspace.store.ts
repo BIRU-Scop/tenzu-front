@@ -22,7 +22,7 @@
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { inject } from "@angular/core";
 import { lastValueFrom } from "rxjs";
-import { removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
+import { EntityId, removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
 import { Workspace, WorkspaceCreation, WorkspaceEdition } from "./workspace.model";
 import { WorkspaceService } from "./workspace.service";
 import {
@@ -72,13 +72,19 @@ export const WorkspaceStore = signalStore(
         patchState(store, setEntity(editedWorkspace));
       }
     },
+    removeEntity(selectedEntityId: EntityId) {
+      patchState(store, removeEntity(selectedEntityId));
+    },
+  })),
+  withMethods((store, workspaceService = inject(WorkspaceService)) => ({
     async deleteSelectedEntity() {
       const selectedEntityId = store.selectedEntityId();
       const selectedEntity = store.selectedEntity();
       if (selectedEntityId && selectedEntity) {
         store.sendCommand({ command: "unsubscribe_to_workspace_events", workspace: selectedEntityId as string });
         await lastValueFrom(workspaceService.delete(selectedEntity.id));
-        patchState(store, removeEntity(selectedEntityId));
+        store.removeEntity(selectedEntityId);
+        store.resetSelectedEntity();
         return selectedEntity;
       }
       throw Error(`No entity to delete`);

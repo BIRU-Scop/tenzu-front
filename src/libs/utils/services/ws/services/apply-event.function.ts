@@ -8,6 +8,7 @@ import {
   StoryEventType,
   WorkflowEventType,
   WorkflowStatusEventType,
+  WorkspaceEventType,
 } from "./event-type.enum";
 import { ProjectStore } from "@tenzu/data/project";
 import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
@@ -174,6 +175,31 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       }
       notificationService.warning({
         title: "notification.events.delete_project",
+        translocoTitleParams: {
+          username: content.deletedBy.username,
+          name: content.name,
+        },
+      });
+      break;
+    }
+  }
+}
+
+export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
+  const workspaceStore = inject(WorkspaceStore);
+  const router = inject(Router);
+  const notificationService = inject(NotificationService);
+  const content = message.event.content as { deletedBy: UserMinimal; workspace: string; name: string };
+  switch (message.event.type) {
+    case WorkspaceEventType.WorkspaceDelete: {
+      const currectWorkspace = workspaceStore.selectedEntity();
+      workspaceStore.removeEntity(content.workspace);
+      if (currectWorkspace && currectWorkspace.id === content.workspace) {
+        await router.navigateByUrl("/");
+        workspaceStore.resetSelectedEntity();
+      }
+      notificationService.warning({
+        title: "notification.events.delete_workspace",
         translocoTitleParams: {
           username: content.deletedBy.username,
           name: content.name,
