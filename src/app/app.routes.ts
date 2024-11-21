@@ -51,6 +51,11 @@ export const routes: Routes = [
     ],
   },
   {
+    path: "404",
+    loadComponent: () => import("./page404/page404.component"),
+    providers: [provideTranslocoScope("errorPages")],
+  },
+  {
     path: "accept-project-invitation/:token",
     children: [],
     canActivate: [ProjectInvitationGuard],
