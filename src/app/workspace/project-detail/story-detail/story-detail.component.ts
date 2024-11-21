@@ -41,12 +41,14 @@ import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils";
 import { MembershipStore } from "@tenzu/data/membership";
-import { WorkflowStore } from "@tenzu/data/workflow";
+import { Workflow, WorkflowStore } from "@tenzu/data/workflow";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
+import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 
 @Component({
   selector: "app-story-detail",
@@ -73,7 +75,22 @@ import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
   ],
   template: `<ng-container *transloco="let t; prefix: 'workflow.detail_story'">
     @if (this.selectedStory(); as story) {
-      <h1 class="mat-headline-small text-neutral-40">{{ t("label") }} #{{ story.ref }}</h1>
+      <div class="flex gap-1 items-baseline mb-2">
+        <span class="text-neutral-40 mat-title-small">{{ t("workflow") }}</span>
+        <span class="text-neutral-20 mat-title-medium">{{ story.workflow.name }}</span>
+        <button
+          class="icon-sm"
+          mat-icon-button
+          type="button"
+          [attr.aria-label]="t('change_workflow')"
+          (click)="openChooseWorkflowDialog($event)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <span class="text-neutral-40 mat-title-small">/</span>
+        <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
+        <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
+      </div>
       <div class="flex flex-row gap-8">
         <div class="basis-2/3 flex flex-col gap-y-6">
           <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
@@ -238,9 +255,7 @@ export class StoryDetailComponent {
       this.form.setValue({ title: value?.title || "" });
       this.statusSelected.set(value.status);
     });
-    // TODO: get workflow URL when we implements multi workflow
-    this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
-    this.breadcrumbStore.setSixthLevel({ label: "workflow.detail_story.label", link: "", doTranslation: true });
+    this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
   }
 
   assigned = computed(() => this.selectedStory().assignees || []);
@@ -312,10 +327,32 @@ export class StoryDetailComponent {
     );
   }
 
+  openChooseWorkflowDialog(event: MouseEvent): void {
+    const story = this.storyStore.selectedStoryDetails();
+    const dialogRef = this.relativeDialog.open(ChooseWorkflowDialogComponent, event?.target, {
+      ...matDialogConfig,
+      relativeXPosition: "right",
+      data: {
+        currentWorkflowSlug: story.workflow.slug,
+      },
+    });
+    dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
+      if (newWorkflowSlug !== story.workflow.slug) {
+        const patchedStory = await this.storyDetailService.patchSelectedStory({ workflow: newWorkflowSlug });
+        if (patchedStory) {
+          this.notificationService.success({ title: "notification.action.changes_saved" });
+          await this.workflowStore.refreshWorkflow(patchedStory.workflow);
+          await this.workflowStore.selectWorkflow(patchedStory.workflow.id);
+          this.statusSelected.set(patchedStory.status);
+        }
+      }
+    });
+  }
+
   changeStatus() {
-    this.storyDetailService.patchSelectedStory({ status: this.statusSelected() }).then((value) => {
+    this.storyDetailService.patchSelectedStory({ status: this.statusSelected().id }).then((value) => {
       if (value) {
-        this.notificationService.success({ title: "notification.action.save" });
+        this.notificationService.success({ title: "notification.action.changes_saved" });
       }
     });
   }

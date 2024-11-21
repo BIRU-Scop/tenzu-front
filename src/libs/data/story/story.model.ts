@@ -74,6 +74,15 @@ export type StoryCreate = {
   status: string;
 };
 
+export interface StoryUpdate {
+  ref: Story["ref"];
+  version: Story["version"];
+  status?: Story["status"]["id"];
+  title?: Story["title"];
+  description?: Story["description"];
+  workflow?: Workflow["slug"];
+}
+
 export type StoryAttachment = {
   id: string;
   name: string;

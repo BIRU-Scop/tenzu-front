@@ -40,7 +40,7 @@ import {
   StoryCreate,
   StoryDetail,
   StoryReorderPayload,
-  StoryReorderPayloadEvent,
+  StoryReorderPayloadEvent, StoryUpdate
 } from "@tenzu/data/story/story.model";
 import { StoryService } from "@tenzu/data/story/story.service";
 import { lastValueFrom } from "rxjs";
@@ -230,9 +230,10 @@ export const StoryStore = signalStore(
       const newStory = await lastValueFrom(storyService.create(projectId, workflowSlug, Story));
       store.add(newStory);
     },
-    async patch(projectId: string, story: StoryDetail, data: Partial<StoryDetail>) {
-      const storyPatched = await lastValueFrom(storyService.patch(projectId, { ...story, ...data }));
+    async patch(projectId: string, story: StoryDetail, data: StoryUpdate) {
+      const storyPatched = await lastValueFrom(storyService.patch(projectId, data));
       store.update(storyPatched);
+      return storyPatched;
     },
     async deleteStory(projectId: string, ref: number) {
       await lastValueFrom(storyService.deleteStory(projectId, ref));
