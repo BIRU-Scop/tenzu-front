@@ -32,10 +32,9 @@ import {
 import { TranslocoDirective } from "@jsverse/transloco";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
-import { MatSelect, MatSelectTrigger } from "@angular/material/select";
+import { MatSelect } from "@angular/material/select";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
@@ -47,7 +46,6 @@ type DeleteStatusDialogData = {
 
 @Component({
   selector: "app-delete-status-dialog",
-  standalone: true,
   imports: [
     MatButton,
     MatDialogActions,
@@ -58,13 +56,10 @@ type DeleteStatusDialogData = {
     MatRadioButton,
     TranslocoDirective,
     ReactiveFormsModule,
-    AvatarComponent,
-    MatError,
     MatFormField,
     MatLabel,
     MatOption,
     MatSelect,
-    MatSelectTrigger,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.delete_status'">

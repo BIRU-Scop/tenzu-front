@@ -44,19 +44,18 @@ import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
 
 @Component({
-  selector: "app-project-kanban",
-  standalone: true,
-  imports: [
-    MatButton,
-    TranslocoDirective,
-    StatusCardComponent,
-    StoryCardComponent,
-    CdkDropList,
-    CdkDrag,
-    CdkDropListGroup,
-    ProjectKanbanSkeletonComponent,
-  ],
-  template: `
+    selector: "app-project-kanban",
+    imports: [
+        MatButton,
+        TranslocoDirective,
+        StatusCardComponent,
+        StoryCardComponent,
+        CdkDropList,
+        CdkDrag,
+        CdkDropListGroup,
+        ProjectKanbanSkeletonComponent,
+    ],
+    template: `
     <h1 class="mat-headline-small text-neutral-40">{{ workflowStore.selectedEntity()?.name }}</h1>
     @if (!storyStore.isLoading()) {
       @if (workflowStore.listStatusesOrdered(); as statuses) {
@@ -107,7 +106,7 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
       <app-project-kanban-skeleton></app-project-kanban-skeleton>
     }
   `,
-  styles: `
+    styles: `
     .kanban-viewport {
       height: calc(100vh - var(--mat-toolbar-standard-height) - 32px - 1rem - 42px);
       padding-bottom: 1.5px;
@@ -117,35 +116,27 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
       overflow-y: hidden;
     }
   `,
-  animations: [
-    trigger("newStoryFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(0, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-    trigger("newStatusFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, width: 0 }),
-            stagger(0, [animate("400ms ease-out", style({ opacity: 1, width: "192px" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger("newStoryFlyIn", [
+            transition(":enter, * => 0, * => -1", []),
+            transition(":increment", [
+                query(":enter", [
+                    style({ opacity: 0, height: 0 }),
+                    stagger(0, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+                ], { optional: true }),
+            ]),
+        ]),
+        trigger("newStatusFlyIn", [
+            transition(":enter, * => 0, * => -1", []),
+            transition(":increment", [
+                query(":enter", [
+                    style({ opacity: 0, width: 0 }),
+                    stagger(0, [animate("400ms ease-out", style({ opacity: 1, width: "192px" }))]),
+                ], { optional: true }),
+            ]),
+        ]),
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectKanbanComponent {
   breadcrumbStore = inject(BreadcrumbStore);

@@ -25,23 +25,12 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { Project, ProjectStore } from "@tenzu/data/project";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatIconAnchor } from "@angular/material/button";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { SideNavStore } from "@tenzu/data/sidenav";
 
 @Component({
   selector: "app-sidenav-list-workflow",
-  standalone: true,
-  imports: [
-    MatIcon,
-    MatListItem,
-    RouterLinkActive,
-    RouterLink,
-    TranslocoDirective,
-    MatIconAnchor,
-    MatNavList,
-    MatListItemIcon,
-  ],
+  imports: [MatIcon, MatListItem, RouterLinkActive, RouterLink, TranslocoDirective, MatNavList, MatListItemIcon],
   template: `
         <ng-container *transloco="let t">
             @let project = projectStore.selectedEntity() ;

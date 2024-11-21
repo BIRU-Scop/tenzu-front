@@ -25,10 +25,9 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
-  selector: "app-workspace-placeholder-dialog",
-  standalone: true,
-  imports: [MatDialogContent, MatDialogActions, MatDialogTitle, MatDialogClose, MatButton, TranslocoDirective],
-  template: `
+    selector: "app-workspace-placeholder-dialog",
+    imports: [MatDialogContent, MatDialogActions, MatDialogTitle, MatDialogClose, MatButton, TranslocoDirective],
+    template: `
     <ng-container *transloco="let t; prefix: 'workspace'">
       <h2 id="aria-label" mat-dialog-title>{{ t("placeholder.placeholder_title") }}</h2>
       <mat-dialog-content
@@ -39,7 +38,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
       </mat-dialog-actions>
     </ng-container>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspacePlaceholderDialogComponent {}

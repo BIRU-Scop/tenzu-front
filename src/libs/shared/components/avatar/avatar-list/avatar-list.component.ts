@@ -25,10 +25,9 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { UserMinimal, UserStore } from "@tenzu/data/user";
 
 @Component({
-  selector: "app-avatar-list",
-  standalone: true,
-  imports: [MatTooltip, AvatarComponent],
-  template: `
+    selector: "app-avatar-list",
+    imports: [MatTooltip, AvatarComponent],
+    template: `
     <div class="flex flex-row">
       @for (user of filteredUsernames().slice(0, userOverflowThreshold()); track user.fullName) {
         <app-avatar
@@ -53,8 +52,8 @@ import { UserMinimal, UserStore } from "@tenzu/data/user";
       }
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AvatarListComponent {
   userStore = inject(UserStore);

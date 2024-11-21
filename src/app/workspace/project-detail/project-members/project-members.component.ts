@@ -35,10 +35,9 @@ import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 
 @Component({
-  selector: "app-project-members",
-  standalone: true,
-  imports: [TranslocoDirective, MatButton, MatList, MatTabGroup, MatTab, MatTabLabel, UserCardComponent, MatIcon],
-  template: `
+    selector: "app-project-members",
+    imports: [TranslocoDirective, MatButton, MatList, MatTabGroup, MatTab, MatTabLabel, UserCardComponent, MatIcon],
+    template: `
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.members'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
@@ -83,23 +82,19 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
       </mat-tab-group>
     </div>
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger("newItemsFlyIn", [
+            transition(":enter, * => 0, * => -1", []),
+            transition(":increment", [
+                query(":enter", [
+                    style({ opacity: 0, height: 0 }),
+                    stagger(50, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+                ], { optional: true }),
+            ]),
+        ]),
+    ],
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectMembersComponent {
   breadcrumbStore = inject(BreadcrumbStore);

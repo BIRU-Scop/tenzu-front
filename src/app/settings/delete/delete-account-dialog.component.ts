@@ -22,7 +22,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
-import { MatError } from "@angular/material/form-field";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectForDelete, WorkspaceForDelete } from "@tenzu/data/user";
 import { MatIcon } from "@angular/material/icon";
@@ -38,12 +37,10 @@ export interface ConfirmDialogData {
 
 @Component({
   selector: "app-confirm-dialog",
-  standalone: true,
   imports: [
     TranslocoDirective,
     MatDialogModule,
     MatButton,
-    MatError,
     MatIcon,
     MatExpansionModule,
     AvatarComponent,

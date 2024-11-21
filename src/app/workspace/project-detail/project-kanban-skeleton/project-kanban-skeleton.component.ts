@@ -24,10 +24,9 @@ import { StatusSkeletonComponent } from "./status-skeleton/status-skeleton.compo
 import { StorySkeletonComponent } from "./story-skeleton/story-skeleton.component";
 
 @Component({
-  selector: "app-project-kanban-skeleton",
-  standalone: true,
-  imports: [StatusSkeletonComponent, StorySkeletonComponent],
-  template: `
+    selector: "app-project-kanban-skeleton",
+    imports: [StatusSkeletonComponent, StorySkeletonComponent],
+    template: `
     <div class="flex flex-row gap-x-8">
       <div class="flex flex-col w-64 shrink-0">
         <app-status-skeleton></app-status-skeleton>
@@ -47,7 +46,7 @@ import { StorySkeletonComponent } from "./story-skeleton/story-skeleton.componen
       </div>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectKanbanSkeletonComponent {}

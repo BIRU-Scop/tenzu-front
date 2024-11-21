@@ -42,18 +42,17 @@ import { Validators } from "@angular/forms";
 import { ProjectStore } from "@tenzu/data/project";
 
 @Component({
-  selector: "app-workspace-list",
-  standalone: true,
-  imports: [
-    WorkspaceCardComponent,
-    MatIcon,
-    MatButton,
-    TranslocoDirective,
-    ProjectCardComponent,
-    WorkspaceSkeletonComponent,
-    CardSkeletonComponent,
-  ],
-  template: `
+    selector: "app-workspace-list",
+    imports: [
+        WorkspaceCardComponent,
+        MatIcon,
+        MatButton,
+        TranslocoDirective,
+        ProjectCardComponent,
+        WorkspaceSkeletonComponent,
+        CardSkeletonComponent,
+    ],
+    template: `
     <div *transloco="let t; prefix: 'commons'" class="p-4 max-w-7xl mx-auto">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("projects") }}</h1>
@@ -110,23 +109,19 @@ import { ProjectStore } from "@tenzu/data/project";
       }
     </div>
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger("newItemsFlyIn", [
+            transition(":enter, * => 0, * => -1", []),
+            transition(":increment", [
+                query(":enter", [
+                    style({ opacity: 0, height: 0 }),
+                    stagger(50, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+                ], { optional: true }),
+            ]),
+        ]),
+    ],
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceListComponent {
   readonly workspaceStore = inject(WorkspaceStore);

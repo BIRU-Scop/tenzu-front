@@ -22,10 +22,9 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
 @Component({
-  selector: "app-story-skeleton",
-  standalone: true,
-  imports: [],
-  template: `
+    selector: "app-story-skeleton",
+    imports: [],
+    template: `
     <div class="flex flex-col gap-4 skeleton-container">
       <div class="grow flex flex-col gap-y-2">
         <div class="skeleton-line skeleton-line-md"></div>
@@ -38,7 +37,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
       </div>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StorySkeletonComponent {}

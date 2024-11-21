@@ -34,21 +34,20 @@ import { Credential } from "@tenzu/data/auth";
 import { MatDivider } from "@angular/material/divider";
 
 @Component({
-  selector: "app-login",
-  standalone: true,
-  imports: [
-    MatInput,
-    MatFormField,
-    ReactiveFormsModule,
-    MatButton,
-    TranslocoDirective,
-    MatLabel,
-    PasswordFieldComponent,
-    RouterLink,
-    MatError,
-    MatDivider,
-  ],
-  template: `
+    selector: "app-login",
+    imports: [
+        MatInput,
+        MatFormField,
+        ReactiveFormsModule,
+        MatButton,
+        TranslocoDirective,
+        MatLabel,
+        PasswordFieldComponent,
+        RouterLink,
+        MatError,
+        MatDivider,
+    ],
+    template: `
     <div *transloco="let t; prefix: 'login'" class="flex flex-col gap-y-4 ">
       <h1 class="mat-headline-medium">{{ t("title") }}</h1>
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
@@ -80,8 +79,8 @@ import { MatDivider } from "@angular/material/divider";
       </footer>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
   loginError = signal(false);

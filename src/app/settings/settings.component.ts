@@ -25,10 +25,9 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
-  selector: "app-settings",
-  standalone: true,
-  imports: [RouterOutlet, MatTabNavPanel, MatTabNav, MatTabLink, RouterLinkActive, RouterLink, TranslocoDirective],
-  template: `<nav
+    selector: "app-settings",
+    imports: [RouterOutlet, MatTabNavPanel, MatTabNav, MatTabLink, RouterLinkActive, RouterLink, TranslocoDirective],
+    template: `<nav
       mat-tab-nav-bar
       mat-stretch-tabs="false"
       mat-align-tabs="center"
@@ -51,8 +50,8 @@ import { TranslocoDirective } from "@jsverse/transloco";
     <mat-tab-nav-panel #tabPanel class="grid grid-cols-1 place-items-center py-4"
       ><router-outlet
     /></mat-tab-nav-panel>`,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent {
   baseUrl = `/settings/`;

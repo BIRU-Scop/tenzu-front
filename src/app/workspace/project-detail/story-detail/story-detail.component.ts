@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, model, viewChild 
 import { StoryStore } from "@tenzu/data/story";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconAnchor, MatIconButton } from "@angular/material/button";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -47,11 +47,9 @@ import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
 
 @Component({
   selector: "app-story-detail",
-  standalone: true,
   imports: [
     UserCardComponent,
     MatButton,
@@ -70,9 +68,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     MatIconAnchor,
     AvatarListComponent,
     MatDivider,
-    AvatarComponent,
     MatSelect,
-    MatLabel,
     MatOption,
   ],
   template: `<ng-container *transloco="let t; prefix: 'workflow.detail_story'">

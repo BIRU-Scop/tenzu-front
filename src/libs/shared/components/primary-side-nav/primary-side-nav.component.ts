@@ -27,13 +27,12 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatDivider } from "@angular/material/divider";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NgComponentOutlet, NgTemplateOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
+import { NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
   selector: "app-primary-side-nav",
-  standalone: true,
   imports: [
     MatSidenavContainer,
     MatSidenav,
@@ -50,7 +49,6 @@ import { TranslocoDirective } from "@jsverse/transloco";
     UpperCasePipe,
     TitleCasePipe,
     TranslocoDirective,
-    NgTemplateOutlet,
     NgComponentOutlet,
   ],
   template: `

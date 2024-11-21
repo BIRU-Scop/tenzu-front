@@ -31,13 +31,11 @@ import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
-import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-workspace-settings",
-  standalone: true,
   imports: [
     AvatarComponent,
     FormsModule,
@@ -48,7 +46,6 @@ import { MatIcon } from "@angular/material/icon";
     MatButton,
     TranslocoDirective,
     ReactiveFormsModule,
-    DescriptionFieldComponent,
     ConfirmDirective,
     MatIcon,
   ],

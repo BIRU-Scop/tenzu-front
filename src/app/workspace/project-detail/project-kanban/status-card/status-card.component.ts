@@ -37,20 +37,19 @@ import { DeleteStatusDialogComponent } from "./delete-status-dialog/delete-statu
 import { Validators } from "@angular/forms";
 
 @Component({
-  selector: "app-status-card",
-  standalone: true,
-  imports: [
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatIcon,
-    TranslocoDirective,
-    MatIconButton,
-    MatMenu,
-    MatMenuItem,
-    MatMenuTrigger,
-  ],
-  template: `
+    selector: "app-status-card",
+    imports: [
+        MatCard,
+        MatCardHeader,
+        MatCardTitle,
+        MatIcon,
+        TranslocoDirective,
+        MatIconButton,
+        MatMenu,
+        MatMenuItem,
+        MatMenuTrigger,
+    ],
+    template: `
     <mat-card appearance="outlined" class="heading-card" *transloco="let t; prefix: 'workflow'">
       <mat-card-header>
         <mat-card-title class="whitespace-nowrap truncate">
@@ -80,11 +79,11 @@ import { Validators } from "@angular/forms";
       </mat-card-header>
     </mat-card>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: "w-full",
-  },
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {
+        class: "w-full",
+    }
 })
 export class StatusCardComponent {
   name = input("");

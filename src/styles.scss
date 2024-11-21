@@ -168,7 +168,8 @@
 }
 
 body {
-  @include mat.core;
+  @include mat.elevation-classes();
+  @include mat.app-background();
   @include mat.all-component-bases(themes.$light-theme);
   @include mat.all-component-densities(themes.$light-theme);
   @include mat.all-component-typographies(themes.$light-theme);
@@ -181,13 +182,8 @@ body {
     @include apply-theme(themes.$light-theme);
     color: mat.get-theme-color(themes.$light-theme, neutral, 17);
     background-color: mat.get-theme-color(themes.$light-theme, neutral, 100);
-    @include mat.core-overrides((
-            background-color: mat.get-theme-color(themes.$light-theme, neutral, 100),
-            text-color: mat.get-theme-color(themes.$light-theme, neutral, 17),
-            elevation-shadow-level-1: "1px 1px 1px rgba(0, 0, 0, 0.3)",
-            elevation-shadow-level-2: "2px 2px 2px rgba(0, 0, 0, 0.2)",
-            elevation-shadow-level-3: "4px 4px 4px rgba(0, 0, 0, 0.1)",
-    ));
+    @include mat.elevation-classes();
+    @include mat.app-background();
     --mdc-outlined-card-container-elevation: 1px 1px 1px rgba(0, 0, 0, 0.3);
     --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
   }
@@ -198,13 +194,8 @@ body {
     @include apply-theme(themes.$dark-theme);
     color: mat.get-theme-color(themes.$dark-theme, neutral, 17);
     background-color: mat.get-theme-color(themes.$dark-theme, neutral, 98);
-    @include mat.core-overrides((
-      background-color: mat.get-theme-color(themes.$dark-theme, neutral, 98),
-      text-color: mat.get-theme-color(themes.$dark-theme, neutral, 17),
-      elevation-shadow-level-1: "1px 1px 1px rgba(0, 0, 0, 0.9)",
-      elevation-shadow-level-2: "2px 2px 2px rgba(0, 0, 0, 0.8)",
-      elevation-shadow-level-3: "4px 4px 4px rgba(0, 0, 0, 0.7)",
-    ));
+    @include mat.elevation-classes();
+    @include mat.app-background();
     --mdc-outlined-card-container-elevation: 1px 1px 1px rgba(0, 0, 0, 0.9);
     --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
   }

@@ -20,7 +20,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
-import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -35,16 +34,7 @@ import { NotificationService } from "@tenzu/utils/services";
 
 @Component({
   selector: "app-reset-password-form",
-  standalone: true,
-  imports: [
-    EmailFieldComponent,
-    FormsModule,
-    MatButton,
-    ReactiveFormsModule,
-    TranslocoDirective,
-    PasswordFieldComponent,
-    MatError,
-  ],
+  imports: [FormsModule, MatButton, ReactiveFormsModule, TranslocoDirective, PasswordFieldComponent, MatError],
   template: `
     <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-4">
       <h1 class="mat-headline-medium">
@@ -110,7 +100,10 @@ export class ResetPasswordFormComponent {
         this.userService.verifyResetTokenPassword(this.token).subscribe({
           error: (err: HttpErrorResponse) => {
             this.router.navigateByUrl("/reset-password");
-            this.notificationService.error({ title: "resetPassword.token_error." + err.error.error.detail, translocoTitle: true });
+            this.notificationService.error({
+              title: "resetPassword.token_error." + err.error.error.detail,
+              translocoTitle: true,
+            });
             this.token_expired.set(true);
           },
           next: (value1) => {
@@ -130,7 +123,10 @@ export class ResetPasswordFormComponent {
       this.userService.resetPassword(this.token, this.form.value.newPassword).subscribe({
         error: (err: HttpErrorResponse) => {
           this.router.navigateByUrl("/reset-password");
-          this.notificationService.error({ title: "resetPassword.token_error." + err.error.error.detail, translocoTitle: true });
+          this.notificationService.error({
+            title: "resetPassword.token_error." + err.error.error.detail,
+            translocoTitle: true,
+          });
           this.token_expired.set(true);
         },
         next: (value: Tokens) => {

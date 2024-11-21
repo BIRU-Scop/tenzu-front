@@ -26,19 +26,16 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { MatOption, MatSelect } from "@angular/material/select";
-import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { UserStore } from "@tenzu/data/user";
 import { LanguageStore } from "@tenzu/data/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 
 @Component({
   selector: "app-profile",
-  standalone: true,
   imports: [
     AvatarComponent,
     ReactiveFormsModule,
     MatInput,
-    EmailFieldComponent,
     TranslocoDirective,
     MatFormField,
     MatLabel,
