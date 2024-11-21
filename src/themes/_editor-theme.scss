@@ -48,7 +48,12 @@
         right: -12px;
         padding-right: 0;
         .ce-toolbar__plus, .ce-toolbar__settings-btn {
-          background-color:  mat.get-theme-color($theme, neutral, 100);
+          @media (prefers-color-scheme: dark) {
+            background-color:  mat.get-theme-color($theme, neutral, 99);
+          }
+          @media (prefers-color-scheme: light) {
+            background-color:  mat.get-theme-color($theme, neutral, 100);
+          }
           border-color: mat.get-theme-color($theme, tertiary, 70);
           box-shadow: 0 0 3px mat.get-theme-color($theme, tertiary, 70);
           color: mat.get-theme-color($theme, tertiary, 20);
@@ -69,11 +74,24 @@
         --height: 32px;
         --container-padding: 0px;
       }
+      @media (prefers-color-scheme: dark) {
+        --color-background: mat.get-theme-color($theme, neutral, 99);
+      }
+      @media (prefers-color-scheme: light) {
+        --color-background: mat.get-theme-color($theme, neutral, 100);
+      }
       --border-radius: 4px;
       --padding: 4px;
       .ce-popover__container {
-        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-        border: 1px solid mat.get-theme-color($theme, neutral, 94);
+        @media (prefers-color-scheme: light) {
+          background-color: mat.get-theme-color($theme, neutral, 100) ;
+          box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+        }
+        @media (prefers-color-scheme: dark) {
+          background-color: mat.get-theme-color($theme, neutral, 99) ;
+          box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
+        }
+        border: 1px solid mat.get-theme-color($theme, neutral, 90);
         border-bottom-width: 2px;
         padding: 0;
         .ce-popover-item, .ce-inline-tool {
@@ -90,7 +108,7 @@
         }
         .ce-popover__search {
           margin: 4px;
-          background-color:  mat.get-theme-color($theme, neutral, 100);
+          background-color:  mat.get-theme-color($theme, neutral, 99);
           border-style: solid;
           border-color:  mat.get-theme-color($theme, primary, 80);
           border-width: 1px;
@@ -115,6 +133,11 @@
             svg {
               color: mat.get-theme-color($theme, neutral-variant, 40);
             }
+          }
+        }
+        .ce-popover-item-separator {
+          .ce-popover-item-separator__line {
+            background: mat.get-theme-color($theme, primary, 80);
           }
         }
       }

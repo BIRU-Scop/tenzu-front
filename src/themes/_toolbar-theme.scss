@@ -33,8 +33,17 @@
     @apply border-x-0;
     @apply border-t-0;
     @apply border-solid;
+    @media (prefers-color-scheme: dark) {
+      @include mat.toolbar-overrides((
+        container-background-color: mat.get-theme-color($theme, neutral, 98),
+      ));
+    }
+    @media (prefers-color-scheme: light) {
+      @include mat.toolbar-overrides((
+        container-background-color: mat.get-theme-color($theme, neutral, 100),
+      ));
+    }
     @include mat.toolbar-overrides((
-      container-background-color: mat.get-theme-color($theme, neutral, 100),
       container-text-color: mat.get-theme-color($theme, primary, 40),
     ))
   }

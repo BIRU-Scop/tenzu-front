@@ -76,7 +76,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           formControlName="description"
         ></app-description-field>
         <div class="flex gap-x-4 mt-2">
-          <button mat-flat-button type="submit" class="primary-button" data-testid="project-edit-submit">
+          <button mat-flat-button type="submit" class="tertiary-button" data-testid="project-edit-submit">
             {{ t("buttons.save") }}
           </button>
           <button mat-flat-button (click)="reset()" class="secondary-button">

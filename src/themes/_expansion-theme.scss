@@ -39,7 +39,7 @@ html {
 
 @mixin color-and-typo($theme) {
   .mat-expansion-panel {
-    border-color:  mat.get-theme-color($theme, neutral, 95);
+    border-color:  mat.get-theme-color($theme, neutral, 90);
     &:focus-within {
       outline: mat.get-theme-color($theme, neutral-variant, 95) solid 4px;
       border-color:  mat.get-theme-color($theme, neutral-variant, 95);
@@ -47,8 +47,17 @@ html {
     &:hover {
       border-color:  mat.get-theme-color($theme, neutral-variant, 90);
     }
+    @media (prefers-color-scheme: dark) {
+      @include mat.expansion-overrides((
+        container-background-color: mat.get-theme-color($theme, neutral, 95),
+      ));
+    }
+    @media (prefers-color-scheme: light) {
+      @include mat.expansion-overrides((
+        container-background-color: mat.get-theme-color($theme, neutral, 100),
+      ));
+    }
     @include mat.expansion-overrides((
-      container-background-color: mat.get-theme-color($theme, neutral, 100),
       container-shape: 4px,
       header-hover-state-layer-color: transparent,
       header-focus-state-layer-color: transparent,

@@ -106,6 +106,44 @@
   }
 }
 
+@mixin create-button-variant($theme, $variant) {
+  .#{$variant}-button {
+    &.mat-mdc-outlined-button {
+      box-shadow: 0 0 3px mat.get-theme-color($theme, $variant, 80);
+      &.mat-mdc-button-disabled {
+        box-shadow: none;
+      }
+    }
+    &.mdc-button--unelevated {
+      box-shadow: 0 0 9px mat.get-theme-color($theme, $variant, 80);
+      border: solid 1px  mat.get-theme-color($theme, $variant, 80);
+      margin: 3px;
+      &.mat-mdc-button-disabled {
+        box-shadow: none;
+        border: 0;
+        margin: 0;
+      }
+    }
+    @include mat.button-color($theme, $color-variant: $variant);
+    @include mat.button-overrides((
+      outline-color: mat.get-theme-color($theme, $variant, 80),
+      state-layer-color: mat.get-theme-color($theme, $variant, 50),
+      container-color: mat.get-theme-color($theme, $variant, 90),
+      label-text-color: mat.get-theme-color($theme, $variant, 30)
+    ));
+    @include mat.icon-button-overrides((
+      state-layer-color: mat.get-theme-color($theme, $variant, 50),
+      ripple-color: mat.get-theme-color($theme, $variant, 30)
+    ));
+    .mat-icon {
+      @include mat.icon-overrides((color: mat.get-theme-color($theme, $variant, 40)));
+    }
+    &:focus {
+      outline: solid mat.get-theme-color($theme, primary, 80) 3px;
+    }
+  }
+}
+
 @mixin color-and-typo($theme) {
   @include mat.button-overrides((
     hover-state-layer-opacity: 0.75,
@@ -129,119 +167,9 @@
       }
   }
 
-  .primary-button {
-    &.mat-mdc-outlined-button {
-      box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
-    }
-    &.mdc-button--unelevated {
-      box-shadow: 0 0 6px mat.get-theme-color($theme, primary, 80);
-      margin: 3px;
-    }
-    @include mat.button-color($theme, $color-variant: primary);
-    @include mat.button-overrides((
-      outline-color: mat.get-theme-color($theme, primary, 80),
-      state-layer-color: mat.get-theme-color($theme, primary, 60),
-      container-color: mat.get-theme-color($theme, primary, 90),
-      label-text-color: mat.get-theme-color($theme, primary, 40)
-    ));
-    @include mat.icon-button-overrides((
-      state-layer-color: mat.get-theme-color($theme, primary, 60),
-      ripple-color: mat.get-theme-color($theme, primary, 40)
-    ));
-    .mat-icon {
-      @include mat.icon-overrides((color: mat.get-theme-color($theme, primary, 50)));
-    }
-    &:focus {
-      outline: solid mat.get-theme-color($theme, primary, 80) 3px;
-    }
-  }
-
-  .secondary-button {
-    &.mat-mdc-outlined-button {
-      box-shadow: 0 0 3px mat.get-theme-color($theme, secondary, 80);
-    }
-    &.mdc-button--unelevated {
-      box-shadow: 0 0 6px mat.get-theme-color($theme, secondary, 80);
-      margin: 3px;
-    }
-    @include mat.button-color($theme, $color-variant: secondary);
-    @include mat.button-overrides((
-        outline-color: mat.get-theme-color($theme, secondary, 80),
-        state-layer-color: mat.get-theme-color($theme, secondary, 60),
-        container-color: mat.get-theme-color($theme, secondary, 90),
-        label-text-color: mat.get-theme-color($theme, secondary, 30)
-    ));
-    @include mat.icon-button-overrides((
-      state-layer-color: mat.get-theme-color($theme, secondary, 60),
-      ripple-color: mat.get-theme-color($theme, secondary, 30)
-    ));
-    .mat-icon {
-      @include mat.icon-overrides((color: mat.get-theme-color($theme, secondary, 40)));
-    }
-    &:focus {
-      outline: solid mat.get-theme-color($theme, secondary, 80) 3px;
-    }
-  }
-
-  .tertiary-button {
-    &.mat-mdc-outlined-button {
-      box-shadow: 0 0 3px mat.get-theme-color($theme, tertiary, 70);
-    }
-    &.mdc-button--unelevated {
-      box-shadow: 0 0 6px mat.get-theme-color($theme, tertiary, 70);
-      margin: 3px;
-    }
-    @include mat.button-color($theme, $color-variant: tertiary);
-    @include mat.button-overrides((
-      outline-color: mat.get-theme-color($theme, tertiary, 70),
-      state-layer-color: mat.get-theme-color($theme, tertiary, 50),
-      container-color: mat.get-theme-color($theme, tertiary, 90),
-      label-text-color: mat.get-theme-color($theme, tertiary, 30)
-    ));
-    @include mat.icon-button-overrides((
-      state-layer-color: mat.get-theme-color($theme, tertiary, 50),
-      ripple-color: mat.get-theme-color($theme, tertiary, 30)
-    ));
-    .mat-icon {
-      @include mat.icon-overrides((color: mat.get-theme-color($theme, tertiary, 30)));
-    }
-    &:focus {
-      outline: solid mat.get-theme-color($theme, tertiary, 70) 3px;
-    }
-  }
-
-  .error-button {
-    &.mat-mdc-outlined-button {
-      box-shadow: 0 0 3px mat.get-theme-color($theme, error, 80);
-    }
-    &.mdc-button--unelevated {
-      box-shadow: 0 0 6px mat.get-theme-color($theme, error, 80);
-      margin: 3px;
-    }
-    @include mat.button-color($theme, $color-variant: error);
-    @include mat.button-overrides((
-      outline-color: mat.get-theme-color($theme, error, 80),
-      state-layer-color: mat.get-theme-color($theme, error, 60),
-      container-color: mat.get-theme-color($theme, error, 90),
-      label-text-color: mat.get-theme-color($theme, error, 30)
-    ));
-    @include mat.icon-button-overrides((
-      state-layer-color: mat.get-theme-color($theme, error, 60),
-      ripple-color: mat.get-theme-color($theme, error, 30)
-    ));
-    .mat-icon {
-      @include mat.icon-overrides((color: mat.get-theme-color($theme, error, 40)));
-    }
-    &:focus {
-      outline: solid mat.get-theme-color($theme, error, 80) 3px;
-    }
-  }
-
-  .mat-mdc-button[disabled], .mat-mdc-button:disabled, .mat-mdc-button-disabled {
-    box-shadow: none;
-    .mat-icon {
-      @include mat.icon-overrides((color: mat.get-theme-color($theme, neutral, 80)));
-    }
-  }
+  @include create-button-variant($theme, primary);
+  @include create-button-variant($theme, secondary);
+  @include create-button-variant($theme, tertiary);
+  @include create-button-variant($theme, error);
 }
 

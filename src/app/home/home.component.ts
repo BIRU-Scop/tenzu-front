@@ -31,6 +31,8 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { UserStore } from "@tenzu/data/user";
 import { AuthService } from "@tenzu/data/auth";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { darkModeOn$ } from "@tenzu/utils";
 
 @Component({
   selector: "app-home",
@@ -51,7 +53,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
   template: `
     <mat-toolbar role="banner" class="flex justify-between" *transloco="let t; prefix: 'home.navigation'">
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
-        <mat-icon class="icon-full" svgIcon="logo-text"></mat-icon>
+        <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'"></mat-icon>
       </a>
       @let myUser = userStore.myUser();
         <button>
@@ -92,8 +94,14 @@ export class HomeComponent {
   authService = inject(AuthService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
+  darkModeOn = toSignal(darkModeOn$);
+
   constructor() {
     this.iconRegistry.addSvgIcon("logo-text", this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu.svg"));
+    this.iconRegistry.addSvgIcon(
+      "logo-text-dark",
+      this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu-dark.svg"),
+    );
   }
 
   logout() {

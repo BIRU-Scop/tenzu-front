@@ -42,7 +42,7 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
-        <button (click)="openInviteDialog()" class="primary-button" mat-stroked-button>
+        <button (click)="openInviteDialog()" class="tertiary-button" mat-stroked-button>
           {{ t("invite_to_workspace") }}
         </button>
       </div>

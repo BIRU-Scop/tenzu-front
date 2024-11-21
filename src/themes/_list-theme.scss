@@ -52,44 +52,85 @@ $list-item-spacing: 12px;
       }
     }
   }
-  .mat-mdc-nav-list {
-    @apply flex flex-col gap-1;
-    .mdc-list-item  {
-      --mat-ripple-color: rgba(0,0,0,0.12);
-      @include mat.list-overrides((
-        list-item-container-shape: 0px,
-        active-indicator-shape: 0px,
-        list-item-container-color: mat.get-theme-color($theme, primary, 20),
-        active-indicator-color: mat.get-theme-color($theme, primary, 10),
-        list-item-hover-state-layer-opacity: 0,
-        list-item-focus-state-layer-opacity: 0,
-        list-item-label-text-color: mat.get-theme-color($theme, primary, 90),
-        list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 90),
-        list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 90),
-        list-item-leading-icon-color: mat.get-theme-color($theme, primary, 60),
-        list-item-hover-leading-icon-color:  mat.get-theme-color($theme, primary, 60),
-      ));
-      .mat-icon {
-        color: mat.get-theme-color($theme, primary, 60);
+  @media (prefers-color-scheme: dark) {
+    .mat-mdc-nav-list {
+      .mdc-list-item  {
+        --mat-ripple-color: rgba(0,0,0,0.12);
+        @include mat.list-overrides((
+          list-item-container-color: mat.get-theme-color($theme, neutral, 100),
+          active-indicator-color: mat.get-theme-color($theme, neutral, 98),
+          list-item-label-text-color: mat.get-theme-color($theme, primary, 10),
+          list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 10),
+          list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 10),
+          list-item-leading-icon-color: mat.get-theme-color($theme, primary, 40),
+          list-item-hover-leading-icon-color:  mat.get-theme-color($theme, primary, 40),
+        ));
+        .mat-icon {
+          color: mat.get-theme-color($theme, primary, 40);
+        }
+        &:hover {
+          background-color: mat.get-theme-color($theme, neutral, 98);
+        }
+        &:focus {
+          outline: 1px solid mat.get-theme-color($theme, primary, 30);
+          background-color: mat.get-theme-color($theme, neutral, 98);
+        }
+        &.mdc-list-item--activated {
+          @include mat.list-overrides((
+            list-item-label-text-color: mat.get-theme-color($theme, primary, 0),
+            list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 0),
+            list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 0),
+            list-item-leading-icon-color: mat.get-theme-color($theme, primary, 30),
+            list-item-hover-leading-icon-color: mat.get-theme-color($theme, primary, 30),
+          ));
+        }
       }
-      &:hover {
-        background-color: mat.get-theme-color($theme, primary, 10);
-      }
-      &:focus {
-        outline: 1px solid mat.get-theme-color($theme, primary, 70);
-        background-color: mat.get-theme-color($theme, primary, 10);
-      }
-      &.mdc-list-item--activated {
-        @include mat.list-overrides(
-          (
+    }
+  }
+  @media (prefers-color-scheme: light) {
+    .mat-mdc-nav-list {
+      .mdc-list-item  {
+        --mat-ripple-color: rgba(0,0,0,0.12);
+        @include mat.list-overrides((
+          list-item-container-color: mat.get-theme-color($theme, primary, 20),
+          active-indicator-color: mat.get-theme-color($theme, primary, 10),
+          list-item-label-text-color: mat.get-theme-color($theme, primary, 90),
+          list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 90),
+          list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 90),
+          list-item-leading-icon-color: mat.get-theme-color($theme, primary, 60),
+          list-item-hover-leading-icon-color:  mat.get-theme-color($theme, primary, 60),
+        ));
+        .mat-icon {
+          color: mat.get-theme-color($theme, primary, 60);
+        }
+        &:hover {
+          background-color: mat.get-theme-color($theme, primary, 10);
+        }
+        &:focus {
+          outline: 1px solid mat.get-theme-color($theme, primary, 70);
+          background-color: mat.get-theme-color($theme, primary, 10);
+        }
+        &.mdc-list-item--activated {
+          @include mat.list-overrides((
             list-item-label-text-color: mat.get-theme-color($theme, primary, 100),
             list-item-hover-label-text-color: mat.get-theme-color($theme, primary, 100),
             list-item-focus-label-text-color: mat.get-theme-color($theme, primary, 100),
             list-item-leading-icon-color: mat.get-theme-color($theme, primary, 70),
             list-item-hover-leading-icon-color: mat.get-theme-color($theme, primary, 70),
-          )
-        );
+          ));
+        }
       }
+    }
+  }
+  .mat-mdc-nav-list {
+    @apply flex flex-col gap-1;
+    .mdc-list-item  {
+      @include mat.list-overrides((
+        list-item-container-shape: 0px,
+        active-indicator-shape: 0px,
+        list-item-hover-state-layer-opacity: 0,
+        list-item-focus-state-layer-opacity: 0,
+      ));
     }
   }
   .mat-mdc-selection-list {
@@ -97,14 +138,14 @@ $list-item-spacing: 12px;
       active-indicator-color: mat.get-theme-color($theme, primary, 10),
       list-item-hover-state-layer-opacity: 0.15,
       list-item-focus-state-layer-opacity: 0.15,
-      list-item-hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 60),
+      list-item-one-line-container-height: auto,
+      list-item-hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 80),
       list-item-focus-state-layer-color: mat.get-theme-color($theme, neutral-variant, 80),
       list-item-label-text-color: mat.get-theme-color($theme, neutral-variant, 20),
       list-item-hover-label-text-color: mat.get-theme-color($theme, neutral-variant, 10),
       list-item-focus-label-text-color: mat.get-theme-color($theme, neutral-variant, 10),
       list-item-leading-icon-color: mat.get-theme-color($theme, primary, 60),
       list-item-hover-leading-icon-color:  mat.get-theme-color($theme, primary, 60),
-            list-item-one-line-container-height: auto,
     ));
   }
 }

@@ -24,7 +24,7 @@
 .mat-mdc-card {
   --mdc-outlined-card-container-shape: 4px;
   &.mat-mdc-card-outlined {
-    @apply border-b-2;
+    @apply border-b;
   }
   @apply gap-2;
   .mat-mdc-card-header {
@@ -58,12 +58,20 @@
 
 @mixin color-and-typo($theme) {
   .mat-mdc-card {
+    @media (prefers-color-scheme: dark) {
+      @include mat.card-overrides((
+        container-color:  mat.get-theme-color($theme, neutral, 98),
+      ));
+    }
+    @media (prefers-color-scheme: light) {
+      @include mat.card-overrides((
+        container-color:  mat.get-theme-color($theme, neutral, 100),
+      ));
+    }
     @include mat.card-overrides((
-      outline-color: mat.get-theme-color($theme, neutral, 95),
-      container-color:  mat.get-theme-color($theme, neutral, 100),
+      outline-color: mat.get-theme-color($theme, neutral, 90),
       title-text-size: mat.get-theme-typography($theme, body-medium, font-size),
       title-text-line-height: mat.get-theme-typography($theme, body-medium, line-height),
-      container-elevation:  1px 1px 1px rgba(0, 0, 0, 0.2)
     ));
     .mat-mdc-card-header {
       color: mat.get-theme-color($theme, neutral-variant, 20);
@@ -77,7 +85,7 @@
     &.heading-card {
       @include mat.card-overrides((
         title-text-size: mat.get-theme-typography($theme, body-large, font-size),
-        outline-color: mat.get-theme-color($theme, neutral, 90),
+        outline-color: mat.get-theme-color($theme, neutral, 80),
         container-elevation: none
       ));
     }

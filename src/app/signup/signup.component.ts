@@ -95,7 +95,7 @@ import { MatDivider } from "@angular/material/divider";
           </button>
           <div class="flex justify-center">
             <button
-              mat-button
+              mat-flat-button
               class="secondary-button"
               (click)="displayForm.set(false)"
             >

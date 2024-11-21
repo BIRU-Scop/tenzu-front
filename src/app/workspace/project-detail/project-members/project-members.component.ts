@@ -43,7 +43,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
 
-        <button (click)="openCreateDialog()" class="primary-button" mat-stroked-button>
+        <button (click)="openCreateDialog()" class="tertiary-button" mat-stroked-button>
           {{ t("invite_to_project") }}
         </button>
       </div>

@@ -61,9 +61,7 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
           <mat-form-field>
             <mat-label>{{ t("commons.workspace") }}</mat-label>
             <mat-select required [hidden]="!workspaceStore.isLoading()" formControlName="workspaceId">
-              @if (selectedWorkspace(); as workspace) {
-                <mat-select-trigger>{{ workspace.name }}</mat-select-trigger>
-              }
+              <mat-select-trigger>{{ selectedWorkspace()?.name }}</mat-select-trigger>
               @for (workspace of workspaceStore.entities(); track workspace.id) {
                 <mat-option value="{{ workspace.id }}">
                   <div class="flex gap-x-2 items-center">
@@ -102,7 +100,7 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
               *transloco="let t; prefix: 'project.new_project'"
               mat-flat-button
               type="submit"
-              class="primary-button"
+              class="tertiary-button"
               data-testid="new-project-submit"
             >
               {{ t("create_project") }}

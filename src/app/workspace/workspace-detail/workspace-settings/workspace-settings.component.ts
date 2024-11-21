@@ -74,7 +74,7 @@ import { MatIcon } from "@angular/material/icon";
           </div>
         </div>
         <div class="flex gap-x-4 mt-2" *transloco="let t; prefix: 'commons'">
-          <button mat-flat-button type="submit" class="primary-button" data-testid="workspace-edit-submit">
+          <button mat-flat-button type="submit" class="tertiary-button" data-testid="workspace-edit-submit">
             {{ t("save") }}
           </button>
           <button mat-flat-button (click)="reset()" class="secondary-button">
