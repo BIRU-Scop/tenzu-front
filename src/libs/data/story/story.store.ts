@@ -141,7 +141,6 @@ export const StoryStore = signalStore(
       if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
         const newAssignees = [storyAssign.user, ...store.entityMap()[ref].assignees];
         patchState(store, updateEntity({ id: ref, changes: { assignees: newAssignees } }, { selectId }));
-        console.log(newAssignees);
         if (store.selectedStoryDetails().ref === ref) {
           patchState(store, (state) => ({
             selectedStoryDetails: {
