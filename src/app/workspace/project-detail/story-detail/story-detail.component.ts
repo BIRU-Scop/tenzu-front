@@ -212,9 +212,9 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
             <mat-icon>delete</mat-icon>
           </button>
         </div>
-      </div> 
-    }</ng-container>
-  `,
+      </div>
+    }
+  </ng-container> `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
