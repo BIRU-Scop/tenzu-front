@@ -65,7 +65,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
               @if (!sideNavStore.resized()) {
                 <div class="flex flex-col ">
                   <div class="mat-label-small text-neutral-60">{{ t(avatar.type) | uppercase }} /</div>
-                  <div class="mat-title-small line-clamp-2">{{ avatar.name | titlecase }}</div>
+                  <div class="text-sm line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
                 </div>
               }
             </div>

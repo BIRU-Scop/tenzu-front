@@ -159,33 +159,33 @@ $_inverted_error: ();
 
 @each $key, $value in map.get($_light_palettes, primary) {
   $map: ();
-  $map: map-merge($map, ($key: color.complement(color.invert($value))) );
-  $_inverted_primary: map-merge($_inverted_primary, $map);
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_primary: map.merge($_inverted_primary, $map);
 }
 @each $key, $value in map.get($_light_palettes, secondary) {
   $map: ();
-  $map: map-merge($map, ($key: color.complement(color.invert($value))) );
-  $_inverted_secondary: map-merge($_inverted_secondary, $map);
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_secondary: map.merge($_inverted_secondary, $map);
 }
 @each $key, $value in map.get($_light_palettes, tertiary) {
   $map: ();
-  $map: map-merge($map, ($key: color.complement(color.invert($value))) );
-  $_inverted_tertiary: map-merge($_inverted_tertiary, $map);
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_tertiary: map.merge($_inverted_tertiary, $map);
 }
 @each $key, $value in map.get($_light_palettes, neutral) {
   $map: ();
-  $map: map-merge($map, ($key: color.complement(color.invert($value))) );
-  $_inverted_neutral: map-merge($_inverted_neutral, $map);
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_neutral: map.merge($_inverted_neutral, $map);
 }
 @each $key, $value in map.get($_light_palettes, neutral-variant) {
   $map: ();
-  $map: map-merge($map, ($key: color.complement(color.invert($value))) );
-  $_inverted_neutral-variant: map-merge($_inverted_neutral-variant, $map);
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_neutral-variant: map.merge($_inverted_neutral-variant, $map);
 }
 @each $key, $value in map.get($_light_palettes, error) {
   $map: ();
-  $map: map-merge($map, ($key: color.complement(color.invert($value))) );
-  $_inverted_error: map-merge($_inverted_error, $map);
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_error: map.merge($_inverted_error, $map);
 }
 
 $_rest_light: (

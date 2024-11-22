@@ -108,7 +108,7 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
   `,
     styles: `
     .kanban-viewport {
-      height: calc(100vh - var(--mat-toolbar-standard-height) - 32px - 1rem - 42px);
+      height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 36px - 2rem - 12px - 16px);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
@@ -122,7 +122,7 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
             transition(":increment", [
                 query(":enter", [
                     style({ opacity: 0, height: 0 }),
-                    stagger(0, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+                    stagger(0, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
                 ], { optional: true }),
             ]),
         ]),
@@ -131,7 +131,7 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
             transition(":increment", [
                 query(":enter", [
                     style({ opacity: 0, width: 0 }),
-                    stagger(0, [animate("400ms ease-out", style({ opacity: 1, width: "192px" }))]),
+                    stagger(0, [animate("200ms ease-out", style({ opacity: 1, width: "192px" }))]),
                 ], { optional: true }),
             ]),
         ]),
