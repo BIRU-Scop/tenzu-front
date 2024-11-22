@@ -27,17 +27,12 @@ import { DeleteAccountDialogComponent } from "./delete-account-dialog.component"
 import { matDialogConfig } from "@tenzu/utils";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService, UserStore } from "@tenzu/data/user";
-import { MatList, MatListItem } from "@angular/material/list";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatError, MatFormField } from "@angular/material/form-field";
-import { JsonPipe } from "@angular/common";
-import { MatPseudoCheckbox } from "@angular/material/core";
+import { MatError } from "@angular/material/form-field";
 import { Router } from "@angular/router";
-import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-delete",
-  standalone: true,
   template: `
     <div class="w-90 flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.delete'">
       <h1 class="mat-headline-medium">{{ t("delete") }}</h1>
@@ -63,19 +58,7 @@ import { MatIcon } from "@angular/material/icon";
       </form>
     </div>
   `,
-  imports: [
-    TranslocoDirective,
-    MatCheckbox,
-    MatButton,
-    MatList,
-    MatListItem,
-    ReactiveFormsModule,
-    MatError,
-    JsonPipe,
-    MatFormField,
-    MatPseudoCheckbox,
-    MatIcon,
-  ],
+  imports: [TranslocoDirective, MatCheckbox, MatButton, ReactiveFormsModule, MatError],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -85,7 +68,6 @@ export class DeleteComponent {
   userStore = inject(UserStore);
   userService = inject(UserService);
   readonly dialog = inject(MatDialog);
-  translocoService = inject(TranslocoService);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     consent: [false, Validators.required],

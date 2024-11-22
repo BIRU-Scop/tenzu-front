@@ -35,22 +35,21 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services";
 
 @Component({
-  selector: "app-project-settings",
-  standalone: true,
-  imports: [
-    MatError,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    ReactiveFormsModule,
-    TranslocoDirective,
-    DescriptionFieldComponent,
-    MatButton,
-    MatIcon,
-    ConfirmDirective,
-    AvatarComponent,
-  ],
-  template: `
+    selector: "app-project-settings",
+    imports: [
+        MatError,
+        MatFormField,
+        MatInput,
+        MatLabel,
+        ReactiveFormsModule,
+        TranslocoDirective,
+        DescriptionFieldComponent,
+        MatButton,
+        MatIcon,
+        ConfirmDirective,
+        AvatarComponent,
+    ],
+    template: `
     <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings'">
       <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
         <h1 class="mat-headline-medium">{{ t("title") }}</h1>
@@ -101,8 +100,8 @@ import { NotificationService } from "@tenzu/utils/services";
       </div>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectSettingsComponent {
   notificationService = inject(NotificationService);

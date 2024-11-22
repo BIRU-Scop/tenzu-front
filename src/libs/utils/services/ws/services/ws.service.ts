@@ -26,6 +26,7 @@ import {
   applyStoryEvent,
   applyWorkflowEvent,
   applyWorkflowStatusEvent,
+  applyWorkspaceEvent,
 } from "./apply-event.function";
 
 const MAX_RETRY = 10;
@@ -129,6 +130,7 @@ export class WsService {
           break;
         }
         case FamilyEventType.Workspace: {
+          await applyWorkspaceEvent(message);
           break;
         }
         case FamilyEventType.ProjectInvitation: {

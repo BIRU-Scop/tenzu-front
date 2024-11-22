@@ -21,8 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbComponent } from "@tenzu/shared/components/breadcrumb";
-import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -32,8 +30,7 @@ import { SidenavListWorkflowComponent } from "./sidenav-list-workflow/sidenav-li
 
 @Component({
   selector: "app-project-detail",
-  standalone: true,
-  imports: [RouterOutlet, BreadcrumbComponent, PrimarySideNavComponent],
+  imports: [RouterOutlet],
   template: ` <router-outlet />`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -20,11 +20,12 @@
  */
 
 import {
-  APP_INITIALIZER,
   ApplicationConfig,
   importProvidersFrom,
   isDevMode,
   provideExperimentalZonelessChangeDetection,
+  inject,
+  provideAppInitializer,
 } from "@angular/core";
 import { provideRouter, withRouterConfig } from "@angular/router";
 
@@ -53,16 +54,10 @@ export const appConfig: ApplicationConfig = {
       provide: PRECONNECT_CHECK_BLOCKLIST,
       useValue: `${environment.api.scheme}://${environment.api.baseDomain}`,
     },
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [LanguageStore],
-      useFactory: (languageStore: LanguageStore) => {
-        return () => {
-          return lastValueFrom(languageStore.initLanguages());
-        };
-      },
-    },
+    provideAppInitializer(() => {
+      const languageStore = inject(LanguageStore);
+      return lastValueFrom(languageStore.initLanguages());
+    }),
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
     importProvidersFrom(
       JwtModule.forRoot({

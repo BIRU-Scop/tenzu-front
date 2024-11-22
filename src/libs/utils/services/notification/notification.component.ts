@@ -34,18 +34,17 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
-  selector: "app-notification",
-  standalone: true,
-  imports: [
-    MatSnackBarLabel,
-    MatSnackBarActions,
-    MatIcon,
-    MatIconButton,
-    MatSnackBarAction,
-    TranslocoDirective,
-    NgTemplateOutlet,
-  ],
-  template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
+    selector: "app-notification",
+    imports: [
+        MatSnackBarLabel,
+        MatSnackBarActions,
+        MatIcon,
+        MatIconButton,
+        MatSnackBarAction,
+        TranslocoDirective,
+        NgTemplateOutlet,
+    ],
+    template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
     <ng-template #content let-data="data">
       <div matSnackBarLabel>
         <p class="mat-title-small">
@@ -84,8 +83,8 @@ import { NgTemplateOutlet } from "@angular/common";
       }
     }
   </div>`,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationComponent {
   data: NotificationMessage = inject(MAT_SNACK_BAR_DATA);

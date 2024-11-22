@@ -38,7 +38,7 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from "@angular/material/dialog";
-import { JsonPipe, NgComponentOutlet } from "@angular/common";
+import { NgComponentOutlet } from "@angular/common";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 export type ConfirmPopupData = {
@@ -82,13 +82,11 @@ export type ConfirmPopupData = {
       </mat-dialog-actions>
     </ng-container>
   `,
-  standalone: true,
   imports: [
     MatDialogActions,
     MatButton,
     MatDialogClose,
     MatDialogContent,
-    JsonPipe,
     NgComponentOutlet,
     TranslocoDirective,
     MatDialogTitle,

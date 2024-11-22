@@ -23,7 +23,6 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { RouterLink, RouterOutlet } from "@angular/router";
-import { MatIconAnchor } from "@angular/material/button";
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -36,14 +35,12 @@ import { darkModeOn$ } from "@tenzu/utils";
 
 @Component({
   selector: "app-home",
-  standalone: true,
   imports: [
     AvatarComponent,
     MatToolbar,
     MatIcon,
     RouterLink,
     RouterOutlet,
-    MatIconAnchor,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
@@ -89,7 +86,7 @@ import { darkModeOn$ } from "@tenzu/utils";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
+export default class HomeComponent {
   userStore = inject(UserStore);
   authService = inject(AuthService);
   iconRegistry = inject(MatIconRegistry);

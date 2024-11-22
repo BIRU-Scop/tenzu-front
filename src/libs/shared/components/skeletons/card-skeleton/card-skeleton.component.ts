@@ -22,10 +22,9 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
 @Component({
-  selector: "app-card-skeleton",
-  standalone: true,
-  imports: [],
-  template: `
+    selector: "app-card-skeleton",
+    imports: [],
+    template: `
     <div class="flex flex-col gap-4 skeleton-container">
       <div class="flex gap-4">
         <div class="skeleton-image"></div>
@@ -40,7 +39,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
       </div>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardSkeletonComponent {}

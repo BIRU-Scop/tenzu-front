@@ -23,7 +23,6 @@ import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { MatError, MatFormField } from "@angular/material/form-field";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/data/user";
@@ -31,13 +30,10 @@ import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-request-reset-password",
-  standalone: true,
   imports: [
     EmailFieldComponent,
     FormsModule,
     MatButton,
-    MatError,
-    MatFormField,
     ReactiveFormsModule,
     TranslocoDirective,
     RouterLink,
@@ -64,7 +60,13 @@ import { MatDivider } from "@angular/material/divider";
             {{ t("confirm.subtitle") }}
           </p>
           <p class="mat-body-large font-bold">{{ form.value.email }}</p>
-          <button mat-stroked-button class="primary-button w-fit" data-testid="goBackToLogin-button" [routerLink]="['/login']" type="button">
+          <button
+            mat-stroked-button
+            class="primary-button w-fit"
+            data-testid="goBackToLogin-button"
+            [routerLink]="['/login']"
+            type="button"
+          >
             {{ t("confirm.back") }}
           </button>
         </div>

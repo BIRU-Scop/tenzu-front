@@ -29,14 +29,12 @@ import { matDialogConfig } from "@tenzu/utils";
 import { RelativeDialogService } from "@tenzu/utils/services";
 import { MembershipStore } from "@tenzu/data/membership";
 import { ProjectKanbanService } from "../project-kanban.service";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-story-card",
-  standalone: true,
   imports: [
     MatCard,
     MatCardHeader,
@@ -44,9 +42,7 @@ import { MatIcon } from "@angular/material/icon";
     MatCardContent,
     AvatarListComponent,
     MatCardTitle,
-    MatButton,
     TranslocoDirective,
-    AvatarComponent,
     MatIcon,
     MatIconButton,
   ],

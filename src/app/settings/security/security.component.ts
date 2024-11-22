@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatError, MatLabel } from "@angular/material/input";
+import { MatError } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
@@ -32,8 +32,7 @@ import { UserStore } from "@tenzu/data/user";
 
 @Component({
   selector: "app-security",
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoDirective, MatLabel, MatButton, MatError, PasswordFieldComponent],
+  imports: [ReactiveFormsModule, TranslocoDirective, MatButton, MatError, PasswordFieldComponent],
   template: `
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
       <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>

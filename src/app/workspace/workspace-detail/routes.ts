@@ -19,14 +19,23 @@
  *
  */
 
-import { ActivatedRouteSnapshot, Routes } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { inject } from "@angular/core";
 
 import { ProjectStore } from "@tenzu/data/project";
+import { HttpErrorResponse } from "@angular/common/http";
 
 export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) {
   const projectStore = inject(ProjectStore);
-  return await projectStore.getProjectsByWorkspaceId(route.paramMap.get("id")!);
+  const router = inject(Router);
+  try {
+    return await projectStore.getProjectsByWorkspaceId(route.paramMap.get("id")!);
+  } catch (error) {
+    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+      await router.navigate(["/404"]);
+    }
+    return;
+  }
 }
 
 export const routes: Routes = [

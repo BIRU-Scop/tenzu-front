@@ -28,20 +28,19 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 
 @Component({
-  selector: "app-workspace-card",
-  standalone: true,
-  imports: [
-    AvatarComponent,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatIcon,
-    RouterLink,
-    RouterLinkActive,
-    MatButton,
-    TranslocoDirective,
-  ],
-  template: `
+    selector: "app-workspace-card",
+    imports: [
+        AvatarComponent,
+        MatCard,
+        MatCardHeader,
+        MatCardTitle,
+        MatIcon,
+        RouterLink,
+        RouterLinkActive,
+        MatButton,
+        TranslocoDirective,
+    ],
+    template: `
     <mat-card appearance="outlined" class="heading-card" *transloco="let t; prefix: 'commons'">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
@@ -62,8 +61,8 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
       </mat-card-header>
     </mat-card>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceCardComponent {
   name = input("");

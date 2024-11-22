@@ -20,12 +20,10 @@
  */
 
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-status-skeleton",
-  standalone: true,
-  imports: [MatDivider],
+  imports: [],
   template: `
     <div class="flex flex-row gap-x-4 items-center skeleton-container">
       <div class="grow flex flex-col gap-y-2">
