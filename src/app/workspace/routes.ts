@@ -33,16 +33,17 @@ export async function workspaceResolver(route: ActivatedRouteSnapshot) {
   const membershipStore = inject(MembershipStore);
   const router = inject(Router);
   try {
-    await membershipStore.listWorkspaceMembership(route.paramMap.get("id")!);
-    await membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!);
-    await membershipStore.listWorkspaceGuest(route.paramMap.get("id")!);
-
-    return await workspaceStore.get(route.paramMap.get("id")!);
+    return Promise.all([
+      workspaceStore.get(route.paramMap.get("id")!),
+      membershipStore.listWorkspaceMembership(route.paramMap.get("id")!),
+      membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!),
+      membershipStore.listWorkspaceGuest(route.paramMap.get("id")!),
+    ]);
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      await router.navigate(["/404"]);
+      return router.navigate(["/404"]);
     }
-    return;
+    throw error;
   }
 }
 
@@ -53,15 +54,18 @@ export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) 
   const router = inject(Router);
 
   try {
-    const project = await projectStore.getProject(route.paramMap.get("projectId")!);
-    workflowStore.setWorkflows(project.workflows);
-    await membershipStore.listProjectMembership(route.paramMap.get("projectId")!);
-    await membershipStore.listProjectInvitations(route.paramMap.get("projectId")!);
+    return Promise.all([
+      projectStore
+        .getProject(route.paramMap.get("projectId")!)
+        .then((project) => workflowStore.setWorkflows(project.workflows)),
+      membershipStore.listProjectMembership(route.paramMap.get("projectId")!),
+      membershipStore.listProjectInvitations(route.paramMap.get("projectId")!),
+    ]);
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      await router.navigate(["/404"]);
+      return router.navigate(["/404"]);
     }
-    return;
+    throw error;
   }
 }
 

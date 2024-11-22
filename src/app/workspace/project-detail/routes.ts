@@ -26,34 +26,41 @@ import { provideTranslocoScope } from "@jsverse/transloco";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { HttpErrorResponse } from "@angular/common/http";
 
-export async function storyResolver(route: ActivatedRouteSnapshot) {
+export function storyResolver(route: ActivatedRouteSnapshot) {
   const storyStore = inject(StoryStore);
   const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
   try {
-    const story = await storyStore.get(route.paramMap.get("projectId")!, parseInt(route.paramMap.get("ref")!, 10));
-    if (workflowStore.entityMap()[story.workflowId]?.statuses) {
-      const workflow = await workflowStore.refreshWorkflowById(route.paramMap.get("projectId")!, story.workflowId);
-      workflowStore.selectWorkflow(workflow.id);
-    }
+    return storyStore
+      .get(route.paramMap.get("projectId")!, parseInt(route.paramMap.get("ref")!, 10))
+      .then(async (story) => {
+        if (workflowStore.entityMap()[story.workflowId]?.statuses) {
+          await workflowStore
+            .refreshWorkflowById(route.paramMap.get("projectId")!, story.workflowId)
+            .then((workflow) => {
+              workflowStore.selectWorkflow(workflow.id);
+            });
+        }
+      });
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      await router.navigate(["/404"]);
+      return router.navigate(["/404"]);
     }
-    return;
+    throw error;
   }
 }
-export async function workflowResolver(route: ActivatedRouteSnapshot) {
+export function workflowResolver(route: ActivatedRouteSnapshot) {
   const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
   try {
-    const workflow = await workflowStore.refreshWorkflow({ projectId: projectId, slug: workflowSLug });
-    workflowStore.selectWorkflow(workflow.id);
+    return workflowStore.refreshWorkflow({ projectId: projectId, slug: workflowSLug }).then((workflow) => {
+      workflowStore.selectWorkflow(workflow.id);
+    });
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      await router.navigate(["/404"]);
+      return router.navigate(["/404"]);
     }
     return;
   }
