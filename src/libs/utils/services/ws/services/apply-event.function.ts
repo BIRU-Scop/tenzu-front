@@ -49,8 +49,31 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       break;
     }
     case StoryEventType.UpdateStory: {
-      const content = message.event.content as { story: StoryDetail };
-      storyStore.update(content.story);
+      const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
+      const story = content.story;
+      storyStore.update(story);
+      switch (true) {
+        case content.updatesAttrs.includes("workflow"): {
+          const workspace = workspaceStore.selectedEntity();
+          if (workspace && router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}`) {
+            await workflowStore.refreshWorkflow(story.workflow);
+            workflowStore.selectWorkflow(story.workflowId);
+          }
+          if (
+            workspace &&
+            (router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}` ||
+              router.url.includes(`/workspace/${workspace.id}/project/${story.projectId}/kanban`))
+          ) {
+            notificationService.info({
+              title: "notification.events.move_story_to_workflow",
+              translocoTitleParams: {
+                workflowURL: `/workspace/${workspace.id}/project/${story.projectId}/kanban/${story.workflow.slug}`,
+                workflowName: content.story.workflow.name,
+              },
+            });
+          }
+        }
+      }
       break;
     }
     case StoryEventType.ReorderStory: {
@@ -74,7 +97,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       const workspace = workspaceStore.selectedEntity();
       storyStore.removeStory(content.ref);
       if (router.url === `/workspace/${workspace!.id}/project/${project!.id}/story/${content.ref}`) {
-        await router.navigateByUrl(`/workspace/${workspace!.id}/project/${project!.id}/kanban/${workflow!.slug}`);
+        await router.navigateByUrl(`/workspace/${workspace?.id}/project/${project?.id}/kanban/${workflow?.slug}`);
         notificationService.warning({
           title: "notification.events.delete_story",
           translocoTitleParams: {
