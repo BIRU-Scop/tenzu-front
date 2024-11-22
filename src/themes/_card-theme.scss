@@ -60,16 +60,16 @@
   .mat-mdc-card {
     @media (prefers-color-scheme: dark) {
       @include mat.card-overrides((
-        container-color:  mat.get-theme-color($theme, neutral, 98),
+          outlined-container-color:  mat.get-theme-color($theme, neutral, 98),
       ));
     }
     @media (prefers-color-scheme: light) {
       @include mat.card-overrides((
-        container-color:  mat.get-theme-color($theme, neutral, 100),
+          outlined-container-color:  mat.get-theme-color($theme, neutral, 100),
       ));
     }
     @include mat.card-overrides((
-      outline-color: mat.get-theme-color($theme, neutral, 90),
+      outlined-outline-color: mat.get-theme-color($theme, neutral, 90),
       title-text-size: mat.get-theme-typography($theme, body-medium, font-size),
       title-text-line-height: mat.get-theme-typography($theme, body-medium, line-height),
     ));
@@ -85,8 +85,8 @@
     &.heading-card {
       @include mat.card-overrides((
         title-text-size: mat.get-theme-typography($theme, body-large, font-size),
-        outline-color: mat.get-theme-color($theme, neutral, 80),
-        container-elevation: none
+        outlined-outline-color: mat.get-theme-color($theme, neutral, 80),
+        outlined-container-elevation: none
       ));
     }
   }

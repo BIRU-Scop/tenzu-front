@@ -30,7 +30,7 @@ import { RouterOutlet } from "@angular/router";
     template: `
     <app-primary-side-nav>
       <app-breadcrumb></app-breadcrumb>
-      <div class="mt-10"><router-outlet /></div>
+      <div class="mt-9"><router-outlet /></div>
     </app-primary-side-nav>
   `,
     styles: ``,

@@ -109,7 +109,7 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
             transition(":increment", [
                 query(":enter", [
                     style({ opacity: 0, height: 0 }),
-                    stagger(50, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+                    stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
                 ], { optional: true }),
             ]),
         ]),

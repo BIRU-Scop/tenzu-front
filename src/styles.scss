@@ -168,36 +168,32 @@
 }
 
 body {
+  font-family: "Lexend", sans-serif;
+  font-optical-sizing: auto;
   @include mat.elevation-classes();
   @include mat.app-background();
   @include mat.all-component-bases(themes.$light-theme);
   @include mat.all-component-densities(themes.$light-theme);
   @include mat.all-component-typographies(themes.$light-theme);
-  font-family: "Lexend", sans-serif;
-  font-optical-sizing: auto;
 }
 
 @media (prefers-color-scheme: light) {
   body {
-    @include apply-theme(themes.$light-theme);
     color: mat.get-theme-color(themes.$light-theme, neutral, 17);
     background-color: mat.get-theme-color(themes.$light-theme, neutral, 100);
-    @include mat.elevation-classes();
-    @include mat.app-background();
     --mdc-outlined-card-container-elevation: 1px 1px 1px rgba(0, 0, 0, 0.3);
     --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    @include apply-theme(themes.$light-theme);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    @include apply-theme(themes.$dark-theme);
     color: mat.get-theme-color(themes.$dark-theme, neutral, 17);
     background-color: mat.get-theme-color(themes.$dark-theme, neutral, 98);
-    @include mat.elevation-classes();
-    @include mat.app-background();
     --mdc-outlined-card-container-elevation: 1px 1px 1px rgba(0, 0, 0, 0.9);
     --mat-select-container-elevation-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+    @include apply-theme(themes.$dark-theme);
   }
 }
 
