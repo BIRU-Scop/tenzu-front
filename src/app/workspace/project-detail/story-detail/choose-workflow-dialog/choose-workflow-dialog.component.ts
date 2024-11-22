@@ -28,7 +28,6 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle,
 } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectStore } from "@tenzu/data/project";
@@ -40,10 +39,8 @@ export type ChooseWorkflowDialogData = {
 
 @Component({
   selector: "app-enter-name-dialog",
-  standalone: true,
   imports: [
     MatDialogContent,
-    MatDialogTitle,
     MatDialogActions,
     MatDialogClose,
     MatButton,
@@ -100,6 +97,6 @@ export class ChooseWorkflowDialogComponent {
   }
 
   submit() {
-    this.dialogRef.close( this.newWorkflowSlug.value);
+    this.dialogRef.close(this.newWorkflowSlug.value);
   }
 }

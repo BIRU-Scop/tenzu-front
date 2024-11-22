@@ -41,7 +41,11 @@ export class StoryDetailService {
     const project = this.projectStore.selectedEntity();
     const story = this.storyStore.selectedStoryDetails();
     if (project && story) {
-      return this.storyStore.patch(project.id, story, { ...data, version: story.version, ref: story.ref });
+      return this.storyStore.patch(project.id, story, {
+        ...data,
+        version: story.version,
+        ref: story.ref,
+      });
     }
     throw new Error("No story to update");
   }

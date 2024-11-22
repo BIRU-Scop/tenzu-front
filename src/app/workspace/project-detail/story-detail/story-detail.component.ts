@@ -33,7 +33,6 @@ import { DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { NotificationService, RelativeDialogService } from "@tenzu/utils/services";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
@@ -41,13 +40,12 @@ import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils";
 import { MembershipStore } from "@tenzu/data/membership";
-import { Workflow, WorkflowStore } from "@tenzu/data/workflow";
+import { WorkflowStore } from "@tenzu/data/workflow";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 
 @Component({
@@ -107,21 +105,21 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
           </form>
           <mat-divider></mat-divider>
           <div class="flex flex-col gap-y-4">
-            <button class="primary-button w-fit" mat-flat-button type="button" (click)="selectFile()">
+            <button class="primary-button w-fit" mat-flat-button type="button" (click)="fileUpload.click()">
               <mat-icon class="icon-full">attach_file</mat-icon>
               {{ t("attachments.attach_file") }}
             </button>
-            <input type="file" [hidden]="true" (change)="onFileSelected($event)" />
-
-            @if (this.storyStore.selectedStoryAttachments().length > 0) {
+            <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
+            @let selectedStoryAttachments = storyStore.selectedStoryAttachments();
+            @if (selectedStoryAttachments.length > 0) {
               <mat-expansion-panel expanded>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>attachment</mat-icon>
-                    Attachments ({{ this.storyStore.selectedStoryAttachments().length }})
+                    Attachments ({{ selectedStoryAttachments.length }})
                   </mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-table [dataSource]="this.storyStore.selectedStoryAttachments()">
+                <mat-table [dataSource]="selectedStoryAttachments">
                   <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
                     <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
@@ -241,7 +239,6 @@ export class StoryDetailComponent {
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
   fb = inject(FormBuilder);
-  _snackBar = inject(MatSnackBar);
 
   selectedStory = this.storyStore.selectedStoryDetails;
   editor = viewChild.required<EditorComponent>("editorContainer");
@@ -251,9 +248,13 @@ export class StoryDetailComponent {
   statusSelected = model({} as Status);
 
   constructor() {
-    toObservable(this.selectedStory).subscribe((value) => {
+    toObservable(this.selectedStory).subscribe(async (value) => {
       this.form.setValue({ title: value?.title || "" });
       this.statusSelected.set(value.status);
+      if (this.workflowStore.selectedEntity()?.id !== value.workflowId) {
+        await this.workflowStore.refreshWorkflow(value.workflow);
+        this.workflowStore.selectWorkflow(value.workflowId);
+      }
     });
     this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
   }
@@ -263,21 +264,13 @@ export class StoryDetailComponent {
   async submit() {
     const description = await this.editor().save();
     const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
-    this.storyDetailService.patchSelectedStory(data).then((value) => {
-      if (value) {
-        this.notificationService.success({ title: "notification.action.changes_saved" });
-      }
-    });
+    await this.storyDetailService.patchSelectedStory(data);
+    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 
-  cancel() {
-    this.editor().cancel();
+  async cancel() {
+    await this.editor().cancel();
     this.form.setValue({ title: this.selectedStory()?.title || "" });
-  }
-
-  selectFile(): void {
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    fileInput.click();
   }
 
   onFileSelected(event: Event): void {
@@ -339,22 +332,15 @@ export class StoryDetailComponent {
     dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
       if (newWorkflowSlug !== story.workflow.slug) {
         const patchedStory = await this.storyDetailService.patchSelectedStory({ workflow: newWorkflowSlug });
-        if (patchedStory) {
-          this.notificationService.success({ title: "notification.action.changes_saved" });
-          await this.workflowStore.refreshWorkflow(patchedStory.workflow);
-          await this.workflowStore.selectWorkflow(patchedStory.workflow.id);
-          this.statusSelected.set(patchedStory.status);
-        }
+        this.notificationService.success({ title: "notification.action.changes_saved" });
+        this.statusSelected.set(patchedStory.status);
       }
     });
   }
 
-  changeStatus() {
-    this.storyDetailService.patchSelectedStory({ status: this.statusSelected().id }).then((value) => {
-      if (value) {
-        this.notificationService.success({ title: "notification.action.changes_saved" });
-      }
-    });
+  async changeStatus() {
+    await this.storyDetailService.patchSelectedStory({ status: this.statusSelected().id });
+    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 
   compareStatus(o1: Status, o2: Status) {
