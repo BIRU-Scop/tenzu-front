@@ -32,35 +32,33 @@ import { MatIcon } from "@angular/material/icon";
 import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NgTemplateOutlet } from "@angular/common";
+import { SafeHtmlPipe } from "../../../shared/pipes";
 
 @Component({
-    selector: "app-notification",
-    imports: [
-        MatSnackBarLabel,
-        MatSnackBarActions,
-        MatIcon,
-        MatIconButton,
-        MatSnackBarAction,
-        TranslocoDirective,
-        NgTemplateOutlet,
-    ],
-    template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
+  selector: "app-notification",
+  imports: [
+    MatSnackBarLabel,
+    MatSnackBarActions,
+    MatIcon,
+    MatIconButton,
+    MatSnackBarAction,
+    TranslocoDirective,
+    NgTemplateOutlet,
+    SafeHtmlPipe,
+  ],
+  template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
     <ng-template #content let-data="data">
       <div matSnackBarLabel>
-        <p class="mat-title-small">
-          @if (data.translocoTitle) {
-            {{ t(data.title, data.translocoTitleParams) }}
-          } @else {
-            {{ data.title }}
-          }
-        </p>
-        <p class="mat-body-medium">
-          @if (data.translocoDetail && data.detail) {
-            {{ t(data.detail, data.translocoDetailParams) }}
-          } @else if (data.detail) {
-            {{ data.detail }}
-          }
-        </p>
+        @if (data.translocoTitle) {
+          <p class="mat-title-small" [innerHTML]="t(data.title, data.translocoTitleParams) | safeHtml"></p>
+        } @else {
+          <p class="mat-title-small" [innerHTML]="data.title | safeHtml"></p>
+        }
+        @if (data.translocoDetail && data.detail) {
+          <p class="mat-body-medium" [innerHTML]="t(data.detail, data.translocoDetailParams) | safeHtml"></p>
+        } @else if (data.detail) {
+          <p class="mat-body-medium" [innerHTML]="data.detail | safeHtml"></p>
+        }
       </div>
     </ng-template>
     <div class="flex" matSnackBarActions>
@@ -83,8 +81,8 @@ import { NgTemplateOutlet } from "@angular/common";
       }
     }
   </div>`,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent {
   data: NotificationMessage = inject(MAT_SNACK_BAR_DATA);
