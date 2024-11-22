@@ -6,6 +6,7 @@ import {
   StoryAssignmentEventType,
   StoryAttachmentEventType,
   StoryEventType,
+  UserEventType,
   WorkflowEventType,
   WorkflowStatusEventType,
   WorkspaceEventType,
@@ -17,6 +18,7 @@ import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services";
 import { UserMinimal } from "@tenzu/data/user";
 import { StatusDetail } from "@tenzu/data/status";
+import { AuthService } from "@tenzu/data/auth";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyStore = inject(StoryStore);
@@ -229,6 +231,15 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
         },
       });
       break;
+    }
+  }
+}
+
+export async function applyUserEvent(message: WSResponseEvent<unknown>) {
+  const authService = inject(AuthService);
+  switch (message.event.type) {
+    case UserEventType.DeleteUser: {
+      await authService.logout();
     }
   }
 }

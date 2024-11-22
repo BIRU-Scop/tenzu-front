@@ -54,6 +54,10 @@ export enum WorkspaceEventType {
   WorkspaceDelete = "workspaces.delete",
 }
 
+export enum UserEventType {
+  DeleteUser = "users.delete",
+}
+
 export enum FamilyEventType {
   Story = "stories",
   Workflow = "workflows",
@@ -66,4 +70,5 @@ export enum FamilyEventType {
   WorkspaceMembership = "workspacememberships",
   Project = "projects",
   Workspace = "workspaces",
+  User = "users",
 }
