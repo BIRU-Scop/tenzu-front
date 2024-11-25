@@ -23,7 +23,8 @@
     "events": {
       "delete_story": "{{username}} has deleted the story #{{ref}}",
       "delete_project": "{{username}} has deleted the project {{name}}",
-      "delete_workspace": "{{username}} has deleted the workspace {{name}}"
+      "delete_workspace": "{{username}} has deleted the workspace {{name}}",
+      "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow"
     }
   },
   "component": {

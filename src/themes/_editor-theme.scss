@@ -54,9 +54,9 @@
           @media (prefers-color-scheme: light) {
             background-color:  mat.get-theme-color($theme, neutral, 100);
           }
-          border-color: mat.get-theme-color($theme, tertiary, 70);
-          box-shadow: 0 0 3px mat.get-theme-color($theme, tertiary, 70);
-          color: mat.get-theme-color($theme, tertiary, 20);
+          border-color: mat.get-theme-color($theme, primary, 70);
+          box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 70);
+          color: mat.get-theme-color($theme, primary, 20);
           width: 24px;
           height: 24px;
           @apply border;
@@ -64,7 +64,7 @@
           @apply rounded;
         }
         .ce-toolbar__plus:hover, .ce-toolbar__settings-btn:hover {
-          background-color:  mat.get-theme-color($theme, tertiary, 95);
+          background-color:  mat.get-theme-color($theme, primary, 95);
         }
       }
     }
@@ -180,9 +180,9 @@
         box-shadow: none;
       }
       .cdx-quote {
-        background-color: mat.get-theme-color($theme, tertiary, 95);
+        background-color: mat.get-theme-color($theme, primary, 95);
         @apply px-3 py-2 rounded;
-        color: mat.get-theme-color($theme, tertiary, 20);
+        color: mat.get-theme-color($theme, primary, 20);
         .cdx-quote__caption {
           color: mat.get-theme-color($theme, neutral-variant, 60);
           font-size: mat.get-theme-typography($theme, body-small, font-size);

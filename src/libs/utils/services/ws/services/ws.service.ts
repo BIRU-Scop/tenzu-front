@@ -24,6 +24,7 @@ import {
   applyStoryAssignmentEvent,
   applyStoryAttachmentEvent,
   applyStoryEvent,
+  applyUserEvent,
   applyWorkflowEvent,
   applyWorkflowStatusEvent,
   applyWorkspaceEvent,
@@ -147,6 +148,10 @@ export class WsService {
         }
         case FamilyEventType.WorkspaceMembership: {
           // Add handling logic if required
+          break;
+        }
+        case FamilyEventType.User: {
+          await applyUserEvent(message);
           break;
         }
       }

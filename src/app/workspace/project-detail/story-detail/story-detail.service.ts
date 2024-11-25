@@ -21,7 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { ProjectStore } from "@tenzu/data/project";
-import { StoryDetail, StoryService, StoryStore } from "@tenzu/data/story";
+import { StoryDetail, StoryService, StoryStore, StoryUpdate } from "@tenzu/data/story";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
 import { WorkflowStore } from "@tenzu/data/workflow";
@@ -37,14 +37,17 @@ export class StoryDetailService {
   storyService = inject(StoryService);
   router = inject(Router);
 
-  public async patchSelectedStory(data: Partial<StoryDetail>) {
+  public async patchSelectedStory(data: Partial<StoryUpdate>) {
     const project = this.projectStore.selectedEntity();
     const story = this.storyStore.selectedStoryDetails();
     if (project && story) {
-      await this.storyStore.patch(project.id, story, data);
-      return true;
+      return this.storyStore.patch(project.id, story, {
+        ...data,
+        version: story.version,
+        ref: story.ref,
+      });
     }
-    return false;
+    throw new Error("No story to update");
   }
 
   public async deleteSelectedStory() {
