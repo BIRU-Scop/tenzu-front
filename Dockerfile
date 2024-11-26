@@ -3,7 +3,7 @@ ARG NODE_VERSION=20
 FROM node:${NODE_VERSION} AS dev-env
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --force
 COPY --chown=node:node . .
 
 # Step 2: Build the production environment
