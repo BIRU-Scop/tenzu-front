@@ -31,13 +31,11 @@ import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
-import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-workspace-settings",
-  standalone: true,
   imports: [
     AvatarComponent,
     FormsModule,
@@ -48,7 +46,6 @@ import { MatIcon } from "@angular/material/icon";
     MatButton,
     TranslocoDirective,
     ReactiveFormsModule,
-    DescriptionFieldComponent,
     ConfirmDirective,
     MatIcon,
   ],
@@ -74,7 +71,7 @@ import { MatIcon } from "@angular/material/icon";
           </div>
         </div>
         <div class="flex gap-x-4 mt-2" *transloco="let t; prefix: 'commons'">
-          <button mat-flat-button type="submit" class="primary-button" data-testid="workspace-edit-submit">
+          <button mat-flat-button type="submit" class="tertiary-button" data-testid="workspace-edit-submit">
             {{ t("save") }}
           </button>
           <button mat-flat-button (click)="reset()" class="secondary-button">
@@ -99,6 +96,7 @@ import { MatIcon } from "@angular/material/icon";
             mat-flat-button
             class="error-button w-fit"
             appConfirm
+            [data]="{ deleteAction: true }"
             (popupConfirm)="onDelete()"
           >
             {{ t("delete") }}

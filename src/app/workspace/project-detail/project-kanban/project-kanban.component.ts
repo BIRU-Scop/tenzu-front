@@ -39,14 +39,12 @@ import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cd
 import { Status } from "@tenzu/data/status";
 import { Step, Workflow } from "@tenzu/data/workflow";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { pipe, tap } from "rxjs";
+import { distinctUntilChanged, pipe, tap } from "rxjs";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
-import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-project-kanban",
-  standalone: true,
   imports: [
     MatButton,
     TranslocoDirective,
@@ -56,10 +54,10 @@ import { RouterLink } from "@angular/router";
     CdkDrag,
     CdkDropListGroup,
     ProjectKanbanSkeletonComponent,
-    RouterLink,
   ],
   template: `
-    @if (!storyStore.isLoading()){
+    <h1 class="mat-headline-small text-neutral-40">{{ workflowStore.selectedEntity()?.name }}</h1>
+    @if (!storyStore.isLoading()) {
       @if (workflowStore.listStatusesOrdered(); as statuses) {
         <ul
           class="grid grid-flow-col gap-8 kanban-viewport"
@@ -68,10 +66,13 @@ import { RouterLink } from "@angular/router";
           cdkDropListGroup
         >
           @for (status of statuses; track status.id) {
-            @let stories =  storyStore.groupedByStatus()[status.id];
+            @let stories = storyStore.groupedByStatus()[status.id];
 
             <li class="group w-64 flex flex-col overflow-hidden">
-              <app-status-card (movedLeft)="moveStatus(status, $index, Step.LEFT)" (movedRight)="moveStatus(status, $index, Step.RIGHT)" [config]="{ showLeft: !$first, showRight: !$last}" [name]="status.name" [id]="status.id" [isEmpty]="!stories" />
+              <app-status-card (movedLeft)="moveStatus(status, $index, Step.LEFT)"
+                               (movedRight)="moveStatus(status, $index, Step.RIGHT)"
+                               [config]="{ showLeft: !$first, showRight: !$last}" [name]="status.name" [id]="status.id"
+                               [isEmpty]="!stories" />
               <ul
                 [@newStoryFlyIn]="storyStore.entities().length || 0"
                 [id]="status.id"
@@ -79,8 +80,8 @@ import { RouterLink } from "@angular/router";
                 cdkDropList [cdkDropListData]="status" (cdkDropListDropped)="drop($event)"
               >
                 @for (story of stories; track story.ref) {
-                  <li  cdkDrag [cdkDragData]="story" class="w-60">
-                    <app-story-card  [ref]="story.ref" [title]="story.title" [users]="story.assignees" />
+                  <li cdkDrag [cdkDragData]="story" class="w-60">
+                    <app-story-card [ref]="story.ref" [title]="story.title" [users]="story.assignees" />
                   </li>
                 }
               </ul>
@@ -94,19 +95,20 @@ import { RouterLink } from "@angular/router";
             </li>
           }
           <li>
-            <button mat-stroked-button class="tertiary-button whitespace-nowrap w-64" (click)="openCreateStatus($event)">
+            <button mat-stroked-button class="tertiary-button whitespace-nowrap w-64"
+                    (click)="openCreateStatus($event)">
               {{ t("add_status") }}
             </button>
           </li>
         </ul>
       }
-    }@else {
+    } @else {
       <app-project-kanban-skeleton></app-project-kanban-skeleton>
     }
   `,
   styles: `
     .kanban-viewport {
-      height: calc(100vh - var(--mat-toolbar-standard-height) - 32px - 1rem - 42px);
+      height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 36px - 2rem - 12px - 16px);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
@@ -122,7 +124,7 @@ import { RouterLink } from "@angular/router";
           ":enter",
           [
             style({ opacity: 0, height: 0 }),
-            stagger(0, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+            stagger(0, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
           ],
           { optional: true },
         ),
@@ -135,7 +137,7 @@ import { RouterLink } from "@angular/router";
           ":enter",
           [
             style({ opacity: 0, width: 0 }),
-            stagger(0, [animate("400ms ease-out", style({ opacity: 1, width: "192px" }))]),
+            stagger(0, [animate("200ms ease-out", style({ opacity: 1, width: "192px" }))]),
           ],
           { optional: true },
         ),
@@ -150,13 +152,12 @@ export class ProjectKanbanComponent {
   storyStore = inject(StoryStore);
   projectKanbanService = inject(ProjectKanbanService);
   readonly relativeDialog = inject(RelativeDialogService);
-  protected readonly Step = Step;
   limit = signal(100);
   offset = 0;
-
   list = rxMethod<Workflow | null>(
     pipe(
       filterNotNull(),
+      distinctUntilChanged((prev, curr) => prev.id === curr.id),
       tap(async (workflow) => {
         this.breadcrumbStore.setSixthLevel({ label: workflow.name, doTranslation: false });
         while (true) {
@@ -170,8 +171,10 @@ export class ProjectKanbanComponent {
       }),
     ),
   );
+  protected readonly Step = Step;
 
   constructor() {
+    this.storyStore.reset();
     this.list(this.workflowStore.selectedEntity);
     this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
   }
@@ -197,13 +200,13 @@ export class ProjectKanbanComponent {
     };
     const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
       ...matDialogConfig,
-      relativeXPosition: "center",
-      relativeYPosition: "above",
+      relativeXPosition: "auto",
+      relativeYPosition: "auto",
       data: data,
     });
-    dialogRef.afterClosed().subscribe((name?: string) => {
+    dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        this.projectKanbanService.createStory({
+        await this.projectKanbanService.createStory({
           title: name,
           status: statusId,
         });
@@ -235,16 +238,17 @@ export class ProjectKanbanComponent {
       relativeXPosition: "left",
       data: data,
     });
-    dialogRef.afterClosed().subscribe((name?: string) => {
+    dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
         const color = Math.floor(Math.random() * (8 - 1) + 1);
-        this.projectKanbanService.createStatus({
+        await this.projectKanbanService.createStatus({
           name: name,
           color,
         });
       }
     });
   }
+
   async drop(event: CdkDragDrop<Status, Status, Story>) {
     const workflow = this.workflowStore.selectedEntity();
     if (!workflow) {

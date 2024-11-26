@@ -20,7 +20,15 @@
  */
 
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
-import { addEntity, removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
+import {
+  addEntity,
+  EntityId,
+  removeEntity,
+  setAllEntities,
+  setEntity,
+  updateEntity,
+  withEntities,
+} from "@ngrx/signals/entities";
 import { Project, ProjectBase } from "./project.model";
 import { inject } from "@angular/core";
 import { WorkspaceService } from "@tenzu/data/workspace";
@@ -31,6 +39,7 @@ import {
   setSelectedEntity,
   withLoadingStatus,
   withSelectedEntity,
+  withWsCommand,
 } from "../../utils/store/store-features";
 import { ProjectService } from "@tenzu/data/project/project.service";
 import { Workflow, WorkflowService } from "@tenzu/data/workflow";
@@ -40,6 +49,7 @@ export const ProjectStore = signalStore(
   withEntities<Project>(),
   withLoadingStatus(),
   withSelectedEntity(),
+  withWsCommand(),
   withMethods(
     (
       store,
@@ -53,6 +63,11 @@ export const ProjectStore = signalStore(
       async createWorkflow(projectId: string, workflow: Pick<Workflow, "name">) {
         await lastValueFrom(workflowService.create(projectId, workflow));
       },
+      addWorkflow(workflow: Workflow) {
+        const project = store.entityMap()[workflow.projectId];
+        project.workflows.push(workflow);
+        patchState(store, updateEntity({ id: project.id, changes: { workflows: project.workflows } }));
+      },
       async getProjectsByWorkspaceId(workspaceId: string) {
         patchState(store, setLoadingBegin());
         const projects = await lastValueFrom(workspaceService.getProjects(workspaceId));
@@ -61,11 +76,16 @@ export const ProjectStore = signalStore(
         return projects;
       },
       async getProject(projectId: string) {
+        const oldSelectedEntityId = store.selectedEntityId() as string;
+        if (oldSelectedEntityId) {
+          store.sendCommand({ command: "unsubscribe_from_project_events", project: oldSelectedEntityId });
+        }
         patchState(store, setLoadingBegin());
         const project = await lastValueFrom(projectService.get(projectId));
         patchState(store, setLoadingEnd());
         patchState(store, setEntity(project));
         patchState(store, setSelectedEntity(projectId));
+        store.sendCommand({ command: "subscribe_to_project_events", project: projectId });
         return project;
       },
       async patchSelectedEntity(project: Partial<ProjectBase>) {
@@ -75,16 +95,23 @@ export const ProjectStore = signalStore(
           patchState(store, setEntity(editedProject));
         }
       },
-      async deleteSelectedEntity() {
-        const selectedEntityId = store.selectedEntityId();
-        const selectedEntity = store.selectedEntity();
-        if (selectedEntityId && selectedEntity) {
-          await lastValueFrom(projectService.delete(selectedEntity.id));
-          patchState(store, removeEntity(selectedEntityId));
-          return selectedEntity;
-        }
-        throw Error(`No entity to delete`);
+      removeEntity(entityId: EntityId) {
+        patchState(store, removeEntity(entityId));
       },
     }),
   ),
+  withMethods((store, projectService = inject(ProjectService)) => ({
+    async deleteSelectedEntity() {
+      const selectedEntityId = store.selectedEntityId();
+      const selectedEntity = store.selectedEntity();
+      if (selectedEntityId && selectedEntity) {
+        store.sendCommand({ command: "unsubscribe_from_project_events", project: selectedEntityId as string });
+        await lastValueFrom(projectService.delete(selectedEntity.id));
+        store.removeEntity(selectedEntityId);
+        store.resetSelectedEntity();
+        return selectedEntity;
+      }
+      throw Error(`No entity to delete`);
+    },
+  })),
 );

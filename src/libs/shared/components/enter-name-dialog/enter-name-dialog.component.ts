@@ -20,6 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from "@angular/core";
+import type { Validators } from "@angular/forms";
 import { FormBuilder, ReactiveFormsModule, ValidatorFn } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import {
@@ -28,13 +29,10 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle,
 } from "@angular/material/dialog";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { KeyValuePipe } from "@angular/common";
-import type { Validators } from "@angular/forms";
 
 type TranslocoParams = Record<string, string | number>;
 
@@ -55,10 +53,8 @@ export type NameDialogData = {
 
 @Component({
   selector: "app-enter-name-dialog",
-  standalone: true,
   imports: [
     MatDialogContent,
-    MatDialogTitle,
     MatFormField,
     MatDialogActions,
     MatDialogClose,
@@ -68,12 +64,10 @@ export type NameDialogData = {
     MatLabel,
     ReactiveFormsModule,
     TranslocoDirective,
-    KeyValuePipe,
   ],
   template: `
     <ng-container *transloco="let t">
       <mat-dialog-content>
-        <div class="flex flex-col gap-4">
           <mat-form-field>
             <mat-label id="aria-label">{{ t(data.label) }}</mat-label>
             <input
@@ -94,10 +88,9 @@ export type NameDialogData = {
               ></mat-error>
             }
           </mat-form-field>
-        </div>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button data-testid="enter-name-submit" mat-flat-button class="primary-button" (click)="submit()">
+        <button data-testid="enter-name-submit" mat-flat-button class="tertiary-button" (click)="submit()">
           {{ t(data.action) }}
         </button>
         <button

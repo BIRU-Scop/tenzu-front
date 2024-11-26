@@ -23,7 +23,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from "@
 import { computed, inject } from "@angular/core";
 import { addEntity, setAllEntities, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { setSelectedEntity, withLoadingStatus, withSelectedEntity } from "../../utils/store/store-features";
-import { Workflow, WorkflowReorderPayload } from "@tenzu/data/workflow/workflow.model";
+import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow/workflow.model";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { lastValueFrom } from "rxjs";
 import { Status } from "@tenzu/data/status";
@@ -68,15 +68,14 @@ export const WorkflowStore = signalStore(
       const refreshedWorkflow = await lastValueFrom(workflowService.get(workflow.projectId, workflow.slug));
       return store.setWorkflow(refreshedWorkflow);
     },
-    async createStatus(projectId: string, status: Pick<Status, "name" | "color">) {
+    addStatus(status: Status) {
       const selectedWorkflow = store.selectedEntity();
       if (selectedWorkflow) {
-        const newStatus = await lastValueFrom(workflowService.createStatus(projectId, selectedWorkflow.slug, status));
         patchState(
           store,
           updateEntity({
             id: selectedWorkflow.id,
-            changes: { ...selectedWorkflow, statuses: [...selectedWorkflow.statuses, newStatus] },
+            changes: { ...selectedWorkflow, statuses: [...selectedWorkflow.statuses, status] },
           }),
         );
         const refreshedWorkflow = store.selectedEntity();
@@ -92,7 +91,7 @@ export const WorkflowStore = signalStore(
       patchState(store, { selectedEntityStatusesOrder: [...selectedEntityStatusOrder] });
       const statuses = store.listStatusesOrdered();
       const status = statuses[newPosition];
-      let payload: WorkflowReorderPayload | null = null;
+      let payload: WorkflowStatusReorderPayload | null = null;
       if (newPosition < oldPosition) {
         payload = {
           statuses: [status.id],
@@ -112,11 +111,10 @@ export const WorkflowStore = signalStore(
       }
       await lastValueFrom(workflowService.reorderStatus(projectId, workflowId, payload));
     },
-    async deleteStatus(projectId: string, statusId: string, moveToStatus: string | undefined) {
+    removeStatus(statusId: string) {
       const selectedWorkflow = store.selectedEntity();
       if (selectedWorkflow) {
         const statusIndex = selectedWorkflow.statuses.findIndex((curr) => statusId === curr.id);
-        await lastValueFrom(workflowService.deleteStatus(projectId, selectedWorkflow.slug, statusId, moveToStatus));
         patchState(
           store,
           updateEntity({
@@ -136,10 +134,9 @@ export const WorkflowStore = signalStore(
         }
       }
     },
-    async editStatus(projectId: string, status: Pick<Status, "name" | "id">) {
+    updateStatus(status: Status) {
       const selectedWorkflow = store.selectedEntity();
       if (selectedWorkflow) {
-        const editedStatus = await lastValueFrom(workflowService.editStatus(projectId, selectedWorkflow.slug, status));
         const statusIndex = selectedWorkflow.statuses.findIndex((curr) => status.id === curr.id);
         patchState(
           store,
@@ -149,7 +146,7 @@ export const WorkflowStore = signalStore(
               ...selectedWorkflow,
               statuses: [
                 ...selectedWorkflow.statuses.slice(0, statusIndex),
-                editedStatus,
+                status,
                 ...selectedWorkflow.statuses.slice(statusIndex + 1),
               ],
             },
@@ -161,6 +158,29 @@ export const WorkflowStore = signalStore(
       const workflow = await lastValueFrom(workflowService.create(projectId, workflowName));
       patchState(store, addEntity(workflow));
       return workflow;
+    },
+  })),
+  withMethods((store, workflowService = inject(WorkflowService)) => ({
+    async createStatus(projectId: string, status: Pick<Status, "name" | "color">) {
+      const selectedWorkflow = store.selectedEntity();
+      if (selectedWorkflow) {
+        const newStatus = await lastValueFrom(workflowService.createStatus(projectId, selectedWorkflow.slug, status));
+        store.addStatus(newStatus);
+      }
+    },
+    async editStatus(projectId: string, status: Pick<Status, "name" | "id">) {
+      const selectedWorkflow = store.selectedEntity();
+      if (selectedWorkflow) {
+        const editedStatus = await lastValueFrom(workflowService.editStatus(projectId, selectedWorkflow.slug, status));
+        store.updateStatus(editedStatus);
+      }
+    },
+    async deleteStatus(projectId: string, statusId: string, moveToStatus: string | undefined) {
+      const selectedWorkflow = store.selectedEntity();
+      if (selectedWorkflow) {
+        await lastValueFrom(workflowService.deleteStatus(projectId, selectedWorkflow.slug, statusId, moveToStatus));
+        store.removeStatus(statusId);
+      }
     },
   })),
 );

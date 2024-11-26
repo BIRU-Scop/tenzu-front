@@ -26,13 +26,14 @@ import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { WorkspaceStore } from "@tenzu/data/workspace";
+import { WorkflowStore } from "@tenzu/data/workflow";
+import { StoryStore } from "@tenzu/data/story";
 
 @Component({
   selector: "app-workspace-project-list",
-  standalone: true,
-  imports: [ProjectCardComponent, TranslocoDirective, MatButton, MatIcon, RouterLink, RouterLinkActive],
+  imports: [ProjectCardComponent, TranslocoDirective, MatButton, MatIcon, RouterLink],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
@@ -65,9 +66,13 @@ import { WorkspaceStore } from "@tenzu/data/workspace";
 export class WorkspaceProjectListComponent {
   projectStore = inject(ProjectStore);
   workspaceStore = inject(WorkspaceStore);
+  workflowStore = inject(WorkflowStore);
+  storyStore = inject(StoryStore);
   breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
+    this.workflowStore.reset();
+    this.storyStore.reset();
     this.breadcrumbStore.setThirdLevel({
       label: "workspace.general_title.workspaceListProjects",
       link: "",

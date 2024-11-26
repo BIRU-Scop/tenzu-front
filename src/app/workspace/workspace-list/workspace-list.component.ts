@@ -39,10 +39,12 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
+import { ProjectStore } from "@tenzu/data/project";
+import { WorkflowStore } from "@tenzu/data/workflow";
+import { StoryStore } from "@tenzu/data/story";
 
 @Component({
   selector: "app-workspace-list",
-  standalone: true,
   imports: [
     WorkspaceCardComponent,
     MatIcon,
@@ -100,7 +102,7 @@ import { Validators } from "@angular/forms";
           <li>
             <app-workspace-skeleton></app-workspace-skeleton>
             <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-              @for (skeleton of skeletons; track skeleton) {
+              @for (skeleton of skeletons; track $index) {
                 <li><app-card-skeleton></app-card-skeleton></li>
               }
             </ul>
@@ -117,7 +119,7 @@ import { Validators } from "@angular/forms";
           ":enter",
           [
             style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("400ms ease-out", style({ opacity: 1, height: "*" }))]),
+            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
           ],
           { optional: true },
         ),
@@ -129,6 +131,9 @@ import { Validators } from "@angular/forms";
 })
 export class WorkspaceListComponent {
   readonly workspaceStore = inject(WorkspaceStore);
+  readonly projectStore = inject(ProjectStore);
+  readonly workflowStore = inject(WorkflowStore);
+  readonly storyStore = inject(StoryStore);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -148,6 +153,10 @@ export class WorkspaceListComponent {
   };
 
   constructor() {
+    this.projectStore.reset();
+    this.workspaceStore.reset();
+    this.workflowStore.reset();
+    this.storyStore.reset();
     this.init();
   }
 

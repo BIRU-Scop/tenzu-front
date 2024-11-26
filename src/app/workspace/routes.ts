@@ -19,32 +19,55 @@
  *
  */
 
-import { ActivatedRouteSnapshot, Routes } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { inject } from "@angular/core";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { ProjectStore } from "@tenzu/data/project";
 import { WorkflowStore } from "@tenzu/data/workflow/workflow.store";
 import { MembershipStore } from "@tenzu/data/membership";
+import { HttpErrorResponse } from "@angular/common/http";
 
 export async function workspaceResolver(route: ActivatedRouteSnapshot) {
   const workspaceStore = inject(WorkspaceStore);
   const membershipStore = inject(MembershipStore);
-  await membershipStore.listWorkspaceMembership(route.paramMap.get("id")!);
-  await membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!);
-  await membershipStore.listWorkspaceGuest(route.paramMap.get("id")!);
-  return await workspaceStore.get(route.paramMap.get("id")!);
+  const router = inject(Router);
+  try {
+    return Promise.all([
+      workspaceStore.get(route.paramMap.get("id")!),
+      membershipStore.listWorkspaceMembership(route.paramMap.get("id")!),
+      membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!),
+      membershipStore.listWorkspaceGuest(route.paramMap.get("id")!),
+    ]);
+  } catch (error) {
+    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+      return router.navigate(["/404"]);
+    }
+    throw error;
+  }
 }
 
 export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) {
   const projectStore = inject(ProjectStore);
   const workflowStore = inject(WorkflowStore);
   const membershipStore = inject(MembershipStore);
-  await projectStore
-    .getProject(route.paramMap.get("projectId")!)
-    .then((project) => workflowStore.setWorkflows(project.workflows));
-  await membershipStore.listProjectMembership(route.paramMap.get("projectId")!);
-  await membershipStore.listProjectInvitations(route.paramMap.get("projectId")!);
+  const router = inject(Router);
+
+  try {
+    projectStore.reset();
+    return Promise.all([
+      projectStore
+        .getProject(route.paramMap.get("projectId")!)
+        .then((project) => workflowStore.setWorkflows(project.workflows)),
+      membershipStore.listProjectMembership(route.paramMap.get("projectId")!),
+      membershipStore.listProjectInvitations(route.paramMap.get("projectId")!),
+    ]);
+  } catch (error) {
+    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+      return router.navigate(["/404"]);
+    }
+    throw error;
+  }
 }
 
 export const routes: Routes = [

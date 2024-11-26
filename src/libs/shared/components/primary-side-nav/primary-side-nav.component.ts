@@ -27,13 +27,12 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatDivider } from "@angular/material/divider";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NgComponentOutlet, NgTemplateOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
+import { NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
   selector: "app-primary-side-nav",
-  standalone: true,
   imports: [
     MatSidenavContainer,
     MatSidenav,
@@ -50,7 +49,6 @@ import { TranslocoDirective } from "@jsverse/transloco";
     UpperCasePipe,
     TitleCasePipe,
     TranslocoDirective,
-    NgTemplateOutlet,
     NgComponentOutlet,
   ],
   template: `
@@ -67,7 +65,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
               @if (!sideNavStore.resized()) {
                 <div class="flex flex-col ">
                   <div class="mat-label-small text-neutral-60">{{ t(avatar.type) | uppercase }} /</div>
-                  <div class="mat-title-small line-clamp-2">{{ avatar.name | titlecase }}</div>
+                  <div class="text-sm line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
                 </div>
               }
             </div>

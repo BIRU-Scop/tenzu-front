@@ -22,7 +22,7 @@
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { inject } from "@angular/core";
 import { lastValueFrom } from "rxjs";
-import { removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
+import { EntityId, removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
 import { Workspace, WorkspaceCreation, WorkspaceEdition } from "./workspace.model";
 import { WorkspaceService } from "./workspace.service";
 import {
@@ -31,6 +31,7 @@ import {
   setSelectedEntity,
   withLoadingStatus,
   withSelectedEntity,
+  withWsCommand,
 } from "../../utils/store/store-features";
 
 export const WorkspaceStore = signalStore(
@@ -38,6 +39,7 @@ export const WorkspaceStore = signalStore(
   withEntities<Workspace>(),
   withSelectedEntity(),
   withLoadingStatus(),
+  withWsCommand(),
   withMethods((store, workspaceService = inject(WorkspaceService)) => ({
     async list() {
       patchState(store, setLoadingBegin());
@@ -51,11 +53,16 @@ export const WorkspaceStore = signalStore(
       patchState(store, setAllEntities(newWorkspace ? [newWorkspace, ...store.entities()] : []));
     },
     async get(id: string) {
+      const oldSelectedEntityId = store.selectedEntityId();
+      if (oldSelectedEntityId) {
+        store.sendCommand({ command: "unsubscribe_to_workspace_events", workspace: oldSelectedEntityId as string });
+      }
       patchState(store, setLoadingBegin());
       const workspace = await lastValueFrom(workspaceService.get(id));
       patchState(store, setLoadingEnd());
       patchState(store, setEntity(workspace));
       patchState(store, setSelectedEntity(id));
+      store.sendCommand({ command: "subscribe_to_workspace_events", workspace: workspace.id });
       return workspace;
     },
     async patchSelectedEntity(workspace: WorkspaceEdition) {
@@ -65,12 +72,19 @@ export const WorkspaceStore = signalStore(
         patchState(store, setEntity(editedWorkspace));
       }
     },
+    removeEntity(selectedEntityId: EntityId) {
+      patchState(store, removeEntity(selectedEntityId));
+    },
+  })),
+  withMethods((store, workspaceService = inject(WorkspaceService)) => ({
     async deleteSelectedEntity() {
       const selectedEntityId = store.selectedEntityId();
       const selectedEntity = store.selectedEntity();
       if (selectedEntityId && selectedEntity) {
+        store.sendCommand({ command: "unsubscribe_to_workspace_events", workspace: selectedEntityId as string });
         await lastValueFrom(workspaceService.delete(selectedEntity.id));
-        patchState(store, removeEntity(selectedEntityId));
+        store.removeEntity(selectedEntityId);
+        store.resetSelectedEntity();
         return selectedEntity;
       }
       throw Error(`No entity to delete`);

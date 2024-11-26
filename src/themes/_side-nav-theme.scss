@@ -46,36 +46,69 @@ $sidenav-width: 250px;
         content-background-color: transparent
     ));
     .mat-sidenav {
+      @media (prefers-color-scheme: light) {
+        @include mat.sidenav-overrides((
+          container-background-color: mat.get-theme-color($theme, primary, 20),
+          container-text-color: mat.get-theme-color($theme, neutral, 98),
+          container-divider-color: mat.get-theme-color($theme, primary, 20),
+        ));
+        .nav-button {
+          color: mat.get-theme-color($theme, neutral-variant, 80);
+          &:focus {
+            background-color: mat.get-theme-color($theme, neutral-variant, 10);
+            border-top: mat.get-theme-color($theme, neutral-variant, 70) solid 1px;
+            border-bottom: mat.get-theme-color($theme, neutral-variant, 70) solid 1px;
+          }
+          &:hover {
+            background-color: mat.get-theme-color($theme, neutral-variant, 10);
+          }
+          .mat-icon {
+            color: mat.get-theme-color($theme, neutral-variant, 60);
+          }
+        }
+        .mat-divider {
+          box-shadow: 0 0 4px mat.get-theme-color($theme, primary, 80);
+          @include mat.divider-overrides((
+          color: mat.get-theme-color($theme, primary, 80)
+          ))
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        @include mat.sidenav-overrides((
+          container-background-color: mat.get-theme-color($theme, neutral, 100),
+          container-text-color: mat.get-theme-color($theme, neutral, 5),
+          container-divider-color: mat.get-theme-color($theme, neutral, 98),
+        ));
+        .nav-button {
+          color: mat.get-theme-color($theme, neutral-variant, 20);
+          &:focus {
+            background-color: mat.get-theme-color($theme, neutral-variant, 98);
+            border-top: mat.get-theme-color($theme, neutral-variant, 30) solid 1px;
+            border-bottom: mat.get-theme-color($theme, neutral-variant, 30) solid 1px;
+          }
+          &:hover {
+            background-color: mat.get-theme-color($theme, neutral-variant, 98);
+          }
+          .mat-icon {
+            color: mat.get-theme-color($theme, neutral-variant, 40);
+          }
+        }
+        .mat-divider {
+          box-shadow: 0 0 4px mat.get-theme-color($theme, primary, 80);
+          @include mat.divider-overrides((
+          color: mat.get-theme-color($theme, primary, 80)
+          ))
+        }
+      }
       @include mat.sidenav-overrides((
-        container-background-color: mat.get-theme-color($theme, primary, 20),
-        container-text-color: mat.get-theme-color($theme, neutral, 100),
         container-shape: 0px,
-        container-divider-color: mat.get-theme-color($theme, primary, 20),
         container-width: $sidenav-width,
       ));
       .nav-button {
         @apply cursor-pointer;
-        color: mat.get-theme-color($theme, neutral-variant, 90);
         height: var(--mdc-list-list-item-one-line-container-height);
         min-width: var(--mdc-list-list-item-one-line-container-height);
         border: solid 1px transparent;
-        &:focus {
-          background-color: mat.get-theme-color($theme, neutral-variant, 10);
-          border-top: mat.get-theme-color($theme, neutral-variant, 70) solid 1px;
-          border-bottom: mat.get-theme-color($theme, neutral-variant, 70) solid 1px;
-        }
-        &:hover {
-          background-color: mat.get-theme-color($theme, neutral-variant, 10);
-        }
-        .mat-icon {
-          color: mat.get-theme-color($theme, neutral-variant, 60);
-        }
-      }
-      .mat-divider {
-        box-shadow: 0 0 4px mat.get-theme-color($theme, primary, 80);
-        @include mat.divider-overrides((
-          color: mat.get-theme-color($theme, primary, 80)
-        ))
       }
     }
 

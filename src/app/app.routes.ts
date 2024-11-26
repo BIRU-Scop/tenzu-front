@@ -29,7 +29,7 @@ import { ProjectInvitationGuard } from "./guards/project-invitation.guard";
 export const routes: Routes = [
   {
     path: "",
-    loadComponent: () => import("./home/home.component").then((m) => m.HomeComponent),
+    loadComponent: () => import("./home/home.component"),
     providers: [provideTranslocoScope("home")],
     canActivate: [loginGuard],
     canActivateChild: [loginGuard],
@@ -44,11 +44,15 @@ export const routes: Routes = [
       },
       {
         path: "new-project",
-        loadComponent: () =>
-          import("./project/project-create/project-create.component").then((m) => m.ProjectCreateComponent),
+        loadComponent: () => import("./project/project-create/project-create.component"),
         providers: [provideTranslocoScope("project")],
       },
     ],
+  },
+  {
+    path: "404",
+    loadComponent: () => import("./page404/page404.component"),
+    providers: [provideTranslocoScope("errorPages")],
   },
   {
     path: "accept-project-invitation/:token",
@@ -85,5 +89,10 @@ export const routes: Routes = [
         providers: [provideTranslocoScope("signup")],
       },
     ],
+  },
+  {
+    path: "**",
+    loadComponent: () => import("./page404/page404.component"),
+    providers: [provideTranslocoScope("errorPages")],
   },
 ];

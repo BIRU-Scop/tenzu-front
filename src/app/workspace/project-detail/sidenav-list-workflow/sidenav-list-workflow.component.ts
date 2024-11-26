@@ -25,35 +25,27 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { Project, ProjectStore } from "@tenzu/data/project";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatIconAnchor } from "@angular/material/button";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { SideNavStore } from "@tenzu/data/sidenav";
 
 @Component({
   selector: "app-sidenav-list-workflow",
-  standalone: true,
-  imports: [
-    MatIcon,
-    MatListItem,
-    RouterLinkActive,
-    RouterLink,
-    TranslocoDirective,
-    MatIconAnchor,
-    MatNavList,
-    MatListItemIcon,
-  ],
+  imports: [MatIcon, MatListItem, RouterLinkActive, RouterLink, TranslocoDirective, MatNavList, MatListItemIcon],
   template: `
         <ng-container *transloco="let t">
             @let project = projectStore.selectedEntity() ;
             @let workspace = workspaceStore.selectedEntity() ;
             @if (project && workspace) {
                 @if (!sideNavStore.resized()) {
-                    <div class="flex flex-row items-center gap-2 px-2"><span
-                            class="text-neutral-60 mat-body-medium">{{ t("workspace.general_title.kanban") }}</span> <a
+                    <div class="flex flex-row items-center gap-2 px-2">
+                      <span class="text-neutral-60 mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
+                      <a
                             class="nav-button flex flex-row items-center justify-center rounded-full"
+                            [attr.aria-label]="t('workspace.general_title.new_kanban')"
                             [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']">
                         <mat-icon>add</mat-icon>
-                    </a></div>
+                      </a>
+                    </div>
                 } @else {
                     <a class="mb-1 nav-button w-full flex flex-row items-center justify-center"
                        [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']">
@@ -85,7 +77,7 @@ import { SideNavStore } from "@tenzu/data/sidenav";
                                     #routerLinkActive="routerLinkActive"
                                     [activated]="routerLinkActive.isActive"
                             >
-                                <mat-icon>view_column</mat-icon>
+                                <mat-icon class="pt-1">view_column</mat-icon>
                             </a>
                         }
                     }

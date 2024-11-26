@@ -23,7 +23,6 @@ import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { MatError, MatFormField } from "@angular/material/form-field";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/data/user";
@@ -31,24 +30,18 @@ import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-request-reset-password",
-  standalone: true,
   imports: [
     EmailFieldComponent,
     FormsModule,
     MatButton,
-    MatError,
-    MatFormField,
     ReactiveFormsModule,
     TranslocoDirective,
     RouterLink,
     MatDivider,
   ],
-  host: {
-    class: "grow",
-  },
   template: `
     <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-4">
-      <h1 class="mat-headline-medium">
+      <h1 class="mat-headline-medium text-center">
         {{ t(!showConfirmation() ? "title" : "confirm.title") }}
       </h1>
       @if (!showConfirmation()) {
@@ -57,17 +50,23 @@ import { MatDivider } from "@angular/material/divider";
         </p>
         <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
           <app-email-field formControlName="email"></app-email-field>
-          <button data-testid="submitCreateAccount-button" mat-flat-button class="primary-button" type="submit">
+          <button data-testid="submitResetPassword-button" mat-flat-button class="primary-button" type="submit">
             {{ t("submit") }}
           </button>
         </form>
       } @else {
-        <div class="max-w-2xl flex flex-col items-center gap-y-4">
+        <div class="max-w-2xl flex flex-col gap-y-4 items-center">
           <p class="mat-body-medium text-center">
             {{ t("confirm.subtitle") }}
           </p>
           <p class="mat-body-large font-bold">{{ form.value.email }}</p>
-          <button mat-stroked-button class="primary-button" [routerLink]="['/login']" type="button">
+          <button
+            mat-stroked-button
+            class="primary-button w-fit"
+            data-testid="goBackToLogin-button"
+            [routerLink]="['/login']"
+            type="button"
+          >
             {{ t("confirm.back") }}
           </button>
         </div>

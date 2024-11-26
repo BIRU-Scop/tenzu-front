@@ -29,14 +29,23 @@
 @mixin color-and-typo($theme) {
   .mat-mdc-menu-panel {
     border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 94);
+    border-color:  mat.get-theme-color($theme, neutral, 90);
     border-width: 1px;
     color:  mat.get-theme-color($theme, neutral, 20);
     a {
       text-decoration: none;
     }
+    @media (prefers-color-scheme: dark) {
+      @include mat.menu-overrides((
+        container-color: mat.get-theme-color($theme, neutral, 98),
+      ));
+    }
+    @media (prefers-color-scheme: light) {
+      @include mat.menu-overrides((
+        container-color: mat.get-theme-color($theme, neutral, 100),
+      ));
+    }
     @include mat.menu-overrides((
-      container-color: mat.get-theme-color($theme, neutral, 100),
       item-label-text-size : mat.get-theme-typography($theme, label-large, font-size),
       item-label-text-line-height : mat.get-theme-typography($theme, label-large, line-height),
       item-label-text-color:  mat.get-theme-color($theme, neutral-variant, 20),

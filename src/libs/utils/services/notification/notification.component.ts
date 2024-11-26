@@ -32,10 +32,10 @@ import { MatIcon } from "@angular/material/icon";
 import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NgTemplateOutlet } from "@angular/common";
+import { SafeHtmlPipe } from "../../../shared/pipes";
 
 @Component({
   selector: "app-notification",
-  standalone: true,
   imports: [
     MatSnackBarLabel,
     MatSnackBarActions,
@@ -44,28 +44,25 @@ import { NgTemplateOutlet } from "@angular/common";
     MatSnackBarAction,
     TranslocoDirective,
     NgTemplateOutlet,
+    SafeHtmlPipe,
   ],
   template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
     <ng-template #content let-data="data">
       <div matSnackBarLabel>
-        <p class="mat-title-small">
-          @if (data.translocoTitle) {
-            {{ t(data.title, data.translocoTitleParams) }}
-          } @else {
-            {{ data.title }}
-          }
-        </p>
-        <p class="mat-body-medium">
-          @if (data.translocoDetail && data.detail) {
-            {{ t(data.detail, data.translocoDetailParams) }}
-          } @else if (data.detail) {
-            {{ data.detail }}
-          }
-        </p>
+        @if (data.translocoTitle) {
+          <p class="mat-title-small" [innerHTML]="t(data.title, data.translocoTitleParams) | safeHtml"></p>
+        } @else {
+          <p class="mat-title-small" [innerHTML]="data.title | safeHtml"></p>
+        }
+        @if (data.translocoDetail && data.detail) {
+          <p class="mat-body-medium" [innerHTML]="t(data.detail, data.translocoDetailParams) | safeHtml"></p>
+        } @else if (data.detail) {
+          <p class="mat-body-medium" [innerHTML]="data.detail | safeHtml"></p>
+        }
       </div>
     </ng-template>
     <div class="flex" matSnackBarActions>
-      <button mat-icon-button matSnackBarAction (click)="close()">
+      <button mat-icon-button matSnackBarAction [attr.aria-label]="t('commons.close')" (click)="close()">
         <mat-icon>close</mat-icon>
       </button>
     </div>

@@ -36,24 +36,23 @@ import { ProjectService, ProjectStore } from "@tenzu/data/project";
 import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
 
 @Component({
-  selector: "app-project-create-form",
-  standalone: true,
-  imports: [
-    MatOption,
-    AvatarComponent,
-    MatSelectTrigger,
-    MatSelect,
-    MatLabel,
-    MatFormField,
-    TranslocoDirective,
-    ReactiveFormsModule,
-    DescriptionFieldComponent,
-    RouterLink,
-    MatButton,
-    MatInput,
-    MatError,
-  ],
-  template: `
+    selector: "app-project-create-form",
+    imports: [
+        MatOption,
+        AvatarComponent,
+        MatSelectTrigger,
+        MatSelect,
+        MatLabel,
+        MatFormField,
+        TranslocoDirective,
+        ReactiveFormsModule,
+        DescriptionFieldComponent,
+        RouterLink,
+        MatButton,
+        MatInput,
+        MatError,
+    ],
+    template: `
     <div class="grid grid-cols-1 place-items-center place-content-center" *transloco="let t">
       <div class="w-min flex flex-col gap-y-8 py-4">
         <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
@@ -61,9 +60,7 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
           <mat-form-field>
             <mat-label>{{ t("commons.workspace") }}</mat-label>
             <mat-select required [hidden]="!workspaceStore.isLoading()" formControlName="workspaceId">
-              @if (selectedWorkspace(); as workspace) {
-                <mat-select-trigger>{{ workspace.name }}</mat-select-trigger>
-              }
+              <mat-select-trigger>{{ selectedWorkspace()?.name }}</mat-select-trigger>
               @for (workspace of workspaceStore.entities(); track workspace.id) {
                 <mat-option value="{{ workspace.id }}">
                   <div class="flex gap-x-2 items-center">
@@ -102,7 +99,7 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
               *transloco="let t; prefix: 'project.new_project'"
               mat-flat-button
               type="submit"
-              class="primary-button"
+              class="tertiary-button"
               data-testid="new-project-submit"
             >
               {{ t("create_project") }}
@@ -115,10 +112,10 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
       </div>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProjectCreateComponent {
+export default class ProjectCreateComponent {
   projectService = inject(ProjectService);
   projectStore = inject(ProjectStore);
   workspaceStore = inject(WorkspaceStore);

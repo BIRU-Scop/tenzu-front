@@ -30,6 +30,9 @@ export type StoryReorderPayload = {
   status: string;
   stories: number[];
 };
+export type StoryReorderPayloadEvent = StoryReorderPayload & {
+  status: Status;
+};
 
 export type Story = {
   ref: number;
@@ -37,6 +40,7 @@ export type Story = {
   version: number;
   description: string;
   workflowId: string;
+  projectId: string;
   status: Status;
   assignees: Array<UserMinimal>;
 };
@@ -48,7 +52,7 @@ export interface createdBy {
 }
 
 export interface StoryDetail extends Story {
-  workflow: Pick<Workflow, "id" | "name" | "slug">;
+  workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
   prev: null | {
     ref: Story["ref"];
     title: Story["title"];
@@ -69,6 +73,15 @@ export type StoryCreate = {
   title: string;
   status: string;
 };
+
+export interface StoryUpdate {
+  ref: Story["ref"];
+  version: Story["version"];
+  status?: Story["status"]["id"];
+  title?: Story["title"];
+  description?: Story["description"];
+  workflow?: Workflow["slug"];
+}
 
 export type StoryAttachment = {
   id: string;

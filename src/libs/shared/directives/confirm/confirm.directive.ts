@@ -38,7 +38,7 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from "@angular/material/dialog";
-import { JsonPipe, NgComponentOutlet } from "@angular/common";
+import { NgComponentOutlet } from "@angular/common";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 export type ConfirmPopupData = {
@@ -77,18 +77,16 @@ export type ConfirmPopupData = {
         @if (data().deleteAction) {
           <button mat-flat-button class="error-button" [mat-dialog-close]="true">{{ t("deleteAction") }}</button>
         } @else {
-          <button mat-flat-button class="primary-button" [mat-dialog-close]="true">{{ t("confirmAction") }}</button>
+          <button mat-flat-button class="tertiary-button" [mat-dialog-close]="true">{{ t("confirmAction") }}</button>
         }
       </mat-dialog-actions>
     </ng-container>
   `,
-  standalone: true,
   imports: [
     MatDialogActions,
     MatButton,
     MatDialogClose,
     MatDialogContent,
-    JsonPipe,
     NgComponentOutlet,
     TranslocoDirective,
     MatDialogTitle,

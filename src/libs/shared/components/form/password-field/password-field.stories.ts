@@ -171,4 +171,13 @@ export const EnabledStrengthBar: Story = {
   },
 };
 
+export const EnabledStrengthBarIgnoredCharactersOnly: Story = {
+  args: {
+    value: "£ùéà学中カタカナ",
+    settings: {
+      strength: { enabled: true, showBar: true },
+    },
+  },
+};
+
 export default meta;

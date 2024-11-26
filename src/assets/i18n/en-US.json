@@ -16,6 +16,31 @@
     },
     "action": {
       "changes_saved": "Changes saved"
+    },
+    "project": {
+      "deleted": "The project {{ name }} has been deleted"
+    },
+    "events": {
+      "delete_story": "{{username}} has deleted the story #{{ref}}",
+      "delete_project": "{{username}} has deleted the project {{name}}",
+      "delete_workspace": "{{username}} has deleted the workspace {{name}}",
+      "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "You don’t have any notification.",
+    "only_unread": "Show only unread",
+    "all_read": "You have read all your notifications.",
+    "types": {
+      "stories.assign.self": "<span class='text-neutral-0'>{{fullName}}</span> assigned you the story",
+      "stories.unassign.self": "<span class='text-neutral-0'>{{fullName}}</span> unassigned you from the story",
+      "stories.assign": "<span class='text-neutral-0'>{{fullName}}</span> was assigned to the story",
+      "stories.unassign": "<span class='text-neutral-0'>{{fullName}}</span> was unassigned to the story",
+      "stories.status_change": "<span class='text-neutral-0'>{{fullName}}</span> changed the status of the story to <span class='text-neutral-0'>{{status}}</span>",
+      "story_comment.create": "<span class='text-neutral-0'>{{fullName}}</span> commented on the story",
+      "stories.delete": "<span class='text-neutral-0'>{{fullName}}</span> deleted the story {{story}}",
+      "stories.workflow_change": "<span class='text-neutral-0'>{{fullName}}</span> moved the story to <span class='text-neutral-0'>{{status}}</span> status on the  <span class='text-neutral-0'>{{workflow}}</span> workflow."
     }
   },
   "component": {
@@ -27,7 +52,8 @@
       "hints": {
         "minLength": "Your password needs to be at least {{ minLength }} long.",
         "diversity": "Your password needs to have at least {{ diversityDifference }} of these kinds:",
-        "diversityType": "1 {{ diversityType }}"
+        "diversityType": "1 {{ diversityType }}",
+        "symbolCharacters": "Note: Only <strong>{{ symbols }}</strong> symbols count toward strength."
       },
       "errors": {
         "required": "{{ label }} is <strong>required</strong>",
@@ -88,6 +114,7 @@
     "projects": "Projects",
     "workspace": "Workspace",
     "cancel": "Cancel",
+    "close": "Close",
     "save": "Save"
   },
   "general": {

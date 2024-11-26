@@ -3,11 +3,11 @@ import AxeBuilder from "@axe-core/playwright";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  const firstProjectLink = page.locator("css=.mat-mdc-card").nth(0).getByRole("link");
-  await expect(firstProjectLink).toBeVisible();
-  await firstProjectLink.click();
+  const firstWorkspaceLink = page.locator("css=.mat-mdc-card").first().getByRole("link");
+  await expect(firstWorkspaceLink).toBeVisible();
+  await firstWorkspaceLink.click();
   await page.getByTestId("settings-link").click();
-  await expect(page.getByRole("heading")).toBeVisible();
+  await expect(page.locator("button[type=submit]")).toBeVisible();
 });
 
 test.describe("Workspace settings", () => {

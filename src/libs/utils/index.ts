@@ -21,5 +21,6 @@
 
 export * from "./injectors";
 export * from "./functions";
+export * from "./observables";
 export * from "./validators";
 export * from "./mat-config";

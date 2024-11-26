@@ -30,7 +30,7 @@
 
 
 @mixin color-and-typo($theme) {
-    .mdc-checkbox {
+    .mdc-checkbox, .mat-mdc-checkbox {
       @include mat.checkbox-overrides((
         state-layer-size: 32px,
         selected-icon-color: mat.get-theme-color($theme, primary, 90),
@@ -45,6 +45,7 @@
       ));
       .mdc-checkbox__background {
         box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+        border-width: 1px;
       }
       .mdc-checkbox__native-control:focus:focus:not(:checked)~.mdc-checkbox__background, .mdc-checkbox__native-control:focus:focus:not(:indeterminate)~.mdc-checkbox__background {
         border-color: mat.get-theme-color($theme, primary, 60);

@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, model, viewChild 
 import { StoryStore } from "@tenzu/data/story";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconAnchor, MatIconButton } from "@angular/material/button";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -33,7 +33,6 @@ import { DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { NotificationService, RelativeDialogService } from "@tenzu/utils/services";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
@@ -47,11 +46,10 @@ import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 
 @Component({
   selector: "app-story-detail",
-  standalone: true,
   imports: [
     UserCardComponent,
     MatButton,
@@ -70,22 +68,36 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     MatIconAnchor,
     AvatarListComponent,
     MatDivider,
-    AvatarComponent,
     MatSelect,
-    MatLabel,
     MatOption,
   ],
-  template: `
+  template: `<ng-container *transloco="let t; prefix: 'workflow.detail_story'">
     @if (this.selectedStory(); as story) {
-      <div class="flex flex-row gap-8" *transloco="let t; prefix: 'workflow.detail_story'">
+      <div class="flex gap-1 items-baseline mb-2">
+        <span class="text-neutral-40 mat-title-small">{{ t("workflow") }}</span>
+        <span class="text-neutral-20 mat-title-medium">{{ story.workflow.name }}</span>
+        <button
+          class="icon-sm"
+          mat-icon-button
+          type="button"
+          [attr.aria-label]="t('change_workflow')"
+          (click)="openChooseWorkflowDialog($event)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <span class="text-neutral-40 mat-title-small">/</span>
+        <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
+        <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
+      </div>
+      <div class="flex flex-row gap-8">
         <div class="basis-2/3 flex flex-col gap-y-6">
           <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
             <mat-form-field appearance="fill" class="title-field">
-              <input matInput data-testid="title-input" formControlName="title" />
+              <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
             </mat-form-field>
             <app-editor #editorContainer [data]="storyStore.selectedStoryDetails().description"></app-editor>
             <div class="flex flex-row gap-2">
-              <button class="primary-button" mat-flat-button type="submit">{{ t("save") }}</button>
+              <button class="tertiary-button" mat-flat-button type="submit">{{ t("save") }}</button>
               <button class="secondary-button" mat-flat-button type="button" (click)="cancel()">
                 {{ t("cancel") }}
               </button>
@@ -93,21 +105,21 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           </form>
           <mat-divider></mat-divider>
           <div class="flex flex-col gap-y-4">
-            <button class="tertiary-button w-fit" mat-flat-button type="button" (click)="selectFile()">
+            <button class="primary-button w-fit" mat-flat-button type="button" (click)="fileUpload.click()">
               <mat-icon class="icon-full">attach_file</mat-icon>
               {{ t("attachments.attach_file") }}
             </button>
-            <input type="file" [hidden]="true" (change)="onFileSelected($event)" />
-
-            @if (this.storyStore.selectedStoryAttachments().length > 0) {
+            <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
+            @let selectedStoryAttachments = storyStore.selectedStoryAttachments();
+            @if (selectedStoryAttachments.length > 0) {
               <mat-expansion-panel expanded>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>attachment</mat-icon>
-                    Attachments ({{ this.storyStore.selectedStoryAttachments().length }})
+                    Attachments ({{ selectedStoryAttachments.length }})
                   </mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-table [dataSource]="this.storyStore.selectedStoryAttachments()">
+                <mat-table [dataSource]="selectedStoryAttachments">
                   <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
                     <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
@@ -206,13 +218,14 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
               message: t('confirm_delete_story_message'),
             }"
             (popupConfirm)="onDelete()"
+            [attr.aria-label]="t('delete_story')"
           >
             <mat-icon>delete</mat-icon>
           </button>
         </div>
       </div>
     }
-  `,
+  </ng-container> `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -226,7 +239,6 @@ export class StoryDetailComponent {
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
   fb = inject(FormBuilder);
-  _snackBar = inject(MatSnackBar);
 
   selectedStory = this.storyStore.selectedStoryDetails;
   editor = viewChild.required<EditorComponent>("editorContainer");
@@ -236,13 +248,15 @@ export class StoryDetailComponent {
   statusSelected = model({} as Status);
 
   constructor() {
-    toObservable(this.selectedStory).subscribe((value) => {
+    toObservable(this.selectedStory).subscribe(async (value) => {
       this.form.setValue({ title: value?.title || "" });
       this.statusSelected.set(value.status);
+      if (this.workflowStore.selectedEntity()?.id !== value.workflowId) {
+        await this.workflowStore.refreshWorkflow(value.workflow);
+        this.workflowStore.selectWorkflow(value.workflowId);
+      }
     });
-    // TODO: get workflow URL when we implements multi workflow
-    this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
-    this.breadcrumbStore.setSixthLevel({ label: "workflow.detail_story.label", link: "", doTranslation: true });
+    this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
   }
 
   assigned = computed(() => this.selectedStory().assignees || []);
@@ -250,21 +264,13 @@ export class StoryDetailComponent {
   async submit() {
     const description = await this.editor().save();
     const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
-    this.storyDetailService.patchSelectedStory(data).then((value) => {
-      if (value) {
-        this.notificationService.success({ title: "notification.action.changes_saved" });
-      }
-    });
+    await this.storyDetailService.patchSelectedStory(data);
+    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 
-  cancel() {
-    this.editor().cancel();
+  async cancel() {
+    await this.editor().cancel();
     this.form.setValue({ title: this.selectedStory()?.title || "" });
-  }
-
-  selectFile(): void {
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    fileInput.click();
   }
 
   onFileSelected(event: Event): void {
@@ -314,12 +320,27 @@ export class StoryDetailComponent {
     );
   }
 
-  changeStatus() {
-    this.storyDetailService.patchSelectedStory({ status: this.statusSelected() }).then((value) => {
-      if (value) {
-        this.notificationService.success({ title: "notification.action.save" });
+  openChooseWorkflowDialog(event: MouseEvent): void {
+    const story = this.storyStore.selectedStoryDetails();
+    const dialogRef = this.relativeDialog.open(ChooseWorkflowDialogComponent, event?.target, {
+      ...matDialogConfig,
+      relativeXPosition: "right",
+      data: {
+        currentWorkflowSlug: story.workflow.slug,
+      },
+    });
+    dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
+      if (newWorkflowSlug !== story.workflow.slug) {
+        const patchedStory = await this.storyDetailService.patchSelectedStory({ workflow: newWorkflowSlug });
+        this.notificationService.success({ title: "notification.action.changes_saved" });
+        this.statusSelected.set(patchedStory.status);
       }
     });
+  }
+
+  async changeStatus() {
+    await this.storyDetailService.patchSelectedStory({ status: this.statusSelected().id });
+    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 
   compareStatus(o1: Status, o2: Status) {

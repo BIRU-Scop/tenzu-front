@@ -19,14 +19,14 @@
  *
  */
 
-import { Status } from "../status/status.model";
+import { Status } from "../status/";
 
 export enum Step {
   LEFT = -1,
   RIGHT = 1,
 }
 
-export type WorkflowReorderPayload = {
+export type WorkflowStatusReorderPayload = {
   statuses: string[];
   reorder: {
     place: "after" | "before";

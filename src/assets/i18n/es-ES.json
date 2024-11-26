@@ -8,7 +8,8 @@
       "hints": {
         "minLength": "Tu contraseña debe tener al menos {{ minLength }} de longitud.",
         "diversity": "Tu contraseña debe tener al menos {{ diversityDifference }} de estos tipos:",
-        "diversityType": "1 {{ diversityType }}"
+        "diversityType": "1 {{ diversityType }}",
+        "symbolCharacters": "Nota: Solo <strong>{{ symbols }}</strong> símbolos cuentan para la fuerza."
       },
       "errors": {
         "required": "El campo de contraseña es <strong>obligatorio</strong>",

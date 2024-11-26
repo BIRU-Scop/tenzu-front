@@ -31,12 +31,11 @@ import { Workflow, WorkflowStore } from "@tenzu/data/workflow";
 import { ProjectStore } from "@tenzu/data/project";
 
 @Component({
-  selector: "app-project-kanban-create",
-  standalone: true,
-  imports: [ProjectKanbanSkeletonComponent, TranslocoDirective],
-  template: ` <app-project-kanban-skeleton *transloco="let t"></app-project-kanban-skeleton> `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: "app-project-kanban-create",
+    imports: [ProjectKanbanSkeletonComponent, TranslocoDirective],
+    template: ` <app-project-kanban-skeleton *transloco="let t"></app-project-kanban-skeleton> `,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);

@@ -19,15 +19,14 @@
  *
  */
 
-import { Component, Directive, ElementRef, inject, OnInit, output, ViewContainerRef, signal } from "@angular/core";
+import { Component, Directive, ElementRef, inject, OnInit, output, signal, ViewContainerRef } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
-import { MatListItem, MatListItemIcon, MatListItemMeta, MatList } from "@angular/material/list";
+import { MatListItemIcon } from "@angular/material/list";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
   selector: "app-resize-button-component",
-  standalone: true,
-  imports: [MatIcon, MatList, MatListItem, MatListItemIcon, MatListItemMeta, TranslocoDirective],
+  imports: [MatIcon, MatListItemIcon, TranslocoDirective],
   template: `
     <button
       (click)="toggle()"

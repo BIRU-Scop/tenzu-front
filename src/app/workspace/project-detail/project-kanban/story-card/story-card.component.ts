@@ -29,14 +29,12 @@ import { matDialogConfig } from "@tenzu/utils";
 import { RelativeDialogService } from "@tenzu/utils/services";
 import { MembershipStore } from "@tenzu/data/membership";
 import { ProjectKanbanService } from "../project-kanban.service";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-story-card",
-  standalone: true,
   imports: [
     MatCard,
     MatCardHeader,
@@ -44,9 +42,7 @@ import { MatIcon } from "@angular/material/icon";
     MatCardContent,
     AvatarListComponent,
     MatCardTitle,
-    MatButton,
     TranslocoDirective,
-    AvatarComponent,
     MatIcon,
     MatIconButton,
   ],
@@ -55,7 +51,7 @@ import { MatIcon } from "@angular/material/icon";
       <mat-card-header>
         <mat-card-title
           ><a [routerLink]="['../..', 'story', ref()]" class="line-clamp-2 w-fit"
-            ><span class="text-tertiary-40">#{{ ref() }}</span> {{ title() }}</a
+            ><span class="text-tertiary-30">#{{ ref() }}</span> {{ title() }}</a
           ></mat-card-title
         >
       </mat-card-header>
@@ -94,17 +90,18 @@ export class StoryCardComponent {
     const teamMembers = this.membershipStore.projectEntities();
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
-      relativeXPosition: "left",
+      relativeXPosition: "auto",
+      relativeYPosition: "auto",
       data: {
         assigned: this.users(),
         teamMembers: teamMembers,
       },
     });
-    dialogRef.componentInstance.memberAssigned.subscribe((username) =>
-      this.projectKanbanService.assignStory(username, null, this.ref()),
+    dialogRef.componentInstance.memberAssigned.subscribe(
+      async (username) => await this.projectKanbanService.assignStory(username, null, this.ref()),
     );
-    dialogRef.componentInstance.memberUnassigned.subscribe((username) =>
-      this.projectKanbanService.removeAssignStory(username, null, this.ref()),
+    dialogRef.componentInstance.memberUnassigned.subscribe(
+      async (username) => await this.projectKanbanService.removeAssignStory(username, null, this.ref()),
     );
   }
 }

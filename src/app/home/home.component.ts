@@ -19,11 +19,10 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { RouterLink, RouterOutlet } from "@angular/router";
-import { MatIconAnchor } from "@angular/material/button";
 import { DomSanitizer } from "@angular/platform-browser";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -31,28 +30,40 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { UserStore } from "@tenzu/data/user";
 import { AuthService } from "@tenzu/data/auth";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { darkModeOn$ } from "@tenzu/utils";
+import { RelativeDialogService } from "@tenzu/utils/services";
+import { MatIconButton } from "@angular/material/button";
+import { NotificationsComponent } from "./notifications/notifications.component";
+import { MatBadge } from "@angular/material/badge";
+import { NotificationsComponentService } from "./notifications/notifications-component.service";
+import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-home",
-  standalone: true,
   imports: [
     AvatarComponent,
     MatToolbar,
     MatIcon,
     RouterLink,
     RouterOutlet,
-    MatIconAnchor,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
     TranslocoDirective,
     UserCardComponent,
+    MatIconButton,
+    MatBadge,
+    MatDivider,
   ],
   template: `
-    <mat-toolbar role="banner" class="flex justify-between" *transloco="let t; prefix: 'home.navigation'">
+    <mat-toolbar role="banner" class="flex" *transloco="let t; prefix: 'home.navigation'">
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
-        <mat-icon class="icon-full" svgIcon="logo-text"></mat-icon>
+        <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'"></mat-icon>
       </a>
+      <div class="mx-auto"></div>
+      <button mat-icon-button (click)="openNotificationDialog($event)"><mat-icon [matBadge]="notificationsComponentService.count.unread()" [matBadgeHidden]="!notificationsComponentService.count.unread()">notifications</mat-icon></button>
+      <mat-divider class="h-1/2 !mx-2" [vertical]="true"></mat-divider>
       @let myUser = userStore.myUser();
         <button>
           <app-avatar
@@ -87,16 +98,33 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
+export default class HomeComponent implements OnInit {
   userStore = inject(UserStore);
   authService = inject(AuthService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
+  darkModeOn = toSignal(darkModeOn$);
+  relativeDialog = inject(RelativeDialogService);
+  notificationsComponentService = inject(NotificationsComponentService);
+
   constructor() {
     this.iconRegistry.addSvgIcon("logo-text", this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu.svg"));
+    this.iconRegistry.addSvgIcon(
+      "logo-text-dark",
+      this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu-dark.svg"),
+    );
+  }
+  async ngOnInit() {
+    await this.notificationsComponentService.getCount();
   }
 
-  logout() {
-    this.authService.logout();
+  async logout() {
+    await this.authService.logout();
+  }
+  openNotificationDialog(even: MouseEvent) {
+    this.relativeDialog.open(NotificationsComponent, even?.target, {
+      relativeXPosition: "left",
+      relativeYPosition: "below",
+    });
   }
 }

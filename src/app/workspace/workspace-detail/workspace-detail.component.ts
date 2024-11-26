@@ -21,18 +21,14 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav/";
 import { WorkspaceStore } from "@tenzu/data/workspace";
-import { JsonPipe } from "@angular/common";
-import { BreadcrumbComponent } from "@tenzu/shared/components/breadcrumb";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/data/sidenav";
 
 @Component({
   selector: "app-workspace-detail",
-  standalone: true,
-  imports: [RouterOutlet, PrimarySideNavComponent, JsonPipe, BreadcrumbComponent],
+  imports: [RouterOutlet],
   template: ` <router-outlet />`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -23,30 +23,31 @@
 // Proceed with caution if making changes to this file.
 
 @use 'sass:map';
+@use 'sass:color';
 @use '@angular/material' as mat;
 
-// Note: Color palettes are generated from primary: #00277f, secondary: #fbc257, tertiary: #0eb188, neutral: #88959d
-$_palettes: (
+// Note: Color palettes are generated from primary: #2a3c96, secondary: #fbc259, tertiary: #0eb188, neutral: #88959d
+$_light_palettes: (
   primary: (
-    0: #000000,
-    10: #090c1e,
-    20: #141c46,
-    25: #19245a,
-    30: #1f2c6e,
-    35: #243482,
-    40: #2a3c96,
-    50: #354cbe,
-    60: #566ad0,
-    70: #7e8edb,
-    80: #a6b1e6,
-    90: #ced4f1,
-    95: #e2e5f7,
-    98: #eef0fa,
-    99: #f2f3fb,
-    100: #f6f7fc,
+    0: #03050c,
+    10: #070a18,
+    20: #0e1330,
+    25: #11183c,
+    30: #141d48,
+    35: #182254,
+    40: #1b2660,
+    50: #223078,
+    60: #4e5993,
+    70: #7f8ac0,
+    80: #a7acc9,
+    90: #d3d6e4,
+    95: #e9eaf2,
+    98: #f3f3f9,
+    99: #f4f5fa,
+    100: #f6f7fb,
   ),
   secondary: (
-    0: #000000,
+    0: #150e03,
     10: #211601,
     20: #533602,
     25: #6c4703,
@@ -64,7 +65,7 @@ $_palettes: (
     100: #fff9ee,
   ),
   tertiary: (
-    0: #000000,
+    0: #000c06,
     10: #03231b,
     20: #07523f,
     25: #086a52,
@@ -82,7 +83,7 @@ $_palettes: (
     100: #f3fefb,
   ),
   neutral: (
-    0: #000000,
+    0: #010101,
     5: #060706,
     10: #121413,
     15: #1e2221,
@@ -99,7 +100,7 @@ $_palettes: (
     95: #ebedec,
     98: #f3f4f4,
     99: #f5f6f6,
-    100: #ffffff,
+    100: #fefefe,
     4: #030404,
     6: #080909,
     12: #191c1b,
@@ -112,7 +113,7 @@ $_palettes: (
     96: #edefef
   ),
   neutral-variant: (
-    0: #000000,
+    0: #030605,
     10: #070909,
     20: #1c2726,
     25: #273535,
@@ -130,7 +131,7 @@ $_palettes: (
     100: #ebf0f0
   ),
   error: (
-    0: #000000,
+    0: #110000,
     10: #2c0707,
     20: #580e0e,
     25: #6e1111,
@@ -145,33 +146,80 @@ $_palettes: (
     95: #fce9e9,
     98: #fef6f6,
     99: #fefbfb,
-    100: #ffffff,
+    100: #fffefe,
   ),
 );
-$_rest: (
-  secondary: map.get($_palettes, secondary),
-  neutral: map.get($_palettes, neutral),
-  neutral-variant: map.get($_palettes,  neutral-variant),
-  error: map.get($_palettes, error),
-);
-$_primary: map.merge(map.get($_palettes, primary), $_rest);
-$_tertiary: map.merge(map.get($_palettes, tertiary), $_rest);
 
+$_inverted_primary: ();
+$_inverted_secondary: ();
+$_inverted_tertiary: ();
+$_inverted_neutral: ();
+$_inverted_neutral-variant: ();
+$_inverted_error: ();
+
+@each $key, $value in map.get($_light_palettes, primary) {
+  $map: ();
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_primary: map.merge($_inverted_primary, $map);
+}
+@each $key, $value in map.get($_light_palettes, secondary) {
+  $map: ();
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_secondary: map.merge($_inverted_secondary, $map);
+}
+@each $key, $value in map.get($_light_palettes, tertiary) {
+  $map: ();
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_tertiary: map.merge($_inverted_tertiary, $map);
+}
+@each $key, $value in map.get($_light_palettes, neutral) {
+  $map: ();
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_neutral: map.merge($_inverted_neutral, $map);
+}
+@each $key, $value in map.get($_light_palettes, neutral-variant) {
+  $map: ();
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_neutral-variant: map.merge($_inverted_neutral-variant, $map);
+}
+@each $key, $value in map.get($_light_palettes, error) {
+  $map: ();
+  $map: map.merge($map, ($key: color.complement(color.invert($value))) );
+  $_inverted_error: map.merge($_inverted_error, $map);
+}
+
+$_rest_light: (
+  secondary: map.get($_light_palettes, secondary),
+  neutral: map.get($_light_palettes, neutral),
+  neutral-variant: map.get($_light_palettes, neutral-variant),
+  error: map.get($_light_palettes, error),
+);
+$_primary_light: map.merge(map.get($_light_palettes, primary), $_rest_light);
+$_tertiary_light: map.merge(map.get($_light_palettes, tertiary), $_rest_light);
 $light-theme: mat.define-theme((
   color: (
     theme-type: light,
-    primary: $_primary,
-    tertiary: $_tertiary,
+    primary: $_primary_light,
+    tertiary: $_tertiary_light,
   ),
   typography: (
     plain-family: 'Lexend',
   ),
 ));
+
+$_rest_dark: (
+  secondary: $_inverted_secondary,
+  neutral: $_inverted_neutral,
+  neutral-variant: $_inverted_neutral-variant,
+  error: $_inverted_error,
+);
+$_primary_dark: map.merge($_inverted_primary, $_rest_dark);
+$_tertiary_dark: map.merge($_inverted_tertiary, $_rest_dark);
 $dark-theme: mat.define-theme((
   color: (
     theme-type: dark,
-    primary: $_primary,
-    tertiary: $_tertiary,
+    primary: $_primary_dark,
+    tertiary: $_tertiary_dark,
   ),
   typography: (
     plain-family: 'Lexend',

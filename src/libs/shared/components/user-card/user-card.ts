@@ -25,17 +25,16 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
-  selector: "app-user-card",
-  standalone: true,
-  imports: [AvatarComponent, TranslocoDirective],
-  template: ` <div class="flex flex-row gap-2 items-center" *transloco="let t; prefix: 'component.user_card'">
+    selector: "app-user-card",
+    imports: [AvatarComponent, TranslocoDirective],
+    template: ` <div class="flex flex-row gap-2 items-center" *transloco="let t; prefix: 'component.user_card'">
     <app-avatar [rounded]="true" [name]="fullName()" [color]="color()" />
     <div class="flex flex-col min-h-9 justify-center">
       @if (fullName()) {
         <div class="flex flex-row gap-1">
           <span class="mat-label-large text-neutral-20" [innerHtml]="highlightedFullName()"> </span>
           @if (isSelf()) {
-            <span class="mat-label-large@:wq neutral-0"> ({{ t("your_user") }}) </span>
+            <span class="mat-label-large neutral-0"> ({{ t("your_user") }}) </span>
           }
         </div>
       }
@@ -48,8 +47,8 @@ import { DomSanitizer } from "@angular/platform-browser";
       }
     </div>
   </div>`,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserCardComponent {
   domSanitizer = inject(DomSanitizer);

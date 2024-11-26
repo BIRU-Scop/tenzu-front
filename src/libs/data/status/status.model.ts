@@ -19,9 +19,15 @@
  *
  */
 
-export interface Status {
+import { Workflow } from "@tenzu/data/workflow";
+
+export type Status = {
   id: string;
   name: string;
   color: number;
   order?: number;
-}
+};
+
+export type StatusDetail = Status & {
+  workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
+};

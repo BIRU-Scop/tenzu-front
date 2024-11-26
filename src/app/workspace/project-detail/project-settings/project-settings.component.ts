@@ -23,37 +23,33 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ProjectStore } from "@tenzu/data/project";
-import { JsonPipe } from "@angular/common";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { MatButton } from "@angular/material/button";
-import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
 import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { NotificationService } from "@tenzu/utils/services";
 
 @Component({
-  selector: "app-project-settings",
-  standalone: true,
-  imports: [
-    JsonPipe,
-    MatError,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    ReactiveFormsModule,
-    TranslocoDirective,
-    DescriptionFieldComponent,
-    MatButton,
-    MatIcon,
-    ConfirmDirective,
-    AvatarComponent,
-  ],
-  template: `
+    selector: "app-project-settings",
+    imports: [
+        MatError,
+        MatFormField,
+        MatInput,
+        MatLabel,
+        ReactiveFormsModule,
+        TranslocoDirective,
+        DescriptionFieldComponent,
+        MatButton,
+        MatIcon,
+        ConfirmDirective,
+        AvatarComponent,
+    ],
+    template: `
     <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings'">
       <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
         <h1 class="mat-headline-medium">{{ t("title") }}</h1>
@@ -61,7 +57,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           <app-avatar
             size="xl"
             [name]="form.controls.name.value!"
-            [color]="projectStore.selectedEntity()!.color || 0"
+            [color]="projectStore.selectedEntity()?.color || 0"
           ></app-avatar>
           <mat-form-field>
             <mat-label>{{ t("name") }}</mat-label>
@@ -76,7 +72,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           formControlName="description"
         ></app-description-field>
         <div class="flex gap-x-4 mt-2">
-          <button mat-flat-button type="submit" class="primary-button" data-testid="project-edit-submit">
+          <button mat-flat-button type="submit" class="tertiary-button" data-testid="project-edit-submit">
             {{ t("buttons.save") }}
           </button>
           <button mat-flat-button (click)="reset()" class="secondary-button">
@@ -104,11 +100,11 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
       </div>
     </div>
   `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectSettingsComponent {
-  _snackBar = inject(MatSnackBar);
+  notificationService = inject(NotificationService);
   breadcrumbStore = inject(BreadcrumbStore);
   projectStore = inject(ProjectStore);
   router = inject(Router);
@@ -130,26 +126,18 @@ export class ProjectSettingsComponent {
     this.form.reset(this.form.value);
     if (this.form.valid) {
       await this.projectStore.patchSelectedEntity(this.form.getRawValue());
-      this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-        duration: 3000,
-        data: {
-          message: "settings.project.messages.saved",
-          var: "",
-        },
+      this.notificationService.success({
+        title: "settings.project.messages.saved",
       });
     }
   }
 
-  onDelete() {
-    this.projectStore.deleteSelectedEntity().then((deleted) => {
-      this.router.navigateByUrl("/");
-      this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-        duration: 3000,
-        data: {
-          message: "settings.project.messages.deleted",
-          var: deleted.name,
-        },
-      });
+  async onDelete() {
+    const deletedProject = await this.projectStore.deleteSelectedEntity();
+    await this.router.navigateByUrl("/");
+    this.notificationService.warning({
+      title: "notification.project.deleted",
+      translocoTitleParams: { name: deletedProject.name },
     });
   }
 

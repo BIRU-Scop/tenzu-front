@@ -24,6 +24,7 @@ export const environment: EnvironmentConfig = {
   appVersion: "$RELEASE_VERSION",
   production: true,
   env: "staging",
+  wsUrl: "wss://$BASE_DOMAIN/events/",
   api: {
     prefix: "v2",
     baseDomain: "$BASE_DOMAIN",

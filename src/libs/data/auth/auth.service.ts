@@ -26,12 +26,14 @@ import { Credential, Tokens } from "./auth.model";
 import { map, of, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
+import { WsService } from "@tenzu/utils/services";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
   jwtHelperService = inject(JwtHelperService);
+  wsService = inject(WsService);
   http = inject(HttpClient);
   url = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/auth`;
   router = inject(Router);
@@ -51,6 +53,7 @@ export class AuthService {
   }
 
   logout() {
+    this.wsService.command({ command: "signout" });
     this.clear();
     return this.router.navigateByUrl("/login");
   }

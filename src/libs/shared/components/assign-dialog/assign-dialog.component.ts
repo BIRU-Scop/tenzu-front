@@ -21,14 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -49,13 +42,9 @@ type AssignDialogData = {
 
 @Component({
   selector: "app-assign-dialog",
-  standalone: true,
   imports: [
     MatDialogContent,
-    MatDialogTitle,
     MatFormField,
-    MatDialogActions,
-    MatButton,
     MatInput,
     MatLabel,
     ReactiveFormsModule,
@@ -69,7 +58,7 @@ type AssignDialogData = {
   template: `
     <ng-container *transloco="let t; prefix: 'component.assign'">
       <mat-dialog-content>
-        <div class="flex flex-col gap-4 max-h-[50vh] overflow-y-hidden">
+        <div class="flex flex-col gap-4 max-h-[45vh] overflow-y-hidden">
           @if ((assignedMembers.value?.length || 0) > 0) {
             <div class="flex flex-row items-center">
               <p class="pr-2">{{ t("assigned_to") }}</p>
