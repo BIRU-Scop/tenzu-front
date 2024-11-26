@@ -31,6 +31,9 @@
   ))
 }
 .mat-mdc-dialog-panel {
+  @include mat.dialog-overrides((
+    container-min-width: min-content,
+  ));
   &.aligned-center-to-anchor {
     @apply -translate-x-1/2;
   }
@@ -41,6 +44,7 @@
     @apply -translate-y-full;
   }
 }
+
 
 @mixin color-and-typo($theme) {
   .cdk-overlay-dark-backdrop {

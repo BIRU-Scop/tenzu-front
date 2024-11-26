@@ -21,14 +21,12 @@
 
 @use '@angular/material' as mat;
 
-body {
-  --mat-toolbar-mobile-height: 48px;
-  @include mat.toolbar-overrides((
-    standard-height: 48px,
-  ));
-}
 
 @mixin color-and-typo($theme) {
+  @include mat.toolbar-overrides((
+    standard-height: 48px,
+    mobile-height: 48px,
+  ));
   .mat-toolbar {
     @apply border-b border-x-0 border-t-0 border-solid;
     border-color: mat.get-theme-color($theme, primary, 80);

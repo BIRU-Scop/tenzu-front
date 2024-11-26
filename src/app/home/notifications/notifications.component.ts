@@ -10,24 +10,25 @@ import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { MatDivider } from "@angular/material/divider";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { UserMinimal } from "@tenzu/data/user";
+import { MatDialogContent } from "@angular/material/dialog";
 
 @Component({
   selector: "app-notification-unit",
   standalone: true,
   imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe],
   template: `
-    <div class="flex flex-row mx-2 gap-2" *transloco="let t" (click)="read.emit()">
-      @let notif = notification();
+    @let notif = notification();
+    <div class="flex flex-row gap-2" *transloco="let t" (click)="read.emit()" [class.opacity-60]="!!notif.readAt">
       @let context = getContext(notif);
       <app-avatar [name]="context.user.fullName" [matTooltip]="context.user.fullName" [color]="context.user.color" [rounded]="true"></app-avatar>
       <div>
-        <div [innerHTML]="t(context.translateKey, context.params)|safeHtml"></div>
+        <p class="text-neutral-20" [innerHTML]="t(context.translateKey, context.params)|safeHtml"></p>
         @if (context.link) {
-          <a [routerLink]="notificationsComponentService.getStoryUrl(notif)">
+          <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
             {{ notificationsComponentService.getStoryName(notif) }}
           </a>
         } @else {
-          {{ notificationsComponentService.getStoryName(notif) }}
+          <span class="line-clamp-1">{{ notificationsComponentService.getStoryName(notif) }}</span>
         }
 
       </div>
@@ -124,15 +125,17 @@ export class NotificationUnitComponent {
 @Component({
   selector: "app-notifications",
   standalone: true,
-  imports: [NotificationUnitComponent, MatDivider, TranslocoDirective, MatSlideToggle],
+  imports: [NotificationUnitComponent, MatDialogContent, MatDivider, TranslocoDirective, MatSlideToggle],
   template: `
-    <ng-container *transloco="let t">
-      <div>
-        <span class="mb-2">
+    <mat-dialog-content *transloco="let t">
+      <div class="flex flex-row gap-4 items-baseline">
+        <p class="mat-title-medium">
           {{ t("notifications.title") }}
-        </span>
-        <span>{{ t("notifications.only_unread") }}</span>
+        </p>
+        <div class="flex flex-row gap-1 items-baseline">
+          <span class="mat-label-medium whitespace-nowrap">{{ t("notifications.only_unread") }}</span>
         <mat-slide-toggle (toggleChange)="toggleShowRead()"></mat-slide-toggle>
+        </div>
       </div>
 
       <div class="flex flex-col gap-2">
@@ -142,10 +145,10 @@ export class NotificationUnitComponent {
             <mat-divider></mat-divider>
           }
         } @empty {
-          <div>{{ t("notifications.empty") }}</div>
+          <div class="mat-body-medium text-neutral-60">{{ t("notifications.empty") }}</div>
         }
       </div>
-    </ng-container>
+    </mat-dialog-content>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

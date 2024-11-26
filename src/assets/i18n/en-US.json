@@ -33,14 +33,14 @@
     "only_unread": "Show only unread",
     "all_read": "You have read all your notifications.",
     "types": {
-      "stories.assign.self": "<span class='highlight'>{{fullName}}</span> assigned you the story <br/>",
-      "stories.unassign.self": "<span class='highlight'>{{fullName}}</span> unassigned you from the story <br/>",
-      "stories.assign": "<span class='highlight'>{{fullName}}</span> was assigned to the story <br/>",
-      "stories.unassign": "<span class='highlight'>{{fullName}}</span> was unassigned to the story <br/>",
-      "stories.status_change": "<span class='highlight'>{{fullName}}</span> changed the status of the story <br/> to {{status}}",
-      "story_comment.create": "<span class='highlight'>{{fullName}}</span> commented on the story <br/>",
-      "stories.delete": "<span class='highlight'>{{fullName}}</span> deleted the story {{story}}",
-      "stories.workflow_change": "<span class='highlight'>{{fullName}}</span> moved the story <br/> to {{status}}  status on the {{workflow}} workflow."
+      "stories.assign.self": "<span class='text-neutral-0'>{{fullName}}</span> assigned you the story",
+      "stories.unassign.self": "<span class='text-neutral-0'>{{fullName}}</span> unassigned you from the story",
+      "stories.assign": "<span class='text-neutral-0'>{{fullName}}</span> was assigned to the story",
+      "stories.unassign": "<span class='text-neutral-0'>{{fullName}}</span> was unassigned to the story",
+      "stories.status_change": "<span class='text-neutral-0'>{{fullName}}</span> changed the status of the story to <span class='text-neutral-0'>{{status}}</span>",
+      "story_comment.create": "<span class='text-neutral-0'>{{fullName}}</span> commented on the story",
+      "stories.delete": "<span class='text-neutral-0'>{{fullName}}</span> deleted the story {{story}}",
+      "stories.workflow_change": "<span class='text-neutral-0'>{{fullName}}</span> moved the story to <span class='text-neutral-0'>{{status}}</span> status on the  <span class='text-neutral-0'>{{workflow}}</span> workflow."
     }
   },
   "component": {
