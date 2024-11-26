@@ -40,6 +40,8 @@ import {
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
 import { ProjectStore } from "@tenzu/data/project";
+import { WorkflowStore } from "@tenzu/data/workflow";
+import { StoryStore } from "@tenzu/data/story";
 
 @Component({
   selector: "app-workspace-list",
@@ -130,6 +132,8 @@ import { ProjectStore } from "@tenzu/data/project";
 export class WorkspaceListComponent {
   readonly workspaceStore = inject(WorkspaceStore);
   readonly projectStore = inject(ProjectStore);
+  readonly workflowStore = inject(WorkflowStore);
+  readonly storyStore = inject(StoryStore);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -149,8 +153,10 @@ export class WorkspaceListComponent {
   };
 
   constructor() {
-    this.projectStore.resetSelectedEntity();
-    this.workspaceStore.resetSelectedEntity();
+    this.projectStore.reset();
+    this.workspaceStore.reset();
+    this.workflowStore.reset();
+    this.storyStore.reset();
     this.init();
   }
 

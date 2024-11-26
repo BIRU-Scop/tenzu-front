@@ -27,6 +27,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { ProjectStore } from "@tenzu/data/project";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { SidenavListWorkflowComponent } from "./sidenav-list-workflow/sidenav-list-workflow.component";
+import { WorkflowStore } from "@tenzu/data/workflow";
 
 @Component({
   selector: "app-project-detail",

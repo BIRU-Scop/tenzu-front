@@ -21,7 +21,7 @@
 
 import { patchState, signalStoreFeature, type, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed } from "@angular/core";
-import { EntityId, EntityState } from "@ngrx/signals/entities";
+import { EntityId, EntityState, removeAllEntities } from "@ngrx/signals/entities";
 import { Command } from "@tenzu/utils/services";
 
 export function withLoadingStatus() {
@@ -69,6 +69,10 @@ export function withSelectedEntity<Entity>() {
     withMethods((store) => ({
       resetSelectedEntity() {
         patchState(store, { selectedEntityId: null });
+      },
+      reset() {
+        patchState(store, { selectedEntityId: null });
+        patchState(store, removeAllEntities());
       },
     })),
   );
