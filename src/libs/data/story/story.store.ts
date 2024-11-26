@@ -40,7 +40,8 @@ import {
   StoryCreate,
   StoryDetail,
   StoryReorderPayload,
-  StoryReorderPayloadEvent, StoryUpdate
+  StoryReorderPayloadEvent,
+  StoryUpdate,
 } from "@tenzu/data/story/story.model";
 import { StoryService } from "@tenzu/data/story/story.service";
 import { lastValueFrom } from "rxjs";
@@ -48,15 +49,15 @@ import { Status } from "@tenzu/data/status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
-
+const initialState = {
+  selectedStoryDetails: {} as StoryDetail,
+  orderStoryByStatus: {} as Record<string, number[]>,
+  selectedStoryAttachments: [] as StoryAttachment[],
+};
 export const StoryStore = signalStore(
   { providedIn: "root" },
   withEntities<Story>(),
-  withState({
-    selectedStoryDetails: {} as StoryDetail,
-    orderStoryByStatus: {} as Record<string, number[]>,
-    selectedStoryAttachments: [] as StoryAttachment[],
-  }),
+  withState(initialState),
   withLoadingStatus(),
   withComputed(({ entityMap, orderStoryByStatus }) => ({
     groupedByStatus: computed(() => {
@@ -83,8 +84,9 @@ export const StoryStore = signalStore(
     },
   })),
   withMethods((store, storyService = inject(StoryService)) => ({
-    resetList() {
+    reset() {
       patchState(store, removeAllEntities());
+      patchState(store, initialState);
     },
     async list(projectId: string, workflowSlug: string, offset: number, limit: number) {
       patchState(store, setLoadingBegin());

@@ -26,11 +26,12 @@ import { provideTranslocoScope } from "@jsverse/transloco";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { HttpErrorResponse } from "@angular/common/http";
 
-export function storyResolver(route: ActivatedRouteSnapshot) {
+export async function storyResolver(route: ActivatedRouteSnapshot) {
   const storyStore = inject(StoryStore);
   const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
   try {
+    storyStore.reset();
     return storyStore
       .get(route.paramMap.get("projectId")!, parseInt(route.paramMap.get("ref")!, 10))
       .then(async (story) => {
@@ -49,12 +50,13 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
     throw error;
   }
 }
-export function workflowResolver(route: ActivatedRouteSnapshot) {
+export async function workflowResolver(route: ActivatedRouteSnapshot) {
   const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
   try {
+    workflowStore.reset();
     return workflowStore.refreshWorkflow({ projectId: projectId, slug: workflowSLug }).then((workflow) => {
       workflowStore.selectWorkflow(workflow.id);
     });

@@ -68,7 +68,6 @@ export type NameDialogData = {
   template: `
     <ng-container *transloco="let t">
       <mat-dialog-content>
-        <div class="flex flex-col gap-4">
           <mat-form-field>
             <mat-label id="aria-label">{{ t(data.label) }}</mat-label>
             <input
@@ -89,7 +88,6 @@ export type NameDialogData = {
               ></mat-error>
             }
           </mat-form-field>
-        </div>
       </mat-dialog-content>
       <mat-dialog-actions>
         <button data-testid="enter-name-submit" mat-flat-button class="tertiary-button" (click)="submit()">

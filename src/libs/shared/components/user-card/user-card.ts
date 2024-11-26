@@ -34,7 +34,7 @@ import { DomSanitizer } from "@angular/platform-browser";
         <div class="flex flex-row gap-1">
           <span class="mat-label-large text-neutral-20" [innerHtml]="highlightedFullName()"> </span>
           @if (isSelf()) {
-            <span class="mat-label-large@:wq neutral-0"> ({{ t("your_user") }}) </span>
+            <span class="mat-label-large neutral-0"> ({{ t("your_user") }}) </span>
           }
         </div>
       }

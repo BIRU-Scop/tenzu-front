@@ -29,6 +29,7 @@ export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) 
   const projectStore = inject(ProjectStore);
   const router = inject(Router);
   try {
+    projectStore.reset();
     return await projectStore.getProjectsByWorkspaceId(route.paramMap.get("id")!);
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {

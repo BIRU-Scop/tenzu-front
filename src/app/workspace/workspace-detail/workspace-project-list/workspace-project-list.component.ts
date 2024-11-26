@@ -28,6 +28,8 @@ import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { WorkspaceStore } from "@tenzu/data/workspace";
+import { WorkflowStore } from "@tenzu/data/workflow";
+import { StoryStore } from "@tenzu/data/story";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -64,10 +66,13 @@ import { WorkspaceStore } from "@tenzu/data/workspace";
 export class WorkspaceProjectListComponent {
   projectStore = inject(ProjectStore);
   workspaceStore = inject(WorkspaceStore);
+  workflowStore = inject(WorkflowStore);
+  storyStore = inject(StoryStore);
   breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
-    this.projectStore.resetSelectedEntity();
+    this.workflowStore.reset();
+    this.storyStore.reset();
     this.breadcrumbStore.setThirdLevel({
       label: "workspace.general_title.workspaceListProjects",
       link: "",

@@ -20,6 +20,7 @@ import { Router } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils";
 import {
+  applyNotificationEvent,
   applyProjectEvent,
   applyStoryAssignmentEvent,
   applyStoryAttachmentEvent,
@@ -152,6 +153,10 @@ export class WsService {
         }
         case FamilyEventType.User: {
           await applyUserEvent(message);
+          break;
+        }
+        case FamilyEventType.Notification: {
+          applyNotificationEvent(message);
           break;
         }
       }

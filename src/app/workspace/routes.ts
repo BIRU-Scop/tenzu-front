@@ -54,6 +54,7 @@ export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) 
   const router = inject(Router);
 
   try {
+    projectStore.reset();
     return Promise.all([
       projectStore
         .getProject(route.paramMap.get("projectId")!)

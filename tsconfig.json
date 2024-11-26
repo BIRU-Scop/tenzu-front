@@ -22,6 +22,7 @@
     "paths": {
       "@tenzu/shared/components/*": ["src/libs/shared/components/*"],
       "@tenzu/directives/*" : ["src/libs/shared/directives/*"],
+      "@tenzu/pipes/*" : ["src/libs/shared/pipes/*"],
       "@tenzu/data/*": ["src/libs/data/*"],
       "@tenzu/utils": ["src/libs/utils/index.ts"],
       "@tenzu/utils/services": ["src/libs/utils/services/index.ts"]

@@ -2,6 +2,7 @@ import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
 import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
 import {
+  NotificationEventType,
   ProjectEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
@@ -19,6 +20,7 @@ import { NotificationService } from "@tenzu/utils/services";
 import { UserMinimal } from "@tenzu/data/user";
 import { StatusDetail } from "@tenzu/data/status";
 import { AuthService } from "@tenzu/data/auth";
+import { Notification, NotificationsStore } from "@tenzu/data/notifications";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyStore = inject(StoryStore);
@@ -240,6 +242,26 @@ export async function applyUserEvent(message: WSResponseEvent<unknown>) {
   switch (message.event.type) {
     case UserEventType.DeleteUser: {
       await authService.logout();
+    }
+  }
+}
+export function applyNotificationEvent(message: WSResponseEvent<unknown>) {
+  const notificationsStore = inject(NotificationsStore);
+  switch (message.event.type) {
+    case NotificationEventType.CreateNotification: {
+      const notifications = notificationsStore.entities();
+      const content = message.event.content as { notification: Notification };
+      notificationsStore.setNotifications([content.notification, ...notifications]);
+      notificationsStore.increaseUnreadCount();
+      break;
+    }
+    case NotificationEventType.ReadNotifications: {
+      const content = message.event.content as { notificationsIds: string[] };
+      content.notificationsIds.map((id) => {
+        notificationsStore.markReadEvent(id);
+        notificationsStore.decreaseUnreadCount();
+      });
+      break;
     }
   }
 }
