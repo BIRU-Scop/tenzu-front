@@ -43,5 +43,12 @@ export const NotificationsStore = signalStore(
       const count = store.count();
       patchState(store, { count: { ...count, unread: count.unread > 0 ? count.unread - 1 : 0 } });
     },
+    increaseUnreadCount() {
+      const count = store.count();
+      patchState(store, { count: { ...count, unread: count.unread + 1 } });
+    },
+    markReadEvent(notificationId: string) {
+      patchState(store, updateEntity({ id: notificationId, changes: { readAt: new Date().toISOString() } }));
+    },
   })),
 );

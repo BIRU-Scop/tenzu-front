@@ -57,6 +57,10 @@ export enum WorkspaceEventType {
 export enum UserEventType {
   DeleteUser = "users.delete",
 }
+export enum NotificationEventType {
+  CreateNotification = "notifications.create",
+  ReadNotifications = "notifications.read",
+}
 
 export enum FamilyEventType {
   Story = "stories",
@@ -71,4 +75,5 @@ export enum FamilyEventType {
   Project = "projects",
   Workspace = "workspaces",
   User = "users",
+  Notification = "notifications",
 }
