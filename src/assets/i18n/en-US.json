@@ -27,6 +27,22 @@
       "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow"
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "You don’t have any notification.",
+    "only_unread": "Show only unread",
+    "all_read": "You have read all your notifications.",
+    "types": {
+      "stories.assign.self": "<span class='highlight'>{{fullName}}</span> assigned you the story <br/>",
+      "stories.unassign.self": "<span class='highlight'>{{fullName}}</span> unassigned you from the story <br/>",
+      "stories.assign": "<span class='highlight'>{{fullName}}</span> was assigned to the story <br/>",
+      "stories.unassign": "<span class='highlight'>{{fullName}}</span> was unassigned to the story <br/>",
+      "stories.status_change": "<span class='highlight'>{{fullName}}</span> changed the status of the story <br/> to {{status}}",
+      "story_comment.create": "<span class='highlight'>{{fullName}}</span> commented on the story <br/>",
+      "stories.delete": "<span class='highlight'>{{fullName}}</span> deleted the story {{story}}",
+      "stories.workflow_change": "<span class='highlight'>{{fullName}}</span> moved the story <br/> to {{status}}  status on the {{workflow}} workflow."
+    }
+  },
   "component": {
     "password": {
       "label": "Password",
