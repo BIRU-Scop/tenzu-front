@@ -118,13 +118,13 @@ export class WsService {
             `[WS] from the channel ${message.content.channel} received a response of the command ${message.action.command}`,
             message,
           );
-          this.manageSubscription(message);
         }
+        this.manageSubscription(message);
         break;
       }
 
       case "error": {
-        console.error(`[WS] the command $${message.action.command} received a error response`, message);
+        console.error(`[WS] the command ${message.action.command} received a error response`, message);
         break;
       }
     }
