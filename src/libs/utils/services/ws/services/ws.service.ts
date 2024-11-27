@@ -6,7 +6,7 @@
  * Copyright (c) 2023-present Kaleidos INC
  */
 
-import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from "@angular/core";
+import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext } from "@angular/core";
 
 import { BehaviorSubject, of, repeat, retry, share, switchMap, throwError } from "rxjs";
 import { catchError, filter } from "rxjs/operators";
@@ -41,6 +41,16 @@ export class WsService {
   private config = inject(ConfigServiceService);
   private subject = webSocket({
     url: this.config.environment.wsUrl,
+    openObserver: {
+      next: () => {
+        console.log("[WS] connected");
+      },
+    },
+    closeObserver: {
+      next: () => {
+        console.log("[WS] disconnected");
+      },
+    },
   });
   loggedSubject = new BehaviorSubject(false);
   logged$ = this.loggedSubject.asObservable();
@@ -48,6 +58,7 @@ export class WsService {
     catchError((e) => {
       // the server are reload we loose the connexion and we need to login again
       // TODO find a way to unsubscribe to the channels were subscribed in the previous session
+      console.log("[WS] the server are reload we loose the connexion and we need to login again", e);
       this.loggedSubject.next(false);
       this.command({ command: "signin", token: localStorage.getItem("token") || "" });
       return throwError(() => e);
@@ -79,7 +90,7 @@ export class WsService {
         await this.dispatchEvent(message);
         break;
       case "system":
-        if (!this.config.environment.production) {
+        if (!isDevMode()) {
           console.error("received system error websocket", message);
         }
         break;
@@ -87,7 +98,19 @@ export class WsService {
   }
   dispatchAction(message: WSResponseAction) {
     if (!this.config.environment.production) {
-      console.log("received action websocket", message);
+      switch (message.status) {
+        case "ok": {
+          console.debug(
+            `[WS] from the channel ${message.content.channel} received a response of the command ${message.action.command}`,
+            message,
+          );
+          break;
+        }
+        case "error": {
+          console.error(`[WS] the command $${message.action.command} received a error response`, message);
+          break;
+        }
+      }
     }
     switch (message.action.command) {
       case "signin":
@@ -100,8 +123,8 @@ export class WsService {
     if (message.event.correlationId === this.config.correlationId) {
       return;
     }
-    if (!this.config.environment.production) {
-      console.log("received event websocket", message);
+    if (isDevMode()) {
+      console.debug(`[WS] from the channel ${message.channel} received the event ${message.event.type}`, message);
     }
 
     const family = message.event.type.split(".")[0];
@@ -165,7 +188,7 @@ export class WsService {
 
   public command(command: Command) {
     if (!this.config.environment.production) {
-      console.log("sent command websocket", command);
+      console.debug(`[WS] sent the command ${command.command}`, command);
     }
     if (command.command === "signin") {
       this.subject.next(command);
