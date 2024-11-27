@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.1-staging.9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.8...v0.0.1-staging.9) (2024-11-27)
+
+
+### Features
+
+* **ws.service:** manage WS event subscriptions dynamically ([7d5c6b9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7d5c6b9a6f18ed1091a2e4c3af01934f8edf2a1b))
+
 ## [0.0.1-staging.8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.7...v0.0.1-staging.8) (2024-11-27)
 
 
