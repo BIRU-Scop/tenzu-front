@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.1-staging.8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.7...v0.0.1-staging.8) (2024-11-27)
+
+
+### Features
+
+* add package-lock.json file ([987d2c3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/987d2c3cd9e5257f4997edbcb6133c706ae36a13))
+* **ws.service:** enhance WebSocket service with detailed logging ([653a58e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/653a58e3571aa84918c705f00832ec79c9fc16a1))
+
 ## [0.0.1-staging.7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.6...v0.0.1-staging.7) (2024-11-26)
 
 ## [0.0.1-staging.6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.5...v0.0.1-staging.6) (2024-11-26)
