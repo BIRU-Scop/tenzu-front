@@ -47,6 +47,7 @@ import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
+import { RouterLink } from "@angular/router";
 import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
@@ -72,6 +73,7 @@ import { MatTooltip } from "@angular/material/tooltip";
     MatSelect,
     MatOption,
     MatTooltip,
+    RouterLink,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -92,6 +94,28 @@ import { MatTooltip } from "@angular/material/tooltip";
           <span class="text-neutral-40 mat-title-small">/</span>
           <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
           <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
+          <a
+            mat-icon-button
+            class="icon-sm"
+            type="button"
+            [attr.aria-label]="t('story_previous')"
+            [matTooltip]="t('story_previous')"
+            [disabled]="!selectedStory().prev"
+            [routerLink]="['..', selectedStory().prev?.ref]"
+          >
+            <mat-icon>arrow_back</mat-icon>
+          </a>
+          <a
+            mat-icon-button
+            class="icon-sm"
+            type="button"
+            [attr.aria-label]="t('story_next')"
+            [matTooltip]="t('story_next')"
+            [disabled]="!selectedStory().next"
+            [routerLink]="['..', selectedStory().next?.ref]"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </a>
         </div>
         <div class="flex flex-row gap-8">
           <div class="basis-2/3 flex flex-col gap-y-6">
