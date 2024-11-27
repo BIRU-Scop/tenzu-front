@@ -71,161 +71,163 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
     MatSelect,
     MatOption,
   ],
-  template: `<ng-container *transloco="let t; prefix: 'workflow.detail_story'">
-    @if (this.selectedStory(); as story) {
-      <div class="flex gap-1 items-baseline mb-2">
-        <span class="text-neutral-40 mat-title-small">{{ t("workflow") }}</span>
-        <span class="text-neutral-20 mat-title-medium">{{ story.workflow.name }}</span>
-        <button
-          class="icon-sm"
-          mat-icon-button
-          type="button"
-          [attr.aria-label]="t('change_workflow')"
-          (click)="openChooseWorkflowDialog($event)"
-        >
-          <mat-icon>edit</mat-icon>
-        </button>
-        <span class="text-neutral-40 mat-title-small">/</span>
-        <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
-        <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
-      </div>
-      <div class="flex flex-row gap-8">
-        <div class="basis-2/3 flex flex-col gap-y-6">
-          <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
-            <mat-form-field appearance="fill" class="title-field">
-              <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
-            </mat-form-field>
-            <app-editor #editorContainer [data]="storyStore.selectedStoryDetails().description"></app-editor>
-            <div class="flex flex-row gap-2">
-              <button class="tertiary-button" mat-flat-button type="submit">{{ t("save") }}</button>
-              <button class="secondary-button" mat-flat-button type="button" (click)="cancel()">
-                {{ t("cancel") }}
-              </button>
-            </div>
-          </form>
-          <mat-divider></mat-divider>
-          <div class="flex flex-col gap-y-4">
-            <button class="primary-button w-fit" mat-flat-button type="button" (click)="fileUpload.click()">
-              <mat-icon class="icon-full">attach_file</mat-icon>
-              {{ t("attachments.attach_file") }}
-            </button>
-            <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
-            @let selectedStoryAttachments = storyStore.selectedStoryAttachments();
-            @if (selectedStoryAttachments.length > 0) {
-              <mat-expansion-panel expanded>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <mat-icon>attachment</mat-icon>
-                    Attachments ({{ selectedStoryAttachments.length }})
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-table [dataSource]="selectedStoryAttachments">
-                  <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
-                  </ng-container>
-
-                  <ng-container matColumnDef="size">
-                    <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
-                  </ng-container>
-
-                  <ng-container matColumnDef="date">
-                    <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
-                  </ng-container>
-
-                  <ng-container matColumnDef="actions">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let row">
-                      <a
-                        mat-icon-button
-                        target="_blank"
-                        href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
-                        type="button"
-                      >
-                        <mat-icon>visibility</mat-icon>
-                      </a>
-                      <a
-                        mat-icon-button
-                        download
-                        href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
-                        type="button"
-                      >
-                        <mat-icon>download</mat-icon>
-                      </a>
-                      <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </mat-cell>
-                  </ng-container>
-
-                  <!-- Header and Row Declarations -->
-                  <mat-header-row *matHeaderRowDef="['name', 'size', 'date', 'actions']"></mat-header-row>
-                  <mat-row *matRowDef="let row; columns: ['name', 'size', 'date', 'actions']"></mat-row>
-                </mat-table>
-              </mat-expansion-panel>
-            }
-          </div>
-        </div>
-        <div
-          class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-neutral-80 pl-8 pt-4"
-        >
-          <div class="grid grid-cols-2 gap-y-4 content-start mb-2">
-            <span class="text-neutral-40 mat-label-medium self-center">{{ t("created_by") }}</span>
-            <app-user-card
-              [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
-              [username]="story.createdAt | date: 'short'"
-              [color]="story.createdBy?.color || 0"
-            ></app-user-card>
-            <span class="text-neutral-40 mat-label-medium self-center">{{ t("status") }}</span>
-            <mat-form-field>
-              <mat-select
-                [(value)]="this.statusSelected"
-                (selectionChange)="changeStatus()"
-                [compareWith]="compareStatus"
-              >
-                @for (status of this.workflowStore.selectedEntity()?.statuses; track status.id) {
-                  <mat-option [value]="status">{{ status.name }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            <span class="text-neutral-40 mat-label-medium self-center">{{ t("assigned_to") }}</span>
-            @if (assigned().length > 0) {
-              <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
-                <app-avatar-list [users]="assigned()" [prioritizeCurrentUser]="true"></app-avatar-list>
-              </button>
-            } @else {
-              <button
-                mat-icon-button
-                type="button"
-                (click)="openAssignStoryDialog($event)"
-                [attr.aria-label]="t('add_assignees')"
-              >
-                <mat-icon>person_add</mat-icon>
-              </button>
-            }
-          </div>
-          <mat-divider></mat-divider>
+  template: `
+    <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
+      @if (this.selectedStory(); as story) {
+        <div class="flex gap-1 items-baseline mb-2">
+          <span class="text-neutral-40 mat-title-small">{{ t("workflow") }}</span>
+          <span class="text-neutral-20 mat-title-medium">{{ story.workflow.name }}</span>
           <button
-            type="button"
-            class="col-span-2"
+            class="icon-sm"
             mat-icon-button
-            appConfirm
-            [data]="{
-              deleteAction: true,
-              title: t('confirm_delete_story'),
-              message: t('confirm_delete_story_message'),
-            }"
-            (popupConfirm)="onDelete()"
-            [attr.aria-label]="t('delete_story')"
+            type="button"
+            [attr.aria-label]="t('change_workflow')"
+            (click)="openChooseWorkflowDialog($event)"
           >
-            <mat-icon>delete</mat-icon>
+            <mat-icon>edit</mat-icon>
           </button>
+          <span class="text-neutral-40 mat-title-small">/</span>
+          <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
+          <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
         </div>
-      </div>
-    }
-  </ng-container> `,
+        <div class="flex flex-row gap-8">
+          <div class="basis-2/3 flex flex-col gap-y-6">
+            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+              <mat-form-field appearance="fill" class="title-field">
+                <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
+              </mat-form-field>
+              <app-editor #editorContainer [data]="storyStore.selectedStoryDetails().description"></app-editor>
+              <div class="flex flex-row gap-2">
+                <button class="tertiary-button" mat-flat-button type="submit">{{ t("save") }}</button>
+                <button class="secondary-button" mat-flat-button type="button" (click)="cancel()">
+                  {{ t("cancel") }}
+                </button>
+              </div>
+            </form>
+            <mat-divider></mat-divider>
+            <div class="flex flex-col gap-y-4">
+              <button class="primary-button w-fit" mat-flat-button type="button" (click)="fileUpload.click()">
+                <mat-icon class="icon-full">attach_file</mat-icon>
+                {{ t("attachments.attach_file") }}
+              </button>
+              <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
+              @let selectedStoryAttachments = storyStore.selectedStoryAttachments();
+              @if (selectedStoryAttachments.length > 0) {
+                <mat-expansion-panel expanded>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>attachment</mat-icon>
+                      Attachments ({{ selectedStoryAttachments.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <mat-table [dataSource]="selectedStoryAttachments">
+                    <ng-container matColumnDef="name">
+                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
+                      <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="size">
+                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
+                      <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="date">
+                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
+                      <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                      <mat-cell *matCellDef="let row">
+                        <a
+                          mat-icon-button
+                          target="_blank"
+                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
+                          type="button"
+                        >
+                          <mat-icon>visibility</mat-icon>
+                        </a>
+                        <a
+                          mat-icon-button
+                          download
+                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
+                          type="button"
+                        >
+                          <mat-icon>download</mat-icon>
+                        </a>
+                        <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </mat-cell>
+                    </ng-container>
+
+                    <!-- Header and Row Declarations -->
+                    <mat-header-row *matHeaderRowDef="['name', 'size', 'date', 'actions']"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: ['name', 'size', 'date', 'actions']"></mat-row>
+                  </mat-table>
+                </mat-expansion-panel>
+              }
+            </div>
+          </div>
+          <div
+            class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-neutral-80 pl-8 pt-4"
+          >
+            <div class="grid grid-cols-2 gap-y-4 content-start mb-2">
+              <span class="text-neutral-40 mat-label-medium self-center">{{ t("created_by") }}</span>
+              <app-user-card
+                [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
+                [username]="story.createdAt | date: 'short'"
+                [color]="story.createdBy?.color || 0"
+              ></app-user-card>
+              <span class="text-neutral-40 mat-label-medium self-center">{{ t("status") }}</span>
+              <mat-form-field>
+                <mat-select
+                  [(value)]="this.statusSelected"
+                  (selectionChange)="changeStatus()"
+                  [compareWith]="compareStatus"
+                >
+                  @for (status of this.workflowStore.selectedEntity()?.statuses; track status.id) {
+                    <mat-option [value]="status">{{ status.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <span class="text-neutral-40 mat-label-medium self-center">{{ t("assigned_to") }}</span>
+              @if (assigned().length > 0) {
+                <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
+                  <app-avatar-list [users]="assigned()" [prioritizeCurrentUser]="true"></app-avatar-list>
+                </button>
+              } @else {
+                <button
+                  mat-icon-button
+                  type="button"
+                  (click)="openAssignStoryDialog($event)"
+                  [attr.aria-label]="t('add_assignees')"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              }
+            </div>
+            <mat-divider></mat-divider>
+            <button
+              type="button"
+              class="col-span-2"
+              mat-icon-button
+              appConfirm
+              [data]="{
+                deleteAction: true,
+                title: t('confirm_delete_story'),
+                message: t('confirm_delete_story_message'),
+              }"
+              (popupConfirm)="onDelete()"
+              [attr.aria-label]="t('delete_story')"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </ng-container>
+  `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
