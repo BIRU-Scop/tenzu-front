@@ -257,6 +257,7 @@ export class StoryDetailComponent {
       }
     });
     this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
+    this.breadcrumbStore.setSixthLevel(undefined);
   }
 
   assigned = computed(() => this.selectedStory().assignees || []);
