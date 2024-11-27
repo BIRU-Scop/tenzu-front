@@ -6,11 +6,11 @@
  * Copyright (c) 2023-present Kaleidos INC
  */
 
-import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext } from "@angular/core";
+import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext, signal } from "@angular/core";
 
 import { BehaviorSubject, of, repeat, retry, share, switchMap, throwError } from "rxjs";
 import { catchError, filter } from "rxjs/operators";
-import { Command, WSResponse, WSResponseAction, WSResponseEvent } from "../ws.model";
+import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
@@ -38,12 +38,27 @@ const RETRY_TIME = 10000;
   providedIn: "root",
 })
 export class WsService {
+  loggedSubject = new BehaviorSubject(false);
+  logged$ = this.loggedSubject.asObservable();
+  channelSubscribed = signal<{ channelWorkspaces: string[]; channelProjects: string[] }>({
+    channelWorkspaces: [],
+    channelProjects: [],
+  });
   private config = inject(ConfigServiceService);
   private subject = webSocket({
     url: this.config.environment.wsUrl,
     openObserver: {
       next: () => {
         console.log("[WS] connected");
+        const subcriptions = this.channelSubscribed();
+        subcriptions.channelProjects.map((channel) => {
+          const projectId = channel.split(".")[1];
+          this.command({ command: "subscribe_to_project_events", project: projectId });
+        });
+        subcriptions.channelWorkspaces.map((channel) => {
+          const workspaceId = channel.split(".")[1];
+          this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
+        });
       },
     },
     closeObserver: {
@@ -52,8 +67,7 @@ export class WsService {
       },
     },
   });
-  loggedSubject = new BehaviorSubject(false);
-  logged$ = this.loggedSubject.asObservable();
+
   ws$ = this.subject.pipe(
     catchError((e) => {
       // the server are reload we loose the connexion and we need to login again
@@ -97,25 +111,66 @@ export class WsService {
     }
   }
   dispatchAction(message: WSResponseAction) {
-    if (!this.config.environment.production) {
-      switch (message.status) {
-        case "ok": {
+    switch (message.status) {
+      case "ok": {
+        if (isDevMode()) {
           console.debug(
             `[WS] from the channel ${message.content.channel} received a response of the command ${message.action.command}`,
             message,
           );
-          break;
+          this.manageSubscription(message);
         }
-        case "error": {
-          console.error(`[WS] the command $${message.action.command} received a error response`, message);
-          break;
-        }
+        break;
+      }
+
+      case "error": {
+        console.error(`[WS] the command $${message.action.command} received a error response`, message);
+        break;
       }
     }
+  }
+
+  manageSubscription(message: WSResponseActionSuccess) {
     switch (message.action.command) {
-      case "signin":
+      case "signin": {
         this.loggedSubject.next(true);
         break;
+      }
+      case "subscribe_to_workspace_events": {
+        this.channelSubscribed.update((value) => {
+          value.channelWorkspaces = [...value.channelWorkspaces, message.content.channel];
+          return value;
+        });
+        break;
+      }
+      case "subscribe_to_project_events": {
+        this.channelSubscribed.update((value) => {
+          value.channelProjects = [...value.channelProjects, message.content.channel];
+          return value;
+        });
+        break;
+      }
+      case "unsubscribe_from_project_events": {
+        this.channelSubscribed.update((value) => {
+          value.channelProjects = value.channelProjects.filter(
+            (channelProject) => channelProject !== message.content.channel,
+          );
+          return value;
+        });
+        break;
+      }
+      case "unsubscribe_to_workspace_events": {
+        this.channelSubscribed.update((value) => {
+          value.channelWorkspaces = value.channelWorkspaces.filter(
+            (channelWorkspace) => channelWorkspace !== message.content.channel,
+          );
+          return value;
+        });
+        break;
+      }
+      default: {
+        break;
+      }
     }
   }
 

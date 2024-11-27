@@ -6,31 +6,43 @@
  * Copyright (c) 2023-present Kaleidos INC
  */
 
-export type SignInAction = {
+export type CommandActionType =
+  | "signin"
+  | "signout"
+  | "subscribe_to_project_events"
+  | "unsubscribe_from_project_events"
+  | "subscribe_to_workspace_events"
+  | "unsubscribe_to_workspace_events"
+  | "ping";
+
+export type CommandBase = {
+  command: CommandActionType;
+};
+export type SignInAction = CommandBase & {
   command: "signin";
   token: string;
 };
 
-export type SignOutAction = {
+export type SignOutAction = CommandBase & {
   command: "signout";
 };
-export type SubscribeToProjectEventsAction = {
+export type SubscribeToProjectEventsAction = CommandBase & {
   command: "subscribe_to_project_events";
   project: string;
 };
-export type UnsubscribeToProjectEventsAction = {
+export type UnsubscribeToProjectEventsAction = CommandBase & {
   command: "unsubscribe_from_project_events";
   project: string;
 };
-export type SubscribeToWorkspaceEventsAction = {
+export type SubscribeToWorkspaceEventsAction = CommandBase & {
   command: "subscribe_to_workspace_events";
   workspace: string;
 };
-export type UnSubscribeToWorkspaceEventsAction = {
+export type UnSubscribeToWorkspaceEventsAction = CommandBase & {
   command: "unsubscribe_to_workspace_events";
   workspace: string;
 };
-export type PingActions = {
+export type PingActions = CommandBase & {
   command: "ping";
 };
 
@@ -46,7 +58,7 @@ export type Command =
 export interface WSResponseActionBase {
   type: "action";
   action: {
-    command: string;
+    command: CommandActionType;
     project?: string;
   };
 }
