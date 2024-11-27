@@ -47,6 +47,7 @@ import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: "app-story-detail",
@@ -70,6 +71,7 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
     MatDivider,
     MatSelect,
     MatOption,
+    MatTooltip,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -83,6 +85,7 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
             type="button"
             [attr.aria-label]="t('change_workflow')"
             (click)="openChooseWorkflowDialog($event)"
+            [matTooltip]="t('change_workflow')"
           >
             <mat-icon>edit</mat-icon>
           </button>
@@ -202,6 +205,7 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
                   type="button"
                   (click)="openAssignStoryDialog($event)"
                   [attr.aria-label]="t('add_assignees')"
+                  [matTooltip]="t('add_assignees')"
                 >
                   <mat-icon>person_add</mat-icon>
                 </button>
@@ -220,6 +224,7 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
               }"
               (popupConfirm)="onDelete()"
               [attr.aria-label]="t('delete_story')"
+              [matTooltip]="t('delete_story')"
             >
               <mat-icon>delete</mat-icon>
             </button>
