@@ -21,71 +21,48 @@
 
 @use '@angular/material' as mat;
 
-.mat-mdc-card {
-  --mdc-outlined-card-container-shape: 4px;
-  &.mat-mdc-card-outlined {
-    @apply border-b;
-  }
-  @apply gap-2;
+.mat-mdc-card.mat-mdc-card-outlined {
+  @apply gap-2 border-b-2;
   .mat-mdc-card-header {
     @apply px-3 pt-2;
     .mat-mdc-card-header-text {
-      @apply line-clamp-2;
-      @apply grow;
+      @apply line-clamp-2 grow;
     }
-    @apply items-center;
-    @apply gap-2;
+    @apply items-center gap-2;
   }
   .mat-mdc-card-content {
     @apply px-3 pb-2;
+    font-size: var(--mat-sys-body-small-size);
+    line-height: var(--mat-sys-body-small-line-height);
+    font-weight: var(--mat-sys-body-small-weight);
     p {
       @apply line-clamp-2;
     }
   }
 
     &.heading-card {
-    --mdc-outlined-card-container-shape: 0;
-    @apply border-t-0;
-    @apply border-r-0;
-    @apply border-l-0;
+    @apply border-t-0 border-r-0 border-l-0 border-b;
     .mat-mdc-card-header {
-      @apply px-0;
-      @apply pt-0;
-      @apply pb-2;
+      @apply px-0 pt-0 pb-2;
     }
   }
 }
 
-@mixin color-and-typo($theme) {
+@mixin tokens-overrides {
+  @include mat.card-overrides((
+    title-text-size: var(--mat-sys-body-medium-size),
+    title-text-line-height: var(--mat-sys-body-medium-line-height),
+    title-text-weight: var(--mat-sys-body-medium-weight),
+    outlined-container-elevation: var(--mat-sys-level1),
+    outlined-container-shape: var(--mat-sys-corner-medium),
+  ));
   .mat-mdc-card {
-    @media (prefers-color-scheme: dark) {
-      @include mat.card-overrides((
-          outlined-container-color:  mat.get-theme-color($theme, neutral, 98),
-      ));
-    }
-    @media (prefers-color-scheme: light) {
-      @include mat.card-overrides((
-          outlined-container-color:  mat.get-theme-color($theme, neutral, 100),
-      ));
-    }
-    @include mat.card-overrides((
-      outlined-outline-color: mat.get-theme-color($theme, neutral, 90),
-      title-text-size: mat.get-theme-typography($theme, body-medium, font-size),
-      title-text-line-height: mat.get-theme-typography($theme, body-medium, line-height),
-    ));
-    .mat-mdc-card-header {
-      color: mat.get-theme-color($theme, neutral-variant, 20);
-    }
-    .mat-mdc-card-content {
-      font-size: mat.get-theme-typography($theme, body-small, font-size);
-      line-height: mat.get-theme-typography($theme, body-small, line-height);
-      color: mat.get-theme-color($theme, neutral, 30);
-    }
-
     &.heading-card {
       @include mat.card-overrides((
-        title-text-size: mat.get-theme-typography($theme, body-large, font-size),
-        outlined-outline-color: mat.get-theme-color($theme, neutral, 80),
+        outlined-container-shape: 0,
+        title-text-size: var(--mat-sys-body-large-size),
+        title-text-weight: var(--mat-sys-body-large-weight),
+        outlined-outline-color: var(--mat-sys-outline),
         outlined-container-elevation: none
       ));
     }

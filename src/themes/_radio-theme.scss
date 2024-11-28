@@ -33,11 +33,11 @@
   .mat-mdc-radio-button {
     @include mat.radio-overrides((
       state-layer-size: 32px,
-      selected-icon-color: mat.get-theme-color($theme, primary, 80),
-      selected-focus-icon-color: mat.get-theme-color($theme, primary, 80),
+      selected-icon-color: var(--mat-sys-primary),
+      selected-focus-icon-color: var(--mat-sys-primary),
       selected-hover-icon-color: mat.get-theme-color($theme, primary, 60),
       selected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
-      unselected-icon-color: mat.get-theme-color($theme, primary, 80),
+      unselected-icon-color: var(--mat-sys-primary),
       unselected-hover-icon-color: mat.get-theme-color($theme, primary, 60),
       unselected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
       label-text-size: mat.get-theme-typography($theme, label-large, font-size),
@@ -48,7 +48,7 @@
     ));
     .mdc-radio {
       .mdc-radio__outer-circle {
-        box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+        box-shadow: 0 0 3px var(--mat-sys-primary);
       }
       .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__inner-circle {
         box-shadow: 0 0 6px mat.get-theme-color($theme, primary, 60);

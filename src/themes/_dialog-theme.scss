@@ -22,7 +22,6 @@
 @use '@angular/material' as mat;
 
 .mdc-dialog {
-  --mdc-dialog-container-shape: 4px;
   @include mat.dialog-overrides((
     headline-padding: 0 16px 16px,
     content-padding: 12px 16px 0,
@@ -55,23 +54,18 @@
   }
   .mat-mdc-dialog-surface {
     @media (prefers-color-scheme: dark) {
-      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
-      @include mat.dialog-overrides((
-        container-color: mat.get-theme-color($theme, neutral, 98),
-      ));
+      box-shadow: var(--mat-sys-level2);
     }
     @media (prefers-color-scheme: light) {
-      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
-      @include mat.dialog-overrides((
-        container-color: mat.get-theme-color($theme, neutral, 100),
-      ));
+      box-shadow: var(--mat-sys-level2);
     }
     @include mat.dialog-overrides((
       supporting-text-color: mat.get-theme-color($theme, neutral, 17),
-      subhead-color: mat.get-theme-color($theme, neutral, 10)
+      subhead-color: mat.get-theme-color($theme, neutral, 10),
+      container-shape: var(--mat-sys-corner-medium),
     ));
     border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 90);
+    border-color: var(--mat-sys-outline);
     border-width: 1px;
   }
 }

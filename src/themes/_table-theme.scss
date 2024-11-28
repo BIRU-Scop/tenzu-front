@@ -35,10 +35,10 @@
         header-container-height: 48px
     ));
     .mat-mdc-cell {
-      border-bottom-color: mat.get-theme-color($theme, neutral, 80);
+      border-bottom-color: var(--mat-sys-outline-variant);
     }
     .mat-mdc-header-cell {
-      border-bottom-color: mat.get-theme-color($theme, neutral, 70);
+      border-bottom-color: var(--mat-sys-outline);
     }
   }
 }

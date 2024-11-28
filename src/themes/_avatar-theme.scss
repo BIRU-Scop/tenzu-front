@@ -89,8 +89,8 @@ button {
       }
       &.color-1,&.color-5 {
         background-color: transparent;
-        border-color: mat.get-theme-color($theme, primary, 80);
-        box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+        border-color: var(--mat-sys-primary);
+        box-shadow: 0 0 3px var(--mat-sys-primary);
       }
       &.color-2,&.color-6 {
         background-color: transparent;
@@ -136,7 +136,7 @@ button {
         }
         &.color-1,&.color-5 {
           background-color: mat.get-theme-color($theme, primary, 90);
-          outline-color: mat.get-theme-color($theme, primary, 80);
+          outline-color: var(--mat-sys-primary);
         }
         &.color-2,&.color-6 {
           background-color: mat.get-theme-color($theme, secondary, 90);

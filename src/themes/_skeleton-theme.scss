@@ -56,32 +56,32 @@
   }
   .skeleton-line-md {
     background-color: mat.get-theme-color($theme, neutral, 92);
-    height: mat.get-theme-typography($theme, body-medium, font-size);
+    height: var(--mat-sys-body-medium-size);
   }
   .skeleton-line-lg {
     background-color: mat.get-theme-color($theme, neutral, 90);
-    height: mat.get-theme-typography($theme, body-large, font-size);
+    height: var(--mat-sys-body-large-size);
   }
   .skeleton-image {
     background-color: mat.get-theme-color($theme, neutral, 90);
-    height: mat.get-theme-typography($theme, body-large, font-size) * 2;
-    width: mat.get-theme-typography($theme, body-large, font-size) * 2;
+    height: calc(var(--mat-sys-body-large-size) * 2);
+    width: calc(var(--mat-sys-body-large-size) * 2);
   }
   .skeleton-button {
     background-color: mat.get-theme-color($theme, neutral, 92);
-    height: mat.get-theme-typography($theme, body-large, font-size) * 2;
+    height: calc(var(--mat-sys-body-large-size) * 2);
   }
   .skeleton-icon-button {
     background-color: mat.get-theme-color($theme, neutral, 92);
-    height: mat.get-theme-typography($theme, body-large, font-size) * 2;
-    width: mat.get-theme-typography($theme, body-large, font-size) * 2;
+    height: calc(var(--mat-sys-body-large-size) * 2);
+    width: calc(var(--mat-sys-body-large-size) * 2);
   }
   .skeleton-container {
     background-color: mat.get-theme-color($theme, neutral, 99);
   }
   .skeleton-avatar {
-    height: mat.get-theme-typography($theme, body-large, font-size) * 2;
-    width: mat.get-theme-typography($theme, body-large, font-size) * 2;
+    height: calc(var(--mat-sys-body-large-size) * 2);
+    width: calc(var(--mat-sys-body-large-size) * 2);
     background-color: mat.get-theme-color($theme, neutral, 94);
   }
   .skeleton-avatar-light {

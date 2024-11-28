@@ -25,17 +25,17 @@
   .codex-editor {
     @apply rounded;
     border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 90);
+    border-color: var(--mat-sys-outline);
     border-width: 1px;
     color: mat.get-theme-color($theme, neutral, 17);
     font-family: Lexend, sans-serif;
     &:hover {
-      border-color:  mat.get-theme-color($theme, primary, 80);
-      box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+      border-color: var(--mat-sys-primary);
+      box-shadow: 0 0 3px var(--mat-sys-primary);
     }
     &:focus-within {
       border-width: 2px;
-      border-color:  mat.get-theme-color($theme, primary, 80);
+      border-color:  var(--mat-sys-primary);
     }
     .ce-block__content {
       max-width: 100%;
@@ -48,12 +48,7 @@
         right: -12px;
         padding-right: 0;
         .ce-toolbar__plus, .ce-toolbar__settings-btn {
-          @media (prefers-color-scheme: dark) {
-            background-color:  mat.get-theme-color($theme, neutral, 99);
-          }
-          @media (prefers-color-scheme: light) {
-            background-color:  mat.get-theme-color($theme, neutral, 100);
-          }
+          background-color: var(--mat-sys-surface-container);
           border-color: mat.get-theme-color($theme, primary, 70);
           box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 70);
           color: mat.get-theme-color($theme, primary, 20);
@@ -74,24 +69,13 @@
         --height: 32px;
         --container-padding: 0px;
       }
-      @media (prefers-color-scheme: dark) {
-        --color-background: mat.get-theme-color($theme, neutral, 99);
-      }
-      @media (prefers-color-scheme: light) {
-        --color-background: mat.get-theme-color($theme, neutral, 100);
-      }
-      --border-radius: 4px;
+      --color-background: var(--mat-sys-surface-container);
+      --border-radius: var(--mat-sys-corner-medium);
       --padding: 4px;
       .ce-popover__container {
-        @media (prefers-color-scheme: light) {
-          background-color: mat.get-theme-color($theme, neutral, 100) ;
-          box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-        }
-        @media (prefers-color-scheme: dark) {
-          background-color: mat.get-theme-color($theme, neutral, 99) ;
-          box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
-        }
-        border: 1px solid mat.get-theme-color($theme, neutral, 90);
+        background-color: var(--mat-sys-surface-container);
+        box-shadow: var(--mat-sys-level1);
+        border: 1px solid var(--mat-sys-outline);
         border-bottom-width: 2px;
         padding: 0;
         .ce-popover-item, .ce-inline-tool {
@@ -99,7 +83,7 @@
           border-radius: 0;
         }
         .ce-popover-item:hover:not(.ce-popover-item--no-hover) {
-          background-color: mat.get-theme-color($theme, neutral-variant, 98);
+          background-color: var(--mat-sys-surface-container);
         }
         .ce-popover-item__title {
           font-size: mat.get-theme-typography($theme, label-large, font-size);
@@ -110,9 +94,9 @@
           margin: 4px;
           background-color:  mat.get-theme-color($theme, neutral, 99);
           border-style: solid;
-          border-color:  mat.get-theme-color($theme, primary, 80);
+          border-color:  var(--mat-sys-primary);
           border-width: 1px;
-          box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+          box-shadow: 0 0 3px var(--mat-sys-primary);
           input {
             color: mat.get-theme-color($theme, neutral, 17);
             &::placeholder {
@@ -137,7 +121,7 @@
         }
         .ce-popover-item-separator {
           .ce-popover-item-separator__line {
-            background: mat.get-theme-color($theme, primary, 80);
+            background: var(--mat-sys-primary);
           }
         }
       }
@@ -148,8 +132,8 @@
 
     // BLOCKS
     .ce-block {
-      font-size: mat.get-theme-typography($theme, body-medium, font-size);
-      line-height: mat.get-theme-typography($theme, body-medium, line-height);
+      font-size: var(--mat-sys-body-medium-size);
+      line-height: var(--mat-sys-body-medium-line-height);
       font-weight: mat.get-theme-typography($theme, body-medium, font-weight);
       .cdx-block {
         @apply py-1;
@@ -184,15 +168,15 @@
         @apply px-3 py-2 rounded;
         color: mat.get-theme-color($theme, primary, 20);
         .cdx-quote__caption {
-          color: mat.get-theme-color($theme, neutral-variant, 60);
-          font-size: mat.get-theme-typography($theme, body-small, font-size);
-          line-height: mat.get-theme-typography($theme, body-small, line-height);
+          color: mat.get-theme-color($theme, neutral, 60);
+          font-size: var(--mat-sys-body-small-size);
+          line-height: var(--mat-sys-body-small-line-height);
           font-weight: mat.get-theme-typography($theme, body-small, font-weight);
         }
         .cdx-quote__text {
           min-height: fit-content;
-          font-size: mat.get-theme-typography($theme, body-medium, font-size);
-          line-height: mat.get-theme-typography($theme, body-medium, line-height);
+          font-size: var(--mat-sys-body-medium-size);
+          line-height: var(--mat-sys-body-medium-line-height);
           font-weight: mat.get-theme-typography($theme, body-medium, font-weight);
           @apply mb-2;
         }
@@ -209,14 +193,14 @@
         }
         .cdx-input {
           color: mat.get-theme-color($theme, secondary, 30);
-          font-size: mat.get-theme-typography($theme, body-small, font-size);
-          line-height: mat.get-theme-typography($theme, body-small, line-height);
+          font-size: var(--mat-sys-body-small-size);
+          line-height: var(--mat-sys-body-small-line-height);
           font-weight: mat.get-theme-typography($theme, body-small, font-weight);
           min-height: fit-content;
           &.cdx-warning__title {
             color: mat.get-theme-color($theme, secondary, 20);
-            font-size: mat.get-theme-typography($theme, body-medium, font-size);
-            line-height: mat.get-theme-typography($theme, body-medium, line-height);
+            font-size: var(--mat-sys-body-medium-size);
+            line-height: var(--mat-sys-body-medium-line-height);
             font-weight: mat.get-theme-typography($theme, body-medium, font-weight);
             @apply mb-2;
           }
@@ -236,7 +220,7 @@
       .ce-delimiter {
         border-bottom-width: 1px;
         border-bottom-style: solid;
-        border-color: mat.get-theme-color($theme, neutral, 80);
+        border-color: var(--mat-sys-outline-variant);
         line-height: 0;
         @apply mb-2;
         &:before {

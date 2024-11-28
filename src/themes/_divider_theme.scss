@@ -26,7 +26,7 @@
 
   .mat-divider {
     @include mat.divider-overrides((
-      color: mat.get-theme-color($theme, neutral, 90)
+      color: var(--mat-sys-outline-variant)
     ))
   }
 }

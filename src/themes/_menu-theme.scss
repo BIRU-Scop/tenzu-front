@@ -22,40 +22,30 @@
 @use '@angular/material' as mat;
 
 .mat-mdc-menu-panel {
+  border-style: solid;
+  border-color: var(--mat-sys-outline);
+  border-width: 1px;
+  border-bottom-width: 2px;
+  a {
+    text-decoration: none;
+  }
   .mat-mdc-menu-item {
     min-height: 32px;
   }
 }
-@mixin color-and-typo($theme) {
+@mixin tokens-overrides() {
+  @include mat.menu-overrides((
+    item-label-text-size : var(--mat-sys-label-large-size),
+    item-label-text-line-height : var(--mat-sys-label-large-line-height),
+    item-label-text-color: var(--mat-sys-on-secondary-container),
+    item-icon-color: var(--mat-sys-on-secondary),
+    item-hover-state-layer-color: var(--mat-sys-secondary-container),
+    item-focus-state-layer-color: var(--mat-sys-secondary-container),
+    item-icon-size: var(--mat-sys-body-large-size)
+  ));
   .mat-mdc-menu-panel {
-    border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 90);
-    border-width: 1px;
-    color:  mat.get-theme-color($theme, neutral, 20);
-    a {
-      text-decoration: none;
-    }
-    @media (prefers-color-scheme: dark) {
-      @include mat.menu-overrides((
-        container-color: mat.get-theme-color($theme, neutral, 98),
-      ));
-    }
-    @media (prefers-color-scheme: light) {
-      @include mat.menu-overrides((
-        container-color: mat.get-theme-color($theme, neutral, 100),
-      ));
-    }
-    @include mat.menu-overrides((
-      item-label-text-size : mat.get-theme-typography($theme, label-large, font-size),
-      item-label-text-line-height : mat.get-theme-typography($theme, label-large, line-height),
-      item-label-text-color:  mat.get-theme-color($theme, neutral-variant, 20),
-      item-icon-color:  mat.get-theme-color($theme, neutral-variant, 60),
-      item-hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 99),
-      item-focus-state-layer-color: mat.get-theme-color($theme, neutral-variant, 99),
-      item-icon-size: mat.get-theme-typography($theme, body-medium, font-size)
-     ));
     .mat-icon {
-      font-size: mat.get-theme-typography($theme, body-medium, font-size);
+      font-size: var(--mat-sys-body-large-size);
     }
   }
 }

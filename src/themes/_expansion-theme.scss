@@ -26,8 +26,16 @@ html {
     border-style: solid;
     border-width: 1px;
     border-bottom-width: 2px;
+    border-color:  var(--mat-sys-outline);
     &:not([class*=mat-elevation-z]) {
-      box-shadow:  1px 1px 1px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--mat-sys-level1);
+    }
+    &:focus-within {
+      outline: var(--mat-sys-primary) solid 4px;
+      border-color:  var(--mat-sys-outline);
+    }
+    &:hover {
+      border-color:  var(--mat-sys-primary);
     }
   }
   .mdc-dialog__content {
@@ -37,41 +45,21 @@ html {
   }
 }
 
-@mixin color-and-typo($theme) {
-  .mat-expansion-panel {
-    border-color:  mat.get-theme-color($theme, neutral, 90);
-    &:focus-within {
-      outline: mat.get-theme-color($theme, neutral-variant, 95) solid 4px;
-      border-color:  mat.get-theme-color($theme, neutral-variant, 95);
-    }
-    &:hover {
-      border-color:  mat.get-theme-color($theme, neutral-variant, 90);
-    }
-    @media (prefers-color-scheme: dark) {
-      @include mat.expansion-overrides((
-        container-background-color: mat.get-theme-color($theme, neutral, 95),
-      ));
-    }
-    @media (prefers-color-scheme: light) {
-      @include mat.expansion-overrides((
-        container-background-color: mat.get-theme-color($theme, neutral, 100),
-      ));
-    }
-    @include mat.expansion-overrides((
-      container-shape: 4px,
-      header-hover-state-layer-color: transparent,
-      header-focus-state-layer-color: transparent,
-      header-disabled-state-text-color: mat.get-theme-color($theme, neutral, 60),
-      header-text-color: mat.get-theme-color($theme, neutral-variant, 20),
-      container-text-color:  mat.get-theme-color($theme, neutral-variant, 30),
-      header-description-color: mat.get-theme-color($theme, neutral-variant, 40),
-      header-indicator-color: mat.get-theme-color($theme, neutral-variant, 60),
-      header-text-size: mat.get-theme-typography($theme, body-large, font-size),
-      header-text-weight: mat.get-theme-typography($theme, body-large, font-weight),
-      header-text-line-height: mat.get-theme-typography($theme, body-large, line-height),
-      container-text-line-height: mat.get-theme-typography($theme, body-large, line-height),
-      container-text-size: mat.get-theme-typography($theme, body-large, font-size),
-      container-text-weight:mat.get-theme-typography($theme, body-large, font-weight),
-    ));
-  }
+@mixin tokens-overrides() {
+  @include mat.expansion-overrides((
+    container-shape: var(--mat-sys-corner-medium),
+    header-hover-state-layer-color: transparent,
+    header-focus-state-layer-color: transparent,
+    header-text-color: var(--mat-sys-on-background),
+    container-text-color:  var(--mat-sys-on-background),
+    header-description-color: var(--mat-sys-on-surface),
+    header-indicator-color: var(--mat-sys-on-surface-variant),
+    header-text-size: var(--mat-sys-body-large-size),
+    header-text-weight: var(--mat-sys-body-large-weight),
+    header-text-line-height: var(--mat-sys-body-large-line-height),
+    container-text-size: var(--mat-sys-body-medium-size),
+    container-text-weight: var(--mat-sys-body-medium-weight),
+    container-text-line-height: var(--mat-sys-body-medium-line-height),
+    container-background-color: var(--mat-sys-surface),
+  ));
 }

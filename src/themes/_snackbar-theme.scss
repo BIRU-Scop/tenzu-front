@@ -39,7 +39,7 @@
 @mixin color-and-typo($theme) {
   .mdc-snackbar {
     @include mat.snack-bar-overrides((
-      container-shape: 4px
+      container-shape: var(--mat-sys-corner-medium)
     ));
     &.snackbar-success {
       @include mat.snack-bar-overrides((
