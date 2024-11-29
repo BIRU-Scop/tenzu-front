@@ -79,7 +79,7 @@ export const routes: Routes = [
   {
     path: "workspace/:id",
     loadComponent: () => import("./detail-base/detail-base.component").then((m) => m.DetailBaseComponent),
-    providers: [provideTranslocoScope("workspace")],
+    providers: [provideTranslocoScope("workspace", "workflow")],
     resolve: { workspace: workspaceResolver },
     children: [
       {

@@ -27,12 +27,23 @@ export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   switch (message.event.type) {
     case StoryAssignmentEventType.CreateStoryAssignment: {
       const content = message.event.content as { storyAssignment: StoryAssign };
-      storyStore.addAssign(content.storyAssignment, content.storyAssignment.story.ref);
+      if (
+        storyStore.entityMap()[content.storyAssignment.story.ref] ||
+        storyStore.selectedStoryDetails().ref === content.storyAssignment.story.ref
+      ) {
+        storyStore.addAssign(content.storyAssignment, content.storyAssignment.story.ref);
+      }
       break;
     }
     case StoryAssignmentEventType.DeleteStoryAssignment: {
       const content = message.event.content as { storyAssignment: StoryAssign };
-      storyStore.removeAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
+      if (
+        storyStore.entityMap()[content.storyAssignment.story.ref] ||
+        storyStore.selectedStoryDetails().ref === content.storyAssignment.story.ref
+      ) {
+        storyStore.removeAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
+      }
+
       break;
     }
   }

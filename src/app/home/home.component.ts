@@ -62,34 +62,32 @@ import { MatDivider } from "@angular/material/divider";
         <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'"></mat-icon>
       </a>
       <div class="mx-auto"></div>
-      <button mat-icon-button (click)="openNotificationDialog($event)"><mat-icon [matBadge]="notificationsComponentService.count.unread()" [matBadgeHidden]="!notificationsComponentService.count.unread()">notifications</mat-icon></button>
+      <button mat-icon-button (click)="openNotificationDialog($event)">
+        <mat-icon
+          [matBadge]="notificationsComponentService.count.unread()"
+          [matBadgeHidden]="!notificationsComponentService.count.unread()"
+          >notifications</mat-icon
+        >
+      </button>
       <mat-divider class="h-1/2 !mx-2" [vertical]="true"></mat-divider>
       @let myUser = userStore.myUser();
-        <button>
-          <app-avatar
-            [matMenuTriggerFor]="userMenu"
-            [name]="myUser.fullName"
-            [color]="myUser.color"
-            [rounded]="true"
-          />
+
+      <button>
+        <app-avatar [matMenuTriggerFor]="userMenu" [name]="myUser.fullName" [color]="myUser.color" [rounded]="true" />
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <div class="px-3 py-1.5">
+          <app-user-card [username]="myUser.email" [fullName]="myUser.fullName" [color]="myUser.color"></app-user-card>
+        </div>
+        <button mat-menu-item [routerLink]="'settings'" [attr.aria-label]="t('settings')">
+          <mat-icon>settings</mat-icon>
+          <span>{{ t("settings") }}</span>
         </button>
-        <mat-menu #userMenu="matMenu">
-          <div class="px-3 py-1.5">
-            <app-user-card
-              [username]="myUser.email"
-              [fullName]="myUser.fullName"
-              [color]="myUser.color"
-            ></app-user-card>
-          </div>
-          <button mat-menu-item [routerLink]="'settings'" [attr.aria-label]="t('settings')">
-            <mat-icon>settings</mat-icon>
-            <span>{{ t("settings") }}</span>
-          </button>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>{{ t("logout") }}</span>
-          </button>
-        </mat-menu>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>{{ t("logout") }}</span>
+        </button>
+      </mat-menu>
     </mat-toolbar>
     <main>
       <router-outlet />

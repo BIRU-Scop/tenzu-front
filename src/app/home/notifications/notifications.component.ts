@@ -20,9 +20,14 @@ import { MatDialogContent } from "@angular/material/dialog";
     @let notif = notification();
     <div class="flex flex-row gap-2" *transloco="let t" (click)="read.emit()" [class.opacity-60]="!!notif.readAt">
       @let context = getContext(notif);
-      <app-avatar [name]="context.user.fullName" [matTooltip]="context.user.fullName" [color]="context.user.color" [rounded]="true"></app-avatar>
+      <app-avatar
+        [name]="context.user.fullName"
+        [matTooltip]="context.user.fullName"
+        [color]="context.user.color"
+        [rounded]="true"
+      ></app-avatar>
       <div>
-        <p class="text-neutral-20" [innerHTML]="t(context.translateKey, context.params)|safeHtml"></p>
+        <p class="text-neutral-20" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
         @if (context.link) {
           <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
             {{ notificationsComponentService.getStoryName(notif) }}
@@ -30,7 +35,6 @@ import { MatDialogContent } from "@angular/material/dialog";
         } @else {
           <span class="line-clamp-1">{{ notificationsComponentService.getStoryName(notif) }}</span>
         }
-
       </div>
     </div>
   `,
@@ -134,7 +138,7 @@ export class NotificationUnitComponent {
         </p>
         <div class="flex flex-row gap-1 items-baseline">
           <span class="mat-label-medium whitespace-nowrap">{{ t("notifications.only_unread") }}</span>
-        <mat-slide-toggle (toggleChange)="toggleShowRead()"></mat-slide-toggle>
+          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()"></mat-slide-toggle>
         </div>
       </div>
 
@@ -155,10 +159,10 @@ export class NotificationUnitComponent {
 })
 export class NotificationsComponent implements OnInit {
   notificationsComponentService = inject(NotificationsComponentService);
-  showRead = signal(false);
+  showOnlyUnread = signal(true);
   notifications = computed(() => {
     const notifications = this.notificationsComponentService.notifications();
-    return this.showRead() ? notifications : notifications.filter((notification) => !notification.readAt);
+    return this.showOnlyUnread() ? notifications.filter((notification) => !notification.readAt) : notifications;
   });
 
   async ngOnInit() {
@@ -170,6 +174,6 @@ export class NotificationsComponent implements OnInit {
     }
   }
   toggleShowRead() {
-    this.showRead.update((value) => !value);
+    this.showOnlyUnread.update((value) => !value);
   }
 }

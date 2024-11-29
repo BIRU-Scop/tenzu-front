@@ -25,9 +25,9 @@ import { MatIconRegistry } from "@angular/material/icon";
 import { DOCUMENT } from "@angular/common";
 
 @Component({
-    selector: "app-root",
-    imports: [RouterOutlet],
-    template: `<router-outlet />`
+  selector: "app-root",
+  imports: [RouterOutlet],
+  template: `<router-outlet />`,
 })
 export class AppComponent implements OnInit {
   title = "tenzu";
