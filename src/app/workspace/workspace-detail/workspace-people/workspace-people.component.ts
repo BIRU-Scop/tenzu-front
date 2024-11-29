@@ -35,9 +35,9 @@ import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 @Component({
-    selector: "app-workspace-people",
-    imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
-    template: `
+  selector: "app-workspace-people",
+  imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
+  template: `
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
@@ -103,19 +103,23 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
       </mat-tab-group>
     </div>
   `,
-    animations: [
-        trigger("newItemsFlyIn", [
-            transition(":enter, * => 0, * => -1", []),
-            transition(":increment", [
-                query(":enter", [
-                    style({ opacity: 0, height: 0 }),
-                    stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-                ], { optional: true }),
-            ]),
-        ]),
-    ],
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [
+    trigger("newItemsFlyIn", [
+      transition(":enter, * => 0, * => -1", []),
+      transition(":increment", [
+        query(
+          ":enter",
+          [
+            style({ opacity: 0, height: 0 }),
+            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
+          ],
+          { optional: true },
+        ),
+      ]),
+    ]),
+  ],
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspacePeopleComponent {
   breadcrumbStore = inject(BreadcrumbStore);

@@ -69,15 +69,21 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
             @let stories = storyStore.groupedByStatus()[status.id];
 
             <li class="group w-64 flex flex-col overflow-hidden">
-              <app-status-card (movedLeft)="moveStatus(status, $index, Step.LEFT)"
-                               (movedRight)="moveStatus(status, $index, Step.RIGHT)"
-                               [config]="{ showLeft: !$first, showRight: !$last}" [name]="status.name" [id]="status.id"
-                               [isEmpty]="!stories" />
+              <app-status-card
+                (movedLeft)="moveStatus(status, $index, Step.LEFT)"
+                (movedRight)="moveStatus(status, $index, Step.RIGHT)"
+                [config]="{ showLeft: !$first, showRight: !$last }"
+                [name]="status.name"
+                [id]="status.id"
+                [isEmpty]="!stories"
+              />
               <ul
                 [@newStoryFlyIn]="storyStore.entities().length || 0"
                 [id]="status.id"
                 class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 bg-neutral-98 rounded-b shadow-inner"
-                cdkDropList [cdkDropListData]="status" (cdkDropListDropped)="drop($event)"
+                cdkDropList
+                [cdkDropListData]="status"
+                (cdkDropListDropped)="drop($event)"
               >
                 @for (story of stories; track story.ref) {
                   <li cdkDrag [cdkDragData]="story" class="w-60">
@@ -95,8 +101,11 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
             </li>
           }
           <li>
-            <button mat-stroked-button class="tertiary-button whitespace-nowrap w-64"
-                    (click)="openCreateStatus($event)">
+            <button
+              mat-stroked-button
+              class="tertiary-button whitespace-nowrap w-64"
+              (click)="openCreateStatus($event)"
+            >
               {{ t("add_status") }}
             </button>
           </li>

@@ -119,16 +119,16 @@ export class WorkspaceSettingsComponent {
   _snackBar = inject(MatSnackBar);
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
-  onSubmit() {
+  async onSubmit() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      this.workspaceStore.patchSelectedEntity(this.form.getRawValue());
+      await this.workspaceStore.patchSelectedEntity(this.form.getRawValue());
     }
   }
 
   onDelete() {
-    this.workspaceStore.deleteSelectedEntity().then((deleted) => {
-      this.router.navigateByUrl("/");
+    this.workspaceStore.deleteSelectedEntity().then(async (deleted) => {
+      await this.router.navigateByUrl("/");
       this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
         duration: 3000,
         data: {
