@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { StoryDetail, StoryService, StoryStore, StoryUpdate } from "@tenzu/data/story";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
@@ -32,13 +32,14 @@ import { WorkflowStore } from "@tenzu/data/workflow";
 export class StoryDetailService {
   workflowStore = inject(WorkflowStore);
   projectStore = inject(ProjectStore);
+  projectDetailStore = inject(ProjectDetailStore);
   workspaceStore = inject(WorkspaceStore);
   storyStore = inject(StoryStore);
   storyService = inject(StoryService);
   router = inject(Router);
 
   public async patchSelectedStory(data: Partial<StoryUpdate>) {
-    const project = this.projectStore.selectedEntity();
+    const project = this.projectDetailStore.item();
     const story = this.storyStore.selectedStoryDetails();
     if (project && story) {
       return this.storyStore.patch(project.id, story, {
@@ -51,35 +52,41 @@ export class StoryDetailService {
   }
 
   public async deleteSelectedStory() {
-    const project = this.projectStore.selectedEntity();
+    const project = this.projectDetailStore.item();
     const story = this.storyStore.selectedStoryDetails();
-    const workflow = this.workflowStore.selectedEntity();
-    const workspace = this.workspaceStore.selectedEntity();
-    await this.storyStore.deleteStory(project!.id, story!.ref);
-    await this.router.navigateByUrl(`/workspace/${workspace!.id}/project/${project!.id}/kanban/${workflow!.slug}`);
+    if (project && story) {
+      const workflow = this.workflowStore.entityMap()[story.workflowId];
+      await this.storyStore.deleteStory(project!.id, story!.ref);
+      await this.router.navigateByUrl(
+        `/workspace/${project?.workspaceId}/project/${project.id}/kanban/${workflow!.slug}`,
+      );
+    }
   }
 
   public async addAttachment(file: File) {
-    await this.storyStore.createAttachment(
-      this.projectStore.selectedEntity()!.id,
-      this.storyStore.selectedStoryDetails().ref,
-      file,
-    );
+    const project = this.projectDetailStore.item();
+    if (project) {
+      await this.storyStore.createAttachment(project.id, this.storyStore.selectedStoryDetails().ref, file);
+    }
   }
 
   public async deleteAttachment(id: string) {
-    await this.storyStore.deleteAttachment(
-      this.projectStore.selectedEntity()!.id,
-      this.storyStore.selectedStoryDetails().ref,
-      id,
-    );
+    const project = this.projectDetailStore.item();
+    if (project) {
+      await this.storyStore.deleteAttachment(project!.id, this.storyStore.selectedStoryDetails().ref, id);
+    }
   }
 
   public getStoryAttachmentUrlBack(attachmentId: string) {
-    return this.storyService.getStoryAttachmentUrl(
-      this.projectStore.selectedEntity()!.id,
-      this.storyStore.selectedStoryDetails().ref,
-      attachmentId,
-    );
+    const project = this.projectDetailStore.item();
+    if (project) {
+      return this.storyService.getStoryAttachmentUrl(
+        project.id,
+        this.storyStore.selectedStoryDetails().ref,
+        attachmentId,
+      );
+    } else {
+      return "";
+    }
   }
 }

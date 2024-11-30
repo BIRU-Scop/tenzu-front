@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { WorkflowStore } from "@tenzu/data/workflow/workflow.store";
 import { Story, StoryStore } from "@tenzu/data/story";
@@ -37,11 +37,12 @@ import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { Status } from "@tenzu/data/status";
-import { Step, Workflow } from "@tenzu/data/workflow";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { distinctUntilChanged, pipe, tap } from "rxjs";
+import { Step } from "@tenzu/data/workflow";
+import { filter } from "rxjs";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: "app-project-kanban",
@@ -163,28 +164,25 @@ export class ProjectKanbanComponent {
   readonly relativeDialog = inject(RelativeDialogService);
   limit = signal(100);
   offset = 0;
-  list = rxMethod<Workflow | null>(
-    pipe(
-      filterNotNull(),
-      distinctUntilChanged((prev, curr) => prev.id === curr.id),
-      tap(async (workflow) => {
+
+  protected readonly Step = Step;
+
+  constructor() {
+    toObservable(this.workflowStore.selectedEntity)
+      .pipe(filterNotNull())
+      .subscribe(async (workflow) => {
         this.breadcrumbStore.setSixthLevel({ label: workflow.name, doTranslation: false });
         while (true) {
           const stories = await this.storyStore.list(workflow.projectId, workflow.slug, this.offset, this.limit());
-          this.storyStore.reorder();
+
           if (stories.length < this.limit()) {
             break;
           }
           this.offset += this.limit();
         }
-      }),
-    ),
-  );
-  protected readonly Step = Step;
+        this.storyStore.reorder();
+      });
 
-  constructor() {
-    this.storyStore.reset();
-    this.list(this.workflowStore.selectedEntity);
     this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
   }
 

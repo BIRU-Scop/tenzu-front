@@ -10,10 +10,12 @@
           "inlineTemplate": true,
           "inlineStyle": true,
           "changeDetection": "OnPush",
-          "style": "scss"
+          "style": "scss",
+          "skipTests": true
         },
         "@schematics/angular:service": {
-          "flat": false
+          "flat": true,
+          "skipTests": true
         }
       },
       "root": "",

@@ -28,19 +28,21 @@ import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-di
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { Workflow, WorkflowStore } from "@tenzu/data/workflow";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project/project.service";
 
 @Component({
-    selector: "app-project-kanban-create",
-    imports: [ProjectKanbanSkeletonComponent, TranslocoDirective],
-    template: ` <app-project-kanban-skeleton *transloco="let t"></app-project-kanban-skeleton> `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "app-project-kanban-create",
+  imports: [ProjectKanbanSkeletonComponent, TranslocoDirective],
+  template: ` <app-project-kanban-skeleton *transloco="let t"></app-project-kanban-skeleton> `,
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
   readonly workflowStore = inject(WorkflowStore);
-  readonly projectStore = inject(ProjectStore);
+  readonly projectDetailStore = inject(ProjectDetailStore);
+  readonly projectService = inject(ProjectService);
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
   readonly activatedRoute = inject(ActivatedRoute);
@@ -69,10 +71,11 @@ export class ProjectKanbanCreateComponent {
       },
     });
     dialogRef.afterClosed().subscribe(async (name?: Pick<Workflow, "name">) => {
-      if (name) {
-        const projectId = this.projectStore.selectedEntity()!.id;
-        const workflow = await this.workflowStore.createWorkflow(projectId, name);
-        this.projectStore.getProject(projectId);
+      const project = this.projectDetailStore.item();
+      if (name && project) {
+        const projectId = project.id;
+        const workflow = await this.projectService.createWorkflow(projectId, name);
+        await this.projectService.getProject(projectId);
         await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
       } else {
         await this.router.navigate([".."], { relativeTo: this.activatedRoute });

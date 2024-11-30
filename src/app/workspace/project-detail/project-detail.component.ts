@@ -24,10 +24,10 @@ import { RouterOutlet } from "@angular/router";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore } from "@tenzu/data/project";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { SidenavListWorkflowComponent } from "./sidenav-list-workflow/sidenav-list-workflow.component";
-import { WorkflowStore } from "@tenzu/data/workflow";
+import { filterNotNull } from "@tenzu/utils";
 
 @Component({
   selector: "app-project-detail",
@@ -39,29 +39,31 @@ import { WorkflowStore } from "@tenzu/data/workflow";
 export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
   workspaceStore = inject(WorkspaceStore);
-  projectStore = inject(ProjectStore);
+  projectDetailStore = inject(ProjectDetailStore);
   breadcrumbStore = inject(BreadcrumbStore);
   baseUrl = computed(
-    () => `/workspace/${this.workspaceStore.selectedEntity()?.id}/project/${this.projectStore.selectedEntity()?.id}`,
+    () => `/workspace/${this.workspaceStore.selectedEntity()?.id}/project/${this.projectDetailStore.item()?.id}`,
   );
   constructor() {
-    toObservable(this.projectStore.selectedEntity).subscribe((project) => {
-      this.sideNavStore.setAvatar(
-        project ? { name: project.name, type: "workspace.general_title.project", color: project.color } : undefined,
-      );
-      if (project) {
-        this.breadcrumbStore.setThirdLevel({
-          label: "workspace.general_title.projects",
-          link: "/",
-          doTranslation: true,
-        });
-        this.breadcrumbStore.setFourthLevel({
-          label: project.name,
-          link: `project/${project.id}`,
-          doTranslation: false,
-        });
-      }
-    });
+    toObservable(this.projectDetailStore.item)
+      .pipe(filterNotNull())
+      .subscribe((project) => {
+        this.sideNavStore.setAvatar(
+          project ? { name: project.name, type: "workspace.general_title.project", color: project.color } : undefined,
+        );
+        if (project) {
+          this.breadcrumbStore.setThirdLevel({
+            label: "workspace.general_title.projects",
+            link: "/",
+            doTranslation: true,
+          });
+          this.breadcrumbStore.setFourthLevel({
+            label: project.name,
+            link: `project/${project.id}`,
+            doTranslation: false,
+          });
+        }
+      });
     this.breadcrumbStore.setFirstLevel({
       label: "workspace.general_title.workspaces",
       link: "/",

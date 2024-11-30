@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ProjectStore } from "@tenzu/data/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
@@ -29,23 +29,26 @@ import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { WorkflowStore } from "@tenzu/data/workflow";
-import { StoryStore } from "@tenzu/data/story";
+import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 
 @Component({
   selector: "app-workspace-project-list",
-  imports: [ProjectCardComponent, TranslocoDirective, MatButton, MatIcon, RouterLink],
+  imports: [ProjectCardComponent, TranslocoDirective, MatButton, MatIcon, RouterLink, CardSkeletonComponent],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
-      <button
-        class="primary-button"
-        routerLink="/new-project"
-        [queryParams]="{ workspaceId: workspaceStore.selectedEntity()!.id }"
-        mat-stroked-button
-      >
-        <mat-icon>add</mat-icon>
-        {{ t("commons.project") }}
-      </button>
+      @let workspace = workspaceStore.selectedEntity();
+      @if (workspace) {
+        <button
+          class="primary-button"
+          routerLink="/new-project"
+          [queryParams]="{ workspaceId: workspace.id }"
+          mat-stroked-button
+        >
+          <mat-icon>add</mat-icon>
+          {{ t("commons.project") }}
+        </button>
+      }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
       @for (project of projectStore.entities(); track project.id) {
@@ -57,26 +60,29 @@ import { StoryStore } from "@tenzu/data/story";
           [projectId]="project.id"
           [description]="project.description ? project.description : null"
         ></app-project-card>
+      } @empty {
+        @for (skeleton of Array(6); track $index) {
+          <li><app-card-skeleton></app-card-skeleton></li>
+        }
       }
     </div>
   </div>`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceProjectListComponent {
+export default class WorkspaceProjectListComponent implements AfterViewInit {
   projectStore = inject(ProjectStore);
   workspaceStore = inject(WorkspaceStore);
   workflowStore = inject(WorkflowStore);
-  storyStore = inject(StoryStore);
   breadcrumbStore = inject(BreadcrumbStore);
 
-  constructor() {
-    this.workflowStore.reset();
-    this.storyStore.reset();
+  ngAfterViewInit(): void {
     this.breadcrumbStore.setThirdLevel({
       label: "workspace.general_title.workspaceListProjects",
       link: "",
       doTranslation: true,
     });
   }
+
+  protected readonly Array = Array;
 }

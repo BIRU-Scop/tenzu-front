@@ -30,7 +30,7 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 
 export type ChooseWorkflowDialogData = {
@@ -53,15 +53,11 @@ export type ChooseWorkflowDialogData = {
     <ng-container *transloco="let t">
       <mat-dialog-content>
         <div class="flex flex-col gap-4">
-            <label id="aria-label">{{ t("workflow.detail_story.change_workflow") }}</label>
-          <mat-radio-group
-            aria-labelledby="aria-label"
-            [formControl]="newWorkflowSlug"
-            class="flex flex-col"
-          >
-            @let workflows = projectStore.selectedEntity()?.workflows;
+          <label id="aria-label">{{ t("workflow.detail_story.change_workflow") }}</label>
+          <mat-radio-group aria-labelledby="aria-label" [formControl]="newWorkflowSlug" class="flex flex-col">
+            @let workflows = projectDetailStore.item()?.workflows;
             @for (workflow of workflows; track workflow.slug) {
-              <mat-radio-button  [value]="workflow.slug">{{workflow.name}}</mat-radio-button>
+              <mat-radio-button [value]="workflow.slug">{{ workflow.name }}</mat-radio-button>
             }
           </mat-radio-group>
         </div>
@@ -70,12 +66,7 @@ export type ChooseWorkflowDialogData = {
         <button data-testid="choose-workflow-submit" mat-flat-button class="tertiary-button" (click)="submit()">
           {{ t("commons.save") }}
         </button>
-        <button
-          data-testid="close-dialog"
-          mat-flat-button
-          class="secondary-button"
-          mat-dialog-close
-        >
+        <button data-testid="close-dialog" mat-flat-button class="secondary-button" mat-dialog-close>
           {{ t("commons.cancel") }}
         </button>
       </mat-dialog-actions>
@@ -89,7 +80,7 @@ export class ChooseWorkflowDialogComponent {
   data = inject<ChooseWorkflowDialogData>(MAT_DIALOG_DATA);
   fb = inject(FormBuilder);
   newWorkflowSlug = this.fb.nonNullable.control(this.data.currentWorkflowSlug || "");
-  projectStore = inject(ProjectStore);
+  projectDetailStore = inject(ProjectDetailStore);
 
   @HostListener("window:keyup.Enter", ["$event"])
   onPressEnter() {

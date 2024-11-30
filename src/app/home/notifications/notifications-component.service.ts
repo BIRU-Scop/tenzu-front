@@ -19,7 +19,6 @@ export class NotificationsComponentService {
   notifications = this.notificationsStore.entities;
   count = this.notificationsStore.count;
 
-  constructor() {}
   async list() {
     const notifications = await lastValueFrom(this.notificationsService.list());
     this.notificationsStore.setNotifications(notifications);

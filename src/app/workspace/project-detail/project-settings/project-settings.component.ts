@@ -19,10 +19,10 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -33,23 +33,27 @@ import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services";
+import { ProjectService } from "@tenzu/data/project/project.service";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { filterNotNull } from "@tenzu/utils";
+import { tap } from "rxjs";
 
 @Component({
-    selector: "app-project-settings",
-    imports: [
-        MatError,
-        MatFormField,
-        MatInput,
-        MatLabel,
-        ReactiveFormsModule,
-        TranslocoDirective,
-        DescriptionFieldComponent,
-        MatButton,
-        MatIcon,
-        ConfirmDirective,
-        AvatarComponent,
-    ],
-    template: `
+  selector: "app-project-settings",
+  imports: [
+    MatError,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    ReactiveFormsModule,
+    TranslocoDirective,
+    DescriptionFieldComponent,
+    MatButton,
+    MatIcon,
+    ConfirmDirective,
+    AvatarComponent,
+  ],
+  template: `
     <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings'">
       <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
         <h1 class="mat-headline-medium">{{ t("title") }}</h1>
@@ -57,7 +61,7 @@ import { NotificationService } from "@tenzu/utils/services";
           <app-avatar
             size="xl"
             [name]="form.controls.name.value!"
-            [color]="projectStore.selectedEntity()?.color || 0"
+            [color]="projectDetailStore.item()?.color || 0"
           ></app-avatar>
           <mat-form-field>
             <mat-label>{{ t("name") }}</mat-label>
@@ -72,7 +76,13 @@ import { NotificationService } from "@tenzu/utils/services";
           formControlName="description"
         ></app-description-field>
         <div class="flex gap-x-4 mt-2">
-          <button mat-flat-button type="submit" class="tertiary-button" data-testid="project-edit-submit">
+          <button
+            mat-flat-button
+            type="submit"
+            class="tertiary-button"
+            data-testid="project-edit-submit"
+            [disabled]="form.pristine"
+          >
             {{ t("buttons.save") }}
           </button>
           <button mat-flat-button (click)="reset()" class="secondary-button">
@@ -100,20 +110,35 @@ import { NotificationService } from "@tenzu/utils/services";
       </div>
     </div>
   `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectSettingsComponent {
+export class ProjectSettingsComponent implements AfterViewInit {
   notificationService = inject(NotificationService);
+  projectService = inject(ProjectService);
   breadcrumbStore = inject(BreadcrumbStore);
-  projectStore = inject(ProjectStore);
+  projectDetailStore = inject(ProjectDetailStore);
   router = inject(Router);
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
-    name: [this.projectStore.selectedEntity()?.name, Validators.required],
-    description: [this.projectStore.selectedEntity()?.description],
+    name: ["", Validators.required],
+    description: [""],
   });
   constructor() {
+    toObservable(this.projectDetailStore.item)
+      .pipe(
+        filterNotNull(),
+        tap((project) =>
+          this.form.patchValue({
+            name: project.name,
+            description: project.description,
+          }),
+        ),
+      )
+      .subscribe();
+  }
+
+  ngAfterViewInit(): void {
     this.breadcrumbStore.setFifthLevel({
       label: "workspace.general_title.projectSettings",
       link: "",
@@ -125,7 +150,7 @@ export class ProjectSettingsComponent {
   async onSave() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      await this.projectStore.patchSelectedEntity(this.form.getRawValue());
+      await this.projectService.patchSelectedProject(this.form.getRawValue());
       this.notificationService.success({
         title: "settings.project.messages.saved",
       });
@@ -133,16 +158,16 @@ export class ProjectSettingsComponent {
   }
 
   async onDelete() {
-    const deletedProject = await this.projectStore.deleteSelectedEntity();
+    const deletedProject = await this.projectService.deleteSelectedProject();
     await this.router.navigateByUrl("/");
     this.notificationService.warning({
       title: "notification.project.deleted",
-      translocoTitleParams: { name: deletedProject.name },
+      translocoTitleParams: { name: deletedProject?.name },
     });
   }
 
   reset() {
-    const selectedEntity = this.projectStore.selectedEntity();
+    const selectedEntity = this.projectDetailStore.item();
     if (selectedEntity) {
       this.form.reset({ ...selectedEntity });
     }

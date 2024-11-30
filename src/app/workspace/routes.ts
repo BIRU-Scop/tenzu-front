@@ -19,55 +19,30 @@
  *
  */
 
-import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
+import { ActivatedRouteSnapshot, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
+import { ProjectDetailService } from "./project-detail/project-detail.service";
 import { inject } from "@angular/core";
-import { WorkspaceStore } from "@tenzu/data/workspace";
-import { ProjectStore } from "@tenzu/data/project";
-import { WorkflowStore } from "@tenzu/data/workflow/workflow.store";
-import { MembershipStore } from "@tenzu/data/membership";
-import { HttpErrorResponse } from "@angular/common/http";
-
-export async function workspaceResolver(route: ActivatedRouteSnapshot) {
-  const workspaceStore = inject(WorkspaceStore);
-  const membershipStore = inject(MembershipStore);
-  const router = inject(Router);
-  try {
-    return Promise.all([
-      workspaceStore.get(route.paramMap.get("id")!),
-      membershipStore.listWorkspaceMembership(route.paramMap.get("id")!),
-      membershipStore.listWorkspaceInvitations(route.paramMap.get("id")!),
-      membershipStore.listWorkspaceGuest(route.paramMap.get("id")!),
-    ]);
-  } catch (error) {
-    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      return router.navigate(["/404"]);
-    }
-    throw error;
+import { WorkspaceDetailService } from "./workspace-detail/workspace-detail.service";
+import { debug } from "../../libs/utils/functions/logging";
+export function workspaceResolver(route: ActivatedRouteSnapshot) {
+  debug("workspaceResolver", "start");
+  const workspaceDetailService = inject(WorkspaceDetailService);
+  const workspaceId = route.paramMap.get("workspaceId");
+  if (workspaceId) {
+    workspaceDetailService.load(workspaceId);
   }
+  debug("workspaceResolver", "end");
 }
-
-export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) {
-  const projectStore = inject(ProjectStore);
-  const workflowStore = inject(WorkflowStore);
-  const membershipStore = inject(MembershipStore);
-  const router = inject(Router);
-
-  try {
-    projectStore.reset();
-    return Promise.all([
-      projectStore
-        .getProject(route.paramMap.get("projectId")!)
-        .then((project) => workflowStore.setWorkflows(project.workflows)),
-      membershipStore.listProjectMembership(route.paramMap.get("projectId")!),
-      membershipStore.listProjectInvitations(route.paramMap.get("projectId")!),
-    ]);
-  } catch (error) {
-    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      return router.navigate(["/404"]);
-    }
-    throw error;
+export function projectResolver(route: ActivatedRouteSnapshot) {
+  debug("projectResolver", "start");
+  const projectService = inject(ProjectDetailService);
+  const projectId = route.paramMap.get("projectId");
+  const workspaceId = route.paramMap.get("workspaceId");
+  if (projectId && workspaceId) {
+    projectService.load(workspaceId, projectId);
   }
+  debug("projectResolver", "end");
 }
 
 export const routes: Routes = [
@@ -77,7 +52,7 @@ export const routes: Routes = [
     providers: [provideTranslocoScope("workspace")],
   },
   {
-    path: "workspace/:id",
+    path: "workspace/:workspaceId",
     loadComponent: () => import("./detail-base/detail-base.component").then((m) => m.DetailBaseComponent),
     providers: [provideTranslocoScope("workspace", "workflow")],
     resolve: { workspace: workspaceResolver },
@@ -85,10 +60,9 @@ export const routes: Routes = [
       {
         path: "project/:projectId",
         loadComponent: () => import("./project-detail/project-detail.component").then((m) => m.ProjectDetailComponent),
-
         loadChildren: () => import("./project-detail/routes").then((m) => m.routes),
         providers: [provideTranslocoScope("workflow")],
-        resolve: { project: projectByWorkspaceResolver },
+        resolve: { project: projectResolver },
       },
       {
         path: "",

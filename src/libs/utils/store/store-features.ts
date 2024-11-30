@@ -67,11 +67,51 @@ export function withSelectedEntity<Entity>() {
       }),
     })),
     withMethods((store) => ({
+      setSelectedEntity(id: EntityId) {
+        patchState(store, setSelectedEntity(id));
+      },
       resetSelectedEntity() {
         patchState(store, { selectedEntityId: null });
       },
       reset() {
         patchState(store, { selectedEntityId: null });
+        patchState(store, removeAllEntities());
+      },
+    })),
+  );
+}
+export function withEntity<T>() {
+  return signalStoreFeature(
+    withState<{ item: T | undefined }>({ item: undefined }),
+    withMethods((store) => ({
+      set(item: T) {
+        patchState(store, { item: item });
+      },
+      patch(partialTtem: Partial<T>) {
+        const item = store.item();
+        if (item) {
+          patchState(store, {
+            item: {
+              ...item,
+              ...partialTtem,
+            },
+          });
+          return item;
+        }
+        return undefined;
+      },
+      reset() {
+        patchState(store, { item: undefined });
+      },
+    })),
+  );
+}
+
+export function withResetEntities<Entity>() {
+  return signalStoreFeature(
+    { state: type<EntityState<Entity>>() },
+    withMethods((store) => ({
+      reset() {
         patchState(store, removeAllEntities());
       },
     })),

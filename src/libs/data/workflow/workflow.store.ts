@@ -24,7 +24,7 @@ import { computed, inject } from "@angular/core";
 import { addEntity, setAllEntities, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { setSelectedEntity, withLoadingStatus, withSelectedEntity } from "../../utils/store/store-features";
 import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow/workflow.model";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { WorkflowInfraService } from "@tenzu/data/workflow/workflow-infra.service";
 import { lastValueFrom } from "rxjs";
 import { Status } from "@tenzu/data/status";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
@@ -53,20 +53,19 @@ export const WorkflowStore = signalStore(
       return refreshedWorkflow;
     },
   })),
-  withMethods((store, workflowService = inject(WorkflowService)) => ({
+  withMethods((store, workflowService = inject(WorkflowInfraService)) => ({
     selectWorkflow(workflowId: string) {
       patchState(store, setSelectedEntity(workflowId));
     },
-    setWorkflows(workflows: Workflow[]) {
-      patchState(store, setAllEntities(workflows));
-    },
     async refreshWorkflowById(projectId: string, workflowId: string) {
       const refreshedWorkflow = await lastValueFrom(workflowService.getById(projectId, workflowId));
-      return store.setWorkflow(refreshedWorkflow);
+      store.setWorkflow({ ...refreshedWorkflow });
+      return refreshedWorkflow;
     },
     async refreshWorkflow(workflow: Pick<Workflow, "projectId" | "slug">) {
       const refreshedWorkflow = await lastValueFrom(workflowService.get(workflow.projectId, workflow.slug));
-      return store.setWorkflow(refreshedWorkflow);
+      store.setWorkflow(refreshedWorkflow);
+      return refreshedWorkflow;
     },
     addStatus(status: Status) {
       const selectedWorkflow = store.selectedEntity();
@@ -160,7 +159,7 @@ export const WorkflowStore = signalStore(
       return workflow;
     },
   })),
-  withMethods((store, workflowService = inject(WorkflowService)) => ({
+  withMethods((store, workflowService = inject(WorkflowInfraService)) => ({
     async createStatus(projectId: string, status: Pick<Status, "name" | "color">) {
       const selectedWorkflow = store.selectedEntity();
       if (selectedWorkflow) {

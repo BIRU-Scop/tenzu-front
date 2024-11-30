@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -129,7 +129,7 @@ import { StoryStore } from "@tenzu/data/story";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceListComponent {
+export class WorkspaceListComponent implements AfterViewInit {
   readonly workspaceStore = inject(WorkspaceStore);
   readonly projectStore = inject(ProjectStore);
   readonly workflowStore = inject(WorkflowStore);
@@ -152,12 +152,12 @@ export class WorkspaceListComponent {
     });
   };
 
-  constructor() {
+  ngAfterViewInit(): void {
     this.projectStore.reset();
     this.workspaceStore.reset();
     this.workflowStore.reset();
     this.storyStore.reset();
-    this.init();
+    this.init().then();
   }
 
   public openCreateDialog(event?: MouseEvent): void {

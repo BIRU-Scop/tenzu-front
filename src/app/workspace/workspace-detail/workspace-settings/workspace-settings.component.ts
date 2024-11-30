@@ -108,7 +108,7 @@ import { MatIcon } from "@angular/material/icon";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceSettingsComponent {
+export default class WorkspaceSettingsComponent {
   workspaceStore = inject(WorkspaceStore);
 
   fb = inject(FormBuilder);

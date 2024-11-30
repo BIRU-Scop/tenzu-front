@@ -12,7 +12,7 @@ import {
   WorkflowStatusEventType,
   WorkspaceEventType,
 } from "./event-type.enum";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
 import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
@@ -52,6 +52,7 @@ export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
 export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
   const storyStore = inject(StoryStore);
   const projectStore = inject(ProjectStore);
+  const projectDetailStore = inject(ProjectDetailStore);
   const workflowStore = inject(WorkflowStore);
   const workspaceStore = inject(WorkspaceStore);
   const router = inject(Router);
@@ -107,7 +108,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
           username: string;
         };
       };
-      const project = projectStore.selectedEntity();
+      const project = projectDetailStore.item();
       const workflow = workflowStore.selectedEntity();
       const workspace = workspaceStore.selectedEntity();
       storyStore.removeStory(content.ref);
@@ -127,12 +128,15 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
 }
 
 export function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
-  const projectStore = inject(ProjectStore);
+  const projectDetailStore = inject(ProjectDetailStore);
 
   switch (message.event.type) {
     case WorkflowEventType.CreateWorkflow: {
       const content = message.event.content as { workflow: Workflow };
-      projectStore.addWorkflow(content.workflow);
+      const project = projectDetailStore.item();
+      if (project && project.id === content.workflow.projectId) {
+        projectDetailStore.addWorkflow(content.workflow);
+      }
       break;
     }
     case WorkflowEventType.UpdateWorkflow: {
@@ -194,6 +198,7 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
 
 export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
   const projectStore = inject(ProjectStore);
+  const projectDetailStore = inject(ProjectDetailStore);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
@@ -205,11 +210,11 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
         workspace: string;
         name: string;
       };
-      const currentProject = projectStore.selectedEntity();
+      const currentProject = projectDetailStore.item();
       projectStore.removeEntity(content.project);
       if (currentProject && currentProject.id === content.project) {
         await router.navigateByUrl("/");
-        projectStore.resetSelectedEntity();
+        projectDetailStore.reset();
       }
       notificationService.warning({
         title: "notification.events.delete_project",

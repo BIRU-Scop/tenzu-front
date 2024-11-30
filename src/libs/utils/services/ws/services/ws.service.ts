@@ -30,6 +30,7 @@ import {
   applyWorkflowStatusEvent,
   applyWorkspaceEvent,
 } from "./apply-event.function";
+import { debug } from "../../../functions/logging";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -49,7 +50,7 @@ export class WsService {
     url: this.config.environment.wsUrl,
     openObserver: {
       next: () => {
-        console.log("[WS] connected");
+        debug("WS", "connected");
         const subcriptions = this.channelSubscribed();
         subcriptions.channelProjects.map((channel) => {
           const projectId = channel.split(".")[1];
@@ -63,7 +64,7 @@ export class WsService {
     },
     closeObserver: {
       next: () => {
-        console.log("[WS] disconnected");
+        debug("WS", "disconnected");
       },
     },
   });
@@ -91,9 +92,6 @@ export class WsService {
     toObservable(this.workspaceStore.command)
       .pipe(filterNotNull())
       .subscribe((command) => this.command(command));
-    toObservable(this.projectStore.command)
-      .pipe(filterNotNull())
-      .subscribe((command) => this.command(command));
   }
   async dispatch(message: WSResponse) {
     switch (message.type) {
@@ -113,12 +111,11 @@ export class WsService {
   dispatchAction(message: WSResponseAction) {
     switch (message.status) {
       case "ok": {
-        if (isDevMode()) {
-          console.debug(
-            `[WS] from the channel ${message.content.channel} received a response of the command ${message.action.command}`,
-            message,
-          );
-        }
+        debug(
+          "WS",
+          `from the channel ${message.content.channel} received a response of the command ${message.action.command}`,
+          message,
+        );
         this.manageSubscription(message);
         break;
       }
@@ -178,9 +175,7 @@ export class WsService {
     if (message.event.correlationId === this.config.correlationId) {
       return;
     }
-    if (isDevMode()) {
-      console.debug(`[WS] from the channel ${message.channel} received the event ${message.event.type}`, message);
-    }
+    debug("WS", `from the channel ${message.channel} received the event ${message.event.type}`, message);
 
     const family = message.event.type.split(".")[0];
     await runInInjectionContext(this.environmentInjector, async () => {
@@ -242,9 +237,7 @@ export class WsService {
   }
 
   public command(command: Command) {
-    if (!this.config.environment.production) {
-      console.debug(`[WS] sent the command ${command.command}`, command);
-    }
+    debug("WS", `sent the command ${command.command}`, command);
     if (command.command === "signin") {
       this.subject.next(command);
     } else {

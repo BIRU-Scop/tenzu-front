@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { RouterLink, RouterOutlet } from "@angular/router";
@@ -96,7 +96,7 @@ import { MatDivider } from "@angular/material/divider";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class HomeComponent implements OnInit {
+export default class HomeComponent implements AfterViewInit {
   userStore = inject(UserStore);
   authService = inject(AuthService);
   iconRegistry = inject(MatIconRegistry);
@@ -112,12 +112,13 @@ export default class HomeComponent implements OnInit {
       this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu-dark.svg"),
     );
   }
-  async ngOnInit() {
-    await this.notificationsComponentService.getCount();
+
+  ngAfterViewInit(): void {
+    this.notificationsComponentService.getCount().then();
   }
 
-  async logout() {
-    await this.authService.logout();
+  logout() {
+    this.authService.logout().then();
   }
   openNotificationDialog(even: MouseEvent) {
     this.relativeDialog.open(NotificationsComponent, even?.target, {

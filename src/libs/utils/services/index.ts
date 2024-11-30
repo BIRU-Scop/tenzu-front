@@ -25,3 +25,4 @@ export * from "./relative-dialog/relative-dialog.service";
 export * from "./notification";
 export * from "./config-service";
 export * from "./ws";
+export * from "./config-service/config-service.service";

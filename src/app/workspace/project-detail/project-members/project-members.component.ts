@@ -26,7 +26,7 @@ import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
 import { matDialogConfig } from "@tenzu/utils";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { MembershipStore } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -35,9 +35,9 @@ import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 
 @Component({
-    selector: "app-project-members",
-    imports: [TranslocoDirective, MatButton, MatList, MatTabGroup, MatTab, MatTabLabel, UserCardComponent, MatIcon],
-    template: `
+  selector: "app-project-members",
+  imports: [TranslocoDirective, MatButton, MatList, MatTabGroup, MatTab, MatTabLabel, UserCardComponent, MatIcon],
+  template: `
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.members'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
@@ -82,24 +82,28 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
       </mat-tab-group>
     </div>
   `,
-    animations: [
-        trigger("newItemsFlyIn", [
-            transition(":enter, * => 0, * => -1", []),
-            transition(":increment", [
-                query(":enter", [
-                    style({ opacity: 0, height: 0 }),
-                    stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-                ], { optional: true }),
-            ]),
-        ]),
-    ],
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [
+    trigger("newItemsFlyIn", [
+      transition(":enter, * => 0, * => -1", []),
+      transition(":increment", [
+        query(
+          ":enter",
+          [
+            style({ opacity: 0, height: 0 }),
+            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
+          ],
+          { optional: true },
+        ),
+      ]),
+    ]),
+  ],
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMembersComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  projectStore = inject(ProjectStore);
+  projectDetailStore = inject(ProjectDetailStore);
   membershipStore = inject(MembershipStore);
   translocoService = inject(TranslocoService);
 
@@ -124,13 +128,13 @@ export class ProjectMembersComponent {
           " " +
           this.translocoService.translateObject("component.invite_dialog.to") +
           " " +
-          this.projectStore.selectedEntity()?.name,
+          this.projectDetailStore.item()?.name,
         description: this.translocoService.translateObject("project.members.description_modal"),
       },
     });
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        await this.membershipStore.sendProjectInvitations(this.projectStore.selectedEntity()!.id, result);
+        await this.membershipStore.sendProjectInvitations(this.projectDetailStore.item()!.id, result);
         this.selectedTabIndex.set(1);
       }
     });

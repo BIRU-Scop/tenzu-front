@@ -121,7 +121,7 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspacePeopleComponent {
+export default class WorkspacePeopleComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
   workspaceStore = inject(WorkspaceStore);

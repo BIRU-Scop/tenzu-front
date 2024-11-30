@@ -28,7 +28,7 @@ import { Status } from "@tenzu/data/status";
 @Injectable({
   providedIn: "root",
 })
-export class WorkflowService {
+export class WorkflowInfraService {
   http = inject(HttpClient);
   url = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/`;
 

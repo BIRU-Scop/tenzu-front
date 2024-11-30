@@ -32,27 +32,28 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { MatInput } from "@angular/material/input";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
-import { ProjectService, ProjectStore } from "@tenzu/data/project";
+import { ProjectStore } from "@tenzu/data/project";
 import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
+import { ProjectService } from "@tenzu/data/project/project.service";
 
 @Component({
-    selector: "app-project-create-form",
-    imports: [
-        MatOption,
-        AvatarComponent,
-        MatSelectTrigger,
-        MatSelect,
-        MatLabel,
-        MatFormField,
-        TranslocoDirective,
-        ReactiveFormsModule,
-        DescriptionFieldComponent,
-        RouterLink,
-        MatButton,
-        MatInput,
-        MatError,
-    ],
-    template: `
+  selector: "app-project-create-form",
+  imports: [
+    MatOption,
+    AvatarComponent,
+    MatSelectTrigger,
+    MatSelect,
+    MatLabel,
+    MatFormField,
+    TranslocoDirective,
+    ReactiveFormsModule,
+    DescriptionFieldComponent,
+    RouterLink,
+    MatButton,
+    MatInput,
+    MatError,
+  ],
+  template: `
     <div class="grid grid-cols-1 place-items-center place-content-center" *transloco="let t">
       <div class="w-min flex flex-col gap-y-8 py-4">
         <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
@@ -112,8 +113,8 @@ import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
       </div>
     </div>
   `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectCreateComponent {
   projectService = inject(ProjectService);
@@ -149,16 +150,11 @@ export default class ProjectCreateComponent {
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      this.projectService.create(this.form.getRawValue()).subscribe({
-        error: (err) => console.log("error", err),
-        next: (value) => {
-          this.projectStore.addProject(value);
-          this.router.navigateByUrl(`/workspace/${value.workspace.id}/project/${value.id}/kanban/main`);
-        },
-      });
+      const project = await this.projectService.createProject(this.form.getRawValue());
+      this.router.navigateByUrl(`/workspace/${project.workspace.id}/project/${project.id}/kanban/main`).then();
     }
   }
 }
