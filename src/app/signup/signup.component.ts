@@ -34,23 +34,23 @@ import { NotificationService } from "@tenzu/utils/services";
 import { MatDivider } from "@angular/material/divider";
 
 @Component({
-    selector: "app-signup",
-    imports: [
-        EmailFieldComponent,
-        FormsModule,
-        MatButton,
-        MatLabel,
-        PasswordFieldComponent,
-        ReactiveFormsModule,
-        TranslocoDirective,
-        MatFormField,
-        MatInput,
-        MatIcon,
-        RouterLink,
-        MatError,
-        MatDivider,
-    ],
-    template: ` <div *transloco="let t" class="flex flex-col gap-y-4">
+  selector: "app-signup",
+  imports: [
+    EmailFieldComponent,
+    FormsModule,
+    MatButton,
+    MatLabel,
+    PasswordFieldComponent,
+    ReactiveFormsModule,
+    TranslocoDirective,
+    MatFormField,
+    MatInput,
+    MatIcon,
+    RouterLink,
+    MatError,
+    MatDivider,
+  ],
+  template: ` <div *transloco="let t" class="flex flex-col gap-y-4">
     @if (!emailSent()) {
       <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
       @if (!displayForm()) {
@@ -93,11 +93,7 @@ import { MatDivider } from "@angular/material/divider";
             {{ t("signup.create_account") }}
           </button>
           <div class="flex justify-center">
-            <button
-              mat-flat-button
-              class="secondary-button"
-              (click)="displayForm.set(false)"
-            >
+            <button mat-flat-button class="secondary-button" (click)="displayForm.set(false)">
               <mat-icon class="align-middle">arrow_back_ios</mat-icon>
               {{ t("signup.all_options") }}
             </button>
@@ -131,8 +127,8 @@ import { MatDivider } from "@angular/material/divider";
       </p>
     </footer>
   </div>`,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
   notificationService = inject(NotificationService);

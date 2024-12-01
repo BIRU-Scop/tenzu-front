@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
 
 import { NotificationsComponentService } from "./notifications-component.service";
@@ -18,11 +39,23 @@ import { MatDialogContent } from "@angular/material/dialog";
   imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe],
   template: `
     @let notif = notification();
-    <div class="flex flex-row gap-2" *transloco="let t" (click)="read.emit()" [class.opacity-60]="!!notif.readAt">
+    <div
+      tabindex="1"
+      (keyup)="read.emit()"
+      class="flex flex-row gap-2"
+      *transloco="let t"
+      (click)="read.emit()"
+      [class.opacity-60]="!!notif.readAt"
+    >
       @let context = getContext(notif);
-      <app-avatar [name]="context.user.fullName" [matTooltip]="context.user.fullName" [color]="context.user.color" [rounded]="true"></app-avatar>
+      <app-avatar
+        [name]="context.user.fullName"
+        [matTooltip]="context.user.fullName"
+        [color]="context.user.color"
+        [rounded]="true"
+      ></app-avatar>
       <div>
-        <p class="text-neutral-20" [innerHTML]="t(context.translateKey, context.params)|safeHtml"></p>
+        <p class="text-neutral-20" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
         @if (context.link) {
           <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
             {{ notificationsComponentService.getStoryName(notif) }}
@@ -30,7 +63,6 @@ import { MatDialogContent } from "@angular/material/dialog";
         } @else {
           <span class="line-clamp-1">{{ notificationsComponentService.getStoryName(notif) }}</span>
         }
-
       </div>
     </div>
   `,
@@ -134,7 +166,7 @@ export class NotificationUnitComponent {
         </p>
         <div class="flex flex-row gap-1 items-baseline">
           <span class="mat-label-medium whitespace-nowrap">{{ t("notifications.only_unread") }}</span>
-        <mat-slide-toggle (toggleChange)="toggleShowRead()"></mat-slide-toggle>
+          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()"></mat-slide-toggle>
         </div>
       </div>
 
@@ -155,10 +187,10 @@ export class NotificationUnitComponent {
 })
 export class NotificationsComponent implements OnInit {
   notificationsComponentService = inject(NotificationsComponentService);
-  showRead = signal(false);
+  showOnlyUnread = signal(true);
   notifications = computed(() => {
     const notifications = this.notificationsComponentService.notifications();
-    return this.showRead() ? notifications : notifications.filter((notification) => !notification.readAt);
+    return this.showOnlyUnread() ? notifications.filter((notification) => !notification.readAt) : notifications;
   });
 
   async ngOnInit() {
@@ -170,6 +202,6 @@ export class NotificationsComponent implements OnInit {
     }
   }
   toggleShowRead() {
-    this.showRead.update((value) => !value);
+    this.showOnlyUnread.update((value) => !value);
   }
 }

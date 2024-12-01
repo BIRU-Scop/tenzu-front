@@ -25,13 +25,14 @@ import { StoryStore } from "@tenzu/data/story";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { HttpErrorResponse } from "@angular/common/http";
+import { ProjectKanbanService } from "./project-kanban/project-kanban.service";
+import { debug } from "../../../libs/utils/functions/logging";
 
 export async function storyResolver(route: ActivatedRouteSnapshot) {
   const storyStore = inject(StoryStore);
   const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
   try {
-    storyStore.reset();
     return storyStore
       .get(route.paramMap.get("projectId")!, parseInt(route.paramMap.get("ref")!, 10))
       .then(async (story) => {
@@ -51,20 +52,13 @@ export async function storyResolver(route: ActivatedRouteSnapshot) {
   }
 }
 export async function workflowResolver(route: ActivatedRouteSnapshot) {
-  const workflowStore = inject(WorkflowStore);
-  const router = inject(Router);
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
-  try {
-    workflowStore.reset();
-    return workflowStore.refreshWorkflow({ projectId: projectId, slug: workflowSLug }).then((workflow) => {
-      workflowStore.selectWorkflow(workflow.id);
-    });
-  } catch (error) {
-    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      return router.navigate(["/404"]);
-    }
-    return;
+  const projectKanbanService = inject(ProjectKanbanService);
+  if (projectId && workflowSLug) {
+    debug("workflowResolver", "load start");
+    projectKanbanService.loadWorkflow({ projectId: projectId, workflowSlug: workflowSLug }).then();
+    debug("workflowResolver", "load end");
   }
 }
 

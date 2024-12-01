@@ -27,7 +27,7 @@ import {
   inject,
   provideAppInitializer,
 } from "@angular/core";
-import { provideRouter, withRouterConfig } from "@angular/router";
+import { provideRouter, withComponentInputBinding, withRouterConfig } from "@angular/router";
 
 import { routes } from "./app.routes";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
@@ -39,7 +39,6 @@ import { JwtModule } from "@auth0/angular-jwt";
 import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { environment } from "../environments/environment";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { lastValueFrom } from "rxjs";
 import { LanguageStore } from "@tenzu/data/transloco";
 import { refreshTokenInterceptor } from "@tenzu/data/interceptors";
 import { provideMicroSentry } from "@micro-sentry/angular";
@@ -56,7 +55,8 @@ export const appConfig: ApplicationConfig = {
     },
     provideAppInitializer(() => {
       const languageStore = inject(LanguageStore);
-      return lastValueFrom(languageStore.initLanguages());
+      languageStore.initLanguages().subscribe();
+      return;
     }),
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
     importProvidersFrom(
@@ -70,7 +70,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideExperimentalZonelessChangeDetection(),
-    provideRouter(routes, withRouterConfig({ paramsInheritanceStrategy: "always" })),
+    provideRouter(routes, withComponentInputBinding(), withRouterConfig({ paramsInheritanceStrategy: "always" })),
     provideAnimationsAsync(),
     provideTransloco({
       config: {

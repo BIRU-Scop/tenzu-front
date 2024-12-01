@@ -24,11 +24,11 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { AuthService } from "@tenzu/data/auth";
-import { WorkspaceInvitationInfo, WorkspaceService } from "@tenzu/data/workspace";
+import { WorkspaceInvitationInfo, WorkspaceInfraService } from "@tenzu/data/workspace";
 
 export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
-  const workspaceService = inject(WorkspaceService);
+  const workspaceService = inject(WorkspaceInfraService);
   const router = inject(Router);
 
   const token = route.params["token"] as string;

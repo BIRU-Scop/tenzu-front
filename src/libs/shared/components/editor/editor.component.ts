@@ -33,11 +33,11 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { TranslocoService } from "@jsverse/transloco";
 
 @Component({
-    selector: "app-editor",
-    imports: [],
-    template: `<div #editorContainer></div>`,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "app-editor",
+  imports: [],
+  template: `<div #editorContainer></div>`,
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorComponent implements OnInit {
   translocoService = inject(TranslocoService);

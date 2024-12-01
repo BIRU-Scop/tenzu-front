@@ -29,6 +29,7 @@ import { User, UserEdition } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { AuthService } from "@tenzu/data/auth";
 import { WsService } from "@tenzu/utils/services";
+import { debug } from "../../utils/functions/logging";
 
 export const UserStore = signalStore(
   { providedIn: "root" },
@@ -56,6 +57,7 @@ export const UserStore = signalStore(
                     }
                     localStorage.setItem("user", JSON.stringify(myUser));
                     wsService.command({ command: "signin", token: localStorage.getItem("token") || "" });
+                    debug("user", "get user end");
                   },
                   error: console.error,
                 }),
@@ -91,6 +93,7 @@ export const UserStore = signalStore(
   ),
   withHooks({
     onInit({ getMe }) {
+      debug("user", "get user start");
       getMe();
     },
   }),

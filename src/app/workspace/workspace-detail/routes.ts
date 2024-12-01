@@ -19,26 +19,20 @@
  *
  */
 
-import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
+import { ActivatedRouteSnapshot, Routes } from "@angular/router";
+import { debug } from "../../../libs/utils/functions/logging";
 import { inject } from "@angular/core";
+import { WorkspaceService } from "@tenzu/data/workspace";
 
-import { ProjectStore } from "@tenzu/data/project";
-import { HttpErrorResponse } from "@angular/common/http";
-
-export async function projectByWorkspaceResolver(route: ActivatedRouteSnapshot) {
-  const projectStore = inject(ProjectStore);
-  const router = inject(Router);
-  try {
-    projectStore.reset();
-    return await projectStore.getProjectsByWorkspaceId(route.paramMap.get("id")!);
-  } catch (error) {
-    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      await router.navigate(["/404"]);
-    }
-    return;
+export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
+  debug("workspaceListProjectsResolver", "start");
+  const workspaceService = inject(WorkspaceService);
+  const workspaceId = route.paramMap.get("workspaceId");
+  if (workspaceId) {
+    workspaceService.getProjectsByWorkspace(workspaceId);
   }
+  debug("workspaceListProjectsResolver", "end");
 }
-
 export const routes: Routes = [
   {
     path: "",
@@ -47,20 +41,15 @@ export const routes: Routes = [
   },
   {
     path: "projects",
-    loadComponent: () =>
-      import("./workspace-project-list/workspace-project-list.component").then((m) => m.WorkspaceProjectListComponent),
-    resolve: {
-      projects: projectByWorkspaceResolver,
-    },
+    loadComponent: () => import("./workspace-project-list/workspace-project-list.component"),
+    resolve: { projects: workspaceListProjectsResolver },
   },
   {
     path: "people",
-    loadComponent: () =>
-      import("./workspace-people/workspace-people.component").then((m) => m.WorkspacePeopleComponent),
+    loadComponent: () => import("./workspace-people/workspace-people.component"),
   },
   {
     path: "settings",
-    loadComponent: () =>
-      import("./workspace-settings/workspace-settings.component").then((m) => m.WorkspaceSettingsComponent),
+    loadComponent: () => import("./workspace-settings/workspace-settings.component"),
   },
 ];

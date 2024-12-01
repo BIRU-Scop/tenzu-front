@@ -26,9 +26,9 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 
 @Component({
-    selector: "app-project-card",
-    imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, TranslocoDirective, RouterLink],
-    template: `
+  selector: "app-project-card",
+  imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, TranslocoDirective, RouterLink],
+  template: `
     <mat-card appearance="outlined" class="min-h-[90px]" *transloco="let t; prefix: 'component.project_card'">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
@@ -55,8 +55,8 @@ import { RouterLink } from "@angular/router";
       </mat-card-content>
     </mat-card>
   `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectCardComponent {
   name = input("");

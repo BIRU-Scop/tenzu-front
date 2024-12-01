@@ -20,7 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
-import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { TranslocoDirective } from "@jsverse/transloco";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { MatButton } from "@angular/material/button";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";

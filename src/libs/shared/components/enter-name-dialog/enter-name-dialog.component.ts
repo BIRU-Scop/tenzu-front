@@ -68,26 +68,26 @@ export type NameDialogData = {
   template: `
     <ng-container *transloco="let t">
       <mat-dialog-content>
-          <mat-form-field>
-            <mat-label id="aria-label">{{ t(data.label) }}</mat-label>
-            <input
-              matInput
-              [formControl]="name"
-              data-testid="name-input"
-              [placeholder]="data.placeholder ? t(data.placeholder) : ''"
-            />
-            @if (name.hasError("required")) {
-              <mat-error
-                data-testid="name-required-error"
-                [innerHTML]="t(errorMessages!.required.message, errorMessages!.required.translocoParams)"
-              ></mat-error>
-            } @else if (name.hasError("maxlength")) {
-              <mat-error
-                data-testid="name-maxLength-error"
-                [innerHTML]="t(errorMessages!.maxLength.message, errorMessages!.maxLength.translocoParams)"
-              ></mat-error>
-            }
-          </mat-form-field>
+        <mat-form-field>
+          <mat-label id="aria-label">{{ t(data.label) }}</mat-label>
+          <input
+            matInput
+            [formControl]="name"
+            data-testid="name-input"
+            [placeholder]="data.placeholder ? t(data.placeholder) : ''"
+          />
+          @if (name.hasError("required")) {
+            <mat-error
+              data-testid="name-required-error"
+              [innerHTML]="t(errorMessages!.required.message, errorMessages!.required.translocoParams)"
+            ></mat-error>
+          } @else if (name.hasError("maxlength")) {
+            <mat-error
+              data-testid="name-maxLength-error"
+              [innerHTML]="t(errorMessages!.maxLength.message, errorMessages!.maxLength.translocoParams)"
+            ></mat-error>
+          }
+        </mat-form-field>
       </mat-dialog-content>
       <mat-dialog-actions>
         <button data-testid="enter-name-submit" mat-flat-button class="tertiary-button" (click)="submit()">

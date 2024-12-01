@@ -19,60 +19,90 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { GenericCrudService } from "../generic-crud";
-import { ProjectInvitationInfo } from "@tenzu/data/workspace";
-import { Project, ProjectBase, ProjectCreation, ProjectFilter, ProjectInvitationAccept } from "./project.model";
+import { inject, Injectable } from "@angular/core";
+import { ProjectInfraService } from "./project-infra.service";
+import { WsService } from "@tenzu/utils/services";
+import { ProjectDetailStore, ProjectStore } from "./project.store";
+import { lastValueFrom } from "rxjs";
+import { Workflow, WorkflowInfraService } from "../workflow";
+import { Project, ProjectBase, ProjectCreation, ProjectSummary } from "./project.model";
+import { ServiceStore } from "../interface";
 
 @Injectable({
   providedIn: "root",
 })
-export class ProjectService extends GenericCrudService<Project, ProjectFilter> {
-  override endPoint = `projects`;
+export class ProjectService implements ServiceStore<ProjectSummary, Project> {
+  projectInfraService = inject(ProjectInfraService);
+  workflowInfraService = inject(WorkflowInfraService);
+  projectStore = inject(ProjectStore);
+  projectDetailStore = inject(ProjectDetailStore);
+  wsService = inject(WsService);
+  entities = this.projectStore.entities;
+  selectedEntity = this.projectDetailStore.item;
+  entityMap = this.projectStore.entityMap;
 
-  override create(newProject: ProjectCreation): Observable<Project> {
-    const formData = new FormData();
-    formData.append("name", newProject.name);
-    if (newProject.description) {
-      formData.append("description", newProject.description);
+  async deleteSelected() {
+    const project = this.projectDetailStore.item();
+    if (project) {
+      this.wsService.command({ command: "unsubscribe_from_project_events", project: project.id as string });
+      await lastValueFrom(this.projectInfraService.delete(project.id));
+      this.projectStore.removeEntity(project.id);
+      this.projectDetailStore.reset();
+      return project;
     }
-    formData.append("color", newProject.color.toString());
-    formData.append("workspaceId", newProject.workspaceId);
-
-    return this.http.post<Project>(`${this.getUrl()}`, formData);
+    return undefined;
   }
-
-  // Need to pass by POST method because django ninja don't support PATCH with form
-  override patch(id: string, item: Partial<ProjectBase>): Observable<Project> {
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(item)) {
-      formData.append(key, typeof value === "number" ? value.toString() : value);
+  async list() {
+    const projects = await lastValueFrom(this.projectInfraService.list());
+    this.projectStore.setAllEntities(projects);
+    return projects;
+  }
+  async createWorkflow(projectId: string, workflow: Pick<Workflow, "name">) {
+    const newWorkflow = await lastValueFrom(this.workflowInfraService.create(projectId, workflow));
+    this.projectDetailStore.addWorkflow(newWorkflow);
+    return newWorkflow;
+  }
+  async get(projectId: string) {
+    const oldSelectedEntityId = this.projectDetailStore.item()?.id as string;
+    if (oldSelectedEntityId) {
+      this.wsService.command({ command: "unsubscribe_from_project_events", project: oldSelectedEntityId });
     }
-    return this.http.post<Project>(`${this.getUrl()}/${id}`, formData);
+    const project = await lastValueFrom(this.projectInfraService.get(projectId));
+    this.projectStore.setEntity(project);
+    this.projectDetailStore.set(project);
+    this.wsService.command({ command: "subscribe_to_project_events", project: project.id });
+    return project;
+  }
+  async updateSelected(project: Partial<ProjectBase>) {
+    const selectedEntity = this.projectDetailStore.item();
+    if (selectedEntity) {
+      const editedProject = await lastValueFrom(this.projectInfraService.patch(selectedEntity.id, project));
+      this.projectStore.setEntity(editedProject);
+      this.projectDetailStore.patch(editedProject);
+      return editedProject;
+    }
+    return undefined;
+  }
+  async create(project: ProjectCreation) {
+    const newProject = await lastValueFrom(this.projectInfraService.create(project));
+    this.projectStore.setEntity(newProject);
+    return newProject;
   }
 
-  getWorkspaceProjects(workspace_id: number): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.getUrl()}/workspaces/${workspace_id}/projects`);
+  resetSelectedEntity(): void {
+    this.projectDetailStore.reset();
   }
-
-  getInvitedProjects(workspace_id: number): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.getUrl()}/workspaces/${workspace_id}/invited-projects`);
+  resetEntities(): void {
+    this.projectStore.reset();
   }
-
-  getPublicPermissions(id: number) {
-    return this.http.get<string>(`${this.getUrl()}/${id}/public-permissions`);
+  wsRemoveEntity(workspaceId: string) {
+    this.projectStore.removeEntity(workspaceId);
   }
-
-  updatePublicPermissions(id: number, item: string[]) {
-    return this.http.put<void>(`${this.getUrl()}/${id}/public-permissions`, item);
+  wsAddWorkdlow(workflow: Workflow) {
+    this.projectDetailStore.addWorkflow(workflow);
   }
-
-  getProjectInvitationInfo(token: string) {
-    return this.http.get<ProjectInvitationInfo>(`${this.getUrl()}/invitations/${token}`);
-  }
-
-  acceptInvitation(token: string) {
-    return this.http.post<ProjectInvitationAccept>(`${this.getUrl()}/invitations/${token}/accept`, token);
+  fullReset(): void {
+    this.resetEntities();
+    this.resetSelectedEntity();
   }
 }
