@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.1-staging.12](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.11...v0.0.1-staging.12) (2024-12-01)
+
+
+### Features
+
+* **story:** add story prev and next navigation ([4e43a54](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4e43a5462686dff09df2bb8a0a61555e56e1e365))
+
+
+### Bug Fixes
+
+* add workflow scope to workspace route ([00116d2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/00116d2cad6a9afbc39e054435905cf6d3944934))
+* clear sixth level breadcrumb on story detail ([d2432a4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d2432a4aaecbd1da7478eea19903d8c031153ef7))
+* guard story assignment actions with existence checks ([7c0e60c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7c0e60c630819036fc1639427f2a56a1838d04fa))
+* improve notification display logic and formatting ([680e859](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/680e859cbdf94b71644d95b2c8e5f15c80c1cb1c))
+
 ## [0.0.1-staging.11](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.10...v0.0.1-staging.11) (2024-11-27)
 
 ## [0.0.1-staging.10](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.9...v0.0.1-staging.10) (2024-11-27)

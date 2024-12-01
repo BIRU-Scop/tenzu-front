@@ -1,6 +1,6 @@
 {
   "name": "tenzu",
-  "version": "0.0.1-staging.11",
+  "version": "0.0.1-staging.12",
   "scripts": {
     "ng": "ng",
     "start": "ng serve  tenzu --hmr --host local-tenzu.biru.ovh",
