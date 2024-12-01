@@ -19,32 +19,13 @@
  *
  */
 
-import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { addEntity, EntityId, removeEntity, setAllEntities, setEntity, withEntities } from "@ngrx/signals/entities";
+import { patchState, signalStore, withMethods } from "@ngrx/signals";
+import { withEntities } from "@ngrx/signals/entities";
 import { Project, ProjectSummary } from "./project.model";
-import { withEntity, withLoadingStatus, withResetEntities } from "../../utils/store/store-features";
+import { withEntity, withMethodsEntities } from "../../utils/store/store-features";
 import { Workflow } from "@tenzu/data/workflow";
 
-export const ProjectStore = signalStore(
-  { providedIn: "root" },
-  withEntities<ProjectSummary>(),
-  withLoadingStatus(),
-  withResetEntities(),
-  withMethods((store) => ({
-    addProject(project: ProjectSummary) {
-      patchState(store, addEntity(project));
-    },
-    setProjects(projects: ProjectSummary[]) {
-      patchState(store, setAllEntities(projects));
-    },
-    patchProject(project: ProjectSummary) {
-      patchState(store, setEntity(project));
-    },
-    removeEntity(entityId: EntityId) {
-      patchState(store, removeEntity(entityId));
-    },
-  })),
-);
+export const ProjectStore = signalStore({ providedIn: "root" }, withEntities<ProjectSummary>(), withMethodsEntities());
 
 export const ProjectDetailStore = signalStore(
   { providedIn: "root" },

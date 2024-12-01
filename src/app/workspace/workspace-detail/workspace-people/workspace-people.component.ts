@@ -27,12 +27,12 @@ import { MatIcon } from "@angular/material/icon";
 import { matDialogConfig } from "@tenzu/utils";
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { MembershipStore } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-workspace-people",
@@ -124,7 +124,7 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 export default class WorkspacePeopleComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  workspaceStore = inject(WorkspaceStore);
+  readonly workspaceService = inject(WorkspaceService);
   translocoService = inject(TranslocoService);
   membershipStore = inject(MembershipStore);
 
@@ -148,12 +148,12 @@ export default class WorkspacePeopleComponent {
           " " +
           this.translocoService.translate("component.invite_dialog.to") +
           " " +
-          this.workspaceStore.selectedEntity()?.name,
+          this.workspaceService.selectedEntity()?.name,
         description: this.translocoService.translate("workspace.people.description_modal"),
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
-      const selectedWorkspace = this.workspaceStore.selectedEntity();
+      const selectedWorkspace = this.workspaceService.selectedEntity();
       if (selectedWorkspace) {
         await this.membershipStore.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
         this.selectedTabIndex.set(1);

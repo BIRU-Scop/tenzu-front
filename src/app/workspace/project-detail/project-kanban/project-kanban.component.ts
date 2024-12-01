@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { WorkflowStore } from "@tenzu/data/workflow/workflow.store";
 import { Story, StoryStore } from "@tenzu/data/story";
@@ -38,11 +38,9 @@ import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { Status } from "@tenzu/data/status";
 import { Step } from "@tenzu/data/workflow";
-import { filter } from "rxjs";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: "app-project-kanban",

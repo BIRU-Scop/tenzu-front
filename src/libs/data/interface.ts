@@ -19,19 +19,19 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
-import { withEntities } from "@ngrx/signals/entities";
-import { Workspace } from "./workspace.model";
-import { withEntity, withLoadingStatus, withMethodsEntities } from "../../utils/store/store-features";
+import { Signal } from "@angular/core";
+import { EntityId, EntityMap } from "@ngrx/signals/entities";
 
-export const WorkspacesStore = signalStore(
-  { providedIn: "root" },
-  withEntities<Workspace>(),
-  withLoadingStatus(),
-  withMethodsEntities(),
-);
-
-export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withEntity<Workspace>());
-
-export type WorkspacesStore = InstanceType<typeof WorkspacesStore>;
-export type WorkspaceDetailStore = InstanceType<typeof WorkspaceDetailStore>;
+export interface ServiceStore<Entities, EntityDetail = Entities> {
+  entities: Signal<Entities[]>;
+  selectedEntity: Signal<EntityDetail | undefined>;
+  entityMap: Signal<EntityMap<Entities>>;
+  list(): Promise<Entities[]>;
+  deleteSelected(): Promise<EntityDetail | undefined>;
+  create(item: Partial<EntityDetail>): Promise<EntityDetail>;
+  get(id: EntityId): Promise<EntityDetail | undefined>;
+  updateSelected(item: Partial<EntityDetail>): Promise<EntityDetail | undefined>;
+  resetSelectedEntity(): void;
+  resetEntities(): void;
+  fullReset(): void;
+}

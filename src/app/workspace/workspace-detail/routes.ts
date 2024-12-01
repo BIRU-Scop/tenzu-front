@@ -22,14 +22,14 @@
 import { ActivatedRouteSnapshot, Routes } from "@angular/router";
 import { debug } from "../../../libs/utils/functions/logging";
 import { inject } from "@angular/core";
-import { WorkspaceDetailService } from "./workspace-detail.service";
+import { WorkspaceService } from "@tenzu/data/workspace";
 
 export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceListProjectsResolver", "start");
-  const workspaceDetailService = inject(WorkspaceDetailService);
+  const workspaceService = inject(WorkspaceService);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
-    workspaceDetailService.loadProjects(workspaceId);
+    workspaceService.getProjectsByWorkspace(workspaceId);
   }
   debug("workspaceListProjectsResolver", "end");
 }

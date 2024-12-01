@@ -19,13 +19,13 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/data/sidenav";
-import { WorkspaceDetailService } from "./workspace-detail.service";
 import { filterNotNull } from "@tenzu/utils";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-workspace-detail",
@@ -35,13 +35,12 @@ import { filterNotNull } from "@tenzu/utils";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceDetailComponent {
-  workspaceDetailService = inject(WorkspaceDetailService);
+  workspaceService = inject(WorkspaceService);
   sideNavStore = inject(SideNavStore);
-  workspaceStore = this.workspaceDetailService.workspaceStore;
   breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
-    toObservable(this.workspaceStore.selectedEntity)
+    toObservable(this.workspaceService.selectedEntity)
       .pipe(filterNotNull())
       .subscribe((workspace) => {
         this.sideNavStore.setAvatar(
@@ -79,7 +78,7 @@ export class WorkspaceDetailComponent {
       link: "/",
       doTranslation: true,
     });
-    toObservable(this.workspaceStore.selectedEntity)
+    toObservable(this.workspaceService.selectedEntity)
       .pipe(filterNotNull())
       .subscribe((workspace) => {
         this.breadcrumbStore.setSecondLevel({

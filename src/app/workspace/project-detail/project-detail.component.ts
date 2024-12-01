@@ -22,12 +22,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { ProjectDetailStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { SidenavListWorkflowComponent } from "./sidenav-list-workflow/sidenav-list-workflow.component";
 import { filterNotNull } from "@tenzu/utils";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-project-detail",
@@ -38,14 +38,15 @@ import { filterNotNull } from "@tenzu/utils";
 })
 export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
-  workspaceStore = inject(WorkspaceStore);
-  projectDetailStore = inject(ProjectDetailStore);
+  workspaceService = inject(WorkspaceService);
+  projectService = inject(ProjectService);
   breadcrumbStore = inject(BreadcrumbStore);
   baseUrl = computed(
-    () => `/workspace/${this.workspaceStore.selectedEntity()?.id}/project/${this.projectDetailStore.item()?.id}`,
+    () =>
+      `/workspace/${this.workspaceService.selectedEntity()?.id}/project/${this.projectService.selectedEntity()?.id}`,
   );
   constructor() {
-    toObservable(this.projectDetailStore.item)
+    toObservable(this.projectService.selectedEntity)
       .pipe(filterNotNull())
       .subscribe((project) => {
         this.sideNavStore.setAvatar(
@@ -97,7 +98,7 @@ export class ProjectDetailComponent {
       ]);
     });
 
-    toObservable(this.workspaceStore.selectedEntity).subscribe((workspace) => {
+    toObservable(this.workspaceService.selectedEntity).subscribe((workspace) => {
       if (workspace) {
         this.breadcrumbStore.setSecondLevel({
           label: workspace.name,

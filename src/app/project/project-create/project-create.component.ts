@@ -32,9 +32,9 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { MatInput } from "@angular/material/input";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
-import { ProjectStore } from "@tenzu/data/project";
-import { Workspace, WorkspaceStore } from "@tenzu/data/workspace";
+import { Workspace } from "@tenzu/data/workspace";
 import { ProjectService } from "@tenzu/data/project/project.service";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-project-create-form",
@@ -60,9 +60,9 @@ import { ProjectService } from "@tenzu/data/project/project.service";
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-4">
           <mat-form-field>
             <mat-label>{{ t("commons.workspace") }}</mat-label>
-            <mat-select required [hidden]="!workspaceStore.isLoading()" formControlName="workspaceId">
+            <mat-select required formControlName="workspaceId">
               <mat-select-trigger>{{ selectedWorkspace()?.name }}</mat-select-trigger>
-              @for (workspace of workspaceStore.entities(); track workspace.id) {
+              @for (workspace of workspaceService.entities(); track workspace.id) {
                 <mat-option value="{{ workspace.id }}">
                   <div class="flex gap-x-2 items-center">
                     <app-avatar size="sm" [name]="workspace.name" [color]="workspace.color" [rounded]="true" />
@@ -118,11 +118,10 @@ import { ProjectService } from "@tenzu/data/project/project.service";
 })
 export default class ProjectCreateComponent {
   projectService = inject(ProjectService);
-  projectStore = inject(ProjectStore);
-  workspaceStore = inject(WorkspaceStore);
+  workspaceService = inject(WorkspaceService);
   router = inject(Router);
   selectedWorkspace = model<Workspace>();
-  $entities = toObservable(this.workspaceStore.entities).pipe(filter((entities) => entities.length > 0));
+  $entities = toObservable(this.workspaceService.entities).pipe(filter((entities) => entities.length > 0));
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
@@ -133,8 +132,8 @@ export default class ProjectCreateComponent {
   });
 
   constructor(private route: ActivatedRoute) {
-    if (!this.workspaceStore.entities().length) {
-      this.workspaceStore.list();
+    if (!this.workspaceService.entities().length) {
+      this.workspaceService.list().then();
     }
     this.route.queryParamMap.pipe(combineLatestWith(this.$entities)).subscribe(([paramMap]) => {
       const workspaceId = paramMap.get("workspaceId");
@@ -145,7 +144,7 @@ export default class ProjectCreateComponent {
 
     this.form.valueChanges.subscribe((value) => {
       if (value.workspaceId) {
-        this.selectedWorkspace.set(this.workspaceStore.entityMap()[value.workspaceId]);
+        this.selectedWorkspace.set(this.workspaceService.entityMap()[value.workspaceId]);
       }
     });
   }
@@ -153,7 +152,7 @@ export default class ProjectCreateComponent {
   async onSubmit() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      const project = await this.projectService.createProject(this.form.getRawValue());
+      const project = await this.projectService.create(this.form.getRawValue());
       this.router.navigateByUrl(`/workspace/${project.workspace.id}/project/${project.id}/kanban/main`).then();
     }
   }

@@ -28,7 +28,6 @@ import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-di
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { Workflow, WorkflowStore } from "@tenzu/data/workflow";
-import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { ProjectService } from "@tenzu/data/project/project.service";
 
 @Component({
@@ -41,7 +40,6 @@ import { ProjectService } from "@tenzu/data/project/project.service";
 export class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
   readonly workflowStore = inject(WorkflowStore);
-  readonly projectDetailStore = inject(ProjectDetailStore);
   readonly projectService = inject(ProjectService);
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -71,11 +69,11 @@ export class ProjectKanbanCreateComponent {
       },
     });
     dialogRef.afterClosed().subscribe(async (name?: Pick<Workflow, "name">) => {
-      const project = this.projectDetailStore.item();
+      const project = this.projectService.selectedEntity();
       if (name && project) {
         const projectId = project.id;
         const workflow = await this.projectService.createWorkflow(projectId, name);
-        await this.projectService.getProject(projectId);
+        await this.projectService.get(projectId);
         await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
       } else {
         await this.router.navigate([".."], { relativeTo: this.activatedRoute });

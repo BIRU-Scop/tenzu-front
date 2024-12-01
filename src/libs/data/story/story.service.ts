@@ -30,7 +30,7 @@ import {
   StoryReorderPayload,
   StoryAttachment,
   StoryAssign,
-  StoryUpdate
+  StoryUpdate,
 } from "./story.model";
 
 @Injectable({

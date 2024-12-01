@@ -21,7 +21,7 @@
 
 import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed, inject } from "@angular/core";
-import { addEntity, setAllEntities, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
+import { addEntity, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { setSelectedEntity, withLoadingStatus, withSelectedEntity } from "../../utils/store/store-features";
 import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow/workflow.model";
 import { WorkflowInfraService } from "@tenzu/data/workflow/workflow-infra.service";

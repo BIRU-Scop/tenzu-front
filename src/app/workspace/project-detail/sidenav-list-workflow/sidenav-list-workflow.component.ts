@@ -23,18 +23,18 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list";
 import { RouterLink, RouterLinkActive } from "@angular/router";
-import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { SideNavStore } from "@tenzu/data/sidenav";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-sidenav-list-workflow",
   imports: [MatIcon, MatListItem, RouterLinkActive, RouterLink, TranslocoDirective, MatNavList, MatListItemIcon],
   template: `
     <ng-container *transloco="let t">
-      @let project = projectDetailStore.item();
-      @let workspace = workspaceStore.selectedEntity();
+      @let project = projectService.selectedEntity();
+      @let workspace = workspaceService.selectedEntity();
       @if (project && workspace) {
         @if (!sideNavStore.resized()) {
           <div class="flex flex-row items-center gap-2 px-2">
@@ -92,7 +92,7 @@ import { SideNavStore } from "@tenzu/data/sidenav";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavListWorkflowComponent {
-  projectDetailStore = inject(ProjectDetailStore);
-  workspaceStore = inject(WorkspaceStore);
+  projectService = inject(ProjectService);
+  workspaceService = inject(WorkspaceService);
   sideNavStore = inject(SideNavStore);
 }

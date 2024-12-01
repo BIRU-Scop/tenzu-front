@@ -21,27 +21,20 @@
 
 import { patchState, signalStoreFeature, type, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed } from "@angular/core";
-import { EntityId, EntityState, removeAllEntities } from "@ngrx/signals/entities";
-import { Command } from "@tenzu/utils/services";
+import {
+  EntityId,
+  EntityState,
+  removeAllEntities,
+  removeEntity,
+  setAllEntities,
+  setEntity,
+} from "@ngrx/signals/entities";
 
 export function withLoadingStatus() {
   return signalStoreFeature(
     withState({ loading: false }),
     withComputed(({ loading }) => ({
       isLoading: computed(() => loading()),
-    })),
-  );
-}
-
-export function withWsCommand() {
-  return signalStoreFeature(
-    withState({
-      command: undefined as Command | undefined,
-    }),
-    withMethods((store) => ({
-      sendCommand(command: Command) {
-        patchState(store, { command: command });
-      },
     })),
   );
 }
@@ -67,9 +60,6 @@ export function withSelectedEntity<Entity>() {
       }),
     })),
     withMethods((store) => ({
-      setSelectedEntity(id: EntityId) {
-        patchState(store, setSelectedEntity(id));
-      },
       resetSelectedEntity() {
         patchState(store, { selectedEntityId: null });
       },
@@ -80,6 +70,26 @@ export function withSelectedEntity<Entity>() {
     })),
   );
 }
+
+export function withMethodsEntities<T extends { id: EntityId }>() {
+  return signalStoreFeature(
+    withMethods((store) => ({
+      setAllEntities(entities: T[]) {
+        patchState(store, setAllEntities(entities));
+      },
+      setEntity(entity: T) {
+        patchState(store, setEntity(entity));
+      },
+      removeEntity(selectedEntityId: EntityId) {
+        patchState(store, removeEntity(selectedEntityId));
+      },
+      reset() {
+        patchState(store, removeAllEntities());
+      },
+    })),
+  );
+}
+
 export function withEntity<T>() {
   return signalStoreFeature(
     withState<{ item: T | undefined }>({ item: undefined }),
@@ -102,17 +112,6 @@ export function withEntity<T>() {
       },
       reset() {
         patchState(store, { item: undefined });
-      },
-    })),
-  );
-}
-
-export function withResetEntities<Entity>() {
-  return signalStoreFeature(
-    { state: type<EntityState<Entity>>() },
-    withMethods((store) => ({
-      reset() {
-        patchState(store, removeAllEntities());
       },
     })),
   );

@@ -30,7 +30,7 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 
 export type ChooseWorkflowDialogData = {
@@ -53,9 +53,14 @@ export type ChooseWorkflowDialogData = {
     <ng-container *transloco="let t">
       <mat-dialog-content>
         <div class="flex flex-col gap-4">
-          <label id="aria-label">{{ t("workflow.detail_story.change_workflow") }}</label>
-          <mat-radio-group aria-labelledby="aria-label" [formControl]="newWorkflowSlug" class="flex flex-col">
-            @let workflows = projectDetailStore.item()?.workflows;
+          <label for="workflow" id="aria-label">{{ t("workflow.detail_story.change_workflow") }}</label>
+          <mat-radio-group
+            aria-labelledby="aria-label"
+            [formControl]="newWorkflowSlug"
+            class="flex flex-col"
+            name="workflow"
+          >
+            @let workflows = projectService.selectedEntity()?.workflows;
             @for (workflow of workflows; track workflow.slug) {
               <mat-radio-button [value]="workflow.slug">{{ workflow.name }}</mat-radio-button>
             }
@@ -80,7 +85,7 @@ export class ChooseWorkflowDialogComponent {
   data = inject<ChooseWorkflowDialogData>(MAT_DIALOG_DATA);
   fb = inject(FormBuilder);
   newWorkflowSlug = this.fb.nonNullable.control(this.data.currentWorkflowSlug || "");
-  projectDetailStore = inject(ProjectDetailStore);
+  projectService = inject(ProjectService);
 
   @HostListener("window:keyup.Enter", ["$event"])
   onPressEnter() {

@@ -22,7 +22,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -61,7 +60,7 @@ import { tap } from "rxjs";
           <app-avatar
             size="xl"
             [name]="form.controls.name.value!"
-            [color]="projectDetailStore.item()?.color || 0"
+            [color]="projectService.selectedEntity()?.color || 0"
           ></app-avatar>
           <mat-form-field>
             <mat-label>{{ t("name") }}</mat-label>
@@ -117,7 +116,6 @@ export class ProjectSettingsComponent implements AfterViewInit {
   notificationService = inject(NotificationService);
   projectService = inject(ProjectService);
   breadcrumbStore = inject(BreadcrumbStore);
-  projectDetailStore = inject(ProjectDetailStore);
   router = inject(Router);
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
@@ -125,7 +123,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
     description: [""],
   });
   constructor() {
-    toObservable(this.projectDetailStore.item)
+    toObservable(this.projectService.selectedEntity)
       .pipe(
         filterNotNull(),
         tap((project) =>
@@ -150,7 +148,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
   async onSave() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      await this.projectService.patchSelectedProject(this.form.getRawValue());
+      await this.projectService.updateSelected(this.form.getRawValue());
       this.notificationService.success({
         title: "settings.project.messages.saved",
       });
@@ -158,7 +156,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
   }
 
   async onDelete() {
-    const deletedProject = await this.projectService.deleteSelectedProject();
+    const deletedProject = await this.projectService.deleteSelected();
     await this.router.navigateByUrl("/");
     this.notificationService.warning({
       title: "notification.project.deleted",
@@ -167,7 +165,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
   }
 
   reset() {
-    const selectedEntity = this.projectDetailStore.item();
+    const selectedEntity = this.projectService.selectedEntity();
     if (selectedEntity) {
       this.form.reset({ ...selectedEntity });
     }

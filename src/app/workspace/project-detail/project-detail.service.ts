@@ -1,41 +1,60 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
 import { inject, Injectable } from "@angular/core";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { MembershipStore } from "@tenzu/data/membership";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { WsService } from "@tenzu/utils/services";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "../../../libs/utils/functions/logging";
 import { ProjectService } from "@tenzu/data/project/project.service";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class ProjectDetailService {
-  workspaceStore = inject(WorkspaceStore);
+  workspaceService = inject(WorkspaceService);
   workflowStore = inject(WorkflowStore);
   membershipStore = inject(MembershipStore);
-  projectDetailStore = inject(ProjectDetailStore);
   wsService = inject(WsService);
   projectService = inject(ProjectService);
   route = inject(ActivatedRoute);
   router = inject(Router);
 
   loadProject(projectId: string) {
-    this.projectService.getProject(projectId).then();
+    this.projectService.get(projectId).then();
     this.membershipStore.listProjectMembership(projectId).then();
     this.membershipStore.listProjectInvitations(projectId).then();
   }
   loadWorkspace(workspaceId: string) {
-    if (this.workspaceStore.selectedEntity()?.id !== workspaceId) {
-      this.workspaceStore.get(workspaceId).then();
+    if (this.workspaceService.selectedEntity()?.id !== workspaceId) {
+      this.workspaceService.get(workspaceId).then();
     }
   }
   load(workspaceId: string, projectId: string) {
     debug("project", "load start");
     try {
-      const oldSelectedProjectId = this.projectDetailStore.item()?.id as string;
+      const oldSelectedProjectId = this.projectService.selectedEntity()?.id as string;
       if (oldSelectedProjectId) {
         this.wsService.command({ command: "unsubscribe_from_project_events", project: oldSelectedProjectId });
       }

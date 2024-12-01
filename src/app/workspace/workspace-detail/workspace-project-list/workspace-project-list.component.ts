@@ -20,16 +20,16 @@
  */
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -37,7 +37,7 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
-      @let workspace = workspaceStore.selectedEntity();
+      @let workspace = workspaceService.selectedEntity();
       @if (workspace) {
         <button
           class="primary-button"
@@ -51,7 +51,7 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
-      @for (project of projectStore.entities(); track project.id) {
+      @for (project of projectService.entities(); track project.id) {
         <app-project-card
           class="basis-1/5"
           [name]="project.name"
@@ -71,8 +71,8 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceProjectListComponent implements AfterViewInit {
-  projectStore = inject(ProjectStore);
-  workspaceStore = inject(WorkspaceStore);
+  workspaceService = inject(WorkspaceService);
+  projectService = inject(ProjectService);
   workflowStore = inject(WorkflowStore);
   breadcrumbStore = inject(BreadcrumbStore);
 

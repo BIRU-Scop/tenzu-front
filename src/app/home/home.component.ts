@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { RouterLink, RouterOutlet } from "@angular/router";

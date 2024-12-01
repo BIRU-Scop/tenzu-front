@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,11 +35,8 @@ import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSRespo
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
-import { ProjectStore } from "@tenzu/data/project";
-import { WorkspaceStore } from "@tenzu/data/workspace";
+// import { WorkspacesStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils";
 import {
   applyNotificationEvent,
   applyProjectEvent,
@@ -82,16 +100,11 @@ export class WsService {
     repeat({ count: MAX_RETRY, delay: RETRY_TIME }),
     share(),
   );
-  workspaceStore = inject(WorkspaceStore);
-  projectStore = inject(ProjectStore);
   router = inject(Router);
   private environmentInjector = inject(EnvironmentInjector);
 
   constructor() {
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
-    toObservable(this.workspaceStore.command)
-      .pipe(filterNotNull())
-      .subscribe((command) => this.command(command));
   }
   async dispatch(message: WSResponse) {
     switch (message.type) {

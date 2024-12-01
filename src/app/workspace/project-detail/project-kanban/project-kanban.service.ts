@@ -22,10 +22,10 @@
 import { inject, Injectable } from "@angular/core";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { StoryCreate, StoryStore } from "@tenzu/data/story";
-import { ProjectDetailStore } from "@tenzu/data/project";
 import { Status } from "@tenzu/data/status";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
+import { ProjectService } from "@tenzu/data/project";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -34,20 +34,20 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class ProjectKanbanService {
-  projectDetailStore = inject(ProjectDetailStore);
+  projectService = inject(ProjectService);
   workflowStore = inject(WorkflowStore);
   storyStore = inject(StoryStore);
   router = inject(Router);
 
   public async createStatus(status: Pick<Status, "name" | "color">) {
-    const selectedProject = this.projectDetailStore.item();
+    const selectedProject = this.projectService.selectedEntity();
     if (selectedProject) {
       await this.workflowStore.createStatus(selectedProject.id, status);
     }
   }
 
   public async deleteStatus(statusId: string, moveToStatus?: string) {
-    const selectedProject = this.projectDetailStore.item();
+    const selectedProject = this.projectService.selectedEntity();
     if (selectedProject) {
       await this.workflowStore.deleteStatus(selectedProject.id, statusId, moveToStatus);
       const newStatus = this.workflowStore.selectedEntity()?.statuses.find((status) => status.id === moveToStatus);
@@ -58,14 +58,14 @@ export class ProjectKanbanService {
   }
 
   public async editStatus(status: Pick<Status, "name" | "id">) {
-    const selectedProject = this.projectDetailStore.item();
+    const selectedProject = this.projectService.selectedEntity();
     if (selectedProject) {
       await this.workflowStore.editStatus(selectedProject.id, status);
     }
   }
 
   public async createStory(story: StoryCreate) {
-    const selectedProject = this.projectDetailStore.item();
+    const selectedProject = this.projectService.selectedEntity();
     const selectedWorkflow = this.workflowStore.selectedEntity();
     if (selectedProject && selectedWorkflow) {
       await this.storyStore.create(selectedProject.id, selectedWorkflow.slug, story);
@@ -73,7 +73,7 @@ export class ProjectKanbanService {
   }
 
   async assignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
-    const pId = projectId ? projectId : this.projectDetailStore.item()?.id;
+    const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
     const ref = storyRef ? storyRef : this.storyStore.selectedStoryDetails().ref;
     if (pId) {
       await this.storyStore.createAssign(pId, ref, username);
@@ -81,7 +81,7 @@ export class ProjectKanbanService {
   }
 
   async removeAssignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
-    const pId = projectId ? projectId : this.projectDetailStore.item()?.id;
+    const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
     const ref = storyRef ? storyRef : this.storyStore.selectedStoryDetails().ref;
     if (pId) {
       await this.storyStore.deleteAssign(pId, ref, username);

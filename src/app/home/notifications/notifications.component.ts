@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
 
 import { NotificationsComponentService } from "./notifications-component.service";
@@ -18,7 +39,14 @@ import { MatDialogContent } from "@angular/material/dialog";
   imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe],
   template: `
     @let notif = notification();
-    <div class="flex flex-row gap-2" *transloco="let t" (click)="read.emit()" [class.opacity-60]="!!notif.readAt">
+    <div
+      tabindex="1"
+      (keyup)="read.emit()"
+      class="flex flex-row gap-2"
+      *transloco="let t"
+      (click)="read.emit()"
+      [class.opacity-60]="!!notif.readAt"
+    >
       @let context = getContext(notif);
       <app-avatar
         [name]="context.user.fullName"

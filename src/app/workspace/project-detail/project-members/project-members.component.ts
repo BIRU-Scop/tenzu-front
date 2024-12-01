@@ -26,7 +26,7 @@ import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
 import { matDialogConfig } from "@tenzu/utils";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectDetailStore, ProjectStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project";
 import { MembershipStore } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -103,7 +103,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 export class ProjectMembersComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  projectDetailStore = inject(ProjectDetailStore);
+  projectService = inject(ProjectService);
   membershipStore = inject(MembershipStore);
   translocoService = inject(TranslocoService);
 
@@ -128,13 +128,13 @@ export class ProjectMembersComponent {
           " " +
           this.translocoService.translateObject("component.invite_dialog.to") +
           " " +
-          this.projectDetailStore.item()?.name,
+          this.projectService.selectedEntity()?.name,
         description: this.translocoService.translateObject("project.members.description_modal"),
       },
     });
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        await this.membershipStore.sendProjectInvitations(this.projectDetailStore.item()!.id, result);
+        await this.membershipStore.sendProjectInvitations(this.projectService.selectedEntity()!.id, result);
         this.selectedTabIndex.set(1);
       }
     });
