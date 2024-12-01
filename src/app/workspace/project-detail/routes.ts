@@ -28,22 +28,22 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { ProjectKanbanService } from "./project-kanban/project-kanban.service";
 import { debug } from "../../../libs/utils/functions/logging";
 
-export async function storyResolver(route: ActivatedRouteSnapshot) {
+export function storyResolver(route: ActivatedRouteSnapshot) {
   const storyStore = inject(StoryStore);
   const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
   try {
-    return storyStore
+    storyStore
       .get(route.paramMap.get("projectId")!, parseInt(route.paramMap.get("ref")!, 10))
-      .then(async (story) => {
+      .then((story) => {
         if (workflowStore.entityMap()[story.workflowId]?.statuses) {
-          await workflowStore
-            .refreshWorkflowById(route.paramMap.get("projectId")!, story.workflowId)
-            .then((workflow) => {
-              workflowStore.selectWorkflow(workflow.id);
-            });
+          workflowStore.refreshWorkflowById(route.paramMap.get("projectId")!, story.workflowId).then((workflow) => {
+            workflowStore.selectWorkflow(workflow.id);
+          });
         }
-      });
+      })
+      .then();
+    return true;
   } catch (error) {
     if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
       return router.navigate(["/404"]);
@@ -51,7 +51,7 @@ export async function storyResolver(route: ActivatedRouteSnapshot) {
     throw error;
   }
 }
-export async function workflowResolver(route: ActivatedRouteSnapshot) {
+export function workflowResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
   const projectKanbanService = inject(ProjectKanbanService);

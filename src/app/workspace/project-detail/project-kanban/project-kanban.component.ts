@@ -41,6 +41,7 @@ import { Step } from "@tenzu/data/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
 import { toObservable } from "@angular/core/rxjs-interop";
+import { debug } from "../../../../libs/utils/functions/logging";
 
 @Component({
   selector: "app-project-kanban",
@@ -169,6 +170,7 @@ export class ProjectKanbanComponent {
     toObservable(this.workflowStore.selectedEntity)
       .pipe(filterNotNull())
       .subscribe(async (workflow) => {
+        debug("story", "load stories start");
         this.breadcrumbStore.setSixthLevel({ label: workflow.name, doTranslation: false });
         while (true) {
           const stories = await this.storyStore.list(workflow.projectId, workflow.slug, this.offset, this.limit());
@@ -178,6 +180,7 @@ export class ProjectKanbanComponent {
           }
           this.offset += this.limit();
         }
+        debug("story", "load stories end");
         this.storyStore.reorder();
       });
 
