@@ -26,13 +26,13 @@ import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-workspace-settings",
@@ -50,16 +50,13 @@ import { MatIcon } from "@angular/material/icon";
     MatIcon,
   ],
   template: `
+    @let workspace = workspaceService.selectedEntity();
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'workspace.settings'">
       <h1 class="mat-headline-medium">{{ t("title") }}</h1>
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-2">
         <h2 class="mat-headline-small">{{ t("edit_profile") }}</h2>
         <div class="flex flex-row gap-4 items-center" *transloco="let t; prefix: 'workspace.settings.edit'">
-          <app-avatar
-            size="xl"
-            [name]="form.controls.name.value"
-            [color]="workspaceStore.selectedEntity()?.color || 0"
-          ></app-avatar>
+          <app-avatar size="xl" [name]="form.controls.name.value" [color]="workspace?.color || 0"></app-avatar>
           <div class="flex flex-col gap-y-4">
             <mat-form-field>
               <mat-label>{{ t("name") }}</mat-label>
@@ -82,17 +79,17 @@ import { MatIcon } from "@angular/material/icon";
       <div class="flex flex-col gap-y-2">
         <h2 class="mat-headline-small">{{ t("delete_workspace") }}</h2>
         <div *transloco="let t; prefix: 'workspace.settings.delete'" class="flex flex-col gap-4">
-          @if (workspaceStore.selectedEntity()?.hasProjects) {
+          @if (workspace?.hasProjects) {
             <div class="flex flex-row">
               <mat-icon class="text-error-40 pr-3 self-center">warning</mat-icon>
               <p
                 class="mat-body-medium text-error-40 align-middle"
-                [innerHTML]="t('error', { totalProjects: workspaceStore.selectedEntity()?.totalProjects })"
+                [innerHTML]="t('error', { totalProjects: workspace?.totalProjects })"
               ></p>
             </div>
           }
           <button
-            [disabled]="workspaceStore.selectedEntity()?.hasProjects"
+            [disabled]="workspace?.hasProjects"
             mat-flat-button
             class="error-button w-fit"
             appConfirm
@@ -108,8 +105,9 @@ import { MatIcon } from "@angular/material/icon";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceSettingsComponent {
-  workspaceStore = inject(WorkspaceStore);
+export default class WorkspaceSettingsComponent {
+  workspaceService = inject(WorkspaceService);
+  // workspaceStore = this.workspaceService.workspaceStore;
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
@@ -119,28 +117,28 @@ export class WorkspaceSettingsComponent {
   _snackBar = inject(MatSnackBar);
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
-  onSubmit() {
+  async onSubmit() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      this.workspaceStore.patchSelectedEntity(this.form.getRawValue());
+      await this.workspaceService.updateSelected(this.form.getRawValue());
     }
   }
 
-  onDelete() {
-    this.workspaceStore.deleteSelectedEntity().then((deleted) => {
-      this.router.navigateByUrl("/");
-      this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-        duration: 3000,
-        data: {
-          message: "workspace.settings.delete.deleted_workspace",
-          var: deleted.name,
-        },
-      });
+  async onDelete() {
+    const deletedWorkspace = await this.workspaceService.deleteSelected();
+
+    await this.router.navigateByUrl("/");
+    this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
+      duration: 3000,
+      data: {
+        message: "workspace.settings.delete.deleted_workspace",
+        var: deletedWorkspace?.name,
+      },
     });
   }
 
   reset() {
-    const selectedEntity = this.workspaceStore.selectedEntity();
+    const selectedEntity = this.workspaceService.selectedEntity();
     if (selectedEntity) {
       this.form.reset({ ...selectedEntity });
     }

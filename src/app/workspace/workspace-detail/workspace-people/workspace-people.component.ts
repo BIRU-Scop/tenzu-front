@@ -27,17 +27,17 @@ import { MatIcon } from "@angular/material/icon";
 import { matDialogConfig } from "@tenzu/utils";
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { MembershipStore } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
-    selector: "app-workspace-people",
-    imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
-    template: `
+  selector: "app-workspace-people",
+  imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
+  template: `
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
@@ -103,24 +103,28 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
       </mat-tab-group>
     </div>
   `,
-    animations: [
-        trigger("newItemsFlyIn", [
-            transition(":enter, * => 0, * => -1", []),
-            transition(":increment", [
-                query(":enter", [
-                    style({ opacity: 0, height: 0 }),
-                    stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-                ], { optional: true }),
-            ]),
-        ]),
-    ],
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [
+    trigger("newItemsFlyIn", [
+      transition(":enter, * => 0, * => -1", []),
+      transition(":increment", [
+        query(
+          ":enter",
+          [
+            style({ opacity: 0, height: 0 }),
+            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
+          ],
+          { optional: true },
+        ),
+      ]),
+    ]),
+  ],
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspacePeopleComponent {
+export default class WorkspacePeopleComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  workspaceStore = inject(WorkspaceStore);
+  readonly workspaceService = inject(WorkspaceService);
   translocoService = inject(TranslocoService);
   membershipStore = inject(MembershipStore);
 
@@ -144,12 +148,12 @@ export class WorkspacePeopleComponent {
           " " +
           this.translocoService.translate("component.invite_dialog.to") +
           " " +
-          this.workspaceStore.selectedEntity()?.name,
+          this.workspaceService.selectedEntity()?.name,
         description: this.translocoService.translate("workspace.people.description_modal"),
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
-      const selectedWorkspace = this.workspaceStore.selectedEntity();
+      const selectedWorkspace = this.workspaceService.selectedEntity();
       if (selectedWorkspace) {
         await this.membershipStore.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
         this.selectedTabIndex.set(1);

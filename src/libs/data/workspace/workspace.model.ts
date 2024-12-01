@@ -19,7 +19,7 @@
  *
  */
 
-import { Project } from "../project/project.model";
+import { Project } from "../project";
 
 export type WorkspaceProject = Pick<Project, "id" | "name" | "slug" | "description" | "color" | "logoSmall">;
 
@@ -47,11 +47,6 @@ export interface WorkspaceCreation {
 
 export interface WorkspaceEdition {
   name: string;
-}
-
-export interface WorkspaceDetail {
-  workspace: Workspace;
-  workspaceProject: Project[];
 }
 
 export interface InvitationInfo {

@@ -21,10 +21,11 @@
 
 import { inject, Injectable } from "@angular/core";
 import { WorkflowStore } from "@tenzu/data/workflow";
-import { StoryStore } from "@tenzu/data/story";
-import { ProjectStore } from "@tenzu/data/project";
+import { StoryCreate, StoryStore } from "@tenzu/data/story";
 import { Status } from "@tenzu/data/status";
-import { StoryCreate } from "@tenzu/data/story";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { ProjectService } from "@tenzu/data/project";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -33,19 +34,20 @@ import { StoryCreate } from "@tenzu/data/story";
   providedIn: "root",
 })
 export class ProjectKanbanService {
-  projectStore = inject(ProjectStore);
+  projectService = inject(ProjectService);
   workflowStore = inject(WorkflowStore);
   storyStore = inject(StoryStore);
+  router = inject(Router);
 
   public async createStatus(status: Pick<Status, "name" | "color">) {
-    const selectedProject = this.projectStore.selectedEntity();
+    const selectedProject = this.projectService.selectedEntity();
     if (selectedProject) {
       await this.workflowStore.createStatus(selectedProject.id, status);
     }
   }
 
   public async deleteStatus(statusId: string, moveToStatus?: string) {
-    const selectedProject = this.projectStore.selectedEntity();
+    const selectedProject = this.projectService.selectedEntity();
     if (selectedProject) {
       await this.workflowStore.deleteStatus(selectedProject.id, statusId, moveToStatus);
       const newStatus = this.workflowStore.selectedEntity()?.statuses.find((status) => status.id === moveToStatus);
@@ -56,14 +58,14 @@ export class ProjectKanbanService {
   }
 
   public async editStatus(status: Pick<Status, "name" | "id">) {
-    const selectedProject = this.projectStore.selectedEntity();
+    const selectedProject = this.projectService.selectedEntity();
     if (selectedProject) {
       await this.workflowStore.editStatus(selectedProject.id, status);
     }
   }
 
   public async createStory(story: StoryCreate) {
-    const selectedProject = this.projectStore.selectedEntity();
+    const selectedProject = this.projectService.selectedEntity();
     const selectedWorkflow = this.workflowStore.selectedEntity();
     if (selectedProject && selectedWorkflow) {
       await this.storyStore.create(selectedProject.id, selectedWorkflow.slug, story);
@@ -71,7 +73,7 @@ export class ProjectKanbanService {
   }
 
   async assignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
-    const pId = projectId ? projectId : this.projectStore.selectedEntity()?.id;
+    const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
     const ref = storyRef ? storyRef : this.storyStore.selectedStoryDetails().ref;
     if (pId) {
       await this.storyStore.createAssign(pId, ref, username);
@@ -79,10 +81,25 @@ export class ProjectKanbanService {
   }
 
   async removeAssignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
-    const pId = projectId ? projectId : this.projectStore.selectedEntity()?.id;
+    const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
     const ref = storyRef ? storyRef : this.storyStore.selectedStoryDetails().ref;
     if (pId) {
       await this.storyStore.deleteAssign(pId, ref, username);
+    }
+  }
+  async loadWorkflow(value: { projectId: string; workflowSlug: string }) {
+    try {
+      const workflow = await this.workflowStore.refreshWorkflow({
+        projectId: value.projectId,
+        slug: value.workflowSlug,
+      });
+      this.workflowStore.selectWorkflow(workflow.id);
+      return workflow;
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+        await this.router.navigate(["/404"]);
+      }
+      throw error;
     }
   }
 }

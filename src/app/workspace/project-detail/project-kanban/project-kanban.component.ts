@@ -37,11 +37,10 @@ import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { Status } from "@tenzu/data/status";
-import { Step, Workflow } from "@tenzu/data/workflow";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { distinctUntilChanged, pipe, tap } from "rxjs";
+import { Step } from "@tenzu/data/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
+import { toObservable } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-project-kanban",
@@ -69,15 +68,21 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
             @let stories = storyStore.groupedByStatus()[status.id];
 
             <li class="group w-64 flex flex-col overflow-hidden">
-              <app-status-card (movedLeft)="moveStatus(status, $index, Step.LEFT)"
-                               (movedRight)="moveStatus(status, $index, Step.RIGHT)"
-                               [config]="{ showLeft: !$first, showRight: !$last}" [name]="status.name" [id]="status.id"
-                               [isEmpty]="!stories" />
+              <app-status-card
+                (movedLeft)="moveStatus(status, $index, Step.LEFT)"
+                (movedRight)="moveStatus(status, $index, Step.RIGHT)"
+                [config]="{ showLeft: !$first, showRight: !$last }"
+                [name]="status.name"
+                [id]="status.id"
+                [isEmpty]="!stories"
+              />
               <ul
                 [@newStoryFlyIn]="storyStore.entities().length || 0"
                 [id]="status.id"
                 class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 bg-neutral-98 rounded-b shadow-inner"
-                cdkDropList [cdkDropListData]="status" (cdkDropListDropped)="drop($event)"
+                cdkDropList
+                [cdkDropListData]="status"
+                (cdkDropListDropped)="drop($event)"
               >
                 @for (story of stories; track story.ref) {
                   <li cdkDrag [cdkDragData]="story" class="w-60">
@@ -95,8 +100,11 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
             </li>
           }
           <li>
-            <button mat-stroked-button class="tertiary-button whitespace-nowrap w-64"
-                    (click)="openCreateStatus($event)">
+            <button
+              mat-stroked-button
+              class="tertiary-button whitespace-nowrap w-64"
+              (click)="openCreateStatus($event)"
+            >
               {{ t("add_status") }}
             </button>
           </li>
@@ -154,28 +162,25 @@ export class ProjectKanbanComponent {
   readonly relativeDialog = inject(RelativeDialogService);
   limit = signal(100);
   offset = 0;
-  list = rxMethod<Workflow | null>(
-    pipe(
-      filterNotNull(),
-      distinctUntilChanged((prev, curr) => prev.id === curr.id),
-      tap(async (workflow) => {
+
+  protected readonly Step = Step;
+
+  constructor() {
+    toObservable(this.workflowStore.selectedEntity)
+      .pipe(filterNotNull())
+      .subscribe(async (workflow) => {
         this.breadcrumbStore.setSixthLevel({ label: workflow.name, doTranslation: false });
         while (true) {
           const stories = await this.storyStore.list(workflow.projectId, workflow.slug, this.offset, this.limit());
-          this.storyStore.reorder();
+
           if (stories.length < this.limit()) {
             break;
           }
           this.offset += this.limit();
         }
-      }),
-    ),
-  );
-  protected readonly Step = Step;
+        this.storyStore.reorder();
+      });
 
-  constructor() {
-    this.storyStore.reset();
-    this.list(this.workflowStore.selectedEntity);
     this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
   }
 

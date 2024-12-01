@@ -24,9 +24,9 @@ import { PasswordSeverity } from "./_utils";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
-    selector: "app-password-strength",
-    imports: [TranslocoDirective],
-    template: `@if (severity()) {
+  selector: "app-password-strength",
+  imports: [TranslocoDirective],
+  template: `@if (severity()) {
     <div
       class="flex flex-row items-center gap-x-2"
       [class]="severity()"
@@ -43,8 +43,8 @@ import { TranslocoDirective } from "@jsverse/transloco";
       }
     </div>
   }`,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordStrengthComponent {
   severity = input<PasswordSeverity>();

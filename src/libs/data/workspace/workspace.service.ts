@@ -19,31 +19,90 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { Workspace, WorkspaceInvitationInfo } from "./workspace.model";
-import { GenericCrudService } from "../generic-crud";
-import { Project, ProjectFilter } from "../project";
+import { inject, Injectable } from "@angular/core";
+import { WorkspaceInfraService } from "./workspace-infra.service";
+import { WorkspaceDetailStore, WorkspacesStore } from "./workspace.store";
+import { WsService } from "@tenzu/utils/services";
+import { lastValueFrom } from "rxjs";
+import { Workspace, WorkspaceCreation, WorkspaceEdition } from "./workspace.model";
+import { ServiceStore } from "@tenzu/data/interface";
+import { ProjectStore } from "../project/project.store";
 
 @Injectable({
   providedIn: "root",
 })
-export class WorkspaceService extends GenericCrudService<Workspace, ProjectFilter> {
-  myWorkspacesUrl = `${this.url}my/workspaces`;
-  override endPoint = "workspaces";
+export class WorkspaceService implements ServiceStore<Workspace> {
+  private wsService = inject(WsService);
+  private workspaceInfraService = inject(WorkspaceInfraService);
+  private workspaceStore = inject(WorkspacesStore);
+  private workspaceDetailStore = inject(WorkspaceDetailStore);
+  private projectStore = inject(ProjectStore);
+  selectedEntity = this.workspaceDetailStore.item;
+  entities = this.workspaceStore.entities;
+  entityMap = this.workspaceStore.entityMap;
 
-  override list() {
-    return this.http.get<Workspace[]>(`${this.myWorkspacesUrl}`);
+  async deleteSelected() {
+    const workspace = this.workspaceDetailStore.item();
+    if (workspace) {
+      this.wsService.command({ command: "unsubscribe_to_workspace_events", workspace: workspace.id as string });
+      await lastValueFrom(this.workspaceInfraService.delete(workspace.id));
+      this.workspaceStore.removeEntity(workspace.id);
+      this.workspaceDetailStore.reset();
+      return workspace;
+    }
+    return undefined;
   }
 
-  getProjects(workspaceId: string) {
-    return this.http.get<Project[]>(`${this.getUrl()}/${workspaceId}/projects`);
+  async list() {
+    const workspaces = await lastValueFrom(this.workspaceInfraService.list());
+    this.workspaceStore.setAllEntities(workspaces);
+    return workspaces;
   }
-
-  getInvitationDetail(token: string) {
-    return this.http.get<WorkspaceInvitationInfo>(`${this.getUrl()}/invitations/${token}`);
+  async create(workspace: WorkspaceCreation) {
+    const newWorkspace = await lastValueFrom(this.workspaceInfraService.create(workspace));
+    this.workspaceStore.setAllEntities([newWorkspace, ...this.workspaceStore.entities()]);
+    return newWorkspace;
   }
-
-  acceptInvitation(token: string) {
-    return this.http.post<WorkspaceInvitationInfo>(`${this.getUrl()}/invitations/${token}/accept`, token);
+  async get(workspaceId: string) {
+    const oldSelectedWorkspace = this.workspaceDetailStore.item();
+    if (oldSelectedWorkspace) {
+      this.wsService.command({
+        command: "unsubscribe_to_workspace_events",
+        workspace: oldSelectedWorkspace.id as string,
+      });
+    }
+    const workspace = await lastValueFrom(this.workspaceInfraService.get(workspaceId));
+    this.workspaceDetailStore.set(workspace);
+    this.workspaceStore.setEntity(workspace);
+    this.wsService.command({ command: "subscribe_to_workspace_events", workspace: workspace.id });
+    return workspace;
+  }
+  async updateSelected(workspace: WorkspaceEdition) {
+    const selectedWorkspace = this.workspaceDetailStore.item();
+    if (selectedWorkspace) {
+      const editedWorkspace = await lastValueFrom(this.workspaceInfraService.patch(selectedWorkspace.id, workspace));
+      this.workspaceStore.setEntity(editedWorkspace);
+      this.workspaceDetailStore.patch(editedWorkspace);
+      return editedWorkspace;
+    }
+    return undefined;
+  }
+  resetSelectedEntity() {
+    this.workspaceDetailStore.reset();
+  }
+  resetEntities() {
+    this.workspaceStore.reset();
+  }
+  fullReset() {
+    this.resetSelectedEntity();
+    this.resetEntities();
+  }
+  wsRemoveEntity(workspaceId: string) {
+    this.workspaceStore.removeEntity(workspaceId);
+  }
+  getProjectsByWorkspace(workspaceId: string) {
+    this.workspaceInfraService
+      .getProjects(workspaceId)
+      .subscribe((projects) => this.projectStore.setAllEntities(projects));
   }
 }

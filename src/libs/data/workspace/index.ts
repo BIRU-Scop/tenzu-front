@@ -19,6 +19,6 @@
  *
  */
 
-export * from "./workspace.service";
-export * from "./workspace.store";
+export * from "./workspace-infra.service";
 export * from "./workspace.model";
+export * from "./workspace.service";

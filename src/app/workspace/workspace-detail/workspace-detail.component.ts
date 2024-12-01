@@ -21,10 +21,11 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/data/sidenav";
+import { filterNotNull } from "@tenzu/utils";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-workspace-detail",
@@ -34,18 +35,20 @@ import { SideNavStore } from "@tenzu/data/sidenav";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceDetailComponent {
+  workspaceService = inject(WorkspaceService);
   sideNavStore = inject(SideNavStore);
-  workspaceStore = inject(WorkspaceStore);
   breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
-    toObservable(this.workspaceStore.selectedEntity).subscribe((workspace) => {
-      this.sideNavStore.setAvatar(
-        workspace
-          ? { name: workspace.name, type: "workspace.general_title.workspace", color: workspace.color }
-          : undefined,
-      );
-    });
+    toObservable(this.workspaceService.selectedEntity)
+      .pipe(filterNotNull())
+      .subscribe((workspace) => {
+        this.sideNavStore.setAvatar(
+          workspace
+            ? { name: workspace.name, type: "workspace.general_title.workspace", color: workspace.color }
+            : undefined,
+        );
+      });
     this.sideNavStore.setPrimaryNavItems([
       {
         label: "workspace.general_title.workspaceListProjects",
@@ -75,15 +78,15 @@ export class WorkspaceDetailComponent {
       link: "/",
       doTranslation: true,
     });
-    toObservable(this.workspaceStore.selectedEntity).subscribe((workspace) => {
-      if (workspace) {
+    toObservable(this.workspaceService.selectedEntity)
+      .pipe(filterNotNull())
+      .subscribe((workspace) => {
         this.breadcrumbStore.setSecondLevel({
           label: workspace.name,
           link: `workspace/${workspace.id}`,
           doTranslation: false,
         });
         this.breadcrumbStore.setFourthLevel(undefined);
-      }
-    });
+      });
   }
 }

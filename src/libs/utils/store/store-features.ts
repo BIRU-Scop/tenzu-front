@@ -21,27 +21,20 @@
 
 import { patchState, signalStoreFeature, type, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed } from "@angular/core";
-import { EntityId, EntityState, removeAllEntities } from "@ngrx/signals/entities";
-import { Command } from "@tenzu/utils/services";
+import {
+  EntityId,
+  EntityState,
+  removeAllEntities,
+  removeEntity,
+  setAllEntities,
+  setEntity,
+} from "@ngrx/signals/entities";
 
 export function withLoadingStatus() {
   return signalStoreFeature(
     withState({ loading: false }),
     withComputed(({ loading }) => ({
       isLoading: computed(() => loading()),
-    })),
-  );
-}
-
-export function withWsCommand() {
-  return signalStoreFeature(
-    withState({
-      command: undefined as Command | undefined,
-    }),
-    withMethods((store) => ({
-      sendCommand(command: Command) {
-        patchState(store, { command: command });
-      },
     })),
   );
 }
@@ -73,6 +66,52 @@ export function withSelectedEntity<Entity>() {
       reset() {
         patchState(store, { selectedEntityId: null });
         patchState(store, removeAllEntities());
+      },
+    })),
+  );
+}
+
+export function withMethodsEntities<T extends { id: EntityId }>() {
+  return signalStoreFeature(
+    withMethods((store) => ({
+      setAllEntities(entities: T[]) {
+        patchState(store, setAllEntities(entities));
+      },
+      setEntity(entity: T) {
+        patchState(store, setEntity(entity));
+      },
+      removeEntity(selectedEntityId: EntityId) {
+        patchState(store, removeEntity(selectedEntityId));
+      },
+      reset() {
+        patchState(store, removeAllEntities());
+      },
+    })),
+  );
+}
+
+export function withEntity<T>() {
+  return signalStoreFeature(
+    withState<{ item: T | undefined }>({ item: undefined }),
+    withMethods((store) => ({
+      set(item: T) {
+        patchState(store, { item: item });
+      },
+      patch(partialTtem: Partial<T>) {
+        const item = store.item();
+        if (item) {
+          patchState(store, {
+            item: {
+              ...item,
+              ...partialTtem,
+            },
+          });
+          return item;
+        }
+        return undefined;
+      },
+      reset() {
+        patchState(store, { item: undefined });
       },
     })),
   );

@@ -36,10 +36,10 @@ export type DescriptionOptions = {
 };
 
 @Component({
-    selector: "app-description-field",
-    imports: [MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatLabel, TranslocoDirective],
-    hostDirectives: [NoopValueAccessorDirective],
-    template: `
+  selector: "app-description-field",
+  imports: [MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatLabel, TranslocoDirective],
+  hostDirectives: [NoopValueAccessorDirective],
+  template: `
     <mat-form-field class="mat-form-field" *transloco="let t; prefix: 'component.description'">
       <mat-label>{{ t("label") }}</mat-label>
       <textarea
@@ -56,8 +56,8 @@ export type DescriptionOptions = {
       ></textarea>
     </mat-form-field>
   `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DescriptionFieldComponent {
   ngControl = injectNgControl();

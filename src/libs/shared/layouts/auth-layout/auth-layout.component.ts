@@ -28,16 +28,21 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { darkModeOn$ } from "@tenzu/utils";
 
 @Component({
-    selector: "app-auth-layout",
-    imports: [RouterOutlet, MatIcon],
-    template: `
+  selector: "app-auth-layout",
+  imports: [RouterOutlet, MatIcon],
+  template: `
     <main class="h-[100vh] flex flex-col items-center justify-center gap-4">
-      <div class="h-[200px]"><mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-full-animated' : 'logo-full-animated-dark'"></mat-icon></div>
+      <div class="h-[200px]">
+        <mat-icon
+          class="icon-full"
+          [svgIcon]="!darkModeOn() ? 'logo-full-animated' : 'logo-full-animated-dark'"
+        ></mat-icon>
+      </div>
       <router-outlet></router-outlet>
     </main>
   `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthLayoutComponent {
   notificationService = inject(NotificationService);

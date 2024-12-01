@@ -62,26 +62,26 @@ export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): Vali
 };
 
 @Component({
-    selector: "app-invite-peoples-dialog",
-    imports: [
-        TranslocoDirective,
-        MatDialogTitle,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
-        MatButton,
-        MatDivider,
-        MatIcon,
-        MatFormField,
-        MatInput,
-        UserCardComponent,
-        MatIconButton,
-        FormsModule,
-        ReactiveFormsModule,
-        MatError,
-        MatLabel,
-    ],
-    template: `
+  selector: "app-invite-peoples-dialog",
+  imports: [
+    TranslocoDirective,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatDivider,
+    MatIcon,
+    MatFormField,
+    MatInput,
+    UserCardComponent,
+    MatIconButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatError,
+    MatLabel,
+  ],
+  template: `
     <ng-container *transloco="let t; prefix: 'component.invite_dialog'">
       <h2 id="aria-label" mat-dialog-title>{{ data.title }}</h2>
       <mat-dialog-content>
@@ -139,8 +139,8 @@ export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): Vali
       </mat-dialog-actions>
     </ng-container>
   `,
-    styles: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitePeoplesDialogComponent {
   fb = inject(FormBuilder);

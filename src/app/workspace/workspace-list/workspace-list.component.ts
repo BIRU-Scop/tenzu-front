@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -32,16 +32,16 @@ import { WorkspacePlaceholderDialogComponent } from "./workspace-placeholder-dia
 import { matDialogConfig } from "@tenzu/utils";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card/project-card.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton/card-skeleton.component";
-import { WorkspaceStore } from "@tenzu/data/workspace";
 import { RelativeDialogService } from "@tenzu/utils/services";
 import {
   EnterNameDialogComponent,
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
-import { ProjectStore } from "@tenzu/data/project";
+import { ProjectService } from "@tenzu/data/project";
 import { WorkflowStore } from "@tenzu/data/workflow";
 import { StoryStore } from "@tenzu/data/story";
+import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({
   selector: "app-workspace-list",
@@ -68,7 +68,7 @@ import { StoryStore } from "@tenzu/data/story";
           {{ t("workspace") }}
         </button>
       </div>
-      @let workpaces = workspaceStore.entities();
+      @let workpaces = workspaceService.entities();
       @if (workpaces.length > 0) {
         <ul [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-8">
           @for (workspace of workpaces; track workspace.id) {
@@ -129,9 +129,9 @@ import { StoryStore } from "@tenzu/data/story";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceListComponent {
-  readonly workspaceStore = inject(WorkspaceStore);
-  readonly projectStore = inject(ProjectStore);
+export class WorkspaceListComponent implements AfterViewInit {
+  readonly workspaceService = inject(WorkspaceService);
+  readonly projectService = inject(ProjectService);
   readonly workflowStore = inject(WorkflowStore);
   readonly storyStore = inject(StoryStore);
   readonly relativeDialog = inject(RelativeDialogService);
@@ -139,10 +139,11 @@ export class WorkspaceListComponent {
   readonly skeletons = Array(6);
 
   private init = async () => {
-    const workspaces = await this.workspaceStore.list();
-    if (workspaces.length === 0) {
-      this.openPlaceholderDialog();
-    }
+    this.workspaceService.list().then((workspaces) => {
+      if (workspaces.length === 0) {
+        this.openPlaceholderDialog();
+      }
+    });
   };
 
   private openPlaceholderDialog = (event?: MouseEvent) => {
@@ -152,12 +153,12 @@ export class WorkspaceListComponent {
     });
   };
 
-  constructor() {
-    this.projectStore.reset();
-    this.workspaceStore.reset();
+  ngAfterViewInit(): void {
+    this.projectService.fullReset();
+    this.workspaceService.fullReset();
     this.workflowStore.reset();
     this.storyStore.reset();
-    this.init();
+    this.init().then();
   }
 
   public openCreateDialog(event?: MouseEvent): void {
@@ -181,7 +182,7 @@ export class WorkspaceListComponent {
     };
     const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
       ...matDialogConfig,
-      disableClose: this.workspaceStore.entities().length === 0,
+      disableClose: this.workspaceService.entities().length === 0,
       relativeXPosition: "left",
       id: "create-workspace",
       data: data,
@@ -190,11 +191,11 @@ export class WorkspaceListComponent {
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
         const color = Math.floor(Math.random() * (8 - 1) + 1);
-        await this.workspaceStore.create({
+        await this.workspaceService.create({
           name,
           color,
         });
-      } else if (this.workspaceStore.entities().length === 0) {
+      } else if (this.workspaceService.entities().length === 0) {
         this.openPlaceholderDialog(event);
       }
     });
