@@ -28,8 +28,8 @@ import {
   EnterNameDialogComponent,
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
-import { RelativeDialogService } from "@tenzu/utils/services";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { ProjectKanbanService } from "../project-kanban.service";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatDialog } from "@angular/material/dialog";

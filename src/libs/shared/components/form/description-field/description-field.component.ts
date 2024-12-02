@@ -22,10 +22,10 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
-import { injectNgControl } from "@tenzu/utils";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor-directive.directive";
+import { injectNgControl } from "@tenzu/utils/injectors";
 
 export type DescriptionOptions = {
   autoSize: boolean;

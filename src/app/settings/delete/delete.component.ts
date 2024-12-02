@@ -24,7 +24,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { MatButton } from "@angular/material/button";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService, UserStore } from "@tenzu/data/user";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";

@@ -33,7 +33,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { UserMinimal } from "@tenzu/data/user";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 type AssignDialogData = {
   assigned: UserMinimal[];

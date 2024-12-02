@@ -25,7 +25,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideTransloco } from "@jsverse/transloco";
 import { isDevMode } from "@angular/core";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 
 const meta: Meta<ProjectCardComponent> = {
   title: "Components/ProjectCard",

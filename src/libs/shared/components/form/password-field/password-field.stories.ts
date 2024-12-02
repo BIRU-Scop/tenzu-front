@@ -29,7 +29,7 @@ import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/c
 import { toObservable } from "@angular/core/rxjs-interop";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { PasswordRequirements, PasswordSettings } from "./password-strength/_utils";
 
 const DEFAULT_STRENGTH_SETTINGS = { enabled: false, lengthSecureThreshold: 15, showBar: false };

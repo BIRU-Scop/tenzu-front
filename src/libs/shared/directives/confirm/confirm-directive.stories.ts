@@ -25,7 +25,7 @@ import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/c
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
 import { ConfirmDirective, ConfirmPopupData } from "./confirm.directive";
 import { MatButton } from "@angular/material/button";

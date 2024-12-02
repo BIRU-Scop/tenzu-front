@@ -33,22 +33,23 @@ import { DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { NotificationService, RelativeDialogService } from "@tenzu/utils/services";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MembershipStore } from "@tenzu/data/membership";
-import { WorkflowStore } from "@tenzu/data/workflow";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
-import { RouterLink } from "@angular/router";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-story-detail",
@@ -169,7 +170,7 @@ import { MatTooltip } from "@angular/material/tooltip";
                         <a
                           mat-icon-button
                           target="_blank"
-                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
+                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
                           type="button"
                         >
                           <mat-icon>visibility</mat-icon>
@@ -213,7 +214,7 @@ import { MatTooltip } from "@angular/material/tooltip";
                   (selectionChange)="changeStatus()"
                   [compareWith]="compareStatus"
                 >
-                  @for (status of this.workflowStore.selectedEntity()?.statuses; track status.id) {
+                  @for (status of workflowService.selectedEntity()?.statuses; track status.id) {
                     <mat-option [value]="status">{{ status.name }}</mat-option>
                   }
                 </mat-select>
@@ -261,10 +262,10 @@ import { MatTooltip } from "@angular/material/tooltip";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailComponent {
+  workflowService = inject(WorkflowService);
   storyStore = inject(StoryStore);
   membershipStore = inject(MembershipStore);
   breadcrumbStore = inject(BreadcrumbStore);
-  workflowStore = inject(WorkflowStore);
   notificationService = inject(NotificationService);
   storyDetailService = inject(StoryDetailService);
   projectKanbanService = inject(ProjectKanbanService);
@@ -282,9 +283,8 @@ export class StoryDetailComponent {
     toObservable(this.selectedStory).subscribe(async (value) => {
       this.form.setValue({ title: value?.title || "" });
       this.statusSelected.set(value.status);
-      if (this.workflowStore.selectedEntity()?.id !== value.workflowId) {
-        await this.workflowStore.refreshWorkflow(value.workflow);
-        this.workflowStore.selectWorkflow(value.workflowId);
+      if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
+        await this.workflowService.getBySlug(value.workflow);
       }
     });
     this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });

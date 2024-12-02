@@ -23,43 +23,57 @@ import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { inject } from "@angular/core";
 import { StoryStore } from "@tenzu/data/story";
 import { provideTranslocoScope } from "@jsverse/transloco";
-import { WorkflowStore } from "@tenzu/data/workflow";
 import { HttpErrorResponse } from "@angular/common/http";
-import { ProjectKanbanService } from "./project-kanban/project-kanban.service";
 import { debug } from "../../../libs/utils/functions/logging";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
+  const workflowService = inject(WorkflowService);
   const storyStore = inject(StoryStore);
-  const workflowStore = inject(WorkflowStore);
   const router = inject(Router);
-  try {
-    storyStore
-      .get(route.paramMap.get("projectId")!, parseInt(route.paramMap.get("ref")!, 10))
-      .then((story) => {
-        if (workflowStore.entityMap()[story.workflowId]?.statuses) {
-          workflowStore.refreshWorkflowById(route.paramMap.get("projectId")!, story.workflowId).then((workflow) => {
-            workflowStore.selectWorkflow(workflow.id);
-          });
-        }
-      })
-      .then();
-    return true;
-  } catch (error) {
-    if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-      return router.navigate(["/404"]);
+  const projectId = route.paramMap.get("projectId");
+  if (projectId) {
+    try {
+      storyStore
+        .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
+        .then((story) => {
+          if (workflowService.selectedEntity()?.id != story.workflowId) {
+            workflowService.get(projectId, story.workflowId).then();
+          }
+        })
+        .then();
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+        return router.navigate(["/404"]);
+      }
+      throw error;
     }
-    throw error;
   }
+  return true;
 }
 export function workflowResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
-  const projectKanbanService = inject(ProjectKanbanService);
+  const workflowService = inject(WorkflowService);
+  const router = inject(Router);
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
-    projectKanbanService.loadWorkflow({ projectId: projectId, workflowSlug: workflowSLug }).then();
+    try {
+      workflowService
+        .getBySlug({
+          projectId: projectId,
+          slug: workflowSLug,
+        })
+        .then();
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+        router.navigate(["/404"]).then();
+      }
+      throw error;
+    }
     debug("workflowResolver", "load end");
   }
+  return true;
 }
 
 export const routes: Routes = [

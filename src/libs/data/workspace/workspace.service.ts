@@ -22,16 +22,16 @@
 import { inject, Injectable } from "@angular/core";
 import { WorkspaceInfraService } from "./workspace-infra.service";
 import { WorkspaceDetailStore, WorkspacesStore } from "./workspace.store";
-import { WsService } from "@tenzu/utils/services";
+import { WsService } from "@tenzu/utils/services/ws";
 import { lastValueFrom } from "rxjs";
 import { Workspace, WorkspaceCreation, WorkspaceEdition } from "./workspace.model";
-import { ServiceStore } from "@tenzu/data/interface";
+import { ServiceStoreEntity } from "@tenzu/data/interface";
 import { ProjectStore } from "../project/project.store";
 
 @Injectable({
   providedIn: "root",
 })
-export class WorkspaceService implements ServiceStore<Workspace> {
+export class WorkspaceService implements ServiceStoreEntity<Workspace> {
   private wsService = inject(WsService);
   private workspaceInfraService = inject(WorkspaceInfraService);
   private workspaceStore = inject(WorkspacesStore);

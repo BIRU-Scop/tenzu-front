@@ -16,16 +16,18 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
+    "isolatedModules": true,
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "baseUrl": "./",
     "paths": {
       "@tenzu/shared/components/*": ["src/libs/shared/components/*"],
+      "@tenzu/shared/layouts/*": ["src/libs/shared/layouts/*"],
       "@tenzu/directives/*" : ["src/libs/shared/directives/*"],
       "@tenzu/pipes/*" : ["src/libs/shared/pipes/*"],
       "@tenzu/data/*": ["src/libs/data/*"],
-      "@tenzu/utils": ["src/libs/utils/index.ts"],
-      "@tenzu/utils/services": ["src/libs/utils/services/index.ts"]
+      "@tenzu/utils/*": ["src/libs/utils/*"],
+      "@tenzu/utils/services/*": ["src/libs/utils/services/*"]
     }
   },
   "angularCompilerOptions": {

@@ -34,14 +34,15 @@ import {
   WorkspaceEventType,
 } from "./event-type.enum";
 import { ProjectService } from "@tenzu/data/project";
-import { Workflow, WorkflowStatusReorderPayload, WorkflowStore } from "@tenzu/data/workflow";
+import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow";
 import { Router } from "@angular/router";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserMinimal } from "@tenzu/data/user";
 import { StatusDetail } from "@tenzu/data/status";
 import { AuthService } from "@tenzu/data/auth";
 import { Notification, NotificationsStore } from "@tenzu/data/notifications";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyStore = inject(StoryStore);
@@ -74,7 +75,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
   const workspaceService = inject(WorkspaceService);
   const projectService = inject(ProjectService);
   const storyStore = inject(StoryStore);
-  const workflowStore = inject(WorkflowStore);
+  const workflowService = inject(WorkflowService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
@@ -92,8 +93,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
         case content.updatesAttrs.includes("workflow"): {
           const workspace = workspaceService.selectedEntity();
           if (workspace && router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}`) {
-            await workflowStore.refreshWorkflow(story.workflow);
-            workflowStore.selectWorkflow(story.workflowId);
+            await workflowService.getBySlug(story.workflow);
           }
           if (
             workspace &&
@@ -129,7 +129,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
         };
       };
       const project = projectService.selectedEntity();
-      const workflow = workflowStore.selectedEntity();
+      const workflow = workflowService.selectedEntity();
       const workspace = workspaceService.selectedEntity();
       storyStore.removeStory(content.ref);
       if (router.url === `/workspace/${workspace?.id}/project/${project?.id}/story/${content.ref}`) {
@@ -169,23 +169,23 @@ export function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>) {
-  const workflowStore = inject(WorkflowStore);
+  const workflowService = inject(WorkflowService);
   const storyStore = inject(StoryStore);
 
   switch (message.event.type) {
     case WorkflowStatusEventType.CreateWorkflowStatus: {
       const content = message.event.content as { workflowStatus: StatusDetail };
-      workflowStore.addStatus(content.workflowStatus);
+      workflowService.wsAddStatus(content.workflowStatus);
       break;
     }
     case WorkflowStatusEventType.UpdateWorkflowStatus: {
       const content = message.event.content as { workflowStatus: StatusDetail };
-      workflowStore.updateStatus(content.workflowStatus);
+      workflowService.wsUpdateStatus(content.workflowStatus);
       break;
     }
     case WorkflowStatusEventType.DeleteWorkflowStatus: {
       const content = message.event.content as { workflowStatus: StatusDetail; targetStatus: StatusDetail };
-      workflowStore.removeStatus(content.workflowStatus.id);
+      workflowService.wsRemoveStatus(content.workflowStatus.id);
       storyStore.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
       break;
     }
@@ -193,7 +193,7 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
       const content = message.event.content as {
         reorder: WorkflowStatusReorderPayload & { workflow: Workflow };
       };
-      await workflowStore.refreshWorkflow(content.reorder.workflow);
+      await workflowService.getBySlug(content.reorder.workflow);
       break;
     }
   }

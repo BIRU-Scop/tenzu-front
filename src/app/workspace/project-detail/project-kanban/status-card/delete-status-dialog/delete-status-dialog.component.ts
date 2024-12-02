@@ -35,9 +35,9 @@ import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
-import { WorkflowStore } from "@tenzu/data/workflow";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 
 type DeleteStatusDialogData = {
   statusName: string;
@@ -107,7 +107,7 @@ export class DeleteStatusDialogComponent {
   data = inject<DeleteStatusDialogData>(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<DeleteStatusDialogComponent>);
   fb = inject(FormBuilder);
-  workflowStore = inject(WorkflowStore);
+  workflowService = inject(WorkflowService);
 
   form = this.fb.nonNullable.group({
     stories: ["move"],
@@ -115,7 +115,7 @@ export class DeleteStatusDialogComponent {
   });
 
   filteredStatus = computed(() => {
-    const currWorkflow = this.workflowStore.selectedEntity();
+    const currWorkflow = this.workflowService.selectedEntity();
     if (currWorkflow) {
       return currWorkflow.statuses.filter((it) => it.id !== this.data.statusId);
     }

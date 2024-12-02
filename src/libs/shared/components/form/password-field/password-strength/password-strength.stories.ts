@@ -29,7 +29,7 @@ import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/c
 import { PasswordStrengthComponent } from "./password-strength.component";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { PasswordSeverity } from "./_utils";

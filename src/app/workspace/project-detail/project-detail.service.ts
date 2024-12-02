@@ -22,10 +22,9 @@
 import { inject, Injectable } from "@angular/core";
 import { MembershipStore } from "@tenzu/data/membership";
 import { ActivatedRoute, Router } from "@angular/router";
-import { WorkflowStore } from "@tenzu/data/workflow";
-import { WsService } from "@tenzu/utils/services";
+import { WsService } from "@tenzu/utils/services/ws";
 import { HttpErrorResponse } from "@angular/common/http";
-import { debug } from "../../../libs/utils/functions/logging";
+import { debug } from "@tenzu/utils/functions/logging";
 import { ProjectService } from "@tenzu/data/project/project.service";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
@@ -34,7 +33,6 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 })
 export class ProjectDetailService {
   workspaceService = inject(WorkspaceService);
-  workflowStore = inject(WorkflowStore);
   membershipStore = inject(MembershipStore);
   wsService = inject(WsService);
   projectService = inject(ProjectService);

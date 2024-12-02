@@ -26,7 +26,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { ProjectService } from "@tenzu/data/project";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { SidenavListWorkflowComponent } from "./sidenav-list-workflow/sidenav-list-workflow.component";
-import { filterNotNull } from "@tenzu/utils";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
 @Component({

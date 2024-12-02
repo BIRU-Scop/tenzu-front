@@ -23,9 +23,9 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { NotificationService } from "@tenzu/utils/services";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { darkModeOn$ } from "@tenzu/utils";
+import { darkModeOn$ } from "@tenzu/utils/observables";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-auth-layout",

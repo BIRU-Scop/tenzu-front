@@ -91,7 +91,7 @@ export class WsService {
     catchError((e) => {
       // the server are reload we loose the connexion and we need to login again
       // TODO find a way to unsubscribe to the channels were subscribed in the previous session
-      console.log("[WS] the server are reload we loose the connexion and we need to login again", e);
+      debug("WS", "the server are reload we loose the connexion and we need to login again", e);
       this.loggedSubject.next(false);
       this.command({ command: "signin", token: localStorage.getItem("token") || "" });
       return throwError(() => e);
@@ -132,7 +132,6 @@ export class WsService {
         this.manageSubscription(message);
         break;
       }
-
       case "error": {
         console.error(`[WS] the command ${message.action.command} received a error response`, message);
         break;

@@ -20,18 +20,21 @@
  */
 
 import { Signal } from "@angular/core";
-import { EntityId, EntityMap } from "@ngrx/signals/entities";
+import { EntityMap } from "@ngrx/signals/entities";
 
-export interface ServiceStore<Entities, EntityDetail = Entities> {
+export interface ServiceStoreSimpleItem<EntityDetail> {
+  selectedEntity: Signal<EntityDetail | undefined | null>;
+  deleteSelected(...arg: unknown[]): Promise<EntityDetail | undefined>;
+  create(item: Partial<EntityDetail>, ...arg: unknown[]): Promise<EntityDetail>;
+  get(...arg: unknown[]): Promise<EntityDetail | undefined>;
+  updateSelected(item: Partial<EntityDetail>, ...arg: unknown[]): Promise<EntityDetail | undefined>;
+  resetSelectedEntity(): void;
+}
+
+export interface ServiceStoreEntity<Entities, EntityDetail = Entities> extends ServiceStoreSimpleItem<EntityDetail> {
   entities: Signal<Entities[]>;
-  selectedEntity: Signal<EntityDetail | undefined>;
   entityMap: Signal<EntityMap<Entities>>;
   list(): Promise<Entities[]>;
-  deleteSelected(): Promise<EntityDetail | undefined>;
-  create(item: Partial<EntityDetail>): Promise<EntityDetail>;
-  get(id: EntityId): Promise<EntityDetail | undefined>;
-  updateSelected(item: Partial<EntityDetail>): Promise<EntityDetail | undefined>;
-  resetSelectedEntity(): void;
   resetEntities(): void;
   fullReset(): void;
 }
