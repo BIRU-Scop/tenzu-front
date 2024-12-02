@@ -1,0 +1,93 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+.skeleton-container {
+  @apply p-1;
+  @apply animate-pulse;
+}
+
+.skeleton-image {
+  display: block;
+  @apply rounded;
+}
+
+.skeleton-button {
+  display: block;
+  @apply rounded;
+  @apply w-24;
+}
+
+.skeleton-icon-button,
+.skeleton-avatar {
+  display: block;
+  @apply rounded-full;
+}
+
+.skeleton-line {
+  display: block;
+  width: 100%;
+  @apply rounded;
+}
+
+.skeleton-line-sm {
+  background-color: light-dark(rgb(0, 0, 0, 0.06), rgb(255, 255, 255, 0.04));
+  height:var(--mat-sys-body-small-size);
+}
+.skeleton-line-md {
+  background-color: light-dark(rgb(0, 0, 0, 0.08), rgb(255, 255, 255, 0.06));
+  height: var(--mat-sys-body-medium-size);
+}
+.skeleton-line-lg {
+  background-color: light-dark(rgb(0, 0, 0, 0.2), rgb(255, 255, 255, 0.08));
+  height: var(--mat-sys-body-large-size);
+}
+.skeleton-image {
+  background-color: light-dark(rgb(0, 0, 0, 0.2), rgb(255, 255, 255, 0.08));
+  height: calc(var(--mat-sys-body-large-size) * 2);
+  width: calc(var(--mat-sys-body-large-size) * 2);
+}
+.skeleton-button {
+  background-color: light-dark(rgb(0, 0, 0, 0.08), rgb(255, 255, 255, 0.08));
+  height: calc(var(--mat-sys-body-large-size) * 2);
+}
+.skeleton-icon-button {
+  background-color: light-dark(rgb(0, 0, 0, 0.08), rgb(255, 255, 255, 0.08));
+  height: calc(var(--mat-sys-body-large-size) * 2);
+  width: calc(var(--mat-sys-body-large-size) * 2);
+}
+.skeleton-container {
+  background-color: light-dark(rgb(0, 0, 0, 0.02), rgb(255, 255, 255, 0.02));
+}
+.skeleton-avatar {
+  height: calc(var(--mat-sys-body-large-size) * 2);
+  width: calc(var(--mat-sys-body-large-size) * 2);
+  background-color: light-dark(rgb(0, 0, 0, 0.06), rgb(255, 255, 255, 0.06));
+}
+.skeleton-avatar-light {
+  background-color: light-dark(rgb(0, 0, 0, 0.05), rgb(255, 255, 255, 0.04));
+}
+.skeleton-avatar-medium {
+  background-color: light-dark(rgb(0, 0, 0, 0.06), rgb(255, 255, 255, 0.05));
+}
+.skeleton-avatar-heavy {
+  background-color: light-dark(rgb(0, 0, 0, 0.07), rgb(255, 255, 255, 0.06));
+}
+

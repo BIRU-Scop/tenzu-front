@@ -79,8 +79,8 @@ import { MatTooltip } from "@angular/material/tooltip";
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
       @if (this.selectedStory(); as story) {
         <div class="flex gap-1 items-baseline mb-2">
-          <span class="text-neutral-40 mat-title-small">{{ t("workflow") }}</span>
-          <span class="text-neutral-20 mat-title-medium">{{ story.workflow.name }}</span>
+          <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
+          <span class="text-on-surface mat-title-medium">{{ story.workflow.name }}</span>
           <button
             class="icon-sm"
             mat-icon-button
@@ -91,9 +91,9 @@ import { MatTooltip } from "@angular/material/tooltip";
           >
             <mat-icon>edit</mat-icon>
           </button>
-          <span class="text-neutral-40 mat-title-small">/</span>
-          <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
-          <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
+          <span class="text-on-surface-variant mat-title-small">/</span>
+          <span class="text-on-surface-variant mat-title-small">{{ t("story") }}</span>
+          <span class="text-on-surface mat-title-medium">#{{ story.ref }}</span>
           <a
             mat-icon-button
             class="icon-sm"
@@ -197,16 +197,16 @@ import { MatTooltip } from "@angular/material/tooltip";
             </div>
           </div>
           <div
-            class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-neutral-80 pl-8 pt-4"
+            class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline pl-8 pt-4"
           >
             <div class="grid grid-cols-2 gap-y-4 content-start mb-2">
-              <span class="text-neutral-40 mat-label-medium self-center">{{ t("created_by") }}</span>
+              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
               <app-user-card
                 [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
                 [username]="story.createdAt | date: 'short'"
                 [color]="story.createdBy?.color || 0"
               ></app-user-card>
-              <span class="text-neutral-40 mat-label-medium self-center">{{ t("status") }}</span>
+              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
               <mat-form-field>
                 <mat-select
                   [(value)]="this.statusSelected"
@@ -218,7 +218,7 @@ import { MatTooltip } from "@angular/material/tooltip";
                   }
                 </mat-select>
               </mat-form-field>
-              <span class="text-neutral-40 mat-label-medium self-center">{{ t("assigned_to") }}</span>
+              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
               @if (assigned().length > 0) {
                 <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
                   <app-avatar-list [users]="assigned()" [prioritizeCurrentUser]="true"></app-avatar-list>

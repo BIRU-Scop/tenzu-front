@@ -1,0 +1,153 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+.avatar {
+  @apply tracking-widest;
+
+  &.avatar-sm {
+    @apply text-xs;
+    @apply w-6;
+    @apply h-6;
+  }
+
+  &.avatar-md {
+    @apply text-sm;
+    @apply w-8;
+    @apply h-8;
+  }
+
+  &.avatar-lg {
+    @apply text-lg;
+    @apply w-12;
+    @apply h-12;
+  }
+
+  &.avatar-xl {
+    @apply text-lg;
+    @apply w-16;
+    @apply h-16;
+  }
+}
+
+button {
+  .avatar {
+    @apply cursor-pointer;
+    @apply border;
+    @apply border-solid;
+  }
+}
+
+  // API color id range: 1-8
+  .avatar {
+    &.color-0 {
+      color: var(--mat-sys-on-surface);
+      background-color: var(--mat-sys-surface-container);
+    }
+    &.color-1,&.color-5 {
+      color: var(--mat-sys-on-primary-container);
+      background-color: var(--mat-sys-primary-container);
+    }
+    &.color-2,&.color-6 {
+      color: var(--mat-sys-on-warning-container);
+      background-color: var(--mat-sys-warning-container);
+    }
+    &.color-3,&.color-7 {
+      color: var(--mat-sys-on-tertiary-container);
+      background-color: var(--mat-sys-tertiary-container);
+    }
+    &.color-4,&.color-8 {
+      color: var(--mat-sys-on-error-container);
+      background-color: var(--mat-sys-error-container);
+    }
+  }
+
+  button {
+    .avatar {
+      &.color-0 {
+        background-color: transparent;
+        border-color: var(--mat-sys-outline-variant);
+      }
+      &.color-1,&.color-5 {
+        background-color: transparent;
+        border-color: var(--mat-sys-primary);
+        box-shadow: 0 0 3px var(--mat-sys-primary);
+      }
+      &.color-2,&.color-6 {
+        background-color: transparent;
+        border-color: var(--mat-sys-warning);
+        box-shadow: 0 0 3px var(--mat-sys-warning);
+      }
+      &.color-3,&.color-7 {
+        background-color: transparent;
+        border-color: var(--mat-sys-tertiary);
+        box-shadow: 0 0 3px var(--mat-sys-tertiary);
+      }
+      &.color-4,&.color-8 {
+        background-color: transparent;
+        border-color: var(--mat-sys-error);
+        box-shadow: 0 0 3px var(--mat-sys-error);
+      }
+
+      &:hover {
+        &.color-0 {
+          background-color: var(--mat-sys-surface-container);
+        }
+        &.color-1,&.color-5 {
+          background-color: var(--mat-sys-primary-container);
+        }
+        &.color-2,&.color-6 {
+          background-color: var(--mat-sys-warning-container);
+        }
+        &.color-3,&.color-7 {
+          background-color: var(--mat-sys-tertiary-container);
+        }
+        &.color-4,&.color-8 {
+          background-color: var(--mat-sys-error-container);
+        }
+      }
+    }
+    outline: 0;
+    &:focus {
+      .avatar {
+        outline: solid 3px;
+        &.color-0 {
+          background-color: var(--mat-sys-surface-container);
+          outline-color: var(--mat-sys-outline);
+        }
+        &.color-1,&.color-5 {
+          background-color: var(--mat-sys-primary-container);
+          outline-color: var(--mat-sys-primary);
+        }
+        &.color-2,&.color-6 {
+          background-color:var(--mat-sys-warning-container);
+          outline-color: var(--mat-sys-warning);
+        }
+        &.color-3,&.color-7 {
+          background-color: var(--mat-sys-tertiary-container);
+          outline-color: var(--mat-sys-tertiary);
+        }
+        &.color-4,&.color-8 {
+          background-color: var(--mat-sys-error-container);
+          outline-color: var(--mat-sys-error);
+        }
+      }
+    }
+  }

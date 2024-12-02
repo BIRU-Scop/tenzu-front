@@ -19,7 +19,16 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, ElementRef, inject, input, OnInit, viewChild } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  OnInit,
+  viewChild,
+  ViewEncapsulation,
+} from "@angular/core";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import CodeTool from "@editorjs/code";
@@ -36,7 +45,8 @@ import { TranslocoService } from "@jsverse/transloco";
   selector: "app-editor",
   imports: [],
   template: `<div #editorContainer></div>`,
-  styles: ``,
+  styleUrl: "./editor.component.scss",
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorComponent implements OnInit {

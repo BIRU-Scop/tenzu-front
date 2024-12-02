@@ -38,7 +38,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
       @if (project && workspace) {
         @if (!sideNavStore.resized()) {
           <div class="flex flex-row items-center gap-2 px-2">
-            <span class="text-neutral-60 mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
+            <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
             <a
               class="nav-button flex flex-row items-center justify-center rounded-full"
               [attr.aria-label]="t('workspace.general_title.new_kanban')"

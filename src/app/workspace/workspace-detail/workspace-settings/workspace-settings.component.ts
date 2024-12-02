@@ -81,9 +81,9 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
         <div *transloco="let t; prefix: 'workspace.settings.delete'" class="flex flex-col gap-4">
           @if (workspace?.hasProjects) {
             <div class="flex flex-row">
-              <mat-icon class="text-error-40 pr-3 self-center">warning</mat-icon>
+              <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
               <p
-                class="mat-body-medium text-error-40 align-middle"
+                class="mat-body-medium text-on-error-container align-middle"
                 [innerHTML]="t('error', { totalProjects: workspace?.totalProjects })"
               ></p>
             </div>

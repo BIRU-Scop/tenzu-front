@@ -19,11 +19,13 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from "@angular/core";
 
 @Component({
   selector: "app-avatar",
   standalone: true,
+  styleUrl: "avatar.component.scss",
+  encapsulation: ViewEncapsulation.None,
   template: `<div [class]="class()">
     <span>{{ initials() }}</span>
   </div> `,

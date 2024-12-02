@@ -26,8 +26,8 @@
     z-index: 0;
   }
   @include mat.button-overrides((
-    filled-container-shape: 4px,
-    outlined-container-shape: 4px,
+    filled-container-shape: var(--mat-sys-corner-medium),
+    outlined-container-shape: var(--mat-sys-corner-medium),
     filled-container-height: 32px,
     outlined-container-height: 32px,
     filled-horizontal-padding: 12px,
@@ -104,76 +104,193 @@
   }
 }
 
-@mixin create-button-variant($theme, $variant) {
-  .#{$variant}-button {
-    &.mat-mdc-outlined-button {
-      box-shadow: 0 0 3px mat.get-theme-color($theme, $variant, 80);
-      &.mat-mdc-button-disabled {
-        box-shadow: none;
-      }
+// ************** PRIMARY ***************** //
+.primary-button {
+  &.mat-mdc-outlined-button {
+    box-shadow: 0 0 4px var(--mat-sys-primary);
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
     }
-    &.mdc-button--unelevated {
-      box-shadow: 0 0 9px mat.get-theme-color($theme, $variant, 80);
-      border: solid 1px  mat.get-theme-color($theme, $variant, 80);
-      margin: 3px;
-      &.mat-mdc-button-disabled {
-        box-shadow: none;
-        border: solid 1px currentColor;
-        margin: 0;
-      }
+  }
+  &.mdc-button--unelevated {
+    box-shadow: 0 0 6px var(--mat-sys-primary);
+    border: solid 1px  var(--mat-sys-primary);
+    margin: 3px;
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+      border: solid 1px var(--mat-sys-outline-variant);
+      margin: 0;
     }
-    @include mat.button-color($theme, $color-variant: $variant);
-    @include mat.button-overrides((
-      outlined-outline-color: mat.get-theme-color($theme, $variant, 80),
-      outlined-state-layer-color: mat.get-theme-color($theme, $variant, 50),
-      filled-state-layer-color: mat.get-theme-color($theme, $variant, 50),
-      filled-container-color: mat.get-theme-color($theme, $variant, 90),
-      outlined-label-text-color: mat.get-theme-color($theme, $variant, 30),
-      filled-label-text-color: mat.get-theme-color($theme, $variant, 30)
-    ));
-    @include mat.icon-button-overrides((
-      state-layer-color: mat.get-theme-color($theme, $variant, 50),
-      ripple-color: mat.get-theme-color($theme, $variant, 30)
-    ));
-    .mat-icon {
-      @include mat.icon-overrides((color: mat.get-theme-color($theme, $variant, 40)));
-    }
-    &:focus {
-      outline: solid mat.get-theme-color($theme, primary, 80) 3px;
-    }
+  }
+  @include mat.button-overrides((
+    outlined-outline-color: var(--mat-sys-primary),
+    outlined-state-layer-color: var(--mat-sys-on-primary),
+    filled-state-layer-color: var(--mat-sys-on-primary),
+    filled-container-color: var(--mat-sys-primary-container),
+    outlined-label-text-color: var(--mat-sys-on-primary-container),
+    filled-label-text-color: var(--mat-sys-on-primary-container),
+    filled-label-text-size: var(--mat-sys-label-large-size),
+    outlined-label-text-size: var(--mat-sys-label-large-size),
+  ));
+  @include mat.icon-button-overrides((
+    state-layer-color: var(--mat-sys-on-primary),
+    ripple-color: var(--mat-sys-on-primary-container)
+  ));
+  .mat-icon {
+    @include mat.icon-overrides((color: var(--mat-sys-on-primary)));
+  }
+  &:focus {
+    outline: solid var(--mat-sys-primary) 3px;
   }
 }
 
-@mixin color-and-typo($theme) {
+// ************** SECONDARY ***************** //
+.secondary-button {
+  &.mat-mdc-outlined-button {
+    box-shadow: 0 0 4px var(--mat-sys-secondary);
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+    }
+  }
+  &.mdc-button--unelevated {
+    box-shadow: 0 0 6px var(--mat-sys-secondary);
+    border: solid 1px  var(--mat-sys-secondary);
+    margin: 3px;
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+      border: solid 1px var(--mat-sys-outline-variant);
+      margin: 0;
+    }
+  }
   @include mat.button-overrides((
-    filled-hover-state-layer-opacity: 0.75,
-    outlined-hover-state-layer-opacity: 0.75,
-    filled-focus-state-layer-opacity: 0.75,
-    outlined-focus-state-layer-opacity: 0.75,
-    filled-disabled-container-color: mat.get-theme-color($theme, neutral, 95),
-    filled-disabled-label-text-color: mat.get-theme-color($theme, neutral, 80),
-    outlined-disabled-label-text-color: mat.get-theme-color($theme, neutral, 80),
-    outlined-disabled-outline-color: mat.get-theme-color($theme, neutral, 90),
-    filled-label-text-size : mat.get-theme-typography($theme, label-large, font-size),
-    outlined-label-text-size: mat.get-theme-typography($theme, label-large, font-size),
+    outlined-outline-color: var(--mat-sys-secondary),
+    outlined-state-layer-color: var(--mat-sys-on-secondary),
+    filled-state-layer-color: var(--mat-sys-on-secondary),
+    filled-container-color: var(--mat-sys-secondary-container),
+    outlined-label-text-color: var(--mat-sys-on-secondary-container),
+    filled-label-text-color: var(--mat-sys-on-secondary-container),
+    filled-label-text-size: var(--mat-sys-label-large-size),
+    outlined-label-text-size: var(--mat-sys-label-large-size),
+  ));
+  @include mat.icon-button-overrides((
+    state-layer-color: var(--mat-sys-on-secondary),
+    ripple-color: var(--mat-sys-on-secondary-container)
+  ));
+  .mat-icon {
+    @include mat.icon-overrides((color: var(--mat-sys-on-secondary)));
+  }
+  &:focus {
+    outline: solid var(--mat-sys-secondary) 3px;
+  }
+}
+
+// ************** TERTIARY ***************** //
+.tertiary-button {
+  &.mat-mdc-outlined-button {
+    box-shadow: 0 0 4px var(--mat-sys-tertiary);
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+    }
+  }
+  &.mdc-button--unelevated {
+    box-shadow: 0 0 6px var(--mat-sys-tertiary);
+    border: solid 1px  var(--mat-sys-tertiary);
+    margin: 3px;
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+      border: solid 1px var(--mat-sys-outline-variant);
+      margin: 0;
+    }
+  }
+  @include mat.button-overrides((
+    outlined-outline-color: var(--mat-sys-tertiary),
+    outlined-state-layer-color: var(--mat-sys-on-tertiary),
+    filled-state-layer-color: var(--mat-sys-on-tertiary),
+    filled-container-color: var(--mat-sys-tertiary-container),
+    outlined-label-text-color: var(--mat-sys-on-tertiary-container),
+    filled-label-text-color: var(--mat-sys-on-tertiary-container),
+    filled-label-text-size: var(--mat-sys-label-large-size),
+    outlined-label-text-size: var(--mat-sys-label-large-size),
+  ));
+  @include mat.icon-button-overrides((
+    state-layer-color: var(--mat-sys-on-tertiary),
+    ripple-color: var(--mat-sys-on-tertiary-container)
+  ));
+  .mat-icon {
+    @include mat.icon-overrides((color: var(--mat-sys-on-tertiary)));
+  }
+  &:focus {
+    outline: solid var(--mat-sys-tertiary) 3px;
+  }
+}
+
+// ************** ERROR ***************** //
+.error-button {
+  &.mat-mdc-outlined-button {
+    box-shadow: 0 0 4px var(--mat-sys-error);
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+    }
+  }
+  &.mdc-button--unelevated {
+    box-shadow: 0 0 6px var(--mat-sys-error);
+    border: solid 1px  var(--mat-sys-error);
+    margin: 3px;
+    &.mat-mdc-button-disabled {
+      box-shadow: none;
+      border: solid 1px var(--mat-sys-outline-variant);
+      margin: 0;
+    }
+  }
+  @include mat.button-overrides((
+          outlined-outline-color: var(--mat-sys-error),
+          outlined-state-layer-color: var(--mat-sys-on-error),
+          filled-state-layer-color: var(--mat-sys-on-error),
+          filled-container-color: var(--mat-sys-error-container),
+          outlined-label-text-color: var(--mat-sys-on-error-container),
+          filled-label-text-color: var(--mat-sys-on-error-container),
+          filled-label-text-size: var(--mat-sys-label-large-size),
+          outlined-label-text-size: var(--mat-sys-label-large-size),
+  ));
+  @include mat.icon-button-overrides((
+          state-layer-color: var(--mat-sys-on-error),
+          ripple-color: var(--mat-sys-on-error-container)
+  ));
+  .mat-icon {
+    @include mat.icon-overrides((color: var(--mat-sys-on-error)));
+  }
+  &:focus {
+    outline: solid var(--mat-sys-error) 3px;
+  }
+}
+
+@mixin tokens-overrides() {
+  @include mat.button-overrides((
+    filled-hover-state-layer-opacity: 0.25,
+    outlined-hover-state-layer-opacity: 0.25,
+    filled-focus-state-layer-opacity: 0.25,
+    outlined-focus-state-layer-opacity: 0.25,
+    filled-disabled-container-color: var(--mat-sys-on-surface-variant),
+    filled-disabled-label-text-color: var(--mat-sys-outline),
+    outlined-disabled-label-text-color: var(--mat-sys-outline),
+    outlined-disabled-outline-color: var(--mat-sys-outline-variant),
+    filled-label-text-size : var(--mat-sys-label-large-size),
+    outlined-label-text-size:  var(--mat-sys-label-large-size),
+    filled-label-text-weight : var(--mat-sys-label-large-weight),
+    outlined-label-text-weight:  var(--mat-sys-label-large-weight),
+  ));
+  @include mat.icon-button-overrides((
+    state-layer-color: var(--mat-sys-on-secondary),
+    hover-state-layer-opacity: 0.2,
+    focus-state-layer-opacity: 0.1
   ));
   .mat-mdc-icon-button {
-    @include mat.icon-button-overrides((
-      state-layer-color: mat.get-theme-color($theme, neutral-variant, 60),
-      hover-state-layer-opacity: 0.2,
-      focus-state-layer-opacity: 0.1
-    ));
       &:focus {
-        outline: solid mat.get-theme-color($theme, neutral-variant, 80) 3px;
+        outline: solid var(--mat-sys-outline) 3px;
       }
       .mat-icon {
-        @include mat.icon-overrides((color: mat.get-theme-color($theme, neutral-variant, 60)));
+        @include mat.icon-overrides((color: var(--mat-sys-on-secondary)));
       }
   }
-
-  @include create-button-variant($theme, primary);
-  @include create-button-variant($theme, secondary);
-  @include create-button-variant($theme, tertiary);
-  @include create-button-variant($theme, error);
 }
 

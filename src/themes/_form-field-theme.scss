@@ -23,118 +23,120 @@
 
 .mat-mdc-form-field {
   @apply w-full;
+  .mdc-text-field--outlined {
+    box-shadow: 0 0 3px var(--mat-sys-primary);
+    border-bottom-left-radius: var(--mat-sys-corner-medium);
+    border-bottom-right-radius: var(--mat-sys-corner-medium);
+  }
+
+  &.mat-form-field-disabled {
+    .mdc-text-field--outlined {
+      box-shadow: none;
+    }
+  }
+
   .mat-form-field-appearance-outline {
     margin-top: 6.75px;
   }
+
   .mat-mdc-form-field-infix {
-    @apply min-w-52;
-    @apply w-full;
+    @apply min-w-52 w-full;
     textarea {
       min-width: 480px;
     }
   }
+
   .mat-mdc-form-field-hint-wrapper,
   .mat-mdc-form-field-error-wrapper {
     position: relative;
   }
+
   .mat-mdc-form-field-bottom-align:before {
     display: none;
   }
-}
 
-@mixin color-and-typo($theme) {
-  .mat-mdc-form-field {
+  &.mat-form-field-invalid {
     .mdc-text-field--outlined {
-      box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
+      box-shadow: 0 0 3px var(--mat-sys-error);
     }
+  }
 
-    &.mat-form-field-disabled {
-      .mdc-text-field--outlined {
-        box-shadow: none;
-      }
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    .mdc-line-ripple::before, .mdc-line-ripple::after {
+      margin-bottom: 3px;
     }
+  }
 
-    @include mat.form-field-overrides(
-      (
-        outlined-outline-color: mat.get-theme-color($theme, primary, 80),
-        outlined-hover-outline-color: mat.get-theme-color($theme, primary, 70),
-        outlined-focus-outline-color: mat.get-theme-color($theme, primary, 80),
-        outlined-error-outline-color: mat.get-theme-color($theme, error, 80),
-        outlined-error-hover-outline-color: mat.get-theme-color($theme, error, 70),
-        outlined-error-focus-outline-color: mat.get-theme-color($theme, error, 80),
-        container-text-size: mat.get-theme-typography($theme, label-large, font-size),
-        container-text-line-height: mat.get-theme-typography($theme, label-large, line-height),
-        container-height: 36px,
-        container-vertical-padding: 8px,
-        filled-container-color: transparent,
-        outlined-label-text-size: mat.get-theme-typography($theme, label-large, font-size),
-        filled-label-text-size: mat.get-theme-typography($theme, label-large, font-size),
-        outlined-label-text-color: mat.get-theme-color($theme, primary, 25),
-        filled-label-text-color: mat.get-theme-color($theme, primary, 25),
-        filled-input-text-color: mat.get-theme-color($theme, neutral-variant, 25),
-        outlined-input-text-color: mat.get-theme-color($theme, neutral-variant, 25),
-        outlined-focus-label-text-color: mat.get-theme-color($theme, primary, 10),
-        filled-focus-label-text-color: mat.get-theme-color($theme, primary, 10),
-        outlined-hover-label-text-color: mat.get-theme-color($theme, primary, 10),
-        filled-hover-label-text-color: mat.get-theme-color($theme, primary, 10),
-        outlined-error-hover-label-text-color: mat.get-theme-color($theme, error, 10),
-        filled-error-hover-label-text-color: mat.get-theme-color($theme, error, 10),
-        outlined-error-focus-label-text-color: mat.get-theme-color($theme, error, 10),
-        filled-error-focus-label-text-color: mat.get-theme-color($theme, error, 10),
-        outlined-error-label-text-color: mat.get-theme-color($theme, error, 25),
-        filled-error-label-text-color: mat.get-theme-color($theme, error, 25),
-        filled-with-label-container-padding-top: 16px,
-        filled-with-label-container-padding-bottom: 4px,
-        hover-state-layer-opacity: 0,
-        focus-state-layer-opacity: 0,
-        filled-active-indicator-color: mat.get-theme-color($theme, neutral, 90),
-        filled-hover-active-indicator-color: mat.get-theme-color($theme, primary, 80),
-        filled-focus-active-indicator-color: mat.get-theme-color($theme, primary, 80),
-        filled-error-active-indicator-color: mat.get-theme-color($theme, error, 80),
-        filled-error-focus-active-indicator-color: mat.get-theme-color($theme, error, 70),
-        filled-error-hover-active-indicator-color: mat.get-theme-color($theme, error, 80),
-      )
-    );
-
-    .mat-mdc-form-field-error {
-      color: mat.get-theme-color($theme, error, 40);
-    }
-
-    &.mat-form-field-invalid {
-      .mdc-text-field--outlined {
-        box-shadow: 0 0 3px mat.get-theme-color($theme, error, 80);
-      }
-    }
-
+  &:hover, &:focus-within {
     .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-      .mdc-line-ripple::before, .mdc-line-ripple::after {
-        margin-bottom: 3px;
-      }
-    }
-    &:hover, &:focus-within {
-      .mdc-text-field--filled:not(.mdc-text-field--disabled) {
       .mdc-line-ripple::before {
-        box-shadow: 0 0 3px mat.get-theme-color($theme, primary, 80);
+        box-shadow: 0 0 3px var(--mat-sys-primary);
       }
     }
   }
-    &.title-field {
-      @include mat.form-field-overrides(
-        (
-          container-text-size: mat.get-theme-typography($theme, headline-small, font-size),
-          container-text-line-height: mat.get-theme-typography($theme, headline-small, line-height),
-          container-text-weight: mat.get-theme-typography($theme, headline-small, font-weight),
-          container-text-tracking: 0px,
-          outlined-input-text-color: mat.get-theme-color($theme, neutral, 10),
-          filled-input-text-color: mat.get-theme-color($theme, neutral, 10),
-          container-vertical-padding: 0px
-        )
-      );
-      .mat-mdc-form-field-flex {
-        padding-bottom: 8px;
-      }
+}
+form .mat-mdc-form-field-error {
+  color: var(--mat-sys-on-error-container);
+}
+
+@mixin tokens-overrides() {
+  @include mat.form-field-overrides((
+      outlined-outline-color: var(--mat-sys-primary-container),
+      outlined-hover-outline-color: var(--mat-sys-primary),
+      outlined-focus-outline-color: var(--mat-sys-primary),
+      outlined-error-outline-color: var(--mat-sys-error-container),
+      outlined-error-hover-outline-color: var(--mat-sys-error),
+      outlined-error-focus-outline-color: var(--mat-sys-error),
+      container-text-size: var(--mat-sys-label-large-size),
+      container-text-line-height: var(--mat-sys-label-large-line-height),
+      container-height: 36px,
+      container-vertical-padding: 8px,
+      filled-container-color: transparent,
+      outlined-container-shape: var(--mat-sys-corner-medium),
+      filled-container-shape: var(--mat-sys-corner-medium),
+      filled-input-text-color: var(--mat-sys-on-surface),
+      outlined-input-text-color: var(--mat-sys-on-surface),
+      outlined-label-text-size: var(--mat-sys-label-large-size),
+      filled-label-text-size: var(--mat-sys-label-large-line-height),
+      outlined-label-text-color: var(--mat-sys-on-background),
+      filled-label-text-color: var(--mat-sys-on-container),
+      outlined-focus-label-text-color: var(--mat-sys-on-primary-container),
+      filled-focus-label-text-color: var(--mat-sys-on-primary-container),
+      outlined-hover-label-text-color: var(--mat-sys-on-primary-container),
+      filled-hover-label-text-color: var(--mat-sys-on-primary-container),
+      outlined-error-hover-label-text-color: var(--mat-sys-on-error-container),
+      filled-error-hover-label-text-color: var(--mat-sys-on-error-container),
+      outlined-error-focus-label-text-color: var(--mat-sys-on-error-container),
+      filled-error-focus-label-text-color: var(--mat-sys-on-error-container),
+      outlined-error-label-text-color: var(--mat-sys-on-error-container),
+      filled-error-label-text-color: var(--mat-sys-on-error-container),
+      filled-with-label-container-padding-top: 16px,
+      filled-with-label-container-padding-bottom: 4px,
+      hover-state-layer-opacity: 0,
+      focus-state-layer-opacity: 0,
+      filled-active-indicator-color: var(--mat-sys-outline),
+      filled-hover-active-indicator-color: var(--mat-sys-primary),
+      filled-focus-active-indicator-color: var(--mat-sys-primary),
+      filled-error-active-indicator-color: var(--mat-sys-error-container),
+      filled-error-focus-active-indicator-color: var(--mat-sys-error),
+      filled-error-hover-active-indicator-color: var(--mat-sys-error),
+    ));
+
+  .mat-mdc-form-field.title-field {
+    @include mat.form-field-overrides(
+    (
+      container-text-size: var(--mat-sys-headline-small-size),
+      container-text-line-height: var(--mat-sys-headline-small-line-height),
+      container-text-weight: var(--mat-sys-headline-small-weight),
+      container-text-tracking: 0px,
+      outlined-input-text-color: var(--mat-sys-on-background),
+      filled-input-text-color: var(--mat-sys-on-background),
+      container-vertical-padding: 0px
+    )
+    );
+
+    .mat-mdc-form-field-flex {
+      padding-bottom: 8px;
     }
   }
 }

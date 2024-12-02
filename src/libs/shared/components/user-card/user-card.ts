@@ -32,7 +32,7 @@ import { DomSanitizer } from "@angular/platform-browser";
     <div class="flex flex-col min-h-9 justify-center">
       @if (fullName()) {
         <div class="flex flex-row gap-1">
-          <span class="mat-label-large text-neutral-20" [innerHtml]="highlightedFullName()"> </span>
+          <span class="mat-label-large text-on-surface" [innerHtml]="highlightedFullName()"> </span>
           @if (isSelf()) {
             <span class="mat-label-large neutral-0"> ({{ t("your_user") }}) </span>
           }
@@ -40,7 +40,7 @@ import { DomSanitizer } from "@angular/platform-browser";
       }
       @if (username()) {
         <span
-          [class]="fullName() ? 'mat-label-medium text-neutral-40' : 'mat-label-large neutral-20'"
+          [class]="fullName() ? 'mat-label-medium text-on-surface-variant' : 'mat-label-large neutral-20'"
           [innerHtml]="highlightedUsername()"
         >
         </span>
@@ -70,7 +70,7 @@ export class UserCardComponent {
     text.split(" ").forEach((part) => {
       if (part.toLowerCase().match(rgx)) {
         finalText.push(
-          `<span class="font-bold text-neutral-0">${part.substring(
+          `<span class="font-bold text-on-background">${part.substring(
             0,
             this.textToHighlight().length,
           )}</span>${part.substring(this.textToHighlight().length, part.length)}`,
