@@ -55,10 +55,6 @@
     display: none;
   }
 
-  .mat-mdc-form-field-error {
-    color: var(--mat-sys-on-error-container);
-  }
-
   &.mat-form-field-invalid {
     .mdc-text-field--outlined {
       box-shadow: 0 0 3px var(--mat-sys-error);
@@ -79,10 +75,12 @@
     }
   }
 }
+form .mat-mdc-form-field-error {
+  color: var(--mat-sys-on-error-container);
+}
 
 @mixin tokens-overrides() {
-  @include mat.form-field-overrides(
-    (
+  @include mat.form-field-overrides((
       outlined-outline-color: var(--mat-sys-primary-container),
       outlined-hover-outline-color: var(--mat-sys-primary),
       outlined-focus-outline-color: var(--mat-sys-primary),
@@ -96,12 +94,12 @@
       filled-container-color: transparent,
       outlined-container-shape: var(--mat-sys-corner-medium),
       filled-container-shape: var(--mat-sys-corner-medium),
-      filled-input-text-color: var(--mat-sys-on-container),
-      outlined-input-text-color: var(--mat-sys-on-container),
+      filled-input-text-color: var(--mat-sys-on-surface),
+      outlined-input-text-color: var(--mat-sys-on-surface),
       outlined-label-text-size: var(--mat-sys-label-large-size),
       filled-label-text-size: var(--mat-sys-label-large-line-height),
-      outlined-label-text-color: var(--mat-sys-on-container),
-      filled-label-text-color: var(--mat-sys-on-background),
+      outlined-label-text-color: var(--mat-sys-on-background),
+      filled-label-text-color: var(--mat-sys-on-container),
       outlined-focus-label-text-color: var(--mat-sys-on-primary-container),
       filled-focus-label-text-color: var(--mat-sys-on-primary-container),
       outlined-hover-label-text-color: var(--mat-sys-on-primary-container),
@@ -122,8 +120,7 @@
       filled-error-active-indicator-color: var(--mat-sys-error-container),
       filled-error-focus-active-indicator-color: var(--mat-sys-error),
       filled-error-hover-active-indicator-color: var(--mat-sys-error),
-    )
-  );
+    ));
 
   .mat-mdc-form-field.title-field {
     @include mat.form-field-overrides(

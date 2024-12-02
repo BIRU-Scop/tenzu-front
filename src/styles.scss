@@ -18,20 +18,16 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
-
 @use "themes/m3-theme" as themes;
 @use "@angular/material" as mat;
 @use "themes/icon-theme" as icon;
 @use "themes/button-theme" as button;
 @use "themes/toolbar-theme" as toolbar;
-@use "themes/skeleton-theme" as skeleton;
-@use "themes/avatar-theme" as avatar;
 @use "themes/card-theme" as card;
 @use "themes/form-field-theme" as form-field;
 @use "themes/select-theme" as select;
 @use "themes/radio-theme" as radio;
 @use "themes/checkbox-theme" as checkbox;
-@use "themes/password-strength-theme" as password-strength;
 @use "themes/menu-theme" as menu;
 @use "themes/dialog-theme" as dialog;
 @use "themes/list-theme" as list;
@@ -41,260 +37,12 @@
 @use "themes/expansion-theme" as expansion;
 @use "themes/snackbar-theme" as snackbar;
 @use "themes/table-theme" as table;
-@use "themes/editor-theme" as editor;
 @use "themes/cdk-drag-theme" as cdk-drag;
+@use "themes/skeleton";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@mixin apply-theme($theme) {
-  @include button.tokens-overrides;
-  @include toolbar.tokens-overrides;
-  @include skeleton.color-and-typo($theme);
-  @include avatar.color-and-typo($theme);
-  @include card.tokens-overrides;
-  @include form-field.tokens-overrides;
-  @include select.tokens-overrides;
-  @include radio.color-and-typo($theme);
-  @include checkbox.tokens-overrides;
-  @include password-strength.color-and-typo($theme);
-  @include dialog.color-and-typo($theme);
-  @include menu.tokens-overrides;
-  @include list.tokens-overrides;
-  @include side-nav.tokens-overrides;
-  @include divider.color-and-typo($theme);
-  @include tabs.tokens-overrides;
-  @include expansion.tokens-overrides;
-  @include snackbar.color-and-typo($theme);
-  @include table.color-and-typo($theme);
-  @include editor.color-and-typo($theme);
-
-  ::selection {
-    background-color: mat.get-theme-color($theme, primary, 90);
-  }
-  
-  .mat-headline-small,
-  .mat-headline-large,
-  .mat-headline-medium {
-    color: mat.get-theme-color($theme, neutral, 10);
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: mat.get-theme-color($theme, neutral, 10);
-    font-weight: mat.get-theme-typography($theme, title-large, font-weight);
-  }
-
-  a {
-    color: mat.get-theme-color($theme, primary, 40);
-    text-decoration-color: var(--mat-sys-primary);
-    &:hover {
-      text-decoration-line: underline;
-      text-decoration-color: mat.get-theme-color($theme, primary, 40);
-    }
-    &:focus {
-      background-color: mat.get-theme-color($theme, primary, 90);
-      outline: none;
-    }
-  }
-
-  /************************ COLOR CLASSES *************************/
-
-  //Primary
-  @for $i from 0 through 9 {
-    .text-primary-#{$i*10} {
-      color: mat.get-theme-color($theme, primary, $i * 10);
-    }
-  }
-
-  //Secondary
-  @for $i from 0 through 9 {
-    .text-secondary-#{$i*10} {
-      color: mat.get-theme-color($theme, secondary, $i * 10);
-    }
-  }
-
-  //Tertiary
-  @for $i from 0 through 9 {
-    .text-tertiary-#{$i*10} {
-      color: mat.get-theme-color($theme, tertiary, $i * 10);
-    }
-  }
-
-  //Neutral
-  @for $i from 0 through 9 {
-    .text-neutral-#{$i*10} {
-      color: mat.get-theme-color($theme, neutral, $i * 10);
-    }
-    .border-neutral-#{$i*10} {
-      border-color: mat.get-theme-color($theme, neutral, $i * 10);
-    }
-    .bg-neutral-#{$i*10} {
-      background-color: mat.get-theme-color($theme, neutral, $i * 10);
-    }
-  }
-  @for $i from 1 through 4 {
-    .text-neutral-#{90+$i*2} {
-      color: mat.get-theme-color($theme, neutral, 90+$i*2);
-    }
-    .border-neutral-#{90+$i*2} {
-      border-color: mat.get-theme-color($theme, neutral, 90+$i*2);
-    }
-    .bg-neutral-#{90+$i*2} {
-      background-color: mat.get-theme-color($theme, neutral, 90+$i*2);
-    }
-  }
-  //Neutral-variant
-  @for $i from 0 through 9 {
-    .text-neutral-variant-#{$i*10} {
-      color: mat.get-theme-color($theme, neutral-variant, $i * 10);
-    }
-  }
-
-  //Error
-  @for $i from 0 through 9 {
-    .text-error-#{$i*10} {
-      color: mat.get-theme-color($theme, error, $i * 10);
-    }
-  }
-}
-
-body {
-  font-family: "Lexend", sans-serif;
-  font-size: 14px;
-  font-optical-sizing: auto;
-  @include mat.elevation-classes();
-  @include mat.app-background();
-  @include mat.all-component-bases(themes.$light-theme);
-  @include mat.all-component-densities(themes.$light-theme);
-  @include mat.all-component-typographies(themes.$light-theme);
-  @include mat.theme-overrides((
-  label-large-size: 0.875rem,
-  label-large-line-height: 1.25rem,
-  label-large-weight: 500,
-  label-medium-size: 0.75rem,
-  label-medium-line-height: 1rem,
-  label-medium-weight: 500,
-  label-small-size: 0.625rem,
-  label-small-line-height: 0.875rem,
-  label-small-weight: 400,
-  body-large-size: 1rem,
-  body-large-line-height: 1.25rem,
-  body-large-weight: 400,
-  body-medium-size: 0.875rem,
-  body-medium-line-height: 1.25rem,
-  body-medium-weight: 400,
-  body-small-size: 0.75rem,
-  body-small-line-height: 1rem,
-  body-small-weight: 300,
-  title-large-size: 1.25rem,
-  title-large-line-height: 1.75rem,
-  title-large-weight: 500,
-  title-medium-size: 1.125rem,
-  title-medium-line-height: 1.75rem,
-  title-medium-weight: 500,
-  title-small-size: 1rem,
-  title-small-line-height: 1.5rem,
-  title-small-weight: 500,
-  headline-large-size: 2.25rem,
-  headline-large-line-height: 2.5rem,
-  headline-large-weight: 500,
-  headline-medium-size: 1.875rem,
-  headline-medium-line-height: 2.25rem,
-  headline-medium-weight: 500,
-  headline-small-size: 1.5rem,
-  headline-small-line-height: 2rem,
-  headline-small-weight: 500,
-  corner-medium: 4px,
-  ));
-}
-
-@media (prefers-color-scheme: light) {
-  body {
-    color: mat.get-theme-color(themes.$light-theme, neutral, 17);
-    background-color: mat.get-theme-color(themes.$light-theme, neutral, 100);
-    @include mat.theme-overrides((
-      background: mat.get-theme-color(themes.$light-theme, neutral, 100),
-      surface:  mat.get-theme-color(themes.$light-theme, neutral, 100),
-      surface-container: mat.get-theme-color(themes.$light-theme, neutral, 98),
-      surface-dim: mat.get-theme-color(themes.$light-theme, primary, 20),
-      on-background: mat.get-theme-color(themes.$light-theme, neutral, 17),
-      on-surface: mat.get-theme-color(themes.$light-theme, neutral, 25),
-      on-surface-variant: mat.get-theme-color(themes.$light-theme, neutral, 50),
-      outline:  mat.get-theme-color(themes.$light-theme, neutral, 80),
-      outline-variant:  mat.get-theme-color(themes.$light-theme, neutral, 90),
-      primary : mat.get-theme-color(themes.$light-theme, primary, 80),
-      primary-container : mat.get-theme-color(themes.$light-theme, primary, 95),
-      inverse-primary: mat.get-theme-color(themes.$light-theme, primary, 10),
-      on-primary: mat.get-theme-color(themes.$light-theme, primary, 60),
-      on-primary-container: mat.get-theme-color(themes.$light-theme, primary, 30),
-      secondary: mat.get-theme-color(themes.$light-theme, neutral-variant, 70),
-      secondary-container: mat.get-theme-color(themes.$light-theme, neutral-variant, 95),
-      on-secondary: mat.get-theme-color(themes.$light-theme, neutral-variant, 60),
-      on-secondary-container: mat.get-theme-color(themes.$light-theme, neutral-variant, 30),
-      tertiary: mat.get-theme-color(themes.$light-theme, tertiary, 70),
-      tertiary-container: mat.get-theme-color(themes.$light-theme, tertiary, 90),
-      on-tertiary: mat.get-theme-color(themes.$light-theme, tertiary, 50),
-      on-tertiary-container: mat.get-theme-color(themes.$light-theme, tertiary, 20),
-      error: mat.get-theme-color(themes.$light-theme, error, 80),
-      error-container: mat.get-theme-color(themes.$light-theme, error, 95),
-      on-error: mat.get-theme-color(themes.$light-theme, error, 60),
-      on-error-container: mat.get-theme-color(themes.$light-theme, error, 30),
-      level1:  1px 1px 1px rgba(0, 0, 0, 0.3),
-      level2:  2px 2px 2px rgba(0, 0, 0, 0.2),
-      level3:  4px 4px 4px rgba(0, 0, 0, 0.1)
-    ));
-    @include apply-theme(themes.$light-theme);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    color: mat.get-theme-color(themes.$dark-theme, neutral, 17);
-    background-color: mat.get-theme-color(themes.$dark-theme, neutral, 92);
-    --sys-on-surface-lower-emphasis: mat.get-theme-color(themes.$dark-theme, neutral, 40);
-    @include apply-theme(themes.$dark-theme);
-    @include mat.theme-overrides((
-      background: mat.get-theme-color(themes.$dark-theme, neutral, 92),
-      surface:  mat.get-theme-color(themes.$dark-theme, neutral, 92),
-      surface-container: mat.get-theme-color(themes.$dark-theme, neutral, 94),
-      surface-dim: mat.get-theme-color(themes.$dark-theme, neutral, 98),
-      on-surface-background: mat.get-theme-color(themes.$light-theme, neutral, 6),
-      on-surface: mat.get-theme-color(themes.$dark-theme, neutral, 15),
-      on-surface-variant: mat.get-theme-color(themes.$dark-theme, neutral, 40),
-      outline:  mat.get-theme-color(themes.$dark-theme, neutral, 70),
-      outline-variant:  mat.get-theme-color(themes.$dark-theme, neutral, 80),
-      primary : mat.get-theme-color(themes.$dark-theme, primary, 70),
-      primary-container : mat.get-theme-color(themes.$dark-theme, primary, 90),
-      on-primary: mat.get-theme-color(themes.$dark-theme, primary, 50),
-      on-primary-container: mat.get-theme-color(themes.$dark-theme, primary, 20),
-      secondary: mat.get-theme-color(themes.$dark-theme, neutral-variant, 70),
-      secondary-container: mat.get-theme-color(themes.$dark-theme, neutral-variant, 90),
-      on-secondary: mat.get-theme-color(themes.$dark-theme, neutral-variant, 50),
-      on-secondary-container: mat.get-theme-color(themes.$dark-theme, tertiary, 20),
-      tertiary: mat.get-theme-color(themes.$dark-theme, tertiary, 80),
-      tertiary-container: mat.get-theme-color(themes.$dark-theme, tertiary, 90),
-      on-tertiary: mat.get-theme-color(themes.$dark-theme, tertiary, 50),
-      on-tertiary-container: mat.get-theme-color(themes.$dark-theme, tertiary, 20),
-      error: mat.get-theme-color(themes.$dark-theme, error, 80),
-      error-container: mat.get-theme-color(themes.$dark-theme, error, 90),
-      on-error: mat.get-theme-color(themes.$dark-theme, error, 50),
-      on-error-container: mat.get-theme-color(themes.$dark-theme, error, 20),
-      level1:  1px 1px 1px rgba(0, 0, 0, 0.6),
-      level2:  2px 2px 2px rgba(0, 0, 0, 0.5),
-      level3:  4px 4px 4px rgba(0, 0, 0, 0.4)
-    ));
-  }
-}
-
-strong {
-  @apply font-bold;
-}
 
 
 /************************ RESET CSS *************************/
@@ -367,4 +115,206 @@ button,
 button,
 select {
   text-transform: none;
+}
+
+strong {
+  font-weight: 500;
+}
+
+@mixin tokens-overrides() {
+  @include button.tokens-overrides;
+  @include toolbar.tokens-overrides;
+  @include card.tokens-overrides;
+  @include form-field.tokens-overrides;
+  @include select.tokens-overrides;
+  @include radio.tokens-overrides;
+  @include checkbox.tokens-overrides;
+  @include dialog.tokens-overrides;
+  @include menu.tokens-overrides;
+  @include list.tokens-overrides;
+  @include side-nav.tokens-overrides;
+  @include divider.tokens-overrides;
+  @include tabs.tokens-overrides;
+  @include expansion.tokens-overrides;
+  @include snackbar.tokens-overrides;
+  @include table.tokens-overrides;
+  /************************ COLOR CLASSES *************************/
+  .text-on-error {
+    color: var(--mat-sys-on-error);
+  }
+  .text-on-error-container {
+    color: var(--mat-sys-on-error-container);
+  }
+  .text-on-warning-container {
+    color: var(--mat-sys-on-warning-container);
+  }
+  .text-on-tertiary-container {
+    color: var(--mat-sys-on-tertiary-container);
+  }
+  .text-on-background {
+    color: var(--mat-sys-on-background);
+  }
+  .text-on-surface {
+    color: var(--mat-sys-on-surface);
+  }
+  .text-on-surface-variant {
+    color: var(--mat-sys-on-surface-variant);
+  }
+  .border-outline {
+    border-color: var(--mat-sys-outline);
+  }
+  .bg-surface-dim {
+    background-color: var(--mat-sys-surface-dim);
+  }
+  .bg-surface-container {
+    background-color: var(--mat-sys-surface-container);
+  }
+}
+
+body {
+  font-family: "Lexend", sans-serif;
+  font-size: 14px;
+  font-optical-sizing: auto;
+  ::selection {
+    background-color: var(--mat-sys-primary-container);
+  }
+  a {
+    color: var(--mat-sys-on-primary-container);
+    text-decoration-color: var(--mat-sys-primary);
+    &:hover {
+      text-decoration-line: underline;
+      text-decoration-color: var(--mat-sys-primary);
+    }
+    &:focus {
+      background-color: var(--mat-sys-primary-container);
+      outline: none;
+    }
+  }
+  @include mat.theme-overrides((
+    label-large-size: 0.875rem,
+    label-large-line-height: 1.25rem,
+    label-large-weight: 500,
+    label-medium-size: 0.75rem,
+    label-medium-line-height: 1rem,
+    label-medium-weight: 500,
+    label-small-size: 0.625rem,
+    label-small-line-height: 0.875rem,
+    label-small-weight: 400,
+    body-large-size: 1rem,
+    body-large-line-height: 1.25rem,
+    body-large-weight: 400,
+    body-medium-size: 0.875rem,
+    body-medium-line-height: 1.25rem,
+    body-medium-weight: 400,
+    body-small-size: 0.75rem,
+    body-small-line-height: 1rem,
+    body-small-weight: 300,
+    title-large-size: 1.25rem,
+    title-large-line-height: 1.75rem,
+    title-large-weight: 500,
+    title-medium-size: 1.125rem,
+    title-medium-line-height: 1.75rem,
+    title-medium-weight: 500,
+    title-small-size: 1rem,
+    title-small-line-height: 1.5rem,
+    title-small-weight: 500,
+    headline-large-size: 2.25rem,
+    headline-large-line-height: 2.5rem,
+    headline-large-weight: 500,
+    headline-medium-size: 1.875rem,
+    headline-medium-line-height: 2.25rem,
+    headline-medium-weight: 500,
+    headline-small-size: 1.5rem,
+    headline-small-line-height: 2rem,
+    headline-small-weight: 500,
+    corner-medium: 4px,
+  ));
+  @include mat.elevation-classes();
+  @include mat.app-background();
+  @include mat.all-component-bases(themes.$light-theme);
+  @include mat.all-component-densities(themes.$light-theme);
+  @include mat.all-component-typographies(themes.$light-theme);
+  @include mat.typography-hierarchy(themes.$light-theme);
+
+  @media (prefers-color-scheme: light) {
+    color: mat.get-theme-color(themes.$light-theme, neutral, 17);
+    background-color: mat.get-theme-color(themes.$light-theme, neutral, 100);
+    --mat-sys-warning: #{mat.get-theme-color(themes.$light-theme, secondary, 80)};
+    --mat-sys-warning-container: #{mat.get-theme-color(themes.$light-theme, secondary, 95)};
+    --mat-sys-on-warning: #{mat.get-theme-color(themes.$light-theme, secondary, 60)};
+    --mat-sys-on-warning-container: #{mat.get-theme-color(themes.$light-theme, secondary, 30)};
+    @include mat.theme-overrides((
+      background: mat.get-theme-color(themes.$light-theme, neutral, 100),
+      surface:  mat.get-theme-color(themes.$light-theme, neutral, 100),
+      surface-container: mat.get-theme-color(themes.$light-theme, neutral, 98),
+      surface-dim: mat.get-theme-color(themes.$light-theme, primary, 20),
+      on-background: mat.get-theme-color(themes.$light-theme, neutral, 17),
+      on-surface: mat.get-theme-color(themes.$light-theme, neutral, 25),
+      on-surface-variant: mat.get-theme-color(themes.$light-theme, neutral, 50),
+      outline:  mat.get-theme-color(themes.$light-theme, neutral, 80),
+      outline-variant:  mat.get-theme-color(themes.$light-theme, neutral, 90),
+      primary : mat.get-theme-color(themes.$light-theme, primary, 80),
+      primary-container : mat.get-theme-color(themes.$light-theme, primary, 95),
+      inverse-primary: mat.get-theme-color(themes.$light-theme, primary, 10),
+      on-primary: mat.get-theme-color(themes.$light-theme, primary, 60),
+      on-primary-container: mat.get-theme-color(themes.$light-theme, primary, 30),
+      secondary: mat.get-theme-color(themes.$light-theme, neutral-variant, 70),
+      secondary-container: mat.get-theme-color(themes.$light-theme, neutral-variant, 95),
+      on-secondary: mat.get-theme-color(themes.$light-theme, neutral-variant, 60),
+      on-secondary-container: mat.get-theme-color(themes.$light-theme, neutral-variant, 30),
+      tertiary: mat.get-theme-color(themes.$light-theme, tertiary, 80),
+      tertiary-container: mat.get-theme-color(themes.$light-theme, tertiary, 90),
+      on-tertiary: mat.get-theme-color(themes.$light-theme, tertiary, 50),
+      on-tertiary-container: mat.get-theme-color(themes.$light-theme, tertiary, 20),
+      error: mat.get-theme-color(themes.$light-theme, error, 80),
+      error-container: mat.get-theme-color(themes.$light-theme, error, 95),
+      on-error: mat.get-theme-color(themes.$light-theme, error, 60),
+      on-error-container: mat.get-theme-color(themes.$light-theme, error, 30),
+      level1:  1px 1px 1px rgba(0, 0, 0, 0.3),
+      level2:  2px 2px 2px rgba(0, 0, 0, 0.2),
+      level3:  4px 4px 4px rgba(0, 0, 0, 0.1)
+    ));
+    @include tokens-overrides;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: mat.get-theme-color(themes.$dark-theme, neutral, 17);
+    background-color: mat.get-theme-color(themes.$dark-theme, neutral, 92);
+    --sys-on-surface-lower-emphasis: mat.get-theme-color(themes.$dark-theme, neutral, 40);
+    --mat-sys-warning: #{mat.get-theme-color(themes.$dark-theme, secondary, 70)};
+    --mat-sys-warning-container: #{mat.get-theme-color(themes.$dark-theme, secondary, 90)};
+    --mat-sys-on-warning: #{mat.get-theme-color(themes.$dark-theme, secondary, 50)};
+    --mat-sys-on-warning-container: #{mat.get-theme-color(themes.$dark-theme, secondary, 10)};
+    @include mat.theme-overrides((
+      background: mat.get-theme-color(themes.$dark-theme, neutral, 92),
+      surface:  mat.get-theme-color(themes.$dark-theme, neutral, 92),
+      surface-container: mat.get-theme-color(themes.$dark-theme, neutral, 94),
+      surface-dim: mat.get-theme-color(themes.$dark-theme, neutral, 98),
+      on-background: mat.get-theme-color(themes.$dark-theme, neutral, 6),
+      on-surface: mat.get-theme-color(themes.$dark-theme, neutral, 15),
+      on-surface-variant: mat.get-theme-color(themes.$dark-theme, neutral, 40),
+      outline:  mat.get-theme-color(themes.$dark-theme, neutral, 70),
+      outline-variant:  mat.get-theme-color(themes.$dark-theme, neutral, 80),
+      primary : mat.get-theme-color(themes.$dark-theme, primary, 70),
+      primary-container : mat.get-theme-color(themes.$dark-theme, primary, 80),
+      on-primary: mat.get-theme-color(themes.$dark-theme, primary, 50),
+      on-primary-container: mat.get-theme-color(themes.$dark-theme, primary, 20),
+      secondary: mat.get-theme-color(themes.$dark-theme, neutral-variant, 70),
+      secondary-container: mat.get-theme-color(themes.$dark-theme, neutral-variant, 90),
+      on-secondary: mat.get-theme-color(themes.$dark-theme, neutral-variant, 50),
+      on-secondary-container: mat.get-theme-color(themes.$dark-theme, tertiary, 10),
+      tertiary: mat.get-theme-color(themes.$dark-theme, tertiary, 80),
+      tertiary-container: mat.get-theme-color(themes.$dark-theme, tertiary, 90),
+      on-tertiary: mat.get-theme-color(themes.$dark-theme, tertiary, 50),
+      on-tertiary-container: mat.get-theme-color(themes.$dark-theme, tertiary, 20),
+      error: mat.get-theme-color(themes.$dark-theme, error, 70),
+      error-container: mat.get-theme-color(themes.$dark-theme, error, 80),
+      on-error: mat.get-theme-color(themes.$dark-theme, error, 50),
+      on-error-container: mat.get-theme-color(themes.$dark-theme, error, 20),
+      level1:  1px 1px 1px rgba(0, 0, 0, 0.6),
+      level2:  2px 2px 2px rgba(0, 0, 0, 0.5),
+      level3:  4px 4px 4px rgba(0, 0, 0, 0.4)
+    ));
+    @include tokens-overrides;
+  }
 }

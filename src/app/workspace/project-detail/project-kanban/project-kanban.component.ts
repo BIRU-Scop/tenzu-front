@@ -56,7 +56,7 @@ import { debug } from "../../../../libs/utils/functions/logging";
     ProjectKanbanSkeletonComponent,
   ],
   template: `
-    <h1 class="mat-headline-small text-neutral-40">{{ workflowStore.selectedEntity()?.name }}</h1>
+    <h1 class="mat-headline-small text-on-surface-variant">{{ workflowStore.selectedEntity()?.name }}</h1>
     @if (!storyStore.isLoading()) {
       @if (workflowStore.listStatusesOrdered(); as statuses) {
         <ul
@@ -80,7 +80,7 @@ import { debug } from "../../../../libs/utils/functions/logging";
               <ul
                 [@newStoryFlyIn]="storyStore.entities().length || 0"
                 [id]="status.id"
-                class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 bg-neutral-98 rounded-b shadow-inner"
+                class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                 cdkDropList
                 [cdkDropListData]="status"
                 (cdkDropListDropped)="drop($event)"
@@ -117,7 +117,7 @@ import { debug } from "../../../../libs/utils/functions/logging";
   `,
   styles: `
     .kanban-viewport {
-      height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 36px - 2rem - 12px - 16px);
+      height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 32px - 2rem - 12px - 16px);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;

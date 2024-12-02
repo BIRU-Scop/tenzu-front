@@ -21,37 +21,35 @@
 
 @use "@angular/material" as mat;
 
-  .mdc-checkbox {
+  .mdc-checkbox, .mat-mdc-checkbox {
     .mat-mdc-checkbox-touch-target {
       width: 36px;
       height: 36px;
+    }
+    .mdc-checkbox__background {
+      box-shadow: 0 0 3px var(--mat-sys-primary);
+      border-width: 1px;
+      border-color: var(--mat-sys-primary);
     }
   }
 
 
 @mixin tokens-overrides() {
-    .mdc-checkbox, .mat-mdc-checkbox {
-      @include mat.checkbox-overrides((
-        state-layer-size: 32px,
-        selected-icon-color: var(--mat-sys-primary),
-        selected-focus-icon-color: var(--mat-sys-primary),
-        selected-hover-icon-color: var(--mat-sys-primary),
-        selected-pressed-state-layer-color: var(--mat-sys-primary),
-        unselected-icon-color: var(--mat-sys-primary),
-        unselected-hover-icon-color: var(--mat-sys-primary),
-        unselected-focus-icon-color: var(--mat-sys-primary),
-        unselected-hover-state-layer-color: var(--mat-sys-primary),
-        unselected-focus-state-layer-color: var(--mat-sys-primary),
-        unselected-pressed-state-layer-color: var(--mat-sys-primary),
-        label-text-size: var(--mat-sys-label-large-size),
-        label-text-color: var(--mat-sys-on-primary-container),
-        label-text-line-height: var(--mat-sys-label-large-line-height),
-        selected-checkmark-color: var(--mat-sys-on-primary-container),
-      ));
-      .mdc-checkbox__background {
-        box-shadow: 0 0 3px var(--mat-sys-primary);
-        border-width: 1px;
-        border-color: var(--mat-sys-primary);
-      }
-    }
+    @include mat.checkbox-overrides((
+      state-layer-size: 32px,
+      selected-icon-color: var(--mat-sys-primary),
+      selected-focus-icon-color: var(--mat-sys-primary),
+      selected-hover-icon-color: var(--mat-sys-primary),
+      selected-pressed-state-layer-color: var(--mat-sys-primary),
+      unselected-icon-color: var(--mat-sys-primary),
+      unselected-hover-icon-color: var(--mat-sys-primary),
+      unselected-focus-icon-color: var(--mat-sys-primary),
+      unselected-hover-state-layer-color: var(--mat-sys-primary),
+      unselected-focus-state-layer-color: var(--mat-sys-primary),
+      unselected-pressed-state-layer-color: var(--mat-sys-primary),
+      label-text-size: var(--mat-sys-label-large-size),
+      label-text-color: var(--mat-sys-on-surface),
+      label-text-line-height: var(--mat-sys-label-large-line-height),
+      selected-checkmark-color: var(--mat-sys-on-primary-container),
+    ));
   }

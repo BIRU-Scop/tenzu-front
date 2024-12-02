@@ -22,11 +22,8 @@
 @use '@angular/material' as mat;
 
 
-@mixin color-and-typo($theme) {
-
-  .mat-divider {
-    @include mat.divider-overrides((
-      color: var(--mat-sys-outline-variant)
-    ))
-  }
+@mixin tokens-overrides() {
+  @include mat.divider-overrides((
+    color: var(--mat-sys-outline-variant)
+  ))
 }

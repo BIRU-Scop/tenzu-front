@@ -26,41 +26,41 @@
       width: 36px;
       height: 36px;
     }
+    .mdc-radio__outer-circle {
+      box-shadow: 0 0 3px var(--mat-sys-primary);
+    }
+    .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__inner-circle {
+      box-shadow: 0 0 6px var(--mat-sys-primary);
+    }
+    .mdc-radio__native-control:focus:enabled:not(:checked) ~ .mdc-radio__background .mdc-radio__outer-circle {
+      border-color: var(--mat-sys-primary);
+    }
   }
 
 
-@mixin color-and-typo($theme) {
-  .mat-mdc-radio-button {
+@mixin tokens-overrides() {
+  @include mat.radio-overrides((
+    state-layer-size: 32px,
+    selected-icon-color: var(--mat-sys-primary),
+    selected-focus-icon-color: var(--mat-sys-primary),
+    selected-hover-icon-color: var(--mat-sys-on-primary),
+    selected-pressed-icon-color: var(--mat-sys-on-primary-container),
+    unselected-icon-color: var(--mat-sys-primary),
+    unselected-hover-icon-color: var(--mat-sys-on-primary),
+    unselected-pressed-icon-color: var(--mat-sys-on-primary-container),
+    label-text-size: var(--mat-sys-label-large-size),
+    label-text-color: var(--mat-sys-on-surface),
+    label-text-line-height: var(--mat-sys-label-large-line-height),
+    label-text-weight: var(--mat-sys-label-large-line-weight),
+    ripple-color: var(--mat-sys-on-primary-container),
+    checked-ripple-color: var(--mat-sys-on-primary-container)
+  ));
+  .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__inner-circle {
     @include mat.radio-overrides((
-      state-layer-size: 32px,
-      selected-icon-color: var(--mat-sys-primary),
-      selected-focus-icon-color: var(--mat-sys-primary),
-      selected-hover-icon-color: mat.get-theme-color($theme, primary, 60),
-      selected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
-      unselected-icon-color: var(--mat-sys-primary),
-      unselected-hover-icon-color: mat.get-theme-color($theme, primary, 60),
-      unselected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
-      label-text-size: mat.get-theme-typography($theme, label-large, font-size),
-      label-text-color: mat.get-theme-color($theme, primary, 20),
-      label-text-line-height: mat.get-theme-typography($theme, label-large, line-height),
-      ripple-color: mat.get-theme-color($theme, primary, 40),
-      checked-ripple-color: mat.get-theme-color($theme, primary, 40)
+      selected-icon-color: var(--mat-sys-on-primary),
+      selected-focus-icon-color: var(--mat-sys-on-primary-container),
+      selected-hover-icon-color: var(--mat-sys-on-primary-container),
+      selected-pressed-icon-color: var(--mat-sys-on-primary-container),
     ));
-    .mdc-radio {
-      .mdc-radio__outer-circle {
-        box-shadow: 0 0 3px var(--mat-sys-primary);
-      }
-      .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__inner-circle {
-        box-shadow: 0 0 6px mat.get-theme-color($theme, primary, 60);
-        @include mat.radio-overrides((
-          selected-icon-color: mat.get-theme-color($theme, primary, 60),
-          selected-focus-icon-color: mat.get-theme-color($theme, primary, 60),
-          selected-hover-icon-color: mat.get-theme-color($theme, primary, 50),
-          selected-pressed-icon-color: mat.get-theme-color($theme, primary, 40),
-        ));      }
-      .mdc-radio__native-control:focus:enabled:not(:checked) ~ .mdc-radio__background .mdc-radio__outer-circle {
-        border-color: mat.get-theme-color($theme, primary, 60);
-      }
-    }
   }
 }

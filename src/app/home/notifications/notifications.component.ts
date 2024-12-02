@@ -55,7 +55,7 @@ import { MatDialogContent } from "@angular/material/dialog";
         [rounded]="true"
       ></app-avatar>
       <div>
-        <p class="text-neutral-20" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
+        <p class="text-on-surface" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
         @if (context.link) {
           <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
             {{ notificationsComponentService.getStoryName(notif) }}
@@ -177,7 +177,7 @@ export class NotificationUnitComponent {
             <mat-divider></mat-divider>
           }
         } @empty {
-          <div class="mat-body-medium text-neutral-60">{{ t("notifications.empty") }}</div>
+          <div class="mat-body-medium text-on-surface-variant">{{ t("notifications.empty") }}</div>
         }
       </div>
     </mat-dialog-content>

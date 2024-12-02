@@ -76,7 +76,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
               }
             </mat-list>
           } @else {
-            <p class="mat-body-medium text-neutral-60">{{ t("pending_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>

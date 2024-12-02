@@ -82,6 +82,7 @@ $sidenav-width: 250px;
   ));
   @include mat.sidenav-overrides((
     container-background-color: var(--mat-sys-surface-dim),
+    container-divider-color: var(--mat-sys-background),
   ));
   @media (prefers-color-scheme: light) {
     @include mat.sidenav-overrides((

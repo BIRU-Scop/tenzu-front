@@ -44,6 +44,9 @@
     @apply border-t-0 border-r-0 border-l-0 border-b;
     .mat-mdc-card-header {
       @apply px-0 pt-0 pb-2;
+      .mat-mdc-card-title {
+        color: var(--mat-sys-on-background);
+      }
     }
   }
 }

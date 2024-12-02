@@ -87,7 +87,7 @@ type DeleteStatusDialogData = {
                     }
                   </mat-select>
                 </mat-form-field>
-                <p class="mat-body-small text-neutral-30">{{ t("stories_placed_below") }}</p>
+                <p class="mat-body-small text-on-surface">{{ t("stories_placed_below") }}</p>
               </div>
               <mat-radio-button value="delete">{{ t("delete_stories") }}</mat-radio-button>
             </mat-radio-group>

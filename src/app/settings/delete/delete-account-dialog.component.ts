@@ -57,7 +57,7 @@ export interface ConfirmDialogData {
           <mat-expansion-panel [expanded]="true">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <mat-icon class="text-secondary-40 mr-3">warning</mat-icon>
+                <mat-icon class="text-on-warning-container mr-3">warning</mat-icon>
                 {{ t("confirm_dialog.only_member_workspace") }}
               </mat-panel-title>
             </mat-expansion-panel-header>
@@ -93,7 +93,7 @@ export interface ConfirmDialogData {
           <mat-expansion-panel [expanded]="false">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <mat-icon class="text-secondary-40 mr-3">warning</mat-icon>
+                <mat-icon class="text-on-warning-container mr-3">warning</mat-icon>
                 {{ t("confirm_dialog.only_admin_projects") }}
               </mat-panel-title>
             </mat-expansion-panel-header>

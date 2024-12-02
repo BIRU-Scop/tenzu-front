@@ -19,7 +19,6 @@
  *
  */
 
-@use '@angular/material' as mat;
 .avatar {
   @apply tracking-widest;
 
@@ -56,28 +55,27 @@ button {
   }
 }
 
-@mixin color-and-typo($theme) {
   // API color id range: 1-8
   .avatar {
     &.color-0 {
-      color: mat.get-theme-color($theme, neutral, 20);
-      background-color: mat.get-theme-color($theme, neutral, 90);
+      color: var(--mat-sys-on-surface);
+      background-color: var(--mat-sys-surface-container);
     }
     &.color-1,&.color-5 {
-      color: mat.get-theme-color($theme, primary, 20);
-      background-color: mat.get-theme-color($theme, primary, 90);
+      color: var(--mat-sys-on-primary-container);
+      background-color: var(--mat-sys-primary-container);
     }
     &.color-2,&.color-6 {
-      color: mat.get-theme-color($theme, secondary, 20);
-      background-color: mat.get-theme-color($theme, secondary, 90);
+      color: var(--mat-sys-on-warning-container);
+      background-color: var(--mat-sys-warning-container);
     }
     &.color-3,&.color-7 {
-      color: mat.get-theme-color($theme, tertiary, 20);
-      background-color: mat.get-theme-color($theme, tertiary, 90);
+      color: var(--mat-sys-on-tertiary-container);
+      background-color: var(--mat-sys-tertiary-container);
     }
     &.color-4,&.color-8 {
-      color: mat.get-theme-color($theme, error, 20);
-      background-color: mat.get-theme-color($theme, error, 90);
+      color: var(--mat-sys-on-error-container);
+      background-color: var(--mat-sys-error-container);
     }
   }
 
@@ -85,7 +83,7 @@ button {
     .avatar {
       &.color-0 {
         background-color: transparent;
-        border-color: mat.get-theme-color($theme, neutral, 90);
+        border-color: var(--mat-sys-outline-variant);
       }
       &.color-1,&.color-5 {
         background-color: transparent;
@@ -94,35 +92,35 @@ button {
       }
       &.color-2,&.color-6 {
         background-color: transparent;
-        border-color: mat.get-theme-color($theme, secondary, 80);
-        box-shadow: 0 0 3px mat.get-theme-color($theme, secondary, 80);
+        border-color: var(--mat-sys-warning);
+        box-shadow: 0 0 3px var(--mat-sys-warning);
       }
       &.color-3,&.color-7 {
         background-color: transparent;
-        border-color: mat.get-theme-color($theme, tertiary, 80);
-        box-shadow: 0 0 3px mat.get-theme-color($theme, tertiary, 80);
+        border-color: var(--mat-sys-tertiary);
+        box-shadow: 0 0 3px var(--mat-sys-tertiary);
       }
       &.color-4,&.color-8 {
         background-color: transparent;
-        border-color: mat.get-theme-color($theme, error, 80);
-        box-shadow: 0 0 3px mat.get-theme-color($theme, error, 80);
+        border-color: var(--mat-sys-error);
+        box-shadow: 0 0 3px var(--mat-sys-error);
       }
 
       &:hover {
         &.color-0 {
-          background-color: mat.get-theme-color($theme, neutral, 90);
+          background-color: var(--mat-sys-surface-container);
         }
         &.color-1,&.color-5 {
-          background-color: mat.get-theme-color($theme, primary, 90);
+          background-color: var(--mat-sys-primary-container);
         }
         &.color-2,&.color-6 {
-          background-color: mat.get-theme-color($theme, secondary, 90);
+          background-color: var(--mat-sys-warning-container);
         }
         &.color-3,&.color-7 {
-          background-color: mat.get-theme-color($theme, tertiary, 90);
+          background-color: var(--mat-sys-tertiary-container);
         }
         &.color-4,&.color-8 {
-          background-color: mat.get-theme-color($theme, error, 90);
+          background-color: var(--mat-sys-error-container);
         }
       }
     }
@@ -131,26 +129,25 @@ button {
       .avatar {
         outline: solid 3px;
         &.color-0 {
-          background-color: mat.get-theme-color($theme, neutral, 90);
-          outline-color: mat.get-theme-color($theme, neutral, 80);
+          background-color: var(--mat-sys-surface-container);
+          outline-color: var(--mat-sys-outline);
         }
         &.color-1,&.color-5 {
-          background-color: mat.get-theme-color($theme, primary, 90);
+          background-color: var(--mat-sys-primary-container);
           outline-color: var(--mat-sys-primary);
         }
         &.color-2,&.color-6 {
-          background-color: mat.get-theme-color($theme, secondary, 90);
-          outline-color: mat.get-theme-color($theme, secondary, 80);
+          background-color:var(--mat-sys-warning-container);
+          outline-color: var(--mat-sys-warning);
         }
         &.color-3,&.color-7 {
-          background-color: mat.get-theme-color($theme, tertiary, 90);
-          outline-color: mat.get-theme-color($theme, tertiary, 80);
+          background-color: var(--mat-sys-tertiary-container);
+          outline-color: var(--mat-sys-tertiary);
         }
         &.color-4,&.color-8 {
-          background-color: mat.get-theme-color($theme, error, 90);
-          outline-color: mat.get-theme-color($theme, error, 80);
+          background-color: var(--mat-sys-error-container);
+          outline-color: var(--mat-sys-error);
         }
       }
     }
   }
-}

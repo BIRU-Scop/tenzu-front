@@ -92,8 +92,8 @@ import { tap } from "rxjs";
       <div class="flex flex-col gap-y-2">
         <h2 class="mat-headline-small">{{ t("delete_project_title") }}</h2>
         <div class="flex flex-row">
-          <mat-icon class="text-error-40 pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-error-40 align-middle">
+          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
+          <p class="mat-body-medium text-on-error-container align-middle">
             {{ t("delete_project_warning") }}
           </p>
         </div>

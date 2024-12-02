@@ -43,29 +43,24 @@
     @apply -translate-y-full;
   }
 }
+.cdk-overlay-dark-backdrop {
+  background-color: rgba(0, 0, 0, 0.50);
+}
+.mat.get-theme-typography {
+  font-size: var(--mat-sys-title-large-size);
+}
+.mat-mdc-dialog-surface {
+  border-style: solid;
+  border-color: var(--mat-sys-outline);
+  border-width: 1px;
+  border-bottom-width: 2px;
+}
 
-
-@mixin color-and-typo($theme) {
-  .cdk-overlay-dark-backdrop {
-    background-color: rgba(0, 0, 0, 0.50);
-  }
-  .mat.get-theme-typography {
-    font-size: mat.get-theme-typography($theme, title-large, font-size);
-  }
-  .mat-mdc-dialog-surface {
-    @media (prefers-color-scheme: dark) {
-      box-shadow: var(--mat-sys-level2);
-    }
-    @media (prefers-color-scheme: light) {
-      box-shadow: var(--mat-sys-level2);
-    }
-    @include mat.dialog-overrides((
-      supporting-text-color: mat.get-theme-color($theme, neutral, 17),
-      subhead-color: mat.get-theme-color($theme, neutral, 10),
-      container-shape: var(--mat-sys-corner-medium),
-    ));
-    border-style: solid;
-    border-color: var(--mat-sys-outline);
-    border-width: 1px;
-  }
+@mixin tokens-overrides() {
+  @include mat.dialog-overrides((
+    supporting-text-color: var(--mat-sys-on-surface),
+    subhead-color: var(--mat-sys-on-background),
+    container-shape: var(--mat-sys-corner-medium),
+    container-elevation-shadow: var(--mat-sys-level2),
+  ));
 }
