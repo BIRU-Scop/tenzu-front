@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.13...v0.1.0-staging.0) (2024-12-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove unused utility files
+
+* remove unused utility files ([8a5ea6f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8a5ea6f2b38731d5c7e16c0703669f2ea9b2d030))
+
+
+### Features
+
+* create new tw like classes ([62886c2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/62886c2f19149e61d9259d0a3b99dc0b345aefd0))
+* **story-detail:** add MatTooltip and RouterLink imports ([cc9bf04](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cc9bf04be034fa20fe53115e4f65d15827c83f32))
+* use new material tokens ([28802a2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/28802a2a7c304635425c7b2d3fde17934688ff38))
+
+
+### Bug Fixes
+
+* append query parameter for story attachment URL ([201c325](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/201c325d4e34f6795b504eb68795271c25155fd9))
+* **workflow:** implement resetSelectedEntity method ([7d5229a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7d5229abbe3ac96c45291534193078466e0d6f9a))
+
 ## [0.0.1-staging.13](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.12...v0.0.1-staging.13) (2024-12-01)
 
 ## [0.0.1-staging.12](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.0.1-staging.11...v0.0.1-staging.12) (2024-12-01)
