@@ -65,15 +65,15 @@ export class AuthService {
 
   getToken(): Tokens {
     return {
-      token: localStorage.getItem("token"),
+      access: localStorage.getItem("token"),
       refresh: localStorage.getItem("refresh"),
       username: localStorage.getItem("username") || "",
     };
   }
 
   setToken(tokens: Tokens) {
-    if (tokens.token) {
-      localStorage.setItem("token", tokens.token);
+    if (tokens.access) {
+      localStorage.setItem("token", tokens.access);
     }
     if (tokens.refresh) {
       localStorage.setItem("refresh", tokens.refresh);
@@ -85,7 +85,7 @@ export class AuthService {
   isLoginOk() {
     const tokens = this.getToken();
     if (tokens && tokens.refresh) {
-      if (this.jwtHelperService.isTokenExpired(tokens.token)) {
+      if (this.jwtHelperService.isTokenExpired(tokens.access)) {
         return this.refresh(tokens).pipe(map(() => true));
       } else {
         return of(true);
