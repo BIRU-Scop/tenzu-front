@@ -19,7 +19,7 @@
  *
  */
 
-import { RE_SYMBOLS } from "@tenzu/utils";
+import { RE_SYMBOLS } from "@tenzu/utils/functions/strings";
 
 export enum DiversityEnum {
   lowercase = "lowercase",

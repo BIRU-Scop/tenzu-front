@@ -28,7 +28,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { userEvent, within } from "@storybook/test";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
 
 type Story = StoryObj<FormEmailComponent>;

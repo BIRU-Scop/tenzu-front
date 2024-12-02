@@ -18,13 +18,12 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
-
+import { SYMBOLS } from "@tenzu/utils/functions/strings";
 import { ChangeDetectionStrategy, Component, input, OnInit, signal } from "@angular/core";
 import { MatError, MatFormField, MatHint, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { AbstractControl, ReactiveFormsModule, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { injectNgControl, SYMBOLS } from "@tenzu/utils";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordStrengthComponent } from "./password-strength/password-strength.component";
 import {
@@ -38,6 +37,7 @@ import {
 } from "./password-strength/_utils";
 import { AuthService } from "@tenzu/data/auth";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor-directive.directive";
+import { injectNgControl } from "@tenzu/utils/injectors";
 
 type PasswordStrengthSignature = {
   severity: PasswordSeverity;

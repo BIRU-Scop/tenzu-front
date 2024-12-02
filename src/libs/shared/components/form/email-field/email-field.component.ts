@@ -23,10 +23,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { AbstractControl, ReactiveFormsModule, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { injectNgControl } from "@tenzu/utils";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor-directive.directive";
 import { emailRegexPatternValidation } from "@tenzu/shared/components/form/email-field/utils";
+import { injectNgControl } from "@tenzu/utils/injectors";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

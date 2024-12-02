@@ -24,7 +24,7 @@ import { UserCardComponent } from "./user-card";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
 import { isDevMode } from "@angular/core";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 
 const meta: Meta<UserCardComponent> = {
   title: "Components/UserCard",
