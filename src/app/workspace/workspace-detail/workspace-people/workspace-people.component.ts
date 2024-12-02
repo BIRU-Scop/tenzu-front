@@ -24,7 +24,7 @@ import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { matDialogConfig } from "@tenzu/utils";
+
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
 import { MembershipStore } from "@tenzu/data/membership";
@@ -33,6 +33,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 
 @Component({
   selector: "app-workspace-people",

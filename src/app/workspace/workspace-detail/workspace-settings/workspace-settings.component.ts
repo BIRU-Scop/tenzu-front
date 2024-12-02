@@ -107,7 +107,6 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 })
 export default class WorkspaceSettingsComponent {
   workspaceService = inject(WorkspaceService);
-  // workspaceStore = this.workspaceService.workspaceStore;
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({

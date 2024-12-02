@@ -21,9 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { WorkflowStore } from "@tenzu/data/workflow/workflow.store";
 import { Story, StoryStore } from "@tenzu/data/story";
-import { filterNotNull, matDialogConfig } from "@tenzu/utils";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
@@ -31,17 +29,19 @@ import {
   EnterNameDialogComponent,
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
-import { RelativeDialogService } from "@tenzu/utils/services";
+import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { Status } from "@tenzu/data/status";
-import { Step } from "@tenzu/data/workflow";
+import { Step, WorkflowService } from "@tenzu/data/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { debug } from "../../../../libs/utils/functions/logging";
+import { debug } from "@tenzu/utils/functions/logging";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 
 @Component({
   selector: "app-project-kanban",
@@ -56,9 +56,9 @@ import { debug } from "../../../../libs/utils/functions/logging";
     ProjectKanbanSkeletonComponent,
   ],
   template: `
-    <h1 class="mat-headline-small text-on-surface-variant">{{ workflowStore.selectedEntity()?.name }}</h1>
+    <h1 class="mat-headline-small text-on-surface-variant">{{ workflowService.selectedEntity()?.name }}</h1>
     @if (!storyStore.isLoading()) {
-      @if (workflowStore.listStatusesOrdered(); as statuses) {
+      @if (workflowService.listStatusesOrdered(); as statuses) {
         <ul
           class="grid grid-flow-col gap-8 kanban-viewport"
           *transloco="let t; prefix: 'workflow'"
@@ -70,8 +70,8 @@ import { debug } from "../../../../libs/utils/functions/logging";
 
             <li class="group w-64 flex flex-col overflow-hidden">
               <app-status-card
-                (movedLeft)="moveStatus(status, $index, Step.LEFT)"
-                (movedRight)="moveStatus(status, $index, Step.RIGHT)"
+                (movedLeft)="moveStatus($index, Step.LEFT)"
+                (movedRight)="moveStatus($index, Step.RIGHT)"
                 [config]="{ showLeft: !$first, showRight: !$last }"
                 [name]="status.name"
                 [id]="status.id"
@@ -157,7 +157,7 @@ import { debug } from "../../../../libs/utils/functions/logging";
 })
 export class ProjectKanbanComponent {
   breadcrumbStore = inject(BreadcrumbStore);
-  workflowStore = inject(WorkflowStore);
+  workflowService = inject(WorkflowService);
   storyStore = inject(StoryStore);
   projectKanbanService = inject(ProjectKanbanService);
   readonly relativeDialog = inject(RelativeDialogService);
@@ -167,7 +167,7 @@ export class ProjectKanbanComponent {
   protected readonly Step = Step;
 
   constructor() {
-    toObservable(this.workflowStore.selectedEntity)
+    toObservable(this.workflowService.selectedEntity)
       .pipe(filterNotNull())
       .subscribe(async (workflow) => {
         debug("story", "load stories start");
@@ -258,7 +258,7 @@ export class ProjectKanbanComponent {
   }
 
   async drop(event: CdkDragDrop<Status, Status, Story>) {
-    const workflow = this.workflowStore.selectedEntity();
+    const workflow = this.workflowService.selectedEntity();
     if (!workflow) {
       return;
     }
@@ -269,15 +269,12 @@ export class ProjectKanbanComponent {
     }
   }
 
-  async moveStatus(status: Status, oldPosition: number, step: Step) {
-    const selectedWorkspace = this.workflowStore.selectedEntity();
+  moveStatus(oldPosition: number, step: Step) {
+    const selectedWorkspace = this.workflowService.selectedEntity();
     if (selectedWorkspace) {
-      await this.workflowStore.reorder(
-        selectedWorkspace.projectId,
-        selectedWorkspace.slug,
-        oldPosition,
-        oldPosition + step,
-      );
+      this.workflowService
+        .reorder(selectedWorkspace.projectId, selectedWorkspace.slug, oldPosition, oldPosition + step)
+        .then();
     }
   }
 }

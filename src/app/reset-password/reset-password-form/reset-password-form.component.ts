@@ -29,8 +29,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { UserService, UserStore } from "@tenzu/data/user";
 import { HttpErrorResponse } from "@angular/common/http";
 import { AuthService, Tokens } from "@tenzu/data/auth";
-import { passwordsMustMatch } from "@tenzu/utils";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { passwordsMustMatch } from "@tenzu/utils/validators";
 
 @Component({
   selector: "app-reset-password-form",

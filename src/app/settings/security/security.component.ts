@@ -25,10 +25,10 @@ import { MatError } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { passwordsMustMatch } from "@tenzu/utils";
 import { LoginService } from "../../login/login.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UserStore } from "@tenzu/data/user";
+import { passwordsMustMatch } from "@tenzu/utils/validators";
 
 @Component({
   selector: "app-security",

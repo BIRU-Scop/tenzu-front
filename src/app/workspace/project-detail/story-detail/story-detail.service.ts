@@ -23,14 +23,14 @@ import { inject, Injectable } from "@angular/core";
 import { ProjectService } from "@tenzu/data/project";
 import { StoryService, StoryStore, StoryUpdate } from "@tenzu/data/story";
 import { Router } from "@angular/router";
-import { WorkflowStore } from "@tenzu/data/workflow";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class StoryDetailService {
   projectService = inject(ProjectService);
-  workflowStore = inject(WorkflowStore);
+  workflowService = inject(WorkflowService);
   storyStore = inject(StoryStore);
   storyService = inject(StoryService);
   router = inject(Router);
@@ -51,11 +51,11 @@ export class StoryDetailService {
   public async deleteSelectedStory() {
     const project = this.projectService.selectedEntity();
     const story = this.storyStore.selectedStoryDetails();
-    if (project && story) {
-      const workflow = this.workflowStore.entityMap()[story.workflowId];
+    const workflow = this.workflowService.selectedEntity();
+    if (project && story && workflow) {
       await this.storyStore.deleteStory(project!.id, story!.ref);
       await this.router.navigateByUrl(
-        `/workspace/${project?.workspaceId}/project/${project.id}/kanban/${workflow!.slug}`,
+        `/workspace/${project?.workspaceId}/project/${project.id}/kanban/${workflow.slug}`,
       );
     }
   }

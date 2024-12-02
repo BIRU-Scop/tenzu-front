@@ -72,7 +72,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () =>
-      import("../libs/shared/layouts/auth-layout/auth-layout.component").then((m) => m.AuthLayoutComponent),
+      import("@tenzu/shared/layouts/auth-layout/auth-layout.component").then((m) => m.AuthLayoutComponent),
     children: [
       {
         path: "login",

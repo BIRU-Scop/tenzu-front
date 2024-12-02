@@ -31,10 +31,10 @@ import { Router } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectService } from "@tenzu/data/project/project.service";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { tap } from "rxjs";
 
 @Component({

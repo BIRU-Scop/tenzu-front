@@ -26,7 +26,7 @@ import { catchError, map, switchMap } from "rxjs/operators";
 import { AuthService } from "@tenzu/data/auth";
 import { ProjectInvitationInfo } from "@tenzu/data/workspace";
 import { ProjectInfraService } from "@tenzu/data/project";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
