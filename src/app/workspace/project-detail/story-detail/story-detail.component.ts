@@ -48,8 +48,6 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
-import { RouterLink } from "@angular/router";
-import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: "app-story-detail",
@@ -73,8 +71,6 @@ import { MatTooltip } from "@angular/material/tooltip";
     MatDivider,
     MatSelect,
     MatOption,
-    MatTooltip,
-    RouterLink,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
