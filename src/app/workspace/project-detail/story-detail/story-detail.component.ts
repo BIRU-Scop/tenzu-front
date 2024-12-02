@@ -48,6 +48,8 @@ import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-w
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
+import { MatTooltip } from "@angular/material/tooltip";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-story-detail",
@@ -71,6 +73,8 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
     MatDivider,
     MatSelect,
     MatOption,
+    MatTooltip,
+    RouterLink,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -150,40 +154,40 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
                       <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
                     </ng-container>
 
-                  <ng-container matColumnDef="size">
-                    <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
-                  </ng-container>
+                    <ng-container matColumnDef="size">
+                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
+                      <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
+                    </ng-container>
 
-                  <ng-container matColumnDef="date">
-                    <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
-                  </ng-container>
+                    <ng-container matColumnDef="date">
+                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
+                      <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
+                    </ng-container>
 
-                  <ng-container matColumnDef="actions">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let row">
-                      <a
-                        mat-icon-button
-                        target="_blank"
-                        href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
-                        type="button"
-                      >
-                        <mat-icon>visibility</mat-icon>
-                      </a>
-                      <a
-                        mat-icon-button
-                        download
-                        href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
-                        type="button"
-                      >
-                        <mat-icon>download</mat-icon>
-                      </a>
-                      <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </mat-cell>
-                  </ng-container>
+                    <ng-container matColumnDef="actions">
+                      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                      <mat-cell *matCellDef="let row">
+                        <a
+                          mat-icon-button
+                          target="_blank"
+                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
+                          type="button"
+                        >
+                          <mat-icon>visibility</mat-icon>
+                        </a>
+                        <a
+                          mat-icon-button
+                          download
+                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
+                          type="button"
+                        >
+                          <mat-icon>download</mat-icon>
+                        </a>
+                        <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </mat-cell>
+                    </ng-container>
 
                     <!-- Header and Row Declarations -->
                     <mat-header-row *matHeaderRowDef="['name', 'size', 'date', 'actions']"></mat-header-row>
