@@ -35,7 +35,7 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   if (projectId) {
     try {
       storyStore
-        .get(projectId, parseInt(route.paramMap.get("ref")!, 10))
+        .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
         .then((story) => {
           if (workflowService.selectedEntity()?.id != story.workflowId) {
             workflowService.get(projectId, story.workflowId).then();

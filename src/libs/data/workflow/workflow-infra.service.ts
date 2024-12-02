@@ -36,7 +36,6 @@ export class WorkflowInfraService {
     return `${this.url}projects/${projectId}/workflows`;
   }
   create(item: Pick<Workflow, "projectId" | "name">) {
-    console.log(item);
     return this.http.post<Workflow>(`${this.getUrl(item.projectId)}`, { name: item.name });
   }
   createStatus(projectId: string, workflowSlug: string, newStatus: Pick<Status, "name">) {

@@ -166,7 +166,7 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
                       <a
                         mat-icon-button
                         target="_blank"
-                        href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
+                        href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
                         type="button"
                       >
                         <mat-icon>visibility</mat-icon>
