@@ -23,7 +23,7 @@ import { HttpErrorResponse, HttpHandlerFn, HttpRequest } from "@angular/common/h
 import { inject } from "@angular/core";
 import { AuthService } from "../auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
 import { ConfigServiceService } from "../../utils/services/config-service/config-service.service";
 
 export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {

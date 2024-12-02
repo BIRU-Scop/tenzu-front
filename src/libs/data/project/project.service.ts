@@ -21,19 +21,19 @@
 
 import { inject, Injectable } from "@angular/core";
 import { ProjectInfraService } from "./project-infra.service";
-import { WsService } from "@tenzu/utils/services";
+import { WsService } from "@tenzu/utils/services/ws";
 import { ProjectDetailStore, ProjectStore } from "./project.store";
 import { lastValueFrom } from "rxjs";
-import { Workflow, WorkflowInfraService } from "../workflow";
+import { Workflow, WorkflowService } from "../workflow";
 import { Project, ProjectBase, ProjectCreation, ProjectSummary } from "./project.model";
-import { ServiceStore } from "../interface";
+import { ServiceStoreEntity } from "../interface";
 
 @Injectable({
   providedIn: "root",
 })
-export class ProjectService implements ServiceStore<ProjectSummary, Project> {
+export class ProjectService implements ServiceStoreEntity<ProjectSummary, Project> {
   projectInfraService = inject(ProjectInfraService);
-  workflowInfraService = inject(WorkflowInfraService);
+  workflowService = inject(WorkflowService);
   projectStore = inject(ProjectStore);
   projectDetailStore = inject(ProjectDetailStore);
   wsService = inject(WsService);
@@ -57,8 +57,8 @@ export class ProjectService implements ServiceStore<ProjectSummary, Project> {
     this.projectStore.setAllEntities(projects);
     return projects;
   }
-  async createWorkflow(projectId: string, workflow: Pick<Workflow, "name">) {
-    const newWorkflow = await lastValueFrom(this.workflowInfraService.create(projectId, workflow));
+  async createWorkflow(item: Pick<Workflow, "name" | "projectId">) {
+    const newWorkflow = await this.workflowService.create(item);
     this.projectDetailStore.addWorkflow(newWorkflow);
     return newWorkflow;
   }

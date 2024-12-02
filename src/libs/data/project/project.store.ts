@@ -22,14 +22,14 @@
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { withEntities } from "@ngrx/signals/entities";
 import { Project, ProjectSummary } from "./project.model";
-import { withEntity, withMethodsEntities } from "../../utils/store/store-features";
+import { withMethodEntity, withMethodsEntities } from "../../utils/store/store-features";
 import { Workflow } from "@tenzu/data/workflow";
 
 export const ProjectStore = signalStore({ providedIn: "root" }, withEntities<ProjectSummary>(), withMethodsEntities());
 
 export const ProjectDetailStore = signalStore(
   { providedIn: "root" },
-  withEntity<Project>(),
+  withMethodEntity<Project>(),
   withMethods((store) => ({
     addWorkflow(workflow: Workflow) {
       const project = store.item();

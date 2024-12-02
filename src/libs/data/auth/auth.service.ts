@@ -26,7 +26,7 @@ import { Credential, Tokens } from "./auth.model";
 import { map, of, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
-import { WsService } from "@tenzu/utils/services";
+import { WsService } from "@tenzu/utils/services/ws";
 
 @Injectable({
   providedIn: "root",
