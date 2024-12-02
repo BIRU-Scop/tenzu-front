@@ -20,25 +20,20 @@
  */
 
 import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
-import { computed, inject } from "@angular/core";
-import { addEntity, setEntity, updateEntity, withEntities } from "@ngrx/signals/entities";
-import { setSelectedEntity, withLoadingStatus, withSelectedEntity } from "../../utils/store/store-features";
+import { computed } from "@angular/core";
+import { withMethodEntity } from "../../utils/store/store-features";
 import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow/workflow.model";
-import { WorkflowInfraService } from "@tenzu/data/workflow/workflow-infra.service";
-import { lastValueFrom } from "rxjs";
 import { Status } from "@tenzu/data/status";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
 
 export const WorkflowStore = signalStore(
   { providedIn: "root" },
-  withEntities<Workflow>(),
-  withSelectedEntity(),
-  withLoadingStatus(),
-  withState({ selectedEntityStatusesOrder: [] as string[] }),
+  withState({ statusesOrder: [] as string[], item: null as Workflow | null }),
+  withMethodEntity(),
   withComputed((store) => ({
     listStatusesOrdered: computed(() => {
-      const statuses = store.selectedEntity()?.statuses;
-      const selectedEntityStatusOrder = store.selectedEntityStatusesOrder();
+      const statuses = store.item()?.statuses;
+      const selectedEntityStatusOrder = store.statusesOrder();
       if (statuses) {
         return selectedEntityStatusOrder.map((statusId) => statuses.find((status) => status.id === statusId) as Status);
       } else {
@@ -48,46 +43,25 @@ export const WorkflowStore = signalStore(
   })),
   withMethods((store) => ({
     setWorkflow(refreshedWorkflow: Workflow) {
-      patchState(store, setEntity(refreshedWorkflow));
-      patchState(store, { selectedEntityStatusesOrder: refreshedWorkflow.statuses.map((status) => status.id) });
-      return refreshedWorkflow;
-    },
-  })),
-  withMethods((store, workflowService = inject(WorkflowInfraService)) => ({
-    selectWorkflow(workflowId: string) {
-      patchState(store, setSelectedEntity(workflowId));
-    },
-    async refreshWorkflowById(projectId: string, workflowId: string) {
-      const refreshedWorkflow = await lastValueFrom(workflowService.getById(projectId, workflowId));
-      store.setWorkflow({ ...refreshedWorkflow });
-      return refreshedWorkflow;
-    },
-    async refreshWorkflow(workflow: Pick<Workflow, "projectId" | "slug">) {
-      const refreshedWorkflow = await lastValueFrom(workflowService.get(workflow.projectId, workflow.slug));
-      store.setWorkflow(refreshedWorkflow);
+      store.set(refreshedWorkflow);
+      patchState(store, { statusesOrder: refreshedWorkflow.statuses.map((status) => status.id) });
       return refreshedWorkflow;
     },
     addStatus(status: Status) {
-      const selectedWorkflow = store.selectedEntity();
+      const selectedWorkflow = store.item();
       if (selectedWorkflow) {
-        patchState(
-          store,
-          updateEntity({
-            id: selectedWorkflow.id,
-            changes: { ...selectedWorkflow, statuses: [...selectedWorkflow.statuses, status] },
-          }),
-        );
-        const refreshedWorkflow = store.selectedEntity();
+        patchState(store, { item: { ...selectedWorkflow, statuses: [...selectedWorkflow.statuses, status] } });
+        const refreshedWorkflow = store.item();
         if (refreshedWorkflow) {
-          patchState(store, { selectedEntityStatusesOrder: refreshedWorkflow.statuses.map((status) => status.id) });
+          patchState(store, { statusesOrder: refreshedWorkflow.statuses.map((status) => status.id) });
         }
       }
     },
-    async reorder(projectId: string, workflowId: string, oldPosition: number, newPosition: number) {
-      const selectedEntityStatusOrder = store.selectedEntityStatusesOrder();
+    reorder(oldPosition: number, newPosition: number) {
+      const selectedEntityStatusOrder = store.statusesOrder();
 
       moveItemInArray(selectedEntityStatusOrder, oldPosition, newPosition);
-      patchState(store, { selectedEntityStatusesOrder: [...selectedEntityStatusOrder] });
+      patchState(store, { statusesOrder: [...selectedEntityStatusOrder] });
       const statuses = store.listStatusesOrdered();
       const status = statuses[newPosition];
       let payload: WorkflowStatusReorderPayload | null = null;
@@ -108,77 +82,45 @@ export const WorkflowStore = signalStore(
           },
         };
       }
-      await lastValueFrom(workflowService.reorderStatus(projectId, workflowId, payload));
+      return payload;
     },
     removeStatus(statusId: string) {
-      const selectedWorkflow = store.selectedEntity();
+      const selectedWorkflow = store.item();
       if (selectedWorkflow) {
         const statusIndex = selectedWorkflow.statuses.findIndex((curr) => statusId === curr.id);
-        patchState(
-          store,
-          updateEntity({
-            id: selectedWorkflow.id,
-            changes: {
-              ...selectedWorkflow,
-              statuses: [
-                ...selectedWorkflow.statuses.slice(0, statusIndex),
-                ...selectedWorkflow.statuses.slice(statusIndex + 1),
-              ],
-            },
-          }),
-        );
-        const refreshedWorkflow = store.selectedEntity();
+        store.patch({
+          statuses: [
+            ...selectedWorkflow.statuses.slice(0, statusIndex),
+            ...selectedWorkflow.statuses.slice(statusIndex + 1),
+          ],
+        });
+        const refreshedWorkflow = store.item();
         if (refreshedWorkflow) {
-          patchState(store, { selectedEntityStatusesOrder: refreshedWorkflow.statuses.map((status) => status.id) });
+          patchState(store, { statusesOrder: refreshedWorkflow.statuses.map((status) => status.id) });
         }
       }
     },
     updateStatus(status: Status) {
-      const selectedWorkflow = store.selectedEntity();
+      const selectedWorkflow = store.item();
       if (selectedWorkflow) {
         const statusIndex = selectedWorkflow.statuses.findIndex((curr) => status.id === curr.id);
-        patchState(
-          store,
-          updateEntity({
-            id: selectedWorkflow.id,
-            changes: {
-              ...selectedWorkflow,
-              statuses: [
-                ...selectedWorkflow.statuses.slice(0, statusIndex),
-                status,
-                ...selectedWorkflow.statuses.slice(statusIndex + 1),
-              ],
-            },
-          }),
-        );
-      }
-    },
-    async createWorkflow(projectId: string, workflowName: Pick<Workflow, "name">) {
-      const workflow = await lastValueFrom(workflowService.create(projectId, workflowName));
-      patchState(store, addEntity(workflow));
-      return workflow;
-    },
-  })),
-  withMethods((store, workflowService = inject(WorkflowInfraService)) => ({
-    async createStatus(projectId: string, status: Pick<Status, "name" | "color">) {
-      const selectedWorkflow = store.selectedEntity();
-      if (selectedWorkflow) {
-        const newStatus = await lastValueFrom(workflowService.createStatus(projectId, selectedWorkflow.slug, status));
-        store.addStatus(newStatus);
-      }
-    },
-    async editStatus(projectId: string, status: Pick<Status, "name" | "id">) {
-      const selectedWorkflow = store.selectedEntity();
-      if (selectedWorkflow) {
-        const editedStatus = await lastValueFrom(workflowService.editStatus(projectId, selectedWorkflow.slug, status));
-        store.updateStatus(editedStatus);
-      }
-    },
-    async deleteStatus(projectId: string, statusId: string, moveToStatus: string | undefined) {
-      const selectedWorkflow = store.selectedEntity();
-      if (selectedWorkflow) {
-        await lastValueFrom(workflowService.deleteStatus(projectId, selectedWorkflow.slug, statusId, moveToStatus));
-        store.removeStatus(statusId);
+        store.patch({
+          statuses: [
+            ...selectedWorkflow.statuses.slice(0, statusIndex),
+            status,
+            ...selectedWorkflow.statuses.slice(statusIndex + 1),
+          ],
+        });
+        // patchState(store, {
+        //   item: {
+        //     ...selectedWorkflow,
+        //     statuses: [
+        //       ...selectedWorkflow.statuses.slice(0, statusIndex),
+        //       status,
+        //       ...selectedWorkflow.statuses.slice(statusIndex + 1),
+        //     ],
+        //   },
+        // });
       }
     },
   })),

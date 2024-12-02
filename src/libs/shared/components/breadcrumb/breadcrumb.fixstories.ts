@@ -25,7 +25,7 @@
 // import { Component, isDevMode } from "@angular/core";
 // import { provideHttpClient } from "@angular/common/http";
 // import { provideTransloco } from "@jsverse/transloco";
-// import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+// import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 // import { BreadcrumbComponent } from "./breadcrumb.component";
 // import { provideRouter } from "@angular/router";
 //

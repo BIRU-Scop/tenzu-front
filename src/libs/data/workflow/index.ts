@@ -20,5 +20,5 @@
  */
 
 export * from "./workflow.model";
-export * from "./workflow-infra.service";
-export * from "./workflow.store";
+// export * from "./workflow-infra.service";
+export * from "./workflow.service";

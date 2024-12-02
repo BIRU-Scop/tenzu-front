@@ -28,7 +28,7 @@ import { UserService } from "./user.service";
 import { User, UserEdition } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { AuthService } from "@tenzu/data/auth";
-import { WsService } from "@tenzu/utils/services";
+import { WsService } from "@tenzu/utils/services/ws";
 import { debug } from "../../utils/functions/logging";
 
 export const UserStore = signalStore(

@@ -24,8 +24,8 @@ import { RouterOutlet } from "@angular/router";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/data/sidenav";
-import { filterNotNull } from "@tenzu/utils";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceService } from "@tenzu/data/workspace";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 
 @Component({
   selector: "app-workspace-detail",

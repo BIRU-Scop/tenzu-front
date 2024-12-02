@@ -22,7 +22,7 @@
 import { signalStore } from "@ngrx/signals";
 import { withEntities } from "@ngrx/signals/entities";
 import { Workspace } from "./workspace.model";
-import { withEntity, withLoadingStatus, withMethodsEntities } from "../../utils/store/store-features";
+import { withMethodEntity, withLoadingStatus, withMethodsEntities } from "../../utils/store/store-features";
 
 export const WorkspacesStore = signalStore(
   { providedIn: "root" },
@@ -31,7 +31,7 @@ export const WorkspacesStore = signalStore(
   withMethodsEntities(),
 );
 
-export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withEntity<Workspace>());
+export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withMethodEntity<Workspace>());
 
 export type WorkspacesStore = InstanceType<typeof WorkspacesStore>;
 export type WorkspaceDetailStore = InstanceType<typeof WorkspaceDetailStore>;

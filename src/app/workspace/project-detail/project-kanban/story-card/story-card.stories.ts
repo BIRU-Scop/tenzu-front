@@ -25,7 +25,7 @@ import { provideAnimations } from "@angular/platform-browser/animations";
 import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { StoryCardComponent } from "./story-card.component";
 import { provideRouter } from "@angular/router";
 

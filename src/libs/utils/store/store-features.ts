@@ -19,16 +19,9 @@
  *
  */
 
-import { patchState, signalStoreFeature, type, withComputed, withMethods, withState } from "@ngrx/signals";
+import { patchState, signalStoreFeature, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed } from "@angular/core";
-import {
-  EntityId,
-  EntityState,
-  removeAllEntities,
-  removeEntity,
-  setAllEntities,
-  setEntity,
-} from "@ngrx/signals/entities";
+import { EntityId, removeAllEntities, removeEntity, setAllEntities, setEntity } from "@ngrx/signals/entities";
 
 export function withLoadingStatus() {
   return signalStoreFeature(
@@ -45,30 +38,6 @@ export function setLoadingBegin() {
 
 export function setLoadingEnd() {
   return { loading: false };
-}
-
-export type SelectedEntityState = { selectedEntityId: EntityId | null };
-
-export function withSelectedEntity<Entity>() {
-  return signalStoreFeature(
-    { state: type<EntityState<Entity>>() },
-    withState<SelectedEntityState>({ selectedEntityId: null }),
-    withComputed(({ entityMap, selectedEntityId }) => ({
-      selectedEntity: computed(() => {
-        const selectedId = selectedEntityId();
-        return selectedId ? entityMap()[selectedId] : null;
-      }),
-    })),
-    withMethods((store) => ({
-      resetSelectedEntity() {
-        patchState(store, { selectedEntityId: null });
-      },
-      reset() {
-        patchState(store, { selectedEntityId: null });
-        patchState(store, removeAllEntities());
-      },
-    })),
-  );
 }
 
 export function withMethodsEntities<T extends { id: EntityId }>() {
@@ -90,20 +59,20 @@ export function withMethodsEntities<T extends { id: EntityId }>() {
   );
 }
 
-export function withEntity<T>() {
+export function withMethodEntity<T>() {
   return signalStoreFeature(
     withState<{ item: T | undefined }>({ item: undefined }),
     withMethods((store) => ({
       set(item: T) {
         patchState(store, { item: item });
       },
-      patch(partialTtem: Partial<T>) {
+      patch(partialItem: Partial<T>) {
         const item = store.item();
         if (item) {
           patchState(store, {
             item: {
               ...item,
-              ...partialTtem,
+              ...partialItem,
             },
           });
           return item;
@@ -115,8 +84,4 @@ export function withEntity<T>() {
       },
     })),
   );
-}
-
-export function setSelectedEntity(id: EntityId) {
-  return { selectedEntityId: id };
 }

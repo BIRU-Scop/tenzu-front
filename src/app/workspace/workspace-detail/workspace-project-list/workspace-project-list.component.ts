@@ -27,7 +27,6 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
-import { WorkflowStore } from "@tenzu/data/workflow";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
@@ -73,7 +72,6 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 export default class WorkspaceProjectListComponent implements AfterViewInit {
   workspaceService = inject(WorkspaceService);
   projectService = inject(ProjectService);
-  workflowStore = inject(WorkflowStore);
   breadcrumbStore = inject(BreadcrumbStore);
 
   ngAfterViewInit(): void {

@@ -25,8 +25,8 @@ import { RouterLink } from "@angular/router";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { UserMinimal } from "@tenzu/data/user";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
-import { RelativeDialogService } from "@tenzu/utils/services";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MembershipStore } from "@tenzu/data/membership";
 import { ProjectKanbanService } from "../project-kanban.service";
 import { MatIconButton } from "@angular/material/button";
@@ -51,7 +51,7 @@ import { MatIcon } from "@angular/material/icon";
       <mat-card-header>
         <mat-card-title
           ><a [routerLink]="['../..', 'story', ref()]" class="line-clamp-2 w-fit"
-            ><span class="text-tertiary-30">#{{ ref() }}</span> {{ title() }}</a
+            ><span class="text-on-tertiary-container">#{{ ref() }}</span> {{ title() }}</a
           ></mat-card-title
         >
       </mat-card-header>

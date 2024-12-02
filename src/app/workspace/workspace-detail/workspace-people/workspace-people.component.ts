@@ -24,7 +24,7 @@ import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { matDialogConfig } from "@tenzu/utils";
+
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
 import { MembershipStore } from "@tenzu/data/membership";
@@ -33,6 +33,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 
 @Component({
   selector: "app-workspace-people",
@@ -51,7 +52,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
             <mat-icon class="icon-sm mr-1">group</mat-icon>
             {{ t("members_tab") }}
           </ng-template>
-          <p class="mat-body-medium text-neutral-20 mb-2">{{ t("members_description") }}</p>
+          <p class="mat-body-medium text-on-surface mb-2">{{ t("members_description") }}</p>
           @if (membershipStore.workspaceEntities().length > 0) {
             <mat-list>
               @for (guest of membershipStore.workspaceEntities(); track guest.user.username) {
@@ -76,7 +77,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
               }
             </mat-list>
           } @else {
-            <p class="mat-body-medium text-neutral-60">{{ t("pending_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
           }
         </mat-tab>
 
@@ -86,7 +87,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
             {{ t("guests_tab") }}
           </ng-template>
           @if (membershipStore.workspaceGuestsEntities().length > 0) {
-            <p class="mat-body-medium text-neutral-20 mb-2">{{ t("guest_description") }}</p>
+            <p class="mat-body-medium text-on-surface mb-2">{{ t("guest_description") }}</p>
             <mat-list>
               @for (member of membershipStore.workspaceGuestsEntities(); track member.user.username) {
                 <app-user-card
@@ -97,7 +98,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
               }
             </mat-list>
           } @else {
-            <p class="mat-body-medium text-neutral-40">{{ t("guest_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("guest_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>

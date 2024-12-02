@@ -22,7 +22,6 @@
 @use '@angular/material' as mat;
 
 .mdc-dialog {
-  --mdc-dialog-container-shape: 4px;
   @include mat.dialog-overrides((
     headline-padding: 0 16px 16px,
     content-padding: 12px 16px 0,
@@ -44,34 +43,24 @@
     @apply -translate-y-full;
   }
 }
+.cdk-overlay-dark-backdrop {
+  background-color: rgba(0, 0, 0, 0.50);
+}
+.mat.get-theme-typography {
+  font-size: var(--mat-sys-title-large-size);
+}
+.mat-mdc-dialog-surface {
+  border-style: solid;
+  border-color: var(--mat-sys-outline);
+  border-width: 1px;
+  border-bottom-width: 2px;
+}
 
-
-@mixin color-and-typo($theme) {
-  .cdk-overlay-dark-backdrop {
-    background-color: rgba(0, 0, 0, 0.50);
-  }
-  .mat.get-theme-typography {
-    font-size: mat.get-theme-typography($theme, title-large, font-size);
-  }
-  .mat-mdc-dialog-surface {
-    @media (prefers-color-scheme: dark) {
-      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
-      @include mat.dialog-overrides((
-        container-color: mat.get-theme-color($theme, neutral, 98),
-      ));
-    }
-    @media (prefers-color-scheme: light) {
-      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
-      @include mat.dialog-overrides((
-        container-color: mat.get-theme-color($theme, neutral, 100),
-      ));
-    }
-    @include mat.dialog-overrides((
-      supporting-text-color: mat.get-theme-color($theme, neutral, 17),
-      subhead-color: mat.get-theme-color($theme, neutral, 10)
-    ));
-    border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 90);
-    border-width: 1px;
-  }
+@mixin tokens-overrides() {
+  @include mat.dialog-overrides((
+    supporting-text-color: var(--mat-sys-on-surface),
+    subhead-color: var(--mat-sys-on-background),
+    container-shape: var(--mat-sys-corner-medium),
+    container-elevation-shadow: var(--mat-sys-level2),
+  ));
 }

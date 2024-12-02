@@ -24,7 +24,7 @@ import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectService } from "@tenzu/data/project";
 import { MembershipStore } from "@tenzu/data/membership";
@@ -76,7 +76,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
               }
             </mat-list>
           } @else {
-            <p class="mat-body-medium text-neutral-60">{{ t("pending_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>

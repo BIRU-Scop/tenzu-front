@@ -27,7 +27,7 @@ import { provideAnimations } from "@angular/platform-browser/animations";
 import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { DescriptionFieldComponent, DescriptionOptions } from "./description-field.component";

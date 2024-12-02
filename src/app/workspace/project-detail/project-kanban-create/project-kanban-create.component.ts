@@ -21,13 +21,12 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
-import { matDialogConfig } from "@tenzu/utils";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { Workflow, WorkflowStore } from "@tenzu/data/workflow";
 import { ProjectService } from "@tenzu/data/project/project.service";
 
 @Component({
@@ -39,7 +38,6 @@ import { ProjectService } from "@tenzu/data/project/project.service";
 })
 export class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
-  readonly workflowStore = inject(WorkflowStore);
   readonly projectService = inject(ProjectService);
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -68,11 +66,11 @@ export class ProjectKanbanCreateComponent {
         placeholder: "workflow.create_workflow.dialog.name_placeholder",
       },
     });
-    dialogRef.afterClosed().subscribe(async (name?: Pick<Workflow, "name">) => {
+    dialogRef.afterClosed().subscribe(async (name?: string) => {
       const project = this.projectService.selectedEntity();
       if (name && project) {
         const projectId = project.id;
-        const workflow = await this.projectService.createWorkflow(projectId, name);
+        const workflow = await this.projectService.createWorkflow({ projectId: projectId, name: name });
         await this.projectService.get(projectId);
         await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
       } else {

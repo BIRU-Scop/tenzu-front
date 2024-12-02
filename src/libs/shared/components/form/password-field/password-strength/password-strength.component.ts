@@ -26,6 +26,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 @Component({
   selector: "app-password-strength",
   imports: [TranslocoDirective],
+  styleUrl: "./password-strength.component.scss",
   template: `@if (severity()) {
     <div
       class="flex flex-row items-center gap-x-2"

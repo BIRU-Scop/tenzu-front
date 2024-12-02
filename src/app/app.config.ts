@@ -31,7 +31,7 @@ import { provideRouter, withComponentInputBinding, withRouterConfig } from "@ang
 
 import { routes } from "./app.routes";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideTransloco } from "@jsverse/transloco";
 import { provideTranslocoMessageformat } from "@jsverse/transloco-messageformat";
 import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from "@angular/common/http";

@@ -28,7 +28,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 @Component({
   selector: "app-breadcrumb",
   imports: [RouterLink, UpperCasePipe, TranslocoDirective],
-  template: ` <div *transloco="let t" class="mat-label-medium text-neutral-40 flex flex-wrap gap-1">
+  template: ` <div *transloco="let t" class="mat-label-medium text-on-surface-variant flex flex-wrap gap-1">
     @for (breadCrumb of breadcrumbStore.breadCrumbConfig(); track breadCrumb.label; let last = $last) {
       @if (!last) {
         <a [routerLink]="breadCrumb.link">

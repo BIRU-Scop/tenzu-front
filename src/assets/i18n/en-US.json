@@ -33,14 +33,14 @@
     "only_unread": "Show only unread",
     "all_read": "You have read all your notifications.",
     "types": {
-      "stories.assign.self": "<span class='text-neutral-0'>{{fullName}}</span> assigned you the story",
-      "stories.unassign.self": "<span class='text-neutral-0'>{{fullName}}</span> unassigned you from the story",
-      "stories.assign": "<span class='text-neutral-0'>{{fullName}}</span> was assigned to the story",
-      "stories.unassign": "<span class='text-neutral-0'>{{fullName}}</span> was unassigned to the story",
-      "stories.status_change": "<span class='text-neutral-0'>{{fullName}}</span> changed the status of the story to <span class='text-neutral-0'>{{status}}</span>",
-      "story_comment.create": "<span class='text-neutral-0'>{{fullName}}</span> commented on the story",
-      "stories.delete": "<span class='text-neutral-0'>{{fullName}}</span> deleted the story {{story}}",
-      "stories.workflow_change": "<span class='text-neutral-0'>{{fullName}}</span> moved the story to <span class='text-neutral-0'>{{status}}</span> status on the  <span class='text-neutral-0'>{{workflow}}</span> workflow."
+      "stories.assign.self": "<span class='text-on-background'>{{fullName}}</span> assigned you the story",
+      "stories.unassign.self": "<span class='text-on-background'>{{fullName}}</span> unassigned you from the story",
+      "stories.assign": "<span class='text-on-background'>{{fullName}}</span> was assigned to the story",
+      "stories.unassign": "<span class='text-on-background'>{{fullName}}</span> was unassigned to the story",
+      "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> changed the status of the story to <span class='text-on-background'>{{status}}</span>",
+      "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> commented on the story",
+      "stories.delete": "<span class='text-on-background'>{{fullName}}</span> deleted the story {{story}}",
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status on the  <span class='text-on-background'>{{workflow}}</span> workflow."
     }
   },
   "component": {

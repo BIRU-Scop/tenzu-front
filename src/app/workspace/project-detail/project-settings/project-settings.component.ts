@@ -31,10 +31,10 @@ import { Router } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NotificationService } from "@tenzu/utils/services";
+import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectService } from "@tenzu/data/project/project.service";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { tap } from "rxjs";
 
 @Component({
@@ -92,8 +92,8 @@ import { tap } from "rxjs";
       <div class="flex flex-col gap-y-2">
         <h2 class="mat-headline-small">{{ t("delete_project_title") }}</h2>
         <div class="flex flex-row">
-          <mat-icon class="text-error-40 pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-error-40 align-middle">
+          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
+          <p class="mat-body-medium text-on-error-container align-middle">
             {{ t("delete_project_warning") }}
           </p>
         </div>

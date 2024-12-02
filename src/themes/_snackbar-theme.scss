@@ -26,7 +26,7 @@
    @apply m-4;
   }
   .mat-mdc-snackbar-surface {
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--mat-sys-level3);
     @apply pr-1;
   }
   .mat-mdc-simple-snack-bar {
@@ -36,33 +36,33 @@
     @apply py-1.5 px-2;
   }
 }
-@mixin color-and-typo($theme) {
+@mixin tokens-overrides() {
+  @include mat.snack-bar-overrides((
+      container-shape: var(--mat-sys-corner-medium)
+  ));
   .mdc-snackbar {
-    @include mat.snack-bar-overrides((
-      container-shape: 4px
-    ));
     &.snackbar-success {
       @include mat.snack-bar-overrides((
-        container-color: mat.get-theme-color($theme, tertiary, 90),
-        supporting-text-color: mat.get-theme-color($theme, tertiary, 20)
+        container-color: var(--mat-sys-tertiary-container),
+        supporting-text-color: var(--mat-sys-on-tertiary-container)
       ));
     }
     &.snackbar-info {
       @include mat.snack-bar-overrides((
-        container-color: mat.get-theme-color($theme, primary, 90),
-        supporting-text-color: mat.get-theme-color($theme, primary, 20)
+        container-color: var(--mat-sys-secondary-container),
+        supporting-text-color: var(--mat-sys-on-secondary-container)
       ));
     }
     &.snackbar-error {
       @include mat.snack-bar-overrides((
-        container-color: mat.get-theme-color($theme, error, 90),
-        supporting-text-color: mat.get-theme-color($theme, error, 20)
+        container-color: var(--mat-sys-error-container),
+        supporting-text-color: var(--mat-sys-on-error-container)
       ));
     }
     &.snackbar-warning {
       @include mat.snack-bar-overrides((
-        container-color: mat.get-theme-color($theme, secondary, 90),
-        supporting-text-color: mat.get-theme-color($theme, secondary, 20)
+        container-color: var(--mat-sys-warning-container),
+        supporting-text-color: var(--mat-sys-on-warning-container)
       ));
     }
   }

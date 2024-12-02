@@ -33,22 +33,23 @@ import { DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { NotificationService, RelativeDialogService } from "@tenzu/utils/services";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MembershipStore } from "@tenzu/data/membership";
-import { WorkflowStore } from "@tenzu/data/workflow";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
-import { RouterLink } from "@angular/router";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-story-detail",
@@ -79,8 +80,8 @@ import { MatTooltip } from "@angular/material/tooltip";
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
       @if (this.selectedStory(); as story) {
         <div class="flex gap-1 items-baseline mb-2">
-          <span class="text-neutral-40 mat-title-small">{{ t("workflow") }}</span>
-          <span class="text-neutral-20 mat-title-medium">{{ story.workflow.name }}</span>
+          <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
+          <span class="text-on-surface mat-title-medium">{{ story.workflow.name }}</span>
           <button
             class="icon-sm"
             mat-icon-button
@@ -91,9 +92,9 @@ import { MatTooltip } from "@angular/material/tooltip";
           >
             <mat-icon>edit</mat-icon>
           </button>
-          <span class="text-neutral-40 mat-title-small">/</span>
-          <span class="text-neutral-40 mat-title-small">{{ t("story") }}</span>
-          <span class="text-neutral-20 mat-title-medium">#{{ story.ref }}</span>
+          <span class="text-on-surface-variant mat-title-small">/</span>
+          <span class="text-on-surface-variant mat-title-small">{{ t("story") }}</span>
+          <span class="text-on-surface mat-title-medium">#{{ story.ref }}</span>
           <a
             mat-icon-button
             class="icon-sm"
@@ -169,7 +170,7 @@ import { MatTooltip } from "@angular/material/tooltip";
                         <a
                           mat-icon-button
                           target="_blank"
-                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
+                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
                           type="button"
                         >
                           <mat-icon>visibility</mat-icon>
@@ -197,28 +198,28 @@ import { MatTooltip } from "@angular/material/tooltip";
             </div>
           </div>
           <div
-            class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-neutral-80 pl-8 pt-4"
+            class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline pl-8 pt-4"
           >
             <div class="grid grid-cols-2 gap-y-4 content-start mb-2">
-              <span class="text-neutral-40 mat-label-medium self-center">{{ t("created_by") }}</span>
+              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
               <app-user-card
                 [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
                 [username]="story.createdAt | date: 'short'"
                 [color]="story.createdBy?.color || 0"
               ></app-user-card>
-              <span class="text-neutral-40 mat-label-medium self-center">{{ t("status") }}</span>
+              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
               <mat-form-field>
                 <mat-select
                   [(value)]="this.statusSelected"
                   (selectionChange)="changeStatus()"
                   [compareWith]="compareStatus"
                 >
-                  @for (status of this.workflowStore.selectedEntity()?.statuses; track status.id) {
+                  @for (status of workflowService.selectedEntity()?.statuses; track status.id) {
                     <mat-option [value]="status">{{ status.name }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
-              <span class="text-neutral-40 mat-label-medium self-center">{{ t("assigned_to") }}</span>
+              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
               @if (assigned().length > 0) {
                 <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
                   <app-avatar-list [users]="assigned()" [prioritizeCurrentUser]="true"></app-avatar-list>
@@ -261,10 +262,10 @@ import { MatTooltip } from "@angular/material/tooltip";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailComponent {
+  workflowService = inject(WorkflowService);
   storyStore = inject(StoryStore);
   membershipStore = inject(MembershipStore);
   breadcrumbStore = inject(BreadcrumbStore);
-  workflowStore = inject(WorkflowStore);
   notificationService = inject(NotificationService);
   storyDetailService = inject(StoryDetailService);
   projectKanbanService = inject(ProjectKanbanService);
@@ -282,9 +283,8 @@ export class StoryDetailComponent {
     toObservable(this.selectedStory).subscribe(async (value) => {
       this.form.setValue({ title: value?.title || "" });
       this.statusSelected.set(value.status);
-      if (this.workflowStore.selectedEntity()?.id !== value.workflowId) {
-        await this.workflowStore.refreshWorkflow(value.workflow);
-        this.workflowStore.selectWorkflow(value.workflowId);
+      if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
+        await this.workflowService.getBySlug(value.workflow);
       }
     });
     this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });

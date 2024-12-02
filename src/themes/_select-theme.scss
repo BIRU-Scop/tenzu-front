@@ -22,52 +22,43 @@
 @use '@angular/material' as mat;
 
 .mat-mdc-select-panel {
+  border-style: solid;
+  border-color: var(--mat-sys-outline);
+  border-width: 1px;
   .mat-mdc-option {
     min-height: 32px;
   }
+  .mdc-list-item__primary-text {
+    color:  var(--mat-sys-on-secondary-container);
+  }
+  &:hover .mdc-list-item__primary-text {
+    color:  var(--mat-sys-on-secondary-container);
+  }
 }
-@mixin color-and-typo($theme) {
-  .mat-mdc-select {
-    @include mat.select-overrides((
-      trigger-text-size: mat.get-theme-typography($theme, body-medium, font-size),
-      trigger-text-line-height: mat.get-theme-typography($theme, body-medium, line-height),
-      enabled-trigger-text-color:  mat.get-theme-color($theme, neutral-variant, 25),
-    ));
-  }
-  .mat-mdc-select-panel {
-    border-style: solid;
-    border-color:  mat.get-theme-color($theme, neutral, 90);
-    border-width: 1px;
-    @media (prefers-color-scheme: dark) {
-      @include mat.select-overrides((
-        panel-background-color: mat.get-theme-color($theme, neutral, 98),
-      ));
-    }
-    @media (prefers-color-scheme: light) {
-      @include mat.select-overrides((
-        panel-background-color: mat.get-theme-color($theme, neutral, 100),
-      ));
-    }
-    .mdc-list-item {
-      @include mat.option-overrides((
-        label-text-size : mat.get-theme-typography($theme, body-medium, font-size),
-        label-text-line-height : mat.get-theme-typography($theme, body-medium, line-height),
-        label-text-color:  mat.get-theme-color($theme, neutral-variant, 20),
-        selected-state-layer-color: mat.get-theme-color($theme, neutral-variant, 98),
-        selected-state-label-text-color: mat.get-theme-color($theme, tertiary, 20),
-        hover-state-layer-color: mat.get-theme-color($theme, neutral-variant, 98),
-        focus-state-layer-color: mat.get-theme-color($theme, neutral-variant, 95),
-      ));
-      .mdc-list-item__primary-text {
-        color:  mat.get-theme-color($theme, neutral-variant, 20);
-      }
-      &:hover .mdc-list-item__primary-text {
-        color:  mat.get-theme-color($theme, neutral-variant, 20);
-      }
-    }
-    @include mat.pseudo-checkbox-overrides((
-        full-selected-checkmark-color: mat.get-theme-color($theme, tertiary, 25),
-    ));
 
+@mixin tokens-overrides() {
+  @include mat.select-overrides((
+    trigger-text-size: var(--mat-sys-body-medium-size),
+    trigger-text-line-height: var(--mat-sys-body-medium-line-heigh),
+    enabled-trigger-text-color: var(--mat-sys-on-secondary-container),
+    container-elevation-shadow: var(--mat-sys-level3)
+  ));
+  .mat-mdc-select-panel {
+    @include mat.list-overrides((
+      list-item-hover-state-layer-opacity: 0,
+      list-item-focus-state-layer-opacity: 0,
+    ));
   }
+  @include mat.option-overrides((
+    label-text-size : var(--mat-sys-body-medium-size),
+    label-text-line-height : var(--mat-sys-body-line-heigh),
+    label-text-color:  var(--mat-sys-on-secondary-container),
+    selected-state-layer-color: var(--mat-sys-secondary-container),
+    selected-state-label-text-color: var(--mat-sys-on-secondary-container),
+    hover-state-layer-color: var(--mat-sys-secondary-container),
+    focus-state-layer-color: var(--mat-sys-secondary),
+  ));
+  @include mat.pseudo-checkbox-overrides((
+    full-selected-checkmark-color: var(--mat-sys-on-tertiary),
+  ));
 }

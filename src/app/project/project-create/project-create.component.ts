@@ -24,7 +24,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { RandomColorService } from "@tenzu/utils/services";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { MatOption, MatSelect, MatSelectTrigger } from "@angular/material/select";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { combineLatestWith, filter } from "rxjs";

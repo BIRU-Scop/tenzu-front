@@ -29,19 +29,19 @@ import { MatDialog } from "@angular/material/dialog";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 import { WorkspacePlaceholderDialogComponent } from "./workspace-placeholder-dialog/workspace-placeholder-dialog.component";
-import { matDialogConfig } from "@tenzu/utils";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card/project-card.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton/card-skeleton.component";
-import { RelativeDialogService } from "@tenzu/utils/services";
+import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import {
   EnterNameDialogComponent,
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
 import { ProjectService } from "@tenzu/data/project";
-import { WorkflowStore } from "@tenzu/data/workflow";
 import { StoryStore } from "@tenzu/data/story";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
 
 @Component({
   selector: "app-workspace-list",
@@ -132,7 +132,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 export class WorkspaceListComponent implements AfterViewInit {
   readonly workspaceService = inject(WorkspaceService);
   readonly projectService = inject(ProjectService);
-  readonly workflowStore = inject(WorkflowStore);
+  readonly workflowService = inject(WorkflowService);
   readonly storyStore = inject(StoryStore);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
@@ -156,7 +156,7 @@ export class WorkspaceListComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.projectService.fullReset();
     this.workspaceService.fullReset();
-    this.workflowStore.reset();
+    this.workflowService.resetSelectedEntity();
     this.storyStore.reset();
     this.init().then();
   }
