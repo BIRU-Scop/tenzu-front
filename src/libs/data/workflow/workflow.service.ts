@@ -65,7 +65,7 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
     throw new Error("Method not implemented.");
   }
   resetSelectedEntity(): void {
-    throw new Error("Method not implemented.");
+    this.workflowStore.reset();
   }
 
   async createStatus(projectId: string, status: Pick<Status, "name" | "color">) {
