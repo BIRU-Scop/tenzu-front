@@ -21,29 +21,9 @@
 
 @use '@angular/material' as mat;
 
-.mat-mdc-menu-panel {
-  border-style: solid;
-  border-color: var(--mat-sys-outline);
-  border-width: 1px;
-  border-bottom-width: 2px;
-  a {
-    text-decoration: none;
-  }
-  .mat-mdc-menu-item {
-    min-height: 32px;
-    .mat-icon {
-      font-size: var(--mat-sys-body-large-size);
-    }
-  }
-}
 @mixin tokens-overrides() {
-  @include mat.menu-overrides((
-    item-label-text-size : var(--mat-sys-label-large-size),
-    item-label-text-line-height : var(--mat-sys-label-large-line-height),
-    item-label-text-color: var(--mat-sys-on-secondary-container),
-    item-icon-color: var(--mat-sys-on-secondary),
-    item-hover-state-layer-color: var(--mat-sys-secondary-container),
-    item-focus-state-layer-color: var(--mat-sys-secondary-container),
-    item-icon-size: var(--mat-sys-body-large-size)
+  @include mat.badge-overrides((
+    background-color: var(--mat-sys-error-container),
+    text-color:  var(--mat-sys-on-error-container),
   ));
 }
