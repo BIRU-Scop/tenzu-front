@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.6...v0.1.0-staging.7) (2024-12-03)
+
+
+### Bug Fixes
+
+* handle null workflow in story detail subscription ([a3d2d21](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a3d2d2116553c63780fd480e315a8201e77036de))
+
 ## [0.1.0-staging.6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.5...v0.1.0-staging.6) (2024-12-03)
 
 
