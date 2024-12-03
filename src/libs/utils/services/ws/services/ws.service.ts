@@ -35,7 +35,6 @@ import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSRespo
 import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
-// import { WorkspacesStore } from "@tenzu/data/workspace";
 import { Router } from "@angular/router";
 import {
   applyNotificationEvent,
@@ -48,7 +47,8 @@ import {
   applyWorkflowStatusEvent,
   applyWorkspaceEvent,
 } from "./apply-event.function";
-import { debug } from "../../../functions/logging";
+import { debug } from "@tenzu/utils/functions/logging";
+import { clearAuthStorage } from "@tenzu/data/auth/utils";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -108,17 +108,24 @@ export class WsService {
   }
   async dispatch(message: WSResponse) {
     switch (message.type) {
-      case "action":
+      case "action": {
         this.dispatchAction(message);
         break;
-      case "event":
+      }
+      case "event": {
         await this.dispatchEvent(message);
         break;
-      case "system":
+      }
+      case "system": {
         if (!isDevMode()) {
           console.error("received system error websocket", message);
         }
         break;
+      }
+      default: {
+        debug("WS", "The type of the command is unknown", message);
+        break;
+      }
     }
   }
   dispatchAction(message: WSResponseAction) {
@@ -126,7 +133,7 @@ export class WsService {
       case "ok": {
         debug(
           "WS",
-          `from the channel ${message.content.channel} received a response of the command ${message.action.command}`,
+          `from the channel ${message?.content?.channel} received a response of the command ${message?.action?.command}`,
           message,
         );
         this.manageSubscription(message);
@@ -136,6 +143,9 @@ export class WsService {
         console.error(`[WS] the command ${message.action.command} received a error response`, message);
         break;
       }
+      default: {
+        debug("WS", "this command is unknow", message);
+      }
     }
   }
 
@@ -143,6 +153,10 @@ export class WsService {
     switch (message.action.command) {
       case "signin": {
         this.loggedSubject.next(true);
+        break;
+      }
+      case "signout": {
+        this.signout();
         break;
       }
       case "subscribe_to_workspace_events": {
@@ -252,6 +266,9 @@ export class WsService {
     debug("WS", `sent the command ${command.command}`, command);
     if (command.command === "signin") {
       this.subject.next(command);
+    } else if (command.command === "signout") {
+      this.subject.next(command);
+      this.signout();
     } else {
       this.logged$
         .pipe(
@@ -263,5 +280,10 @@ export class WsService {
         )
         .subscribe();
     }
+  }
+  signout() {
+    this.loggedSubject.next(false);
+    clearAuthStorage();
+    this.router.navigateByUrl("/login").then();
   }
 }
