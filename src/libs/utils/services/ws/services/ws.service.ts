@@ -282,7 +282,6 @@ export class WsService {
     }
   }
   signout() {
-    debug("WS", `signout`);
     this.loggedSubject.next(false);
     clearAuthStorage();
     this.router.navigateByUrl("/login").then();

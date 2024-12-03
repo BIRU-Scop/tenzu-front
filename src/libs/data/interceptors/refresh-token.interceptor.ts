@@ -25,12 +25,14 @@ import { AuthService } from "../auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ConfigServiceService } from "../../utils/services/config-service/config-service.service";
+import { WsService } from "@tenzu/utils/services/ws";
 
 export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   const authService = inject(AuthService);
   const tokens = authService.getToken();
   const notificationService = inject(NotificationService);
   const configService = inject(ConfigServiceService);
+  const wsService = inject(WsService);
   request = request.clone({
     setHeaders: {
       "correlation-id": configService.correlationId,
@@ -47,7 +49,7 @@ export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: Htt
             }),
             catchError((error) => {
               if (error.status === 401 || error.status === 403) {
-                authService.logout();
+                wsService.signout();
                 notificationService.error({ title: "notification.login.logout" });
                 return EMPTY;
               }
