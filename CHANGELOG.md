@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.2...v0.1.0-staging.4) (2024-12-03)
+
+
+### Features
+
+* style badge tooltip and slide toggle ([af91a08](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/af91a080d7bd2b48f1c5661c1fcdc3778ce0826d))
+
+
+### Bug Fixes
+
+* bump version ([b5f32bf](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b5f32bffdca3c3557168e0655bd24ebc65ac13b6))
+* error with logout event ([dff4186](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/dff41865eb514cd9ed6cbbc61230f695fdd078ae))
+
 ## [0.1.0-staging.3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.2...v0.1.0-staging.3) (2024-12-03)
 
 
