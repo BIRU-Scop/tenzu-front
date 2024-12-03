@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.2...v0.1.0-staging.3) (2024-12-03)
+
+
+### Bug Fixes
+
+* error with logout event ([dff4186](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/dff41865eb514cd9ed6cbbc61230f695fdd078ae))
+
 ## [0.1.0-staging.2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.1...v0.1.0-staging.2) (2024-12-03)
 
 ## [0.1.0-staging.1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.0...v0.1.0-staging.1) (2024-12-02)
