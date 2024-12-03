@@ -27,6 +27,7 @@ import { map, of, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
+import { clearAuthStorage } from "@tenzu/data/auth/utils";
 
 @Injectable({
   providedIn: "root",
@@ -47,15 +48,11 @@ export class AuthService {
   }
 
   clear() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("refresh");
-    localStorage.removeItem("username");
+    clearAuthStorage();
   }
 
   logout() {
     this.wsService.command({ command: "signout" });
-    this.clear();
-    return this.router.navigateByUrl("/login");
   }
 
   refresh(tokens: Tokens) {
