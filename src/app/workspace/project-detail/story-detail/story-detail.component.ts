@@ -81,7 +81,7 @@ import { RouterLink } from "@angular/router";
       @if (this.selectedStory(); as story) {
         <div class="flex gap-1 items-baseline mb-2">
           <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
-          <span class="text-on-surface mat-title-medium">{{ story.workflow.name }}</span>
+          <span class="text-on-surface mat-title-medium">{{ story?.workflow?.name }}</span>
           <button
             class="icon-sm"
             mat-icon-button
