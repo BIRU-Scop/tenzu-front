@@ -28,10 +28,10 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
-import { MatDivider } from "@angular/material/divider";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { UserMinimal } from "@tenzu/data/user";
 import { MatDialogContent } from "@angular/material/dialog";
+import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-notification-unit",
@@ -42,7 +42,7 @@ import { MatDialogContent } from "@angular/material/dialog";
     <div
       tabindex="1"
       (keyup)="read.emit()"
-      class="flex flex-row gap-2"
+      class="flex flex-row gap-2 px-1 py-1.5 rounded cursor-pointer hover:bg-secondary-container"
       *transloco="let t"
       (click)="read.emit()"
       [class.opacity-60]="!!notif.readAt"
@@ -165,12 +165,13 @@ export class NotificationUnitComponent {
           {{ t("notifications.title") }}
         </p>
         <div class="flex flex-row gap-1 items-baseline">
-          <span class="mat-label-medium whitespace-nowrap">{{ t("notifications.only_unread") }}</span>
-          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()"></mat-slide-toggle>
+          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()">{{
+            t("notifications.only_unread")
+          }}</mat-slide-toggle>
         </div>
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col py-1.5">
         @for (notification of notifications(); track notification.id) {
           <app-notification-unit [notification]="notification" (read)="read(notification)"></app-notification-unit>
           @if (!$last) {

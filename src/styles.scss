@@ -37,7 +37,11 @@
 @use "themes/expansion-theme" as expansion;
 @use "themes/snackbar-theme" as snackbar;
 @use "themes/table-theme" as table;
+@use "themes/tooltip-theme" as tooltip;
+@use "themes/badge-theme" as badge;
 @use "themes/cdk-drag-theme" as cdk-drag;
+@use "themes/slide-toggle-theme" as slide-toggle;
+
 @use "themes/skeleton";
 
 @tailwind base;
@@ -138,37 +142,9 @@ strong {
   @include expansion.tokens-overrides;
   @include snackbar.tokens-overrides;
   @include table.tokens-overrides;
-  /************************ COLOR CLASSES *************************/
-  .text-on-error {
-    color: var(--mat-sys-on-error);
-  }
-  .text-on-error-container {
-    color: var(--mat-sys-on-error-container);
-  }
-  .text-on-warning-container {
-    color: var(--mat-sys-on-warning-container);
-  }
-  .text-on-tertiary-container {
-    color: var(--mat-sys-on-tertiary-container);
-  }
-  .text-on-background {
-    color: var(--mat-sys-on-background);
-  }
-  .text-on-surface {
-    color: var(--mat-sys-on-surface);
-  }
-  .text-on-surface-variant {
-    color: var(--mat-sys-on-surface-variant);
-  }
-  .border-outline {
-    border-color: var(--mat-sys-outline);
-  }
-  .bg-surface-dim {
-    background-color: var(--mat-sys-surface-dim);
-  }
-  .bg-surface-container {
-    background-color: var(--mat-sys-surface-container);
-  }
+  @include tooltip.tokens-overrides;
+  @include badge.tokens-overrides;
+  @include slide-toggle.tokens-overrides();
 }
 
 body {
@@ -246,7 +222,7 @@ body {
     @include mat.theme-overrides((
       background: mat.get-theme-color(themes.$light-theme, neutral, 100),
       surface:  mat.get-theme-color(themes.$light-theme, neutral, 100),
-      surface-container: mat.get-theme-color(themes.$light-theme, neutral, 98),
+      surface-container: mat.get-theme-color(themes.$light-theme, neutral, 100),
       surface-dim: mat.get-theme-color(themes.$light-theme, primary, 20),
       on-background: mat.get-theme-color(themes.$light-theme, neutral, 17),
       on-surface: mat.get-theme-color(themes.$light-theme, neutral, 25),
