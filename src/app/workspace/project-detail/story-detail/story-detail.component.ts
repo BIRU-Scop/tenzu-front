@@ -281,10 +281,12 @@ export class StoryDetailComponent {
 
   constructor() {
     toObservable(this.selectedStory).subscribe(async (value) => {
-      this.form.setValue({ title: value?.title || "" });
-      this.statusSelected.set(value.status);
-      if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
-        await this.workflowService.getBySlug(value.workflow);
+      if (value.workflow) {
+        this.form.setValue({ title: value?.title || "" });
+        this.statusSelected.set(value.status);
+        if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
+          await this.workflowService.getBySlug(value.workflow);
+        }
       }
     });
     this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
