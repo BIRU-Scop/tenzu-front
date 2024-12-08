@@ -20,7 +20,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, computed, inject, model, viewChild } from "@angular/core";
-import { StoryStore } from "@tenzu/data/story";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
@@ -50,6 +49,8 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
 import { RouterLink } from "@angular/router";
+import { StoryService } from "@tenzu/data/story/story.service";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 
 @Component({
   selector: "app-story-detail",
@@ -101,8 +102,8 @@ import { RouterLink } from "@angular/router";
             type="button"
             [attr.aria-label]="t('story_previous')"
             [matTooltip]="t('story_previous')"
-            [disabled]="!selectedStory().prev"
-            [routerLink]="['..', selectedStory().prev?.ref]"
+            [disabled]="!story.prev"
+            [routerLink]="['..', story.prev?.ref]"
           >
             <mat-icon>arrow_back</mat-icon>
           </a>
@@ -112,8 +113,8 @@ import { RouterLink } from "@angular/router";
             type="button"
             [attr.aria-label]="t('story_next')"
             [matTooltip]="t('story_next')"
-            [disabled]="!selectedStory().next"
-            [routerLink]="['..', selectedStory().next?.ref]"
+            [disabled]="!story.next"
+            [routerLink]="['..', story.next?.ref]"
           >
             <mat-icon>arrow_forward</mat-icon>
           </a>
@@ -124,7 +125,7 @@ import { RouterLink } from "@angular/router";
               <mat-form-field appearance="fill" class="title-field">
                 <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
               </mat-form-field>
-              <app-editor #editorContainer [data]="storyStore.selectedStoryDetails().description"></app-editor>
+              <app-editor #editorContainer [data]="story.description"></app-editor>
               <div class="flex flex-row gap-2">
                 <button class="tertiary-button" mat-flat-button type="submit">{{ t("save") }}</button>
                 <button class="secondary-button" mat-flat-button type="button" (click)="cancel()">
@@ -139,7 +140,7 @@ import { RouterLink } from "@angular/router";
                 {{ t("attachments.attach_file") }}
               </button>
               <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
-              @let selectedStoryAttachments = storyStore.selectedStoryAttachments();
+              @let selectedStoryAttachments = storyService.selectedStoryAttachments();
               @if (selectedStoryAttachments.length > 0) {
                 <mat-expansion-panel expanded>
                   <mat-expansion-panel-header>
@@ -263,7 +264,7 @@ import { RouterLink } from "@angular/router";
 })
 export class StoryDetailComponent {
   workflowService = inject(WorkflowService);
-  storyStore = inject(StoryStore);
+  storyService = inject(StoryService);
   membershipStore = inject(MembershipStore);
   breadcrumbStore = inject(BreadcrumbStore);
   notificationService = inject(NotificationService);
@@ -272,7 +273,7 @@ export class StoryDetailComponent {
   relativeDialog = inject(RelativeDialogService);
   fb = inject(FormBuilder);
 
-  selectedStory = this.storyStore.selectedStoryDetails;
+  selectedStory = this.storyService.selectedEntity;
   editor = viewChild.required<EditorComponent>("editorContainer");
   form = this.fb.nonNullable.group({
     title: ["", Validators.required],
@@ -280,20 +281,20 @@ export class StoryDetailComponent {
   statusSelected = model({} as Status);
 
   constructor() {
-    toObservable(this.selectedStory).subscribe(async (value) => {
-      if (value.workflow) {
+    toObservable(this.selectedStory)
+      .pipe(filterNotNull())
+      .subscribe(async (value) => {
         this.form.setValue({ title: value?.title || "" });
         this.statusSelected.set(value.status);
         if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
           await this.workflowService.getBySlug(value.workflow);
         }
-      }
-    });
+      });
     this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
     this.breadcrumbStore.setSixthLevel(undefined);
   }
 
-  assigned = computed(() => this.selectedStory().assignees || []);
+  assigned = computed(() => this.selectedStory()?.assignees || []);
 
   async submit() {
     const description = await this.editor().save();
@@ -338,13 +339,13 @@ export class StoryDetailComponent {
   }
 
   openAssignStoryDialog(event: MouseEvent): void {
-    const story = this.storyStore.selectedStoryDetails();
+    const story = this.selectedStory();
     const teamMembers = this.membershipStore.projectEntities();
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "left",
       data: {
-        assigned: story.assignees,
+        assigned: story?.assignees,
         teamMembers: teamMembers,
       },
     });
@@ -355,25 +356,28 @@ export class StoryDetailComponent {
   }
 
   openChooseWorkflowDialog(event: MouseEvent): void {
-    const story = this.storyStore.selectedStoryDetails();
+    const story = this.selectedStory();
     const dialogRef = this.relativeDialog.open(ChooseWorkflowDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "right",
       data: {
-        currentWorkflowSlug: story.workflow.slug,
+        currentWorkflowSlug: story?.workflow.slug,
       },
     });
     dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
-      if (newWorkflowSlug !== story.workflow.slug) {
-        const patchedStory = await this.storyDetailService.patchSelectedStory({ workflow: newWorkflowSlug });
-        this.notificationService.success({ title: "notification.action.changes_saved" });
-        this.statusSelected.set(patchedStory.status);
+      if (newWorkflowSlug !== story?.workflow.slug) {
+        const patchedStory = await this.storyDetailService.patchSelectedStory({ workflowSlug: newWorkflowSlug });
+        if (patchedStory) {
+          this.notificationService.success({ title: "notification.action.changes_saved" });
+
+          this.statusSelected.set(patchedStory.status);
+        }
       }
     });
   }
 
   async changeStatus() {
-    await this.storyDetailService.patchSelectedStory({ status: this.statusSelected().id });
+    await this.storyDetailService.patchSelectedStory({ statusId: this.statusSelected().id });
     this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 

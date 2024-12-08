@@ -20,11 +20,12 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { StoryCreate, StoryStore } from "@tenzu/data/story";
+import { StoryCreate } from "@tenzu/data/story";
 import { Status } from "@tenzu/data/status";
 import { Router } from "@angular/router";
 import { ProjectService } from "@tenzu/data/project";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { StoryService } from "@tenzu/data/story/story.service";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -35,7 +36,7 @@ import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 export class ProjectKanbanService {
   projectService = inject(ProjectService);
   workflowService = inject(WorkflowService);
-  storyStore = inject(StoryStore);
+  storyService = inject(StoryService);
   router = inject(Router);
 
   public async createStatus(status: Pick<Status, "name" | "color">) {
@@ -51,7 +52,7 @@ export class ProjectKanbanService {
       await this.workflowService.deleteStatus(selectedProject.id, statusId, moveToStatus);
       const newStatus = this.workflowService.selectedEntity()?.statuses.find((status) => status.id === moveToStatus);
       if (newStatus) {
-        this.storyStore.deleteStatusGroup(statusId, newStatus);
+        this.storyService.deleteStatusGroup(statusId, newStatus);
       }
     }
   }
@@ -67,23 +68,26 @@ export class ProjectKanbanService {
     const selectedProject = this.projectService.selectedEntity();
     const selectedWorkflow = this.workflowService.selectedEntity();
     if (selectedProject && selectedWorkflow) {
-      await this.storyStore.create(selectedProject.id, selectedWorkflow.slug, story);
+      await this.storyService.create(story, selectedProject.id, selectedWorkflow.slug);
     }
   }
 
   async assignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
     const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
-    const ref = storyRef ? storyRef : this.storyStore.selectedStoryDetails().ref;
-    if (pId) {
-      await this.storyStore.createAssign(pId, ref, username);
+    if (pId && storyRef) {
+      const selectedStory = this.storyService.entityMap()[storyRef];
+      const ref = storyRef ? storyRef : selectedStory.ref;
+      await this.storyService.createAssign(pId, ref, username);
     }
   }
 
   async removeAssignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
     const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
-    const ref = storyRef ? storyRef : this.storyStore.selectedStoryDetails().ref;
-    if (pId) {
-      await this.storyStore.deleteAssign(pId, ref, username);
+
+    if (pId && storyRef) {
+      const selectedStory = this.storyService.entityMap()[storyRef];
+      const ref = storyRef ? storyRef : selectedStory.ref;
+      await this.storyService.deleteAssign(pId, ref, username);
     }
   }
 }

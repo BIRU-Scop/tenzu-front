@@ -19,15 +19,15 @@
  *
  */
 
-import { Status } from "@tenzu/data/status";
-import { User, UserMinimal } from "@tenzu/data/user";
-import { Workflow } from "@tenzu/data/workflow";
+import { Status } from "../status";
+import { User, UserMinimal } from "../user";
+import { Workflow } from "../workflow";
 export type StoryReorderPayload = {
   reorder?: {
     place: "after" | "before";
     ref: number;
   };
-  status: string;
+  statusId: string;
   stories: number[];
 };
 export type StoryReorderPayloadEvent = StoryReorderPayload & {
@@ -41,6 +41,7 @@ export type Story = {
   description: string;
   workflowId: string;
   projectId: string;
+  statusId: string;
   status: Status;
   assignees: Array<UserMinimal>;
 };
@@ -69,18 +70,10 @@ export interface StoryDetail extends Story {
   descriptionUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
 }
 
-export type StoryCreate = {
-  title: string;
-  status: string;
-};
+export type StoryCreate = Pick<Story, "title" | "statusId">;
 
-export interface StoryUpdate {
-  ref: Story["ref"];
-  version: Story["version"];
-  status?: Story["status"]["id"];
-  title?: Story["title"];
-  description?: Story["description"];
-  workflow?: Workflow["slug"];
+export interface StoryUpdate extends Partial<StoryDetail> {
+  workflowSlug?: string;
 }
 
 export type StoryAttachment = {

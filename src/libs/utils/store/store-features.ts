@@ -21,7 +21,14 @@
 
 import { patchState, signalStoreFeature, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed } from "@angular/core";
-import { EntityId, removeAllEntities, removeEntity, setAllEntities, setEntity } from "@ngrx/signals/entities";
+import {
+  addEntities,
+  EntityId,
+  removeAllEntities,
+  removeEntity,
+  setAllEntities,
+  setEntity,
+} from "@ngrx/signals/entities";
 
 export function withLoadingStatus() {
   return signalStoreFeature(
@@ -43,6 +50,9 @@ export function setLoadingEnd() {
 export function withMethodsEntities<T extends { id: EntityId }>() {
   return signalStoreFeature(
     withMethods((store) => ({
+      addEntities(items: T[]) {
+        patchState(store, addEntities(items));
+      },
       setAllEntities(entities: T[]) {
         patchState(store, setAllEntities(entities));
       },

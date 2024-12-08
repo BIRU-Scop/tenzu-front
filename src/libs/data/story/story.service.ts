@@ -19,81 +19,151 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
-
-import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
+import { inject, Injectable, signal } from "@angular/core";
+import { StoryInfraService } from "./story-infra.service";
+import { lastValueFrom } from "rxjs";
+import { ServiceStoreEntity } from "../interface";
 import {
   Story,
+  StoryAssign,
+  StoryAttachment,
   StoryCreate,
   StoryDetail,
-  StoryReorderPayload,
-  StoryAttachment,
-  StoryAssign,
+  StoryReorderPayloadEvent,
   StoryUpdate,
 } from "./story.model";
+import { StoryDetailStore, StoryStore } from "./story.store";
+import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { Status } from "../status";
 
 @Injectable({
   providedIn: "root",
 })
-export class StoryService {
-  http = inject(HttpClient);
-  url = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/`;
+export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
+  private storyInfraService = inject(StoryInfraService);
+  private storyStore = inject(StoryStore);
+  private storyDetailStore = inject(StoryDetailStore);
+  selectedStoryAttachments = this.storyDetailStore.selectedStoryAttachments;
+  groupedByStatus = this.storyStore.groupedByStatus;
+  selectedEntity = this.storyDetailStore.item;
+  entities = this.storyStore.entities;
+  entityMap = this.storyStore.entityMap;
+  isLoading = signal(false);
 
-  getWorkflowStoryUrl(projectId: string, workflowSlug: string) {
-    return `${this.url}projects/${projectId}/workflows/${workflowSlug}/stories`;
+  async list(projectId: string, workflowSlug: string, offset: number, limit: number) {
+    this.isLoading.set(true);
+    while (true) {
+      const stories = await lastValueFrom(this.storyInfraService.getStories(projectId, workflowSlug, limit, offset));
+      this.isLoading.set(false);
+      this.storyStore.list(stories);
+      this.storyStore.reorder();
+      if (stories.length < limit) {
+        break;
+      }
+      offset += limit;
+    }
+    return [];
+  }
+  resetEntities(): void {
+    this.storyStore.reset();
+  }
+  fullReset(): void {
+    this.resetEntities();
+    this.resetSelectedEntity();
   }
 
-  getStoryUrl(projectId: string) {
-    return `${this.url}projects/${projectId}/stories`;
+  async deleteSelected(projectId: string, ref: number): Promise<StoryDetail | undefined> {
+    await lastValueFrom(this.storyInfraService.deleteStory(projectId, ref));
+    return this.wsRemoveStory(ref);
   }
-
+  wsRemoveStory(ref: number) {
+    this.storyStore.removeStory(ref);
+    if (ref === this.storyDetailStore.item()?.ref) {
+      this.storyDetailStore.reset();
+    }
+    return undefined;
+  }
+  async create(story: StoryCreate, projectId: string, workflowSlug: string): Promise<StoryDetail> {
+    const newStory = await lastValueFrom(this.storyInfraService.create(projectId, workflowSlug, story));
+    this.add(newStory);
+    return newStory;
+  }
+  add(story: Story) {
+    this.storyStore.add(story);
+  }
+  async get(projectId: string, ref: number) {
+    const story = await lastValueFrom(this.storyInfraService.get(projectId, ref));
+    const attachments = await lastValueFrom(this.storyInfraService.getAttachments(projectId, ref));
+    this.storyStore.setEntity(story);
+    this.storyDetailStore.set(story);
+    this.storyDetailStore.setStoryAttachments(attachments);
+    return story;
+  }
+  async updateSelected(data: StoryUpdate, projectId: string): Promise<StoryDetail | undefined> {
+    const storyPatched = await lastValueFrom(this.storyInfraService.patch(projectId, data));
+    this.update(storyPatched);
+    return storyPatched;
+  }
+  update(story: StoryDetail) {
+    this.storyStore.update(story);
+    this.storyDetailStore.set(story);
+  }
+  resetSelectedEntity(): void {
+    this.storyDetailStore.reset();
+  }
   getStoryAttachmentUrl(projectId: string, storyId: number, attachmentId: string) {
-    return `${this.getStoryUrl(projectId)}/${storyId}/attachments/${attachmentId}`;
+    return this.storyInfraService.getStoryAttachmentUrl(projectId, storyId, attachmentId);
   }
-
-  create(projectId: string, workflowSlug: string, Story: StoryCreate) {
-    return this.http.post<Story>(`${this.getWorkflowStoryUrl(projectId, workflowSlug)}`, Story);
+  async createAttachment(projectId: string, ref: number, attachment: Blob) {
+    const newAttachment = await lastValueFrom(this.storyInfraService.addStoryAttachments(projectId, ref, attachment));
+    this.wsAddAttachment(newAttachment, ref);
   }
-
-  getStories(projectId: string, workflowSlug: string, limit: number, offset: number) {
-    return this.http.get<Story[]>(
-      `${this.getWorkflowStoryUrl(projectId, workflowSlug)}?offset=${offset}&limit=${limit}`,
+  wsAddAttachment(attachment: StoryAttachment, ref: number) {
+    this.storyDetailStore.addAttachment(attachment, ref);
+  }
+  async deleteAttachment(projectId: string, ref: number, attachmentId: string) {
+    await lastValueFrom(this.storyInfraService.deleteStoryAttachment(projectId, ref, attachmentId));
+    this.wsRemoveAttachment(attachmentId);
+  }
+  wsRemoveAttachment(attachmentId: string) {
+    this.storyDetailStore.removeAttachment(attachmentId);
+  }
+  async createAssign(projectId: string, ref: number, username: string) {
+    const storyAssign: StoryAssign = await lastValueFrom(
+      this.storyInfraService.createAssignee(projectId, ref, username),
     );
+    this.wsAddAssign(storyAssign, ref);
+    return storyAssign;
+  }
+  wsAddAssign(storyAssign: StoryAssign, ref: number) {
+    this.storyStore.addAssign(storyAssign, ref);
+    this.storyDetailStore.addAssign(storyAssign);
   }
 
-  get(projectId: string, ref: number) {
-    return this.http.get<StoryDetail>(`${this.getStoryUrl(projectId)}/${ref}`);
+  async deleteAssign(projectId: string, ref: number, username: string) {
+    await lastValueFrom(this.storyInfraService.deleteAssignee(projectId, ref, username));
+    this.wsRemoveAssign(ref, username);
   }
-
-  patch(projectId: string, story: StoryUpdate) {
-    return this.http.patch<StoryDetail>(`${this.getStoryUrl(projectId)}/${story.ref}`, story);
+  wsRemoveAssign(ref: number, username: string) {
+    this.storyStore.removeAssign(ref, username);
+    this.storyDetailStore.removeAssign(ref, username);
   }
-
-  deleteStory(projectId: string, ref: number) {
-    return this.http.delete(`${this.getStoryUrl(projectId)}/${ref}`);
+  wsReorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
+    this.storyStore.reorderStoryByEvent(reorder);
+    this.storyDetailStore.reorderStoryByEvent(reorder);
   }
-
-  addStoryAttachments(projectId: string, storyId: number, attachment: Blob) {
-    const formData = new FormData();
-    formData.append("file", attachment);
-    return this.http.post<StoryAttachment>(`${this.getStoryUrl(projectId)}/${storyId}/attachments`, formData);
+  async dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
+    const payload = this.storyStore.dropStoryIntoSameStatus(event);
+    await lastValueFrom(this.storyInfraService.reorder(projectId, workflowSlug, payload));
   }
-
-  getAttachments(projectId: string, storyId: number) {
-    return this.http.get<StoryAttachment[]>(`${this.getStoryUrl(projectId)}/${storyId}/attachments`);
+  async dropStoryBetweenStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
+    const payload = this.storyStore.dropStoryBetweenStatus(event);
+    await lastValueFrom(this.storyInfraService.reorder(projectId, workflowSlug, payload));
   }
-
-  deleteStoryAttachment(projectId: string, storyId: number, attachmentId: string) {
-    return this.http.delete(`${this.getStoryAttachmentUrl(projectId, storyId, attachmentId)}`);
+  reorder() {
+    this.storyStore.reorder();
   }
-  reorder(projectId: string, workflowSlug: string, payload: StoryReorderPayload) {
-    return this.http.post<never>(`${this.getWorkflowStoryUrl(projectId, workflowSlug)}/reorder`, payload);
-  }
-  createAssignee(projectId: string, ref: number, username: string) {
-    return this.http.post<StoryAssign>(`${this.getStoryUrl(projectId)}/${ref}/assignments`, { username: username });
-  }
-  deleteAssignee(projectId: string, ref: number, username: string) {
-    return this.http.delete<void>(`${this.getStoryUrl(projectId)}/${ref}/assignments/${username}`);
+  deleteStatusGroup(oldStatusId: string, newStatus: Status) {
+    this.storyStore.deleteStatusGroup(oldStatusId, newStatus);
   }
 }

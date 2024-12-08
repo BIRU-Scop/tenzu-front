@@ -20,10 +20,10 @@
  */
 
 import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
-import { computed, inject } from "@angular/core";
+import { computed } from "@angular/core";
 import {
   addEntities,
-  addEntity,
+  EntityId,
   removeAllEntities,
   removeEntity,
   SelectEntityId,
@@ -32,43 +32,56 @@ import {
   updateEntity,
   withEntities,
 } from "@ngrx/signals/entities";
-import { setLoadingBegin, setLoadingEnd, withLoadingStatus } from "../../utils/store/store-features";
+import { withMethodEntity } from "../../utils/store/store-features";
 import {
   Story,
   StoryAssign,
   StoryAttachment,
-  StoryCreate,
   StoryDetail,
   StoryReorderPayload,
   StoryReorderPayloadEvent,
-  StoryUpdate,
 } from "@tenzu/data/story/story.model";
-import { StoryService } from "@tenzu/data/story/story.service";
-import { lastValueFrom } from "rxjs";
 import { Status } from "@tenzu/data/status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
-  selectedStoryDetails: {} as StoryDetail,
   orderStoryByStatus: {} as Record<string, number[]>,
-  selectedStoryAttachments: [] as StoryAttachment[],
 };
 export const StoryStore = signalStore(
   { providedIn: "root" },
   withEntities<Story>(),
   withState(initialState),
-  withLoadingStatus(),
   withComputed(({ entityMap, orderStoryByStatus }) => ({
     groupedByStatus: computed(() => {
+      const orderStoryByStatusTemp = orderStoryByStatus();
       const result = {} as Record<string, Story[]>;
-      for (const [statusId, storiesId] of Object.entries(orderStoryByStatus())) {
+      for (const [statusId, storiesId] of Object.entries(orderStoryByStatusTemp)) {
         result[statusId] = storiesId.map((storyId) => entityMap()[storyId]);
       }
       return result;
     }),
   })),
   withMethods((store) => ({
+    addEntities(items: Story[]) {
+      patchState(store, addEntities(items, { selectId }));
+    },
+    setAllEntities(entities: Story[]) {
+      patchState(store, setAllEntities(entities, { selectId }));
+    },
+    setEntity(entity: Story) {
+      patchState(store, setEntity(entity, { selectId }));
+    },
+    updateEntity(ref: number, change: Partial<Story>) {
+      patchState(store, updateEntity({ id: ref, changes: { ...change } }, { selectId }));
+    },
+    removeEntity(selectedEntityId: EntityId) {
+      patchState(store, removeEntity(selectedEntityId));
+    },
+    reset() {
+      patchState(store, removeAllEntities());
+      patchState(store, initialState);
+    },
     reorder() {
       const orderStoryByStatus = store.entities().reduce(
         (acc, story) => {
@@ -83,58 +96,25 @@ export const StoryStore = signalStore(
       patchState(store, { orderStoryByStatus: { ...orderStoryByStatus } });
     },
   })),
-  withMethods((store, storyService = inject(StoryService)) => ({
-    reset() {
-      patchState(store, removeAllEntities());
-      patchState(store, initialState);
-    },
-    async list(projectId: string, workflowSlug: string, offset: number, limit: number) {
-      patchState(store, setLoadingBegin());
-      const stories = await lastValueFrom(storyService.getStories(projectId, workflowSlug, limit, offset));
-      patchState(store, addEntities(stories, { selectId }));
-      patchState(store, setLoadingEnd());
+  withMethods((store) => ({
+    list(stories: Story[]) {
+      store.addEntities(stories);
       return stories;
     },
 
     add(story: Story) {
-      patchState(store, setEntity(story, { selectId }));
+      store.setEntity(story);
       store.reorder();
-    },
-    async get(projectId: string, ref: number) {
-      const story = await lastValueFrom(storyService.get(projectId, ref));
-      const attachments = await lastValueFrom(storyService.getAttachments(projectId, ref));
-      patchState(store, setEntity(story as Story, { selectId }));
-      patchState(store, { selectedStoryDetails: story, selectedStoryAttachments: attachments });
-      return story;
     },
     update(story: StoryDetail) {
       const { ref, ...change } = story;
-      patchState(store, updateEntity({ id: ref, changes: { ...change } }, { selectId }));
-      if (store.selectedStoryDetails().ref === story.ref) {
-        patchState(store, { selectedStoryDetails: story });
-      }
+      store.updateEntity(ref, change);
       store.reorder();
       return story;
     },
-    addAttachment(newAttachment: StoryAttachment, ref: number) {
-      if (store.selectedStoryDetails().ref === ref) {
-        patchState(store, { selectedStoryAttachments: [...store.selectedStoryAttachments(), newAttachment] });
-      }
-      return newAttachment;
-    },
-    removeAttachment(attachmentId: string) {
-      patchState(store, {
-        selectedStoryAttachments: store
-          .selectedStoryAttachments()
-          .filter((attachment) => attachment.id !== attachmentId),
-      });
-    },
+
     removeStory(ref: number) {
-      patchState(store, removeEntity(ref));
-      patchState(store, { selectedStoryAttachments: [] });
-      if (ref === store.selectedStoryDetails().ref) {
-        patchState(store, { selectedStoryDetails: {} as StoryDetail });
-      }
+      store.removeEntity(ref);
       store.reorder();
     },
     addAssign(storyAssign: StoryAssign, ref: number) {
@@ -142,33 +122,18 @@ export const StoryStore = signalStore(
       // avoid the double event from user event channel and project event channel
       if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
         const newAssignees = [storyAssign.user, ...store.entityMap()[ref].assignees];
-        patchState(store, updateEntity({ id: ref, changes: { assignees: newAssignees } }, { selectId }));
-        if (store.selectedStoryDetails().ref === ref) {
-          patchState(store, (state) => ({
-            selectedStoryDetails: {
-              ...state.selectedStoryDetails,
-              assignees: newAssignees,
-            },
-          }));
-        }
+        store.updateEntity(ref, { assignees: newAssignees });
       }
     },
     removeAssign(ref: number, username: string) {
       const removedAssign = [...store.entityMap()[ref].assignees].filter((assignee) => assignee.username != username);
-      patchState(store, updateEntity({ id: ref, changes: { assignees: removedAssign } }, { selectId }));
-      if (store.selectedStoryDetails().ref === ref) {
-        patchState(store, (state) => ({
-          selectedStoryDetails: {
-            ...state.selectedStoryDetails,
-            assignees: removedAssign,
-          },
-        }));
-      }
+      store.updateEntity(ref, { assignees: removedAssign });
     },
     deleteStatusGroup(oldStatusId: string, newStatus: Status) {
       store.entities().forEach((story) => {
         if (story.status.id === oldStatusId) {
-          patchState(store, removeEntity(story.ref), addEntity({ ...story, status: newStatus }, { selectId }));
+          store.removeEntity(story.ref);
+          store.setEntity({ ...story, status: newStatus });
         }
       });
       store.reorder();
@@ -188,17 +153,13 @@ export const StoryStore = signalStore(
           }
           // if no place, nothing to do
         }
-        patchState(store, setAllEntities(stories, { selectId }));
-        patchState(store, updateEntity({ id: storyRef, changes: { status: reorder.status } }, { selectId }));
+        store.setAllEntities(stories);
+        store.updateEntity(storyRef, { status: reorder.status });
         store.reorder();
-        const selectedStoryDetails = store.selectedStoryDetails();
-        if (selectedStoryDetails.ref === storyRef) {
-          patchState(store, { selectedStoryDetails: { ...selectedStoryDetails, status: reorder.status } });
-        }
       }
     },
 
-    async dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
+    dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>) {
       const story = event.item.data;
       const status = event.container.data;
       const copyOrderStoryByStatus = store.orderStoryByStatus();
@@ -207,9 +168,9 @@ export const StoryStore = signalStore(
       copyOrderStoryByStatus[event.item.data.status.id] = stories;
       const payload = calculatePayloadReorder(story.ref, status.id, stories, event.currentIndex);
       patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
-      await lastValueFrom(storyService.reorder(projectId, workflowSlug, payload));
+      return payload;
     },
-    async dropStoryBetweenStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
+    dropStoryBetweenStatus(event: CdkDragDrop<Status, Status, Story>) {
       const story = event.item.data;
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
@@ -223,39 +184,61 @@ export const StoryStore = signalStore(
 
       patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
       story.status = nextStatus;
-      patchState(store, updateEntity({ id: story.ref, changes: { status: { ...nextStatus } } }, { selectId }));
-      await lastValueFrom(storyService.reorder(projectId, workflowSlug, payload));
+      store.updateEntity(story.ref, { status: nextStatus });
+      return payload;
     },
   })),
-  withMethods((store, storyService = inject(StoryService)) => ({
-    async create(projectId: string, workflowSlug: string, Story: StoryCreate) {
-      const newStory = await lastValueFrom(storyService.create(projectId, workflowSlug, Story));
-      store.add(newStory);
+);
+
+export const StoryDetailStore = signalStore(
+  { providedIn: "root" },
+  withState({ selectedStoryAttachments: [] as StoryAttachment[] }),
+  withMethodEntity<StoryDetail>(),
+  withMethods((store) => ({
+    setStoryAttachments: (attachments: StoryAttachment[]) => {
+      patchState(store, { selectedStoryAttachments: attachments });
     },
-    async patch(projectId: string, story: StoryDetail, data: StoryUpdate) {
-      const storyPatched = await lastValueFrom(storyService.patch(projectId, data));
-      store.update(storyPatched);
-      return storyPatched;
+    addAttachment(newAttachment: StoryAttachment, ref: number) {
+      if (store.item()?.ref === ref) {
+        patchState(store, { selectedStoryAttachments: [...store.selectedStoryAttachments(), newAttachment] });
+      }
+      return newAttachment;
     },
-    async deleteStory(projectId: string, ref: number) {
-      await lastValueFrom(storyService.deleteStory(projectId, ref));
-      store.removeStory(ref);
+    removeAttachment(attachmentId: string) {
+      patchState(store, {
+        selectedStoryAttachments: store
+          .selectedStoryAttachments()
+          .filter((attachment) => attachment.id !== attachmentId),
+      });
     },
-    async createAssign(projectId: string, ref: number, username: string) {
-      const storyAssign: StoryAssign = await lastValueFrom(storyService.createAssignee(projectId, ref, username));
-      store.addAssign(storyAssign, ref);
+    reset() {
+      store.reset();
+      patchState(store, { selectedStoryAttachments: [] });
     },
-    async deleteAssign(projectId: string, ref: number, username: string) {
-      await lastValueFrom(storyService.deleteAssignee(projectId, ref, username));
-      store.removeAssign(ref, username);
+    addAssign(storyAssign: StoryAssign) {
+      const story = store.item();
+
+      if (story && story.ref === storyAssign.story.ref) {
+        const currentAssignees = story.assignees;
+        if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
+          const newAssignees = [storyAssign.user, ...story.assignees];
+          store.patch({ assignees: newAssignees });
+        }
+      }
     },
-    async createAttachment(projectId: string, ref: number, attachment: Blob) {
-      const newAttachment = await lastValueFrom(storyService.addStoryAttachments(projectId, ref, attachment));
-      store.addAttachment(newAttachment, ref);
+    reorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
+      const selectedStoryDetails = store.item();
+      const storyRef = reorder.stories[0];
+      if (selectedStoryDetails?.ref === storyRef) {
+        store.patch({ status: reorder.status });
+      }
     },
-    async deleteAttachment(projectId: string, ref: number, attachmentId: string) {
-      await lastValueFrom(storyService.deleteStoryAttachment(projectId, ref, attachmentId));
-      store.removeAttachment(attachmentId);
+    removeAssign(ref: number, username: string) {
+      const story = store.item();
+      if (story && story.ref === ref) {
+        const removedAssign = [...story.assignees].filter((assignee) => assignee.username != username);
+        store.patch({ assignees: removedAssign });
+      }
     },
   })),
 );
@@ -264,22 +247,24 @@ function calculatePayloadReorder(storyId: number, statusId: string, storiesId: n
   let result: StoryReorderPayload;
   if (storiesId.length === 1) {
     result = {
-      status: statusId,
+      statusId: statusId,
       stories: [storyId],
     };
   } else if (index === storiesId.length - 1) {
     result = {
-      status: statusId,
+      statusId: statusId,
       reorder: { place: "after", ref: storiesId[index - 1] },
       stories: [storyId],
     };
   } else {
     result = {
-      status: statusId,
+      statusId: statusId,
       reorder: { place: "before", ref: storiesId[index + 1] },
       stories: [storyId],
     };
   }
   return result;
 }
+
+export type StoryDetailStore = InstanceType<typeof StoryDetailStore>;
 export type StoryStore = InstanceType<typeof StoryStore>;

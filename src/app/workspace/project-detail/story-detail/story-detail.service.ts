@@ -21,9 +21,10 @@
 
 import { inject, Injectable } from "@angular/core";
 import { ProjectService } from "@tenzu/data/project";
-import { StoryService, StoryStore, StoryUpdate } from "@tenzu/data/story";
+import { StoryUpdate } from "@tenzu/data/story";
 import { Router } from "@angular/router";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { StoryService } from "@tenzu/data/story/story.service";
 
 @Injectable({
   providedIn: "root",
@@ -31,29 +32,32 @@ import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 export class StoryDetailService {
   projectService = inject(ProjectService);
   workflowService = inject(WorkflowService);
-  storyStore = inject(StoryStore);
   storyService = inject(StoryService);
   router = inject(Router);
 
   public async patchSelectedStory(data: Partial<StoryUpdate>) {
     const project = this.projectService.selectedEntity();
-    const story = this.storyStore.selectedStoryDetails();
+    const story = this.storyService.selectedEntity();
     if (project && story) {
-      return this.storyStore.patch(project.id, story, {
-        ...data,
-        version: story.version,
-        ref: story.ref,
-      });
+      return this.storyService.updateSelected(
+        {
+          ...story,
+          ...data,
+          version: story.version,
+          ref: story.ref,
+        },
+        project.id,
+      );
     }
     throw new Error("No story to update");
   }
 
   public async deleteSelectedStory() {
     const project = this.projectService.selectedEntity();
-    const story = this.storyStore.selectedStoryDetails();
+    const story = this.storyService.selectedEntity();
     const workflow = this.workflowService.selectedEntity();
     if (project && story && workflow) {
-      await this.storyStore.deleteStory(project!.id, story!.ref);
+      await this.storyService.deleteSelected(project!.id, story!.ref);
       await this.router.navigateByUrl(
         `/workspace/${project?.workspaceId}/project/${project.id}/kanban/${workflow.slug}`,
       );
@@ -62,26 +66,25 @@ export class StoryDetailService {
 
   public async addAttachment(file: File) {
     const project = this.projectService.selectedEntity();
-    if (project) {
-      await this.storyStore.createAttachment(project.id, this.storyStore.selectedStoryDetails().ref, file);
+    const story = this.storyService.selectedEntity();
+    if (project && story) {
+      await this.storyService.createAttachment(project.id, story.ref, file);
     }
   }
 
   public async deleteAttachment(id: string) {
     const project = this.projectService.selectedEntity();
-    if (project) {
-      await this.storyStore.deleteAttachment(project!.id, this.storyStore.selectedStoryDetails().ref, id);
+    const story = this.storyService.selectedEntity();
+    if (project && story) {
+      await this.storyService.deleteAttachment(project.id, story.ref, id);
     }
   }
 
   public getStoryAttachmentUrlBack(attachmentId: string) {
     const project = this.projectService.selectedEntity();
-    if (project) {
-      return this.storyService.getStoryAttachmentUrl(
-        project.id,
-        this.storyStore.selectedStoryDetails().ref,
-        attachmentId,
-      );
+    const story = this.storyService.selectedEntity();
+    if (project && story) {
+      return this.storyService.getStoryAttachmentUrl(project.id, story.ref, attachmentId);
     } else {
       return "";
     }

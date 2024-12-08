@@ -20,21 +20,21 @@
  */
 
 import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
-import { inject } from "@angular/core";
-import { StoryStore } from "@tenzu/data/story";
+import { inject, signal } from "@angular/core";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { HttpErrorResponse } from "@angular/common/http";
-import { debug } from "../../../libs/utils/functions/logging";
+import { debug } from "@tenzu/utils/functions/logging";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { StoryService } from "@tenzu/data/story/story.service";
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
   const workflowService = inject(WorkflowService);
-  const storyStore = inject(StoryStore);
+  const storyService = inject(StoryService);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
   if (projectId) {
     try {
-      storyStore
+      storyService
         .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
         .then((story) => {
           if (workflowService.selectedEntity()?.id != story.workflowId) {
@@ -55,7 +55,10 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId")!;
   const workflowSLug = route.paramMap.get("workflowSlug")!;
   const workflowService = inject(WorkflowService);
+  const storyService = inject(StoryService);
   const router = inject(Router);
+  const limit = signal(100);
+  const offset = 0;
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
     try {
@@ -64,7 +67,15 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
           projectId: projectId,
           slug: workflowSLug,
         })
-        .then();
+        .then((workflow) => {
+          debug("story", "load stories start");
+          if (workflow) {
+            storyService.fullReset();
+
+            storyService.list(workflow.projectId, workflow.slug, offset, limit()).then();
+          }
+          debug("story", "load stories end");
+        });
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         router.navigate(["/404"]).then();

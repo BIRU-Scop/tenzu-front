@@ -19,9 +19,9 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { Story, StoryStore } from "@tenzu/data/story";
+import { Story } from "@tenzu/data/story";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
@@ -39,9 +39,9 @@ import { Step, WorkflowService } from "@tenzu/data/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { debug } from "@tenzu/utils/functions/logging";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { StoryService } from "@tenzu/data/story/story.service";
 
 @Component({
   selector: "app-project-kanban",
@@ -57,7 +57,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
   ],
   template: `
     <h1 class="mat-headline-small text-on-surface-variant">{{ workflowService.selectedEntity()?.name }}</h1>
-    @if (!storyStore.isLoading()) {
+    @if (!storyService.isLoading()) {
       @if (workflowService.listStatusesOrdered(); as statuses) {
         <ul
           class="grid grid-flow-col gap-8 kanban-viewport"
@@ -66,7 +66,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
           cdkDropListGroup
         >
           @for (status of statuses; track status.id) {
-            @let stories = storyStore.groupedByStatus()[status.id];
+            @let stories = storyService.groupedByStatus()[status.id];
 
             <li class="group w-64 flex flex-col overflow-hidden">
               <app-status-card
@@ -78,7 +78,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
                 [isEmpty]="!stories"
               />
               <ul
-                [@newStoryFlyIn]="storyStore.entities().length || 0"
+                [@newStoryFlyIn]="storyService.entities().length || 0"
                 [id]="status.id"
                 class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                 cdkDropList
@@ -158,11 +158,9 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 export class ProjectKanbanComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   workflowService = inject(WorkflowService);
-  storyStore = inject(StoryStore);
+  storyService = inject(StoryService);
   projectKanbanService = inject(ProjectKanbanService);
   readonly relativeDialog = inject(RelativeDialogService);
-  limit = signal(100);
-  offset = 0;
 
   protected readonly Step = Step;
 
@@ -170,18 +168,7 @@ export class ProjectKanbanComponent {
     toObservable(this.workflowService.selectedEntity)
       .pipe(filterNotNull())
       .subscribe(async (workflow) => {
-        debug("story", "load stories start");
         this.breadcrumbStore.setSixthLevel({ label: workflow.name, doTranslation: false });
-        while (true) {
-          const stories = await this.storyStore.list(workflow.projectId, workflow.slug, this.offset, this.limit());
-
-          if (stories.length < this.limit()) {
-            break;
-          }
-          this.offset += this.limit();
-        }
-        debug("story", "load stories end");
-        this.storyStore.reorder();
       });
 
     this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
@@ -216,7 +203,7 @@ export class ProjectKanbanComponent {
       if (name) {
         await this.projectKanbanService.createStory({
           title: name,
-          status: statusId,
+          statusId: statusId,
         });
       }
     });
@@ -263,9 +250,9 @@ export class ProjectKanbanComponent {
       return;
     }
     if (event.previousContainer === event.container) {
-      await this.storyStore.dropStoryIntoSameStatus(event, workflow.projectId, workflow.slug);
+      await this.storyService.dropStoryIntoSameStatus(event, workflow.projectId, workflow.slug);
     } else {
-      await this.storyStore.dropStoryBetweenStatus(event, workflow.projectId, workflow.slug);
+      await this.storyService.dropStoryBetweenStatus(event, workflow.projectId, workflow.slug);
     }
   }
 
