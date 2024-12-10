@@ -26,7 +26,7 @@ export const environment: EnvironmentConfig = {
   production: false,
   env: "dev",
   api: {
-    prefix: "v2",
+    prefix: "v1",
     baseDomain: "local-tenzu.biru.ovh",
     suffixDomain: "api",
     scheme: "https",

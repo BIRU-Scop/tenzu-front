@@ -3,7 +3,7 @@
   "version": "0.0.1-staging.5",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve  tenzu --hmr --host local-tenzu.biru.ovh",
+    "start": "ng serve  tenzu --hmr --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

@@ -25,7 +25,7 @@ export interface Credential {
 }
 
 export interface Tokens {
-  token: string | null;
+  access: string | null;
   refresh: string | null;
   username: string | null;
 }
