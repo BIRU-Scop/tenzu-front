@@ -34,8 +34,7 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
   private workflowStore = inject(WorkflowStore);
   private workflowInfraService = inject(WorkflowInfraService);
   selectedEntity = this.workflowStore.item;
-  listStatusesOrdered = this.workflowStore.listStatusesOrdered;
-
+  statuses = this.workflowStore.entities;
   deleteSelected(): Promise<Workflow | undefined> {
     throw new Error("Method not implemented.");
   }

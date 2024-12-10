@@ -51,6 +51,7 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   isLoading = signal(false);
 
   async list(projectId: string, workflowSlug: string, offset: number, limit: number) {
+    this.fullReset();
     this.isLoading.set(true);
     while (true) {
       const stories = await lastValueFrom(this.storyInfraService.getStories(projectId, workflowSlug, limit, offset));

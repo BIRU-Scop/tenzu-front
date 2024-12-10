@@ -85,7 +85,7 @@ export const StoryStore = signalStore(
     reorder() {
       const orderStoryByStatus = store.entities().reduce(
         (acc, story) => {
-          const statusId = story.status.id;
+          const statusId = story.statusId;
           if (acc[statusId]) {
             return { ...acc, [statusId]: [...acc[statusId], story.ref] };
           }
@@ -131,9 +131,9 @@ export const StoryStore = signalStore(
     },
     deleteStatusGroup(oldStatusId: string, newStatus: Status) {
       store.entities().forEach((story) => {
-        if (story.status.id === oldStatusId) {
+        if (story.statusId === oldStatusId) {
           store.removeEntity(story.ref);
-          store.setEntity({ ...story, status: newStatus });
+          store.setEntity({ ...story, statusId: newStatus.id });
         }
       });
       store.reorder();
@@ -154,7 +154,7 @@ export const StoryStore = signalStore(
           // if no place, nothing to do
         }
         store.setAllEntities(stories);
-        store.updateEntity(storyRef, { status: reorder.status });
+        store.updateEntity(storyRef, { statusId: reorder.status.id });
         store.reorder();
       }
     },
@@ -163,9 +163,9 @@ export const StoryStore = signalStore(
       const story = event.item.data;
       const status = event.container.data;
       const copyOrderStoryByStatus = store.orderStoryByStatus();
-      const stories = copyOrderStoryByStatus[event.item.data.status.id];
+      const stories = copyOrderStoryByStatus[event.item.data.statusId];
       moveItemInArray(stories, event.previousIndex, event.currentIndex);
-      copyOrderStoryByStatus[event.item.data.status.id] = stories;
+      copyOrderStoryByStatus[event.item.data.statusId] = stories;
       const payload = calculatePayloadReorder(story.ref, status.id, stories, event.currentIndex);
       patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
       return payload;
@@ -183,8 +183,8 @@ export const StoryStore = signalStore(
       const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
 
       patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
-      story.status = nextStatus;
-      store.updateEntity(story.ref, { status: nextStatus });
+      story.statusId = nextStatus.id;
+      store.updateEntity(story.ref, { statusId: nextStatus.id });
       return payload;
     },
   })),
@@ -230,7 +230,7 @@ export const StoryDetailStore = signalStore(
       const selectedStoryDetails = store.item();
       const storyRef = reorder.stories[0];
       if (selectedStoryDetails?.ref === storyRef) {
-        store.patch({ status: reorder.status });
+        store.patch({ statusId: reorder.status.id });
       }
     },
     removeAssign(ref: number, username: string) {

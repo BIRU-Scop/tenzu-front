@@ -39,7 +39,6 @@ import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/as
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MembershipStore } from "@tenzu/data/membership";
 import { MatOption, MatSelect } from "@angular/material/select";
-import { Status } from "@tenzu/data/status";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
@@ -210,13 +209,9 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
               ></app-user-card>
               <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
               <mat-form-field>
-                <mat-select
-                  [(value)]="this.statusSelected"
-                  (selectionChange)="changeStatus()"
-                  [compareWith]="compareStatus"
-                >
-                  @for (status of workflowService.selectedEntity()?.statuses; track status.id) {
-                    <mat-option [value]="status">{{ status.name }}</mat-option>
+                <mat-select [(value)]="this.statusSelected" (selectionChange)="changeStatus()">
+                  @for (status of workflowService.statuses(); track status.id) {
+                    <mat-option [value]="status.id">{{ status.name }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
@@ -278,14 +273,14 @@ export class StoryDetailComponent {
   form = this.fb.nonNullable.group({
     title: ["", Validators.required],
   });
-  statusSelected = model({} as Status);
+  statusSelected = model<string>("");
 
   constructor() {
     toObservable(this.selectedStory)
       .pipe(filterNotNull())
       .subscribe(async (value) => {
         this.form.setValue({ title: value?.title || "" });
-        this.statusSelected.set(value.status);
+        this.statusSelected.set(value.statusId);
         if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
           await this.workflowService.getBySlug(value.workflow);
         }
@@ -369,22 +364,14 @@ export class StoryDetailComponent {
         const patchedStory = await this.storyDetailService.patchSelectedStory({ workflowSlug: newWorkflowSlug });
         if (patchedStory) {
           this.notificationService.success({ title: "notification.action.changes_saved" });
-
-          this.statusSelected.set(patchedStory.status);
+          this.statusSelected.set(patchedStory.statusId);
         }
       }
     });
   }
 
   async changeStatus() {
-    await this.storyDetailService.patchSelectedStory({ statusId: this.statusSelected().id });
+    await this.storyDetailService.patchSelectedStory({ statusId: this.statusSelected() });
     this.notificationService.success({ title: "notification.action.changes_saved" });
-  }
-
-  compareStatus(o1: Status, o2: Status) {
-    if (o1?.id && o2?.id) {
-      return o1.id === o2.id;
-    }
-    return false;
   }
 }

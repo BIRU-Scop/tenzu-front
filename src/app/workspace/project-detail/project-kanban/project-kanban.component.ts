@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { Story } from "@tenzu/data/story";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -42,6 +42,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryService } from "@tenzu/data/story/story.service";
+import { MembershipStore } from "@tenzu/data/membership";
 
 @Component({
   selector: "app-project-kanban",
@@ -56,61 +57,57 @@ import { StoryService } from "@tenzu/data/story/story.service";
     ProjectKanbanSkeletonComponent,
   ],
   template: `
-    <h1 class="mat-headline-small text-on-surface-variant">{{ workflowService.selectedEntity()?.name }}</h1>
+    @let workflow = workflowService.selectedEntity();
+    @let statuses = workflowService.statuses();
+    <h1 class="mat-headline-small text-on-surface-variant">{{ workflow?.name }}</h1>
     @if (!storyService.isLoading()) {
-      @if (workflowService.listStatusesOrdered(); as statuses) {
-        <ul
-          class="grid grid-flow-col gap-8 kanban-viewport"
-          *transloco="let t; prefix: 'workflow'"
-          [@newStatusFlyIn]="statuses.length"
-          cdkDropListGroup
-        >
-          @for (status of statuses; track status.id) {
-            @let stories = storyService.groupedByStatus()[status.id];
+      <ul
+        class="grid grid-flow-col gap-8 kanban-viewport"
+        *transloco="let t; prefix: 'workflow'"
+        [@newStatusFlyIn]="statuses.length"
+        cdkDropListGroup
+      >
+        @for (status of statuses; track status.id) {
+          @let stories = storyService.groupedByStatus()[status.id];
 
-            <li class="group w-64 flex flex-col overflow-hidden">
-              <app-status-card
-                (movedLeft)="moveStatus($index, Step.LEFT)"
-                (movedRight)="moveStatus($index, Step.RIGHT)"
-                [config]="{ showLeft: !$first, showRight: !$last }"
-                [name]="status.name"
-                [id]="status.id"
-                [isEmpty]="!stories"
-              />
-              <ul
-                [@newStoryFlyIn]="storyService.entities().length || 0"
-                [id]="status.id"
-                class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
-                cdkDropList
-                [cdkDropListData]="status"
-                (cdkDropListDropped)="drop($event)"
-              >
-                @for (story of stories; track story.ref) {
-                  <li cdkDrag [cdkDragData]="story" class="w-60">
-                    <app-story-card [ref]="story.ref" [title]="story.title" [users]="story.assignees" />
-                  </li>
-                }
-              </ul>
-              <button
-                mat-stroked-button
-                class="primary-button whitespace-nowrap shrink-0 mt-4"
-                (click)="openCreateStory($event, status.id)"
-              >
-                {{ t("add_story") }}
-              </button>
-            </li>
-          }
-          <li>
+          <li class="group w-64 flex flex-col overflow-hidden">
+            <app-status-card
+              (movedLeft)="moveStatus($index, Step.LEFT)"
+              (movedRight)="moveStatus($index, Step.RIGHT)"
+              [config]="{ showLeft: !$first, showRight: !$last }"
+              [name]="status.name"
+              [id]="status.id"
+              [isEmpty]="!stories"
+            />
+            <ul
+              [@newStoryFlyIn]="storyService.entities().length || 0"
+              [id]="status.id"
+              class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+              cdkDropList
+              [cdkDropListData]="status"
+              (cdkDropListDropped)="drop($event)"
+            >
+              @for (story of stories; track story.ref) {
+                <li cdkDrag [cdkDragData]="story" class="w-60">
+                  <app-story-card [ref]="story.ref" [title]="story.title" [users]="story.assignees" />
+                </li>
+              }
+            </ul>
             <button
               mat-stroked-button
-              class="tertiary-button whitespace-nowrap w-64"
-              (click)="openCreateStatus($event)"
+              class="primary-button whitespace-nowrap shrink-0 mt-4"
+              (click)="openCreateStory($event, status.id)"
             >
-              {{ t("add_status") }}
+              {{ t("add_story") }}
             </button>
           </li>
-        </ul>
-      }
+        }
+        <li>
+          <button mat-stroked-button class="tertiary-button whitespace-nowrap w-64" (click)="openCreateStatus($event)">
+            {{ t("add_status") }}
+          </button>
+        </li>
+      </ul>
     } @else {
       <app-project-kanban-skeleton></app-project-kanban-skeleton>
     }
@@ -155,11 +152,12 @@ import { StoryService } from "@tenzu/data/story/story.service";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectKanbanComponent {
+export class ProjectKanbanComponent implements OnDestroy {
   breadcrumbStore = inject(BreadcrumbStore);
   workflowService = inject(WorkflowService);
   storyService = inject(StoryService);
   projectKanbanService = inject(ProjectKanbanService);
+  membershipStore = inject(MembershipStore);
   readonly relativeDialog = inject(RelativeDialogService);
 
   protected readonly Step = Step;
@@ -172,6 +170,11 @@ export class ProjectKanbanComponent {
       });
 
     this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
+  }
+
+  ngOnDestroy(): void {
+    this.storyService.fullReset();
+    this.membershipStore.reset();
   }
 
   openCreateStory(event: MouseEvent, statusId: string): void {
