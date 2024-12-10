@@ -42,7 +42,6 @@ export type Story = {
   workflowId: string;
   projectId: string;
   statusId: string;
-  status: Status;
   assignees: Array<UserMinimal>;
 };
 
