@@ -26,7 +26,7 @@ export const environment: EnvironmentConfig = {
   env: "staging",
   wsUrl: "wss://$BASE_DOMAIN/events/",
   api: {
-    prefix: "v2",
+    prefix: "v1",
     baseDomain: "$BASE_DOMAIN",
     suffixDomain: "api",
     scheme: "https",
