@@ -21,19 +21,19 @@
 
 import { inject, Injectable } from "@angular/core";
 import { User, UserCreation, UserDeleteInfo, UserEdition, VerificationData } from "./user.model";
-
-import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "@tenzu/data/auth";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
   http = inject(HttpClient);
-  endpoint = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}`;
-  myUserUrl = `${this.endpoint}/my/user`;
-  usersUrl = `${this.endpoint}/users`;
+  configAppService = inject(ConfigAppService);
+  endpoint = `${this.configAppService.apiUrl()}`;
+  myUserUrl = `${this.endpoint}my/user`;
+  usersUrl = `${this.endpoint}users`;
 
   getMyUser() {
     return this.http.get<User>(`${this.myUserUrl}`);

@@ -22,15 +22,16 @@
 import { inject, Injectable } from "@angular/core";
 import { Workflow, WorkflowStatusReorderPayload } from "./workflow.model";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
 import { Status } from "@tenzu/data/status";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class WorkflowInfraService {
   http = inject(HttpClient);
-  url = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/`;
+  configAppService = inject(ConfigAppService);
+  url = `${this.configAppService.apiUrl()}`;
 
   getUrl(projectId: string) {
     return `${this.url}projects/${projectId}/workflows`;

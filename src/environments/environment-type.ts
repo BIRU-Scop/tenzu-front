@@ -33,7 +33,7 @@ export interface EnvironmentConfig {
     prefix: string;
     baseDomain: string;
     suffixDomain: string;
-    scheme: string;
+    scheme: "http" | "https";
   };
 
   sentry: BrowserSentryClientOptions;
