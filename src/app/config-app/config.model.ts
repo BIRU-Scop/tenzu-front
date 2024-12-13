@@ -18,23 +18,25 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
+import { z } from "zod";
 
-import { InjectionToken } from "@angular/core";
-import { BrowserSentryClientOptions } from "@micro-sentry/browser";
+export const ConfigSchema = z
+  .object({
+    api: z
+      .object({
+        baseDomain: z.string(),
+        scheme: z.enum(["http", "https"]),
+        port: z.number().optional(),
+      })
+      .nullable(),
+    wsUrl: z.string().optional(),
+    sentry: z
+      .object({
+        dsn: z.string().optional(),
+        environment: z.string().optional(),
+      })
+      .partial(),
+  })
+  .partial();
 
-export const ENVIRONMENT_CONFIG = new InjectionToken("ENVIRONMENT_CONFIG");
-
-export interface EnvironmentConfig {
-  appVersion: string;
-  production: boolean;
-  env: "dev" | "staging" | "production";
-  wsUrl: string;
-  api: {
-    prefix: string;
-    baseDomain: string;
-    suffixDomain: string;
-    scheme: "http" | "https";
-  };
-
-  sentry: BrowserSentryClientOptions;
-}
+export type ConfigModel = z.infer<typeof ConfigSchema>;

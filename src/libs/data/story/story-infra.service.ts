@@ -22,23 +22,24 @@
 import { inject, Injectable } from "@angular/core";
 
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
 import {
   Story,
+  StoryAssign,
+  StoryAttachment,
   StoryCreate,
   StoryDetail,
   StoryReorderPayload,
-  StoryAttachment,
-  StoryAssign,
   StoryUpdate,
 } from "./story.model";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class StoryInfraService {
   http = inject(HttpClient);
-  url = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/`;
+  configAppService = inject(ConfigAppService);
+  url = `${this.configAppService.apiUrl()}`;
 
   getWorkflowStoryUrl(projectId: string, workflowSlug: string) {
     return `${this.url}projects/${projectId}/workflows/${workflowSlug}/stories`;

@@ -22,10 +22,10 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
-  isDevMode,
-  provideExperimentalZonelessChangeDetection,
   inject,
+  isDevMode,
   provideAppInitializer,
+  provideExperimentalZonelessChangeDetection,
 } from "@angular/core";
 import { provideRouter, withComponentInputBinding, withRouterConfig } from "@angular/router";
 
@@ -35,13 +35,15 @@ import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http
 import { provideTransloco } from "@jsverse/transloco";
 import { provideTranslocoMessageformat } from "@jsverse/transloco-messageformat";
 import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from "@angular/common/http";
-import { JwtModule } from "@auth0/angular-jwt";
+import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
 import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
-import { environment } from "../environments/environment";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { LanguageStore } from "@tenzu/data/transloco";
 import { refreshTokenInterceptor } from "@tenzu/data/interceptors";
-import { provideMicroSentry } from "@micro-sentry/angular";
+import { MICRO_SENTRY_CONFIG, provideMicroSentry } from "@micro-sentry/angular";
+import { ConfigAppService } from "./config-app/config-app.service";
+import { BrowserSentryClientOptions } from "@micro-sentry/browser";
+import { WsService } from "@tenzu/utils/services/ws";
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -49,23 +51,41 @@ export function tokenGetter() {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAppInitializer(async () => {
+      const configAppService = inject(ConfigAppService);
+      const languageStore = inject(LanguageStore);
+      const wsService = inject(WsService);
+      await configAppService.loadAppConfig();
+      await wsService.init();
+      return languageStore.initLanguages();
+    }),
     {
       provide: PRECONNECT_CHECK_BLOCKLIST,
-      useValue: `${environment.api.scheme}://${environment.api.baseDomain}`,
+      useFactory: () => {
+        const configAppService = inject(ConfigAppService);
+        const apiConfig = configAppService.configApi();
+        if (!apiConfig) {
+          throw new Error("Config API returned no configuration");
+        }
+        return `${apiConfig.scheme}://${apiConfig.baseDomain}`;
+      },
+      deps: [ConfigAppService],
     },
-    provideAppInitializer(() => {
-      const languageStore = inject(LanguageStore);
-      languageStore.initLanguages().subscribe();
-      return;
-    }),
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
     importProvidersFrom(
       JwtModule.forRoot({
-        config: {
-          tokenGetter: tokenGetter,
-          allowedDomains: [environment.api.baseDomain],
-          headerName: "Authorization",
-          authScheme: "Bearer ",
+        jwtOptionsProvider: {
+          provide: JWT_OPTIONS,
+          useFactory: () => {
+            const configAppService = inject(ConfigAppService);
+            const apiConfig = configAppService.configApi();
+            return {
+              tokenGetter: tokenGetter,
+              allowedDomains: [apiConfig.baseDomain],
+              headerName: "Authorization",
+              authScheme: "Bearer ",
+            };
+          },
         },
       }),
     ),
@@ -86,11 +106,23 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoaderService,
     }),
     provideTranslocoMessageformat(),
-    provideMicroSentry({
-      dsn: environment.sentry.dsn,
-      environment: environment.sentry.environment,
-      release: environment.sentry.release,
-    }),
+    provideMicroSentry({}),
+    {
+      provide: MICRO_SENTRY_CONFIG,
+      useFactory: () => {
+        // const configAppService = inject(ConfigAppService);
+        // const sentryConfig = configAppService.configSentry();
+        const sentryConfig: BrowserSentryClientOptions = JSON.parse(localStorage.getItem("sentry") || "{}");
+        if (sentryConfig) {
+          return {
+            dsn: sentryConfig.dsn,
+            environment: sentryConfig.environment,
+            release: sentryConfig.release,
+          };
+        }
+        return {};
+      },
+    },
     provideHttpClient(withFetch(), withInterceptors([refreshTokenInterceptor]), withInterceptorsFromDi()),
   ],
 };

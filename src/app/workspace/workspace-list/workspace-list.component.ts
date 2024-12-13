@@ -20,17 +20,10 @@
  */
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
-import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
-import { TranslocoDirective } from "@jsverse/transloco";
-import { MatButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
 import { MatDialog } from "@angular/material/dialog";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 import { WorkspacePlaceholderDialogComponent } from "./workspace-placeholder-dialog/workspace-placeholder-dialog.component";
-import { ProjectCardComponent } from "@tenzu/shared/components/project-card/project-card.component";
-import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton/card-skeleton.component";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import {
   EnterNameDialogComponent,
@@ -42,6 +35,13 @@ import { StoryService } from "@tenzu/data/story";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
+import { MatIcon } from "@angular/material/icon";
+import { MatButton } from "@angular/material/button";
+import { TranslocoDirective } from "@jsverse/transloco";
+import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
+import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
+import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 
 @Component({
   selector: "app-workspace-list",
@@ -91,7 +91,9 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
                   </li>
                 }
                 @if (!workspace.latestProjects || workspace.latestProjects.length === 0) {
-                  <li><app-project-card [workspaceId]="workspace.id"></app-project-card></li>
+                  <li>
+                    <app-project-card [workspaceId]="workspace.id"></app-project-card>
+                  </li>
                 }
               </ul>
             </li>
@@ -103,7 +105,9 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
             <app-workspace-skeleton></app-workspace-skeleton>
             <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
               @for (skeleton of skeletons; track $index) {
-                <li><app-card-skeleton></app-card-skeleton></li>
+                <li>
+                  <app-card-skeleton></app-card-skeleton>
+                </li>
               }
             </ul>
           </li>

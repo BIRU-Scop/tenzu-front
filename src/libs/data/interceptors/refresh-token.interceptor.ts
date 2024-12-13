@@ -24,18 +24,18 @@ import { inject } from "@angular/core";
 import { AuthService } from "../auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ConfigServiceService } from "../../utils/services/config-service/config-service.service";
 import { WsService } from "@tenzu/utils/services/ws";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   const authService = inject(AuthService);
   const tokens = authService.getToken();
   const notificationService = inject(NotificationService);
-  const configService = inject(ConfigServiceService);
+  const configAppService = inject(ConfigAppService);
   const wsService = inject(WsService);
   request = request.clone({
     setHeaders: {
-      "correlation-id": configService.correlationId,
+      "correlation-id": configAppService.correlationId,
     },
   });
 

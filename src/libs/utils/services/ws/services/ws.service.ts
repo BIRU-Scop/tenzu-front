@@ -29,10 +29,9 @@
 
 import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext, signal } from "@angular/core";
 
-import { BehaviorSubject, of, repeat, retry, share, switchMap, throwError } from "rxjs";
+import { BehaviorSubject, Observable, of, repeat, retry, share, Subject, switchMap, throwError } from "rxjs";
 import { catchError, filter } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
-import { ConfigServiceService } from "../../config-service";
 import { webSocket } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
 import { Router } from "@angular/router";
@@ -49,6 +48,7 @@ import {
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
 import { clearAuthStorage } from "@tenzu/data/auth/utils";
+import { ConfigAppService } from "../../../../../app/config-app/config-app.service";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -63,49 +63,55 @@ export class WsService {
     channelWorkspaces: [],
     channelProjects: [],
   });
-  private config = inject(ConfigServiceService);
-  private subject = webSocket({
-    url: this.config.environment.wsUrl,
-    openObserver: {
-      next: () => {
-        debug("WS", "connected");
-        const subcriptions = this.channelSubscribed();
-        subcriptions.channelProjects.map((channel) => {
-          const projectId = channel.split(".")[1];
-          this.command({ command: "subscribe_to_project_events", project: projectId });
-        });
-        subcriptions.channelWorkspaces.map((channel) => {
-          const workspaceId = channel.split(".")[1];
-          this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
-        });
-      },
-    },
-    closeObserver: {
-      next: () => {
-        debug("WS", "disconnected");
-      },
-    },
-  });
-
-  ws$ = this.subject.pipe(
-    catchError((e) => {
-      // the server are reload we loose the connexion and we need to login again
-      // TODO find a way to unsubscribe to the channels were subscribed in the previous session
-      debug("WS", "the server are reload we loose the connexion and we need to login again", e);
-      this.loggedSubject.next(false);
-      this.command({ command: "signin", token: localStorage.getItem("token") || "" });
-      return throwError(() => e);
-    }),
-    retry({ delay: RETRY_TIME, resetOnSuccess: true }),
-    repeat({ count: MAX_RETRY, delay: RETRY_TIME }),
-    share(),
-  );
   router = inject(Router);
   private environmentInjector = inject(EnvironmentInjector);
+  private configAppService = inject(ConfigAppService);
+  private subject: Subject<any> | undefined = undefined;
+  private ws$: Observable<WSResponse> | undefined = undefined;
 
-  constructor() {
+  async init() {
+    console.log("init WS");
+    console.log(this.configAppService.wsUrl());
+    this.subject = webSocket({
+      url: this.configAppService.wsUrl(),
+      openObserver: {
+        next: () => {
+          debug("WS", "connected");
+          const subcriptions = this.channelSubscribed();
+          subcriptions.channelProjects.map((channel) => {
+            const projectId = channel.split(".")[1];
+            this.command({ command: "subscribe_to_project_events", project: projectId });
+          });
+          subcriptions.channelWorkspaces.map((channel) => {
+            const workspaceId = channel.split(".")[1];
+            this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
+          });
+        },
+      },
+      closeObserver: {
+        next: () => {
+          debug("WS", "disconnected");
+        },
+      },
+    });
+
+    this.ws$ = this.subject.pipe(
+      catchError((e) => {
+        // the server are reload we loose the connexion and we need to login again
+        // TODO find a way to unsubscribe to the channels were subscribed in the previous session
+        debug("WS", "the server are reload we loose the connexion and we need to login again", e);
+        this.loggedSubject.next(false);
+        this.command({ command: "signin", token: localStorage.getItem("token") || "" });
+        return throwError(() => e);
+      }),
+      retry({ delay: RETRY_TIME, resetOnSuccess: true }),
+      repeat({ count: MAX_RETRY, delay: RETRY_TIME }),
+      share(),
+    );
+
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
   }
+
   async dispatch(message: WSResponse) {
     switch (message.type) {
       case "action": {
@@ -128,6 +134,7 @@ export class WsService {
       }
     }
   }
+
   dispatchAction(message: WSResponseAction) {
     switch (message.status) {
       case "ok": {
@@ -198,7 +205,7 @@ export class WsService {
   }
 
   async dispatchEvent(message: WSResponseEvent<unknown>) {
-    if (message.event.correlationId === this.config.correlationId) {
+    if (message.event.correlationId === this.configAppService.correlationId) {
       return;
     }
     debug("WS", `from the channel ${message.channel} received the event ${message.event.type}`, message);
@@ -263,24 +270,30 @@ export class WsService {
   }
 
   public command(command: Command) {
+    const subject = this.subject;
+    if (!subject) {
+      debug("WS", "not connected");
+      return;
+    }
     debug("WS", `sent the command ${command.command}`, command);
     if (command.command === "signin") {
-      this.subject.next(command);
+      subject.next(command);
     } else if (command.command === "signout") {
-      this.subject.next(command);
+      subject.next(command);
       this.signout();
     } else {
       this.logged$
         .pipe(
           filter((loggedIn) => loggedIn),
           switchMap(() => {
-            this.subject.next(command);
+            subject.next(command);
             return of(null);
           }),
         )
         .subscribe();
     }
   }
+
   signout() {
     this.loggedSubject.next(false);
     clearAuthStorage();

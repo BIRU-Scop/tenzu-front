@@ -22,9 +22,9 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { map } from "rxjs";
-import { environment } from "../../../environments/environment";
 import { Language } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 @Injectable({
   providedIn: "root",
@@ -32,6 +32,7 @@ import { TranslocoService } from "@jsverse/transloco";
 export class SystemApiService {
   http = inject(HttpClient);
   translocoService = inject(TranslocoService);
+  configAppService = inject(ConfigAppService);
 
   initLanguage() {
     return this.getLanguages().pipe(
@@ -52,8 +53,6 @@ export class SystemApiService {
     );
   }
   getLanguages() {
-    return this.http.get<Language[]>(
-      `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/system/languages`,
-    );
+    return this.http.get<Language[]>(`${this.configAppService.apiUrl()}system/languages`);
   }
 }
