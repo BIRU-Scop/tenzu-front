@@ -71,22 +71,11 @@ export const routes: Routes = [
   },
   {
     path: "",
-    loadComponent: () =>
-      import("@tenzu/shared/layouts/auth-layout/auth-layout.component").then((m) => m.AuthLayoutComponent),
+    loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
     children: [
       {
-        path: "login",
-        loadComponent: () => import("./login/login.component").then((m) => m.LoginComponent),
-        providers: [provideTranslocoScope("login")],
-      },
-      {
-        path: "reset-password",
-        loadChildren: () => import("./reset-password/routes").then((m) => m.routes),
-      },
-      {
-        path: "signup",
-        loadComponent: () => import("./signup/signup.component").then((m) => m.SignupComponent),
-        providers: [provideTranslocoScope("signup")],
+        path: "",
+        loadChildren: () => import("./auth/routes").then((m) => m.routes),
       },
     ],
   },

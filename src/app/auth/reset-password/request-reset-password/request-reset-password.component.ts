@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, OnDestroy, OnInit } from "@angular/core";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -27,6 +27,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/data/user";
 import { MatDivider } from "@angular/material/divider";
+import { AuthFormStateStore } from "../../auth-form-state.store";
 
 @Component({
   selector: "app-request-reset-password",
@@ -88,13 +89,22 @@ import { MatDivider } from "@angular/material/divider";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RequestResetPasswordComponent {
+export default class RequestResetPasswordComponent implements OnInit, OnDestroy {
   showConfirmation = model(false);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
-    email: ["", Validators.required],
+    email: ["", Validators.required, Validators.email],
   });
   userStore = inject(UserStore);
+  readonly authFormStateStore = inject(AuthFormStateStore);
+
+  ngOnInit(): void {
+    this.authFormStateStore.updateHasError(this.form.events);
+  }
+  ngOnDestroy(): void {
+    this.authFormStateStore.resetError();
+  }
+
   async submit() {
     this.form.reset(this.form.value);
     if (this.form.value.email) {

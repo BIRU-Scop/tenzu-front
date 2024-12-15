@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError, MatFormField, MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
@@ -32,6 +32,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { Credential } from "@tenzu/data/auth";
 import { MatDivider } from "@angular/material/divider";
+import { AuthFormStateStore } from "../auth-form-state.store";
 
 @Component({
   selector: "app-login",
@@ -61,7 +62,7 @@ import { MatDivider } from "@angular/material/divider";
           }
         </mat-form-field>
         <app-password-field formControlName="password"></app-password-field>
-        @if (loginError() && form.pristine) {
+        @if (form.hasError("loginError")) {
           <div class="mat-mdc-form-field-error" data-testid="login-401">
             {{ t("errors.401") }}
           </div>
@@ -82,15 +83,22 @@ import { MatDivider } from "@angular/material/divider";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {
-  loginError = signal(false);
+export default class LoginComponent implements OnInit, OnDestroy {
   service = inject(LoginService);
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
     username: ["", Validators.required],
-    password: ["", Validators.required],
+    password: [""],
   });
   route = inject(ActivatedRoute);
+  readonly authFormStateStore = inject(AuthFormStateStore);
+
+  ngOnInit(): void {
+    this.authFormStateStore.updateHasError(this.form.events);
+  }
+  ngOnDestroy(): void {
+    this.authFormStateStore.resetError();
+  }
 
   submit() {
     this.form.reset(this.form.value);
@@ -102,7 +110,10 @@ export class LoginComponent {
       this.service.login(this.form.value as Credential, next).subscribe({
         error: (error) => {
           if (error instanceof HttpErrorResponse && error.status === 401) {
-            this.loginError.set(true);
+            this.form.setErrors({ loginError: true });
+            this.form.controls.username.setErrors({ loginError: true });
+            this.form.controls.password.setErrors({ loginError: true });
+            this.form.markAsTouched();
           }
         },
       });

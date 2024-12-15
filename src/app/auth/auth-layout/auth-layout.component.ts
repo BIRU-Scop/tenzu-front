@@ -23,9 +23,8 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { darkModeOn$ } from "@tenzu/utils/observables";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { AuthFormStateStore } from "../auth-form-state.store";
 
 @Component({
   selector: "app-auth-layout",
@@ -35,29 +34,28 @@ import { NotificationService } from "@tenzu/utils/services/notification";
       <div class="h-[200px]">
         <mat-icon
           class="icon-full"
-          [svgIcon]="!darkModeOn() ? 'logo-full-animated' : 'logo-full-animated-dark'"
+          [class.error]="authFormStateStore.hasError()"
+          svgIcon="logo-full-animated"
+          aria-hidden="true"
         ></mat-icon>
       </div>
       <router-outlet></router-outlet>
     </main>
   `,
   styles: ``,
+  styleUrl: `auth-layout.component.scss`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AuthLayoutComponent {
+export default class AuthLayoutComponent {
   notificationService = inject(NotificationService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
-  darkModeOn = toSignal(darkModeOn$);
+  readonly authFormStateStore = inject(AuthFormStateStore);
 
   constructor() {
     this.iconRegistry.addSvgIcon(
       "logo-full-animated",
       this.sanitizer.bypassSecurityTrustResourceUrl("logo-full-tenzu-animated.svg"),
-    );
-    this.iconRegistry.addSvgIcon(
-      "logo-full-animated-dark",
-      this.sanitizer.bypassSecurityTrustResourceUrl("logo-full-tenzu-animated-dark.svg"),
     );
     this.notificationService.warning(
       { title: "notification.login.preview_warning" },
