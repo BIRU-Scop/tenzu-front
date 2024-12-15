@@ -38,7 +38,7 @@ export class AuthService {
   wsService = inject(WsService);
   http = inject(HttpClient);
   router = inject(Router);
-  url: string = `${this.configAppService.apiUrl()}auth`;
+  url = `${this.configAppService.apiUrl()}auth`;
 
   login(credentials: Credential) {
     return this.http

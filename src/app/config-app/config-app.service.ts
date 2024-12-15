@@ -46,7 +46,7 @@ export class ConfigAppService {
       .then((res) => {
         return res.json();
       })
-      .catch((err) => {
+      .catch(() => {
         this.config.set(environment);
       })
       .then((config) => {
