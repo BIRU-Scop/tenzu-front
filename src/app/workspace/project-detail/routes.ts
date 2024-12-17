@@ -34,14 +34,17 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId");
   if (projectId) {
     try {
+      debug("[storyResolver]", "load start");
       storyService
         .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
         .then((story) => {
-          if (workflowService.selectedEntity()?.id != story.workflowId) {
-            workflowService.get(projectId, story.workflowId).then();
-          }
+          workflowService
+            .get(projectId, story.workflowId)
+            .then((workflow) => storyService.list(projectId, workflow?.slug || "", 0, 100))
+            .then();
         })
         .then();
+      debug("[storyResolver]", "load end");
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -62,6 +65,7 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
     try {
+      storyService.resetSelectedEntity();
       workflowService
         .getBySlug({
           projectId: projectId,
@@ -70,8 +74,6 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
         .then((workflow) => {
           debug("story", "load stories start");
           if (workflow) {
-            storyService.fullReset();
-
             storyService.list(workflow.projectId, workflow.slug, offset, limit()).then();
           }
           debug("story", "load stories end");
@@ -95,15 +97,18 @@ export const routes: Routes = [
   },
   {
     path: "kanban/:workflowSlug",
-    loadComponent: () => import("./project-kanban/project-kanban.component").then((m) => m.ProjectKanbanComponent),
+    loadComponent: () => import("./kanban-wrapper/kanban-wrapper.component"),
     providers: [provideTranslocoScope("workflow")],
     resolve: { workflow: workflowResolver },
+    data: { reuseComponent: true },
   },
   {
     path: "story/:ref",
-    loadComponent: () => import("./story-detail/story-detail.component").then((m) => m.StoryDetailComponent),
+    loadComponent: () => import("./kanban-wrapper/kanban-wrapper.component"),
+    // loadComponent: () => import("./story-detail/story-detail.component"),
     providers: [provideTranslocoScope("workflow")],
     resolve: { story: storyResolver },
+    data: { reuseComponent: true },
   },
   {
     path: "new-workflow",
