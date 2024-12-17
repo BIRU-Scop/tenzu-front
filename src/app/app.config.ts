@@ -27,9 +27,9 @@ import {
   provideAppInitializer,
   provideExperimentalZonelessChangeDetection,
 } from "@angular/core";
-import { provideRouter, withComponentInputBinding, withRouterConfig } from "@angular/router";
+import { provideRouter, RouteReuseStrategy, withComponentInputBinding, withRouterConfig } from "@angular/router";
 
-import { routes } from "./app.routes";
+import { CustomReuseStrategy, routes } from "./app.routes";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideTransloco } from "@jsverse/transloco";
@@ -59,6 +59,7 @@ export const appConfig: ApplicationConfig = {
       await wsService.init();
       return languageStore.initLanguages();
     }),
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
     {
       provide: PRECONNECT_CHECK_BLOCKLIST,
       useFactory: () => {
