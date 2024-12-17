@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
@@ -31,9 +31,7 @@ import {
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
 import { ProjectService } from "@tenzu/data/project";
-import { StoryService } from "@tenzu/data/story";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
 import { MatIcon } from "@angular/material/icon";
@@ -133,11 +131,9 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceListComponent implements AfterViewInit {
+export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   readonly workspaceService = inject(WorkspaceService);
   readonly projectService = inject(ProjectService);
-  readonly workflowService = inject(WorkflowService);
-  readonly storyService = inject(StoryService);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -149,7 +145,9 @@ export class WorkspaceListComponent implements AfterViewInit {
       }
     });
   };
-
+  ngOnDestroy(): void {
+    this.workspaceService.resetEntities();
+  }
   private openPlaceholderDialog = (event?: MouseEvent) => {
     const dialogRef = this.dialog.open(WorkspacePlaceholderDialogComponent, { ...matDialogConfig, disableClose: true });
     dialogRef.afterClosed().subscribe(() => {
@@ -158,10 +156,6 @@ export class WorkspaceListComponent implements AfterViewInit {
   };
 
   ngAfterViewInit(): void {
-    this.projectService.fullReset();
-    this.workspaceService.fullReset();
-    this.workflowService.resetSelectedEntity();
-    this.storyService.fullReset();
     this.init().then();
   }
 
