@@ -42,6 +42,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryService } from "@tenzu/data/story/story.service";
+import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 
 @Component({
   selector: "app-project-kanban",
@@ -54,6 +55,9 @@ import { StoryService } from "@tenzu/data/story/story.service";
     CdkDrag,
     CdkDropListGroup,
     ProjectKanbanSkeletonComponent,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
   ],
   template: `
     @let workflow = workflowService.selectedEntity();
@@ -86,8 +90,8 @@ import { StoryService } from "@tenzu/data/story/story.service";
               [cdkDropListData]="status"
               (cdkDropListDropped)="drop($event)"
             >
-              @for (story of stories; track story.ref) {
-                <li cdkDrag [cdkDragData]="story" class="w-60">
+              <cdk-virtual-scroll-viewport [itemSize]="20" class="min-h-[100vh] w-full">
+                <li cdkDrag [cdkDragData]="story" class="w-60" *cdkVirtualFor="let story of stories">
                   <app-story-card
                     [ref]="story.ref"
                     [title]="story.title"
@@ -95,7 +99,7 @@ import { StoryService } from "@tenzu/data/story/story.service";
                     [projectID]="story.projectId"
                   />
                 </li>
-              }
+              </cdk-virtual-scroll-viewport>
             </ul>
             <button
               mat-stroked-button
