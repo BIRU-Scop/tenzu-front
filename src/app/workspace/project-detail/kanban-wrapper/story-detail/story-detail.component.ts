@@ -47,9 +47,10 @@ import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
-import { RouterLink } from "@angular/router";
 import { StoryService } from "@tenzu/data/story/story.service";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { WorkspaceService } from "@tenzu/data/workspace";
+import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 
 @Component({
   selector: "app-story-detail",
@@ -74,50 +75,65 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
     MatSelect,
     MatOption,
     MatTooltip,
-    RouterLink,
+    StoryDetailMenuComponent,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
       @if (this.selectedStory(); as story) {
-        <div class="flex gap-1 items-baseline mb-2">
-          <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
-          <span class="text-on-surface mat-title-medium">{{ story?.workflow?.name }}</span>
-          <button
-            class="icon-sm"
-            mat-icon-button
-            type="button"
-            [attr.aria-label]="t('change_workflow')"
-            (click)="openChooseWorkflowDialog($event)"
-            [matTooltip]="t('change_workflow')"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <span class="text-on-surface-variant mat-title-small">/</span>
-          <span class="text-on-surface-variant mat-title-small">{{ t("story") }}</span>
-          <span class="text-on-surface mat-title-medium">#{{ story.ref }}</span>
-          <a
-            mat-icon-button
-            class="icon-sm"
-            type="button"
-            [attr.aria-label]="t('story_previous')"
-            [matTooltip]="t('story_previous')"
-            [disabled]="!story.prev"
-            [routerLink]="['..', story.prev?.ref]"
-          >
-            <mat-icon>arrow_back</mat-icon>
-          </a>
-          <a
-            mat-icon-button
-            class="icon-sm"
-            type="button"
-            [attr.aria-label]="t('story_next')"
-            [matTooltip]="t('story_next')"
-            [disabled]="!story.next"
-            [routerLink]="['..', story.next?.ref]"
-          >
-            <mat-icon>arrow_forward</mat-icon>
-          </a>
-        </div>
+        <app-story-detail-menu [inputStory]="story"></app-story-detail-menu>
+        <!--        <div class="flex gap-1 items-baseline mb-2">-->
+        <!--          <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>-->
+        <!--          <span class="text-on-surface mat-title-medium">{{ story?.workflow?.name }}</span>-->
+        <!--          <button-->
+        <!--            class="icon-sm"-->
+        <!--            mat-icon-button-->
+        <!--            type="button"-->
+        <!--            [attr.aria-label]="t('change_workflow')"-->
+        <!--            (click)="openChooseWorkflowDialog($event)"-->
+        <!--            [matTooltip]="t('change_workflow')"-->
+        <!--          >-->
+        <!--            <mat-icon>edit</mat-icon>-->
+        <!--          </button>-->
+        <!--          <span class="text-on-surface-variant mat-title-small">/</span>-->
+        <!--          <span class="text-on-surface-variant mat-title-small">{{ t("story") }}</span>-->
+        <!--          <span class="text-on-surface mat-title-medium">#{{ story.ref }}</span>-->
+        <!--          <a-->
+        <!--            mat-icon-button-->
+        <!--            class="icon-sm"-->
+        <!--            type="button"-->
+        <!--            [attr.aria-label]="t('story_previous')"-->
+        <!--            [matTooltip]="t('story_previous')"-->
+        <!--            [disabled]="!story.prev"-->
+        <!--            [routerLink]="[-->
+        <!--              '/workspace',-->
+        <!--              projectKanbanService.workspaceService.selectedEntity()?.id,-->
+        <!--              'project',-->
+        <!--              story.projectId,-->
+        <!--              'story',-->
+        <!--              story.prev?.ref,-->
+        <!--            ]"-->
+        <!--          >-->
+        <!--            <mat-icon>arrow_back</mat-icon>-->
+        <!--          </a>-->
+        <!--          <a-->
+        <!--            mat-icon-button-->
+        <!--            class="icon-sm"-->
+        <!--            type="button"-->
+        <!--            [attr.aria-label]="t('story_next')"-->
+        <!--            [matTooltip]="t('story_next')"-->
+        <!--            [disabled]="!story.next"-->
+        <!--            [routerLink]="[-->
+        <!--              '/workspace',-->
+        <!--              projectKanbanService.workspaceService.selectedEntity()?.id,-->
+        <!--              'project',-->
+        <!--              story.projectId,-->
+        <!--              'story',-->
+        <!--              story.next?.ref,-->
+        <!--            ]"-->
+        <!--          >-->
+        <!--            <mat-icon>arrow_forward</mat-icon>-->
+        <!--          </a>-->
+        <!--        </div>-->
         <div class="flex flex-row gap-8">
           <div class="basis-2/3 flex flex-col gap-y-6">
             <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
@@ -257,8 +273,9 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryDetailComponent {
+export default class StoryDetailComponent {
   workflowService = inject(WorkflowService);
+  workspaceService = inject(WorkspaceService);
   storyService = inject(StoryService);
   membershipStore = inject(MembershipStore);
   breadcrumbStore = inject(BreadcrumbStore);
@@ -336,18 +353,22 @@ export class StoryDetailComponent {
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.selectedStory();
     const teamMembers = this.membershipStore.projectEntities();
-    const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
-      ...matDialogConfig,
-      relativeXPosition: "left",
-      data: {
-        assigned: story?.assignees,
-        teamMembers: teamMembers,
-      },
-    });
-    dialogRef.componentInstance.memberAssigned.subscribe((username) => this.projectKanbanService.assignStory(username));
-    dialogRef.componentInstance.memberUnassigned.subscribe((username) =>
-      this.projectKanbanService.removeAssignStory(username),
-    );
+    if (story) {
+      const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
+        ...matDialogConfig,
+        relativeXPosition: "left",
+        data: {
+          assigned: story?.assignees,
+          teamMembers: teamMembers,
+        },
+      });
+      dialogRef.componentInstance.memberAssigned.subscribe((username) =>
+        this.projectKanbanService.assignStory(username, story.projectId, story.ref),
+      );
+      dialogRef.componentInstance.memberUnassigned.subscribe((username) =>
+        this.projectKanbanService.removeAssignStory(username, story.projectId, story.ref),
+      );
+    }
   }
 
   openChooseWorkflowDialog(event: MouseEvent): void {
