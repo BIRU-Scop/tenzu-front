@@ -60,7 +60,7 @@ const DEFAULT_SETTINGS: PasswordSettings = {
 const DEFAULT_REQUIREMENTS: PasswordRequirements = {
   diversity: 3,
   minLength: 8,
-  maxLength: 256,
+  maxLength: 128,
 };
 
 @Component({
@@ -219,7 +219,7 @@ export class PasswordFieldComponent implements OnInit {
     const resultRequirements = { ...DEFAULT_REQUIREMENTS, ...requirements };
     const _backendMinDiversity = 3;
     const _backendMinLength = 8;
-    const _backendMaxLength = 256;
+    const _backendMaxLength = 128;
 
     if (resultRequirements.diversity < _backendMinDiversity) {
       throw Error(

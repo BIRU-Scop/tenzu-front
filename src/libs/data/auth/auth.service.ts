@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Credential, Tokens } from "./auth.model";
-import { map, of, tap } from "rxjs";
+import { catchError, map, of, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
@@ -38,7 +38,7 @@ export class AuthService {
   wsService = inject(WsService);
   http = inject(HttpClient);
   router = inject(Router);
-  url: string = `${this.configAppService.apiUrl()}auth`;
+  url = `${this.configAppService.apiUrl()}auth`;
 
   login(credentials: Credential) {
     return this.http
@@ -87,7 +87,10 @@ export class AuthService {
     const tokens = this.getToken();
     if (tokens && tokens.refresh) {
       if (this.jwtHelperService.isTokenExpired(tokens.access)) {
-        return this.refresh(tokens).pipe(map(() => true));
+        return this.refresh(tokens).pipe(
+          map(() => true),
+          catchError(() => of(false)),
+        );
       } else {
         return of(true);
       }

@@ -29,10 +29,10 @@
 
 import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext, signal } from "@angular/core";
 
-import { BehaviorSubject, Observable, of, repeat, retry, share, Subject, switchMap, throwError } from "rxjs";
+import { BehaviorSubject, Observable, of, repeat, retry, share, switchMap, throwError } from "rxjs";
 import { catchError, filter } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
-import { webSocket } from "rxjs/webSocket";
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
 import { Router } from "@angular/router";
 import {
@@ -66,7 +66,8 @@ export class WsService {
   router = inject(Router);
   private environmentInjector = inject(EnvironmentInjector);
   private configAppService = inject(ConfigAppService);
-  private subject: Subject<any> | undefined = undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private subject: WebSocketSubject<any> | undefined = undefined;
   private ws$: Observable<WSResponse> | undefined = undefined;
 
   async init() {

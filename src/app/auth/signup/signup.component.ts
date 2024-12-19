@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -29,9 +29,10 @@ import { MatIcon } from "@angular/material/icon";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { UserCreation, UserService } from "../../libs/data/user";
+import { UserCreation, UserService } from "@tenzu/data/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
+import { AuthFormStateStore } from "../auth-form-state.store";
 
 @Component({
   selector: "app-signup",
@@ -130,18 +131,26 @@ import { MatDivider } from "@angular/material/divider";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignupComponent {
+export default class SignupComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
   userService = inject(UserService);
   displayForm = signal(false);
   emailSent = signal(false);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
-    email: ["", Validators.required],
-    fullName: ["", Validators.required],
-    password: ["", Validators.required],
+    email: ["", Validators.required, Validators.email],
+    fullName: ["", Validators.required, Validators.maxLength(256)],
+    password: [""],
   });
   route = inject(ActivatedRoute);
+  readonly authFormStateStore = inject(AuthFormStateStore);
+
+  ngOnInit(): void {
+    this.authFormStateStore.updateHasError(this.form.events);
+  }
+  ngOnDestroy(): void {
+    this.authFormStateStore.resetError();
+  }
   submit(): void {
     this.form.reset(this.form.value);
     if (this.form.valid) {

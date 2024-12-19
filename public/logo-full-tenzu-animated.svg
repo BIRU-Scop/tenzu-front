@@ -433,7 +433,9 @@
             id="path41"
             inkscape:label="fur_head_2"/>
     <path
-            style="display:inline;fill:#fbc259;fill-opacity:0.721569;stroke:none;stroke-width:0.00540158;stroke-linejoin:bevel"
+            fill-opacity="0.721569"
+            fill="currentColor"
+            class="logo-eye"
             d="m 0.26387585,0.21084222 0.004239,0.0736668 -0.13868848,0.0603899 -0.005268,-0.16094202 z"
             id="path4"
             inkscape:label="beam_left">
@@ -452,7 +454,9 @@
                 m 0.26387585,0.21084222 0.004239,0.0736668 -0.0871265,0.0614422 -0.005268,-0.16094202 z"/>
     </path>
     <path
-            style="display:inline;fill:#fbc259;fill-opacity:0.721569;stroke:none;stroke-width:0.00540158;stroke-linejoin:bevel"
+            fill-opacity="0.721569"
+            fill="currentColor"
+            class="logo-eye"
             d="m 0.41023947,0.21088288 -0.004011,0.0736313 0.13536611,0.0589359 0.008603,-0.15949934 z"
             id="path5"
             inkscape:label="beam_right">
@@ -474,31 +478,31 @@
     <ellipse
             cx="0.2571632"
             cy="0.24821159"
-            fill="#fbc259"
             rx="0.037"
             ry="0.037999999"
             id="ellipse37"
-            inkscape:label="eye_left"
-            style="display:inline"/>
+            fill="currentColor"
+            class="logo-eye"
+            inkscape:label="eye_left"/>
     <ellipse
             cx="-0.41716319"
             cy="0.24821159"
-            fill="#fbc259"
             rx="0.037"
             ry="0.037999999"
             transform="scale(-1,1)"
             id="ellipse38"
-            inkscape:label="eye_right"
-            style="display:inline"/>
+            fill="currentColor"
+            class="logo-eye"
+            inkscape:label="eye_right"/>
     <ellipse
             cx="0.1171632"
             cy="0.26521161"
-            fill="#fbc259"
             rx="0.052000001"
             ry="0.082000002"
             id="ellipse39"
-            inkscape:label="eye_spot_left"
-            style="display:inline">
+            fill="currentColor"
+            class="logo-eye"
+            inkscape:label="eye_spot_left">
         <animateMotion
                 dur="5s"
                 repeatCount="indefinite"
@@ -510,13 +514,13 @@
     <ellipse
             cx="-0.55716318"
             cy="0.26521161"
-            fill="#fbc259"
             rx="0.052000001"
             ry="0.082000002"
             transform="scale(-1,1)"
             id="ellipse40"
-            inkscape:label="eye_spot_right"
-            style="display:inline">
+            fill="currentColor"
+            class="logo-eye"
+            inkscape:label="eye_spot_right">
         <animateMotion
                 dur="5s"
                 repeatCount="indefinite"
@@ -526,32 +530,32 @@
                 path="M 0.04375619,-1.5292193e-6 A 0.04375523,0.08697797 0 0 1 9.5823099e-7,0.08697644 0.04375523,0.08697797 0 0 1 -0.04375427,-1.5292193e-6 0.04375523,0.08697797 0 0 1 9.5823099e-7,-0.0869795 0.04375523,0.08697797 0 0 1 0.04375619,-1.5292193e-6 Z"/>
     </ellipse>
     <path
-            style="font-weight:bold;font-size:266.667px;line-height:1.8;font-family:'Typo Round Bold Demo';-inkscape-font-specification:'Typo Round Bold Demo Bold';white-space:pre;fill:#212d69;fill-opacity:1;stroke-width:0.00745273;stroke-linejoin:bevel"
+            fill="currentColor"
             d="m 0.6859984,0.76265679 c 0,0.0176533 -0.006269,0.0327101 -0.018808,0.0451671 -0.0125386,0.0125386 -0.0276365,0.0188106 -0.0452906,0.0188106 -0.0175706,0 -0.0326274,-0.006269 -0.0451668,-0.0188106 -0.0125386,-0.012456 -0.018808,-0.0275127 -0.018808,-0.0451671 v -0.1293013 h 0.0303175 v 0.1293013 c 0,0.009323 0.003259,0.0172826 0.009776,0.0238826 0.0066,0.006517 0.01456,0.009776 0.0238826,0.009776 0.009405,0 0.0174053,-0.003259 0.0240053,-0.009776 0.006517,-0.0066 0.009776,-0.01456 0.009776,-0.0238826 v -0.1293013 h 0.0303175 z"
             id="path22-4"
             sodipodi:nodetypes="scscsccscscsccs"
-            inkscape:label="name_U"/>
+            inkscape:label="name_U" class="logo-letter"/>
     <path
-            style="font-weight:bold;font-size:266.667px;line-height:1.8;font-family:'Typo Round Bold Demo';-inkscape-font-specification:'Typo Round Bold Demo Bold';white-space:pre;display:inline;fill:#212d69;fill-opacity:1;stroke-width:0.00745273;stroke-linejoin:bevel"
+            fill="currentColor"
             d="m 0.41947334,0.63334285 0.10226643,1.275e-5 -0.0562095,0.16296015 h 0.0739841 v 0.0303175 l -0.11817146,2.7e-7 0.0593367,-0.16309669 h -0.0612063 z"
             id="path21-8"
             sodipodi:nodetypes="ccccccccc"
-            inkscape:label="name_Z"/>
+            inkscape:label="name_Z" class="logo-letter"/>
     <path
-            style="font-weight:bold;font-size:266.667px;line-height:1.8;font-family:'Typo Round Bold Demo';-inkscape-font-specification:'Typo Round Bold Demo Bold';white-space:pre;fill:#212d69;fill-opacity:1;stroke-width:0.00745273;stroke-linejoin:bevel"
+            fill="currentColor"
             d="M 0.40284599,0.82655768 H 0.37252847 V 0.69724385 c 0,-0.009323 -0.003259,-0.0172826 -0.009776,-0.0238826 -0.0066,-0.0066 -0.0146026,-0.009899 -0.0240053,-0.009899 -0.009323,0 -0.0172826,0.003299 -0.0238826,0.009899 -0.006517,0.0066 -0.009776,0.01456 -0.009776,0.0238826 v 0.1293101 h -0.0303175 v -0.1293101 c 0,-0.0176533 0.006269,-0.0327514 0.0188106,-0.0452908 0.0125386,-0.012456 0.0275951,-0.0186853 0.0451668,-0.0186853 0.0176533,0 0.0327511,0.006229 0.0452908,0.0186853 0.0125386,0.0125386 0.018808,0.0276365 0.018808,0.0452908 z"
             id="path19-4"
             sodipodi:nodetypes="ccscscsccscscsc"
-            inkscape:label="name_N"/>
+            inkscape:label="name_N" class="logo-letter"/>
     <path
-            style="font-weight:bold;font-size:266.667px;line-height:1.8;font-family:'Typo Round Bold Demo';-inkscape-font-specification:'Typo Round Bold Demo Bold';white-space:pre;fill:#212d69;fill-opacity:1;stroke-width:0.00745273;stroke-linejoin:bevel"
+            fill="currentColor"
             d="m 0.19176022,0.63334285 c -0.0150133,0 -0.0278839,0.005323 -0.0386084,0.0159626 -0.0106427,0.0106426 -0.0159626,0.0234693 -0.0159626,0.0384847 0,0.0169946 0.005323,0.0299466 0.0159626,0.0388562 -0.0125386,0.009568 -0.018808,0.0237999 -0.018808,0.0426922 0,0.0157573 0.005608,0.0292453 0.0168293,0.040465 0.0112186,0.0112186 0.0247493,0.0168293 0.0405884,0.0168293 h 0.0346487 c 0.004043,0 0.007549,-0.001485 0.0105173,-0.004456 0.002971,-0.002805 0.004456,-0.006309 0.004456,-0.0105173 v -2.46e-4 c 0,-0.004125 -0.001485,-0.007672 -0.004456,-0.0106426 -0.002971,-0.002971 -0.006475,-0.004456 -0.0105173,-0.004456 h -0.0346487 c -0.007507,0 -0.0139013,-0.002598 -0.0191813,-0.007797 -0.005197,-0.00528 -0.007797,-0.0116746 -0.007797,-0.0191813 0,-0.007507 0.002598,-0.0139013 0.007797,-0.0191813 0.00528,-0.00528 0.0116746,-0.00792 0.0191813,-0.00792 h 0.0292039 c 0.004125,0 0.007672,-0.001485 0.0106426,-0.004456 0.002888,-0.002888 0.004331,-0.006395 0.004331,-0.0105173 v -2.4488e-4 c 0,-0.004125 -0.001444,-0.007672 -0.004331,-0.0106426 -0.002971,-0.002888 -0.006517,-0.004331 -0.0106426,-0.004331 l -0.0292039,-1.2285e-4 c -0.006683,0 -0.0123733,-0.00231 -0.0170773,-0.006931 -0.004701,-0.004701 -0.007053,-0.0104346 -0.007053,-0.0172 0,-0.006683 0.002352,-0.0123733 0.007053,-0.0170773 0.004784,-0.004784 0.0104773,-0.007176 0.0170773,-0.007176 h 0.0346487 c 0.004043,0 0.007549,-0.001444 0.0105173,-0.004331 0.002971,-0.002971 0.004456,-0.006517 0.004456,-0.0106426 v -2.4537e-4 c 0,-0.004125 -0.001485,-0.007672 -0.004456,-0.0106426 -0.002971,-0.002888 -0.006475,-0.004331 -0.0105173,-0.004331 z"
             id="path11-0"
-            inkscape:label="name_E"/>
+            inkscape:label="name_E" class="logo-letter"/>
     <path
-            style="font-weight:bold;font-size:266.667px;line-height:1.8;font-family:'Typo Round Bold Demo';-inkscape-font-specification:'Typo Round Bold Demo Bold';white-space:pre;fill:#212d69;fill-opacity:1;stroke-width:0.00745273;stroke-linejoin:bevel"
+            fill="currentColor"
             d="M 0.12103209,0.66353673 H 0.08455047 V 0.82658701 H 0.05435675 V 0.66353673 H 0 l 2.0069e-4,-0.0299959 0.12082932,-2.007e-4 z"
             id="text1"
             sodipodi:nodetypes="ccccccccc"
-            inkscape:label="name_T"/>
+            inkscape:label="name_T" class="logo-letter"/>
 </svg>

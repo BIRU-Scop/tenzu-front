@@ -19,8 +19,8 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
-import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, inject, model, OnDestroy, OnInit } from "@angular/core";
+import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
@@ -31,6 +31,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { AuthService, Tokens } from "@tenzu/data/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
+import { AuthFormStateStore } from "../../auth-form-state.store";
 
 @Component({
   selector: "app-reset-password-form",
@@ -76,12 +77,12 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResetPasswordFormComponent {
+export default class ResetPasswordFormComponent implements OnInit, OnDestroy {
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group(
     {
-      newPassword: ["", Validators.required],
-      repeatPassword: ["", Validators.required],
+      newPassword: [""],
+      repeatPassword: [""],
     },
     { validators: passwordsMustMatch },
   );
@@ -92,6 +93,7 @@ export class ResetPasswordFormComponent {
   notificationService = inject(NotificationService);
   authService = inject(AuthService);
   router = inject(Router);
+  readonly authFormStateStore = inject(AuthFormStateStore);
 
   constructor(route: ActivatedRoute) {
     route.paramMap.subscribe((value) => {
@@ -112,6 +114,13 @@ export class ResetPasswordFormComponent {
         });
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.authFormStateStore.updateHasError(this.form.events);
+  }
+  ngOnDestroy(): void {
+    this.authFormStateStore.resetError();
   }
 
   async submit() {
