@@ -19,19 +19,26 @@
  *
  */
 
-import { TestBed } from "@angular/core/testing";
+import { patchState, signalStore, withHooks, withMethods, withState } from "@ngrx/signals";
 
-import { AuthService } from "./auth.service";
+export type StoryView = "kanban" | "fullView" | "side-view";
 
-describe("AuthService", () => {
-  let service: AuthService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
-  });
-
-  it("should be created", () => {
-    expect(service).toBeTruthy();
-  });
-});
+export const KanbanWrapperStore = signalStore(
+  { providedIn: "root" },
+  withState({ storyView: "fullView" as StoryView, firstOpened: true }),
+  withMethods((store) => ({
+    setStoryView(storyView: StoryView) {
+      patchState(store, { storyView });
+      localStorage.setItem("storyView", storyView);
+    },
+    setFirstOpened(firstOpened: boolean) {
+      patchState(store, { firstOpened });
+    },
+  })),
+  withHooks({
+    onInit(store) {
+      const storyView = localStorage.getItem("storyView") || "kanban";
+      store.setStoryView(storyView as StoryView);
+    },
+  }),
+);

@@ -46,6 +46,8 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
+  currentProjectId: null as string | null,
+  currentWorkflowSlug: null as string | null,
   orderStoryByStatus: {} as Record<string, number[]>,
 };
 export const StoryStore = signalStore(
@@ -63,6 +65,9 @@ export const StoryStore = signalStore(
     }),
   })),
   withMethods((store) => ({
+    setCurrentWorkflowId(projectId: string, workflowSlug: string) {
+      patchState(store, { currentProjectId: projectId, currentWorkflowSlug: workflowSlug });
+    },
     addEntities(items: Story[]) {
       patchState(store, addEntities(items, { selectId }));
     },

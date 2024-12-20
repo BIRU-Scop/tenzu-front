@@ -79,6 +79,7 @@ import { MatIcon } from "@angular/material/icon";
 export class StoryCardComponent {
   title = input.required<string>();
   ref = input.required<number>();
+  projectID = input.required<string>();
   users = input.required<UserMinimal[]>();
 
   membershipStore = inject(MembershipStore);
@@ -98,10 +99,10 @@ export class StoryCardComponent {
       },
     });
     dialogRef.componentInstance.memberAssigned.subscribe(async (username) => {
-      await this.projectKanbanService.assignStory(username, null, this.ref());
+      await this.projectKanbanService.assignStory(username, this.projectID(), this.ref());
     });
     dialogRef.componentInstance.memberUnassigned.subscribe(
-      async (username) => await this.projectKanbanService.removeAssignStory(username, null, this.ref()),
+      async (username) => await this.projectKanbanService.removeAssignStory(username, this.projectID(), this.ref()),
     );
   }
 }

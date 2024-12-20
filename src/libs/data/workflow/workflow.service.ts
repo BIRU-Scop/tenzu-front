@@ -44,11 +44,17 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
   }
 
   async get(projectId: string, workflowId: string): Promise<Workflow | undefined> {
-    const refreshedWorkflow = await lastValueFrom(this.workflowInfraService.getById(projectId, workflowId));
+    let workflow = this.selectedEntity();
+    if (workflow && workflow.id === workflowId && workflow.projectId === projectId) {
+      return workflow;
+    } else {
+      this.resetSelectedEntity();
+    }
+    workflow = await lastValueFrom(this.workflowInfraService.getById(projectId, workflowId));
 
-    if (refreshedWorkflow) {
-      this.workflowStore.setWorkflow(refreshedWorkflow);
-      return refreshedWorkflow;
+    if (workflow) {
+      this.workflowStore.setWorkflow(workflow);
+      return workflow;
     }
     return undefined;
   }

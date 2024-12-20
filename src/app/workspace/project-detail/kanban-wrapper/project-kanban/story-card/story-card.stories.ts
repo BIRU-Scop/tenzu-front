@@ -40,7 +40,9 @@ class RoutingTestComponent {}
   selector: "app-storybook-story-card",
   standalone: true,
   imports: [StoryCardComponent],
-  template: ` <app-story-card [title]="title()" [ref]="ref()" [users]="users()"></app-story-card> `,
+  template: `
+    <app-story-card [title]="title()" [ref]="ref()" [users]="users()" [projectID]="projectId()"></app-story-card>
+  `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -48,6 +50,7 @@ class StorybookStoryCardComponent {
   title = input.required<string>();
   ref = input.required<number>();
   users = input.required<Array<{ fullName: string; color: number }>>();
+  projectId = input.required<string>();
 }
 
 type Story = StoryObj<StorybookStoryCardComponent>;
@@ -58,6 +61,7 @@ const meta: Meta<StorybookStoryCardComponent> = {
   args: {
     title: "My story title",
     ref: 5,
+    projectId: "12345",
     users: [
       { fullName: "John Doe", color: 3 },
       { fullName: "Martha Roberts", color: 2 },

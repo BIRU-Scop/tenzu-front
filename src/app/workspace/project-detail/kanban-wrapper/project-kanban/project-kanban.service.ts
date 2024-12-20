@@ -26,6 +26,7 @@ import { Router } from "@angular/router";
 import { ProjectService } from "@tenzu/data/project";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { StoryService } from "@tenzu/data/story/story.service";
+import { WorkspaceService } from "@tenzu/data/workspace";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -34,6 +35,7 @@ import { StoryService } from "@tenzu/data/story/story.service";
   providedIn: "root",
 })
 export class ProjectKanbanService {
+  workspaceService = inject(WorkspaceService);
   projectService = inject(ProjectService);
   workflowService = inject(WorkflowService);
   storyService = inject(StoryService);
@@ -72,22 +74,11 @@ export class ProjectKanbanService {
     }
   }
 
-  async assignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
-    const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
-    if (pId && storyRef) {
-      const selectedStory = this.storyService.entityMap()[storyRef];
-      const ref = storyRef ? storyRef : selectedStory.ref;
-      await this.storyService.createAssign(pId, ref, username);
-    }
+  async assignStory(username: string, projectId: string, storyRef: number) {
+    await this.storyService.createAssign(projectId, storyRef, username);
   }
 
-  async removeAssignStory(username: string, projectId: string | null = null, storyRef: number | null = null) {
-    const pId = projectId ? projectId : this.projectService.selectedEntity()?.id;
-
-    if (pId && storyRef) {
-      const selectedStory = this.storyService.entityMap()[storyRef];
-      const ref = storyRef ? storyRef : selectedStory.ref;
-      await this.storyService.deleteAssign(pId, ref, username);
-    }
+  async removeAssignStory(username: string, projectId: string, storyRef: number) {
+    await this.storyService.deleteAssign(projectId, storyRef, username);
   }
 }

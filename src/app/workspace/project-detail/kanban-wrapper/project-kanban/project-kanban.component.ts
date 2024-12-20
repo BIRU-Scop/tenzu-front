@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { Story } from "@tenzu/data/story";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -37,12 +37,12 @@ import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cd
 import { Status } from "@tenzu/data/status";
 import { Step, WorkflowService } from "@tenzu/data/workflow";
 import { Validators } from "@angular/forms";
-import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
+import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryService } from "@tenzu/data/story/story.service";
-import { MembershipStore } from "@tenzu/data/membership";
+import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 
 @Component({
   selector: "app-project-kanban",
@@ -55,6 +55,9 @@ import { MembershipStore } from "@tenzu/data/membership";
     CdkDrag,
     CdkDropListGroup,
     ProjectKanbanSkeletonComponent,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
   ],
   template: `
     @let workflow = workflowService.selectedEntity();
@@ -87,10 +90,28 @@ import { MembershipStore } from "@tenzu/data/membership";
               [cdkDropListData]="status"
               (cdkDropListDropped)="drop($event)"
             >
-              @for (story of stories; track story.ref) {
-                <li cdkDrag [cdkDragData]="story" class="w-60">
-                  <app-story-card [ref]="story.ref" [title]="story.title" [users]="story.assignees" />
-                </li>
+              @if (stories && stories.length > 10) {
+                <cdk-virtual-scroll-viewport [itemSize]="10" class="min-h-[100vh] w-full">
+                  <li cdkDrag [cdkDragData]="story" class="w-60" *cdkVirtualFor="let story of stories">
+                    <app-story-card
+                      [ref]="story.ref"
+                      [title]="story.title"
+                      [users]="story.assignees"
+                      [projectID]="story.projectId"
+                    />
+                  </li>
+                </cdk-virtual-scroll-viewport>
+              } @else {
+                @for (story of stories; track story.ref) {
+                  <li cdkDrag [cdkDragData]="story" class="w-60">
+                    <app-story-card
+                      [ref]="story.ref"
+                      [title]="story.title"
+                      [users]="story.assignees"
+                      [projectID]="story.projectId"
+                    />
+                  </li>
+                }
               }
             </ul>
             <button
@@ -152,12 +173,11 @@ import { MembershipStore } from "@tenzu/data/membership";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectKanbanComponent implements OnDestroy {
+export class ProjectKanbanComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   workflowService = inject(WorkflowService);
   storyService = inject(StoryService);
   projectKanbanService = inject(ProjectKanbanService);
-  membershipStore = inject(MembershipStore);
   readonly relativeDialog = inject(RelativeDialogService);
 
   protected readonly Step = Step;
@@ -170,11 +190,6 @@ export class ProjectKanbanComponent implements OnDestroy {
       });
 
     this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
-  }
-
-  ngOnDestroy(): void {
-    this.storyService.fullReset();
-    this.membershipStore.reset();
   }
 
   openCreateStory(event: MouseEvent, statusId: string): void {

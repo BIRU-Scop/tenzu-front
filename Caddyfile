@@ -1,6 +1,9 @@
 :80 {
+  header {
+    Cache-Control max-age=31536000
+  }
   try_files {path} /
   root * /usr/share/caddy
+  encode zstd gzip
   file_server
-  encode gzip
 }

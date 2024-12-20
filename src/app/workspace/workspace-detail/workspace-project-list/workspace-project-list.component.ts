@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { ProjectService } from "@tenzu/data/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
@@ -69,7 +69,10 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class WorkspaceProjectListComponent implements AfterViewInit {
+export default class WorkspaceProjectListComponent implements AfterViewInit, OnDestroy {
+  ngOnDestroy(): void {
+    this.projectService.resetEntities();
+  }
   workspaceService = inject(WorkspaceService);
   projectService = inject(ProjectService);
   breadcrumbStore = inject(BreadcrumbStore);

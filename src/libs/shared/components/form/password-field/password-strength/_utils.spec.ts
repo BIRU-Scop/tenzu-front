@@ -29,7 +29,7 @@ import {
   stringDiversity,
 } from "./_utils";
 import { expect } from "vitest";
-import { SYMBOLS } from "@tenzu/utils";
+import { SYMBOLS } from "@tenzu/utils/functions/strings";
 
 const DEFAULT_STRENGTH_SETTINGS = { lengthSecureThreshold: 15 };
 
