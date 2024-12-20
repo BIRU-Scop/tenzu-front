@@ -26,7 +26,7 @@ import { WorkspaceInvitationGuard } from "./guards/workspace-invitation.guard";
 import { VerifyEmailGuard } from "./guards/verify-email.guard";
 import { ProjectInvitationGuard } from "./guards/project-invitation.guard";
 
-function isViewSetterKanbaStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
+function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
   const story = "story/:ref";
   const workflow = "kanban/:workflowSlug";
 
@@ -48,7 +48,7 @@ function isViewSetterKanbaStory(future: ActivatedRouteSnapshot, curr: ActivatedR
 
 export class CustomReuseStrategy extends BaseRouteReuseStrategy {
   override shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
-    if (isViewSetterKanbaStory(future, curr)) {
+    if (isViewSetterKanbanStory(future, curr)) {
       return true;
     }
 

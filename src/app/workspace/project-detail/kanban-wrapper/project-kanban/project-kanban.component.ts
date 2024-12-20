@@ -90,16 +90,29 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
               [cdkDropListData]="status"
               (cdkDropListDropped)="drop($event)"
             >
-              <cdk-virtual-scroll-viewport [itemSize]="20" class="min-h-[100vh] w-full">
-                <li cdkDrag [cdkDragData]="story" class="w-60" *cdkVirtualFor="let story of stories">
-                  <app-story-card
-                    [ref]="story.ref"
-                    [title]="story.title"
-                    [users]="story.assignees"
-                    [projectID]="story.projectId"
-                  />
-                </li>
-              </cdk-virtual-scroll-viewport>
+              @if (stories && stories.length > 10) {
+                <cdk-virtual-scroll-viewport [itemSize]="10" class="min-h-[100vh] w-full">
+                  <li cdkDrag [cdkDragData]="story" class="w-60" *cdkVirtualFor="let story of stories">
+                    <app-story-card
+                      [ref]="story.ref"
+                      [title]="story.title"
+                      [users]="story.assignees"
+                      [projectID]="story.projectId"
+                    />
+                  </li>
+                </cdk-virtual-scroll-viewport>
+              } @else {
+                @for (story of stories; track story.ref) {
+                  <li cdkDrag [cdkDragData]="story" class="w-60">
+                    <app-story-card
+                      [ref]="story.ref"
+                      [title]="story.title"
+                      [users]="story.assignees"
+                      [projectID]="story.projectId"
+                    />
+                  </li>
+                }
+              }
             </ul>
             <button
               mat-stroked-button
