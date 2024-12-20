@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { ProjectKanbanComponent } from "./project-kanban/project-kanban.component";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogContent } from "@angular/material/dialog";
 import StoryDetailComponent from "./story-detail/story-detail.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -30,11 +30,22 @@ import { KanbanWrapperService } from "./kanban-wrapper.service";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { switchMap } from "rxjs/operators";
+import { MatDrawer, MatDrawerContainer } from "@angular/material/sidenav";
+
+@Component({
+  selector: "app-story-detail-dialog",
+  standalone: true,
+  imports: [StoryDetailComponent, MatDialogContent],
+  template: `<mat-dialog-content><app-story-detail></app-story-detail></mat-dialog-content>`,
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class StoryDetailDialogComponent {}
 
 @Component({
   selector: "app-kanban-wrapper",
   standalone: true,
-  imports: [ProjectKanbanComponent, StoryDetailComponent],
+  imports: [ProjectKanbanComponent, StoryDetailComponent, MatDrawer, MatDrawerContainer],
   template: ` @let storyView = kanbanWrapperService.storyView();
     @switch (storyView) {
       @case ("kanban") {
@@ -48,15 +59,34 @@ import { switchMap } from "rxjs/operators";
         }
       }
       @case ("side-view") {
-        <div class="flex flex-row">
+        <mat-drawer-container>
           <app-project-kanban></app-project-kanban>
-          @if (this.kanbanWrapperService.storyService.selectedEntity()) {
+          <mat-drawer
+            #drawer
+            mode="side"
+            opened="!!this.kanbanWrapperService.storyService.selectedEntity()"
+            position="end"
+          >
             <app-story-detail></app-story-detail>
-          }
-        </div>
+          </mat-drawer>
+        </mat-drawer-container>
       }
     }`,
-  styles: ``,
+  styles: `
+    .mat-drawer.mat-drawer-side.mat-drawer-end {
+      width: 50%;
+      padding-bottom: 0px;
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-top: 12px;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--mat-sys-outline);
+      border-left-width: 2px;
+      border-right-width: 0;
+      box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.3);
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class KanbanWrapperComponent implements OnDestroy {
@@ -75,7 +105,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
       .subscribe((storyView) => {
         if (storyView == "kanban" && this.kanbanWrapperService.firstOpened()) {
           this.kanbanWrapperService.setFirstOpened(false);
-          const dialogRef = this.dialog.open(StoryDetailComponent, {
+          const dialogRef = this.dialog.open(StoryDetailDialogComponent, {
             ...matDialogConfig,
             width: "80vw",
             height: "80vh",

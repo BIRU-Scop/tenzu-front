@@ -27,12 +27,27 @@
   border-width: 1px;
   .mat-mdc-option {
     min-height: 32px;
+    padding: 0 12px;
+    .mat-pseudo-checkbox-minimal {
+    margin-left: 0;
+    }
+    .mat-icon {
+      margin-right: 0;
+    }
   }
   .mdc-list-item__primary-text {
     color:  var(--mat-sys-on-secondary-container);
   }
   &:hover .mdc-list-item__primary-text {
     color:  var(--mat-sys-on-secondary-container);
+  }
+}
+.mat-mdc-form-field.transparent .mat-mdc-select-trigger{
+  line-height: 0px;
+  .icon {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
   }
 }
 
