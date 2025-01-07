@@ -110,7 +110,7 @@ import { MatDialog } from "@angular/material/dialog";
       >
         <mat-icon>arrow_forward</mat-icon>
       </a>
-      <mat-form-field>
+      <mat-form-field class="transparent self-end">
         <mat-select [formControl]="storyView">
           <mat-select-trigger>
             <mat-icon>{{ typeStoryView[storyView.getRawValue()] }}</mat-icon>

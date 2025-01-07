@@ -23,6 +23,9 @@
 
 .mat-mdc-form-field {
   @apply w-full;
+  .mdc-text-field {
+    padding: 0 12px;
+  }
   .mdc-text-field--outlined {
     box-shadow: 0 0 3px var(--mat-sys-primary);
     border-bottom-left-radius: var(--mat-sys-corner-medium);
@@ -81,11 +84,11 @@ form .mat-mdc-form-field-error {
 
 @mixin tokens-overrides() {
   @include mat.form-field-overrides((
-      outlined-outline-color: var(--mat-sys-primary-container),
-      outlined-hover-outline-color: var(--mat-sys-primary),
+      outlined-outline-color: var(--mat-sys-primary),
+      outlined-hover-outline-color: var(--mat-sys-on-primary),
       outlined-focus-outline-color: var(--mat-sys-primary),
-      outlined-error-outline-color: var(--mat-sys-error-container),
-      outlined-error-hover-outline-color: var(--mat-sys-error),
+      outlined-error-outline-color: var(--mat-sys-error),
+      outlined-error-hover-outline-color: var(--mat-sys-on-error),
       outlined-error-focus-outline-color: var(--mat-sys-error),
       container-text-size: var(--mat-sys-label-large-size),
       container-text-line-height: var(--mat-sys-label-large-line-height),
@@ -137,6 +140,25 @@ form .mat-mdc-form-field-error {
 
     .mat-mdc-form-field-flex {
       padding-bottom: 8px;
+    }
+  }
+
+  .mat-mdc-form-field.transparent {
+    @apply w-fit;
+    @include mat.form-field-overrides((
+      outlined-outline-color: transparent,
+      outlined-hover-outline-color: transparent,
+      outlined-focus-outline-color: transparent,
+      container-vertical-padding: 0,
+      container-height: 24px,
+    ));
+    .mdc-text-field--outlined {
+      box-shadow: none;
+
+    }
+    .mat-mdc-form-field-infix {
+      min-width: 48px;
+      line-height: 0;
     }
   }
 }
