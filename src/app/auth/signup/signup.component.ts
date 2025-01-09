@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -138,8 +138,8 @@ export default class SignupComponent implements OnInit, OnDestroy {
   emailSent = signal(false);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
-    email: ["", Validators.required, Validators.email],
-    fullName: ["", Validators.required, Validators.maxLength(256)],
+    email: ["", [Validators.required, Validators.email]],
+    fullName: ["", [Validators.required, Validators.maxLength(256)]],
     password: [""],
   });
   route = inject(ActivatedRoute);

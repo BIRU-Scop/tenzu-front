@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -93,7 +93,7 @@ export default class RequestResetPasswordComponent implements OnInit, OnDestroy 
   showConfirmation = model(false);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
-    email: ["", Validators.required, Validators.email],
+    email: ["", [Validators.required, Validators.email]],
   });
   userStore = inject(UserStore);
   readonly authFormStateStore = inject(AuthFormStateStore);
