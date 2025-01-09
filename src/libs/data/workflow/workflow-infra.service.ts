@@ -33,36 +33,51 @@ export class WorkflowInfraService {
   configAppService = inject(ConfigAppService);
   url = `${this.configAppService.apiUrl()}`;
 
-  getUrl(projectId: string) {
+  getUrl(projectId: Workflow["projectId"]) {
     return `${this.url}projects/${projectId}/workflows`;
   }
+
   create(item: Pick<Workflow, "projectId" | "name">) {
     return this.http.post<Workflow>(`${this.getUrl(item.projectId)}`, { name: item.name });
   }
   createStatus(projectId: string, workflowSlug: string, newStatus: Pick<Status, "name">) {
     return this.http.post<Status>(`${this.getUrl(projectId)}/${workflowSlug}/statuses`, newStatus);
   }
-  deleteStatus(projectId: string, workflowSlug: string, statusId: string, moveToStatus: string | undefined) {
+
+  deleteStatus(
+    projectId: Workflow["projectId"],
+    workflowSlug: Workflow["slug"],
+    statusId: string,
+    moveToStatus: string | undefined,
+  ) {
     return this.http.delete(
       `${this.getUrl(projectId)}/${workflowSlug}/statuses/${statusId}${moveToStatus ? `?moveTo=${moveToStatus}` : ""}`,
     );
   }
-  editStatus(projectId: string, workflowSlug: string, status: Pick<Status, "name" | "id">) {
+
+  editStatus(projectId: Workflow["projectId"], workflowSlug: Workflow["slug"], status: Pick<Status, "name" | "id">) {
     return this.http.patch<Status>(`${this.getUrl(projectId)}/${workflowSlug}/statuses/${status.id}`, {
       name: status.name,
     });
   }
 
-  list(projectId: string) {
+  list(projectId: Workflow["projectId"]) {
     return this.http.get<Workflow[]>(`${this.getUrl(projectId)}`);
   }
-  getById(projectId: string, workflowId: string) {
+
+  getById(projectId: Workflow["projectId"], workflowId: Workflow["id"]) {
     return this.http.get<Workflow>(`${this.getUrl(projectId)}/by_id/${workflowId}`);
   }
-  get(projectId: string, workflowSlug: string) {
+
+  get(projectId: Workflow["projectId"], workflowSlug: Workflow["slug"]) {
     return this.http.get<Workflow>(`${this.getUrl(projectId)}/${workflowSlug}`);
   }
-  reorderStatus(projectId: string, workflowSlug: string, payload: WorkflowStatusReorderPayload) {
+
+  reorderStatus(
+    projectId: Workflow["projectId"],
+    workflowSlug: Workflow["slug"],
+    payload: WorkflowStatusReorderPayload,
+  ) {
     return this.http.post(`${this.getUrl(projectId)}/${workflowSlug}/statuses/reorder`, payload);
   }
 }

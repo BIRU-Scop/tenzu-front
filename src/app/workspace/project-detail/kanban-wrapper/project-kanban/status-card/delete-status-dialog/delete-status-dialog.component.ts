@@ -95,8 +95,8 @@ type DeleteStatusDialogData = {
         }
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button (click)="submit()" class="error-button">{{ t("confirm") }}</button>
         <button mat-flat-button mat-dialog-close class="secondary-button">{{ t("cancel") }}</button>
+        <button mat-flat-button (click)="submit()" class="error-button">{{ t("confirm") }}</button>
       </mat-dialog-actions>
     </ng-container>
   `,
@@ -124,6 +124,7 @@ export class DeleteStatusDialogComponent {
   isLastStatus = computed(() => {
     return this.filteredStatus().length === 0;
   });
+
   constructor() {
     toObservable(this.filteredStatus)
       .pipe(
