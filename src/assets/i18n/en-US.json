@@ -11,14 +11,18 @@
       }
     },
     "login": {
-        "logout": "You are signed out",
-        "preview_warning": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly."
+      "logout": "You are signed out",
+      "preview_warning": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly."
     },
     "action": {
       "changes_saved": "Changes saved"
     },
     "project": {
       "deleted": "The project {{ name }} has been deleted"
+    },
+    "workflow": {
+      "renamed": "Kanban has been successfully renamed",
+      "deleted": "The kanban {{ name }} has been deleted"
     },
     "events": {
       "delete_story": "{{username}} has deleted the story #{{ref}}",

@@ -40,7 +40,22 @@ export class WorkflowInfraService {
   create(item: Pick<Workflow, "projectId" | "name">) {
     return this.http.post<Workflow>(`${this.getUrl(item.projectId)}`, { name: item.name });
   }
-  createStatus(projectId: string, workflowSlug: string, newStatus: Pick<Status, "name">) {
+
+  editWorkflow(
+    projectId: Workflow["projectId"],
+    slug: Workflow["slug"],
+    patchData: Partial<Omit<Workflow, "projectId" | "slug">>,
+  ) {
+    return this.http.patch<Workflow>(`${this.getUrl(projectId)}/${slug}`, { ...patchData });
+  }
+
+  delete(item: Pick<Workflow, "projectId" | "slug">, moveToWorkflow: Workflow["slug"] | undefined) {
+    return this.http.delete<void>(
+      `${this.getUrl(item.projectId)}/${item.slug}${moveToWorkflow ? `?moveTo=${moveToWorkflow}` : ""}`,
+    );
+  }
+
+  createStatus(projectId: Workflow["projectId"], workflowSlug: Workflow["slug"], newStatus: Pick<Status, "name">) {
     return this.http.post<Status>(`${this.getUrl(projectId)}/${workflowSlug}/statuses`, newStatus);
   }
 

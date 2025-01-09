@@ -23,10 +23,11 @@ import { inject, Injectable } from "@angular/core";
 import { StoryCreate } from "@tenzu/data/story";
 import { Status } from "@tenzu/data/status";
 import { Router } from "@angular/router";
-import { ProjectService } from "@tenzu/data/project";
+import { Project, ProjectService } from "@tenzu/data/project";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { StoryService } from "@tenzu/data/story/story.service";
 import { WorkspaceService } from "@tenzu/data/workspace";
+import { Workflow } from "@tenzu/data/workflow";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -80,5 +81,48 @@ export class ProjectKanbanService {
 
   async removeAssignStory(username: string, projectId: string, storyRef: number) {
     await this.storyService.deleteAssign(projectId, storyRef, username);
+  }
+
+  async editSelectedWorkflow(patchData: Partial<Omit<Workflow, "projectId" | "slug">>) {
+    const updatedWorkflow = await this.workflowService.updateSelected(patchData);
+    if (updatedWorkflow) {
+      this.projectService.editWorkflow(updatedWorkflow);
+    }
+    return updatedWorkflow;
+  }
+
+  async deletesSelectedWorkflow(moveToWorkflow: Workflow["slug"] | undefined): Promise<
+    | {
+        deletedWorkflow: Workflow | undefined;
+        redirectionSlug: Workflow["slug"];
+      }
+    | undefined
+  > {
+    const workflowToDelete = this.workflowService.selectedEntity();
+    const selectedProject = this.projectService.selectedEntity();
+    const selectedWorkflow = this.workflowService.selectedEntity();
+    if (!selectedProject || !workflowToDelete || !selectedWorkflow) {
+      return undefined;
+    }
+    const deletedWorkflow = await this.workflowService.deleteSelected(moveToWorkflow);
+    if (!deletedWorkflow) {
+      return undefined;
+    }
+    this.projectService.deleteWorkflow(deletedWorkflow);
+    let redirectionSlug = moveToWorkflow;
+    console.log("expected RedirectionSlug", redirectionSlug);
+    if (!moveToWorkflow) {
+      const workflowsExceptSelected = (project: Project, selectedWorkflowSlug: Workflow["slug"]) => {
+        return project.workflows.filter((workflow) => workflow.slug !== selectedWorkflowSlug)[0];
+      };
+      redirectionSlug = workflowsExceptSelected(selectedProject, selectedWorkflow.slug).slug || undefined;
+    }
+
+    return redirectionSlug
+      ? {
+          deletedWorkflow: deletedWorkflow,
+          redirectionSlug: redirectionSlug,
+        }
+      : undefined;
   }
 }

@@ -19,11 +19,11 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { Story } from "@tenzu/data/story";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
   EnterNameDialogComponent,
@@ -43,6 +43,16 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryService } from "@tenzu/data/story/story.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
+import {
+  DeleteWorkflowDialogComponent,
+  FormData as DeleteWorkflowFormData,
+} from "./delete-workflow-dialog/delete-workflow-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-project-kanban",
@@ -58,11 +68,42 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
     CdkVirtualScrollViewport,
     CdkFixedSizeVirtualScroll,
     CdkVirtualForOf,
+    MatMenu,
+    MatIcon,
+    MatMenuTrigger,
+    MatIconButton,
+    MatTooltip,
+    MatMenuItem,
   ],
   template: `
     @let workflow = workflowService.selectedEntity();
     @let statuses = workflowService.statuses();
-    <h1 class="mat-headline-small text-on-surface-variant">{{ workflow?.name }}</h1>
+    <div class="flex flex-row gap-x-2" *transloco="let t; prefix: 'workflow.edit_workflow'">
+      <h1 class="mat-headline-small text-on-surface-variant">{{ workflow?.name }}</h1>
+      <button
+        mat-icon-button
+        [attr.aria-label]="t('aria_label')"
+        [matTooltip]="t('aria_label')"
+        [matMenuTriggerFor]="workflowMenu"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #workflowMenu="matMenu">
+        <button mat-menu-item [attr.aria-label]="t('edit_name')" (click)="openEditWorkflow($event)">
+          <mat-icon>edit</mat-icon>
+          {{ t("edit_name") }}
+        </button>
+        <button
+          mat-menu-item
+          [attr.aria-label]="t('delete')"
+          (click)="openDeleteWorkflowDialog()"
+          [disabled]="onlyHasOneWorkflow()"
+        >
+          <mat-icon>delete</mat-icon>
+          {{ t("delete") }}
+        </button>
+      </mat-menu>
+    </div>
     @if (!storyService.isLoading()) {
       <ul
         class="grid grid-flow-col gap-8 kanban-viewport"
@@ -179,6 +220,20 @@ export class ProjectKanbanComponent {
   storyService = inject(StoryService);
   projectKanbanService = inject(ProjectKanbanService);
   readonly relativeDialog = inject(RelativeDialogService);
+  dialog = inject(MatDialog);
+  router = inject(Router);
+  activatedRoute = inject(ActivatedRoute);
+  notificationService = inject(NotificationService);
+
+  onlyHasOneWorkflow = computed(() => {
+    const project = this.projectKanbanService.projectService.selectedEntity();
+    if (!project) {
+      return false;
+    }
+    const workflows = project.workflows;
+
+    return workflows.length === 1;
+  });
 
   protected readonly Step = Step;
 
@@ -281,5 +336,64 @@ export class ProjectKanbanComponent {
         .reorder(selectedWorkspace.projectId, selectedWorkspace.slug, oldPosition, oldPosition + step)
         .then();
     }
+  }
+
+  openEditWorkflow(event: MouseEvent): void {
+    const data: NameDialogData = {
+      label: "workflow.edit_workflow_name.label",
+      action: "workflow.edit_workflow_name.action",
+      defaultValue: this.workflowService.selectedEntity()?.name,
+      validators: [
+        {
+          type: "required",
+          message: "workflow.edit_workflow_name.name_required",
+          validatorFn: Validators.required,
+        },
+        {
+          type: "maxLength",
+          message: "form_errors.max_length",
+          translocoParams: { length: 30 },
+          validatorFn: Validators.maxLength(30),
+        },
+      ],
+    };
+    const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
+      ...matDialogConfig,
+      relativeXPosition: "auto",
+      data: data,
+    });
+    dialogRef.afterClosed().subscribe(async (name?: string) => {
+      if (name) {
+        const editedWorkflow = await this.projectKanbanService.editSelectedWorkflow({ name: name });
+        this.notificationService.success({
+          title: "notification.workflow.renamed",
+        });
+        await this.router.navigate(["..", editedWorkflow?.slug], { relativeTo: this.activatedRoute });
+      }
+    });
+  }
+
+  openDeleteWorkflowDialog() {
+    const selectedWorkflow = this.workflowService.selectedEntity();
+    const dialogRef = this.dialog.open(DeleteWorkflowDialogComponent, {
+      ...matDialogConfig,
+      data: {
+        workflowName: selectedWorkflow.name,
+        workflowId: selectedWorkflow.id,
+      },
+    });
+    dialogRef.afterClosed().subscribe(async (formValue?: DeleteWorkflowFormData) => {
+      if (formValue) {
+        const moveToWorkflow: string | undefined = formValue.stories === "move" ? formValue.workflowTarget : undefined;
+        const deletedData = await this.projectKanbanService.deletesSelectedWorkflow(moveToWorkflow);
+        if (deletedData) {
+          await this.router.navigate(["..", deletedData.redirectionSlug], { relativeTo: this.activatedRoute });
+          this.notificationService.success({
+            title: "notification.workflow.deleted",
+            translocoTitleParams: { name: selectedWorkflow.name },
+          });
+        }
+      }
+    });
   }
 }

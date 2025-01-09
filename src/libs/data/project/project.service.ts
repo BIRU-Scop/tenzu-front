@@ -52,16 +52,27 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
     }
     return undefined;
   }
+
   async list() {
     const projects = await lastValueFrom(this.projectInfraService.list());
     this.projectStore.setAllEntities(projects);
     return projects;
   }
+
   async createWorkflow(item: Pick<Workflow, "name" | "projectId">) {
     const newWorkflow = await this.workflowService.create(item);
     this.projectDetailStore.addWorkflow(newWorkflow);
     return newWorkflow;
   }
+
+  editWorkflow(workflow: Workflow) {
+    this.projectDetailStore.editWorkflow(workflow);
+  }
+
+  deleteWorkflow(workflow: Workflow) {
+    this.projectDetailStore.deleteWorkflow(workflow);
+  }
+
   async get(projectId: string) {
     const oldSelectedEntityId = this.projectDetailStore.item()?.id as string;
     if (oldSelectedEntityId) {
@@ -73,6 +84,7 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
     this.wsService.command({ command: "subscribe_to_project_events", project: project.id });
     return project;
   }
+
   async updateSelected(project: Partial<ProjectBase>) {
     const selectedEntity = this.projectDetailStore.item();
     if (selectedEntity) {
@@ -83,6 +95,7 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
     }
     return undefined;
   }
+
   async create(project: ProjectCreation) {
     const newProject = await lastValueFrom(this.projectInfraService.create(project));
     this.projectStore.setEntity(newProject);
@@ -92,15 +105,19 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
   resetSelectedEntity(): void {
     this.projectDetailStore.reset();
   }
+
   resetEntities(): void {
     this.projectStore.reset();
   }
+
   wsRemoveEntity(workspaceId: string) {
     this.projectStore.removeEntity(workspaceId);
   }
+
   wsAddWorkdlow(workflow: Workflow) {
     this.projectDetailStore.addWorkflow(workflow);
   }
+
   fullReset(): void {
     this.resetEntities();
     this.resetSelectedEntity();
