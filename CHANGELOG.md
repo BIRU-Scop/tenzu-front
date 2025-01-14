@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.7...v0.1.0-staging.8) (2025-01-14)
+
+
+### Features
+
+* add config-app service to load app configuration ([0686f9f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0686f9f689e0a969dc70fc8f75e874c75323cc2b))
+* add KanbanWrapperComponent and related services ([679376f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/679376fdd83006f7438dd35b1af5d4170c5602a0))
+* change token key for access token ([e4d87f4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e4d87f4e4b5208dc4fe3ce685e90529f5bc00aa7))
+* dynamic change of auth layout display depending on child form errors ([7de5410](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7de54109e43eaaf4c9da8b6ee5f16936609f0d7d))
+* enhance Caddyfile with caching and encoding updates ([78e0da9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/78e0da9aedf9cc846c261269e9987cf0ef8d9605))
+* implement OnDestroy for cleanup in workspace components ([add1638](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/add163897d83ea9b1ebca17c8270a307cec0e665))
+* improve story details three views style ([90b0d6a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/90b0d6a841cf9e48d12d50c88b2c03f34951074f))
+* **kanban:** implement virtual scrolling for stories list ([25b1c98](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/25b1c98896c58c351b2e990dbd299a4c1f1b7108))
+* **router:** implement custom route reuse strategy ([ffe6c0e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/ffe6c0e0dfc371e50540db3d6d60158a7c009794))
+* **story-detail-menu:** add new story detail menu component ([25296d4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/25296d455aa418031df44ec82be85332b328d51e))
+* **story:** add project and workflow tracking in store ([2a42154](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/2a421546f18f6d14799c8948f9639b27c07580ff))
+* switch to v1 of API ([ca82cb5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/ca82cb5d8b6043a92980217ceb63596fa216c9b0))
+* use configAppService everywhere needed ([10af912](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/10af912894e9af57f0be450f9e43d960a963a115))
+* **workflow:** implement caching ([5d9bd65](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5d9bd6561398eadcf8ca2c1d1aae89e32e17c5ef))
+
+
+### Bug Fixes
+
+* add linting fix and missing zod dependency ([9542d32](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9542d324ae9d7def3244fa30d977cc338008ff29))
+* ensure workflows exist before rendering sidenav content ([ffcd18c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/ffcd18cabd9c7455d37fa357e284123daa7154c7))
+* fix some bug introduced by ngrx/signal v19 ([92c5f3a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/92c5f3a77b49ee3c72fa78e84f035ddab513117d))
+* prevent crash on bad validators argument ([e73c769](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e73c76995d73bd6b17a1cd512efea2f12d8e1ba3))
+* prevent infinite loop when refresh token is expired ([50912b6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/50912b662de13251f1decac35a2b07c02efe1b64))
+
 ## [0.1.0-staging.7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.6...v0.1.0-staging.7) (2024-12-03)
 
 
