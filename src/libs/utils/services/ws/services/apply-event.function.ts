@@ -21,7 +21,7 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
-import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent, StoryStore } from "@tenzu/data/story";
+import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/data/story";
 import {
   NotificationEventType,
   ProjectEventType,
@@ -43,27 +43,28 @@ import { AuthService } from "@tenzu/data/auth";
 import { Notification, NotificationsStore } from "@tenzu/data/notifications";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { StoryService } from "@tenzu/data/story/story.service";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
-  const storyStore = inject(StoryStore);
+  const storyService = inject(StoryService);
   switch (message.event.type) {
     case StoryAssignmentEventType.CreateStoryAssignment: {
       const content = message.event.content as { storyAssignment: StoryAssign };
       if (
-        storyStore.entityMap()[content.storyAssignment.story.ref] ||
-        storyStore.selectedStoryDetails().ref === content.storyAssignment.story.ref
+        storyService.entityMap()[content.storyAssignment.story.ref] ||
+        storyService.selectedEntity()?.ref === content.storyAssignment.story.ref
       ) {
-        storyStore.addAssign(content.storyAssignment, content.storyAssignment.story.ref);
+        storyService.wsAddAssign(content.storyAssignment, content.storyAssignment.story.ref);
       }
       break;
     }
     case StoryAssignmentEventType.DeleteStoryAssignment: {
       const content = message.event.content as { storyAssignment: StoryAssign };
       if (
-        storyStore.entityMap()[content.storyAssignment.story.ref] ||
-        storyStore.selectedStoryDetails().ref === content.storyAssignment.story.ref
+        storyService.entityMap()[content.storyAssignment.story.ref] ||
+        storyService.selectedEntity()?.ref === content.storyAssignment.story.ref
       ) {
-        storyStore.removeAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
+        storyService.wsRemoveAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
       }
 
       break;
@@ -74,7 +75,7 @@ export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
 export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
   const workspaceService = inject(WorkspaceService);
   const projectService = inject(ProjectService);
-  const storyStore = inject(StoryStore);
+  const storyService = inject(StoryService);
   const workflowService = inject(WorkflowService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
@@ -82,13 +83,13 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
   switch (message.event.type) {
     case StoryEventType.CreateStory: {
       const content = message.event.content as { story: StoryDetail };
-      storyStore.add(content.story);
+      storyService.add(content.story);
       break;
     }
     case StoryEventType.UpdateStory: {
       const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
       const story = content.story;
-      storyStore.update(story);
+      storyService.update(story);
       switch (true) {
         case content.updatesAttrs.includes("workflow"): {
           const workspace = workspaceService.selectedEntity();
@@ -116,7 +117,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       const content = message.event.content as {
         reorder: StoryReorderPayloadEvent;
       };
-      storyStore.reorderStoryByEvent(content.reorder);
+      storyService.wsReorderStoryByEvent(content.reorder);
       break;
     }
     case StoryEventType.DeleteStory: {
@@ -131,7 +132,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       const project = projectService.selectedEntity();
       const workflow = workflowService.selectedEntity();
       const workspace = workspaceService.selectedEntity();
-      storyStore.removeStory(content.ref);
+      storyService.wsRemoveStory(content.ref);
       if (router.url === `/workspace/${workspace?.id}/project/${project?.id}/story/${content.ref}`) {
         await router.navigateByUrl(`/workspace/${workspace?.id}/project/${project?.id}/kanban/${workflow?.slug}`);
         notificationService.warning({
@@ -170,7 +171,7 @@ export function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
 
 export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>) {
   const workflowService = inject(WorkflowService);
-  const storyStore = inject(StoryStore);
+  const storyService = inject(StoryService);
 
   switch (message.event.type) {
     case WorkflowStatusEventType.CreateWorkflowStatus: {
@@ -186,7 +187,7 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
     case WorkflowStatusEventType.DeleteWorkflowStatus: {
       const content = message.event.content as { workflowStatus: StatusDetail; targetStatus: StatusDetail };
       workflowService.wsRemoveStatus(content.workflowStatus.id);
-      storyStore.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
+      storyService.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
       break;
     }
     case WorkflowStatusEventType.ReorderWorkflowStatus: {
@@ -200,17 +201,17 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
 }
 
 export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
-  const storyStore = inject(StoryStore);
+  const storyService = inject(StoryService);
 
   switch (message.event.type) {
     case StoryAttachmentEventType.CreateStoryAttachment: {
       const content = message.event.content as { attachment: StoryAttachment; ref: number };
-      storyStore.addAttachment(content.attachment, content.ref);
+      storyService.wsAddAttachment(content.attachment, content.ref);
       break;
     }
     case StoryAttachmentEventType.DeleteStoryAttachment: {
       const content = message.event.content as { attachment: StoryAttachment; ref: number };
-      storyStore.removeAttachment(content.attachment.id);
+      storyService.wsRemoveAttachment(content.attachment.id);
       break;
     }
   }

@@ -34,7 +34,7 @@ export interface ServiceStoreSimpleItem<EntityDetail> {
 export interface ServiceStoreEntity<Entities, EntityDetail = Entities> extends ServiceStoreSimpleItem<EntityDetail> {
   entities: Signal<Entities[]>;
   entityMap: Signal<EntityMap<Entities>>;
-  list(): Promise<Entities[]>;
+  list(...arg: unknown[]): Promise<Entities[]>;
   resetEntities(): void;
   fullReset(): void;
 }

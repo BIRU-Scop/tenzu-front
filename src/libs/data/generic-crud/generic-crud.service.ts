@@ -21,9 +21,7 @@
 
 import { inject } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
-
-export const API_URL = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/`;
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 export type ListParams = Record<string, string | number | (string | number)[] | boolean | null>;
 export const makeOptions = (params: ListParams) => {
@@ -48,8 +46,9 @@ export const makeOptions = (params: ListParams) => {
 
 export class GenericCrudService<Model, Filter> {
   http = inject(HttpClient);
+  configAppService = inject(ConfigAppService);
   endPoint = "";
-  url = API_URL;
+  url = this.configAppService.apiUrl();
 
   getUrl() {
     return `${this.url}${this.endPoint}`;

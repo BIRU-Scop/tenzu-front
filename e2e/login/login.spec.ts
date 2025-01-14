@@ -13,7 +13,7 @@ test.describe("login", () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
   test("should authenticate", async ({ page }) => {
-    const responsePromise = page.waitForResponse("/api/v2/auth/token");
+    const responsePromise = page.waitForResponse("/api/v1/auth/token");
     await page.getByTestId("username-input").fill("1user");
     await page.getByTestId("password-input").fill("123123");
     await page.locator("button[type=submit]").click();
@@ -32,7 +32,7 @@ test.describe("login", () => {
     await expect(page.getByTestId("password-required-error")).toBeVisible();
   });
   test("should display 401 error", async ({ page }) => {
-    const responsePromise = page.waitForResponse("/api/v2/auth/token");
+    const responsePromise = page.waitForResponse("/api/v1/auth/token");
     await page.getByTestId("username-input").fill("unknown");
     await page.getByTestId("password-input").fill("123123");
     await page.locator("button[type=submit]").click();

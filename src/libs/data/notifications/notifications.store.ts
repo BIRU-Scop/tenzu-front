@@ -21,14 +21,12 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { setAllEntities, updateEntity, withEntities } from "@ngrx/signals/entities";
-import { withLoadingStatus } from "../../utils/store/store-features";
 import { Notification, NotificationCount } from "./notifications.model";
 
 export const NotificationsStore = signalStore(
   { providedIn: "root" },
   withEntities<Notification>(),
   withState<{ count: NotificationCount }>({ count: { total: 0, read: 0, unread: 0 } }),
-  withLoadingStatus(),
   withMethods((store) => ({
     setNotifications(notifications: Notification[]) {
       patchState(store, setAllEntities(notifications));

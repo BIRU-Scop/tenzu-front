@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -28,7 +28,7 @@ export type NavListItem = {
   href: string;
   testId: string;
   componentConfig?: {
-    componentRef: any;
+    componentRef: string;
     data?: any;
   };
 };

@@ -23,10 +23,10 @@
 
 $sidenav-width: 250px;
 
-.mat-drawer-container {
-  height: calc(100vh - var(--mat-toolbar-standard-height));
+.mat-sidenav-container {
   .mat-sidenav {
-    transition-duration: 400ms;
+    height: calc(100vh - var(--mat-toolbar-standard-height));
+    transition-duration: 200ms;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-property: width;
     .nav-button {
@@ -74,24 +74,28 @@ $sidenav-width: 250px;
 @mixin tokens-overrides() {
   @include mat.sidenav-overrides((
     content-background-color: transparent,
-    container-shape: 0px,
-    container-width: $sidenav-width,
+    container-divider-color: var(--mat-sys-outline),
+    container-shape: var(--mat-sys-corner-medium),
   ));
-  @include mat.divider-overrides((
-    color: var(--mat-sys-primary)
-  ));
-  @include mat.sidenav-overrides((
-    container-background-color: var(--mat-sys-surface-dim),
-    container-divider-color: var(--mat-sys-background),
-  ));
-  @media (prefers-color-scheme: light) {
+  .mat-sidenav {
     @include mat.sidenav-overrides((
-      container-text-color: var(--mat-sys-surface),
+      container-shape: 0px,
+      container-width: $sidenav-width,
+      container-background-color: var(--mat-sys-surface-dim),
+      container-divider-color: var(--mat-sys-background),
     ));
-  }
-  @media (prefers-color-scheme: dark) {
-    @include mat.sidenav-overrides((
-      container-text-color: var(--mat-sys-on-surface),
+    @media (prefers-color-scheme: light) {
+      @include mat.sidenav-overrides((
+        container-text-color: var(--mat-sys-surface),
+      ));
+    }
+    @media (prefers-color-scheme: dark) {
+      @include mat.sidenav-overrides((
+        container-text-color: var(--mat-sys-on-surface),
+      ));
+    }
+    @include mat.divider-overrides((
+      color: var(--mat-sys-primary)
     ));
   }
 }

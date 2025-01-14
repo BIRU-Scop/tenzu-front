@@ -25,10 +25,14 @@ include:
         - job: launch-demo-deploy
       rules:
         - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.7.1
+    inputs:
+      repo: github.com/BIRU-Scop/tenzu-front.git
 
 stages:
   - release
   - build-deploy
+  - mirror
   - merge
   - deploy-demo
 

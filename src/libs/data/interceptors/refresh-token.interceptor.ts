@@ -24,38 +24,36 @@ import { inject } from "@angular/core";
 import { AuthService } from "../auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ConfigServiceService } from "../../utils/services/config-service/config-service.service";
 import { WsService } from "@tenzu/utils/services/ws";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { JwtHelperService } from "@auth0/angular-jwt";
 
 export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   const authService = inject(AuthService);
   const tokens = authService.getToken();
+  const jwtHelperService = inject(JwtHelperService);
   const notificationService = inject(NotificationService);
-  const configService = inject(ConfigServiceService);
+  const configAppService = inject(ConfigAppService);
   const wsService = inject(WsService);
   request = request.clone({
     setHeaders: {
-      "correlation-id": configService.correlationId,
+      "correlation-id": configAppService.correlationId,
     },
   });
 
   return next(request).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse && !request.url.includes("login") && error.status === 401) {
-        if (tokens.refresh) {
+        if (tokens.refresh && !jwtHelperService.isTokenExpired(tokens.refresh)) {
           return authService.refresh(tokens).pipe(
             switchMap(() => {
               return next(request);
             }),
-            catchError((error) => {
-              if (error.status === 401 || error.status === 403) {
-                wsService.signout();
-                notificationService.error({ title: "notification.login.logout" });
-                return EMPTY;
-              }
-              return throwError(() => error);
-            }),
           );
+        } else {
+          wsService.signout();
+          notificationService.error({ title: "notification.login.logout" });
+          return EMPTY;
         }
       } else if (error instanceof HttpErrorResponse) {
         switch (error.status) {

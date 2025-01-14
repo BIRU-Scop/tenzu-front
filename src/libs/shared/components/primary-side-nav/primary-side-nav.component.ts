@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,6 +30,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-detail/sidenav-list-workflow/sidenav-list-workflow.component";
 
 @Component({
   selector: "app-primary-side-nav",
@@ -73,7 +74,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
           @for (item of sideNavStore.primaryNavItems(); track item.href) {
             @if (item.componentConfig?.componentRef) {
               <ng-container
-                *ngComponentOutlet="item.componentConfig!.componentRef; inputs: item.componentConfig!.data"
+                *ngComponentOutlet="components[item.componentConfig!.componentRef]; inputs: item.componentConfig!.data"
               ></ng-container>
             }
           }
@@ -153,7 +154,10 @@ import { TranslocoDirective } from "@jsverse/transloco";
 })
 export class PrimarySideNavComponent implements OnDestroy {
   sideNavStore = inject(SideNavStore);
-
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  components: Record<string, any> = {
+    SidenavListWorkflowComponent: SidenavListWorkflowComponent,
+  };
   ngOnDestroy() {
     this.sideNavStore.reset();
   }

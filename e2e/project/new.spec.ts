@@ -16,7 +16,7 @@ test.describe("Create from workspace page", () => {
   });
   test("should create a project", async ({ page }) => {
     const [projectName, projectInitials] = [`Test Project`, `TP`];
-    const responsePromise = page.waitForResponse("/api/v2/projects");
+    const responsePromise = page.waitForResponse("/api/v1/projects");
     await page.getByTestId("project-name-input").fill(projectName);
     await expect(page.locator("css=.avatar-lg")).toHaveText(projectInitials);
     await page.getByTestId("new-project-submit").click();

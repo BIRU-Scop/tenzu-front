@@ -35,7 +35,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
     <ng-container *transloco="let t">
       @let project = projectService.selectedEntity();
       @let workspace = workspaceService.selectedEntity();
-      @if (project && workspace) {
+      @if (project && project?.workflows && workspace) {
         @if (!sideNavStore.resized()) {
           <div class="flex flex-row items-center gap-2 px-2">
             <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>

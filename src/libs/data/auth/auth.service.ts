@@ -21,23 +21,24 @@
 
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
 import { Credential, Tokens } from "./auth.model";
-import { map, of, tap } from "rxjs";
+import { catchError, map, of, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
 import { clearAuthStorage } from "@tenzu/data/auth/utils";
+import { ConfigAppService } from "../../../app/config-app/config-app.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
   jwtHelperService = inject(JwtHelperService);
+  configAppService = inject(ConfigAppService);
   wsService = inject(WsService);
   http = inject(HttpClient);
-  url = `${environment.api.scheme}://${environment.api.baseDomain}/${environment.api.suffixDomain}/${environment.api.prefix}/auth`;
   router = inject(Router);
+  url = `${this.configAppService.apiUrl()}auth`;
 
   login(credentials: Credential) {
     return this.http
@@ -65,15 +66,15 @@ export class AuthService {
 
   getToken(): Tokens {
     return {
-      token: localStorage.getItem("token"),
+      access: localStorage.getItem("token"),
       refresh: localStorage.getItem("refresh"),
       username: localStorage.getItem("username") || "",
     };
   }
 
   setToken(tokens: Tokens) {
-    if (tokens.token) {
-      localStorage.setItem("token", tokens.token);
+    if (tokens.access) {
+      localStorage.setItem("token", tokens.access);
     }
     if (tokens.refresh) {
       localStorage.setItem("refresh", tokens.refresh);
@@ -85,8 +86,11 @@ export class AuthService {
   isLoginOk() {
     const tokens = this.getToken();
     if (tokens && tokens.refresh) {
-      if (this.jwtHelperService.isTokenExpired(tokens.token)) {
-        return this.refresh(tokens).pipe(map(() => true));
+      if (this.jwtHelperService.isTokenExpired(tokens.access)) {
+        return this.refresh(tokens).pipe(
+          map(() => true),
+          catchError(() => of(false)),
+        );
       } else {
         return of(true);
       }

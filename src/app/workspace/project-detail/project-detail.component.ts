@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,6 @@ import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { ProjectService } from "@tenzu/data/project";
 import { SideNavStore } from "@tenzu/data/sidenav";
-import { SidenavListWorkflowComponent } from "./sidenav-list-workflow/sidenav-list-workflow.component";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 
@@ -78,7 +77,7 @@ export class ProjectDetailComponent {
           href: `${baseUrl}/kanban`,
           testId: "kanban-link",
           componentConfig: {
-            componentRef: SidenavListWorkflowComponent,
+            componentRef: "SidenavListWorkflowComponent",
           },
         },
       ]);

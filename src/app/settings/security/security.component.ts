@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,12 +20,12 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { MatError } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { LoginService } from "../../login/login.service";
+import { LoginService } from "../../auth/login/login.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UserStore } from "@tenzu/data/user";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
@@ -89,9 +89,9 @@ export class SecurityComponent {
   loginService = inject(LoginService);
   userStore = inject(UserStore);
   form = this.fb.group({
-    currentPassword: ["", Validators.required],
-    newPassword: ["", Validators.required],
-    repeatPassword: ["", Validators.required],
+    currentPassword: [""],
+    newPassword: [""],
+    repeatPassword: [""],
   });
 
   submit() {

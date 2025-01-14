@@ -19,12 +19,42 @@
  *
  */
 
-import { Routes } from "@angular/router";
+import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, Routes } from "@angular/router";
 import { loginGuard } from "./guards/login.guard";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { WorkspaceInvitationGuard } from "./guards/workspace-invitation.guard";
 import { VerifyEmailGuard } from "./guards/verify-email.guard";
 import { ProjectInvitationGuard } from "./guards/project-invitation.guard";
+
+function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
+  const story = "story/:ref";
+  const workflow = "kanban/:workflowSlug";
+
+  const urls = [story, workflow];
+
+  const findUrl = (it: ActivatedRouteSnapshot): boolean => {
+    const found = !!urls.find((url) => it.routeConfig?.path === url);
+    if (found) {
+      return true;
+    } else if (it.parent) {
+      return findUrl(it.parent);
+    } else {
+      return false;
+    }
+  };
+
+  return findUrl(future) && findUrl(curr);
+}
+
+export class CustomReuseStrategy extends BaseRouteReuseStrategy {
+  override shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
+    if (isViewSetterKanbanStory(future, curr)) {
+      return true;
+    }
+
+    return future.routeConfig === curr.routeConfig;
+  }
+}
 
 export const routes: Routes = [
   {
@@ -71,22 +101,11 @@ export const routes: Routes = [
   },
   {
     path: "",
-    loadComponent: () =>
-      import("@tenzu/shared/layouts/auth-layout/auth-layout.component").then((m) => m.AuthLayoutComponent),
+    loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
     children: [
       {
-        path: "login",
-        loadComponent: () => import("./login/login.component").then((m) => m.LoginComponent),
-        providers: [provideTranslocoScope("login")],
-      },
-      {
-        path: "reset-password",
-        loadChildren: () => import("./reset-password/routes").then((m) => m.routes),
-      },
-      {
-        path: "signup",
-        loadComponent: () => import("./signup/signup.component").then((m) => m.SignupComponent),
-        providers: [provideTranslocoScope("signup")],
+        path: "",
+        loadChildren: () => import("./auth/routes").then((m) => m.routes),
       },
     ],
   },

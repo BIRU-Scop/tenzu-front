@@ -20,7 +20,7 @@
  */
 
 import { ActivatedRouteSnapshot, Routes } from "@angular/router";
-import { debug } from "../../../libs/utils/functions/logging";
+import { debug } from "@tenzu/utils/functions/logging";
 import { inject } from "@angular/core";
 import { WorkspaceService } from "@tenzu/data/workspace";
 
