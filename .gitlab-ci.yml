@@ -28,8 +28,17 @@ include:
   - component: $CI_SERVER_FQDN/biru/component/push@v1.7.1
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
+  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.7.1
+    inputs:
+      stage: test
+      rules:
+        - if: '$CI_COMMIT_REF_SLUG == $CI_DEFAULT_BRANCH'
+      destination: ''
+      prefix: test-
+      extra-args: "--no-push"
 
 stages:
+  - test
   - release
   - build-deploy
   - mirror
