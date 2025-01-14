@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -42,7 +42,7 @@ export class ConfigAppService {
   readonly correlationId = CORRELATION_ID;
 
   async loadAppConfig() {
-    return await fetch("/assets/config.json")
+    return await fetch("/assets/configs/config.json")
       .then((res) => {
         return res.json();
       })
