@@ -33,6 +33,7 @@ include:
       stage: test
       rules:
         - if: '$CI_COMMIT_REF_SLUG == $CI_DEFAULT_BRANCH'
+        - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       destination: ''
       prefix: test-
       extra-args: "--no-push"
