@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -85,7 +85,7 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   wsRemoveStory(ref: number) {
     this.storyStore.removeStory(ref);
     if (ref === this.storyDetailStore.item()?.ref) {
-      this.storyDetailStore.reset();
+      this.storyDetailStore.resetOverride();
     }
     return undefined;
   }
@@ -115,7 +115,7 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
     this.storyDetailStore.set(story);
   }
   resetSelectedEntity(): void {
-    this.storyDetailStore.reset();
+    this.storyDetailStore.resetOverride();
   }
   getStoryAttachmentUrl(projectId: string, storyId: number, attachmentId: string) {
     return this.storyInfraService.getStoryAttachmentUrl(projectId, storyId, attachmentId);

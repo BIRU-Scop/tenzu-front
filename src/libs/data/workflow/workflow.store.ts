@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,7 +30,6 @@ export const WorkflowStore = signalStore(
   { providedIn: "root" },
   withEntities<Status>(),
   withState({
-    item: null as Workflow | null,
     statusesMap: {} as Record<string, Status>,
   }),
   withMethodEntity<Workflow>(),

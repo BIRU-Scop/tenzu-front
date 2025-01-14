@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -216,7 +216,7 @@ export const StoryDetailStore = signalStore(
           .filter((attachment) => attachment.id !== attachmentId),
       });
     },
-    reset() {
+    resetOverride() {
       store.reset();
       patchState(store, { selectedStoryAttachments: [] });
     },

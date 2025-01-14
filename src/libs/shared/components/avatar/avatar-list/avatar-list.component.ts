@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -62,7 +62,7 @@ export class AvatarListComponent {
   prioritizeCurrentUser = input<boolean>(false);
 
   filteredUsernames = computed(() => {
-    const users = this.users();
+    const users = [...this.users()];
     const usernamePriority = this.prioritizeCurrentUser() ? this.userStore.myUser().username : "";
     users.sort((a, b) => {
       if (a.username === usernamePriority) {
