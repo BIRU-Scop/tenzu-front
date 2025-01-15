@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, model, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
@@ -80,7 +80,11 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
       @if (this.selectedStory(); as story) {
-        <app-story-detail-menu [inputStory]="story"></app-story-detail-menu>
+        <app-story-detail-menu
+          [inputStory]="story"
+          [canBeClosed]="canBeClosed()"
+          (closed)="closed.emit()"
+        ></app-story-detail-menu>
         <div class="flex flex-row gap-8">
           <div class="basis-2/3 flex flex-col gap-y-6">
             <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
@@ -231,7 +235,8 @@ export default class StoryDetailComponent {
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
   fb = inject(FormBuilder);
-
+  canBeClosed = input(false);
+  closed = output<void>();
   selectedStory = this.storyService.selectedEntity;
   editor = viewChild.required<EditorComponent>("editorContainer");
   form = this.fb.nonNullable.group({

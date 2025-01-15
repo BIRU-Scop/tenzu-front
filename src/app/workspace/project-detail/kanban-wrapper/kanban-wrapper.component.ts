@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -64,10 +64,10 @@ export class StoryDetailDialogComponent {}
           <mat-drawer
             #drawer
             mode="side"
-            opened="!!this.kanbanWrapperService.storyService.selectedEntity()"
+            [opened]="!!this.kanbanWrapperService.storyService.selectedEntity()"
             position="end"
           >
-            <app-story-detail></app-story-detail>
+            <app-story-detail [canBeClosed]="true" (closed)="navigateToKanban()"></app-story-detail>
           </mat-drawer>
         </mat-drawer-container>
       }
@@ -95,6 +95,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
   kanbanWrapperService = inject(KanbanWrapperService);
   workflowService = inject(WorkflowService);
   activatedRoute = inject(ActivatedRoute);
+
   constructor() {
     const storyView$ = toObservable(this.kanbanWrapperService.storyView);
     toObservable(this.kanbanWrapperService.storyService.selectedEntity)
@@ -123,6 +124,14 @@ export default class KanbanWrapperComponent implements OnDestroy {
           });
         }
       });
+  }
+  navigateToKanban(): void {
+    this.kanbanWrapperService.storyService.resetSelectedEntity();
+    this.router
+      .navigate(["../..", "kanban", this.workflowService.selectedEntity()?.slug], {
+        relativeTo: this.activatedRoute,
+      })
+      .then(() => this.kanbanWrapperService.storyService.resetSelectedEntity());
   }
   ngOnDestroy(): void {
     this.kanbanWrapperService.storyService.fullReset();
