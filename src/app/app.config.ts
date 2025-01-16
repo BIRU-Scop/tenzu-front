@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -57,7 +57,8 @@ export const appConfig: ApplicationConfig = {
       const wsService = inject(WsService);
       await configAppService.loadAppConfig();
       await wsService.init();
-      return languageStore.initLanguages();
+      languageStore.initLanguages().subscribe();
+      return;
     }),
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
     {
