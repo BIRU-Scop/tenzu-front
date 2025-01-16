@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -150,7 +150,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
     if (this.form.valid) {
       await this.projectService.updateSelected(this.form.getRawValue());
       this.notificationService.success({
-        title: "settings.project.messages.saved",
+        title: "notification.action.changes_saved",
       });
     }
   }
