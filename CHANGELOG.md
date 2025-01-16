@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.11](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.10...v0.1.0-staging.11) (2025-01-16)
+
+
+### Bug Fixes
+
+* langages not loading at init ([cf966ab](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cf966abc5c074e171f6744637edd32c3adac187e))
+* missing translation ([5c8acc9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5c8acc987a5d2e7e11c31e19ff2502883b623cf9))
+
 ## [0.1.0-staging.10](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.9...v0.1.0-staging.10) (2025-01-14)
 
 
