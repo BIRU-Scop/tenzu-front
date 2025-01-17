@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -62,6 +62,7 @@ $sidenav-width: 250px;
     }
   }
   .mat-sidenav-content {
+    height: calc(100vh - var(--mat-toolbar-standard-height) - 2rem);
     transition-duration: 400ms;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-property: margin-left;
