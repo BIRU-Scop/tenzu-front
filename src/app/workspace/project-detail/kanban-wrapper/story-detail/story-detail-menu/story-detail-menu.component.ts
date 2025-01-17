@@ -163,7 +163,7 @@ export class StoryDetailMenuComponent {
       },
     });
     dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
-      if (newWorkflowSlug !== story?.workflow.slug) {
+      if (newWorkflowSlug && newWorkflowSlug !== story?.workflow.slug) {
         const patchedStory = await this.storyDetailService.patchSelectedStory({ workflowSlug: newWorkflowSlug });
         if (patchedStory) {
           this.notificationService.success({ title: "notification.action.changes_saved" });
