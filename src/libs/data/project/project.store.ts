@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -34,11 +34,10 @@ export const ProjectDetailStore = signalStore(
     addWorkflow(workflow: Workflow) {
       const project = store.item();
       if (project) {
-        project.workflows.push(workflow);
         patchState(store, {
           item: {
             ...project,
-            workflows: { ...project.workflows },
+            workflows: [...project.workflows, workflow],
           },
         });
       }
