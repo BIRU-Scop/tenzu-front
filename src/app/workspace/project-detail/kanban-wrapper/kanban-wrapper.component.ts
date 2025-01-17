@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { ProjectKanbanComponent } from "./project-kanban/project-kanban.component";
-import { MatDialog, MatDialogContent } from "@angular/material/dialog";
+import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import StoryDetailComponent from "./story-detail/story-detail.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -36,11 +36,15 @@ import { MatDrawer, MatDrawerContainer } from "@angular/material/sidenav";
   selector: "app-story-detail-dialog",
   standalone: true,
   imports: [StoryDetailComponent, MatDialogContent],
-  template: `<mat-dialog-content><app-story-detail></app-story-detail></mat-dialog-content>`,
+  template: `<mat-dialog-content
+    ><app-story-detail [canBeClosed]="true" (closed)="dialogRef.close()"></app-story-detail
+  ></mat-dialog-content>`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryDetailDialogComponent {}
+export class StoryDetailDialogComponent {
+  readonly dialogRef = inject(MatDialogRef<StoryDetailDialogComponent>);
+}
 
 @Component({
   selector: "app-kanban-wrapper",
@@ -64,10 +68,10 @@ export class StoryDetailDialogComponent {}
           <mat-drawer
             #drawer
             mode="side"
-            opened="!!this.kanbanWrapperService.storyService.selectedEntity()"
+            [opened]="!!this.kanbanWrapperService.storyService.selectedEntity()"
             position="end"
           >
-            <app-story-detail></app-story-detail>
+            <app-story-detail [canBeClosed]="true" (closed)="navigateToKanban()"></app-story-detail>
           </mat-drawer>
         </mat-drawer-container>
       }
@@ -95,6 +99,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
   kanbanWrapperService = inject(KanbanWrapperService);
   workflowService = inject(WorkflowService);
   activatedRoute = inject(ActivatedRoute);
+
   constructor() {
     const storyView$ = toObservable(this.kanbanWrapperService.storyView);
     toObservable(this.kanbanWrapperService.storyService.selectedEntity)
@@ -123,6 +128,14 @@ export default class KanbanWrapperComponent implements OnDestroy {
           });
         }
       });
+  }
+  navigateToKanban(): void {
+    this.kanbanWrapperService.storyService.resetSelectedEntity();
+    this.router
+      .navigate(["../..", "kanban", this.workflowService.selectedEntity()?.slug], {
+        relativeTo: this.activatedRoute,
+      })
+      .then(() => this.kanbanWrapperService.storyService.resetSelectedEntity());
   }
   ngOnDestroy(): void {
     this.kanbanWrapperService.storyService.fullReset();
