@@ -121,8 +121,8 @@ import { MatDialog } from "@angular/material/dialog";
         </mat-select>
       </mat-form-field>
       @if (canBeClosed()) {
-        <div></div>
-        <button class="end" mat-icon-button (click)="closed.emit()"><mat-icon>close</mat-icon></button>
+        <div class="mx-auto"></div>
+        <button mat-icon-button (click)="closed.emit()"><mat-icon>close</mat-icon></button>
       }
     </div>
   `,

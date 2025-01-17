@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { ProjectKanbanComponent } from "./project-kanban/project-kanban.component";
-import { MatDialog, MatDialogContent } from "@angular/material/dialog";
+import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import StoryDetailComponent from "./story-detail/story-detail.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -36,11 +36,15 @@ import { MatDrawer, MatDrawerContainer } from "@angular/material/sidenav";
   selector: "app-story-detail-dialog",
   standalone: true,
   imports: [StoryDetailComponent, MatDialogContent],
-  template: `<mat-dialog-content><app-story-detail></app-story-detail></mat-dialog-content>`,
+  template: `<mat-dialog-content
+    ><app-story-detail [canBeClosed]="true" (closed)="dialogRef.close()"></app-story-detail
+  ></mat-dialog-content>`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryDetailDialogComponent {}
+export class StoryDetailDialogComponent {
+  readonly dialogRef = inject(MatDialogRef<StoryDetailDialogComponent>);
+}
 
 @Component({
   selector: "app-kanban-wrapper",
