@@ -150,4 +150,16 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
   wsRemoveStatus(statusId: string) {
     this.workflowStore.removeStatus(statusId);
   }
+
+  wsEditWorkflow(workflow: Workflow) {
+    if (workflow.slug === this.workflowStore.item()?.slug) {
+      this.workflowStore.patch(workflow);
+    }
+  }
+
+  wsDeleteWorkflow(workflow: Workflow) {
+    if (workflow.slug === this.workflowStore.item()?.slug) {
+      this.workflowStore.reset();
+    }
+  }
 }

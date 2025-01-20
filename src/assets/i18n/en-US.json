@@ -25,6 +25,9 @@
       "deleted": "The kanban {{ name }} has been deleted"
     },
     "events": {
+      "edit_workflow": "The kanban {{oldName}} has been renamed to {{newName}}.",
+      "delete_workflow": "The kanban {{name}} has been deleted.",
+      "delete_workflow_and_moved_content": "{{name}} has been deleted, content was moved to <a href=\"{{workflowUrl}}\"> {{workflowName}} </a>",
       "delete_story": "{{username}} has deleted the story #{{ref}}",
       "delete_project": "{{username}} has deleted the project {{name}}",
       "delete_workspace": "{{username}} has deleted the workspace {{name}}",

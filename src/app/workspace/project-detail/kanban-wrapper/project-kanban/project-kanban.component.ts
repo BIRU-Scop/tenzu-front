@@ -375,25 +375,30 @@ export class ProjectKanbanComponent {
 
   openDeleteWorkflowDialog() {
     const selectedWorkflow = this.workflowService.selectedEntity();
-    const dialogRef = this.dialog.open(DeleteWorkflowDialogComponent, {
-      ...matDialogConfig,
-      data: {
-        workflowName: selectedWorkflow.name,
-        workflowId: selectedWorkflow.id,
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (formValue?: DeleteWorkflowFormData) => {
-      if (formValue) {
-        const moveToWorkflow: string | undefined = formValue.stories === "move" ? formValue.workflowTarget : undefined;
-        const deletedData = await this.projectKanbanService.deletesSelectedWorkflow(moveToWorkflow);
-        if (deletedData) {
-          await this.router.navigate(["..", deletedData.redirectionSlug], { relativeTo: this.activatedRoute });
-          this.notificationService.success({
-            title: "notification.workflow.deleted",
-            translocoTitleParams: { name: selectedWorkflow.name },
-          });
+    if (selectedWorkflow) {
+      const dialogRef = this.dialog.open(DeleteWorkflowDialogComponent, {
+        ...matDialogConfig,
+        data: {
+          workflowName: selectedWorkflow.name,
+          workflowId: selectedWorkflow.id,
+        },
+      });
+      dialogRef.afterClosed().subscribe(async (formValue?: DeleteWorkflowFormData) => {
+        if (formValue) {
+          const moveToWorkflow: string | undefined =
+            formValue.stories === "move" ? formValue.workflowTarget : undefined;
+          const deletedData = await this.projectKanbanService.deletesSelectedWorkflow(moveToWorkflow);
+          if (deletedData) {
+            await this.router.navigate(["..", deletedData.redirectionSlug], { relativeTo: this.activatedRoute });
+            this.notificationService.success({
+              title: "notification.workflow.deleted",
+              translocoTitleParams: { name: selectedWorkflow.name },
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      throw new Error("[WORKFLOW] Cannot delete workflow, missing SelectedWorkflow");
+    }
   }
 }

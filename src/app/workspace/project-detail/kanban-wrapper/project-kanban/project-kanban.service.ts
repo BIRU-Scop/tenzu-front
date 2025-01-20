@@ -108,7 +108,7 @@ export class ProjectKanbanService {
     if (!deletedWorkflow) {
       return undefined;
     }
-    this.projectService.deleteWorkflow(deletedWorkflow);
+    await this.projectService.refreshSelected();
     let redirectionSlug = moveToWorkflow;
     console.log("expected RedirectionSlug", redirectionSlug);
     if (!moveToWorkflow) {

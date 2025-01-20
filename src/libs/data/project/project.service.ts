@@ -85,6 +85,15 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
     return project;
   }
 
+  async refreshSelected() {
+    const selectedProject = this.projectDetailStore.item();
+    if (selectedProject) {
+      const project = await lastValueFrom(this.projectInfraService.get(selectedProject.id));
+      this.projectStore.updateEntity(project.id, project);
+      this.projectDetailStore.update(project);
+    }
+  }
+
   async updateSelected(project: Partial<ProjectBase>) {
     const selectedEntity = this.projectDetailStore.item();
     if (selectedEntity) {
@@ -116,6 +125,14 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
 
   wsAddWorkdlow(workflow: Workflow) {
     this.projectDetailStore.addWorkflow(workflow);
+  }
+
+  wsEditWorkflow(workflow: Workflow) {
+    this.projectDetailStore.editWorkflow(workflow);
+  }
+
+  wsRemoveWorkflow(workflow: Workflow) {
+    this.projectDetailStore.deleteWorkflow(workflow);
   }
 
   fullReset(): void {

@@ -28,6 +28,7 @@ import {
   removeEntity,
   setAllEntities,
   setEntity,
+  updateEntity,
 } from "@ngrx/signals/entities";
 
 export function withLoadingStatus() {
@@ -59,6 +60,9 @@ export function withMethodsEntities<T extends { id: EntityId }>() {
       setEntity(entity: T) {
         patchState(store, setEntity(entity));
       },
+      updateEntity(id: EntityId, entity: Partial<T>) {
+        patchState(store, updateEntity({ id: id, changes: entity }));
+      },
       removeEntity(selectedEntityId: EntityId) {
         patchState(store, removeEntity(selectedEntityId));
       },
@@ -75,6 +79,9 @@ export function withMethodEntity<T>() {
     withMethods((store) => ({
       set(item: T) {
         patchState(store, { item: item });
+      },
+      update(item: Partial<T>) {
+        patchState(store, { item: { ...store.item(), ...item } as T });
       },
       patch(partialItem: Partial<T>) {
         const item = store.item();
