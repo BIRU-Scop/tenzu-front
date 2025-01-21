@@ -7,6 +7,30 @@
       "name_placeholder": "Add kanban name"
     }
   },
+  "edit_workflow": {
+    "aria_label": "Edit kanban",
+    "edit_name": "Edit kanban name",
+    "delete": "Delete kanban"
+  },
+  "edit_workflow_name": {
+    "label": "Kanban name",
+    "action": "Save",
+    "name_required": "Kanban name can’t be empty"
+  },
+  "delete_workflow": {
+    "title": "Delete {{ workflowName }} kanban?",
+    "stories_and_statuses_will_be_deleted": "The stories and statuses from this kanban will be automatically deleted.",
+    "what_to_do": "What do you want to do with the stories and statuses in this kanban?",
+    "move_to_another_workflow": "Move them to another kanban",
+    "workflow": "Kanban",
+    "select_placeholder": "Choose target destination",
+    "stories_and_statuses_target_location": "The stories and statuses will be placed after the existing ones.",
+    "delete_all": "Delete the stories and statuses too",
+    "actions": {
+      "confirm": "Delete kanban",
+      "cancel": "Cancel"
+    }
+  },
   "edit_status": {
     "aria_label": "Edit status",
     "edit_name": "Edit status name",

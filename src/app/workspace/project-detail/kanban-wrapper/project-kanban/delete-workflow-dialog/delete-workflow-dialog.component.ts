@@ -38,11 +38,14 @@ import { MatSelect } from "@angular/material/select";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { ProjectService } from "@tenzu/data/project";
 
-type DeleteStatusDialogData = {
-  statusName: string;
-  statusId: string;
+export type DialogData = {
+  workflowName: string;
+  workflowId: string;
 };
+
+export type FormData = { stories: "move" | "delete"; workflowTarget: string };
 
 @Component({
   selector: "app-delete-status-dialog",
@@ -62,82 +65,84 @@ type DeleteStatusDialogData = {
     MatSelect,
   ],
   template: `
-    <ng-container *transloco="let t; prefix: 'workflow.delete_status'">
-      <h2 id="aria-label" mat-dialog-title>{{ t("title", { statusName: data.statusName }) }}</h2>
+    <ng-container *transloco="let t; prefix: 'workflow.delete_workflow'">
+      <h2 id="aria-label" mat-dialog-title>{{ t("title", { workflowName: data.workflowName }) }}</h2>
       <mat-dialog-content>
         <h3 class="mat-title-small mb-2">
-          {{ isLastStatus() ? t("stories_will_be_deleted") : t("what_to_do_stories") }}
+          {{ isLastWorkflow() ? t("stories_and_statuses_will_be_deleted") : t("what_to_do") }}
         </h3>
-        @if (!isLastStatus()) {
+        @if (!isLastWorkflow()) {
           <form class="flex flex-col gap-y-4" [formGroup]="form">
-            <mat-radio-group
-              [attr.aria-label]="t('what_to_do_stories')"
-              class="flex flex-col gap-1"
-              formControlName="stories"
-            >
-              <mat-radio-button value="move">{{ t("move_stories_another_status") }}</mat-radio-button>
+            <mat-radio-group [attr.aria-label]="t('what_to_do')" class="flex flex-col gap-1" formControlName="stories">
+              <mat-radio-button value="move">{{ t("move_to_another_workflow") }}</mat-radio-button>
               <div class="pl-9 flex flex-col gap-1">
                 <mat-form-field>
-                  <mat-label>{{ t("status") }}</mat-label>
-                  <mat-select formControlName="status">
-                    @for (status of filteredStatus(); track status.id) {
-                      <mat-option value="{{ status.id }}">
-                        {{ status.name }}
+                  <mat-label>{{ t("workflow") }}</mat-label>
+                  <mat-select formControlName="workflowTarget" [placeholder]="t('select_placeholder')">
+                    @for (workflow of filteredWorkflows(); track workflow.slug) {
+                      <mat-option value="{{ workflow.slug }}">
+                        {{ workflow.name }}
                       </mat-option>
                     }
                   </mat-select>
                 </mat-form-field>
-                <p class="mat-body-small text-on-surface">{{ t("stories_placed_below") }}</p>
+                <p class="mat-body-small text-on-surface">{{ t("stories_and_statuses_target_location") }}</p>
               </div>
-              <mat-radio-button value="delete">{{ t("delete_stories") }}</mat-radio-button>
+              <mat-radio-button value="delete">{{ t("delete_all") }}</mat-radio-button>
             </mat-radio-group>
           </form>
         }
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button mat-dialog-close class="secondary-button">{{ t("cancel") }}</button>
-        <button mat-flat-button (click)="submit()" class="error-button">{{ t("confirm") }}</button>
+        <button mat-flat-button mat-dialog-close [attr.aria-label]="t('actions.cancel')" class="secondary-button">
+          {{ t("actions.cancel") }}
+        </button>
+        <button mat-flat-button (click)="submit()" [attr.aria-label]="t('actions.confirm')" class="error-button">
+          {{ t("actions.confirm") }}
+        </button>
       </mat-dialog-actions>
     </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DeleteStatusDialogComponent {
-  data = inject<DeleteStatusDialogData>(MAT_DIALOG_DATA);
-  readonly dialogRef = inject(MatDialogRef<DeleteStatusDialogComponent>);
+export class DeleteWorkflowDialogComponent {
+  data = inject<DialogData>(MAT_DIALOG_DATA);
+  readonly dialogRef = inject(MatDialogRef<DeleteWorkflowDialogComponent>);
   fb = inject(FormBuilder);
   workflowService = inject(WorkflowService);
+  projectService = inject(ProjectService);
 
-  form = this.fb.nonNullable.group({
-    stories: ["move"],
-    status: [""],
+  form = this.fb.nonNullable.group<FormData>({
+    stories: "move",
+    workflowTarget: "",
   });
 
-  filteredStatus = computed(() => {
+  filteredWorkflows = computed(() => {
     const currWorkflow = this.workflowService.selectedEntity();
-    if (currWorkflow) {
-      return currWorkflow.statuses.filter((it) => it.id !== this.data.statusId);
+    const currProject = this.projectService.selectedEntity();
+    if (currWorkflow && currProject) {
+      return currProject.workflows.filter((it) => it.id !== this.data.workflowId);
     }
     return [];
   });
-  isLastStatus = computed(() => {
-    return this.filteredStatus().length === 0;
+  isLastWorkflow = computed(() => {
+    return this.filteredWorkflows().length === 0;
   });
 
   constructor() {
-    toObservable(this.filteredStatus)
+    toObservable(this.filteredWorkflows)
       .pipe(
-        filter((filteredStatuses) => filteredStatuses.length > 0),
+        filter((filteredWorkflows) => filteredWorkflows.length > 0),
         take(1),
       )
-      .subscribe((filteredStatuses) => {
-        this.form.controls.status.setValue(filteredStatuses[0].id);
+      .subscribe((filteredWorkflows) => {
+        this.form.controls.workflowTarget.setValue(filteredWorkflows[0].slug);
       });
   }
 
   submit() {
-    if (this.isLastStatus()) {
+    if (this.isLastWorkflow()) {
       this.dialogRef.close({ stories: "delete" });
     } else {
       this.dialogRef.close(this.form.value);

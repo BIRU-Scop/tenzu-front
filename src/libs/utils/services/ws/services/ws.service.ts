@@ -219,7 +219,7 @@ export class WsService {
           break;
         }
         case FamilyEventType.Workflow: {
-          applyWorkflowEvent(message);
+          await applyWorkflowEvent(message);
           break;
         }
         case FamilyEventType.WorkflowStatuses: {

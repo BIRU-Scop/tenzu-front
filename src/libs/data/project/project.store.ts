@@ -42,5 +42,22 @@ export const ProjectDetailStore = signalStore(
         });
       }
     },
+    editWorkflow(workflow: Workflow) {
+      const project = store.item();
+      if (project) {
+        const workflows = [...project.workflows];
+        const workflowIndex = workflows.findIndex((workflowIterator) => workflowIterator.id === workflow.id);
+        workflows[workflowIndex] = workflow;
+        store.patch({ ...project, workflows: workflows });
+      }
+    },
+    deleteWorkflow(workflow: Workflow) {
+      const project = store.item();
+      if (project) {
+        let workflows = [...project.workflows];
+        workflows = workflows.filter((workflowIterator) => workflowIterator.id !== workflow.id);
+        store.patch({ ...project, workflows: workflows });
+      }
+    },
   })),
 );

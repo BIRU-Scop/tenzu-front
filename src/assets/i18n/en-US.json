@@ -11,8 +11,8 @@
       }
     },
     "login": {
-        "logout": "You are signed out",
-        "preview_warning": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly."
+      "logout": "You are signed out",
+      "preview_warning": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly."
     },
     "action": {
       "changes_saved": "Changes saved"
@@ -20,7 +20,14 @@
     "project": {
       "deleted": "The project {{ name }} has been deleted"
     },
+    "workflow": {
+      "renamed": "Kanban has been successfully renamed",
+      "deleted": "The kanban {{ name }} has been deleted"
+    },
     "events": {
+      "edit_workflow": "The kanban {{oldName}} has been renamed to {{newName}}.",
+      "delete_workflow": "The kanban {{name}} has been deleted.",
+      "delete_workflow_and_moved_content": "{{name}} has been deleted, content was moved to <a href=\"{{workflowUrl}}\"> {{workflowName}} </a>",
       "delete_story": "{{username}} has deleted the story #{{ref}}",
       "delete_project": "{{username}} has deleted the project {{name}}",
       "delete_workspace": "{{username}} has deleted the workspace {{name}}",
