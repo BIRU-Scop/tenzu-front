@@ -21,7 +21,10 @@
 
 import { Project } from "../project";
 
-export type WorkspaceProject = Pick<Project, "id" | "name" | "slug" | "description" | "color" | "logoSmall">;
+export type WorkspaceProject = Pick<
+  Project,
+  "id" | "name" | "slug" | "description" | "color" | "logoSmall" | "landingPage" | "workspaceId"
+>;
 
 export type WorkspaceRole = "admin" | "member" | "guest" | "none";
 

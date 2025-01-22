@@ -204,21 +204,17 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
         if (selectedWorkflow.id === content.workflow.id) {
           let redirectionUrl = "/404";
           if (content.targetWorkflow) {
-            redirectionUrl = getWorkflowUrl(workspace.id, selectedProject.id, content.targetWorkflow.slug);
+            redirectionUrl = getWorkflowUrl(selectedProject, content.targetWorkflow.slug);
             notificationService.warning({
               title: "notification.events.delete_workflow_and_moved_content",
               translocoTitleParams: {
-                workflowUrl: getWorkflowUrl(
-                  workspace.id,
-                  content.targetWorkflow.projectId,
-                  content.targetWorkflow.slug,
-                ),
+                workflowUrl: redirectionUrl,
                 workflowName: content.targetWorkflow.name,
                 name: content.workflow.name,
               },
             });
           } else if (selectedProject.workflows) {
-            redirectionUrl = getWorkflowUrl(workspace.id, selectedProject.id, selectedProject.workflows[0].slug);
+            redirectionUrl = getWorkflowUrl(selectedProject, selectedProject.workflows[0].slug);
             notificationService.warning({
               title: "notification.events.delete_workflow",
               translocoTitleParams: {

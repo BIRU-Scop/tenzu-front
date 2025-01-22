@@ -33,8 +33,8 @@ import { RouterLink } from "@angular/router";
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
         <mat-card-title>
-          @if (projectId() && workspaceId()) {
-            <a [routerLink]="['/', 'workspace', workspaceId(), 'project', projectId()]">{{ name() }}</a>
+          @if (landingPage()) {
+            <a [routerLink]="landingPage()">{{ name() }}</a>
           } @else {
             {{ name() }}
           }
@@ -61,7 +61,7 @@ import { RouterLink } from "@angular/router";
 export class ProjectCardComponent {
   name = input("");
   color = input(0);
-  projectId = input<string | null>("");
   description = input<string | null>("");
   workspaceId = input<string | null>("");
+  landingPage = input<string | null>("");
 }

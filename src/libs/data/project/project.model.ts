@@ -37,6 +37,7 @@ export type ProjectSummary = ProjectBase & {
   id: string;
   workspaceId: string;
   slug: string;
+  landingPage: string;
 };
 
 export type Project = ProjectSummary & {
