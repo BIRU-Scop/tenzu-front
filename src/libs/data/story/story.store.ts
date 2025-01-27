@@ -167,8 +167,9 @@ export const StoryStore = signalStore(
     dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>) {
       const story = event.item.data;
       const status = event.container.data;
-      const copyOrderStoryByStatus = store.orderStoryByStatus();
+      const copyOrderStoryByStatus = JSON.parse(JSON.stringify(store.orderStoryByStatus()));
       const stories = copyOrderStoryByStatus[event.item.data.statusId];
+
       moveItemInArray(stories, event.previousIndex, event.currentIndex);
       copyOrderStoryByStatus[event.item.data.statusId] = stories;
       const payload = calculatePayloadReorder(story.ref, status.id, stories, event.currentIndex);
@@ -179,7 +180,7 @@ export const StoryStore = signalStore(
       const story = event.item.data;
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
-      const copyOrderStoryByStatus = store.orderStoryByStatus();
+      const copyOrderStoryByStatus = JSON.parse(JSON.stringify(store.orderStoryByStatus()));
       const lastArray = copyOrderStoryByStatus[lastStatus.id] || [];
       const nextArray = copyOrderStoryByStatus[nextStatus.id] || [];
       transferArrayItem(lastArray, nextArray, event.previousIndex, event.currentIndex);
@@ -188,7 +189,6 @@ export const StoryStore = signalStore(
       const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
 
       patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
-      story.statusId = nextStatus.id;
       store.updateEntity(story.ref, { statusId: nextStatus.id });
       return payload;
     },

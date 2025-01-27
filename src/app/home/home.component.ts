@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -66,6 +66,7 @@ import { MatDivider } from "@angular/material/divider";
         <mat-icon
           [matBadge]="notificationsComponentService.count.unread()"
           [matBadgeHidden]="!notificationsComponentService.count.unread()"
+          aria-hidden="false"
           >notifications</mat-icon
         >
       </button>

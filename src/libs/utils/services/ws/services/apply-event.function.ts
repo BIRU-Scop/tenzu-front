@@ -44,6 +44,7 @@ import { Notification, NotificationsStore } from "@tenzu/data/notifications";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { StoryService } from "@tenzu/data/story/story.service";
+import { getWorkflowUrl } from "@tenzu/utils/functions/urls";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryService);
@@ -148,8 +149,12 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
   }
 }
 
-export function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
+export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
   const projectService = inject(ProjectService);
+  const workspaceService = inject(WorkspaceService);
+  const workflowService = inject(WorkflowService);
+  const notificationService = inject(NotificationService);
+  const router = inject(Router);
 
   switch (message.event.type) {
     case WorkflowEventType.CreateWorkflow: {
@@ -161,9 +166,67 @@ export function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
       break;
     }
     case WorkflowEventType.UpdateWorkflow: {
+      const content = message.event.content as {
+        workflow: Workflow;
+      };
+      const selectedProject = projectService.selectedEntity();
+      const selectedWorkflow = workflowService.selectedEntity();
+      const workspace = workspaceService.selectedEntity();
+      if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
+        projectService.wsEditWorkflow(content.workflow);
+        if (selectedWorkflow.id === content.workflow.id) {
+          workflowService.wsEditWorkflow(content.workflow);
+          // TODO: Find a way to prevent the navigation event
+          // await router.navigateByUrl(getWorkflowUrl(workspace.id, selectedProject.id, content.workflow.slug));
+          notificationService.warning({
+            title: "notification.events.edit_workflow",
+            translocoTitleParams: {
+              oldName: selectedWorkflow.name,
+              newName: content.workflow.name,
+            },
+          });
+        }
+      }
       break;
     }
+
     case WorkflowEventType.DeleteWorkflow: {
+      const content = message.event.content as {
+        workflow: Workflow;
+        targetWorkflow: Workflow;
+      };
+      const selectedProject = projectService.selectedEntity();
+      const workspace = workspaceService.selectedEntity();
+      const selectedWorkflow = workflowService.selectedEntity();
+      if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
+        projectService.wsRemoveWorkflow(content.workflow);
+        workflowService.wsDeleteWorkflow(content.workflow);
+        if (selectedWorkflow.id === content.workflow.id) {
+          let redirectionUrl = "/404";
+          if (content.targetWorkflow) {
+            redirectionUrl = getWorkflowUrl(selectedProject, content.targetWorkflow.slug);
+            notificationService.warning({
+              title: "notification.events.delete_workflow_and_moved_content",
+              translocoTitleParams: {
+                workflowUrl: redirectionUrl,
+                workflowName: content.targetWorkflow.name,
+                name: content.workflow.name,
+              },
+            });
+          } else if (selectedProject.workflows) {
+            redirectionUrl = getWorkflowUrl(selectedProject, selectedProject.workflows[0].slug);
+            notificationService.warning({
+              title: "notification.events.delete_workflow",
+              translocoTitleParams: {
+                name: content.workflow.name,
+              },
+            });
+          }
+          // TODO: User is in story and workflow is deleted.
+          // TODO: User is in story and workflow is deleted and stories are moved.
+          await router.navigateByUrl(redirectionUrl);
+        }
+      }
       break;
     }
   }
@@ -282,6 +345,7 @@ export async function applyUserEvent(message: WSResponseEvent<unknown>) {
     }
   }
 }
+
 export function applyNotificationEvent(message: WSResponseEvent<unknown>) {
   const notificationsStore = inject(NotificationsStore);
   switch (message.event.type) {

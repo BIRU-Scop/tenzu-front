@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -155,7 +155,7 @@ export default class WorkspacePeopleComponent {
     });
     dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
       const selectedWorkspace = this.workspaceService.selectedEntity();
-      if (selectedWorkspace) {
+      if (selectedWorkspace && invitationsMail.length) {
         await this.membershipStore.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
         this.selectedTabIndex.set(1);
       }

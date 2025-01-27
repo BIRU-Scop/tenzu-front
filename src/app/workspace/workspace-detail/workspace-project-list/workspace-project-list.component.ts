@@ -29,6 +29,7 @@ import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -56,12 +57,14 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
           [name]="project.name"
           [color]="project.color"
           [workspaceId]="project.workspaceId"
-          [projectId]="project.id"
           [description]="project.description ? project.description : null"
+          [landingPage]="getProjectLandingPageUrl(project)"
         ></app-project-card>
       } @empty {
         @for (skeleton of Array(6); track $index) {
-          <li><app-card-skeleton></app-card-skeleton></li>
+          <li>
+            <app-card-skeleton></app-card-skeleton>
+          </li>
         }
       }
     </div>
@@ -73,6 +76,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
   ngOnDestroy(): void {
     this.projectService.resetEntities();
   }
+
   workspaceService = inject(WorkspaceService);
   projectService = inject(ProjectService);
   breadcrumbStore = inject(BreadcrumbStore);
@@ -86,4 +90,5 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
   }
 
   protected readonly Array = Array;
+  protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
 }

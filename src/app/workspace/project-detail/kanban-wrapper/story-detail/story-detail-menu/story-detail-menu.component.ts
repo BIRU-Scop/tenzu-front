@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
@@ -120,6 +120,10 @@ import { MatDialog } from "@angular/material/dialog";
           <mat-option [value]="'side-view'"><mat-icon>view_sidebar</mat-icon></mat-option>
         </mat-select>
       </mat-form-field>
+      @if (canBeClosed()) {
+        <div class="mx-auto"></div>
+        <button mat-icon-button (click)="closed.emit()"><mat-icon>close</mat-icon></button>
+      }
     </div>
   `,
   styles: ``,
@@ -136,6 +140,8 @@ export class StoryDetailMenuComponent {
   storyView = new FormControl<StoryView>("kanban", { nonNullable: true });
   kanbanWrapperService = inject(KanbanWrapperService);
   dialogRef = inject(MatDialog);
+  canBeClosed = input(false);
+  closed = output<void>();
   constructor() {
     toObservable(this.kanbanWrapperService.storyView).subscribe((storyView) => {
       this.storyView.setValue(storyView);
@@ -157,7 +163,7 @@ export class StoryDetailMenuComponent {
       },
     });
     dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
-      if (newWorkflowSlug !== story?.workflow.slug) {
+      if (newWorkflowSlug && newWorkflowSlug !== story?.workflow.slug) {
         const patchedStory = await this.storyDetailService.patchSelectedStory({ workflowSlug: newWorkflowSlug });
         if (patchedStory) {
           this.notificationService.success({ title: "notification.action.changes_saved" });

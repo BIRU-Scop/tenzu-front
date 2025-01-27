@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -34,13 +34,29 @@ export const ProjectDetailStore = signalStore(
     addWorkflow(workflow: Workflow) {
       const project = store.item();
       if (project) {
-        project.workflows.push(workflow);
         patchState(store, {
           item: {
             ...project,
-            workflows: { ...project.workflows },
+            workflows: [...project.workflows, workflow],
           },
         });
+      }
+    },
+    editWorkflow(workflow: Workflow) {
+      const project = store.item();
+      if (project) {
+        const workflows = [...project.workflows];
+        const workflowIndex = workflows.findIndex((workflowIterator) => workflowIterator.id === workflow.id);
+        workflows[workflowIndex] = workflow;
+        store.patch({ ...project, workflows: workflows });
+      }
+    },
+    deleteWorkflow(workflow: Workflow) {
+      const project = store.item();
+      if (project) {
+        let workflows = [...project.workflows];
+        workflows = workflows.filter((workflowIterator) => workflowIterator.id !== workflow.id);
+        store.patch({ ...project, workflows: workflows });
       }
     },
   })),

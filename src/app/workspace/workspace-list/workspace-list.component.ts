@@ -40,6 +40,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
+import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
 @Component({
   selector: "app-workspace-list",
@@ -81,10 +82,10 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
                   <li>
                     <app-project-card
                       [workspaceId]="workspace.id"
-                      [projectId]="project.id"
                       [name]="project.name"
                       [color]="project.color"
                       [description]="project.description ? project.description : null"
+                      [landingPage]="getProjectLandingPageUrl(project)"
                     ></app-project-card>
                   </li>
                 }
@@ -145,9 +146,11 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
       }
     });
   };
+
   ngOnDestroy(): void {
     this.workspaceService.resetEntities();
   }
+
   private openPlaceholderDialog = (event?: MouseEvent) => {
     const dialogRef = this.dialog.open(WorkspacePlaceholderDialogComponent, { ...matDialogConfig, disableClose: true });
     dialogRef.afterClosed().subscribe(() => {
@@ -198,4 +201,6 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+
+  protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
 }

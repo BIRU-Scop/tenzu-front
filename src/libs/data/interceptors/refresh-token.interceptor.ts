@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -43,7 +43,7 @@ export function refreshTokenInterceptor(request: HttpRequest<unknown>, next: Htt
 
   return next(request).pipe(
     catchError((error) => {
-      if (error instanceof HttpErrorResponse && !request.url.includes("login") && error.status === 401) {
+      if (error instanceof HttpErrorResponse && !request.url.includes("auth") && error.status === 401) {
         if (tokens.refresh && !jwtHelperService.isTokenExpired(tokens.refresh)) {
           return authService.refresh(tokens).pipe(
             switchMap(() => {

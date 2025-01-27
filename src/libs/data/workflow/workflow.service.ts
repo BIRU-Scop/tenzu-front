@@ -35,8 +35,22 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
   private workflowInfraService = inject(WorkflowInfraService);
   selectedEntity = this.workflowStore.item;
   statuses = this.workflowStore.entities;
-  deleteSelected(): Promise<Workflow | undefined> {
-    throw new Error("Method not implemented.");
+
+  async deleteSelected(moveToWorkflow: Workflow["slug"] | undefined): Promise<Workflow | undefined> {
+    const selectedWorkflow = this.selectedEntity();
+    if (selectedWorkflow) {
+      await lastValueFrom(
+        this.workflowInfraService.delete(
+          {
+            projectId: selectedWorkflow.projectId,
+            slug: selectedWorkflow.slug,
+          },
+          moveToWorkflow,
+        ),
+      );
+      return selectedWorkflow;
+    }
+    return undefined;
   }
 
   async create(item: Pick<Workflow, "projectId" | "name">): Promise<Workflow> {
@@ -58,6 +72,7 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
     }
     return undefined;
   }
+
   async getBySlug(workflow: Pick<Workflow, "projectId" | "slug">): Promise<Workflow | undefined> {
     const refreshedWorkflow = await lastValueFrom(this.workflowInfraService.get(workflow.projectId, workflow.slug));
     if (refreshedWorkflow) {
@@ -66,9 +81,19 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
     }
     return undefined;
   }
-  updateSelected(): Promise<Workflow | undefined> {
-    throw new Error("Method not implemented.");
+
+  async updateSelected(patchData: Partial<Omit<Workflow, "projectId" | "slug">>): Promise<Workflow | undefined> {
+    const selectedWorkflow = this.workflowStore.item();
+    if (selectedWorkflow) {
+      const editedWorkflow = await lastValueFrom(
+        this.workflowInfraService.editWorkflow(selectedWorkflow.projectId, selectedWorkflow.slug, patchData),
+      );
+      this.workflowStore.patch(editedWorkflow);
+      return editedWorkflow;
+    }
+    return undefined;
   }
+
   resetSelectedEntity(): void {
     this.workflowStore.reset();
   }
@@ -84,6 +109,7 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
     }
     return undefined;
   }
+
   async editStatus(projectId: string, status: Pick<Status, "name" | "id">) {
     const selectedWorkflow = this.workflowStore.item();
     if (selectedWorkflow) {
@@ -95,6 +121,7 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
     }
     return undefined;
   }
+
   async deleteStatus(projectId: string, statusId: string, moveToStatus: string | undefined) {
     const selectedWorkflow = this.workflowStore.item();
     if (selectedWorkflow) {
@@ -106,17 +133,33 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
     }
     return undefined;
   }
+
   async reorder(projectId: string, workflowId: string, oldPosition: number, newPosition: number) {
     const payload = this.workflowStore.reorder(oldPosition, newPosition);
     await lastValueFrom(this.workflowInfraService.reorderStatus(projectId, workflowId, payload));
   }
+
   wsAddStatus(status: StatusDetail) {
     this.workflowStore.addStatus(status);
   }
+
   wsUpdateStatus(status: StatusDetail) {
     this.workflowStore.updateStatus(status);
   }
+
   wsRemoveStatus(statusId: string) {
     this.workflowStore.removeStatus(statusId);
+  }
+
+  wsEditWorkflow(workflow: Workflow) {
+    if (workflow.slug === this.workflowStore.item()?.slug) {
+      this.workflowStore.patch(workflow);
+    }
+  }
+
+  wsDeleteWorkflow(workflow: Workflow) {
+    if (workflow.slug === this.workflowStore.item()?.slug) {
+      this.workflowStore.reset();
+    }
   }
 }
