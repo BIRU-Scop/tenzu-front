@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.12](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.11...v0.1.0-staging.12) (2025-01-27)
+
+
+### Features
+
+* add close functionality to story detail components ([17d0786](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/17d078684e16bc205e3d1261399cae2add7e0482))
+* **urls:** project cards now redirects to landing page ([b7d6948](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b7d6948c5e5db778669f3b9ae72db154ab4604f2))
+* **workflow:** edit and delete workflows real time p1 ([efbd9f2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/efbd9f273b10829d38541ee11a3458d44588acca))
+* **workflow:** edit name and delete workflows ([d0810da](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d0810dabdd8136911dc46087b4ce85ffac83b993))
+
+
+### Bug Fixes
+
+* **dialog:** enable proper closing of story detail dialog ([b2936ea](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b2936ea02d0b35f2c79d892ce028b0c3101bd897))
+* **interceptor:** login properly displays error ([47ac33e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/47ac33eb3a0be774d7d1d8457a8e31b27e6f209e))
+* prevent errors on invalid workflow slug selection ([36f15dc](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/36f15dcd22402b8523d0cd8d927dcfd8cbd666b9))
+* **project.store:** correct workflow addition logic ([cfcd5e4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cfcd5e4b441095c0dbfe10300a850909d1665310))
+* **sidenav:** adjust content height to account for spacing ([8a4a60a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8a4a60a3044b5f55af5abe5ccf613852f995a03a))
+* **story:** prevent mutation of orderStoryByStatus in drag-drop ([427197a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/427197a69ad1dd928a9005c61d82f3f0266f5c50))
+* **workspace:** cancel invitation dialog no longer raises error ([e091fd4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e091fd44f7bf1af28c6d44f13df100cc4a197b88))
+
 ## [0.1.0-staging.11](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.10...v0.1.0-staging.11) (2025-01-16)
 
 
