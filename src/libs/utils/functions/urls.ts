@@ -22,6 +22,7 @@
 import { ProjectSummary } from "@tenzu/data/project";
 import { Workflow } from "@tenzu/data/workflow";
 import { WorkspaceProject } from "@tenzu/data/workspace";
+import { Story } from "@tenzu/data/story";
 
 export type UrlableProject = ProjectSummary | WorkspaceProject;
 
@@ -41,10 +42,10 @@ export function getWorkflowUrl(project: UrlableProject, slug: Workflow["slug"]) 
   return `${getProjectRootUrl(project)}/kanban/${slug}`;
 }
 
-export function getStoryDetailListUrl(project: UrlableProject, storyId: number) {
-  return [`workspace`, project.workspaceId, "project", project.id, "story", storyId];
+export function getStoryDetailListUrl(project: UrlableProject, ref: Story["ref"]) {
+  return [`workspace`, project.workspaceId, "project", project.id, "story", ref];
 }
 
-export function getStoryDetailUrl(project: UrlableProject, storyId: number) {
-  return `/${getStoryDetailListUrl(project, storyId).join("/")}`;
+export function getStoryDetailUrl(project: UrlableProject, ref: Story["ref"]) {
+  return `/${getStoryDetailListUrl(project, ref).join("/")}`;
 }
