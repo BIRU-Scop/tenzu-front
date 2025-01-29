@@ -25,9 +25,15 @@ include:
         - job: launch-demo-deploy
       rules:
         - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.7.1
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.8.0
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.8.0
+    inputs:
+      repo: github.com/BIRU-Scop/tenzu-front.git
+      job-name: mirror-demo-tags
+      rules:
+        - if: $CI_COMMIT_TAG =~ /^.*-demo.*/
   - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.7.1
     inputs:
       stage: test
