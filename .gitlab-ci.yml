@@ -25,11 +25,11 @@ include:
         - job: launch-demo-deploy
       rules:
         - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.8.0
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.9.1
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       fetch-args: "origin --no-tags"
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.9.0
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.9.1
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       job-name: mirror-demo-tags
