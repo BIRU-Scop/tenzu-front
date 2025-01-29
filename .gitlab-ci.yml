@@ -84,6 +84,22 @@ launch-demo-deploy:
     reports:
       dotenv: demo.env
 
+publish-demo-tag:
+  stage: merge
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+  needs:
+    - job: get-released-tag
+    - job: launch-demo-deploy
+  before_script:
+    - git config --global user.email "bot@biru.sh"
+    - git config --global user.name "${CI_PROJECT_TITLE}-bot"
+    - git remote set-url origin https://oauth2:$DEV_TOKEN@${CI_SERVER_HOST}/${CI_PROJECT_PATH}
+    - git fetch
+  script:
+    - git push origin HEAD:refs/tags/$DEMO_VERSION
+
+
 deploy-demo:
   rules:
     - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
