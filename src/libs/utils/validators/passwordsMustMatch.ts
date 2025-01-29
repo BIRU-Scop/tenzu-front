@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,16 +27,20 @@ export const passwordsMustMatch: ValidatorFn = (control: AbstractControl): Valid
   if (!newPassword || !repeatPassword) {
     throw new Error("Invalid form");
   }
-  if (newPassword.errors) {
-    return newPassword.errors;
-  }
-  if (repeatPassword.errors) {
-    return repeatPassword.errors;
+  if (newPassword.value === "" || repeatPassword.value === "") {
+    return null;
   }
   if (newPassword.value !== repeatPassword.value) {
     newPassword.setErrors({ passwordNotMatch: true });
     repeatPassword.setErrors({ passwordNotMatch: true });
     return { passwordNotMatch: true };
+  }
+  // clean passwordNotMatch for both fields
+  for (const field of [newPassword, repeatPassword]) {
+    if (field.errors && field.hasError("passwordNotMatch")) {
+      delete field.errors["passwordNotMatch"];
+      field.updateValueAndValidity({ onlySelf: true });
+    }
   }
   return null;
 };

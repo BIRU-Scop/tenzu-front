@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -180,8 +180,8 @@ const DEFAULT_REQUIREMENTS: PasswordRequirements = {
                   }
                 </ul>
               </li>
+              <li [innerHTML]="t('hints.symbolCharacters', { symbols: SYMBOLS })"></li>
             }
-            <li [innerHTML]="t('hints.symbolCharacters', { symbols: SYMBOLS })"></li>
           </ul>
         </mat-error>
       }
@@ -201,7 +201,7 @@ export class PasswordFieldComponent implements OnInit {
   settings = input(DEFAULT_SETTINGS, {
     transform: (settings: PasswordSettings) => this.validateSettings(settings),
   });
-  validateSettings(settings: PasswordSettings) {
+  validateSettings(settings: PasswordSettings): PasswordSettings {
     const strengthSettings = { ...DEFAULT_STRENGTH_SETTINGS, ...(settings.strength ?? {}) };
     const resultSettings = { ...settings, strength: strengthSettings };
     if (!resultSettings.strength.enabled && resultSettings.strength.showBar) {
