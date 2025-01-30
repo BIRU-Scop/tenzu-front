@@ -299,6 +299,7 @@ export default class StoryDetailComponent {
   }
 
   async onDelete() {
+    this.closed.emit();
     await this.storyDetailService.deleteSelectedStory();
   }
 
