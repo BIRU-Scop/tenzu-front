@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -33,24 +33,22 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
   if (projectId) {
-    try {
-      debug("[storyResolver]", "load start");
-      storyService
-        .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
-        .then((story) => {
-          workflowService
-            .get(projectId, story.workflowId)
-            .then((workflow) => storyService.list(projectId, workflow?.slug || "", 0, 100))
-            .then();
-        })
-        .then();
-      debug("[storyResolver]", "load end");
-    } catch (error) {
-      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-        return router.navigate(["/404"]);
-      }
-      throw error;
-    }
+    debug("[storyResolver]", "load start");
+    storyService
+      .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
+      .then((story) => {
+        workflowService
+          .get(projectId, story.workflowId)
+          .then((workflow) => storyService.list(projectId, workflow?.slug || "", 0, 100))
+          .then();
+      })
+      .catch((error) => {
+        if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+          return router.navigate(["/404"]);
+        }
+        throw error;
+      });
+    debug("[storyResolver]", "load end");
   }
   return true;
 }
@@ -64,26 +62,25 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   const offset = 0;
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
-    try {
-      storyService.resetSelectedEntity();
-      workflowService
-        .getBySlug({
-          projectId: projectId,
-          slug: workflowSLug,
-        })
-        .then((workflow) => {
-          debug("story", "load stories start");
-          if (workflow) {
-            storyService.list(workflow.projectId, workflow.slug, offset, limit()).then();
-          }
-          debug("story", "load stories end");
-        });
-    } catch (error) {
-      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-        router.navigate(["/404"]).then();
-      }
-      throw error;
-    }
+    storyService.resetSelectedEntity();
+    workflowService
+      .getBySlug({
+        projectId: projectId,
+        slug: workflowSLug,
+      })
+      .then((workflow) => {
+        debug("story", "load stories start");
+        if (workflow) {
+          storyService.list(workflow.projectId, workflow.slug, offset, limit()).then();
+        }
+        debug("story", "load stories end");
+      })
+      .catch((error) => {
+        if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+          router.navigate(["/404"]).then();
+        }
+        throw error;
+      });
     debug("workflowResolver", "load end");
   }
   return true;
