@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -35,7 +35,7 @@ export class StoryDetailService {
   storyService = inject(StoryService);
   router = inject(Router);
 
-  public async patchSelectedStory(data: Partial<StoryUpdate>) {
+  async patchSelectedStory(data: Partial<StoryUpdate>) {
     const project = this.projectService.selectedEntity();
     const story = this.storyService.selectedEntity();
     if (project && story) {
@@ -51,8 +51,21 @@ export class StoryDetailService {
     }
     throw new Error("No story to update");
   }
+  async changeWorkflowSelectedStory(data: Partial<StoryUpdate>) {
+    const project = this.projectService.selectedEntity();
+    const story = this.storyService.selectedEntity();
+    const req = {
+      ...story,
+      ...data,
+    };
+    if (project) {
+      delete req.statusId;
+      return this.storyService.updateSelected({ ...req }, project.id);
+    }
+    return undefined;
+  }
 
-  public async deleteSelectedStory() {
+  async deleteSelectedStory() {
     const project = this.projectService.selectedEntity();
     const story = this.storyService.selectedEntity();
     const workflow = this.workflowService.selectedEntity();
