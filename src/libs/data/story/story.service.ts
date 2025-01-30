@@ -35,6 +35,7 @@ import {
 import { StoryDetailStore, StoryStore } from "./story.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Status } from "../status";
+import { Workflow } from "@tenzu/data/workflow";
 
 @Injectable({
   providedIn: "root",
@@ -113,6 +114,12 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   update(story: StoryDetail) {
     this.storyStore.update(story);
     this.storyDetailStore.set(story);
+  }
+  updateWorkflowStoryDetail(workflow: Workflow) {
+    const story = this.storyDetailStore.item();
+    if (story) {
+      this.storyDetailStore.patch({ ...story, workflow: { ...workflow } });
+    }
   }
   resetSelectedEntity(): void {
     this.storyDetailStore.resetOverride();
