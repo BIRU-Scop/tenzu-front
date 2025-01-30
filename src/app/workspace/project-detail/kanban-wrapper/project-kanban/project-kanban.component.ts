@@ -54,6 +54,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-project-kanban",
@@ -225,7 +226,7 @@ export class ProjectKanbanComponent {
   router = inject(Router);
   activatedRoute = inject(ActivatedRoute);
   notificationService = inject(NotificationService);
-
+  location = inject(Location);
   onlyHasOneWorkflow = computed(() => {
     const project = this.projectKanbanService.projectService.selectedEntity();
     if (!project) {
@@ -380,7 +381,7 @@ export class ProjectKanbanComponent {
         ) {
           this.storyService.updateWorkflowStoryDetail(editedWorkflow);
         } else if (currentProjet && editedWorkflow) {
-          await this.router.navigate([getWorkflowUrl(currentProjet, editedWorkflow.slug)]);
+          this.location.replaceState(getWorkflowUrl(currentProjet, editedWorkflow.slug));
         }
       }
     });
