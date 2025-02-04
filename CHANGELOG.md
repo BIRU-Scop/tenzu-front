@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.13](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.12...v0.1.0-staging.13) (2025-02-04)
+
+
+### Features
+
+* emit closed event when deleting a story ([fa09c89](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/fa09c894951345a3ccca70818e3b3ed47bdbb9a3))
+* enhance workflow update handling in story detail view ([485e84f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/485e84f945fcc9f85d22c79bd411f1dfc5476c5c))
+* give soul to 404 page ([e3d35dd](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e3d35dd5bcecb1d9b7a2d36477ae769b9b633e25))
+* **kanban:** enhance workflow navigation logic ([687cf65](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/687cf655568079f6eaf39f82ee987290ba46bfcb))
+* **story:** add updateWorkflowStoryDetail method ([02b0e08](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/02b0e0888c94136b036cc879b4eff1014a3d0970))
+* **urls:** add functions to generate story detail URLs ([0f6097d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0f6097d7eabd16ebc2e3ffa264c533e232f0d5f0))
+
+
+### Bug Fixes
+
+* change workflow for a story didn't work ([c151552](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c1515521c05193f3a15b0b1821afbe9f455127db))
+* correct workflow matching logic and add story workflow update ([5e7fb69](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5e7fb6937c9e588782e61654c68e0a102c538abe))
+* github workflow ([591ff12](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/591ff12c43286ac685aa04db72fdc78bb664f634))
+* **i18n:** update "workflow" translations to "kanban" ([084b47d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/084b47dd1862a2574ddd507437811abbf8d6338f))
+* **kanban:** update URL handling for workflow changes ([3d72562](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/3d725627481bb6069fb64f5e7cdb0007c0f8892a))
+* prevent persistent password must match error ([cb2bd06](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cb2bd06f6beb98b0d5c3555ca016f42592dd20b8))
+* **routes:** replace try-catch with promise catch ([cbb8dca](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cbb8dcaa77eb534d4e409915d810c074e9593db4))
+
 ## [0.1.0-staging.12](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.11...v0.1.0-staging.12) (2025-01-27)
 
 
