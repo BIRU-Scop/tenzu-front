@@ -88,11 +88,14 @@ export class SecurityComponent {
   fb = inject(NonNullableFormBuilder);
   loginService = inject(LoginService);
   userStore = inject(UserStore);
-  form = this.fb.group({
-    currentPassword: [""],
-    newPassword: [""],
-    repeatPassword: [""],
-  });
+  form = this.fb.group(
+    {
+      currentPassword: [""],
+      newPassword: [""],
+      repeatPassword: [""],
+    },
+    { validators: passwordsMustMatch },
+  );
 
   submit() {
     this.form.reset(this.form.value);
@@ -114,9 +117,5 @@ export class SecurityComponent {
           },
         });
     }
-  }
-
-  constructor() {
-    this.form.addValidators([passwordsMustMatch]);
   }
 }

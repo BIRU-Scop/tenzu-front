@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -33,6 +33,7 @@ import {
   WorkflowStatusEventType,
   WorkspaceEventType,
 } from "./event-type.enum";
+import { Location } from "@angular/common";
 import { ProjectService } from "@tenzu/data/project";
 import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow";
 import { Router } from "@angular/router";
@@ -44,7 +45,7 @@ import { Notification, NotificationsStore } from "@tenzu/data/notifications";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { StoryService } from "@tenzu/data/story/story.service";
-import { getWorkflowUrl } from "@tenzu/utils/functions/urls";
+import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryService);
@@ -153,8 +154,10 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
   const projectService = inject(ProjectService);
   const workspaceService = inject(WorkspaceService);
   const workflowService = inject(WorkflowService);
+  const storyService = inject(StoryService);
   const notificationService = inject(NotificationService);
   const router = inject(Router);
+  const location = inject(Location);
 
   switch (message.event.type) {
     case WorkflowEventType.CreateWorkflow: {
@@ -172,12 +175,22 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
       const selectedProject = projectService.selectedEntity();
       const selectedWorkflow = workflowService.selectedEntity();
       const workspace = workspaceService.selectedEntity();
+      const selectedStory = storyService.selectedEntity();
       if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
         projectService.wsEditWorkflow(content.workflow);
         if (selectedWorkflow.id === content.workflow.id) {
           workflowService.wsEditWorkflow(content.workflow);
-          // TODO: Find a way to prevent the navigation event
-          // await router.navigateByUrl(getWorkflowUrl(workspace.id, selectedProject.id, content.workflow.slug));
+          const currentUrl = router.url;
+          if (
+            selectedProject &&
+            selectedStory &&
+            currentUrl === getStoryDetailUrl(selectedProject, selectedStory.ref)
+          ) {
+            storyService.updateWorkflowStoryDetail(content.workflow);
+          } else {
+            location.replaceState(getWorkflowUrl(selectedProject, content.workflow.slug));
+          }
+
           notificationService.warning({
             title: "notification.events.edit_workflow",
             translocoTitleParams: {

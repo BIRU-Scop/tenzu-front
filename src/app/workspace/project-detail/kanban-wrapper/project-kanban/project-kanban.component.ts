@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -53,6 +53,8 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-project-kanban",
@@ -224,7 +226,7 @@ export class ProjectKanbanComponent {
   router = inject(Router);
   activatedRoute = inject(ActivatedRoute);
   notificationService = inject(NotificationService);
-
+  location = inject(Location);
   onlyHasOneWorkflow = computed(() => {
     const project = this.projectKanbanService.projectService.selectedEntity();
     if (!project) {
@@ -368,7 +370,19 @@ export class ProjectKanbanComponent {
         this.notificationService.success({
           title: "notification.workflow.renamed",
         });
-        await this.router.navigate(["..", editedWorkflow?.slug], { relativeTo: this.activatedRoute });
+        const storySelected = this.storyService.selectedEntity();
+        const currentUrl = this.router.url;
+        const currentProjet = this.projectKanbanService.projectService.selectedEntity();
+        if (
+          editedWorkflow &&
+          currentProjet &&
+          storySelected &&
+          currentUrl === getStoryDetailUrl(currentProjet, storySelected.ref)
+        ) {
+          this.storyService.updateWorkflowStoryDetail(editedWorkflow);
+        } else if (currentProjet && editedWorkflow) {
+          this.location.replaceState(getWorkflowUrl(currentProjet, editedWorkflow.slug));
+        }
       }
     });
   }

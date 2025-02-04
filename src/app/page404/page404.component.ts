@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,15 +23,24 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatAnchor } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
+import { NgOptimizedImage } from "@angular/common";
 
 @Component({
   selector: "app-page404",
-  imports: [TranslocoDirective, RouterLink, MatAnchor],
-  template: ` <div *transloco="let t; prefix: 'errorPages.404'">
-    <div>{{ t("title") }}</div>
-    <div>{{ t("text") }}</div>
-    <a mat-button [routerLink]="'/'">{{ t("call_for_action") }}</a>
-  </div>`,
+  imports: [TranslocoDirective, RouterLink, MatAnchor, NgOptimizedImage],
+  template: `
+    <main
+      class="h-[100vh] flex flex-col items-center justify-center gap-4"
+      *transloco="let t; prefix: 'errorPages.404'"
+    >
+      <img ngSrc="fun-ovni-sheep-animated.webp" width="237" height="328" alt="{{ t('image_description') }}" />
+      <div class="text-center">
+        <p>{{ t("title") }}</p>
+        <p>{{ t("text") }}</p>
+      </div>
+      <a class="primary-button" mat-flat-button [routerLink]="'/'">{{ t("call_for_action") }}</a>
+    </main>
+  `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

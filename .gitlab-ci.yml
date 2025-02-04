@@ -25,9 +25,18 @@ include:
         - job: launch-demo-deploy
       rules:
         - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.7.1
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.9.1
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
+      fetch-args: "origin --no-tags"
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.9.1
+    inputs:
+      repo: github.com/BIRU-Scop/tenzu-front.git
+      job-name: mirror-demo-tags
+      push-args: "origin HEAD:refs/tags/$CI_COMMIT_REF_SLUG"
+      fetch-args: "origin --no-tags"
+      rules:
+        - if: $CI_COMMIT_TAG =~ /^.*-demo.*/
   - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.7.1
     inputs:
       stage: test
@@ -75,6 +84,22 @@ launch-demo-deploy:
   artifacts:
     reports:
       dotenv: demo.env
+
+publish-demo-tag:
+  stage: merge
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+  needs:
+    - job: get-released-tag
+    - job: launch-demo-deploy
+  before_script:
+    - git config --global user.email "bot@biru.sh"
+    - git config --global user.name "${CI_PROJECT_TITLE}-bot"
+    - git remote set-url origin https://oauth2:$DEV_TOKEN@${CI_SERVER_HOST}/${CI_PROJECT_PATH}
+    - git fetch
+  script:
+    - git push origin HEAD:refs/tags/$DEMO_VERSION
+
 
 deploy-demo:
   rules:

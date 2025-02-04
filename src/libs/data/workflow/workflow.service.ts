@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -152,7 +152,7 @@ export class WorkflowService implements ServiceStoreSimpleItem<Workflow> {
   }
 
   wsEditWorkflow(workflow: Workflow) {
-    if (workflow.slug === this.workflowStore.item()?.slug) {
+    if (workflow.id === this.workflowStore.item()?.id) {
       this.workflowStore.patch(workflow);
     }
   }
