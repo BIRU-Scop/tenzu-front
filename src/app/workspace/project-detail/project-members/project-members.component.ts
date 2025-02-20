@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,7 +27,7 @@ import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-pe
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectService } from "@tenzu/data/project";
-import { MembershipStore } from "@tenzu/data/membership";
+import { MembershipService } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
@@ -52,9 +52,9 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
             <mat-icon class="icon-sm mr-1">group</mat-icon>
             {{ t("members_tab") }}
           </ng-template>
-          @if (membershipStore.projectEntities().length > 0) {
+          @if (membershipService.projectMembershipEntities().length > 0) {
             <mat-list>
-              @for (member of membershipStore.projectEntities(); track member.user.username) {
+              @for (member of membershipService.projectMembershipEntities(); track member.user.username) {
                 <app-user-card
                   [fullName]="member.user.fullName"
                   [username]="member.user.username"
@@ -69,9 +69,9 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
             <mat-icon class="icon-sm mr-1">schedule</mat-icon>
             {{ t("pending_tab") }}
           </ng-template>
-          @if (membershipStore.projectInvitationsEntities().length > 0) {
-            <mat-list [@newItemsFlyIn]="membershipStore.projectInvitationsEntities().length">
-              @for (pendingMember of membershipStore.projectInvitationsEntities(); track pendingMember.id) {
+          @if (membershipService.projectInvitationsEntities().length > 0) {
+            <mat-list [@newItemsFlyIn]="membershipService.projectInvitationsEntities().length">
+              @for (pendingMember of membershipService.projectInvitationsEntities(); track pendingMember.id) {
                 <app-user-card [fullName]="pendingMember.email!"></app-user-card>
               }
             </mat-list>
@@ -104,7 +104,7 @@ export class ProjectMembersComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
   projectService = inject(ProjectService);
-  membershipStore = inject(MembershipStore);
+  membershipService = inject(MembershipService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
@@ -134,7 +134,7 @@ export class ProjectMembersComponent {
     });
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        await this.membershipStore.sendProjectInvitations(this.projectService.selectedEntity()!.id, result);
+        await this.membershipService.sendProjectInvitations(this.projectService.selectedEntity()!.id, result);
         this.selectedTabIndex.set(1);
       }
     });

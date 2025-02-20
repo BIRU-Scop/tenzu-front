@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,73 +19,89 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import {
-  Invitation,
-  InvitationsResponse,
-  ProjectMembership,
-  WorkspaceGuest,
-  WorkspaceMembership,
-} from "@tenzu/data/membership/membership.model";
-import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { inject, Injectable, signal } from "@angular/core";
+import { ProjectMembership } from "@tenzu/data/membership/membership.model";
+import { MembershipInfraService } from "@tenzu/data/membership/membership-infra.service";
+import { MembershipStore } from "@tenzu/data/membership/membership.store";
+import { lastValueFrom } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class MembershipService {
-  http = inject(HttpClient);
-  configAppService = inject(ConfigAppService);
-  url = this.configAppService.apiUrl();
-  projectsUrl = `${this.url}projects`;
-  workspacesUrl = `${this.url}workspaces`;
+  private membershipInfraService = inject(MembershipInfraService);
+  private membershipCollectionStore = inject(MembershipStore);
+  projectMembershipEntities = this.membershipCollectionStore.projectEntities;
+  workspaceMembershipEntities = this.membershipCollectionStore.workspaceEntities;
+  guestMembershipEntities = this.membershipCollectionStore.workspaceGuestsEntities;
+  projectInvitationsEntities = this.membershipCollectionStore.projectInvitationsEntities;
+  workspaceInvitationsEntities = this.membershipCollectionStore.workspaceInvitationsEntities;
 
-  listProjectMembership(projectId: string) {
-    return this.http.get<ProjectMembership[]>(`${this.projectsUrl}/${projectId}/memberships`);
+  isLoading = signal(false);
+
+  async listProjectMembership(projectId: string) {
+    this.isLoading.set(true);
+    const projectMemberships = await lastValueFrom(this.membershipInfraService.listProjectMembership(projectId));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.listProjectMembership(projectMemberships);
   }
 
-  patchProjectMembership(projectId: string, username: string, value: Partial<ProjectMembership>) {
-    return this.http.patch<ProjectMembership>(`${this.projectsUrl}/${projectId}/memberships/${username}`, value);
+  async patchProjectMembership(projectId: string, username: string, value: Partial<ProjectMembership>) {
+    this.isLoading.set(true);
+    const projectMembership = await lastValueFrom(
+      this.membershipInfraService.patchProjectMembership(projectId, username, value),
+    );
+    this.isLoading.set(false);
+    this.membershipCollectionStore.patchProjectMembership(projectMembership);
   }
 
-  deleteProjectMembership(projectId: string, username: string) {
-    return this.http.delete<void>(`${this.projectsUrl}/${projectId}/memberships/${username}`);
+  async deleteProjectMembership(projectId: string, username: string) {
+    this.isLoading.set(true);
+    await lastValueFrom(this.membershipInfraService.deleteProjectMembership(projectId, username));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.deleteProjectMembership(username);
   }
 
-  listWorkspaceMembership(workspaceId: string) {
-    return this.http.get<WorkspaceMembership[]>(`${this.workspacesUrl}/${workspaceId}/memberships`);
+  async listWorkspaceMembership(workspaceId: string) {
+    this.isLoading.set(true);
+    const workspaceMemberships = await lastValueFrom(this.membershipInfraService.listWorkspaceMembership(workspaceId));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.listWorkspaceMembership(workspaceMemberships);
   }
 
-  listWorkspaceGuest(workspaceId: string) {
-    return this.http.get<WorkspaceGuest[]>(`${this.workspacesUrl}/${workspaceId}/guests`);
+  async listWorkspaceGuest(workspaceId: string) {
+    this.isLoading.set(true);
+    const workspaceGuests = await lastValueFrom(this.membershipInfraService.listWorkspaceGuest(workspaceId));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.listWorkspaceGuest(workspaceGuests);
   }
 
-  listWorkspaceInvitations(workspaceId: string) {
-    return this.http.get<Invitation[]>(`${this.workspacesUrl}/${workspaceId}/invitations`);
+  async listWorkspaceInvitations(workspaceId: string) {
+    this.isLoading.set(true);
+    const workspaceInvitations = await lastValueFrom(this.membershipInfraService.listWorkspaceInvitations(workspaceId));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.listWorkspaceInvitations(workspaceInvitations);
   }
 
-  listProjectInvitations(projectId: string) {
-    return this.http.get<Invitation[]>(`${this.projectsUrl}/${projectId}/invitations`);
+  async listProjectInvitations(projectId: string) {
+    this.isLoading.set(true);
+    const projectInvitations = await lastValueFrom(this.membershipInfraService.listProjectInvitations(projectId));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.listProjectInvitations(projectInvitations);
   }
 
-  deleteWorkspaceMembership(workspaceId: string, username: string) {
-    return this.http.delete<void>(`${this.workspacesUrl}/${workspaceId}/memberships/${username}`);
+  async deleteWorkspaceMembership(workspaceId: string, username: string) {
+    this.isLoading.set(true);
+    await lastValueFrom(this.membershipInfraService.deleteWorkspaceMembership(workspaceId, username));
+    this.isLoading.set(false);
+    this.membershipCollectionStore.deleteWorkspaceMembership(username);
   }
 
-  sendWorkspaceInvitations(workspaceId: string, invitationMail: string[]) {
-    return this.http.post<InvitationsResponse>(`${this.workspacesUrl}/${workspaceId}/invitations`, {
-      invitations: invitationMail.map((value) => {
-        return { username_or_email: value };
-      }),
-    });
+  async sendWorkspaceInvitations(workspaceId: string, invitationMail: string[]) {
+    await lastValueFrom(this.membershipInfraService.sendWorkspaceInvitations(workspaceId, invitationMail));
   }
 
-  sendProjectInvitations(id: string, mails: string[]) {
-    return this.http.post<InvitationsResponse>(`${this.projectsUrl}/${id}/invitations`, {
-      invitations: mails.map((value) => {
-        // TODO: change role with proper permission later
-        return { email: value, roleSlug: "admin" };
-      }),
-    });
+  async sendProjectInvitations(id: string, mails: string[]) {
+    await lastValueFrom(this.membershipInfraService.sendProjectInvitations(id, mails));
   }
 }
