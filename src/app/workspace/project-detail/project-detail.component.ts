@@ -44,6 +44,7 @@ export class ProjectDetailComponent {
     () =>
       `/workspace/${this.workspaceService.selectedEntity()?.id}/project/${this.projectService.selectedEntity()?.id}`,
   );
+
   constructor() {
     toObservable(this.projectService.selectedEntity)
       .pipe(filterNotNull())
@@ -59,7 +60,7 @@ export class ProjectDetailComponent {
           });
           this.breadcrumbStore.setFourthLevel({
             label: project.name,
-            link: `project/${project.id}`,
+            link: `project/${project.id}/${project.landingPage}`,
             doTranslation: false,
           });
         }
