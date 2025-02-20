@@ -44,7 +44,7 @@ import { UserMinimal, UserStore } from "@tenzu/data/user";
             [matTooltip]="hiddenUsersNames()"
             [name]="'+ ' + hiddenNamesCount"
             [rounded]="true"
-            [color]="0"
+            [color]="1"
           ></app-avatar>
         } @else {
           <app-avatar [matTooltip]="hiddenUsersNames()" name="&hellip;" [rounded]="true" [color]="0"></app-avatar>
