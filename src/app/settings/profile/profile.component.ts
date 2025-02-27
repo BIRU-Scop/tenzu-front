@@ -58,6 +58,10 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
         </mat-form-field>
         <mat-form-field>
+          <mat-label>{{ t("general.identity.username") }}</mat-label>
+          <input formControlName="username" matInput autocomplete data-testid="userName-input" type="text" />
+        </mat-form-field>
+        <mat-form-field>
           <mat-label>{{ t("general.identity.email") }}</mat-label>
           <input formControlName="email" matInput autocomplete data-testid="email-input" type="text" />
         </mat-form-field>
@@ -84,6 +88,7 @@ export class ProfileComponent {
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     fullName: ["", Validators.required],
+    username: ["", Validators.required],
     lang: ["", Validators.required],
     email: ["", Validators.required],
   });
@@ -92,6 +97,7 @@ export class ProfileComponent {
     toObservable(this.userStore.myUser).subscribe((values) => {
       this.form.patchValue({
         fullName: values.fullName,
+        username: values.username,
         lang: values.lang,
         email: values.email,
       });
