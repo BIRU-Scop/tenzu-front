@@ -29,6 +29,7 @@ import { MatOption, MatSelect } from "@angular/material/select";
 import { UserStore } from "@tenzu/data/user";
 import { LanguageStore } from "@tenzu/data/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-profile",
@@ -94,6 +95,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 export class ProfileComponent {
   userStore = inject(UserStore);
   languageStore = inject(LanguageStore);
+  notificationService = inject(NotificationService);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     fullName: ["", Validators.required],
@@ -119,6 +121,10 @@ export class ProfileComponent {
     this.form.reset(this.form.getRawValue());
     if (this.form.valid) {
       this.userStore.patchMe(this.form.getRawValue());
+      this.notificationService.success({
+        title: "settings.profile.changes-saved",
+        translocoTitle: true,
+      });
     }
   }
 }

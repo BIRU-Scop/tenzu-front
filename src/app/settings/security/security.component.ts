@@ -29,6 +29,7 @@ import { LoginService } from "../../auth/login/login.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UserStore } from "@tenzu/data/user";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-security",
@@ -95,6 +96,7 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
 })
 export class SecurityComponent {
   fb = inject(NonNullableFormBuilder);
+  notificationService = inject(NotificationService);
   loginService = inject(LoginService);
   userStore = inject(UserStore);
   form = this.fb.group(
@@ -117,6 +119,10 @@ export class SecurityComponent {
         .subscribe({
           next: () => {
             this.userStore.changePassword(this.form.value.newPassword!);
+            this.notificationService.success({
+              title: "settings.security.changes-saved",
+              translocoTitle: true,
+            });
           },
           error: (error) => {
             if (error instanceof HttpErrorResponse && error.status === 401) {
