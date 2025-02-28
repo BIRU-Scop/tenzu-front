@@ -34,7 +34,7 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
   selector: "app-security",
   imports: [ReactiveFormsModule, TranslocoDirective, MatButton, MatError, PasswordFieldComponent],
   template: `
-    <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
+    <div class="max-w-2xl mx-auto flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
       <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
         <div>
@@ -83,6 +83,9 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "w-full",
+  },
 })
 export class SecurityComponent {
   fb = inject(NonNullableFormBuilder);

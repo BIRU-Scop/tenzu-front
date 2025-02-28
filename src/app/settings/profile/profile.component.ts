@@ -44,7 +44,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     MatOption,
   ],
   template: `
-    <div class="flex flex-col gap-y-8" *transloco="let t">
+    <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
       <h1 class="mat-headline-medium">{{ t("settings.profile.title") }}</h1>
       <app-avatar
         [name]="form.value.fullName || userStore.myUser().fullName"
@@ -81,6 +81,9 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "w-full",
+  },
 })
 export class ProfileComponent {
   userStore = inject(UserStore);
