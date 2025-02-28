@@ -36,7 +36,7 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
   template: `
     <div class="max-w-2xl mx-auto flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
       <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
         <div>
           <app-password-field
             formControlName="currentPassword"

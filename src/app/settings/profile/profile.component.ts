@@ -52,7 +52,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
         [color]="userStore.myUser().color"
         size="xl"
       ></app-avatar>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
         <mat-form-field>
           <mat-label>{{ t("general.identity.fullname") }}</mat-label>
           <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />

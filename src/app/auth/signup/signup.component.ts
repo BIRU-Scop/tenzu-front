@@ -69,7 +69,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
           </button>
         </div>
       } @else if (displayForm()) {
-        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
             <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />

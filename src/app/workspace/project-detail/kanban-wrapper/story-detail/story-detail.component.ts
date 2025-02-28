@@ -87,7 +87,7 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
         ></app-story-detail-menu>
         <div class="flex flex-row gap-8">
           <div class="basis-2/3 flex flex-col gap-y-6">
-            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
               <mat-form-field appearance="fill" class="title-field">
                 <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
               </mat-form-field>
