@@ -73,7 +73,13 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
             }
           </mat-select>
         </mat-form-field>
-        <button data-testid="saveProfileSettings-button" mat-flat-button class="primary-button" type="submit">
+        <button
+          data-testid="saveProfileSettings-button"
+          mat-flat-button
+          class="primary-button"
+          type="submit"
+          [disabled]="!form.dirty || form.invalid || (form.dirty && form.invalid)"
+        >
           {{ t("settings.profile.save") }}
         </button>
       </form>
@@ -105,6 +111,7 @@ export class ProfileComponent {
         email: values.email,
       });
       this.form.controls.email.disable();
+      this.form.markAsPristine();
     });
   }
 

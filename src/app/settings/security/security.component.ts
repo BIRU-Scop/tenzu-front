@@ -75,7 +75,13 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
             </mat-error>
           }
         </div>
-        <button data-testid="saveProfileSettings-button" mat-flat-button class="primary-button" type="submit">
+        <button
+          data-testid="saveProfileSettings-button"
+          mat-flat-button
+          class="primary-button"
+          type="submit"
+          [disabled]="!form.dirty || form.invalid || (form.dirty && form.invalid)"
+        >
           {{ t("save") }}
         </button>
       </form>
