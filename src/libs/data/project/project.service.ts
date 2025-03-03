@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -117,6 +117,10 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
 
   resetEntities(): void {
     this.projectStore.reset();
+  }
+
+  async acceptInvitationForCurrentUser(projectId: string) {
+    return await lastValueFrom(this.projectInfraService.acceptInvitationForCurrentUser(projectId));
   }
 
   wsRemoveEntity(workspaceId: string) {

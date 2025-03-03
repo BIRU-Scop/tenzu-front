@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -58,11 +58,13 @@ export class WorkspaceService implements ServiceStoreEntity<Workspace> {
     this.workspaceStore.setAllEntities(workspaces);
     return workspaces;
   }
+
   async create(workspace: WorkspaceCreation) {
     const newWorkspace = await lastValueFrom(this.workspaceInfraService.create(workspace));
     this.workspaceStore.setAllEntities([newWorkspace, ...this.workspaceStore.entities()]);
     return newWorkspace;
   }
+
   async get(workspaceId: string) {
     const oldSelectedWorkspace = this.workspaceDetailStore.item();
     if (oldSelectedWorkspace) {
@@ -77,6 +79,12 @@ export class WorkspaceService implements ServiceStoreEntity<Workspace> {
     this.wsService.command({ command: "subscribe_to_workspace_events", workspace: workspace.id });
     return workspace;
   }
+
+  patch(workspaceId: Workspace["id"], patchValue: Partial<Workspace>) {
+    this.workspaceStore.updateEntity(workspaceId, patchValue);
+    this.workspaceDetailStore.patch(patchValue);
+  }
+
   async updateSelected(workspace: WorkspaceEdition) {
     const selectedWorkspace = this.workspaceDetailStore.item();
     if (selectedWorkspace) {
@@ -87,19 +95,24 @@ export class WorkspaceService implements ServiceStoreEntity<Workspace> {
     }
     return undefined;
   }
+
   resetSelectedEntity() {
     this.workspaceDetailStore.reset();
   }
+
   resetEntities() {
     this.workspaceStore.reset();
   }
+
   fullReset() {
     this.resetSelectedEntity();
     this.resetEntities();
   }
+
   wsRemoveEntity(workspaceId: string) {
     this.workspaceStore.removeEntity(workspaceId);
   }
+
   getProjectsByWorkspace(workspaceId: string) {
     this.workspaceInfraService
       .getProjects(workspaceId)

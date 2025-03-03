@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,10 +30,23 @@ import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
+import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
+import { ArrayElement } from "@tenzu/utils/functions/typing";
+import { Workspace } from "@tenzu/data/workspace";
+import { WorkspaceUtilsService } from "../../workspace-utils.service";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-workspace-project-list",
-  imports: [ProjectCardComponent, TranslocoDirective, MatButton, MatIcon, RouterLink, CardSkeletonComponent],
+  imports: [
+    ProjectCardComponent,
+    TranslocoDirective,
+    MatButton,
+    MatIcon,
+    RouterLink,
+    CardSkeletonComponent,
+    ProjectSpecialCardComponent,
+  ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
@@ -51,6 +64,18 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
+      @if (workspace) {
+        @for (project of workspace.invitedProjects; track project.id) {
+          <li>
+            <app-project-special-card
+              [name]="project.name"
+              [color]="project.color"
+              (submitted)="acceptProjectInvitation(project)"
+              (canceled)="denyProjectInvitation(project)"
+            ></app-project-special-card>
+          </li>
+        }
+      }
       @for (project of projectService.entities(); track project.id) {
         <app-project-card
           class="basis-1/5"
@@ -77,6 +102,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
     this.projectService.resetEntities();
   }
 
+  workspaceUtilsService = inject(WorkspaceUtilsService);
   workspaceService = inject(WorkspaceService);
   projectService = inject(ProjectService);
   breadcrumbStore = inject(BreadcrumbStore);
@@ -87,6 +113,14 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
       link: "",
       doTranslation: true,
     });
+  }
+
+  async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+    await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
+  }
+
+  denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+    debug("INVITATION", "Denied", project);
   }
 
   protected readonly Array = Array;

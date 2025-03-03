@@ -38,6 +38,7 @@ import { Router } from "@angular/router";
 import {
   applyNotificationEvent,
   applyProjectEvent,
+  applyProjectInvitationEventType,
   applyStoryAssignmentEvent,
   applyStoryAttachmentEvent,
   applyStoryEvent,
@@ -244,7 +245,7 @@ export class WsService {
           break;
         }
         case FamilyEventType.ProjectInvitation: {
-          // Add handling logic if required
+          await applyProjectInvitationEventType(message);
           break;
         }
         case FamilyEventType.ProjectMembership: {

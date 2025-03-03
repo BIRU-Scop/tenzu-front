@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -41,6 +41,11 @@ import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
+import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
+import { Workspace } from "@tenzu/data/workspace";
+import { ArrayElement } from "@tenzu/utils/functions/typing";
+import { WorkspaceUtilsService } from "../workspace-utils.service";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-workspace-list",
@@ -52,6 +57,7 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
     ProjectCardComponent,
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
+    ProjectSpecialCardComponent,
   ],
   template: `
     <div *transloco="let t; prefix: 'commons'" class="p-4 max-w-7xl mx-auto">
@@ -78,6 +84,16 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
                 [id]="workspace.id"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
+                @for (project of workspace.invitedProjects; track project.id) {
+                  <li>
+                    <app-project-special-card
+                      [name]="project.name"
+                      [color]="project.color"
+                      (submitted)="acceptProjectInvitation(project)"
+                      (canceled)="denyProjectInvitation(project)"
+                    ></app-project-special-card>
+                  </li>
+                }
                 @for (project of workspace.latestProjects; track project.id) {
                   <li>
                     <app-project-card
@@ -89,7 +105,10 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
                     ></app-project-card>
                   </li>
                 }
-                @if (!workspace.latestProjects || workspace.latestProjects.length === 0) {
+                @if (
+                  (!workspace.latestProjects || workspace.latestProjects.length === 0) &&
+                  (!workspace.invitedProjects || workspace.invitedProjects.length === 0)
+                ) {
                   <li>
                     <app-project-card [workspaceId]="workspace.id"></app-project-card>
                   </li>
@@ -135,6 +154,7 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   readonly workspaceService = inject(WorkspaceService);
   readonly projectService = inject(ProjectService);
+  readonly workspaceUtilsService = inject(WorkspaceUtilsService);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -200,6 +220,15 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
         this.openPlaceholderDialog(event);
       }
     });
+  }
+
+  async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+    debug("INVITATION", "Accepted", project);
+    await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
+  }
+
+  denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+    debug("INVITATION", "Denied", project);
   }
 
   protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -61,7 +61,7 @@ export function withMethodsEntities<T extends { id: EntityId }>() {
         patchState(store, setEntity(entity));
       },
       updateEntity(id: EntityId, entity: Partial<T>) {
-        patchState(store, updateEntity({ id: id, changes: entity }));
+        patchState(store, updateEntity({ id: id, changes: { ...entity } }));
       },
       removeEntity(selectedEntityId: EntityId) {
         patchState(store, removeEntity(selectedEntityId));

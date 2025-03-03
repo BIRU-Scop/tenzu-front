@@ -25,6 +25,7 @@ import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent } f
 import {
   NotificationEventType,
   ProjectEventType,
+  ProjectInvitationEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
   StoryEventType,
@@ -45,7 +46,7 @@ import { Notification, NotificationsStore } from "@tenzu/data/notifications";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { StoryService } from "@tenzu/data/story/story.service";
-import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
+import { getStoryDetailUrl, getWorkflowUrl, getWorkspaceRootUrl, HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryService);
@@ -375,6 +376,21 @@ export function applyNotificationEvent(message: WSResponseEvent<unknown>) {
         notificationsStore.markReadEvent(id);
         notificationsStore.decreaseUnreadCount();
       });
+      break;
+    }
+  }
+}
+
+export async function applyProjectInvitationEventType(message: WSResponseEvent<unknown>) {
+  const workspaceService = inject(WorkspaceService);
+  const router = inject(Router);
+
+  switch (message.event.type) {
+    case ProjectInvitationEventType.CreateProjectInvitation: {
+      const currentWorkspace = workspaceService.selectedEntity();
+      if (router.url === HOMEPAGE_URL || (currentWorkspace && router.url === getWorkspaceRootUrl(currentWorkspace))) {
+        await workspaceService.list();
+      }
       break;
     }
   }

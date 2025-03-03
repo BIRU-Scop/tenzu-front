@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,7 +23,7 @@ import { Project } from "../project";
 
 export type WorkspaceProject = Pick<
   Project,
-  "id" | "name" | "slug" | "description" | "color" | "logoSmall" | "landingPage" | "workspaceId"
+  "id" | "name" | "slug" | "description" | "color" | "logo" | "logoSmall" | "logoLarge" | "landingPage" | "workspaceId"
 >;
 
 export type WorkspaceRole = "admin" | "member" | "guest" | "none";
