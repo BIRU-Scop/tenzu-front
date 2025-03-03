@@ -29,6 +29,7 @@ import { MatOption, MatSelect } from "@angular/material/select";
 import { UserStore } from "@tenzu/data/user";
 import { LanguageStore } from "@tenzu/data/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-profile",
@@ -44,7 +45,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     MatOption,
   ],
   template: `
-    <div class="flex flex-col gap-y-8" *transloco="let t">
+    <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
       <h1 class="mat-headline-medium">{{ t("settings.profile.title") }}</h1>
       <app-avatar
         [name]="form.value.fullName || userStore.myUser().fullName"
@@ -52,10 +53,14 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
         [color]="userStore.myUser().color"
         size="xl"
       ></app-avatar>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
         <mat-form-field>
           <mat-label>{{ t("general.identity.fullname") }}</mat-label>
           <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t("general.identity.username") }}</mat-label>
+          <input formControlName="username" matInput autocomplete data-testid="userName-input" type="text" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ t("general.identity.email") }}</mat-label>
@@ -69,7 +74,13 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
             }
           </mat-select>
         </mat-form-field>
-        <button data-testid="saveProfileSettings-button" mat-flat-button class="primary-button" type="submit">
+        <button
+          data-testid="saveProfileSettings-button"
+          mat-flat-button
+          class="primary-button"
+          type="submit"
+          [disabled]="!form.dirty || form.invalid || (form.dirty && form.invalid)"
+        >
           {{ t("settings.profile.save") }}
         </button>
       </form>
@@ -77,13 +88,18 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "w-full",
+  },
 })
 export class ProfileComponent {
   userStore = inject(UserStore);
   languageStore = inject(LanguageStore);
+  notificationService = inject(NotificationService);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     fullName: ["", Validators.required],
+    username: ["", Validators.required],
     lang: ["", Validators.required],
     email: ["", Validators.required],
   });
@@ -92,10 +108,12 @@ export class ProfileComponent {
     toObservable(this.userStore.myUser).subscribe((values) => {
       this.form.patchValue({
         fullName: values.fullName,
+        username: values.username,
         lang: values.lang,
         email: values.email,
       });
       this.form.controls.email.disable();
+      this.form.markAsPristine();
     });
   }
 
@@ -103,6 +121,10 @@ export class ProfileComponent {
     this.form.reset(this.form.getRawValue());
     if (this.form.valid) {
       this.userStore.patchMe(this.form.getRawValue());
+      this.notificationService.success({
+        title: "settings.profile.changes-saved",
+        translocoTitle: true,
+      });
     }
   }
 }

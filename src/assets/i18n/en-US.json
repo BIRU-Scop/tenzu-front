@@ -127,6 +127,7 @@
   "general": {
     "identity": {
       "fullname": "Full name",
+      "username": "Username",
       "lang": "Language",
       "email": "Email"
     }

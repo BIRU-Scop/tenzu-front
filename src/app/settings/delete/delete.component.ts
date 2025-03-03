@@ -34,9 +34,9 @@ import { Router } from "@angular/router";
 @Component({
   selector: "app-delete",
   template: `
-    <div class="w-90 flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.delete'">
+    <div class="w-90 flex flex-col gap-y-8 max-w-2xl mx-auto" *transloco="let t; prefix: 'settings.delete'">
       <h1 class="mat-headline-medium">{{ t("delete") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="confirmDialog()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="confirmDialog()" class="flex flex-col gap-y-5">
         <p class="mat-body-medium text-on-surface">{{ t("consequences.sorry") }} (ㅠ﹏ㅠ)</p>
         <p class="mat-body-medium text-on-surface">{{ t("consequences.what") }}:</p>
         <ul class="pl-4">
@@ -61,6 +61,9 @@ import { Router } from "@angular/router";
   imports: [TranslocoDirective, MatCheckbox, MatButton, ReactiveFormsModule, MatError],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "w-full",
+  },
 })
 export class DeleteComponent {
   readonly submit = model(false);

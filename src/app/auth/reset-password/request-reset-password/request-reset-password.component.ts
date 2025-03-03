@@ -41,7 +41,7 @@ import { AuthFormStateStore } from "../../auth-form-state.store";
     MatDivider,
   ],
   template: `
-    <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-4">
+    <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-5">
       <h1 class="mat-headline-medium text-center">
         {{ t(!showConfirmation() ? "title" : "confirm.title") }}
       </h1>

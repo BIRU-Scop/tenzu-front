@@ -51,7 +51,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
   template: `
     <div *transloco="let t; prefix: 'login'" class="flex flex-col gap-y-4 ">
       <h1 class="mat-headline-medium">{{ t("title") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
         <mat-form-field subscriptSizing="fixed">
           <mat-label>
             {{ t("email_or_username") }}

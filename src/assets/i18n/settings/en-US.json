@@ -6,7 +6,8 @@
   },
   "profile": {
     "title": "My profile",
-    "save": "Save"
+    "save": "Save",
+    "changes-saved": "Profile successfully updated"
   },
   "security": {
     "save": "Save",
@@ -15,7 +16,8 @@
     "repeat_password": "Repeat password",
     "password_not_match": "The passwords do not match",
     "invalid_current_password": "This is not your current password",
-    "change_password": "Change password"
+    "change_password": "Change password",
+    "changes-saved": "Password successfully updated"
   },
   "delete": {
     "delete_account": "Delete my account",

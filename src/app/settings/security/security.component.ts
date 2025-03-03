@@ -29,14 +29,15 @@ import { LoginService } from "../../auth/login/login.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UserStore } from "@tenzu/data/user";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-security",
   imports: [ReactiveFormsModule, TranslocoDirective, MatButton, MatError, PasswordFieldComponent],
   template: `
-    <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
+    <div class="max-w-2xl mx-auto flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
       <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
         <div>
           <app-password-field
             formControlName="currentPassword"
@@ -75,7 +76,13 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
             </mat-error>
           }
         </div>
-        <button data-testid="saveProfileSettings-button" mat-flat-button class="primary-button" type="submit">
+        <button
+          data-testid="saveProfileSettings-button"
+          mat-flat-button
+          class="primary-button"
+          type="submit"
+          [disabled]="!form.dirty || form.invalid || (form.dirty && form.invalid)"
+        >
           {{ t("save") }}
         </button>
       </form>
@@ -83,9 +90,13 @@ import { passwordsMustMatch } from "@tenzu/utils/validators";
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "w-full",
+  },
 })
 export class SecurityComponent {
   fb = inject(NonNullableFormBuilder);
+  notificationService = inject(NotificationService);
   loginService = inject(LoginService);
   userStore = inject(UserStore);
   form = this.fb.group(
@@ -108,6 +119,10 @@ export class SecurityComponent {
         .subscribe({
           next: () => {
             this.userStore.changePassword(this.form.value.newPassword!);
+            this.notificationService.success({
+              title: "settings.security.changes-saved",
+              translocoTitle: true,
+            });
           },
           error: (error) => {
             if (error instanceof HttpErrorResponse && error.status === 401) {
