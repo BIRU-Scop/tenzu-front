@@ -113,6 +113,7 @@ export class ProfileComponent {
         email: values.email,
       });
       this.form.controls.email.disable();
+      this.form.controls.username.disable();
       this.form.markAsPristine();
     });
   }
