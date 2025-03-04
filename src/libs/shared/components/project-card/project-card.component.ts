@@ -29,10 +29,10 @@ import { RouterLink } from "@angular/router";
   selector: "app-project-card",
   imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, TranslocoDirective, RouterLink],
   template: `
-    <mat-card appearance="outlined" class="min-h-[90px]" *transloco="let t; prefix: 'component.project_card'">
+    <mat-card appearance="outlined" class="min-h-[100px]" *transloco="let t; prefix: 'component.project_card'">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
-        <mat-card-title>
+        <mat-card-title class="!contents min-h-[40px]">
           @if (landingPage()) {
             <a [routerLink]="landingPage()">{{ name() }}</a>
           } @else {

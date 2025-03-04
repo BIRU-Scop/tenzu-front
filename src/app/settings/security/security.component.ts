@@ -81,7 +81,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
           mat-flat-button
           class="primary-button"
           type="submit"
-          [disabled]="!form.dirty || form.invalid || (form.dirty && form.invalid)"
+          [disabled]="!form.dirty || form.invalid"
         >
           {{ t("save") }}
         </button>

@@ -134,8 +134,8 @@ import { Location } from "@angular/common";
               (cdkDropListDropped)="drop($event)"
             >
               @if (stories && stories.length > 10) {
-                <cdk-virtual-scroll-viewport [itemSize]="10" class="min-h-[100vh] w-full">
-                  <li cdkDrag [cdkDragData]="story" class="w-60" *cdkVirtualFor="let story of stories">
+                <cdk-virtual-scroll-viewport [itemSize]="10" class="min-h-[100vh] w-full flex">
+                  <li cdkDrag [cdkDragData]="story" class="w-56" *cdkVirtualFor="let story of stories">
                     <app-story-card
                       [ref]="story.ref"
                       [title]="story.title"

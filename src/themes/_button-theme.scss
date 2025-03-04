@@ -199,7 +199,7 @@
     &.mat-mdc-button-disabled {
       box-shadow: none;
       border: solid 1px var(--mat-sys-outline-variant);
-      margin: 0;
+      margin: 3px;
     }
   }
   @include mat.button-overrides((

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -79,7 +79,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
           mat-flat-button
           class="primary-button"
           type="submit"
-          [disabled]="!form.dirty || form.invalid || (form.dirty && form.invalid)"
+          [disabled]="!form.dirty || form.invalid"
         >
           {{ t("settings.profile.save") }}
         </button>
@@ -113,6 +113,7 @@ export class ProfileComponent {
         email: values.email,
       });
       this.form.controls.email.disable();
+      this.form.controls.username.disable();
       this.form.markAsPristine();
     });
   }
