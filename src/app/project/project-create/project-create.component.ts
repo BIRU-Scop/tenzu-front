@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -102,6 +102,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
               type="submit"
               class="tertiary-button"
               data-testid="new-project-submit"
+              [disabled]="!form.dirty || form.invalid"
             >
               {{ t("create_project") }}
             </button>

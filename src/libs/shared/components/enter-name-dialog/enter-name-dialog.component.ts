@@ -90,7 +90,13 @@ export type NameDialogData = {
         </mat-form-field>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button data-testid="enter-name-submit" mat-flat-button class="tertiary-button" (click)="submit()">
+        <button
+          data-testid="enter-name-submit"
+          mat-flat-button
+          class="tertiary-button"
+          [disabled]="!name.dirty || name.invalid || (name.dirty && name.invalid)"
+          (click)="submit()"
+        >
           {{ t(data.action) }}
         </button>
         <button
