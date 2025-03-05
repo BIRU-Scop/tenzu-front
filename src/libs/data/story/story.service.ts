@@ -167,6 +167,7 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   }
   async dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
     const payload = this.storyStore.dropStoryIntoSameStatus(event);
+    if (!payload) return;
     await lastValueFrom(this.storyInfraService.reorder(projectId, workflowSlug, payload));
   }
   async dropStoryBetweenStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
