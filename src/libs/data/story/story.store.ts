@@ -165,6 +165,8 @@ export const StoryStore = signalStore(
     },
 
     dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>) {
+      if (event.previousIndex === event.currentIndex) return;
+
       const story = event.item.data;
       const status = event.container.data;
       const copyOrderStoryByStatus = JSON.parse(JSON.stringify(store.orderStoryByStatus()));
