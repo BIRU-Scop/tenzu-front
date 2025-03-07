@@ -32,11 +32,11 @@ import { ServiceStoreEntity } from "../interface";
   providedIn: "root",
 })
 export class ProjectService implements ServiceStoreEntity<ProjectSummary, Project> {
-  projectInfraService = inject(ProjectInfraService);
-  workflowService = inject(WorkflowService);
-  projectStore = inject(ProjectStore);
-  projectDetailStore = inject(ProjectDetailStore);
-  wsService = inject(WsService);
+  private projectInfraService = inject(ProjectInfraService);
+  private workflowService = inject(WorkflowService);
+  private projectStore = inject(ProjectStore);
+  private projectDetailStore = inject(ProjectDetailStore);
+  private wsService = inject(WsService);
   entities = this.projectStore.entities;
   selectedEntity = this.projectDetailStore.item;
   entityMap = this.projectStore.entityMap;
@@ -119,7 +119,11 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
     this.projectStore.reset();
   }
 
-  async acceptInvitationForCurrentUser(projectId: string) {
+  async denyInvitationForCurrentUser(projectId: Project["id"]) {
+    return await lastValueFrom(this.projectInfraService.denyInvitationForCurrentUser(projectId));
+  }
+
+  async acceptInvitationForCurrentUser(projectId: Project["id"]) {
     return await lastValueFrom(this.projectInfraService.acceptInvitationForCurrentUser(projectId));
   }
 

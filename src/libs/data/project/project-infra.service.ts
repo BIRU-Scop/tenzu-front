@@ -32,6 +32,7 @@ import {
   ProjectSummary,
 } from "./project.model";
 import { map } from "rxjs/operators";
+import { User } from "@tenzu/data/user";
 
 @Injectable({
   providedIn: "root",
@@ -94,5 +95,15 @@ export class ProjectInfraService extends GenericCrudService<ProjectSummary, Proj
 
   acceptInvitationForCurrentUser(projectId: Project["id"]) {
     return this.http.post<ProjectInvitationAccept>(`${this.getUrl()}/${projectId}/invitations/accept`, null);
+  }
+
+  revokeInvitationForUsernameOrMail(projectId: Project["id"], usernameOrMail: User["username"] | User["email"]) {
+    return this.http.post<void>(`${this.getUrl()}/${projectId}/invitations/revoke`, {
+      usernameOrMail: usernameOrMail,
+    });
+  }
+
+  denyInvitationForCurrentUser(projectId: Project["id"]) {
+    return this.http.post<void>(`${this.getUrl()}/${projectId}/invitations/deny`, null);
   }
 }

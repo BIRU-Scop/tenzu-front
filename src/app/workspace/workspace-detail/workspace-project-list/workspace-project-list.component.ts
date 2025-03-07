@@ -34,7 +34,6 @@ import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-sp
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { Workspace } from "@tenzu/data/workspace";
 import { WorkspaceUtilsService } from "../../workspace-utils.service";
-import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -119,8 +118,8 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
     await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
   }
 
-  denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
-    debug("INVITATION", "Denied", project);
+  async denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+    await this.workspaceUtilsService.denyInvitationForCurrentUser(project);
   }
 
   protected readonly Array = Array;

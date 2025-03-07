@@ -47,4 +47,13 @@ export class WorkspaceUtilsService {
       this.workspaceService.patch(workspace.id, workspace);
     }
   }
+
+  async denyInvitationForCurrentUser(project: ArrayElement<Workspace["invitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMap()[project.workspaceId] } as Workspace;
+    await this.projectService.denyInvitationForCurrentUser(project.id);
+    workspace.invitedProjects = workspace.invitedProjects.filter(
+      (invitedProject: ArrayElement<Workspace["invitedProjects"]>) => invitedProject.id !== project.id,
+    );
+    this.workspaceService.patch(workspace.id, workspace);
+  }
 }
