@@ -101,7 +101,7 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   async get(projectId: string, ref: number) {
     const story = await lastValueFrom(this.storyInfraService.get(projectId, ref));
     const attachments = await lastValueFrom(this.storyInfraService.getAttachments(projectId, ref));
-    this.storyStore.setEntity(story);
+    this.storyStore.update(story);
     this.storyDetailStore.set(story);
     this.storyDetailStore.setStoryAttachments(attachments);
     return story;
