@@ -254,8 +254,6 @@ export default class StoryDetailComponent {
           await this.workflowService.getBySlug(value.workflow);
         }
       });
-    this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
-    this.breadcrumbStore.setSixthLevel(undefined);
   }
 
   assigned = computed(() => this.selectedStory()?.assignees || []);
