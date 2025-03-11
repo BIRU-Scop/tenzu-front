@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,11 +22,13 @@
 import { Status } from "../status";
 import { User, UserMinimal } from "../user";
 import { Workflow } from "../workflow";
+
+export type StoryReorder = {
+  place: "after" | "before";
+  ref: number;
+};
 export type StoryReorderPayload = {
-  reorder?: {
-    place: "after" | "before";
-    ref: number;
-  };
+  reorder?: StoryReorder;
   statusId: string;
   stories: number[];
 };

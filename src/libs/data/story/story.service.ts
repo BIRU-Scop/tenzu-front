@@ -29,6 +29,7 @@ import {
   StoryAttachment,
   StoryCreate,
   StoryDetail,
+  StoryReorder,
   StoryReorderPayloadEvent,
   StoryUpdate,
 } from "./story.model";
@@ -165,13 +166,14 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
     this.storyStore.reorderStoryByEvent(reorder);
     this.storyDetailStore.reorderStoryByEvent(reorder);
   }
-  async dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
-    const payload = this.storyStore.dropStoryIntoSameStatus(event);
+  async dropStoryIntoStatus(
+    event: CdkDragDrop<Status, Status, [Story, number]>,
+    reorderPlacement: StoryReorder | undefined,
+    projectId: string,
+    workflowSlug: string,
+  ) {
+    const payload = this.storyStore.dropStoryIntoStatus(event, reorderPlacement);
     if (!payload) return;
-    await lastValueFrom(this.storyInfraService.reorder(projectId, workflowSlug, payload));
-  }
-  async dropStoryBetweenStatus(event: CdkDragDrop<Status, Status, Story>, projectId: string, workflowSlug: string) {
-    const payload = this.storyStore.dropStoryBetweenStatus(event);
     await lastValueFrom(this.storyInfraService.reorder(projectId, workflowSlug, payload));
   }
   reorder() {

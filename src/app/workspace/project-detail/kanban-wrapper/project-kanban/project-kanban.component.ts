@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { Story } from "@tenzu/data/story";
+import { Story, StoryReorder } from "@tenzu/data/story";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
@@ -33,7 +33,7 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
-import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
+import { CdkDrag, CdkDragDrop, CdkDragRelease, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { Status } from "@tenzu/data/status";
 import { Step, WorkflowService } from "@tenzu/data/workflow";
 import { Validators } from "@angular/forms";
@@ -55,6 +55,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
 import { Location } from "@angular/common";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-project-kanban",
@@ -134,8 +135,15 @@ import { Location } from "@angular/common";
               (cdkDropListDropped)="drop($event)"
             >
               @if (stories && stories.length > 10) {
-                <cdk-virtual-scroll-viewport [itemSize]="10" class="min-h-[100vh] w-full flex">
-                  <li cdkDrag [cdkDragData]="story" class="w-56" *cdkVirtualFor="let story of stories">
+                <cdk-virtual-scroll-viewport [itemSize]="96" class="min-h-[100vh] w-full flex">
+                  <li
+                    id="story-{{ story.ref }}"
+                    cdkDrag
+                    [cdkDragData]="[story, idx]"
+                    (cdkDragReleased)="releaseItem($event)"
+                    class="w-56 h-[96px]"
+                    *cdkVirtualFor="let story of stories; let idx = index"
+                  >
                     <app-story-card
                       [ref]="story.ref"
                       [title]="story.title"
@@ -145,8 +153,14 @@ import { Location } from "@angular/common";
                   </li>
                 </cdk-virtual-scroll-viewport>
               } @else {
-                @for (story of stories; track story.ref) {
-                  <li cdkDrag [cdkDragData]="story" class="w-60">
+                @for (story of stories; track story.ref; let idx = $index) {
+                  <li
+                    id="story-{{ story.ref }}"
+                    cdkDrag
+                    [cdkDragData]="[story, idx]"
+                    (cdkDragReleased)="releaseItem($event)"
+                    class="w-56 h-[96px]"
+                  >
                     <app-story-card
                       [ref]="story.ref"
                       [title]="story.title"
@@ -227,6 +241,7 @@ export class ProjectKanbanComponent {
   activatedRoute = inject(ActivatedRoute);
   notificationService = inject(NotificationService);
   location = inject(Location);
+  reorderPlacement?: StoryReorder;
   onlyHasOneWorkflow = computed(() => {
     const project = this.projectKanbanService.projectService.selectedEntity();
     if (!project) {
@@ -319,16 +334,23 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<Status, Status, Story>) {
+  async drop(event: CdkDragDrop<Status, Status, [Story, number]>) {
     const workflow = this.workflowService.selectedEntity();
     if (!workflow) {
       return;
     }
-    if (event.previousContainer === event.container) {
-      await this.storyService.dropStoryIntoSameStatus(event, workflow.projectId, workflow.slug);
-    } else {
-      await this.storyService.dropStoryBetweenStatus(event, workflow.projectId, workflow.slug);
+    debug("drop", "reorderPlacement", this.reorderPlacement);
+    const [, index] = event.item.data;
+    // we can't use event.previousIndex because of incompatibility between drag-drop  and virtual-scroll
+    event.previousIndex = index;
+    const newStatusList = this.storyService.groupedByStatus()[event.container.data.id];
+    if (this.reorderPlacement) {
+      event.currentIndex = newStatusList.findIndex((element) => element.ref === this.reorderPlacement?.ref);
+      if (this.reorderPlacement?.place === "after") {
+        event.currentIndex += 1;
+      }
     }
+    await this.storyService.dropStoryIntoStatus(event, this.reorderPlacement, workflow.projectId, workflow.slug);
   }
 
   moveStatus(oldPosition: number, step: Step) {
@@ -414,5 +436,22 @@ export class ProjectKanbanComponent {
     } else {
       throw new Error("[WORKFLOW] Cannot delete workflow, missing SelectedWorkflow");
     }
+  }
+
+  releaseItem(event: CdkDragRelease<[Story, number]>) {
+    const placeholderElt = event.source.getPlaceholderElement();
+    const previousElt = placeholderElt.previousElementSibling;
+    debug("releaseItem", "previousElt", previousElt);
+    if (previousElt && previousElt.nodeName === placeholderElt.nodeName) {
+      this.reorderPlacement = { place: "after", ref: Number(previousElt.id.replace("story-", "")) };
+      return;
+    }
+    const nextElt = placeholderElt.nextElementSibling;
+    debug("releaseItem", "nextElt", nextElt);
+    if (nextElt && nextElt.nodeName === placeholderElt.nodeName) {
+      this.reorderPlacement = { place: "before", ref: Number(nextElt.id.replace("story-", "")) };
+      return;
+    }
+    this.reorderPlacement = undefined;
   }
 }
