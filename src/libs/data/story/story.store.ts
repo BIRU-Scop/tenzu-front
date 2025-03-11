@@ -37,7 +37,7 @@ import {
   StoryAssign,
   StoryAttachment,
   StoryDetail,
-  StoryReorder,
+  StoryReorderPayload,
   StoryReorderPayloadEvent,
 } from "@tenzu/data/story/story.model";
 import { Status } from "@tenzu/data/status";
@@ -154,10 +154,7 @@ export const StoryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(
-      event: CdkDragDrop<Status, Status, [Story, number]>,
-      reorderPlacement: StoryReorder | undefined,
-    ) {
+    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>) {
       const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
@@ -168,10 +165,12 @@ export const StoryStore = signalStore(
       const lastArray = copyGroupedByStatus[lastStatus.id] || [];
       debug("dropStoryBetweenStatus", "story_from_lastArray", lastArray[event.previousIndex]);
 
+      let nextArray = lastArray;
       if (sameStatus) {
+        debug("dropStoryBetweenStatus", "story_from_nextArray", nextArray[event.currentIndex]);
         moveItemInArray(lastArray, event.previousIndex, event.currentIndex);
       } else {
-        const nextArray = copyGroupedByStatus[nextStatus.id] || [];
+        nextArray = copyGroupedByStatus[nextStatus.id] || [];
         debug("dropStoryBetweenStatus", "story_from_nextArray", nextArray[event.currentIndex]);
 
         transferArrayItem(lastArray, nextArray, event.previousIndex, event.currentIndex);
@@ -179,11 +178,7 @@ export const StoryStore = signalStore(
         store.updateEntity(story.ref, { statusId: nextStatus.id });
       }
       copyGroupedByStatus[lastStatus.id] = lastArray;
-      const payload = {
-        statusId: nextStatus.id,
-        stories: [story.ref],
-        reorder: reorderPlacement,
-      };
+      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
 
       patchState(store, { groupedByStatus: { ...copyGroupedByStatus } });
       return payload;
@@ -243,6 +238,23 @@ export const StoryDetailStore = signalStore(
     },
   })),
 );
+
+function calculatePayloadReorder(storyId: number, statusId: string, stories: Story[], index: number) {
+  let result: StoryReorderPayload;
+  if (index === stories.length - 1) {
+    result = {
+      statusId: statusId,
+      stories: [storyId],
+    };
+  } else {
+    result = {
+      statusId: statusId,
+      reorder: { place: "before", ref: stories[index + 1].ref },
+      stories: [storyId],
+    };
+  }
+  return result;
+}
 
 export type StoryDetailStore = InstanceType<typeof StoryDetailStore>;
 export type StoryStore = InstanceType<typeof StoryStore>;
