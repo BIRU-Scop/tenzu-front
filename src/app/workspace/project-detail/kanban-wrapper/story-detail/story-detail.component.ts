@@ -253,6 +253,7 @@ export default class StoryDetailComponent {
         if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
           await this.workflowService.getBySlug(value.workflow);
         }
+        this.breadcrumbStore.setSixthLevel({ label: value.workflow.name, doTranslation: false });
       });
   }
 
