@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -41,7 +41,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
             <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
             <a
               class="nav-button flex flex-row items-center justify-center rounded-full"
-              [attr.aria-label]="t('workspace.general_title.new_kanban')"
+              [attr.aria-label]="t('workspace.general_title.create_kanban')"
               [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
             >
               <mat-icon>add</mat-icon>
@@ -56,7 +56,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
           </a>
         }
 
-        <mat-nav-list attr.aria-label="{{ t('workflow.general_title.kanban') }}">
+        <mat-nav-list attr.aria-label="{{ t('workspace.general_title.kanban') }}">
           @for (workflow of project.workflows; track workflow.id) {
             @if (!sideNavStore.resized()) {
               <a

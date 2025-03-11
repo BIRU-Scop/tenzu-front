@@ -19,8 +19,7 @@
  *
  */
 
-import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
-import { computed } from "@angular/core";
+import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import {
   addEntities,
   EntityId,
@@ -43,27 +42,18 @@ import {
 } from "@tenzu/data/story/story.model";
 import { Status } from "@tenzu/data/status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { debug } from "@tenzu/utils/functions/logging";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
   currentProjectId: null as string | null,
   currentWorkflowSlug: null as string | null,
-  orderStoryByStatus: {} as Record<string, number[]>,
+  groupedByStatus: {} as Record<string, Story[]>,
 };
 export const StoryStore = signalStore(
   { providedIn: "root" },
   withEntities<Story>(),
   withState(initialState),
-  withComputed(({ entityMap, orderStoryByStatus }) => ({
-    groupedByStatus: computed(() => {
-      const orderStoryByStatusTemp = orderStoryByStatus();
-      const result = {} as Record<string, Story[]>;
-      for (const [statusId, storiesId] of Object.entries(orderStoryByStatusTemp)) {
-        result[statusId] = storiesId.map((storyId) => entityMap()[storyId]);
-      }
-      return result;
-    }),
-  })),
   withMethods((store) => ({
     setCurrentWorkflowId(projectId: string, workflowSlug: string) {
       patchState(store, { currentProjectId: projectId, currentWorkflowSlug: workflowSlug });
@@ -88,17 +78,17 @@ export const StoryStore = signalStore(
       patchState(store, initialState);
     },
     reorder() {
-      const orderStoryByStatus = store.entities().reduce(
+      const groupedByStatus = store.entities().reduce(
         (acc, story) => {
           const statusId = story.statusId;
           if (acc[statusId]) {
-            return { ...acc, [statusId]: [...acc[statusId], story.ref] };
+            return { ...acc, [statusId]: [...acc[statusId], story] };
           }
-          return { ...acc, [statusId]: [story.ref] };
+          return { ...acc, [statusId]: [story] };
         },
-        {} as Record<string, number[]>,
+        {} as Record<string, Story[]>,
       );
-      patchState(store, { orderStoryByStatus: { ...orderStoryByStatus } });
+      patchState(store, { groupedByStatus });
     },
   })),
   withMethods((store) => ({
@@ -147,51 +137,50 @@ export const StoryStore = signalStore(
       const storyRef = reorder.stories[0];
       if (storyRef) {
         const stories = store.entities();
-        const currentStatusIndex = stories.findIndex((story) => story.ref === storyRef);
+        const currentIndex = stories.findIndex((story) => story.ref === storyRef);
+        stories[currentIndex].statusId = reorder.status.id;
         const siblingStoryRef = reorder.reorder?.ref;
         if (siblingStoryRef) {
           const siblingStoryIndex = stories.findIndex((story) => story.ref === siblingStoryRef);
           if (reorder.reorder?.place === "after") {
-            moveItemInArray(stories, currentStatusIndex, siblingStoryIndex + 1);
+            moveItemInArray(stories, currentIndex, siblingStoryIndex + 1);
           } else if (reorder.reorder?.place === "before") {
-            moveItemInArray(stories, currentStatusIndex, siblingStoryIndex - 1);
+            moveItemInArray(stories, currentIndex, siblingStoryIndex - 1);
           }
           // if no place, nothing to do
         }
         store.setAllEntities(stories);
-        store.updateEntity(storyRef, { statusId: reorder.status.id });
         store.reorder();
       }
     },
 
-    dropStoryIntoSameStatus(event: CdkDragDrop<Status, Status, Story>) {
-      if (event.previousIndex === event.currentIndex) return;
-
-      const story = event.item.data;
-      const status = event.container.data;
-      const copyOrderStoryByStatus = JSON.parse(JSON.stringify(store.orderStoryByStatus()));
-      const stories = copyOrderStoryByStatus[event.item.data.statusId];
-
-      moveItemInArray(stories, event.previousIndex, event.currentIndex);
-      copyOrderStoryByStatus[event.item.data.statusId] = stories;
-      const payload = calculatePayloadReorder(story.ref, status.id, stories, event.currentIndex);
-      patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
-      return payload;
-    },
-    dropStoryBetweenStatus(event: CdkDragDrop<Status, Status, Story>) {
-      const story = event.item.data;
+    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>) {
+      const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
-      const copyOrderStoryByStatus = JSON.parse(JSON.stringify(store.orderStoryByStatus()));
-      const lastArray = copyOrderStoryByStatus[lastStatus.id] || [];
-      const nextArray = copyOrderStoryByStatus[nextStatus.id] || [];
-      transferArrayItem(lastArray, nextArray, event.previousIndex, event.currentIndex);
-      copyOrderStoryByStatus[lastStatus.id] = lastArray;
-      copyOrderStoryByStatus[nextStatus.id] = nextArray;
+      const sameStatus = lastStatus.id === nextStatus.id;
+      if (sameStatus && event.previousIndex === event.currentIndex) return;
+
+      const copyGroupedByStatus = JSON.parse(JSON.stringify(store.groupedByStatus()));
+      const lastArray = copyGroupedByStatus[lastStatus.id] || [];
+      debug("dropStoryBetweenStatus", "story_from_lastArray", lastArray[event.previousIndex]);
+
+      let nextArray = lastArray;
+      if (sameStatus) {
+        debug("dropStoryBetweenStatus", "story_from_nextArray", nextArray[event.currentIndex]);
+        moveItemInArray(lastArray, event.previousIndex, event.currentIndex);
+      } else {
+        nextArray = copyGroupedByStatus[nextStatus.id] || [];
+        debug("dropStoryBetweenStatus", "story_from_nextArray", nextArray[event.currentIndex]);
+
+        transferArrayItem(lastArray, nextArray, event.previousIndex, event.currentIndex);
+        copyGroupedByStatus[nextStatus.id] = nextArray;
+        store.updateEntity(story.ref, { statusId: nextStatus.id });
+      }
+      copyGroupedByStatus[lastStatus.id] = lastArray;
       const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
 
-      patchState(store, { orderStoryByStatus: { ...copyOrderStoryByStatus } });
-      store.updateEntity(story.ref, { statusId: nextStatus.id });
+      patchState(store, { groupedByStatus: { ...copyGroupedByStatus } });
       return payload;
     },
   })),
@@ -250,23 +239,17 @@ export const StoryDetailStore = signalStore(
   })),
 );
 
-function calculatePayloadReorder(storyId: number, statusId: string, storiesId: number[], index: number) {
+function calculatePayloadReorder(storyId: number, statusId: string, stories: Story[], index: number) {
   let result: StoryReorderPayload;
-  if (storiesId.length === 1) {
+  if (index === stories.length - 1) {
     result = {
       statusId: statusId,
-      stories: [storyId],
-    };
-  } else if (index === storiesId.length - 1) {
-    result = {
-      statusId: statusId,
-      reorder: { place: "after", ref: storiesId[index - 1] },
       stories: [storyId],
     };
   } else {
     result = {
       statusId: statusId,
-      reorder: { place: "before", ref: storiesId[index + 1] },
+      reorder: { place: "before", ref: stories[index + 1].ref },
       stories: [storyId],
     };
   }

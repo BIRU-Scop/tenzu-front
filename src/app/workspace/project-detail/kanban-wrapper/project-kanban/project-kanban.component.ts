@@ -134,8 +134,15 @@ import { Location } from "@angular/common";
               (cdkDropListDropped)="drop($event)"
             >
               @if (stories && stories.length > 10) {
-                <cdk-virtual-scroll-viewport [itemSize]="10" class="min-h-[100vh] w-full flex">
-                  <li cdkDrag [cdkDragData]="story" class="w-56" *cdkVirtualFor="let story of stories">
+                <cdk-virtual-scroll-viewport [itemSize]="96" class="min-h-[100vh] w-full flex">
+                  <li
+                    id="story-{{ story.ref }}"
+                    cdkDrag
+                    [cdkDragData]="[story, idx]"
+                    class="w-56 h-[96px]"
+                    *cdkVirtualFor="let story of stories; let idx = index"
+                    [attr.data-drag-index]="idx"
+                  >
                     <app-story-card
                       [ref]="story.ref"
                       [title]="story.title"
@@ -145,8 +152,14 @@ import { Location } from "@angular/common";
                   </li>
                 </cdk-virtual-scroll-viewport>
               } @else {
-                @for (story of stories; track story.ref) {
-                  <li cdkDrag [cdkDragData]="story" class="w-60">
+                @for (story of stories; track story.ref; let idx = $index) {
+                  <li
+                    id="story-{{ story.ref }}"
+                    cdkDrag
+                    [cdkDragData]="[story, idx]"
+                    class="w-56 h-[96px]"
+                    [attr.data-drag-index]="idx"
+                  >
                     <app-story-card
                       [ref]="story.ref"
                       [title]="story.title"
@@ -319,16 +332,22 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<Status, Status, Story>) {
+  async drop(event: CdkDragDrop<Status, Status, [Story, number]>) {
     const workflow = this.workflowService.selectedEntity();
     if (!workflow) {
       return;
     }
-    if (event.previousContainer === event.container) {
-      await this.storyService.dropStoryIntoSameStatus(event, workflow.projectId, workflow.slug);
-    } else {
-      await this.storyService.dropStoryBetweenStatus(event, workflow.projectId, workflow.slug);
+    // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
+    // so we use workarounds
+    const [, index] = event.item.data;
+    event.previousIndex = index;
+    const dataIndex = event.container.element.nativeElement
+      .getElementsByClassName("cdk-drag")
+      [event.currentIndex]?.getAttribute("data-drag-index");
+    if (dataIndex) {
+      event.currentIndex = Number(dataIndex);
     }
+    await this.storyService.dropStoryIntoStatus(event, workflow.projectId, workflow.slug);
   }
 
   moveStatus(oldPosition: number, step: Step) {
