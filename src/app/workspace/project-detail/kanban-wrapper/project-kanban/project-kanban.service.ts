@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -110,7 +110,6 @@ export class ProjectKanbanService {
     }
     await this.projectService.refreshSelected();
     let redirectionSlug = moveToWorkflow;
-    console.log("expected RedirectionSlug", redirectionSlug);
     if (!moveToWorkflow) {
       const workflowsExceptSelected = (project: Project, selectedWorkflowSlug: Workflow["slug"]) => {
         return project.workflows.filter((workflow) => workflow.slug !== selectedWorkflowSlug)[0];

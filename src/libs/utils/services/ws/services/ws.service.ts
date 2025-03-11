@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -71,6 +71,7 @@ export class WsService {
   private ws$: Observable<WSResponse> | undefined = undefined;
 
   async init() {
+    // We want to keep those log for now
     console.log("init WS");
     console.log(this.configAppService.wsUrl());
     this.subject = webSocket({
