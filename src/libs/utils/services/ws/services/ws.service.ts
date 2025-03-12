@@ -48,7 +48,7 @@ import {
   applyWorkspaceEvent,
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
-import { clearAuthStorage } from "@tenzu/data/auth/utils";
+import { clearAuthStorage } from "@tenzu/repository/auth/utils";
 import { ConfigAppService } from "../../../../../app/config-app/config-app.service";
 
 const MAX_RETRY = 10;
@@ -100,8 +100,6 @@ export class WsService {
 
     this.ws$ = this.subject.pipe(
       catchError((e) => {
-        // the server are reload we loose the connexion and we need to login again
-        // TODO find a way to unsubscribe to the channels were subscribed in the previous session
         debug("WS", "the server are reload we loose the connexion and we need to login again", e);
         this.loggedSubject.next(false);
         this.command({ command: "signin", token: localStorage.getItem("token") || "" });
@@ -289,6 +287,16 @@ export class WsService {
         .pipe(
           filter((loggedIn) => loggedIn),
           switchMap(() => {
+            if (command.command === "unsubscribe_to_workspace_events") {
+              if (!(`workspaces.${command.workspace}` in this.channelSubscribed().channelWorkspaces)) {
+                return of(null);
+              }
+            }
+            if (command.command === "unsubscribe_from_project_events") {
+              if (!(`projects.${command.project}` in this.channelSubscribed().channelProjects)) {
+                return of(null);
+              }
+            }
             subject.next(command);
             return of(null);
           }),

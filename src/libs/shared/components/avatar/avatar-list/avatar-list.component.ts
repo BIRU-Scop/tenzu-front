@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { MatTooltip } from "@angular/material/tooltip";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { UserMinimal, UserStore } from "@tenzu/data/user";
+import { UserMinimal, UserStore } from "@tenzu/repository/user";
 
 @Component({
   selector: "app-avatar-list",

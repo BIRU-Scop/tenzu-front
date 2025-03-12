@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,10 +21,10 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { SideNavStore } from "@tenzu/data/sidenav";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { SideNavStore } from "@tenzu/repository/sidenav";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 
 @Component({
@@ -35,12 +35,12 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceDetailComponent {
-  workspaceService = inject(WorkspaceService);
+  workspaceService = inject(WorkspaceRepositoryService);
   sideNavStore = inject(SideNavStore);
   breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
-    toObservable(this.workspaceService.selectedEntity)
+    toObservable(this.workspaceService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((workspace) => {
         this.sideNavStore.setAvatar(
@@ -78,7 +78,7 @@ export class WorkspaceDetailComponent {
       link: "/",
       doTranslation: true,
     });
-    toObservable(this.workspaceService.selectedEntity)
+    toObservable(this.workspaceService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((workspace) => {
         this.breadcrumbStore.setSecondLevel({

@@ -24,14 +24,14 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
-import { StoryDetail } from "@tenzu/data/story";
+import { StoryDetail } from "@tenzu/repository/story";
 import { Router, RouterLink } from "@angular/router";
 import { ChooseWorkflowDialogComponent } from "../choose-workflow-dialog/choose-workflow-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryDetailService } from "../story-detail.service";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { MatFormField } from "@angular/material/form-field";
 import { MatOption, MatSelect, MatSelectTrigger } from "@angular/material/select";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
@@ -83,7 +83,7 @@ import { MatDialog } from "@angular/material/dialog";
         [disabled]="!story.prev"
         [routerLink]="[
           '/workspace',
-          workspaceService.selectedEntity()?.id,
+          workspaceService.entityDetail()?.id,
           'project',
           story.projectId,
           'story',
@@ -101,7 +101,7 @@ import { MatDialog } from "@angular/material/dialog";
         [disabled]="!story.next"
         [routerLink]="[
           '/workspace',
-          workspaceService.selectedEntity()?.id,
+          workspaceService.entityDetail()?.id,
           'project',
           story.projectId,
           'story',
@@ -135,7 +135,7 @@ export class StoryDetailMenuComponent {
   relativeDialog = inject(RelativeDialogService);
   notificationService = inject(NotificationService);
   storyDetailService = inject(StoryDetailService);
-  workspaceService = inject(WorkspaceService);
+  workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
   storyView = new FormControl<StoryView>("kanban", { nonNullable: true });
   kanbanWrapperService = inject(KanbanWrapperService);

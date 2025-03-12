@@ -20,20 +20,21 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
-import { MembershipService } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 
 @Component({
   selector: "app-workspace-people",
@@ -53,9 +54,10 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
             {{ t("members_tab") }}
           </ng-template>
           <p class="mat-body-medium text-on-surface mb-2">{{ t("members_description") }}</p>
-          @if (membershipService.workspaceMembershipEntities().length > 0) {
+          @let workspaceMembershipEntities = workspaceMembershipService.entities();
+          @if (workspaceMembershipEntities.length > 0) {
             <mat-list>
-              @for (guest of membershipService.workspaceMembershipEntities(); track guest.user.username) {
+              @for (guest of workspaceMembershipEntities; track guest.user.username) {
                 <app-user-card
                   [fullName]="guest.user.fullName"
                   [username]="guest.user.username"
@@ -70,35 +72,15 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
             <mat-icon class="icon-sm mr-1">schedule</mat-icon>
             {{ t("pending_tab") }}
           </ng-template>
-          @if (membershipService.workspaceInvitationsEntities().length > 0) {
-            <mat-list [@newItemsFlyIn]="membershipService.workspaceInvitationsEntities().length">
-              @for (pendingMember of membershipService.workspaceInvitationsEntities(); track pendingMember.id) {
+          @let workspaceInvitations = workspaceInvitationService.entities();
+          @if (workspaceInvitations.length > 0) {
+            <mat-list [@newItemsFlyIn]="workspaceInvitations.length">
+              @for (pendingMember of workspaceInvitations; track pendingMember.id) {
                 <app-user-card [fullName]="pendingMember.email!"></app-user-card>
               }
             </mat-list>
           } @else {
             <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
-          }
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">eyeglasses</mat-icon>
-            {{ t("guests_tab") }}
-          </ng-template>
-          @if (membershipService.guestMembershipEntities().length > 0) {
-            <p class="mat-body-medium text-on-surface mb-2">{{ t("guest_description") }}</p>
-            <mat-list>
-              @for (member of membershipService.guestMembershipEntities(); track member.user.username) {
-                <app-user-card
-                  [fullName]="member.user.fullName"
-                  [username]="member.user.username"
-                  [color]="member.user.color"
-                ></app-user-card>
-              }
-            </mat-list>
-          } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("guest_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>
@@ -125,9 +107,10 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 export default class WorkspacePeopleComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  readonly workspaceService = inject(WorkspaceService);
+  readonly workspaceService = inject(WorkspaceRepositoryService);
   translocoService = inject(TranslocoService);
-  membershipService = inject(MembershipService);
+  workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
+  workspaceMembershipService = inject(WorkspaceMembershipRepositoryService);
 
   selectedTabIndex = model(0);
 
@@ -136,6 +119,11 @@ export default class WorkspacePeopleComponent {
       label: "workspace.general_title.workspacePeople",
       link: "",
       doTranslation: true,
+    });
+    this.selectedTabIndex.subscribe((value) => {
+      if (value === 1) {
+        this.workspaceInvitationService.listWorkspaceInvitations(this.workspaceService.entityDetail()!.id).then();
+      }
     });
   }
 
@@ -149,16 +137,20 @@ export default class WorkspacePeopleComponent {
           " " +
           this.translocoService.translate("component.invite_dialog.to") +
           " " +
-          this.workspaceService.selectedEntity()?.name,
+          this.workspaceService.entityDetail()?.name,
         description: this.translocoService.translate("workspace.people.description_modal"),
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
-      const selectedWorkspace = this.workspaceService.selectedEntity();
+      const selectedWorkspace = this.workspaceService.entityDetail();
       if (selectedWorkspace && invitationsMail.length) {
-        await this.membershipService.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
-        await this.membershipService.listWorkspaceInvitations(selectedWorkspace.id);
-        this.selectedTabIndex.set(1);
+        await this.workspaceInvitationService.createBulkInvitations(
+          selectedWorkspace.id,
+          invitationsMail.map((email) => ({ usernameOrEmail: email })),
+        );
+        if (this.selectedTabIndex() !== 1) {
+          this.selectedTabIndex.set(1);
+        }
       }
     });
   }

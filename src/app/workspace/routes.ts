@@ -23,23 +23,21 @@ import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { ProjectDetailService } from "./project-detail/project-detail.service";
 import { inject } from "@angular/core";
-import { debug } from "../../libs/utils/functions/logging";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { debug } from "@tenzu/utils/functions/logging";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
-import { MembershipService } from "@tenzu/data/membership";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
-  const workspaceService = inject(WorkspaceService);
-  const membershipService = inject(MembershipService);
+  const workspaceService = inject(WorkspaceRepositoryService);
+  const workspaceMembershipService = inject(WorkspaceMembershipRepositoryService);
   const router = inject(Router);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
     try {
-      workspaceService.get(workspaceId).then();
-      membershipService.listWorkspaceMembership(workspaceId).then();
-      membershipService.listWorkspaceInvitations(workspaceId).then();
-      membershipService.listWorkspaceGuest(workspaceId).then();
+      workspaceService.getRequest({ workspaceId }).then();
+      workspaceMembershipService.listWorkspaceMembership(workspaceId).then();
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -55,6 +53,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
   debug("projectResolver", "start");
   const projectService = inject(ProjectDetailService);
   const projectId = route.paramMap.get("projectId");
+
   const workspaceId = route.paramMap.get("workspaceId");
   if (projectId && workspaceId) {
     projectService.load(workspaceId, projectId);

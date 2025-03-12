@@ -26,3 +26,10 @@
 export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType extends readonly (infer ElementType)[]
   ? ElementType
   : never;
+
+export function isPlainObject(a: unknown): a is object {
+  return (
+    // Checking object constructor excludes other types like Date, Array, etc.
+    typeof a === "object" && a !== null && a.constructor === Object
+  );
+}

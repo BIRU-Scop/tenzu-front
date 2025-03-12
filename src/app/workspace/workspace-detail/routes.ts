@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,14 +22,14 @@
 import { ActivatedRouteSnapshot, Routes } from "@angular/router";
 import { debug } from "@tenzu/utils/functions/logging";
 import { inject } from "@angular/core";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceListProjectsResolver", "start");
-  const workspaceService = inject(WorkspaceService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
-    workspaceService.getProjectsByWorkspace(workspaceId);
+    projectRepositoryService.listRequest({ workspaceId });
   }
   debug("workspaceListProjectsResolver", "end");
 }

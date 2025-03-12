@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,11 +25,12 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectService } from "@tenzu/data/project/project.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 
 @Component({
   selector: "app-project-kanban-create",
@@ -40,7 +41,8 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 })
 export class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
-  readonly projectService = inject(ProjectService);
+  readonly projectService = inject(ProjectRepositoryService);
+  readonly workflowService = inject(WorkflowRepositoryService);
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
   readonly activatedRoute = inject(ActivatedRoute);
@@ -70,12 +72,14 @@ export class ProjectKanbanCreateComponent {
       },
     });
     dialogRef.afterClosed().subscribe(async (name?: string) => {
-      const project = this.projectService.selectedEntity();
+      const project = this.projectService.entityDetail();
       if (name && project) {
         const projectId = project.id;
         try {
-          const workflow = await this.projectService.createWorkflow({ projectId: projectId, name: name });
-          await this.projectService.get(projectId);
+          const workflow = await this.workflowService.createRequest(
+            { projectId: projectId, name: name },
+            { projectId: projectId },
+          );
           await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
         } catch (e) {
           if (e instanceof HttpErrorResponse && e.status === 400) {

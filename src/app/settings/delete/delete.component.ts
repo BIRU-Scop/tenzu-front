@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { MatButton } from "@angular/material/button";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
-import { UserService, UserStore } from "@tenzu/data/user";
+import { UserService, UserStore } from "@tenzu/repository/user";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError } from "@angular/material/form-field";
 import { Router } from "@angular/router";

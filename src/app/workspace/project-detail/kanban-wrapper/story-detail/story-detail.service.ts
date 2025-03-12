@@ -20,57 +20,58 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { ProjectService } from "@tenzu/data/project";
-import { StoryUpdate } from "@tenzu/data/story";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { StoryUpdate } from "@tenzu/repository/story";
 import { Router } from "@angular/router";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
-import { StoryService } from "@tenzu/data/story/story.service";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
+import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class StoryDetailService {
-  projectService = inject(ProjectService);
-  workflowService = inject(WorkflowService);
-  storyService = inject(StoryService);
+  projectService = inject(ProjectRepositoryService);
+  workflowService = inject(WorkflowRepositoryService);
+  storyService = inject(StoryRepositoryService);
   router = inject(Router);
 
   async patchSelectedStory(data: Partial<StoryUpdate>) {
-    const project = this.projectService.selectedEntity();
-    const story = this.storyService.selectedEntity();
+    const project = this.projectService.entityDetail();
+    const story = this.storyService.entityDetail();
     if (project && story) {
-      return this.storyService.updateSelected(
+      return this.storyService.patchRequest(
         {
           ...story,
           ...data,
           version: story.version,
           ref: story.ref,
         },
-        project.id,
+        { projectId: project.id, ref: story.ref },
       );
     }
     throw new Error("No story to update");
   }
+
   async changeWorkflowSelectedStory(data: Partial<StoryUpdate>) {
-    const project = this.projectService.selectedEntity();
-    const story = this.storyService.selectedEntity();
+    const project = this.projectService.entityDetail();
+    const story = this.storyService.entityDetail();
     const req = {
       ...story,
       ...data,
     };
-    if (project) {
+    if (project && story) {
       delete req.statusId;
-      return this.storyService.updateSelected({ ...req }, project.id);
+      return this.storyService.patchRequest({ ...req }, { projectId: project.id, ref: story.ref });
     }
     return undefined;
   }
 
   async deleteSelectedStory() {
-    const project = this.projectService.selectedEntity();
-    const story = this.storyService.selectedEntity();
-    const workflow = this.workflowService.selectedEntity();
+    const project = this.projectService.entityDetail();
+    const story = this.storyService.entityDetail();
+    const workflow = this.workflowService.entityDetail();
     if (project && story && workflow) {
-      await this.storyService.deleteSelected(project!.id, story!.ref);
+      await this.storyService.deleteRequest(story, { projectId: project.id, ref: story.ref });
       await this.router.navigateByUrl(
         `/workspace/${project?.workspaceId}/project/${project.id}/kanban/${workflow.slug}`,
       );
@@ -78,24 +79,24 @@ export class StoryDetailService {
   }
 
   public async addAttachment(file: File) {
-    const project = this.projectService.selectedEntity();
-    const story = this.storyService.selectedEntity();
+    const project = this.projectService.entityDetail();
+    const story = this.storyService.entityDetail();
     if (project && story) {
       await this.storyService.createAttachment(project.id, story.ref, file);
     }
   }
 
   public async deleteAttachment(id: string) {
-    const project = this.projectService.selectedEntity();
-    const story = this.storyService.selectedEntity();
+    const project = this.projectService.entityDetail();
+    const story = this.storyService.entityDetail();
     if (project && story) {
       await this.storyService.deleteAttachment(project.id, story.ref, id);
     }
   }
 
   public getStoryAttachmentUrlBack(attachmentId: string) {
-    const project = this.projectService.selectedEntity();
-    const story = this.storyService.selectedEntity();
+    const project = this.projectService.entityDetail();
+    const story = this.storyService.entityDetail();
     if (project && story) {
       return this.storyService.getStoryAttachmentUrl(project.id, story.ref, attachmentId);
     } else {

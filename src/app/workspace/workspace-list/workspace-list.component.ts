@@ -30,8 +30,8 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
-import { ProjectService } from "@tenzu/data/project";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
 import { MatIcon } from "@angular/material/icon";
@@ -42,7 +42,7 @@ import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skele
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
-import { Workspace } from "@tenzu/data/workspace";
+import { Workspace } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { WorkspaceUtilsService } from "../workspace-utils.service";
 
@@ -72,7 +72,7 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
           {{ t("workspace") }}
         </button>
       </div>
-      @let workpaces = workspaceService.entities();
+      @let workpaces = workspaceService.entitiesSummary();
       @if (workpaces.length > 0) {
         <ul [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-8">
           @for (workspace of workpaces; track workspace.id) {
@@ -151,15 +151,15 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
-  readonly workspaceService = inject(WorkspaceService);
-  readonly projectService = inject(ProjectService);
+  readonly workspaceService = inject(WorkspaceRepositoryService);
+  readonly projectService = inject(ProjectRepositoryService);
   readonly workspaceUtilsService = inject(WorkspaceUtilsService);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
 
   private init = async () => {
-    this.workspaceService.list().then((workspaces) => {
+    this.workspaceService.listRequest().then((workspaces) => {
       if (workspaces.length === 0) {
         this.openPlaceholderDialog();
       }
@@ -167,7 +167,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   };
 
   ngOnDestroy(): void {
-    this.workspaceService.resetEntities();
+    this.workspaceService.resetEntitySummaryList();
   }
 
   private openPlaceholderDialog = (event?: MouseEvent) => {
@@ -202,7 +202,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     };
     const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
       ...matDialogConfig,
-      disableClose: this.workspaceService.entities().length === 0,
+      disableClose: this.workspaceService.entitiesSummary().length === 0,
       relativeXPosition: "left",
       id: "create-workspace",
       data: data,
@@ -211,11 +211,11 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
         const color = Math.floor(Math.random() * (8 - 1) + 1);
-        await this.workspaceService.create({
+        await this.workspaceService.createRequest({
           name,
           color,
         });
-      } else if (this.workspaceService.entities().length === 0) {
+      } else if (this.workspaceService.entitiesSummary().length === 0) {
         this.openPlaceholderDialog(event);
       }
     });

@@ -27,10 +27,10 @@ import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { Router } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
@@ -49,7 +49,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
     MatIcon,
   ],
   template: `
-    @let workspace = workspaceService.selectedEntity();
+    @let workspace = workspaceService.entityDetail();
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'workspace.settings'">
       <h1 class="mat-headline-medium">{{ t("title") }}</h1>
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-2">
@@ -105,7 +105,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceSettingsComponent {
-  workspaceService = inject(WorkspaceService);
+  workspaceService = inject(WorkspaceRepositoryService);
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
@@ -116,14 +116,21 @@ export default class WorkspaceSettingsComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
   async onSubmit() {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
-      await this.workspaceService.updateSelected(this.form.getRawValue());
+    const workspace = this.workspaceService.entityDetail();
+    if (workspace) {
+      this.form.reset(this.form.value);
+      if (this.form.valid) {
+        await this.workspaceService.patchRequest(this.form.getRawValue(), { workspaceId: workspace.id });
+      }
     }
   }
 
   async onDelete() {
-    const deletedWorkspace = await this.workspaceService.deleteSelected();
+    const workspace = this.workspaceService.entityDetail();
+    if (!workspace) {
+      return;
+    }
+    const deletedWorkspace = await this.workspaceService.deleteRequest(workspace, { workspaceId: workspace.id });
     if (deletedWorkspace) {
       await this.router.navigateByUrl("/");
       this.notificationService.error({
@@ -135,7 +142,7 @@ export default class WorkspaceSettingsComponent {
   }
 
   reset() {
-    const selectedEntity = this.workspaceService.selectedEntity();
+    const selectedEntity = this.workspaceService.entityDetail();
     if (selectedEntity) {
       this.form.reset({ ...selectedEntity });
     }

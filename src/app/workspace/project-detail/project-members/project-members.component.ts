@@ -20,19 +20,20 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectService } from "@tenzu/data/project";
-import { MembershipService } from "@tenzu/data/membership";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatList } from "@angular/material/list";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
   selector: "app-project-members",
@@ -52,9 +53,10 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
             <mat-icon class="icon-sm mr-1">group</mat-icon>
             {{ t("members_tab") }}
           </ng-template>
-          @if (membershipService.projectMembershipEntities().length > 0) {
+          @let projectMemberships = projectMembershipService.entities();
+          @if (projectMemberships.length > 0) {
             <mat-list>
-              @for (member of membershipService.projectMembershipEntities(); track member.user.username) {
+              @for (member of projectMemberships; track member.user.username) {
                 <app-user-card
                   [fullName]="member.user.fullName"
                   [username]="member.user.username"
@@ -69,9 +71,10 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
             <mat-icon class="icon-sm mr-1">schedule</mat-icon>
             {{ t("pending_tab") }}
           </ng-template>
-          @if (membershipService.projectInvitationsEntities().length > 0) {
-            <mat-list [@newItemsFlyIn]="membershipService.projectInvitationsEntities().length">
-              @for (pendingMember of membershipService.projectInvitationsEntities(); track pendingMember.id) {
+          @let projectInvitations = projectInvitationService.entities();
+          @if (projectInvitations.length > 0) {
+            <mat-list [@newItemsFlyIn]="projectInvitations.length">
+              @for (pendingMember of projectInvitations; track pendingMember.id) {
                 <app-user-card [fullName]="pendingMember.email!"></app-user-card>
               }
             </mat-list>
@@ -103,8 +106,9 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 export class ProjectMembersComponent {
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  projectService = inject(ProjectService);
-  membershipService = inject(MembershipService);
+  projectService = inject(ProjectRepositoryService);
+  projectInvitationService = inject(ProjectInvitationRepositoryService);
+  projectMembershipService = inject(ProjectMembershipRepositoryService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
@@ -116,6 +120,11 @@ export class ProjectMembersComponent {
       doTranslation: true,
     });
     this.breadcrumbStore.setSixthLevel(undefined);
+    this.selectedTabIndex.subscribe((value) => {
+      if (value === 1) {
+        this.projectInvitationService.listProjectInvitations(this.projectService.entityDetail()!.id).then();
+      }
+    });
   }
 
   public openCreateDialog(): void {
@@ -128,15 +137,19 @@ export class ProjectMembersComponent {
           " " +
           this.translocoService.translateObject("component.invite_dialog.to") +
           " " +
-          this.projectService.selectedEntity()?.name,
+          this.projectService.entityDetail()?.name,
         description: this.translocoService.translateObject("project.members.description_modal"),
       },
     });
-    dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) {
-        await this.membershipService.sendProjectInvitations(this.projectService.selectedEntity()!.id, result);
-        await this.membershipService.listProjectInvitations(this.projectService.selectedEntity()!.id);
-        this.selectedTabIndex.set(1);
+    dialogRef.afterClosed().subscribe(async (emails: string[]) => {
+      if (emails) {
+        await this.projectInvitationService.createBulkInvitations(
+          this.projectService.entityDetail()!.id,
+          emails.map((email) => ({ email: email, roleSlug: "admin" })),
+        );
+        if (this.selectedTabIndex() !== 1) {
+          this.selectedTabIndex.set(1);
+        }
       }
     });
   }

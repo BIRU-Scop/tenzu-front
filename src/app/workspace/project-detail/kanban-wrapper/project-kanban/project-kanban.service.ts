@@ -20,14 +20,14 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { StoryCreate } from "@tenzu/data/story";
-import { Status } from "@tenzu/data/status";
+import { StoryCreate } from "@tenzu/repository/story";
+import { Status } from "@tenzu/repository/status";
 import { Router } from "@angular/router";
-import { Project, ProjectService } from "@tenzu/data/project";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
-import { StoryService } from "@tenzu/data/story/story.service";
-import { WorkspaceService } from "@tenzu/data/workspace";
-import { Workflow } from "@tenzu/data/workflow";
+import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
+import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { Workflow } from "@tenzu/repository/workflow";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -36,24 +36,24 @@ import { Workflow } from "@tenzu/data/workflow";
   providedIn: "root",
 })
 export class ProjectKanbanService {
-  workspaceService = inject(WorkspaceService);
-  projectService = inject(ProjectService);
-  workflowService = inject(WorkflowService);
-  storyService = inject(StoryService);
+  workspaceService = inject(WorkspaceRepositoryService);
+  projectService = inject(ProjectRepositoryService);
+  workflowService = inject(WorkflowRepositoryService);
+  storyService = inject(StoryRepositoryService);
   router = inject(Router);
 
   public async createStatus(status: Pick<Status, "name" | "color">) {
-    const selectedProject = this.projectService.selectedEntity();
+    const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
       await this.workflowService.createStatus(selectedProject.id, status);
     }
   }
 
   public async deleteStatus(statusId: string, moveToStatus?: string) {
-    const selectedProject = this.projectService.selectedEntity();
+    const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
       await this.workflowService.deleteStatus(selectedProject.id, statusId, moveToStatus);
-      const newStatus = this.workflowService.selectedEntity()?.statuses.find((status) => status.id === moveToStatus);
+      const newStatus = this.workflowService.entityDetail()?.statuses.find((status) => status.id === moveToStatus);
       if (newStatus) {
         this.storyService.deleteStatusGroup(statusId, newStatus);
       }
@@ -61,17 +61,20 @@ export class ProjectKanbanService {
   }
 
   public async editStatus(status: Pick<Status, "name" | "id">) {
-    const selectedProject = this.projectService.selectedEntity();
+    const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
       await this.workflowService.editStatus(selectedProject.id, status);
     }
   }
 
   public async createStory(story: StoryCreate) {
-    const selectedProject = this.projectService.selectedEntity();
-    const selectedWorkflow = this.workflowService.selectedEntity();
+    const selectedProject = this.projectService.entityDetail();
+    const selectedWorkflow = this.workflowService.entityDetail();
     if (selectedProject && selectedWorkflow) {
-      await this.storyService.create(story, selectedProject.id, selectedWorkflow.slug);
+      await this.storyService.createRequest(story, {
+        projectId: selectedProject.id,
+        workflowSlug: selectedWorkflow.slug,
+      });
     }
   }
 
@@ -83,8 +86,11 @@ export class ProjectKanbanService {
     await this.storyService.deleteAssign(projectId, storyRef, username);
   }
 
-  async editSelectedWorkflow(patchData: Partial<Omit<Workflow, "projectId" | "slug">>) {
-    const updatedWorkflow = await this.workflowService.updateSelected(patchData);
+  async editSelectedWorkflow(
+    patchData: Partial<Omit<Workflow, "projectId" | "slug">>,
+    params: { projectId: string; workflowSlug: string },
+  ) {
+    const updatedWorkflow = await this.workflowService.patchRequest(patchData, params);
     if (updatedWorkflow) {
       this.projectService.editWorkflow(updatedWorkflow);
     }
@@ -98,20 +104,24 @@ export class ProjectKanbanService {
       }
     | undefined
   > {
-    const workflowToDelete = this.workflowService.selectedEntity();
-    const selectedProject = this.projectService.selectedEntity();
-    const selectedWorkflow = this.workflowService.selectedEntity();
+    const workflowToDelete = this.workflowService.entityDetail();
+    const selectedProject = this.projectService.entityDetail();
+    const selectedWorkflow = this.workflowService.entityDetail();
     if (!selectedProject || !workflowToDelete || !selectedWorkflow) {
       return undefined;
     }
-    const deletedWorkflow = await this.workflowService.deleteSelected(moveToWorkflow);
+    const deletedWorkflow = await this.workflowService.deleteRequest(
+      workflowToDelete,
+      { workflowSlug: workflowToDelete.slug, projectId: workflowToDelete.projectId },
+      moveToWorkflow ? { moveToWorkflow: moveToWorkflow } : undefined,
+    );
     if (!deletedWorkflow) {
       return undefined;
     }
-    await this.projectService.refreshSelected();
+    await this.projectService.getRequest({ projectId: selectedProject.id });
     let redirectionSlug = moveToWorkflow;
     if (!moveToWorkflow) {
-      const workflowsExceptSelected = (project: Project, selectedWorkflowSlug: Workflow["slug"]) => {
+      const workflowsExceptSelected = (project: ProjectDetail, selectedWorkflowSlug: Workflow["slug"]) => {
         return project.workflows.filter((workflow) => workflow.slug !== selectedWorkflowSlug)[0];
       };
       redirectionSlug = workflowsExceptSelected(selectedProject, selectedWorkflow.slug).slug || undefined;

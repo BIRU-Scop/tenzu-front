@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,13 +27,13 @@ import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatListOption, MatSelectionList, MatSelectionListChange } from "@angular/material/list";
 import { MatDivider } from "@angular/material/divider";
-import { ProjectMembership } from "@tenzu/data/membership";
 import { startWith, tap } from "rxjs";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { UserMinimal } from "@tenzu/data/user";
+import { UserMinimal } from "@tenzu/repository/user";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { ProjectMembership } from "@tenzu/repository/project-membership";
 
 type AssignDialogData = {
   assigned: UserMinimal[];

@@ -20,19 +20,19 @@
  */
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
-import { ProjectService } from "@tenzu/data/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
-import { Workspace } from "@tenzu/data/workspace";
+import { Workspace } from "@tenzu/repository/workspace";
 import { WorkspaceUtilsService } from "../../workspace-utils.service";
 
 @Component({
@@ -49,7 +49,7 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
-      @let workspace = workspaceService.selectedEntity();
+      @let workspace = workspaceService.entityDetail();
       @if (workspace) {
         <button
           class="primary-button"
@@ -75,7 +75,7 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
           </li>
         }
       }
-      @for (project of projectService.entities(); track project.id) {
+      @for (project of projectService.entitiesSummary(); track project.id) {
         <app-project-card
           class="basis-1/5"
           [name]="project.name"
@@ -98,12 +98,12 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
 })
 export default class WorkspaceProjectListComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
-    this.projectService.resetEntities();
+    this.projectService.resetEntitySummaryList();
   }
 
   workspaceUtilsService = inject(WorkspaceUtilsService);
-  workspaceService = inject(WorkspaceService);
-  projectService = inject(ProjectService);
+  workspaceService = inject(WorkspaceRepositoryService);
+  projectService = inject(ProjectRepositoryService);
   breadcrumbStore = inject(BreadcrumbStore);
 
   ngAfterViewInit(): void {

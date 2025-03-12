@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,22 +23,23 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
-import { AuthService } from "@tenzu/data/auth";
-import { WorkspaceInvitationInfo, WorkspaceInfraService } from "@tenzu/data/workspace";
+import { AuthService } from "@tenzu/repository/auth";
+import { WorkspaceInvitationsApiService } from "@tenzu/repository/workspace-invitations/workspace-invitation-api-service";
+import { WorkspaceInvitation } from "@tenzu/repository/workspace-invitations";
 
 export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
-  const workspaceService = inject(WorkspaceInfraService);
+  const workspaceInvitationsApiService = inject(WorkspaceInvitationsApiService);
   const router = inject(Router);
 
   const token = route.params["token"] as string;
 
-  return workspaceService.getInvitationDetail(token).pipe(
-    switchMap((invitation: WorkspaceInvitationInfo) =>
+  return workspaceInvitationsApiService.getByToken({ token }).pipe(
+    switchMap((invitation: WorkspaceInvitation) =>
       authService.isLoginOk().pipe(
         switchMap((logged) => {
           if (logged) {
-            return workspaceService.acceptInvitation(token).pipe(
+            return workspaceInvitationsApiService.acceptByToken({ token }).pipe(
               map(() => router.parseUrl(`/workspace/${invitation.workspace.id}/projects`)),
               catchError(() => of(false)), // TODO: Handle error when accepting invitation fails
             );

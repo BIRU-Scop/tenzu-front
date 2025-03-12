@@ -28,7 +28,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatDivider } from "@angular/material/divider";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
-import { SideNavStore } from "@tenzu/data/sidenav";
+import { SideNavStore } from "@tenzu/repository/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-detail/sidenav-list-workflow/sidenav-list-workflow.component";
 

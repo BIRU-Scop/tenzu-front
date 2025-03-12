@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { UpperCasePipe } from "@angular/common";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({

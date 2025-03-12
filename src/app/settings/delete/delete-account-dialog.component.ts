@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectForDelete, WorkspaceForDelete } from "@tenzu/data/user";
+import { ProjectForDelete, WorkspaceForDelete } from "@tenzu/repository/user";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";

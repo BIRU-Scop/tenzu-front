@@ -25,7 +25,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
-import { UserStore } from "@tenzu/data/user";
+import { UserStore } from "@tenzu/repository/user";
 import { MatDivider } from "@angular/material/divider";
 import { AuthFormStateStore } from "../../auth-form-state.store";
 

@@ -19,10 +19,10 @@
  *
  */
 
-import { ProjectSummary } from "@tenzu/data/project";
-import { Workflow } from "@tenzu/data/workflow";
-import { Workspace, WorkspaceProject } from "@tenzu/data/workspace";
-import { Story } from "@tenzu/data/story";
+import { ProjectSummary } from "@tenzu/repository/project";
+import { Workflow } from "@tenzu/repository/workflow";
+import { Workspace, WorkspaceProject } from "@tenzu/repository/workspace";
+import { Story } from "@tenzu/repository/story";
 
 export type UrlableProject = ProjectSummary | WorkspaceProject;
 

@@ -23,12 +23,12 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list";
 import { RouterLink, RouterLinkActive } from "@angular/router";
-import { ProjectService } from "@tenzu/data/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { SideNavStore } from "@tenzu/data/sidenav";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 import { MatIconAnchor } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
+import { SideNavStore } from "@tenzu/repository/sidenav";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 
 @Component({
   selector: "app-sidenav-list-workflow",
@@ -45,8 +45,8 @@ import { MatTooltip } from "@angular/material/tooltip";
   ],
   template: `
     <ng-container *transloco="let t">
-      @let project = projectService.selectedEntity();
-      @let workspace = workspaceService.selectedEntity();
+      @let project = projectService.entityDetail();
+      @let workspace = workspaceService.entityDetail();
       @if (project && project?.workflows && workspace) {
         @if (!sideNavStore.resized()) {
           <div class="flex flex-row items-center gap-2 px-2 py-1">
@@ -112,8 +112,8 @@ import { MatTooltip } from "@angular/material/tooltip";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavListWorkflowComponent {
-  projectService = inject(ProjectService);
-  workspaceService = inject(WorkspaceService);
+  projectService = inject(ProjectRepositoryService);
+  workspaceService = inject(WorkspaceRepositoryService);
   sideNavStore = inject(SideNavStore);
   canCreateWorkflow = this.projectService.canCreateWorkflow;
 }

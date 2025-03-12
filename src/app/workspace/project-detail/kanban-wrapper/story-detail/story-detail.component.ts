@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton, MatIconAnchor, MatIconButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -37,20 +37,17 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { MembershipStore } from "@tenzu/data/membership";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
-import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
-import { StoryService } from "@tenzu/data/story/story.service";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
-import { StoryAttachment } from "@tenzu/data/story";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { StoryAttachment } from "@tenzu/repository/story";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 
 @Component({
@@ -220,19 +217,19 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class StoryDetailComponent {
-  workflowService = inject(WorkflowService);
-  workspaceService = inject(WorkspaceService);
-  storyService = inject(StoryService);
-  membershipStore = inject(MembershipStore);
-  notificationService = inject(NotificationService);
   storyDetailService = inject(StoryDetailService);
+  workflowService = this.storyDetailService.workflowService;
+  workspaceService = inject(WorkspaceRepositoryService);
+  storyService = this.storyDetailService.storyService;
+  projectMembershipService = inject(ProjectMembershipRepositoryService);
+  notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
   fileDownloaderService = inject(FileDownloaderService);
   fb = inject(FormBuilder);
   canBeClosed = input(false);
   closed = output<void>();
-  selectedStory = this.storyService.selectedEntity;
+  selectedStory = this.storyService.entityDetail;
   editor = viewChild.required<EditorComponent>("editorContainer");
   form = this.fb.nonNullable.group({
     title: ["", Validators.required],
@@ -245,7 +242,7 @@ export default class StoryDetailComponent {
       .subscribe(async (value) => {
         this.form.setValue({ title: value?.title || "" });
         this.statusSelected.set(value.statusId);
-        if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
+        if (this.workflowService.entityDetail()?.id !== value.workflowId) {
           await this.workflowService.getBySlug(value.workflow);
         }
       });
@@ -313,7 +310,7 @@ export default class StoryDetailComponent {
 
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.selectedStory();
-    const teamMembers = this.membershipStore.projectEntities();
+    const teamMembers = this.projectMembershipService.entities();
     if (story) {
       const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
         ...matDialogConfig,
@@ -330,26 +327,6 @@ export default class StoryDetailComponent {
         this.projectKanbanService.removeAssignStory(username, story.projectId, story.ref),
       );
     }
-  }
-
-  openChooseWorkflowDialog(event: MouseEvent): void {
-    const story = this.selectedStory();
-    const dialogRef = this.relativeDialog.open(ChooseWorkflowDialogComponent, event?.target, {
-      ...matDialogConfig,
-      relativeXPosition: "right",
-      data: {
-        currentWorkflowSlug: story?.workflow.slug,
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
-      if (newWorkflowSlug !== story?.workflow.slug) {
-        const patchedStory = await this.storyDetailService.patchSelectedStory({ workflowSlug: newWorkflowSlug });
-        if (patchedStory) {
-          this.notificationService.success({ title: "notification.action.changes_saved" });
-          this.statusSelected.set(patchedStory.statusId);
-        }
-      }
-    });
   }
 
   async changeStatus() {

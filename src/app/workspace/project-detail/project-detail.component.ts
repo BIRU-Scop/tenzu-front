@@ -21,12 +21,12 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { ProjectService } from "@tenzu/data/project";
-import { SideNavStore } from "@tenzu/data/sidenav";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { SideNavStore } from "@tenzu/repository/sidenav";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 
 @Component({
   selector: "app-project-detail",
@@ -37,16 +37,15 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 })
 export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
-  workspaceService = inject(WorkspaceService);
-  projectService = inject(ProjectService);
+  workspaceService = inject(WorkspaceRepositoryService);
+  projectService = inject(ProjectRepositoryService);
   breadcrumbStore = inject(BreadcrumbStore);
   baseUrl = computed(
-    () =>
-      `/workspace/${this.workspaceService.selectedEntity()?.id}/project/${this.projectService.selectedEntity()?.id}`,
+    () => `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectService.entityDetail()?.id}`,
   );
 
   constructor() {
-    toObservable(this.projectService.selectedEntity)
+    toObservable(this.projectService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((project) => {
         this.sideNavStore.setAvatar(
@@ -98,7 +97,7 @@ export class ProjectDetailComponent {
       ]);
     });
 
-    toObservable(this.workspaceService.selectedEntity).subscribe((workspace) => {
+    toObservable(this.workspaceService.entityDetail).subscribe((workspace) => {
       if (workspace) {
         this.breadcrumbStore.setSecondLevel({
           label: workspace.name,

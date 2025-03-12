@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,14 +22,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
 
 import { NotificationsComponentService } from "./notifications-component.service";
-import { Notification } from "@tenzu/data/notifications";
+import { Notification } from "@tenzu/repository/notifications";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { UserMinimal } from "@tenzu/data/user";
+import { UserMinimal } from "@tenzu/repository/user";
 import { MatDialogContent } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";
