@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -32,6 +32,7 @@ import {
   ProjectSummary,
 } from "./project.model";
 import { map } from "rxjs/operators";
+import { User } from "@tenzu/data/user";
 
 @Injectable({
   providedIn: "root",
@@ -42,9 +43,11 @@ export class ProjectInfraService extends GenericCrudService<ProjectSummary, Proj
   override list(params: ProjectFilter = {} as ProjectFilter) {
     return super.list(params).pipe(map((result) => result as ProjectSummary[]));
   }
+
   override get(id: string) {
     return super.get(id).pipe(map((result) => result as Project));
   }
+
   override create(newProject: ProjectCreation): Observable<Project> {
     const formData = new FormData();
     formData.append("name", newProject.name);
@@ -86,7 +89,21 @@ export class ProjectInfraService extends GenericCrudService<ProjectSummary, Proj
     return this.http.get<ProjectInvitationInfo>(`${this.getUrl()}/invitations/${token}`);
   }
 
-  acceptInvitation(token: string) {
+  acceptInvitationWithToken(token: string) {
     return this.http.post<ProjectInvitationAccept>(`${this.getUrl()}/invitations/${token}/accept`, token);
+  }
+
+  acceptInvitationForCurrentUser(projectId: Project["id"]) {
+    return this.http.post<ProjectInvitationAccept>(`${this.getUrl()}/${projectId}/invitations/accept`, null);
+  }
+
+  revokeInvitationForUsernameOrMail(projectId: Project["id"], usernameOrMail: User["username"] | User["email"]) {
+    return this.http.post<void>(`${this.getUrl()}/${projectId}/invitations/revoke`, {
+      usernameOrMail: usernameOrMail,
+    });
+  }
+
+  denyInvitationForCurrentUser(projectId: Project["id"]) {
+    return this.http.post<void>(`${this.getUrl()}/${projectId}/invitations/deny`, null);
   }
 }

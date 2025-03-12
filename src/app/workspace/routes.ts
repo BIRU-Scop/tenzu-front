@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,20 +26,20 @@ import { inject } from "@angular/core";
 import { debug } from "../../libs/utils/functions/logging";
 import { WorkspaceService } from "@tenzu/data/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
-import { MembershipStore } from "@tenzu/data/membership";
+import { MembershipService } from "@tenzu/data/membership";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
   const workspaceService = inject(WorkspaceService);
-  const membershipStore = inject(MembershipStore);
+  const membershipService = inject(MembershipService);
   const router = inject(Router);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
     try {
       workspaceService.get(workspaceId).then();
-      membershipStore.listWorkspaceMembership(workspaceId).then();
-      membershipStore.listWorkspaceInvitations(workspaceId).then();
-      membershipStore.listWorkspaceGuest(workspaceId).then();
+      membershipService.listWorkspaceMembership(workspaceId).then();
+      membershipService.listWorkspaceInvitations(workspaceId).then();
+      membershipService.listWorkspaceGuest(workspaceId).then();
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -50,6 +50,7 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "end");
   return true;
 }
+
 export function projectResolver(route: ActivatedRouteSnapshot) {
   debug("projectResolver", "start");
   const projectService = inject(ProjectDetailService);

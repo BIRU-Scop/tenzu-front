@@ -27,7 +27,7 @@ import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
-import { MembershipStore } from "@tenzu/data/membership";
+import { MembershipService } from "@tenzu/data/membership";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -53,9 +53,9 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
             {{ t("members_tab") }}
           </ng-template>
           <p class="mat-body-medium text-on-surface mb-2">{{ t("members_description") }}</p>
-          @if (membershipStore.workspaceEntities().length > 0) {
+          @if (membershipService.workspaceMembershipEntities().length > 0) {
             <mat-list>
-              @for (guest of membershipStore.workspaceEntities(); track guest.user.username) {
+              @for (guest of membershipService.workspaceMembershipEntities(); track guest.user.username) {
                 <app-user-card
                   [fullName]="guest.user.fullName"
                   [username]="guest.user.username"
@@ -70,9 +70,9 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
             <mat-icon class="icon-sm mr-1">schedule</mat-icon>
             {{ t("pending_tab") }}
           </ng-template>
-          @if (membershipStore.workspaceInvitationsEntities().length > 0) {
-            <mat-list [@newItemsFlyIn]="membershipStore.workspaceInvitationsEntities().length">
-              @for (pendingMember of membershipStore.workspaceInvitationsEntities(); track pendingMember.id) {
+          @if (membershipService.workspaceInvitationsEntities().length > 0) {
+            <mat-list [@newItemsFlyIn]="membershipService.workspaceInvitationsEntities().length">
+              @for (pendingMember of membershipService.workspaceInvitationsEntities(); track pendingMember.id) {
                 <app-user-card [fullName]="pendingMember.email!"></app-user-card>
               }
             </mat-list>
@@ -86,10 +86,10 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
             <mat-icon class="icon-sm mr-1">eyeglasses</mat-icon>
             {{ t("guests_tab") }}
           </ng-template>
-          @if (membershipStore.workspaceGuestsEntities().length > 0) {
+          @if (membershipService.guestMembershipEntities().length > 0) {
             <p class="mat-body-medium text-on-surface mb-2">{{ t("guest_description") }}</p>
             <mat-list>
-              @for (member of membershipStore.workspaceGuestsEntities(); track member.user.username) {
+              @for (member of membershipService.guestMembershipEntities(); track member.user.username) {
                 <app-user-card
                   [fullName]="member.user.fullName"
                   [username]="member.user.username"
@@ -127,7 +127,7 @@ export default class WorkspacePeopleComponent {
   readonly dialog = inject(MatDialog);
   readonly workspaceService = inject(WorkspaceService);
   translocoService = inject(TranslocoService);
-  membershipStore = inject(MembershipStore);
+  membershipService = inject(MembershipService);
 
   selectedTabIndex = model(0);
 
@@ -156,7 +156,7 @@ export default class WorkspacePeopleComponent {
     dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
       const selectedWorkspace = this.workspaceService.selectedEntity();
       if (selectedWorkspace && invitationsMail.length) {
-        await this.membershipStore.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
+        await this.membershipService.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
         this.selectedTabIndex.set(1);
       }
     });

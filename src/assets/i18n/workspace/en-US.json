@@ -28,7 +28,7 @@
     "delete": {
       "delete": "Delete",
       "error": "You cannot delete a workspace that has projects in it. </br> This workspace has { totalProjects, plural, one {<strong class='number-projects'>#</strong> project} other {<strong class='number-projects'>#</strong> projects} }. Delete the { totalProjects, plural, one {project} other {projects} } first.",
-      "deleted_workspace": "The workspace {{ var }} has been deleted"
+      "deleted_workspace": "The workspace {{ var }} has been deleted."
     },
     "edit": {
       "title": "Edit workspace",

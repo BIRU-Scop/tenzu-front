@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { User, UserMinimal } from "@tenzu/data/user";
+import { UserMinimal } from "@tenzu/data/user";
 import { Project } from "@tenzu/data/project";
 import { Workspace } from "@tenzu/data/workspace";
 
@@ -29,15 +29,22 @@ export type ProjectForProjectMembership = Pick<
 >;
 
 export type WorkspaceForWorkspaceMembership = Pick<Workspace, "id" | "name" | "slug">;
+export type WorkspaceInvitationContent = Pick<Workspace, "id" | "name" | "slug">;
+export type ProjectInvitationContent = Pick<
+  Project,
+  "id" | "workspaceId" | "name" | "slug" | "anonUserCanView" | "landingPage"
+>;
+
+export type MembershipRole = {
+  name: string;
+  slug: string;
+  isAdmin: true;
+  permissions: string[];
+};
 
 export type ProjectMembership = {
   user: UserMinimal;
-  role: {
-    name: string;
-    slug: string;
-    isAdmin: true;
-    permissions: [string];
-  };
+  role: MembershipRole;
   project: ProjectForProjectMembership;
 };
 
@@ -47,15 +54,42 @@ export type WorkspaceMembership = {
   projects: ProjectForProjectMembership[];
 };
 
-export interface Invitation {
+export type ProjectInvitationDetail = {
   id: string;
-  user?: User;
+  project: ProjectInvitationContent;
+  user?: UserMinimal;
   email?: string;
-}
+  role?: MembershipRole;
+  workspaceId?: Workspace["id"];
+};
 
-export interface InvitationsResponse {
+export type WorkspaceInvitationDetail = {
+  id: string;
+  workspace: WorkspaceInvitationContent;
+  user?: UserMinimal;
+  email?: string;
+};
+
+export type InvitationBase = {
+  id: string;
+  user: UserMinimal;
+  email: string;
+};
+
+export type ProjectInvitation = InvitationBase & {
+  role: MembershipRole;
+};
+
+export type WorkspaceInvitation = InvitationBase;
+
+export type CreateWorkspaceInvitationResponse = {
   already_members: number;
-  invitations: Invitation[];
-}
+  invitations: WorkspaceInvitation[];
+};
+
+export type CreateProjectInvitationResponse = {
+  already_members: number;
+  invitations: ProjectInvitation[];
+};
 
 export type WorkspaceGuest = Omit<WorkspaceMembership, "role">;

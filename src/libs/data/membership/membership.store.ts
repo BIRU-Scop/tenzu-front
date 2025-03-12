@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,140 +29,132 @@ import {
   setEntity,
   withEntities,
 } from "@ngrx/signals/entities";
-import { inject } from "@angular/core";
-import { lastValueFrom } from "rxjs";
-import { setLoadingBegin, setLoadingEnd, withLoadingStatus } from "../../utils/store/store-features";
+import { withLoadingStatus } from "../../utils/store/store-features";
 import {
   WorkspaceGuest,
   ProjectMembership,
   WorkspaceMembership,
-  Invitation,
+  ProjectInvitationDetail,
+  WorkspaceInvitationDetail,
 } from "@tenzu/data/membership/membership.model";
-import { MembershipService } from "@tenzu/data/membership/membership.service";
 
 const selectIdProjectMembership: SelectEntityId<ProjectMembership> = (membership) => membership.user.username;
-const selectIdProjectInvitations: SelectEntityId<Invitation> = (membership) => membership.id;
+const selectIdProjectInvitations: SelectEntityId<ProjectInvitationDetail> = (membership) => membership.id;
 const selectIdWorkspaceMembership: SelectEntityId<WorkspaceMembership> = (membership) => membership.user.username;
 const selectIdWorkspaceGuests: SelectEntityId<WorkspaceGuest> = (membership) => membership.user.username;
-const selectIdWorkspaceInvitations: SelectEntityId<Invitation> = (membership) => membership.id;
+const selectIdWorkspaceInvitations: SelectEntityId<WorkspaceInvitationDetail> = (membership) => membership.id;
+
+export enum MembershipStoreCollections {
+  PROJECT = "project",
+  PROJECT_INVITATIONS = "projectInvitations",
+  WORKSPACE = "workspace",
+  WORKSPACE_GUESTS = "workspaceGuests",
+  WORKSPACE_INVITATIONS = "workspaceInvitations",
+}
 
 export const MembershipStore = signalStore(
   { providedIn: "root" },
-  withEntities({ entity: type<ProjectMembership>(), collection: "project" }),
-  withEntities({ entity: type<Invitation>(), collection: "projectInvitations" }),
-  withEntities({ entity: type<WorkspaceMembership>(), collection: "workspace" }),
-  withEntities({ entity: type<WorkspaceGuest>(), collection: "workspaceGuests" }),
-  withEntities({ entity: type<Invitation>(), collection: "workspaceInvitations" }),
+  withEntities({ entity: type<ProjectMembership>(), collection: MembershipStoreCollections.PROJECT }),
+  withEntities({ entity: type<WorkspaceMembership>(), collection: MembershipStoreCollections.WORKSPACE }),
+  withEntities({ entity: type<WorkspaceGuest>(), collection: MembershipStoreCollections.WORKSPACE_GUESTS }),
+  withEntities({ entity: type<ProjectInvitationDetail>(), collection: MembershipStoreCollections.PROJECT_INVITATIONS }),
+  withEntities({
+    entity: type<WorkspaceInvitationDetail>(),
+    collection: MembershipStoreCollections.WORKSPACE_INVITATIONS,
+  }),
 
   withLoadingStatus(),
-  withMethods((store, membershipService = inject(MembershipService)) => ({
-    async listProjectMembership(projectId: string) {
-      patchState(store, setLoadingBegin());
-      const projectMemberships = await lastValueFrom(membershipService.listProjectMembership(projectId));
-      patchState(store, setLoadingEnd());
+  withMethods((store) => ({
+    async listProjectMembership(projectMemberships: ProjectMembership[]) {
       patchState(
         store,
-        setAllEntities(projectMemberships, { collection: "project", selectId: selectIdProjectMembership }),
+        setAllEntities(projectMemberships, {
+          collection: MembershipStoreCollections.PROJECT,
+          selectId: selectIdProjectMembership,
+        }),
       );
       return projectMemberships;
     },
-    async listProjectInvitations(projectId: string) {
-      patchState(store, setLoadingBegin());
-      const projectInvitations = await lastValueFrom(membershipService.listProjectInvitations(projectId));
-      patchState(store, setLoadingEnd());
+    async listProjectInvitations(projectInvitations: ProjectInvitationDetail[]) {
       patchState(
         store,
-        setAllEntities(projectInvitations, { collection: "projectInvitations", selectId: selectIdProjectInvitations }),
+        setAllEntities(projectInvitations, {
+          collection: MembershipStoreCollections.PROJECT_INVITATIONS,
+          selectId: selectIdProjectInvitations,
+        }),
       );
       return projectInvitations;
     },
-    async listWorkspaceMembership(workspaceId: string) {
-      patchState(store, setLoadingBegin());
-      const workspaceMemberships = await lastValueFrom(membershipService.listWorkspaceMembership(workspaceId));
-      patchState(store, setLoadingEnd());
+    async listWorkspaceMembership(workspaceMemberships: WorkspaceMembership[]) {
       patchState(
         store,
-        setAllEntities(workspaceMemberships, { collection: "workspace", selectId: selectIdWorkspaceMembership }),
+        setAllEntities(workspaceMemberships, {
+          collection: MembershipStoreCollections.WORKSPACE,
+          selectId: selectIdWorkspaceMembership,
+        }),
       );
       return workspaceMemberships;
     },
-    async listWorkspaceGuest(workspaceId: string) {
-      patchState(store, setLoadingBegin());
-      const workspaceGuests = await lastValueFrom(membershipService.listWorkspaceGuest(workspaceId));
-      patchState(store, setLoadingEnd());
+    async listWorkspaceGuest(workspaceGuests: WorkspaceGuest[]) {
       patchState(
         store,
-        setAllEntities(workspaceGuests, { collection: "workspaceGuests", selectId: selectIdWorkspaceGuests }),
+        setAllEntities(workspaceGuests, {
+          collection: MembershipStoreCollections.WORKSPACE_GUESTS,
+          selectId: selectIdWorkspaceGuests,
+        }),
       );
       return workspaceGuests;
     },
-    async listWorkspaceInvitations(workspaceId: string) {
-      patchState(store, setLoadingBegin());
-      const workspaceInvitations = await lastValueFrom(membershipService.listWorkspaceInvitations(workspaceId));
-      patchState(store, setLoadingEnd());
+    async listWorkspaceInvitations(workspaceInvitations: WorkspaceInvitationDetail[]) {
       patchState(
         store,
         setAllEntities(workspaceInvitations, {
-          collection: "workspaceInvitations",
+          collection: MembershipStoreCollections.WORKSPACE_INVITATIONS,
           selectId: selectIdWorkspaceInvitations,
         }),
       );
       return workspaceInvitations;
     },
-    async patchProjectMembership(projectId: string, username: string, patchValue: Partial<ProjectMembership>) {
-      patchState(store, setLoadingBegin());
-      const projectMembership = await lastValueFrom(
-        membershipService.patchProjectMembership(projectId, username, patchValue),
-      );
-      patchState(store, setLoadingEnd());
-      setEntity(projectMembership, { collection: "project", selectId: selectIdProjectMembership });
+    async patchProjectMembership(projectMembership: ProjectMembership) {
+      setEntity(projectMembership, {
+        collection: MembershipStoreCollections.PROJECT,
+        selectId: selectIdProjectMembership,
+      });
       return projectMembership;
     },
-    async deleteProjectMembership(projectId: string, username: string) {
-      patchState(store, setLoadingBegin());
-      await lastValueFrom(membershipService.deleteProjectMembership(projectId, username));
-      patchState(store, setLoadingEnd());
-      removeEntity(projectId, { collection: "project" });
+    async deleteProjectMembership(username: string) {
+      removeEntity(username, { collection: MembershipStoreCollections.PROJECT });
     },
-    async deleteWorkspaceMembership(workspaceId: string, username: string) {
-      patchState(store, setLoadingBegin());
-      await lastValueFrom(membershipService.deleteWorkspaceMembership(workspaceId, username));
-      patchState(store, setLoadingEnd());
-      removeEntity(workspaceId, { collection: "workspace" });
-      removeEntity(workspaceId, { collection: "guest" });
+    async deleteWorkspaceMembership(username: string) {
+      removeEntity(username, { collection: MembershipStoreCollections.WORKSPACE });
+      removeEntity(username, { collection: MembershipStoreCollections.WORKSPACE_GUESTS });
     },
 
-    async sendWorkspaceInvitations(workspaceId: string, invitationsMail: string[]) {
-      const newWorkspaceInvitations = await lastValueFrom(
-        membershipService.sendWorkspaceInvitations(workspaceId, invitationsMail),
-      );
+    async setWorkspaceInvitations(invitations: WorkspaceInvitationDetail[]) {
       patchState(
         store,
-        setEntities(newWorkspaceInvitations.invitations, {
-          collection: "workspaceInvitations",
+        setEntities(invitations, {
+          collection: MembershipStoreCollections.WORKSPACE_INVITATIONS,
           selectId: selectIdWorkspaceInvitations,
         }),
       );
     },
 
-    async sendProjectInvitations(projectId: string, invitationsMail: string[]) {
-      const newProjectInvitations = await lastValueFrom(
-        membershipService.sendProjectInvitations(projectId, invitationsMail),
-      );
+    async setProjectInvitations(invitations: ProjectInvitationDetail[]) {
       patchState(
         store,
-        setEntities(newProjectInvitations.invitations, {
-          collection: "projectInvitations",
+        setEntities(invitations, {
+          collection: MembershipStoreCollections.PROJECT_INVITATIONS,
           selectId: selectIdProjectInvitations,
         }),
       );
     },
     reset() {
-      patchState(store, removeAllEntities({ collection: "workspaceInvitations" }));
-      patchState(store, removeAllEntities({ collection: "projectInvitations" }));
-      patchState(store, removeAllEntities({ collection: "project" }));
-      patchState(store, removeAllEntities({ collection: "workspace" }));
-      patchState(store, removeAllEntities({ collection: "workspaceGuests" }));
+      patchState(store, removeAllEntities({ collection: MembershipStoreCollections.WORKSPACE_INVITATIONS }));
+      patchState(store, removeAllEntities({ collection: MembershipStoreCollections.PROJECT_INVITATIONS }));
+      patchState(store, removeAllEntities({ collection: MembershipStoreCollections.PROJECT }));
+      patchState(store, removeAllEntities({ collection: MembershipStoreCollections.WORKSPACE }));
+      patchState(store, removeAllEntities({ collection: MembershipStoreCollections.WORKSPACE_GUESTS }));
     },
   })),
 );

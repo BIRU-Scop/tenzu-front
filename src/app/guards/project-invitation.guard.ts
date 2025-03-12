@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -41,7 +41,7 @@ export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnaps
       authService.isLoginOk().pipe(
         switchMap((logged) => {
           if (logged) {
-            return projectService.acceptInvitation(token).pipe(
+            return projectService.acceptInvitationWithToken(token).pipe(
               map((invitAccept) =>
                 router.parseUrl(`/workspace/${invitAccept.workspaceId}/project/${invitAccept.project.id}/kanban/main`),
               ),

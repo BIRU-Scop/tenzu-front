@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { MembershipStore } from "@tenzu/data/membership";
+import { MembershipService } from "@tenzu/data/membership";
 import { ActivatedRoute, Router } from "@angular/router";
 import { WsService } from "@tenzu/utils/services/ws";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -33,7 +33,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 })
 export class ProjectDetailService {
   workspaceService = inject(WorkspaceService);
-  membershipStore = inject(MembershipStore);
+  membershipService = inject(MembershipService);
   wsService = inject(WsService);
   projectService = inject(ProjectService);
   route = inject(ActivatedRoute);
@@ -41,14 +41,16 @@ export class ProjectDetailService {
 
   loadProject(projectId: string) {
     this.projectService.get(projectId).then();
-    this.membershipStore.listProjectMembership(projectId).then();
-    this.membershipStore.listProjectInvitations(projectId).then();
+    this.membershipService.listProjectMembership(projectId).then();
+    this.membershipService.listProjectInvitations(projectId).then();
   }
+
   loadWorkspace(workspaceId: string) {
     if (this.workspaceService.selectedEntity()?.id !== workspaceId) {
       this.workspaceService.get(workspaceId).then();
     }
   }
+
   load(workspaceId: string, projectId: string) {
     debug("project", "load start");
     try {

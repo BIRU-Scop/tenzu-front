@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,12 +27,11 @@ import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-workspace-settings",
@@ -113,7 +112,7 @@ export default class WorkspaceSettingsComponent {
     name: ["", Validators.required],
   });
   router = inject(Router);
-  _snackBar = inject(MatSnackBar);
+  notificationService = inject(NotificationService);
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
   async onSubmit() {
@@ -125,15 +124,14 @@ export default class WorkspaceSettingsComponent {
 
   async onDelete() {
     const deletedWorkspace = await this.workspaceService.deleteSelected();
-
-    await this.router.navigateByUrl("/");
-    this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-      duration: 3000,
-      data: {
-        message: "workspace.settings.delete.deleted_workspace",
-        var: deletedWorkspace?.name,
-      },
-    });
+    if (deletedWorkspace) {
+      await this.router.navigateByUrl("/");
+      this.notificationService.error({
+        translocoTitle: true,
+        title: "workspace.settings.delete.deleted_workspace",
+        translocoTitleParams: { var: deletedWorkspace.name },
+      });
+    }
   }
 
   reset() {

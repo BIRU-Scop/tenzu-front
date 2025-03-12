@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,12 +21,16 @@
 
 import { Workspace } from "../workspace";
 import { Workflow } from "../workflow";
+import { UserMinimal } from "@tenzu/data/user";
+import { MembershipRole } from "@tenzu/data/membership";
 
 export interface ProjectBase {
   name: string;
   description?: string;
   color: number;
   logo?: File;
+  logoSmall?: string;
+  logoLarge?: string;
 }
 
 export type ProjectCreation = ProjectBase & {
@@ -41,8 +45,6 @@ export type ProjectSummary = ProjectBase & {
 };
 
 export type Project = ProjectSummary & {
-  logoSmall?: string;
-  logoLarge?: string;
   workspace: Pick<Workspace, "id" | "name" | "slug" | "color" | "userRole">;
   workflows: Workflow[];
   userIsAdmin: boolean;
@@ -54,17 +56,13 @@ export type Project = ProjectSummary & {
 
 export type ProjectFilter = Record<string, never>;
 
+export type ProjectAccept = Pick<Project, "id" | "workspaceId" | "name" | "slug" | "anonUserCanView" | "landingPage">;
+
 export interface ProjectInvitationAccept {
   id: string;
   workspaceId: string;
   email: string;
-  project: {
-    id: string;
-    name: string;
-    slug: string;
-    anonUserCanView: boolean;
-  };
-  user: {
-    username: string;
-  };
+  project: ProjectAccept;
+  user: UserMinimal;
+  role: MembershipRole;
 }
