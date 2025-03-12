@@ -110,7 +110,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
         switchMap(() => storyView$),
       )
       .subscribe((storyView) => {
-        this.setUpBreadcrumbByLayout(storyView);
+        this.setUpBreadcrumbForFullView(storyView);
 
         if (storyView == "kanban" && this.kanbanWrapperService.firstOpened()) {
           this.kanbanWrapperService.setFirstOpened(false);
@@ -134,14 +134,8 @@ export default class KanbanWrapperComponent implements OnDestroy {
       });
   }
 
-  setUpBreadcrumbByLayout(storyView: string): void {
-    if (storyView === "kanban" || storyView === "side-view") {
-      this.breadcrumbStore.setFifthLevel({
-        label: "workspace.general_title.kanban",
-        link: "",
-        doTranslation: true,
-      });
-    } else {
+  setUpBreadcrumbForFullView(storyView: string): void {
+    if (storyView === "fullView") {
       this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
       this.breadcrumbStore.setSixthLevel(undefined);
     }
