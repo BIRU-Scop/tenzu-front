@@ -31,6 +31,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { switchMap } from "rxjs/operators";
 import { MatDrawer, MatDrawerContainer } from "@angular/material/sidenav";
+import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 
 @Component({
   selector: "app-story-detail-dialog",
@@ -99,6 +100,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
   kanbanWrapperService = inject(KanbanWrapperService);
   workflowService = inject(WorkflowService);
   activatedRoute = inject(ActivatedRoute);
+  breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
     const storyView$ = toObservable(this.kanbanWrapperService.storyView);
@@ -108,6 +110,8 @@ export default class KanbanWrapperComponent implements OnDestroy {
         switchMap(() => storyView$),
       )
       .subscribe((storyView) => {
+        this.setUpBreadcrumbByLayout(storyView);
+
         if (storyView == "kanban" && this.kanbanWrapperService.firstOpened()) {
           this.kanbanWrapperService.setFirstOpened(false);
           const dialogRef = this.dialog.open(StoryDetailDialogComponent, {
@@ -129,6 +133,20 @@ export default class KanbanWrapperComponent implements OnDestroy {
         }
       });
   }
+
+  setUpBreadcrumbByLayout(storyView: string): void {
+    if (storyView === "kanban" || storyView === "side-view") {
+      this.breadcrumbStore.setFifthLevel({
+        label: "workspace.general_title.kanban",
+        link: "",
+        doTranslation: true,
+      });
+    } else {
+      this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
+      this.breadcrumbStore.setSixthLevel(undefined);
+    }
+  }
+
   navigateToKanban(): void {
     this.kanbanWrapperService.storyService.resetSelectedEntity();
     this.router
