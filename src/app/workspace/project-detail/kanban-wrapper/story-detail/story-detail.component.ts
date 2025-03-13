@@ -295,8 +295,8 @@ export default class StoryDetailComponent {
   }
 
   async onDelete() {
-    this.closed.emit();
     await this.storyDetailService.deleteSelectedStory();
+    this.closed.emit();
   }
 
   openAssignStoryDialog(event: MouseEvent): void {
