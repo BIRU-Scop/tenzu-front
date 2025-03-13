@@ -41,7 +41,6 @@ import { MembershipStore } from "@tenzu/data/membership";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -229,7 +228,6 @@ export default class StoryDetailComponent {
   workspaceService = inject(WorkspaceService);
   storyService = inject(StoryService);
   membershipStore = inject(MembershipStore);
-  breadcrumbStore = inject(BreadcrumbStore);
   notificationService = inject(NotificationService);
   storyDetailService = inject(StoryDetailService);
   projectKanbanService = inject(ProjectKanbanService);
@@ -254,8 +252,6 @@ export default class StoryDetailComponent {
           await this.workflowService.getBySlug(value.workflow);
         }
       });
-    this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
-    this.breadcrumbStore.setSixthLevel(undefined);
   }
 
   assigned = computed(() => this.selectedStory()?.assignees || []);
