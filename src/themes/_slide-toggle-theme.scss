@@ -50,5 +50,9 @@ body {
     selected-focus-state-layer-color: var(--mat-sys-primary-container),
     selected-hover-state-layer-color: var(--mat-sys-primary-container),
     selected-pressed-state-layer-color: var(--mat-sys-primary-container),
+    track-height: 28px,
+    with-icon-handle-size: 22px,
+    selected-with-icon-handle-horizontal-margin: 0 27px,
+    label-text-size: 12px,
   ));
 }
