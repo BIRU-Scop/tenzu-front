@@ -160,7 +160,7 @@ export class NotificationUnitComponent {
   imports: [NotificationUnitComponent, MatDialogContent, MatDivider, TranslocoDirective, MatSlideToggle],
   template: `
     <mat-dialog-content *transloco="let t">
-      <div class="flex flex-row gap-4 items-baseline">
+      <div class="flex flex-row justify-between items-end !min-w-[450px] pb-4">
         <p class="mat-title-medium">
           {{ t("notifications.title") }}
         </p>
