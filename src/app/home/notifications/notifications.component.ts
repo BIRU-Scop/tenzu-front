@@ -42,7 +42,7 @@ import { MatDivider } from "@angular/material/divider";
     <div
       tabindex="1"
       (keyup)="read.emit()"
-      class="flex flex-row gap-2 px-1 py-1.5 rounded cursor-pointer hover:bg-secondary-container"
+      class="flex flex-row items-center gap-2 px-1 py-1.5 rounded cursor-pointer hover:bg-secondary-container"
       *transloco="let t"
       (click)="read.emit()"
       [class.opacity-60]="!!notif.readAt"
@@ -55,7 +55,7 @@ import { MatDivider } from "@angular/material/divider";
         [rounded]="true"
       ></app-avatar>
       <div>
-        <p class="text-on-surface" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
+        <p class="text-on-surface-variant" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
         @if (context.link) {
           <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
             {{ notificationsComponentService.getStoryName(notif) }}
