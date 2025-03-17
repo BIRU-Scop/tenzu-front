@@ -160,7 +160,7 @@ export class NotificationUnitComponent {
   imports: [NotificationUnitComponent, MatDialogContent, MatDivider, TranslocoDirective, MatSlideToggle],
   template: `
     <mat-dialog-content *transloco="let t">
-      <div class="flex flex-row justify-between items-end !min-w-[450px] pb-4">
+      <div class="flex flex-row justify-between items-end !min-w-[450px] pb-2.5">
         <p class="mat-title-medium">
           {{ t("notifications.title") }}
         </p>
@@ -170,6 +170,8 @@ export class NotificationUnitComponent {
           }}</mat-slide-toggle>
         </div>
       </div>
+
+      <mat-divider></mat-divider>
 
       <div class="flex flex-col py-1.5">
         @for (notification of notifications(); track notification.id) {

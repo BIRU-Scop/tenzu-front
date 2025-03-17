@@ -22,6 +22,9 @@
 @use '@angular/material' as mat;
 
 body {
+  .mdc-switch {
+    width: 40px;
+  }
   .mdc-switch__track {
     box-shadow: 0 0 3px var(--mat-sys-primary);;
   }
@@ -50,9 +53,12 @@ body {
     selected-focus-state-layer-color: var(--mat-sys-primary-container),
     selected-hover-state-layer-color: var(--mat-sys-primary-container),
     selected-pressed-state-layer-color: var(--mat-sys-primary-container),
-    track-height: 28px,
-    with-icon-handle-size: 22px,
-    selected-with-icon-handle-horizontal-margin: 0 27px,
+    track-height: 22px,
+    with-icon-handle-size: 16px,
+    selected-with-icon-handle-horizontal-margin: 0 21px,
     label-text-size: 12px,
+    label-text-color: var(--mat-sys-on-surface-variant),
+    selected-icon-size: 14px,
+    unselected-icon-size: 14px,
   ));
 }
