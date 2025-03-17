@@ -82,6 +82,10 @@ form .mat-mdc-form-field-error {
   color: var(--mat-sys-on-error-container);
 }
 
+.mat-mdc-slide-toggle > .mat-internal-form-field > label {
+  padding-left: 8px;
+}
+
 @mixin tokens-overrides() {
   @include mat.form-field-overrides((
       outlined-outline-color: var(--mat-sys-primary),
