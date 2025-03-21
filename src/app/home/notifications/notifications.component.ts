@@ -165,7 +165,7 @@ export class NotificationUnitComponent {
           {{ t("notifications.title") }}
         </p>
         <div class="flex flex-row gap-1 items-baseline">
-          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()">{{
+          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()" class="mat-label-small">{{
             t("notifications.only_unread")
           }}</mat-slide-toggle>
         </div>
