@@ -21,17 +21,16 @@
 
 @use '@angular/material' as mat;
 
-body {
-  .mdc-switch__track {
-    box-shadow: 0 0 3px var(--mat-sys-primary);;
-  }
-  .mat-mdc-slide-toggle.mat-mdc-slide-toggle-focused .mdc-switch .mdc-switch__ripple::after {
-    opacity: .50;
-  }
-  .mat-mdc-slide-toggle .mdc-label {
-    @apply whitespace-nowrap;
-  }
+.mdc-switch__track {
+  box-shadow: 0 0 3px var(--mat-sys-primary);;
 }
+.mat-mdc-slide-toggle.mat-mdc-slide-toggle-focused .mdc-switch .mdc-switch__ripple::after {
+  opacity: .50;
+}
+.mat-mdc-slide-toggle .mdc-label {
+  @apply whitespace-nowrap;
+}
+
   @mixin tokens-overrides() {
   @include mat.slide-toggle-overrides((
     track-outline-color: var(--mat-sys-primary),
