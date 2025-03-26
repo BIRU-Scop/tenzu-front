@@ -32,17 +32,18 @@ import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { UserMinimal } from "@tenzu/data/user";
 import { MatDialogContent } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
+import { MatBadge } from "@angular/material/badge";
 
 @Component({
   selector: "app-notification-unit",
   standalone: true,
-  imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe],
+  imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe, MatBadge],
   template: `
     @let notif = notification();
     <div
       tabindex="1"
       (keyup)="read.emit()"
-      class="flex flex-row items-center gap-2 px-1 py-1.5 rounded cursor-pointer hover:bg-secondary-container"
+      class="flex flex-row items-center gap-4 px-1 py-1.5 rounded cursor-pointer my-1.5 hover:bg-secondary-container"
       *transloco="let t"
       (click)="read.emit()"
       [class.opacity-60]="!!notif.readAt"
@@ -54,8 +55,14 @@ import { MatDivider } from "@angular/material/divider";
         [color]="context.user.color"
         [rounded]="true"
       ></app-avatar>
-      <div>
-        <p class="text-on-surface-variant" [innerHTML]="t(context.translateKey, context.params) | safeHtml"></p>
+      <div class="w-full mr-2">
+        <p
+          class="text-on-surface-variant"
+          matBadge="1"
+          matBadgeSize="small"
+          [matBadgeHidden]="!!notif.readAt"
+          [innerHTML]="t(context.translateKey, context.params) | safeHtml"
+        ></p>
         @if (context.link) {
           <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
             {{ notificationsComponentService.getStoryName(notif) }}
@@ -173,7 +180,7 @@ export class NotificationUnitComponent {
 
       <mat-divider></mat-divider>
 
-      <div class="flex flex-col py-1.5">
+      <div class="flex flex-col">
         @for (notification of notifications(); track notification.id) {
           <app-notification-unit [notification]="notification" (read)="read(notification)"></app-notification-unit>
           @if (!$last) {
