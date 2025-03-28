@@ -113,7 +113,7 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   }
   update(story: StoryDetail) {
     this.storyStore.update(story);
-    if (this.selectedEntity()?.ref === story?.ref) {
+    if (this.selectedEntity()?.ref === story.ref) {
       this.storyDetailStore.set(story);
     }
   }
