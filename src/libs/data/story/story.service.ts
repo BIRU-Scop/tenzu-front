@@ -113,7 +113,9 @@ export class StoryService implements ServiceStoreEntity<Story, StoryDetail> {
   }
   update(story: StoryDetail) {
     this.storyStore.update(story);
-    this.storyDetailStore.set(story);
+    if (this.selectedEntity()?.ref === story?.ref) {
+      this.storyDetailStore.set(story);
+    }
   }
   updateWorkflowStoryDetail(workflow: Workflow) {
     const story = this.storyDetailStore.item();
