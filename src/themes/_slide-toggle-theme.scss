@@ -21,17 +21,16 @@
 
 @use '@angular/material' as mat;
 
-body {
-  .mdc-switch__track {
-    box-shadow: 0 0 3px var(--mat-sys-primary);;
-  }
-  .mat-mdc-slide-toggle.mat-mdc-slide-toggle-focused .mdc-switch .mdc-switch__ripple::after {
-    opacity: .50;
-  }
-  .mat-mdc-slide-toggle .mdc-label {
-    @apply whitespace-nowrap;
-  }
+.mdc-switch__track {
+  box-shadow: 0 0 3px var(--mat-sys-primary);;
 }
+.mat-mdc-slide-toggle.mat-mdc-slide-toggle-focused .mdc-switch .mdc-switch__ripple::after {
+  opacity: .50;
+}
+.mat-mdc-slide-toggle .mdc-label {
+  @apply whitespace-nowrap;
+}
+
   @mixin tokens-overrides() {
   @include mat.slide-toggle-overrides((
     track-outline-color: var(--mat-sys-primary),
@@ -50,5 +49,13 @@ body {
     selected-focus-state-layer-color: var(--mat-sys-primary-container),
     selected-hover-state-layer-color: var(--mat-sys-primary-container),
     selected-pressed-state-layer-color: var(--mat-sys-primary-container),
+    track-width: 40px,
+    track-height: 22px,
+    with-icon-handle-size: 16px,
+    selected-with-icon-handle-horizontal-margin: 0 calc(var(--mdc-switch-track-width) - var(--mat-switch-with-icon-handle-size) - var(--mat-switch-track-outline-width)),
+    label-text-size: label-small-size,
+    label-text-color: var(--mat-sys-on-surface-variant),
+    selected-icon-size: 14px,
+    unselected-icon-size: 14px,
   ));
 }
