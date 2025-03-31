@@ -2,6 +2,7 @@
   "create_workflow": {
     "dialog": {
       "aria_label": "Create kanban",
+      "maximum_reached": "Maximum of kanbans have been reached",
       "create_workflow": "Create new kanban",
       "max-num-workflow-created-error": "Impossible to create the new kaban, you have reached the maximum number",
       "name_required": "Kanban name can’t be empty",

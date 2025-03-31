@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable } from "@angular/core";
 import { ProjectInfraService } from "./project-infra.service";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ProjectDetailStore, ProjectStore } from "./project.store";
@@ -28,6 +28,8 @@ import { Workflow, WorkflowService } from "../workflow";
 import { Project, ProjectBase, ProjectCreation, ProjectSummary } from "./project.model";
 import { ServiceStoreEntity } from "../interface";
 
+// todo temporary way to handle workflows maximum before implementing user settings
+const MAX_WORKFLOWS = 8;
 @Injectable({
   providedIn: "root",
 })
@@ -40,6 +42,13 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
   entities = this.projectStore.entities;
   selectedEntity = this.projectDetailStore.item;
   entityMap = this.projectStore.entityMap;
+
+  canCreateWorkflow = computed(() => {
+    const selectedProject = this.selectedEntity();
+    if (!selectedProject) return false;
+    const selectedProjectWorkflows = selectedProject.workflows;
+    return selectedProjectWorkflows.length < MAX_WORKFLOWS;
+  });
 
   async deleteSelected() {
     const project = this.projectDetailStore.item();

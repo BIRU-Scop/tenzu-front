@@ -27,10 +27,22 @@ import { ProjectService } from "@tenzu/data/project";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { SideNavStore } from "@tenzu/data/sidenav";
 import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { MatIconAnchor } from "@angular/material/button";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: "app-sidenav-list-workflow",
-  imports: [MatIcon, MatListItem, RouterLinkActive, RouterLink, TranslocoDirective, MatNavList, MatListItemIcon],
+  imports: [
+    MatIcon,
+    MatListItem,
+    RouterLinkActive,
+    RouterLink,
+    TranslocoDirective,
+    MatNavList,
+    MatListItemIcon,
+    MatIconAnchor,
+    MatTooltip,
+  ],
   template: `
     <ng-container *transloco="let t">
       @let project = projectService.selectedEntity();
@@ -39,21 +51,28 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
         @if (!sideNavStore.resized()) {
           <div class="flex flex-row items-center gap-2 px-2">
             <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
+            <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
+              <a
+                mat-icon-button
+                [attr.aria-label]="t('workspace.general_title.create_kanban')"
+                [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
+                [disabled]="!canCreateWorkflow()"
+              >
+                <mat-icon>add</mat-icon>
+              </a>
+            </div>
+          </div>
+        } @else {
+          <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
             <a
-              class="nav-button flex flex-row items-center justify-center rounded-full"
-              [attr.aria-label]="t('workspace.general_title.create_kanban')"
+              class="resized"
+              mat-icon-button
               [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
+              [disabled]="!canCreateWorkflow()"
             >
               <mat-icon>add</mat-icon>
             </a>
           </div>
-        } @else {
-          <a
-            class="mb-1 nav-button w-full flex flex-row items-center justify-center"
-            [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
-          >
-            <mat-icon>add</mat-icon>
-          </a>
         }
 
         <mat-nav-list attr.aria-label="{{ t('workspace.general_title.kanban') }}">
@@ -95,4 +114,5 @@ export class SidenavListWorkflowComponent {
   projectService = inject(ProjectService);
   workspaceService = inject(WorkspaceService);
   sideNavStore = inject(SideNavStore);
+  canCreateWorkflow = this.projectService.canCreateWorkflow;
 }
