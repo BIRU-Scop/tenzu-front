@@ -49,7 +49,7 @@ import { MatTooltip } from "@angular/material/tooltip";
       @let workspace = workspaceService.selectedEntity();
       @if (project && project?.workflows && workspace) {
         @if (!sideNavStore.resized()) {
-          <div class="flex flex-row items-center gap-2 px-2">
+          <div class="flex flex-row items-center gap-2 px-2 py-1">
             <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
             <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
               <a
