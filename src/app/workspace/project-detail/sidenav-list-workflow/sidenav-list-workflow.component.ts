@@ -67,6 +67,7 @@ import { MatTooltip } from "@angular/material/tooltip";
             <a
               class="resized"
               mat-icon-button
+              [attr.aria-label]="t('workspace.general_title.create_kanban')"
               [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
               [disabled]="!canCreateWorkflow()"
             >
