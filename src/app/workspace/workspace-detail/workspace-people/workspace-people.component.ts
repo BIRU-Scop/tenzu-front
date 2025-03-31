@@ -157,7 +157,7 @@ export default class WorkspacePeopleComponent {
       const selectedWorkspace = this.workspaceService.selectedEntity();
       if (selectedWorkspace && invitationsMail.length) {
         await this.membershipService.sendWorkspaceInvitations(selectedWorkspace.id, invitationsMail);
-        await this.membershipService.listWorkspaceInvitations(selectedWorkspace.id).then();
+        await this.membershipService.listWorkspaceInvitations(selectedWorkspace.id);
         this.selectedTabIndex.set(1);
       }
     });
