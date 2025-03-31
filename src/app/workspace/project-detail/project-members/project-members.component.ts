@@ -135,6 +135,7 @@ export class ProjectMembersComponent {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         await this.membershipService.sendProjectInvitations(this.projectService.selectedEntity()!.id, result);
+        await this.membershipService.listProjectInvitations(this.projectService.selectedEntity()!.id);
         this.selectedTabIndex.set(1);
       }
     });
