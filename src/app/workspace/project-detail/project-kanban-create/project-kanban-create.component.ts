@@ -28,6 +28,8 @@ import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-di
 import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectService } from "@tenzu/data/project/project.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-project-kanban-create",
@@ -42,6 +44,7 @@ export class ProjectKanbanCreateComponent {
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
   readonly activatedRoute = inject(ActivatedRoute);
+  readonly notificationService = inject(NotificationService);
 
   constructor() {
     this.openCreateDialog();
@@ -70,9 +73,24 @@ export class ProjectKanbanCreateComponent {
       const project = this.projectService.selectedEntity();
       if (name && project) {
         const projectId = project.id;
-        const workflow = await this.projectService.createWorkflow({ projectId: projectId, name: name });
-        await this.projectService.get(projectId);
-        await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
+        try {
+          const workflow = await this.projectService.createWorkflow({ projectId: projectId, name: name });
+          await this.projectService.get(projectId);
+          await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
+        } catch (e) {
+          if (e instanceof HttpErrorResponse && e.status === 400) {
+            const error = e.error?.error?.detail;
+            const message = e.error?.error?.msg;
+            if (error === "max-num-workflow-created-error") {
+              this.notificationService.error({
+                translocoTitle: true,
+                title: "workflow.create_workflow.dialog.max-num-workflow-created-error",
+              });
+            } else {
+              this.notificationService.error({ translocoTitle: true, title: message });
+            }
+          }
+        }
       } else {
         await this.router.navigate([".."], { relativeTo: this.activatedRoute });
       }

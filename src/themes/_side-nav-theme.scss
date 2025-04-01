@@ -22,6 +22,7 @@
 @use '@angular/material' as mat;
 
 $sidenav-width: 250px;
+$list-item-spacing: 12px;
 
 .mat-sidenav-container {
   .mat-sidenav {
@@ -55,6 +56,12 @@ $sidenav-width: 250px;
       }
       .mat-icon {
         color: var(--mat-sys-on-secondary);
+      }
+    }
+    .mat-mdc-icon-button{
+      &.resized {
+        padding-left: $list-item-spacing;
+        padding-right: $list-item-spacing;
       }
     }
     .mat-divider {
@@ -98,5 +105,16 @@ $sidenav-width: 250px;
     @include mat.divider-overrides((
       color: var(--mat-sys-primary)
     ));
+    @include mat.icon-button-overrides((
+      state-layer-color: transparent,
+      disabled-state-layer-color: transparent,
+      ripple-color: transparent,
+    ));
+    .mat-mdc-icon-button {
+      &:focus {
+        outline: 0px;
+        background-color: transparent;
+      }
+    }
   }
 }
