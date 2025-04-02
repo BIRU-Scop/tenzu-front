@@ -136,7 +136,7 @@ export const StoryStore = signalStore(
     reorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
       const storyRef = reorder.stories[0];
       if (storyRef) {
-        const stories = store.entities();
+        const stories = JSON.parse(JSON.stringify(store.entities())) as Story[];
         const currentIndex = stories.findIndex((story) => story.ref === storyRef);
         stories[currentIndex].statusId = reorder.status.id;
         const siblingStoryRef = reorder.reorder?.ref;
