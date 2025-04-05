@@ -57,11 +57,11 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
           @let workspaceMembershipEntities = workspaceMembershipService.entities();
           @if (workspaceMembershipEntities.length > 0) {
             <mat-list>
-              @for (guest of workspaceMembershipEntities; track guest.user.username) {
+              @for (member of workspaceMembershipEntities; track member.user.username) {
                 <app-user-card
-                  [fullName]="guest.user.fullName"
-                  [username]="guest.user.username"
-                  [color]="guest.user.color"
+                  [fullName]="member.user.fullName"
+                  [username]="member.user.username"
+                  [color]="member.user.color"
                 ></app-user-card>
               }
             </mat-list>

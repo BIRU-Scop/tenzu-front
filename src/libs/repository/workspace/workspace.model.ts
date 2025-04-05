@@ -26,7 +26,7 @@ export type WorkspaceProject = Pick<
   "id" | "name" | "slug" | "description" | "color" | "logo" | "logoSmall" | "logoLarge" | "landingPage" | "workspaceId"
 >;
 
-export type WorkspaceRole = "admin" | "member" | "guest" | "none";
+export type WorkspaceRole = "owner" | "admin" | "member" | "readonly-member";
 
 export type Workspace = {
   id: string;

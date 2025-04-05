@@ -29,7 +29,7 @@ import { User, UserEdition } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { AuthService } from "../auth";
 import { WsService } from "@tenzu/utils/services/ws";
-import { debug } from "../../utils/functions/logging";
+import { debug } from "@tenzu/utils/functions/logging";
 
 export const UserStore = signalStore(
   { providedIn: "root" },
