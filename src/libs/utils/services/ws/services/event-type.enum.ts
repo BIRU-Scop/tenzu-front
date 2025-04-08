@@ -39,7 +39,8 @@ export enum ProjectMembershipEventType {
   DeleteProjectMembership = "projectmemberships.delete",
 }
 export enum ProjectEventType {
-  ProjectDelete = "projects.delete",
+  DeleteProject = "projects.delete",
+  UpdateProject = "projects.update",
 }
 export enum WorkspaceInvitationEventType {
   CreateWorkspaceInvitation = "workspaceinvitations.create",
