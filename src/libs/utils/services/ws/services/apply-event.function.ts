@@ -35,7 +35,7 @@ import {
   WorkspaceEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
-import { ProjectService } from "@tenzu/data/project";
+import { ProjectService, Project } from "@tenzu/data/project";
 import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow";
 import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -300,7 +300,7 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
   const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
-    case ProjectEventType.ProjectDelete: {
+    case ProjectEventType.DeleteProject: {
       const content = message.event.content as {
         deletedBy: UserMinimal;
         project: string;
@@ -320,6 +320,26 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
           name: content.name,
         },
       });
+      break;
+    }
+    case ProjectEventType.UpdateProject: {
+      const content = message.event.content as { project: Project; updatedBy: UserMinimal };
+      const project = content.project;
+
+      const currentProject = projectService.selectedEntity();
+
+      const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
+
+      if (!projectIsAlreadyUpdated) {
+        await projectService.updateSelectedFromEvent(project);
+        notificationService.info({
+          title: "notification.events.update_project",
+          translocoTitleParams: {
+            username: content.updatedBy?.fullName,
+            name: content.project.name,
+          },
+        });
+      }
       break;
     }
   }
