@@ -103,6 +103,16 @@ export class ProjectService implements ServiceStoreEntity<ProjectSummary, Projec
     }
   }
 
+  async updateSelectedFromEvent(updatedProject: Project) {
+    const selectedEntity = this.projectDetailStore.item();
+    if (selectedEntity) {
+      this.projectStore.setEntity(updatedProject);
+      this.projectDetailStore.patch(updatedProject);
+      return updatedProject;
+    }
+    return undefined;
+  }
+
   async updateSelected(project: Partial<ProjectBase>) {
     const selectedEntity = this.projectDetailStore.item();
     if (selectedEntity) {
