@@ -44,7 +44,6 @@ import { MICRO_SENTRY_CONFIG, provideMicroSentry } from "@micro-sentry/angular";
 import { ConfigAppService } from "./config-app/config-app.service";
 import { BrowserSentryClientOptions } from "@micro-sentry/browser";
 import { WsService } from "@tenzu/utils/services/ws";
-import { FileSaverModule } from "ngx-filesaver";
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -76,7 +75,6 @@ export const appConfig: ApplicationConfig = {
     },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
     importProvidersFrom(
-      FileSaverModule,
       JwtModule.forRoot({
         jwtOptionsProvider: {
           provide: JWT_OPTIONS,

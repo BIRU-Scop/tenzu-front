@@ -1,21 +1,21 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { FileSaverService } from "ngx-filesaver";
+import { saveAs } from "file-saver";
 
 @Injectable({
   providedIn: "root",
 })
 export class FileDownloaderService {
   http = inject(HttpClient);
-  fileSaverService = inject(FileSaverService);
 
-  downloadFileFromUrl(url: string, fileName?: string) {
+  downloadFileFromUrl(url: string, fileName: string) {
     this.http
       .get(url, {
         responseType: "blob",
       })
-      .subscribe((res) => {
-        this.fileSaverService.save(res, fileName);
+      .subscribe((blob) => {
+        const file = new Blob([blob], { type: blob.type });
+        saveAs(file, decodeURI(fileName));
       });
   }
 
@@ -24,8 +24,8 @@ export class FileDownloaderService {
       .get(url, {
         responseType: "blob",
       })
-      .subscribe((res) => {
-        const url = URL.createObjectURL(res);
+      .subscribe((blob) => {
+        const url = URL.createObjectURL(blob);
         window.open(url, "_blank");
       });
   }
