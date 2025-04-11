@@ -50,6 +50,8 @@ import { StoryService } from "@tenzu/data/story/story.service";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceService } from "@tenzu/data/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
+import { StoryAttachment } from "@tenzu/data/story";
+import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 
 @Component({
   selector: "app-story-detail",
@@ -68,7 +70,6 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
     ConfirmDirective,
     MatTableModule,
     MatIconButton,
-    MatIconAnchor,
     AvatarListComponent,
     MatDivider,
     MatSelect,
@@ -133,22 +134,12 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
                     <ng-container matColumnDef="actions">
                       <mat-header-cell *matHeaderCellDef></mat-header-cell>
                       <mat-cell *matCellDef="let row">
-                        <a
-                          mat-icon-button
-                          target="_blank"
-                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
-                          type="button"
-                        >
+                        <button mat-icon-button (click)="previewFile(row)" type="button">
                           <mat-icon>visibility</mat-icon>
-                        </a>
-                        <a
-                          mat-icon-button
-                          download
-                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
-                          type="button"
-                        >
+                        </button>
+                        <button mat-icon-button (click)="downloadFile(row)" type="button">
                           <mat-icon>download</mat-icon>
-                        </a>
+                        </button>
                         <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
                           <mat-icon>delete</mat-icon>
                         </button>
@@ -232,6 +223,7 @@ export default class StoryDetailComponent {
   storyDetailService = inject(StoryDetailService);
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
+  fileDownloaderService = inject(FileDownloaderService);
   fb = inject(FormBuilder);
   canBeClosed = input(false);
   closed = output<void>();
@@ -255,6 +247,16 @@ export default class StoryDetailComponent {
   }
 
   assigned = computed(() => this.selectedStory()?.assignees || []);
+
+  previewFile(row: StoryAttachment) {
+    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
+    this.fileDownloaderService.previewFileFromUrl(attachmentUrl);
+  }
+
+  downloadFile(row: StoryAttachment) {
+    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
+    this.fileDownloaderService.downloadFileFromUrl(attachmentUrl, row.name);
+  }
 
   async submit() {
     const description = await this.editor().save();

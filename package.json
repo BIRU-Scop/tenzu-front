@@ -50,6 +50,8 @@
     "@micro-sentry/angular": "^7.1.1",
     "@ngrx/operators": "^19.0.0",
     "@ngrx/signals": "^19.0.0",
+    "file-saver": "^2.0.5",
+    "ngx-filesaver": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "uuid": "^11.0.3",
