@@ -100,7 +100,12 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
             </form>
             <mat-divider></mat-divider>
             <div class="flex flex-col gap-y-4">
-              <button class="primary-button w-fit" mat-flat-button type="button" (click)="fileUpload.click()">
+              <button
+                class="primary-button w-fit"
+                mat-flat-button
+                type="button"
+                (click)="resetInput(fileUpload); fileUpload.click()"
+              >
                 <mat-icon class="icon-full">attach_file</mat-icon>
                 {{ t("attachments.attach_file") }}
               </button>
@@ -266,6 +271,11 @@ export default class StoryDetailComponent {
   async cancel() {
     await this.editor().cancel();
     this.form.setValue({ title: this.selectedStory()?.title || "" });
+  }
+
+  // Necessary to avoid Chrome refusing to upload the file which has just been deleted
+  resetInput(fileUpload: HTMLInputElement) {
+    fileUpload.value = "";
   }
 
   onFileSelected(event: Event): void {
