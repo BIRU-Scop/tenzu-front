@@ -54,11 +54,11 @@ export class AvatarComponent {
 
   initials = computed(() => {
     const words = this.name().split(" ");
-    let chunks: string;
+    let chunks = "";
 
     if (words.length > 1) {
       chunks = words[0].slice(0, 1) + words[1].slice(0, 1);
-    } else {
+    } else if (words.length === 1) {
       chunks = this.name().split("").slice(0, 2).join("");
     }
     return chunks;
