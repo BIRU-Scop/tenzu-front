@@ -59,7 +59,7 @@ export class AvatarComponent {
     if (words.length > 1) {
       chunks = words[0].slice(0, 1) + words[1].slice(0, 1);
     } else if (words.length === 1) {
-      chunks = this.name().split("").slice(0, 2).join("");
+      chunks = words[0].slice(0, 2);
     }
     return chunks;
   });
