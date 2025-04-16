@@ -23,10 +23,7 @@ import { UserMinimal } from "../user";
 import { ProjectDetail, ProjectSummary } from "../project";
 import { MembershipRole } from "../base/misc.model";
 
-export type ProjectInvitationContent = Pick<
-  ProjectDetail,
-  "id" | "workspaceId" | "name" | "slug" | "anonUserCanView" | "landingPage"
->;
+export type ProjectInvitationContent = Pick<ProjectDetail, "id" | "workspaceId" | "name" | "slug" | "landingPage">;
 
 export type ProjectInvitation = {
   id: string;

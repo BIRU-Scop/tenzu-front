@@ -22,7 +22,7 @@
 import { Tokens } from "../auth";
 import { Workspace, WorkspaceProject } from "../workspace";
 
-import { ProjectBase } from "../project";
+import { ProjectSummary } from "../project";
 import { ProjectInvitation } from "../project-invitations";
 import { WorkspaceInvitation } from "../workspace-invitations";
 
@@ -53,20 +53,16 @@ export type UserEdition = {
   lang: string;
   password: string;
 };
-export type WorkspaceForDelete = Pick<Workspace, "id" | "name" | "slug" | "color"> & {
-  projects: WorkspaceProject[];
-};
 
-export type ProjectForDelete = ProjectBase & {
-  id: string;
-  logoSmall?: string;
-  logoLarge?: string;
-  workspace: Pick<Workspace, "id" | "name" | "slug">;
+type WorkspaceForDelete = Pick<Workspace, "id" | "name" | "slug" | "color"> & {
+  projects: ProjectSummary[];
 };
 
 export type UserDeleteInfo = {
-  workspaces: WorkspaceForDelete[];
-  projects: ProjectForDelete[];
+  onlyOwnerCollectiveWorkspaces: Pick<Workspace, "id" | "name" | "slug" | "color">[];
+  onlyOwnerCollectiveProjects: ProjectSummary[];
+  onlyMemberWorkspaces: WorkspaceForDelete[];
+  onlyMemberProjects: ProjectSummary[];
 };
 
 export type VerificationData = {

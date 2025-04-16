@@ -34,10 +34,14 @@
     "confirm_consent": "Please, confirm that you understand the consequences of deleting your account.",
     "confirm_dialog": {
       "title": "Before deleting your account",
+      "only_owner_workspaces": "You are the only owner for some workspaces",
+      "info_owner_workspaces": "You can't delete your account while there is no other owner. You can promote another user to owner role",
+      "only_owner_projects": "You are the only owner for some projects",
+      "info_owner_projects": "You can't delete your account while there is no other owner. You can promote another user to owner role",
       "only_member_workspace": "You are the only member in some workspaces",
       "info_delete_workspace": "Those workspaces will be deleted, along with the projects within it. You can invite somebody to be a workspace member.",
-      "only_admin_projects": "You are the only administrator in some projects",
-      "info_admin_projects": "Your role as a project administrator will be moved to another member of the workspace."
+      "only_member_project": "You are the only member in some projects",
+      "info_delete_project": "Those projects will be deleted. You can invite somebody to be a project member."
     }
   }
 }

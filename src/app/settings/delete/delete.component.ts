@@ -81,13 +81,17 @@ export class DeleteComponent {
     this.submit.set(true);
     if (this.form.value.consent) {
       this.userService.getDeleteInfo().subscribe((value) => {
-        if (value.projects.length !== 0 || value.workspaces.length !== 0) {
+        if (
+          value.onlyOwnerCollectiveWorkspaces.length !== 0 ||
+          value.onlyOwnerCollectiveProjects.length !== 0 ||
+          value.onlyMemberWorkspaces.length !== 0 ||
+          value.onlyMemberProjects.length !== 0
+        ) {
           const dialogRef = this.dialog.open(DeleteAccountDialogComponent, {
             ...matDialogConfig,
             minWidth: 600,
             data: {
-              workspaces: value.workspaces,
-              projects: value.projects,
+              ...value,
             },
           });
           dialogRef.afterClosed().subscribe((result) => {

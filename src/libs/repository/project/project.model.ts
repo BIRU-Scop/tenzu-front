@@ -49,7 +49,6 @@ export type ProjectDetail = ProjectSummary & {
   userIsMember: boolean;
   userPermissions: string[];
   userHasPendingInvitation: boolean;
-  anonUserCanView?: boolean;
 };
 
 export type ProjectFilter = Record<string, never>;
