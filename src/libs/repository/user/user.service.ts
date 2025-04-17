@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { User, UserCreation, UserDeleteInfo, UserEdition, VerificationData } from "./user.model";
+import { User, UserCreation, UserDeleteInfo, UserEdition, VerificationInfo } from "./user.model";
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "../auth";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
@@ -62,7 +62,7 @@ export class UserService {
   }
 
   verifyUsers(token: string) {
-    return this.http.post<VerificationData>(`${this.usersUrl}/verify`, { token: token });
+    return this.http.post<VerificationInfo>(`${this.usersUrl}/verify`, { token: token });
   }
 
   getDeleteInfo() {

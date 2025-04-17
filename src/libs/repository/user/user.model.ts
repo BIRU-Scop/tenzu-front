@@ -20,7 +20,7 @@
  */
 
 import { Tokens } from "../auth";
-import { Workspace, WorkspaceProject } from "../workspace";
+import { Workspace } from "../workspace";
 
 import { ProjectSummary } from "../project";
 import { ProjectInvitation } from "../project-invitations";
@@ -65,7 +65,7 @@ export type UserDeleteInfo = {
   onlyMemberProjects: ProjectSummary[];
 };
 
-export type VerificationData = {
+export type VerificationInfo = {
   auth: Tokens;
   workspaceInvitation: WorkspaceInvitation;
   projectInvitationToken: ProjectInvitation;

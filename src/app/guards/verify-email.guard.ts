@@ -24,7 +24,7 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { switchMap, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
-import { UserService, UserStore, VerificationData } from "@tenzu/repository/user";
+import { UserService, UserStore, VerificationInfo } from "@tenzu/repository/user";
 import { AuthService } from "@tenzu/repository/auth";
 
 export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
@@ -36,20 +36,20 @@ export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =
   const verifyParam = route.params["token"] as string;
 
   return userService.verifyUsers(verifyParam).pipe(
-    tap(async (verification: VerificationData) => {
+    tap(async (verification: VerificationInfo) => {
       authService.clear();
       authService.setToken(verification.auth);
       userStore.getMe(); // No need to return here, it's just a side effect
     }),
-    switchMap((verification: VerificationData) => {
+    switchMap((verification: VerificationInfo) => {
       if (verification.workspaceInvitation) {
         const workspaceId = verification.workspaceInvitation.workspace.id;
-
-        if (verification.projectInvitationToken) {
-          const projectId = verification.projectInvitationToken.project.id;
-          return router.navigateByUrl(`/workspace/${workspaceId}/project/${projectId}`);
-        }
         return router.navigateByUrl(`/workspace/${workspaceId}/projects`);
+      }
+      if (verification.projectInvitationToken) {
+        const projectId = verification.projectInvitationToken.project.id;
+        const workspaceId = verification.projectInvitationToken.project.workspaceId;
+        return router.navigateByUrl(`/workspace/${workspaceId}/project/${projectId}`);
       }
       return router.navigateByUrl("/");
     }),
