@@ -102,6 +102,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
+    canActivateChild: [loginGuard],
     children: [
       {
         path: "",

@@ -19,18 +19,23 @@
  *
  */
 
-import { CanActivateFn } from "@angular/router";
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
 import { catchError, of, tap } from "rxjs";
 import { AuthService } from "@tenzu/data/auth";
 
-export const loginGuard: CanActivateFn = () => {
+export const loginGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
+  const authRoutes = ["login", "reset-password", "signup"];
 
   return authService.isLoginOk().pipe(
     tap((value) => {
+      const currentUrl = route.routeConfig?.path ? route.routeConfig.path : ("" as string);
       if (!value) {
         authService.logout();
+      } else if (route.routeConfig && authRoutes.includes(currentUrl)) {
+        router.navigateByUrl("/");
       }
     }),
     catchError(() => {
