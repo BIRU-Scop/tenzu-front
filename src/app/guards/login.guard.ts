@@ -28,10 +28,10 @@ export const loginGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const authRoutes = ["login", "reset-password", "signup"];
+  const currentUrl = route.routeConfig?.path ? route.routeConfig.path : "";
 
   return authService.isLoginOk().pipe(
     tap((value) => {
-      const currentUrl = route.routeConfig?.path ? route.routeConfig.path : ("" as string);
       if (!value) {
         authService.logout();
       } else if (route.routeConfig && authRoutes.includes(currentUrl)) {
