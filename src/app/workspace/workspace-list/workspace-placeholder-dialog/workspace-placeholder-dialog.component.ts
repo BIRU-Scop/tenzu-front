@@ -43,7 +43,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
           mat-stroked-button
           class="primary-button whitespace-nowrap shrink-0"
         >
-          {{ t("cancel") }}
+          {{ t("close") }}
         </button>
       </mat-dialog-actions>
     </ng-container>
