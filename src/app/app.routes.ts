@@ -25,6 +25,7 @@ import { provideTranslocoScope } from "@jsverse/transloco";
 import { WorkspaceInvitationGuard } from "./guards/workspace-invitation.guard";
 import { VerifyEmailGuard } from "./guards/verify-email.guard";
 import { ProjectInvitationGuard } from "./guards/project-invitation.guard";
+import { redirectHomepageGuard } from "./guards/redirect-homepage.guard";
 
 function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
   const story = "story/:ref";
@@ -102,7 +103,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
-    canActivateChild: [loginGuard],
+    canActivateChild: [redirectHomepageGuard],
     children: [
       {
         path: "",

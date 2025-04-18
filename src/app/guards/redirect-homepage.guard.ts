@@ -19,18 +19,22 @@
  *
  */
 
-import { CanActivateFn } from "@angular/router";
+import { CanActivateFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
-import { catchError, of, tap } from "rxjs";
+import { catchError, of, switchMap } from "rxjs";
 import { AuthService } from "@tenzu/data/auth";
 
-export const loginGuard: CanActivateFn = () => {
+export const redirectHomepageGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
+  const router = inject(Router);
 
   return authService.isLoginOk().pipe(
-    tap((value) => {
-      if (!value) {
-        authService.logout();
+    switchMap((logged) => {
+      if (logged) {
+        const urlTree = router.parseUrl("/");
+        return of(urlTree);
+      } else {
+        return of(true);
       }
     }),
     catchError(() => {
