@@ -107,11 +107,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
   breadcrumbStore = inject(BreadcrumbStore);
 
   ngAfterViewInit(): void {
-    this.breadcrumbStore.setThirdLevel({
-      label: "workspace.general_title.workspaceListProjects",
-      link: "",
-      doTranslation: true,
-    });
+    this.breadcrumbStore.setPathComponent("workspaceProjectList");
   }
 
   async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {

@@ -19,86 +19,137 @@
  *
  */
 
-import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
-import { computed } from "@angular/core";
+import { patchState, signalStore, withComputed, withMethods, withProps, withState } from "@ngrx/signals";
+import { computed, inject } from "@angular/core";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { StoryRepositoryService } from "@tenzu/repository/story";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 
-type BreadCrumbConfig = {
+type BreadCrumbNodeConfig = {
   label: string;
   link?: string;
   doTranslation: boolean;
 };
 
-type BreadcrumbState = {
-  firstLevel: BreadCrumbConfig | undefined;
-  secondLevel: BreadCrumbConfig | undefined;
-  thirdLevel: BreadCrumbConfig | undefined;
-  fourthLevel: BreadCrumbConfig | undefined;
-  fifthLevel: BreadCrumbConfig | undefined;
-  sixthLevel: BreadCrumbConfig | undefined;
+type KeyBreadcrumbNodeConfig =
+  | "workspaces" // root
+  | "workspaceDetail" // name for the workspace
+  | "workspaceDetailProjectList"
+  | "workspaceDetailSettings"
+  | "workspaceDetailMember"
+  | "projectDetail"
+  | "projectSettings"
+  | "projectMembers"
+  | "projectCreateWorkflow"
+  | "projectKanban"
+  | "projectWorkflow"
+  | "storyDetail";
+
+const pathBreadcrumbComponent = {
+  workspaceProjectList: "workspaces.workspaceDetail.workspaceDetailProjectList",
+  workspaceSettings: "workspaces.workspaceDetail.workspaceDetailSettings",
+  workspaceMembers: "workspaces.workspaceDetail.workspaceDetailMember",
+  projectMembers: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.projectMembers",
+  projectSettings: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.projectSettings",
+  projectKanban: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.projectKanban.projectWorkflow",
+  projectCreateWorkflow:
+    "workspaces.workspaceDetail.projectDetailRoot.projectDetail.projectCreateTitleWorkflow.projectCreateWorkflow",
+  storyDetail: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.storyDetail",
 };
+type KeyPathBreadcrumbComponent = keyof typeof pathBreadcrumbComponent;
 
 export const BreadcrumbStore = signalStore(
   { providedIn: "root" },
-  withState<BreadcrumbState>({
-    firstLevel: undefined,
-    secondLevel: undefined,
-    thirdLevel: undefined,
-    fourthLevel: undefined,
-    fifthLevel: undefined,
-    sixthLevel: undefined,
-  }),
+  withState<{ keyPathComponent: KeyPathBreadcrumbComponent | undefined }>({ keyPathComponent: undefined }),
+  withProps(() => ({
+    workspaceDetail: inject(WorkspaceRepositoryService).entityDetail,
+    storyDetail: inject(StoryRepositoryService).entityDetail,
+    projectDetail: inject(ProjectRepositoryService).entityDetail,
+    workflowDetail: inject(WorkflowRepositoryService).entityDetail,
+  })),
   withMethods((store) => ({
-    setFirstLevel(firstLevel: BreadCrumbConfig | undefined) {
-      patchState(store, { firstLevel });
-    },
-    setSecondLevel(secondLevel: BreadCrumbConfig | undefined) {
-      patchState(store, { secondLevel });
-    },
-    setThirdLevel(thirdLevel: BreadCrumbConfig | undefined) {
-      patchState(store, { thirdLevel });
-    },
-    setFourthLevel(fourthLevel: BreadCrumbConfig | undefined) {
-      patchState(store, { fourthLevel });
-    },
-    setFifthLevel(fifthLevel: BreadCrumbConfig | undefined) {
-      patchState(store, { fifthLevel });
-    },
-    setSixthLevel(sixthLevel: BreadCrumbConfig | undefined) {
-      patchState(store, { sixthLevel });
+    setPathComponent(keyPathComponent: KeyPathBreadcrumbComponent) {
+      patchState(store, { keyPathComponent });
     },
     reset() {
-      patchState(store, {});
+      patchState(store, { keyPathComponent: undefined });
     },
   })),
   withComputed((store) => ({
-    breadCrumbConfig: computed(() => {
-      const path: BreadCrumbConfig[] = [];
-      type T = keyof BreadcrumbState;
-      const keys: T[] = ["firstLevel", "secondLevel", "thirdLevel", "fourthLevel", "fifthLevel", "sixthLevel"];
-      for (const key of keys) {
-        const value = store[key]();
-        if (value) {
-          path.push(value);
-        } else {
-          break;
-        }
+    breadcrumb: computed(() => {
+      const workspaceDetail = store.workspaceDetail();
+      const projectDetail = store.projectDetail();
+      const workflowDetail = store.workflowDetail();
+
+      const breadcrumbNodeConfig: Record<KeyBreadcrumbNodeConfig, BreadCrumbNodeConfig> = {
+        workspaces: {
+          label: "workspace.general_title.workspaces",
+          link: "/",
+          doTranslation: true,
+        },
+        workspaceDetail: {
+          label: workspaceDetail?.name || "",
+          link: `/workspace/${workspaceDetail?.id}`,
+          doTranslation: false,
+        },
+        workspaceDetailProjectList: {
+          label: "workspace.general_title.workspaceListProjects",
+          link: `/workspace/${workspaceDetail?.id}/projects`,
+          doTranslation: true,
+        },
+        workspaceDetailSettings: {
+          label: "workspace.general_title.workspaceSettings",
+          link: `/workspace/${workspaceDetail?.id}/settings`,
+          doTranslation: true,
+        },
+        workspaceDetailMember: {
+          label: "workspace.general_title.workspacePeople",
+          link: `/workspace/${workspaceDetail?.id}/people`,
+          doTranslation: true,
+        },
+        projectDetail: {
+          label: projectDetail?.name || "",
+          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/${projectDetail?.landingPage}`,
+          doTranslation: false,
+        },
+        projectSettings: {
+          label: "workspace.general_title.projectSettings",
+          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/settings`,
+          doTranslation: true,
+        },
+        projectMembers: {
+          label: "workspace.general_title.projectMembers",
+          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/members`,
+          doTranslation: true,
+        },
+        projectCreateWorkflow: {
+          label: "workflow.create_workflow.dialog.create_workflow",
+          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/new-workflow`,
+          doTranslation: true,
+        },
+        projectKanban: {
+          label: "workspace.general_title.kanban",
+          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}`,
+          doTranslation: true,
+        },
+        projectWorkflow: {
+          label: workflowDetail?.name || "",
+          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/workflow/${workflowDetail?.slug}`,
+          doTranslation: false,
+        },
+        storyDetail: {
+          label: "workflow.detail_story.story",
+          doTranslation: true,
+        },
+      };
+
+      const keyPathComponent = store.keyPathComponent();
+      if (!keyPathComponent) {
+        return [];
       }
-      return transformLinks(path);
+      const paths = pathBreadcrumbComponent[keyPathComponent].split(".") as KeyBreadcrumbNodeConfig[];
+      return paths.map((component) => breadcrumbNodeConfig[component] as BreadCrumbNodeConfig);
     }),
   })),
 );
-
-const transformLinks = (links: BreadCrumbConfig[]) => {
-  let currentPath = "";
-
-  return links.map((item) => {
-    // Ensure each link starts with a slash
-    currentPath += item?.link?.startsWith("/") ? item.link : "/" + item.link;
-
-    return {
-      ...item,
-      link: currentPath,
-    };
-  });
-};
-export type BreadcrumbStore = InstanceType<typeof BreadcrumbStore>;

@@ -115,11 +115,7 @@ export default class WorkspacePeopleComponent {
   selectedTabIndex = model(0);
 
   constructor() {
-    this.breadcrumbStore.setThirdLevel({
-      label: "workspace.general_title.workspacePeople",
-      link: "",
-      doTranslation: true,
-    });
+    this.breadcrumbStore.setPathComponent("workspaceMembers");
     this.selectedTabIndex.subscribe((value) => {
       if (value === 1) {
         this.workspaceInvitationService.listWorkspaceInvitations(this.workspaceService.entityDetail()!.id).then();

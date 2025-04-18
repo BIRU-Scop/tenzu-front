@@ -135,12 +135,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.breadcrumbStore.setFifthLevel({
-      label: "workspace.general_title.projectSettings",
-      link: "",
-      doTranslation: true,
-    });
-    this.breadcrumbStore.setSixthLevel(undefined);
+    this.breadcrumbStore.setPathComponent("projectSettings");
   }
 
   async onSave() {

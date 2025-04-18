@@ -114,12 +114,7 @@ export class ProjectMembersComponent {
   selectedTabIndex = model(0);
 
   constructor() {
-    this.breadcrumbStore.setFifthLevel({
-      label: "workspace.general_title.projectMembers",
-      link: "",
-      doTranslation: true,
-    });
-    this.breadcrumbStore.setSixthLevel(undefined);
+    this.breadcrumbStore.setPathComponent("projectMembers");
     this.selectedTabIndex.subscribe((value) => {
       if (value === 1) {
         this.projectInvitationService.listProjectInvitations(this.projectService.entityDetail()!.id).then();

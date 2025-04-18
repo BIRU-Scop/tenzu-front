@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
@@ -37,7 +36,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 export class WorkspaceDetailComponent {
   workspaceService = inject(WorkspaceRepositoryService);
   sideNavStore = inject(SideNavStore);
-  breadcrumbStore = inject(BreadcrumbStore);
+  // breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
     toObservable(this.workspaceService.entityDetail)
@@ -71,22 +70,22 @@ export class WorkspaceDetailComponent {
         testId: "settings-link",
       },
     ]);
-    this.breadcrumbStore.setFourthLevel(undefined);
+    // this.breadcrumbStore.setFourthLevel(undefined);
 
-    this.breadcrumbStore.setFirstLevel({
-      label: "workspace.general_title.workspaces",
-      link: "/",
-      doTranslation: true,
-    });
-    toObservable(this.workspaceService.entityDetail)
-      .pipe(filterNotNull())
-      .subscribe((workspace) => {
-        this.breadcrumbStore.setSecondLevel({
-          label: workspace.name,
-          link: `workspace/${workspace.id}`,
-          doTranslation: false,
-        });
-        this.breadcrumbStore.setFourthLevel(undefined);
-      });
+    // this.breadcrumbStore.setFirstLevel({
+    //   label: "workspace.general_title.workspaces",
+    //   link: "/",
+    //   doTranslation: true,
+    // });
+    // toObservable(this.workspaceService.entityDetail)
+    //   .pipe(filterNotNull())
+    //   .subscribe((workspace) => {
+    //     this.breadcrumbStore.setSecondLevel({
+    //       label: workspace.name,
+    //       link: `workspace/${workspace.id}`,
+    //       doTranslation: false,
+    //     });
+    //     this.breadcrumbStore.setFourthLevel(undefined);
+    //   });
   }
 }

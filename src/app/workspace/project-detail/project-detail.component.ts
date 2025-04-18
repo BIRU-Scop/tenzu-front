@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { SideNavStore } from "@tenzu/repository/sidenav";
@@ -39,7 +38,7 @@ export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);
-  breadcrumbStore = inject(BreadcrumbStore);
+  // breadcrumbStore = inject(BreadcrumbStore);
   baseUrl = computed(
     () => `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectService.entityDetail()?.id}`,
   );
@@ -51,24 +50,8 @@ export class ProjectDetailComponent {
         this.sideNavStore.setAvatar(
           project ? { name: project.name, type: "workspace.general_title.project", color: project.color } : undefined,
         );
-        if (project) {
-          this.breadcrumbStore.setThirdLevel({
-            label: "workspace.general_title.projects",
-            link: "/",
-            doTranslation: true,
-          });
-          this.breadcrumbStore.setFourthLevel({
-            label: project.name,
-            link: `project/${project.id}/${project.landingPage}`,
-            doTranslation: false,
-          });
-        }
       });
-    this.breadcrumbStore.setFirstLevel({
-      label: "workspace.general_title.workspaces",
-      link: "/",
-      doTranslation: true,
-    });
+
     toObservable(this.baseUrl).subscribe((baseUrl) => {
       this.sideNavStore.setPrimaryNavItems([
         {
@@ -97,14 +80,14 @@ export class ProjectDetailComponent {
       ]);
     });
 
-    toObservable(this.workspaceService.entityDetail).subscribe((workspace) => {
-      if (workspace) {
-        this.breadcrumbStore.setSecondLevel({
-          label: workspace.name,
-          link: `workspace/${workspace.id}`,
-          doTranslation: false,
-        });
-      }
-    });
+    // toObservable(this.workspaceService.entityDetail).subscribe((workspace) => {
+    //   if (workspace) {
+    //     this.breadcrumbStore.setSecondLevel({
+    //       label: workspace.name,
+    //       link: `workspace/${workspace.id}`,
+    //       doTranslation: false,
+    //     });
+    //   }
+    // });
   }
 }

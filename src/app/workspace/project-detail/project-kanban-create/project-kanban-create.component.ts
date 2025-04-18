@@ -41,6 +41,7 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 })
 export class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
+
   readonly projectService = inject(ProjectRepositoryService);
   readonly workflowService = inject(WorkflowRepositoryService);
   readonly dialog = inject(MatDialog);
@@ -50,14 +51,6 @@ export class ProjectKanbanCreateComponent {
 
   constructor() {
     this.openCreateDialog();
-    this.breadcrumbStore.setFifthLevel({
-      label: "workspace.general_title.kanban",
-      doTranslation: true,
-    });
-    this.breadcrumbStore.setSixthLevel({
-      label: "workflow.create_workflow.dialog.create_workflow",
-      doTranslation: true,
-    });
   }
 
   public openCreateDialog(): void {
