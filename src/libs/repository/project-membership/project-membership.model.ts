@@ -21,7 +21,7 @@
 
 import { UserMinimal } from "../user";
 import { ProjectDetail } from "../project";
-import { MembershipRole } from "../base/misc.model";
+import { MembershipRole } from "../membership";
 
 export type ProjectForProjectMembership = Pick<
   ProjectDetail,

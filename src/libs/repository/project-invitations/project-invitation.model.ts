@@ -21,17 +21,11 @@
 
 import { UserMinimal } from "../user";
 import { ProjectDetail, ProjectSummary } from "../project";
-import { MembershipRole } from "../base/misc.model";
+import { Invitation, MembershipRole } from "../membership";
 
 export type ProjectInvitationContent = Pick<ProjectDetail, "id" | "workspaceId" | "name" | "slug" | "landingPage">;
 
-export type ProjectInvitation = {
-  id: string;
-  status: "pending" | "accepted" | "revoked";
-  email?: string;
-  existingUser: boolean;
-  role?: MembershipRole;
-  user?: UserMinimal;
+export type ProjectInvitation = Invitation & {
   project: ProjectInvitationContent;
 };
 

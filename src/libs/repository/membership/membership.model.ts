@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,13 +19,20 @@
  *
  */
 
-type Primitive = string | number | boolean | null | undefined;
+import { UserMinimal } from "../user";
 
-// Use an interface instead of a type to enable for recursion
-export interface JsonObject {
-  [key: string]: JsonValue | undefined;
-}
+export type Invitation = {
+  id: string;
+  status: "pending" | "accepted" | "revoked" | "denied";
+  email?: string;
+  existingUser: boolean;
+  role?: MembershipRole;
+  user?: UserMinimal;
+};
 
-type JsonArray = Array<JsonValue>;
-
-type JsonValue = Primitive | JsonObject | JsonArray;
+export type MembershipRole = {
+  name: string;
+  slug: string;
+  isAdmin: true;
+  permissions: string[];
+};

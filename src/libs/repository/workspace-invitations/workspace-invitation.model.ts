@@ -19,18 +19,13 @@
  *
  */
 
-import { UserMinimal } from "../user";
 import { Workspace } from "../workspace";
+import { Invitation } from "@tenzu/repository/membership";
 
 export type WorkspaceInvitationContent = Pick<Workspace, "id" | "name" | "slug">;
 
-export type WorkspaceInvitation = {
-  id: string;
-  status: "pending" | "accepted" | "revoked";
+export type WorkspaceInvitation = Invitation & {
   workspace: WorkspaceInvitationContent;
-  user?: UserMinimal;
-  existingUser: boolean;
-  email?: string;
 };
 
 export type CreateWorkspaceInvitationResponse = {
