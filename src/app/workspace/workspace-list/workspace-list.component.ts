@@ -171,9 +171,13 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   }
 
   private openPlaceholderDialog = (event?: MouseEvent) => {
-    const dialogRef = this.dialog.open(WorkspacePlaceholderDialogComponent, { ...matDialogConfig, disableClose: true });
-    dialogRef.afterClosed().subscribe(() => {
-      this.openCreateDialog(event);
+    const dialogRef = this.dialog.open(WorkspacePlaceholderDialogComponent, {
+      ...matDialogConfig,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.openCreateDialog(event);
+      }
     });
   };
 
