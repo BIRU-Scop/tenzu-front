@@ -45,8 +45,4 @@ export class WorkspaceApiService extends AbstractApiService<
   protected override getEntityBaseUrl(params: WorkspaceApiServiceType.BaseParams): string {
     return `${this.baseUrl}/${params.workspaceId}`;
   }
-
-  override listUrl() {
-    return `${this.configAppService.apiUrl()}my/workspaces`;
-  }
 }

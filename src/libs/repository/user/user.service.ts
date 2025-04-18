@@ -32,7 +32,7 @@ export class UserService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
   endpoint = `${this.configAppService.apiUrl()}`;
-  myUserUrl = `${this.endpoint}my/user`;
+  myUserUrl = `${this.endpoint}users/me`;
   usersUrl = `${this.endpoint}users`;
 
   getMyUser() {
