@@ -28,21 +28,27 @@ export type WorkspaceProject = Pick<
 
 export type WorkspaceRole = "owner" | "admin" | "member" | "readonly-member";
 
-export type Workspace = {
+export type WorkspaceBase = {
   id: string;
   name: string;
   slug: string;
   color: number;
-  latestProjects: WorkspaceProject[];
-  invitedProjects: WorkspaceProject[];
+};
+export type WorkspaceSummary = WorkspaceBase & {
+  userMemberProjects: WorkspaceProject[];
+  userInvitedProjects: WorkspaceProject[];
+  userIsInvited: boolean;
+};
+
+export type WorkspaceDetail = WorkspaceSummary & {
+  userIsInvited: boolean;
+  // user_role: Role;
   totalProjects: number;
-  hasProjects: boolean;
-  userRole: WorkspaceRole;
 };
 
 // not implemented yet
 export type WorkspaceFilter = Record<string, never>;
 
-export type WorkspaceCreation = Pick<Workspace, "name" | "color">;
+export type WorkspaceCreation = Pick<WorkspaceSummary, "name" | "color">;
 
-export type WorkspaceEdition = Pick<Workspace, "name">;
+export type WorkspaceEdition = Pick<WorkspaceSummary, "name">;

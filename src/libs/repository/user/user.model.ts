@@ -20,7 +20,7 @@
  */
 
 import { Tokens } from "../auth";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 
 import { ProjectSummary } from "../project";
 import { ProjectInvitation } from "../project-invitations";
@@ -54,12 +54,12 @@ export type UserEdition = {
   password: string;
 };
 
-type WorkspaceForDelete = Pick<Workspace, "id" | "name" | "slug" | "color"> & {
+type WorkspaceForDelete = Pick<WorkspaceSummary, "id" | "name" | "slug" | "color"> & {
   projects: ProjectSummary[];
 };
 
 export type UserDeleteInfo = {
-  onlyOwnerCollectiveWorkspaces: Pick<Workspace, "id" | "name" | "slug" | "color">[];
+  onlyOwnerCollectiveWorkspaces: Pick<WorkspaceSummary, "id" | "name" | "slug" | "color">[];
   onlyOwnerCollectiveProjects: ProjectSummary[];
   onlyMemberWorkspaces: WorkspaceForDelete[];
   onlyMemberProjects: ProjectSummary[];

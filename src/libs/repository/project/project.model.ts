@@ -19,7 +19,7 @@
  *
  */
 
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 import { Workflow } from "../workflow";
 
 export type ProjectBase = {
@@ -40,10 +40,11 @@ export type ProjectSummary = ProjectBase & {
   workspaceId: string;
   slug: string;
   landingPage: string;
+  userIsInvited: boolean;
 };
 
 export type ProjectDetail = ProjectSummary & {
-  workspace: Pick<Workspace, "id" | "name" | "slug" | "color" | "userRole">;
+  workspace: Pick<WorkspaceSummary, "id" | "name" | "slug" | "color">;
   workflows: Workflow[];
   userIsAdmin: boolean;
   userIsMember: boolean;

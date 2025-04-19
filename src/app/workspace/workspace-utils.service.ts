@@ -21,7 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { WorkspaceRepositoryService, Workspace } from "@tenzu/repository/workspace";
+import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
@@ -34,24 +34,24 @@ export class WorkspaceUtilsService {
   route = inject(ActivatedRoute);
   router = inject(Router);
 
-  async acceptProjectInvitationForCurrentUser(project: ArrayElement<Workspace["invitedProjects"]>) {
-    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as Workspace;
+  async acceptProjectInvitationForCurrentUser(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
     const acceptedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
     if (acceptedInvitation) {
-      workspace.invitedProjects = workspace.invitedProjects.filter(
-        (invitedProject: ArrayElement<Workspace["invitedProjects"]>) =>
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) =>
           invitedProject.id !== acceptedInvitation.project.id,
       );
-      workspace.latestProjects = [...workspace.latestProjects, { ...project }];
+      workspace.userMemberProjects = [...workspace.userMemberProjects, { ...project }];
       await this.workspaceService.patchRequest(workspace, { workspaceId: workspace.id });
     }
   }
 
-  async denyInvitationForCurrentUser(project: ArrayElement<Workspace["invitedProjects"]>) {
-    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as Workspace;
+  async denyInvitationForCurrentUser(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
     await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
-    workspace.invitedProjects = workspace.invitedProjects.filter(
-      (invitedProject: ArrayElement<Workspace["invitedProjects"]>) => invitedProject.id !== project.id,
+    workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+      (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) => invitedProject.id !== project.id,
     );
     await this.workspaceService.patchRequest(workspace, { workspaceId: workspace.id });
   }

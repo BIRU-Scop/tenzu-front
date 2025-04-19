@@ -27,10 +27,10 @@ import {
   WorkspaceInvitation,
 } from "./workspace-invitation.model";
 import { Observable } from "rxjs";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 
 type ListParams = {
-  workspaceId: Workspace["id"];
+  workspaceId: WorkspaceSummary["id"];
 };
 
 @Injectable({
@@ -42,7 +42,7 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
   ListParams
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
-  protected override getBaseUrl(params: { workspaceId: Workspace["id"] }) {
+  protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/invitations`;
   }
   protected override getEntityBaseUrl(): string {
@@ -63,7 +63,7 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
   override delete(): Observable<void> {
     throw new Error("Method not implemented.");
   }
-  createBulkInvitations(data: CreateWorkspaceInvitationRequest, params: { workspaceId: Workspace["id"] }) {
+  createBulkInvitations(data: CreateWorkspaceInvitationRequest, params: { workspaceId: WorkspaceSummary["id"] }) {
     return this.http.post<CreateWorkspaceInvitationResponse>(`${this.getBaseUrl(params)}`, data);
   }
   getByToken(params: { token: string }) {

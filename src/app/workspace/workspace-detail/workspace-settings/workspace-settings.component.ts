@@ -78,7 +78,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
       <div class="flex flex-col gap-y-2">
         <h2 class="mat-headline-small">{{ t("delete_workspace") }}</h2>
         <div *transloco="let t; prefix: 'workspace.settings.delete'" class="flex flex-col gap-4">
-          @if (workspace?.hasProjects) {
+          @if (workspace?.totalProjects || 0 > 0) {
             <div class="flex flex-row">
               <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
               <p
@@ -88,7 +88,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
             </div>
           }
           <button
-            [disabled]="workspace?.hasProjects"
+            [disabled]="workspace?.totalProjects || 0 > 0"
             mat-flat-button
             class="error-button w-fit"
             appConfirm

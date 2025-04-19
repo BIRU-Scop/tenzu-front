@@ -20,9 +20,12 @@
  */
 
 import { signalStore } from "@ngrx/signals";
-import { Workspace } from "./workspace.model";
+import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 
-export const WorkspaceEntitiesSummaryStore = signalStore({ providedIn: "root" }, withEntityListFeature<Workspace>());
+export const WorkspaceEntitiesSummaryStore = signalStore(
+  { providedIn: "root" },
+  withEntityListFeature<WorkspaceSummary>(),
+);
 
-export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<Workspace>());
+export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<WorkspaceDetail>());

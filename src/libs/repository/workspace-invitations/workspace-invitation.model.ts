@@ -19,10 +19,10 @@
  *
  */
 
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 import { Invitation } from "@tenzu/repository/membership";
 
-export type WorkspaceInvitationContent = Pick<Workspace, "id" | "name" | "slug">;
+export type WorkspaceInvitationContent = Pick<WorkspaceSummary, "id" | "name" | "slug">;
 
 export type WorkspaceInvitation = Invitation & {
   workspace: WorkspaceInvitationContent;

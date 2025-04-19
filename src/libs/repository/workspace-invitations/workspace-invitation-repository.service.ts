@@ -24,7 +24,7 @@ import { lastValueFrom } from "rxjs";
 import { WorkspaceInvitationEntitiesStore } from "./workspace-invitation.store";
 import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-service";
 import { ProjectDetail } from "../project";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 import { CreateWorkspaceInvitation } from "./workspace-invitation.model";
 
 @Injectable({
@@ -36,7 +36,7 @@ export class WorkspaceInvitationRepositoryService {
   entities = this.workspaceInvitationEntitiesStore.entities;
   entityMap = this.workspaceInvitationEntitiesStore.entityMap;
 
-  async listWorkspaceInvitations(workspaceId: Workspace["id"]) {
+  async listWorkspaceInvitations(workspaceId: WorkspaceSummary["id"]) {
     const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.list({ workspaceId }));
     this.workspaceInvitationEntitiesStore.setAllEntities(workspaceInvitations);
   }

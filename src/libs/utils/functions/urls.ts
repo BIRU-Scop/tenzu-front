@@ -21,12 +21,12 @@
 
 import { ProjectSummary } from "@tenzu/repository/project";
 import { Workflow } from "@tenzu/repository/workflow";
-import { Workspace, WorkspaceProject } from "@tenzu/repository/workspace";
+import { WorkspaceProject, WorkspaceBase } from "@tenzu/repository/workspace";
 import { Story } from "@tenzu/repository/story";
 
 export type UrlableProject = ProjectSummary | WorkspaceProject;
 
-export type UrlableWorkspace = Workspace;
+export type UrlableWorkspace = WorkspaceBase;
 
 export const HOMEPAGE_URL = "/";
 

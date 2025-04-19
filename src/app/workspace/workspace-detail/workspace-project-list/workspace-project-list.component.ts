@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
@@ -32,7 +32,7 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
-import { Workspace } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { WorkspaceUtilsService } from "../../workspace-utils.service";
 
 @Component({
@@ -63,27 +63,24 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
-      @if (workspace) {
-        @for (project of workspace.invitedProjects; track project.id) {
-          <li>
-            <app-project-special-card
-              [name]="project.name"
-              [color]="project.color"
-              (submitted)="acceptProjectInvitation(project)"
-              (canceled)="denyProjectInvitation(project)"
-            ></app-project-special-card>
-          </li>
-        }
-      }
       @for (project of projectService.entitiesSummary(); track project.id) {
-        <app-project-card
-          class="basis-1/5"
-          [name]="project.name"
-          [color]="project.color"
-          [workspaceId]="project.workspaceId"
-          [description]="project.description ? project.description : null"
-          [landingPage]="getProjectLandingPageUrl(project)"
-        ></app-project-card>
+        @if (project.userIsInvited) {
+          <app-project-special-card
+            [name]="project.name"
+            [color]="project.color"
+            (submitted)="acceptProjectInvitation(project)"
+            (canceled)="denyProjectInvitation(project)"
+          ></app-project-special-card>
+        } @else {
+          <app-project-card
+            class="basis-1/5"
+            [name]="project.name"
+            [color]="project.color"
+            [workspaceId]="project.workspaceId"
+            [description]="project.description ? project.description : null"
+            [landingPage]="getProjectLandingPageUrl(project)"
+          ></app-project-card>
+        }
       } @empty {
         @for (skeleton of Array(6); track $index) {
           <li>
@@ -96,11 +93,7 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class WorkspaceProjectListComponent implements AfterViewInit, OnDestroy {
-  ngOnDestroy(): void {
-    this.projectService.resetEntitySummaryList();
-  }
-
+export default class WorkspaceProjectListComponent implements AfterViewInit {
   workspaceUtilsService = inject(WorkspaceUtilsService);
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);
@@ -114,11 +107,11 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
     });
   }
 
-  async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+  async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
     await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
   }
 
-  async denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+  async denyProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
     await this.workspaceUtilsService.denyInvitationForCurrentUser(project);
   }
 

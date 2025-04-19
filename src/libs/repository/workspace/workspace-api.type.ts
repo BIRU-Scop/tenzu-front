@@ -19,9 +19,9 @@
  *
  */
 
-import { Workspace } from "./workspace.model";
+import { WorkspaceSummary } from "./workspace.model";
 
-export type BaseParams = { workspaceId: Workspace["id"] };
+export type BaseParams = { workspaceId: WorkspaceSummary["id"] };
 export type ListEntitiesSummaryParams = undefined;
 export type CreateEntityDetailParams = BaseParams;
 export type GetEntityDetailParams = BaseParams;

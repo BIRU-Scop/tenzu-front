@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 import { WorkspaceMembership } from "./workspace-membership.model";
 
 type ListWorkspaceMembershipParams = {
@@ -30,8 +30,8 @@ type ListWorkspaceMembershipParams = {
 type CreateWorkspaceMembershipParams = unknown;
 type GetWorkspaceMembershipParams = unknown;
 type PutWorkspaceMembershipParams = unknown;
-type PatchWorkspaceMembershipParams = { workspaceId: Workspace["id"]; username: string };
-type DeleteWorkspaceMembershipParams = { workspaceId: Workspace["id"]; username: string };
+type PatchWorkspaceMembershipParams = { workspaceId: WorkspaceSummary["id"]; username: string };
+type DeleteWorkspaceMembershipParams = { workspaceId: WorkspaceSummary["id"]; username: string };
 
 @Injectable({
   providedIn: "root",
@@ -47,10 +47,10 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   DeleteWorkspaceMembershipParams
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
-  protected override getBaseUrl(params: { workspaceId: Workspace["id"] }) {
+  protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/memberships`;
   }
-  protected override getEntityBaseUrl(params: { workspaceId: Workspace["id"]; username: string }): string {
+  protected override getEntityBaseUrl(params: { workspaceId: WorkspaceSummary["id"]; username: string }): string {
     return `${this.getBaseUrl(params)}/${params.username}`;
   }
 }

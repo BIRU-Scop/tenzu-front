@@ -27,6 +27,7 @@ import { debug } from "@tenzu/utils/functions/logging";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
@@ -47,6 +48,16 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
   }
   debug("workspaceResolver", "end");
   return true;
+}
+
+export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
+  debug("workspaceListProjectsResolver", "start");
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const workspaceId = route.paramMap.get("workspaceId");
+  if (workspaceId) {
+    projectRepositoryService.listRequest({ workspaceId }).then();
+  }
+  debug("workspaceListProjectsResolver", "end");
 }
 
 export function projectResolver(route: ActivatedRouteSnapshot) {
@@ -84,6 +95,7 @@ export const routes: Routes = [
         path: "",
         loadComponent: () =>
           import("./workspace-detail/workspace-detail.component").then((m) => m.WorkspaceDetailComponent),
+        resolve: { projects: workspaceListProjectsResolver },
 
         loadChildren: () => import("./workspace-detail/routes").then((m) => m.routes),
       },

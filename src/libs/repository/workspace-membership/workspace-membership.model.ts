@@ -21,14 +21,14 @@
 
 import { UserMinimal } from "../user";
 import { ProjectDetail } from "../project";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 
 export type ProjectForProjectMembership = Pick<
   ProjectDetail,
   "logo" | "logoSmall" | "logoLarge" | "id" | "name" | "slug" | "description" | "color"
 >;
 
-export type WorkspaceForWorkspaceMembership = Pick<Workspace, "id" | "name" | "slug">;
+export type WorkspaceForWorkspaceMembership = Pick<WorkspaceSummary, "id" | "name" | "slug">;
 
 export type WorkspaceMembership = {
   user: UserMinimal;

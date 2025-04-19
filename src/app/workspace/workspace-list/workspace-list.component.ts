@@ -42,7 +42,7 @@ import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skele
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
-import { Workspace } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { WorkspaceUtilsService } from "../workspace-utils.service";
 
@@ -83,7 +83,7 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
                 [id]="workspace.id"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                @for (project of workspace.invitedProjects; track project.id) {
+                @for (project of workspace.userInvitedProjects; track project.id) {
                   <li>
                     <app-project-special-card
                       [name]="project.name"
@@ -93,7 +93,7 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
                     ></app-project-special-card>
                   </li>
                 }
-                @for (project of workspace.latestProjects; track project.id) {
+                @for (project of workspace.userMemberProjects; track project.id) {
                   <li>
                     <app-project-card
                       [workspaceId]="workspace.id"
@@ -105,8 +105,8 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
                   </li>
                 }
                 @if (
-                  (!workspace.latestProjects || workspace.latestProjects.length === 0) &&
-                  (!workspace.invitedProjects || workspace.invitedProjects.length === 0)
+                  (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
+                  (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
                 ) {
                   <li>
                     <app-project-card [workspaceId]="workspace.id"></app-project-card>
@@ -225,11 +225,11 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+  async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
     await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
   }
 
-  async denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
+  async denyProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
     await this.workspaceUtilsService.denyInvitationForCurrentUser(project);
   }
 
