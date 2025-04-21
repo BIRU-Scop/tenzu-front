@@ -85,6 +85,6 @@ export class ProjectInvitationsApiService extends AbstractApiService<
   }
 
   denyForCurrentUser(params: { projectId: ProjectDetail["id"] }) {
-    return this.http.post<void>(`${this.getBaseUrl(params)}/deny`, null);
+    return this.http.post<ProjectInvitation>(`${this.getBaseUrl(params)}/deny`, null);
   }
 }
