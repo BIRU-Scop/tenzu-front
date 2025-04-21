@@ -36,10 +36,10 @@ import {
 } from "./event-type.enum";
 import { Location } from "@angular/common";
 import { ProjectRepositoryService, ProjectDetail } from "@tenzu/repository/project";
-import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/repository/workflow";
+import { Workflow, ReorderWorkflowStatusesPayload, WorkflowNested } from "@tenzu/repository/workflow";
 import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { UserMinimal } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user";
 import { StatusDetail } from "@tenzu/repository/status";
 import { AuthService } from "@tenzu/repository/auth";
 import { Notification, NotificationsStore } from "@tenzu/repository/notifications";
@@ -275,7 +275,7 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
     }
     case WorkflowStatusEventType.ReorderWorkflowStatus: {
       const content = message.event.content as {
-        reorder: WorkflowStatusReorderPayload & { workflow: Workflow };
+        reorder: ReorderWorkflowStatusesPayload & { workflow: WorkflowNested };
       };
       await workflowService.getBySlug(content.reorder.workflow);
       break;
@@ -308,7 +308,7 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
   switch (message.event.type) {
     case ProjectEventType.DeleteProject: {
       const content = message.event.content as {
-        deletedBy: UserMinimal;
+        deletedBy: UserNested;
         project: string;
         workspace: string;
         name: string;
@@ -329,7 +329,7 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       break;
     }
     case ProjectEventType.UpdateProject: {
-      const content = message.event.content as { project: ProjectDetail; updatedBy: UserMinimal };
+      const content = message.event.content as { project: ProjectDetail; updatedBy: UserNested };
       const project = content.project;
 
       const currentProject = projectService.entityDetail();
@@ -355,7 +355,7 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
   const workspaceService = inject(WorkspaceRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
-  const content = message.event.content as { deletedBy: UserMinimal; workspace: string; name: string };
+  const content = message.event.content as { deletedBy: UserNested; workspace: string; name: string };
 
   switch (message.event.type) {
     case WorkspaceEventType.WorkspaceDelete: {

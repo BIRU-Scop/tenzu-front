@@ -26,7 +26,7 @@ import { catchError, map, switchMap } from "rxjs/operators";
 import { AuthService } from "@tenzu/repository/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectInvitationsApiService } from "@tenzu/repository/project-invitations/project-invitation-api.service";
-import { ProjectInvitation } from "@tenzu/repository/project-invitations";
+import { PublicProjectPendingInvitation } from "@tenzu/repository/project-invitations";
 
 export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
@@ -37,13 +37,15 @@ export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnaps
   const token = route.params["token"] as string;
 
   return projectInvitationApiService.getByToken({ token }).pipe(
-    switchMap((invitation: ProjectInvitation) =>
+    switchMap((invitation: PublicProjectPendingInvitation) =>
       authService.isLoginOk().pipe(
         switchMap((logged) => {
           if (logged) {
             return projectInvitationApiService.acceptByToken({ token }).pipe(
               map((invitAccept) =>
-                router.parseUrl(`/workspace/${invitAccept.workspaceId}/project/${invitAccept.project.id}/kanban/main`),
+                router.parseUrl(
+                  `/workspace/${invitAccept.project.workspaceId}/project/${invitAccept.project.id}/kanban/main`,
+                ),
               ),
               catchError((err) => {
                 notificationService.error({ title: err });

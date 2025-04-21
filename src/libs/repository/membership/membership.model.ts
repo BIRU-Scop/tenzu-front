@@ -19,20 +19,49 @@
  *
  */
 
-import { UserMinimal } from "../user";
+import { UserNested } from "../user";
 
-export type Invitation = {
-  id: string;
-  status: "pending" | "accepted" | "revoked" | "denied";
-  email?: string;
-  existingUser: boolean;
-  role?: MembershipRole;
-  user?: UserMinimal;
-};
-
-export type MembershipRole = {
+export type Role = {
   name: string;
   slug: string;
-  isAdmin: true;
+  isOwner: boolean;
+  order: number;
+  editable: boolean;
   permissions: string[];
+};
+
+export type InvitationStatus = "pending" | "accepted" | "revoked" | "denied";
+
+export type InvitationBase = {
+  id: string;
+  status: InvitationStatus;
+  user?: UserNested;
+  role: Role;
+  email: string;
+};
+
+type _PrivateEmailInvitation = InvitationBase & {
+  email?: string;
+};
+
+export type CreateInvitations = {
+  invitations: _PrivateEmailInvitation[];
+  alreadyMembers: number;
+};
+
+export type PublicPendingInvitationBase = {
+  email: string;
+  existingUser: boolean;
+};
+
+export type InvitationsPayload = {
+  invitations: {
+    email?: string;
+    username?: string;
+    roleSlug: string;
+  }[];
+};
+
+export type UpdateInvitationPayload = {
+  roleSlug: string;
 };

@@ -19,14 +19,14 @@
  *
  */
 
-import { ProjectSummary } from "@tenzu/repository/project";
+import { ProjectLinkNested } from "@tenzu/repository/project";
 import { Workflow } from "@tenzu/repository/workflow";
-import { WorkspaceProject, WorkspaceBase } from "@tenzu/repository/workspace";
 import { Story } from "@tenzu/repository/story";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 
-export type UrlableProject = ProjectSummary | WorkspaceProject;
+export type UrlableProject = ProjectLinkNested;
 
-export type UrlableWorkspace = WorkspaceBase;
+export type UrlableWorkspace = WorkspaceLinkNested;
 
 export const HOMEPAGE_URL = "/";
 

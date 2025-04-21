@@ -19,24 +19,15 @@
  *
  */
 
-import { WorkspaceSummary } from "../workspace";
-import { Invitation } from "@tenzu/repository/membership";
+import { InvitationBase, PublicPendingInvitationBase } from "../membership";
+import { WorkspaceLinkNested } from "../workspace";
 
-export type WorkspaceInvitationContent = Pick<WorkspaceSummary, "id" | "name" | "slug">;
-
-export type WorkspaceInvitation = Invitation & {
-  workspace: WorkspaceInvitationContent;
+export type PublicWorkspacePendingInvitation = PublicPendingInvitationBase & {
+  workspace: WorkspaceLinkNested;
 };
 
-export type CreateWorkspaceInvitationResponse = {
-  already_members: number;
-  invitations: WorkspaceInvitation[];
+export type WorkspaceInvitation = InvitationBase & {
+  workspace: WorkspaceLinkNested;
 };
 
-export type CreateWorkspaceInvitation = {
-  usernameOrEmail: string;
-};
-
-export type CreateWorkspaceInvitationRequest = {
-  invitations: CreateWorkspaceInvitation[];
-};
+export type WorkspaceInvitationNested = Pick<WorkspaceInvitation, "workspace" | "status">;

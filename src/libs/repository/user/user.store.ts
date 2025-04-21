@@ -25,7 +25,7 @@ import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { lastValueFrom, of, pipe, switchMap } from "rxjs";
 import { tapResponse } from "@ngrx/operators";
 import { UserService } from "./user.service";
-import { User, UserEdition } from "./user.model";
+import { User, UpdateUserPayload } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { AuthService } from "../auth";
 import { WsService } from "@tenzu/utils/services/ws";
@@ -68,14 +68,14 @@ export const UserStore = signalStore(
           }),
         ),
       ),
-      async patchMe(value: Partial<UserEdition>) {
+      async patchMe(value: UpdateUserPayload) {
         const myUser = await lastValueFrom(userService.patchMyUser(value));
         if (myUser.lang) {
           translocoService.setActiveLang(myUser.lang);
         }
         patchState(store, { myUser });
       },
-      async changePassword(password: UserEdition["password"]) {
+      async changePassword(password: UpdateUserPayload["password"]) {
         await lastValueFrom(userService.patchMyUser({ password }));
         return authService.logout();
       },

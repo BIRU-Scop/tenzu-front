@@ -24,7 +24,8 @@ import { lastValueFrom } from "rxjs";
 import { ProjectInvitationsEntitiesSummaryStore } from "./project-invitations-entities.store";
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
 import { ProjectDetail } from "../project";
-import { CreateProjectInvitation } from "./project-invitation.model";
+import { InvitationsPayload } from "../membership";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -40,9 +41,16 @@ export class ProjectInvitationRepositoryService {
     this.projectInvitationEntitiesStore.setAllEntities(projectInvitations);
   }
 
-  async createBulkInvitations(projectId: ProjectDetail["id"], invitations: CreateProjectInvitation[]) {
+  async createBulkInvitations(project: ProjectDetail, invitations: InvitationsPayload["invitations"]) {
     const createProjectInvitationResponse = await lastValueFrom(
-      this.projectInvitationsApiService.createBulkInvitations({ invitations }, { projectId }),
+      this.projectInvitationsApiService.createBulkInvitations({ invitations }, { projectId: project.id }).pipe(
+        map((createInvitations) => {
+          return {
+            ...createInvitations,
+            invitations: createInvitations.invitations.map((invitation) => ({ ...invitation, project: project })),
+          };
+        }),
+      ),
     );
     this.projectInvitationEntitiesStore.addEntities(createProjectInvitationResponse.invitations);
   }

@@ -20,7 +20,7 @@
  */
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { Workflow, WorkflowStatusReorderPayload } from "./workflow.model";
+import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { Status } from "../status";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
 import { removeEntity, setAllEntities, updateEntity, withEntities } from "@ngrx/signals/entities";
@@ -52,21 +52,21 @@ export const WorkflowDetailStore = signalStore(
       patchState(store, setAllEntities(selectedEntityStatusOrder));
       const statuses = store.entities();
       const status = statuses[newPosition];
-      let payload: WorkflowStatusReorderPayload | null = null;
+      let payload: ReorderWorkflowStatusesPayload | null = null;
       if (newPosition < oldPosition) {
         payload = {
-          statuses: [status.id],
+          statusIds: [status.id],
           reorder: {
             place: "before",
-            status: statuses[newPosition + 1].id,
+            statusId: statuses[newPosition + 1].id,
           },
         };
       } else {
         payload = {
-          statuses: [status.id],
+          statusIds: [status.id],
           reorder: {
             place: "after",
-            status: statuses[newPosition - 1].id,
+            statusId: statuses[newPosition - 1].id,
           },
         };
       }

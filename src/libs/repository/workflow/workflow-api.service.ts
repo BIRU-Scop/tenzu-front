@@ -20,7 +20,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Workflow, WorkflowStatusReorderPayload } from "./workflow.model";
+import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { Status } from "../status";
 import { AbstractApiServiceDetail } from "../base";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
@@ -93,7 +93,7 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   reorderStatus(
     projectId: Workflow["projectId"],
     workflowSlug: Workflow["slug"],
-    payload: WorkflowStatusReorderPayload,
+    payload: ReorderWorkflowStatusesPayload,
   ) {
     return this.http.post(`${this.getBaseUrl({ projectId })}/${workflowSlug}/statuses/reorder`, payload);
   }

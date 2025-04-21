@@ -19,19 +19,12 @@
  *
  */
 
-import { UserMinimal } from "../user";
-import { ProjectDetail } from "../project";
-import { WorkspaceSummary } from "../workspace";
-
-export type ProjectForProjectMembership = Pick<
-  ProjectDetail,
-  "logo" | "logoSmall" | "logoLarge" | "id" | "name" | "slug" | "description" | "color"
->;
-
-export type WorkspaceForWorkspaceMembership = Pick<WorkspaceSummary, "id" | "name" | "slug">;
+import { Role } from "../membership";
+import { WorkspaceNested } from "../workspace";
+import { UserNested } from "../user";
 
 export type WorkspaceMembership = {
-  user: UserMinimal;
-  workspace: WorkspaceForWorkspaceMembership;
-  projects: ProjectForProjectMembership[];
+  user: UserNested;
+  workspace: WorkspaceNested;
+  role: Role;
 };

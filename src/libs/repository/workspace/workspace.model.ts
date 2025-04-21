@@ -19,36 +19,32 @@
  *
  */
 
-import { ProjectDetail } from "../project";
+import { ProjectNested } from "../project";
+import { Role } from "../membership";
 
-export type WorkspaceProject = Pick<
-  ProjectDetail,
-  "id" | "name" | "slug" | "description" | "color" | "logo" | "logoSmall" | "logoLarge" | "landingPage" | "workspaceId"
->;
-
-export type WorkspaceRole = "owner" | "admin" | "member" | "readonly-member";
-
-export type WorkspaceBase = {
+type _WorkspaceBaseNested = {
   id: string;
   name: string;
   slug: string;
+};
+
+export type WorkspaceLinkNested = _WorkspaceBaseNested;
+
+export type WorkspaceNested = _WorkspaceBaseNested & {
   color: number;
 };
-export type WorkspaceSummary = WorkspaceBase & {
-  userMemberProjects: WorkspaceProject[];
-  userInvitedProjects: WorkspaceProject[];
-  userIsInvited: boolean;
+
+type _WorkspaceListProjectsSummary = {
+  userMemberProjects: ProjectNested[];
+  userInvitedProjects: ProjectNested[];
 };
+
+export type WorkspaceSummary = WorkspaceNested &
+  _WorkspaceListProjectsSummary & {
+    userIsInvited: boolean;
+  };
 
 export type WorkspaceDetail = WorkspaceSummary & {
-  userIsInvited: boolean;
-  // user_role: Role;
+  userRole?: Role;
   totalProjects: number;
 };
-
-// not implemented yet
-export type WorkspaceFilter = Record<string, never>;
-
-export type WorkspaceCreation = Pick<WorkspaceSummary, "name" | "color">;
-
-export type WorkspaceEdition = Pick<WorkspaceSummary, "name">;

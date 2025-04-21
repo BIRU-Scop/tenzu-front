@@ -141,12 +141,13 @@ export default class WorkspacePeopleComponent {
         description: this.translocoService.translate("workspace.people.description_modal"),
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
       const selectedWorkspace = this.workspaceService.entityDetail();
-      if (selectedWorkspace && invitationsMail.length) {
+      if (selectedWorkspace && invitationEmails.length) {
         await this.workspaceInvitationService.createBulkInvitations(
-          selectedWorkspace.id,
-          invitationsMail.map((email) => ({ usernameOrEmail: email })),
+          selectedWorkspace,
+          // TODO use dynamic role instead
+          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);

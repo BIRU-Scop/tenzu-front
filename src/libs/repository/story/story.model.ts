@@ -20,7 +20,7 @@
  */
 
 import { Status } from "../status";
-import { User, UserMinimal } from "../user";
+import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 
 export type StoryReorder = {
@@ -44,7 +44,7 @@ export type Story = {
   workflowId: string;
   projectId: string;
   statusId: string;
-  assignees: Array<UserMinimal>;
+  assignees: Array<UserNested>;
 };
 
 export interface createdBy {
@@ -87,6 +87,6 @@ export type StoryAttachment = {
 };
 
 export type StoryAssign = {
-  user: UserMinimal;
+  user: UserNested;
   story: Pick<Story, "ref" | "title">;
 };

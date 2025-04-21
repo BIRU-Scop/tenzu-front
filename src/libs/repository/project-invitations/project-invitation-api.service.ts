@@ -22,13 +22,9 @@
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
 import { ProjectDetail } from "../project";
-import {
-  CreateProjectInvitationRequest,
-  CreateProjectInvitationResponse,
-  ProjectInvitation,
-  ProjectInvitationAccept,
-} from "./project-invitation.model";
+import { ProjectInvitation, PublicProjectPendingInvitation } from "./project-invitation.model";
 import { Observable } from "rxjs";
+import { CreateInvitations, InvitationsPayload } from "../membership";
 
 type ListProjectInvitationParams = {
   projectId: string;
@@ -73,19 +69,19 @@ export class ProjectInvitationsApiService extends AbstractApiService<
   override delete(): Observable<void> {
     throw new Error("Method not implemented.");
   }
-  createBulkInvitations(data: CreateProjectInvitationRequest, params: { projectId: ProjectDetail["id"] }) {
-    return this.http.post<CreateProjectInvitationResponse>(`${this.getBaseUrl(params)}`, data);
+  createBulkInvitations(data: InvitationsPayload, params: { projectId: ProjectDetail["id"] }) {
+    return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
   getByToken(params: { token: string }) {
-    return this.http.get<ProjectInvitation>(`${this.baseUrl}/invitations/${params.token}`);
+    return this.http.get<PublicProjectPendingInvitation>(`${this.baseUrl}/invitations/${params.token}`);
   }
 
   acceptByToken(params: { token: string }) {
-    return this.http.post<ProjectInvitationAccept>(`${this.baseUrl}/invitations/${params.token}/accept`, params.token);
+    return this.http.post<ProjectInvitation>(`${this.baseUrl}/invitations/${params.token}/accept`, params.token);
   }
 
   acceptForCurrentUser(params: { projectId: ProjectDetail["id"] }) {
-    return this.http.post<ProjectInvitationAccept>(`${this.getBaseUrl(params)}/accept`, null);
+    return this.http.post<ProjectInvitation>(`${this.getBaseUrl(params)}/accept`, null);
   }
 
   denyForCurrentUser(params: { projectId: ProjectDetail["id"] }) {

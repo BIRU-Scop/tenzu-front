@@ -23,9 +23,9 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceInvitationEntitiesStore } from "./workspace-invitation.store";
 import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-service";
-import { ProjectDetail } from "../project";
-import { WorkspaceSummary } from "../workspace";
-import { CreateWorkspaceInvitation } from "./workspace-invitation.model";
+import { WorkspaceDetail, WorkspaceSummary } from "../workspace";
+import { InvitationsPayload } from "@tenzu/repository/membership";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -41,9 +41,16 @@ export class WorkspaceInvitationRepositoryService {
     this.workspaceInvitationEntitiesStore.setAllEntities(workspaceInvitations);
   }
 
-  async createBulkInvitations(workspaceId: ProjectDetail["id"], invitations: CreateWorkspaceInvitation[]) {
+  async createBulkInvitations(workspace: WorkspaceDetail, invitations: InvitationsPayload["invitations"]) {
     const createWorkspaceInvitationResponse = await lastValueFrom(
-      this.workspaceInvitationsApiService.createBulkInvitations({ invitations }, { workspaceId }),
+      this.workspaceInvitationsApiService.createBulkInvitations({ invitations }, { workspaceId: workspace.id }).pipe(
+        map((createInvitations) => {
+          return {
+            ...createInvitations,
+            invitations: createInvitations.invitations.map((invitation) => ({ ...invitation, workspace: workspace })),
+          };
+        }),
+      ),
     );
     this.workspaceInvitationEntitiesStore.addEntities(createWorkspaceInvitationResponse.invitations);
   }

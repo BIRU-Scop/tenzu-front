@@ -20,25 +20,42 @@
  */
 
 import { Tokens } from "../auth";
-import { WorkspaceSummary } from "../workspace";
+import { WorkspaceNested } from "../workspace";
 
-import { ProjectSummary } from "../project";
-import { ProjectInvitation } from "../project-invitations";
-import { WorkspaceInvitation } from "../workspace-invitations";
+import { ProjectLinkNested, ProjectNested } from "../project";
+import { ProjectInvitationNested } from "../project-invitations";
+import { WorkspaceInvitationNested } from "../workspace-invitations";
 
-export interface User {
+export type UserNested = {
   username: string;
   fullName: string;
   color: number;
+};
+
+export type User = UserNested & {
   email: string;
   lang: string;
-}
+};
 
-export type UserMinimal = Pick<User, "username" | "fullName" | "color">;
+export type VerificationInfo = {
+  auth: Tokens;
+  workspaceInvitation: WorkspaceInvitationNested;
+  projectInvitationToken: ProjectInvitationNested;
+};
 
-export type UserCreation = Omit<User, "username" | "color" | "lang"> & {
+type _WorkspaceForDeleteWithProjectsNested = WorkspaceNested & {
+  projects: ProjectLinkNested[];
+};
+
+export type UserDeleteInfo = {
+  onlyOwnerCollectiveWorkspaces: WorkspaceNested[];
+  onlyOwnerCollectiveProjects: ProjectNested[];
+  onlyMemberWorkspaces: _WorkspaceForDeleteWithProjectsNested[];
+  onlyMemberProjects: ProjectNested[];
+};
+
+export type CreateUserPayload = Pick<User, "fullName" | "email"> & {
   password: string;
-  username?: string;
   acceptTerms: boolean;
   color?: number;
   lang?: string;
@@ -48,25 +65,8 @@ export type UserCreation = Omit<User, "username" | "color" | "lang"> & {
   acceptWorkspaceInvitation?: boolean;
 };
 
-export type UserEdition = {
-  fullName: string;
-  lang: string;
-  password: string;
-};
-
-type WorkspaceForDelete = Pick<WorkspaceSummary, "id" | "name" | "slug" | "color"> & {
-  projects: ProjectSummary[];
-};
-
-export type UserDeleteInfo = {
-  onlyOwnerCollectiveWorkspaces: Pick<WorkspaceSummary, "id" | "name" | "slug" | "color">[];
-  onlyOwnerCollectiveProjects: ProjectSummary[];
-  onlyMemberWorkspaces: WorkspaceForDelete[];
-  onlyMemberProjects: ProjectSummary[];
-};
-
-export type VerificationInfo = {
-  auth: Tokens;
-  workspaceInvitation: WorkspaceInvitation;
-  projectInvitationToken: ProjectInvitation;
-};
+export type UpdateUserPayload = Partial<
+  Pick<User, "fullName" | "lang"> & {
+    password: string;
+  }
+>;

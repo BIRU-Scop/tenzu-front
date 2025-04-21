@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { User, UserCreation, UserDeleteInfo, UserEdition, VerificationInfo } from "./user.model";
+import { User, CreateUserPayload, UserDeleteInfo, UpdateUserPayload, VerificationInfo } from "./user.model";
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "../auth";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
@@ -39,11 +39,11 @@ export class UserService {
     return this.http.get<User>(`${this.myUserUrl}`);
   }
 
-  patchMyUser(item: Partial<UserEdition>) {
+  patchMyUser(item: UpdateUserPayload) {
     return this.http.put<User>(`${this.myUserUrl}`, item);
   }
 
-  create(item: UserCreation) {
+  create(item: CreateUserPayload) {
     return this.http.post<User>(`${this.usersUrl}`, item);
   }
 

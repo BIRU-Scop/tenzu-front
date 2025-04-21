@@ -30,13 +30,13 @@ import { MatDivider } from "@angular/material/divider";
 import { startWith, tap } from "rxjs";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { UserMinimal } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectMembership } from "@tenzu/repository/project-membership";
 
 type AssignDialogData = {
-  assigned: UserMinimal[];
+  assigned: UserNested[];
   teamMembers: ProjectMembership[];
 };
 
@@ -153,20 +153,20 @@ export class AssignDialogComponent {
 
   memberIsAssigned(member: ProjectMembership) {
     const result = this.assignedMembers.value?.find(
-      (memberElement: UserMinimal) => memberElement.fullName === member.user.fullName,
+      (memberElement: UserNested) => memberElement.fullName === member.user.fullName,
     );
     return !!result;
   }
 
   optionSelected(event: MatSelectionListChange) {
     const member: ProjectMembership = event.options[0].value;
-    let newValue: UserMinimal[] = [...this.assignedMembers.value!];
+    let newValue: UserNested[] = [...this.assignedMembers.value!];
     if (!this.memberIsAssigned(member)) {
       newValue = [member.user, ...newValue];
       this.memberAssigned.emit(member.user.username);
     } else if (this.memberIsAssigned(member)) {
       newValue.splice(
-        newValue.findIndex((assigned_member: UserMinimal) => assigned_member.username === member.user.username),
+        newValue.findIndex((assigned_member: UserNested) => assigned_member.username === member.user.username),
         1,
       );
       this.memberUnassigned.emit(member.user.username);

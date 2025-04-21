@@ -19,34 +19,15 @@
  *
  */
 
-import { UserMinimal } from "../user";
-import { ProjectDetail, ProjectSummary } from "../project";
-import { Invitation, MembershipRole } from "../membership";
+import { InvitationBase, PublicPendingInvitationBase } from "../membership";
+import { ProjectLinkNested } from "../project";
 
-export type ProjectInvitationContent = Pick<ProjectDetail, "id" | "workspaceId" | "name" | "slug" | "landingPage">;
-
-export type ProjectInvitation = Invitation & {
-  project: ProjectInvitationContent;
+export type PublicProjectPendingInvitation = PublicPendingInvitationBase & {
+  project: ProjectLinkNested;
 };
 
-export type CreateProjectInvitationResponse = {
-  already_members: number;
-  invitations: ProjectInvitation[];
-};
-export type CreateProjectInvitation = {
-  email: string;
-  roleSlug: string;
+export type ProjectInvitation = InvitationBase & {
+  project: ProjectLinkNested;
 };
 
-export type CreateProjectInvitationRequest = {
-  invitations: CreateProjectInvitation[];
-};
-
-export interface ProjectInvitationAccept {
-  id: string;
-  workspaceId: string;
-  email: string;
-  project: ProjectSummary;
-  user: UserMinimal;
-  role: MembershipRole;
-}
+export type ProjectInvitationNested = Pick<ProjectInvitation, "project" | "status">;

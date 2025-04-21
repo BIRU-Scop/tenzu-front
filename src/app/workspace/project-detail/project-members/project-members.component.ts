@@ -141,11 +141,13 @@ export class ProjectMembersComponent {
         description: this.translocoService.translateObject("project.members.description_modal"),
       },
     });
-    dialogRef.afterClosed().subscribe(async (emails: string[]) => {
-      if (emails) {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
+      const selectedProject = this.projectService.entityDetail();
+      if (selectedProject && invitationEmails.length) {
         await this.projectInvitationService.createBulkInvitations(
-          this.projectService.entityDetail()!.id,
-          emails.map((email) => ({ email: email, roleSlug: "admin" })),
+          selectedProject,
+          // TODO use dynamic role instead
+          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);
