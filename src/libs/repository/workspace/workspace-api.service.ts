@@ -31,8 +31,8 @@ export class WorkspaceApiService extends AbstractApiService<
   WorkspaceSummary,
   WorkspaceDetail,
   WorkspaceApiServiceType.ListEntitiesSummaryParams,
-  WorkspaceApiServiceType.CreateEntityDetailParams,
   WorkspaceApiServiceType.GetEntityDetailParams,
+  WorkspaceApiServiceType.CreateEntityDetailParams,
   WorkspaceApiServiceType.PutEntityDetailParams,
   WorkspaceApiServiceType.PatchEntityDetailParams,
   WorkspaceApiServiceType.DeleteEntityDetailParams

@@ -23,7 +23,7 @@ import { WorkspaceSummary } from "./workspace.model";
 
 export type BaseParams = { workspaceId: WorkspaceSummary["id"] };
 export type ListEntitiesSummaryParams = undefined;
-export type CreateEntityDetailParams = BaseParams;
+export type CreateEntityDetailParams = undefined;
 export type GetEntityDetailParams = BaseParams;
 export type PutEntityDetailParams = BaseParams;
 export type PatchEntityDetailParams = BaseParams;
