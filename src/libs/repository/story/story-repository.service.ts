@@ -23,7 +23,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { StoryApiService } from "./story-api.service";
 import { lastValueFrom } from "rxjs";
 import type * as StoryApiServiceType from "./story-api.type";
-import { Story, StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
+import { Story, StoryAssign, StoryAttachment, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Status } from "../status";
@@ -91,6 +91,9 @@ export class StoryRepositoryService extends BaseRepositoryService<
     }
     return this.entitiesSummary();
   }
+  override async createRequest(item: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
+    return super.createRequest(item, params);
+  }
 
   override async getRequest(params: StoryApiServiceType.GetEntityDetailParams) {
     const story = super.getRequest(params);
@@ -148,9 +151,9 @@ export class StoryRepositoryService extends BaseRepositoryService<
     projectId: string,
     workflowSlug: string,
   ) {
-    const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event);
+    const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event, workflowSlug);
     if (!payload) return;
-    await lastValueFrom(this.apiService.reorder(payload, { projectId, workflowSlug }));
+    await lastValueFrom(this.apiService.reorder(payload, { projectId }));
   }
 
   deleteStatusGroup(oldStatusId: string, newStatus: Status) {

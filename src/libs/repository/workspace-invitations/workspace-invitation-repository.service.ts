@@ -24,7 +24,7 @@ import { lastValueFrom } from "rxjs";
 import { WorkspaceInvitationEntitiesStore } from "./workspace-invitation.store";
 import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-service";
 import { WorkspaceDetail, WorkspaceSummary } from "../workspace";
-import { InvitationsPayload } from "@tenzu/repository/membership";
+import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
 
 @Injectable({

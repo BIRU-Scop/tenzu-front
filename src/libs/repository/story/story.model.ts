@@ -31,6 +31,7 @@ export type StoryReorderPayload = {
   reorder?: StoryReorder;
   statusId: string;
   stories: number[];
+  workflowSlug: string;
 };
 export type StoryReorderPayloadEvent = StoryReorderPayload & {
   status: Status;
@@ -71,7 +72,8 @@ export type StoryDetail = Story & {
   descriptionUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
 };
 
-export type StoryCreate = Pick<Story, "title" | "statusId">;
+export type StoryCreate = Pick<Story, "title" | "statusId"> &
+  Partial<Pick<Story, "description">> & { workflowSlug: string };
 
 export type StoryUpdate = Partial<StoryDetail> & {
   workflowSlug?: string;

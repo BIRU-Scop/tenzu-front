@@ -56,7 +56,7 @@ export type ProjectDetail = ProjectSummary & {
   userRole?: Role;
 };
 
-export type CreateProjectPayload = Pick<ProjectNested, "name"> &
+export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId"> &
   Partial<Pick<ProjectNested, "description" | "color" | "logo">>;
 
 export type UpdateProjectPayload = Partial<Pick<ProjectNested, "description" | "name">>;

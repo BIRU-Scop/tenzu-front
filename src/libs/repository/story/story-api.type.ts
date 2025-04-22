@@ -25,7 +25,7 @@ import { Workflow } from "../workflow";
 export type BaseParams = { projectId: Story["projectId"]; ref: Story["ref"] };
 export type ListEntitiesSummaryParams = { projectId: Story["projectId"]; workflowSlug: Workflow["slug"] };
 export type GetEntityDetailParams = BaseParams;
-export type CreateEntityDetailParams = { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] };
+export type CreateEntityDetailParams = { projectId: Workflow["projectId"] };
 export type PutEntityDetailParams = BaseParams;
 export type PatchEntityDetailParams = BaseParams;
 export type DeleteEntityDetailParams = BaseParams;

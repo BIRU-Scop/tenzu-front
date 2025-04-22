@@ -105,7 +105,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>) {
+    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>, workflowSlug: string) {
       const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
@@ -129,7 +129,7 @@ export const StoryEntitiesSummaryStore = signalStore(
         store.updateEntity(story.ref, { statusId: nextStatus.id });
       }
       copyGroupedByStatus[lastStatus.id] = lastArray;
-      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
+      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex, workflowSlug);
 
       patchState(store, { groupedByStatus: { ...copyGroupedByStatus } });
       return payload;
@@ -190,18 +190,26 @@ export const StoryDetailStore = signalStore(
   })),
 );
 
-function calculatePayloadReorder(storyId: number, statusId: string, stories: Story[], index: number) {
+function calculatePayloadReorder(
+  storyId: number,
+  statusId: string,
+  stories: Story[],
+  index: number,
+  workflowSlug: string,
+) {
   let result: StoryReorderPayload;
   if (index === stories.length - 1) {
     result = {
       statusId: statusId,
       stories: [storyId],
+      workflowSlug,
     };
   } else {
     result = {
       statusId: statusId,
       reorder: { place: "before", ref: stories[index + 1].ref },
       stories: [storyId],
+      workflowSlug,
     };
   }
   return result;
