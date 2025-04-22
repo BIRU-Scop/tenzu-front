@@ -353,9 +353,7 @@ export class ProjectKanbanComponent {
   moveStatus(oldPosition: number, step: Step) {
     const selectedWorkspace = this.workflowService.entityDetail();
     if (selectedWorkspace) {
-      this.workflowService
-        .reorder(selectedWorkspace.projectId, selectedWorkspace.slug, oldPosition, oldPosition + step)
-        .then();
+      this.workflowService.reorder(selectedWorkspace.id, oldPosition, oldPosition + step).then();
     }
   }
 
@@ -390,8 +388,8 @@ export class ProjectKanbanComponent {
           return;
         }
         const editedWorkflow = await this.projectKanbanService.editSelectedWorkflow(
-          { name: name },
-          { projectId: currentWorkflow.projectId, workflowSlug: currentWorkflow.slug },
+          { name: name, id: currentWorkflow.id },
+          { workflowId: currentWorkflow.id },
         );
         this.notificationService.success({
           title: "notification.workflow.renamed",

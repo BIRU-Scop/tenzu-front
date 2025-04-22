@@ -45,14 +45,14 @@ export class ProjectKanbanService {
   public async createStatus(status: Pick<Status, "name" | "color">) {
     const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
-      await this.workflowService.createStatus(selectedProject.id, status);
+      await this.workflowService.createStatus(status);
     }
   }
 
   public async deleteStatus(statusId: string, moveToStatus?: string) {
     const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
-      await this.workflowService.deleteStatus(selectedProject.id, statusId, moveToStatus);
+      await this.workflowService.deleteStatus(statusId, moveToStatus);
       const newStatus = this.workflowService.entityDetail()?.statuses.find((status) => status.id === moveToStatus);
       if (newStatus) {
         this.storyService.deleteStatusGroup(statusId, newStatus);
@@ -63,7 +63,7 @@ export class ProjectKanbanService {
   public async editStatus(status: Pick<Status, "name" | "id">) {
     const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
-      await this.workflowService.editStatus(selectedProject.id, status);
+      await this.workflowService.editStatus(status);
     }
   }
 
@@ -87,8 +87,8 @@ export class ProjectKanbanService {
   }
 
   async editSelectedWorkflow(
-    patchData: Partial<Omit<Workflow, "projectId" | "slug">>,
-    params: { projectId: string; workflowSlug: string },
+    patchData: Pick<Workflow, "id"> & Partial<Omit<Workflow, "projectId" | "slug">>,
+    params: { workflowId: Workflow["id"] },
   ) {
     const updatedWorkflow = await this.workflowService.patchRequest(patchData, params);
     if (updatedWorkflow) {
@@ -112,7 +112,7 @@ export class ProjectKanbanService {
     }
     const deletedWorkflow = await this.workflowService.deleteRequest(
       workflowToDelete,
-      { workflowSlug: workflowToDelete.slug, projectId: workflowToDelete.projectId },
+      { workflowId: workflowToDelete.id },
       moveToWorkflow ? { moveToWorkflow: moveToWorkflow } : undefined,
     );
     if (!deletedWorkflow) {

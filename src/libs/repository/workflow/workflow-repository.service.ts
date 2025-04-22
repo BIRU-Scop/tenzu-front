@@ -24,7 +24,7 @@ import { Status, StatusDetail } from "../status";
 import { lastValueFrom } from "rxjs";
 import { WorkflowApiService } from "./workflow-api.service";
 import { Workflow } from "./workflow.model";
-import { ProjectDetail, ProjectRepositoryService } from "../project";
+import { ProjectRepositoryService } from "../project";
 import { WorkflowDetailStore } from "./workflow-entities.store";
 import { BaseRepositoryDetailService } from "../base";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
@@ -46,37 +46,27 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
 
   statuses = this.entityDetailStore.entities;
 
-  override async createRequest(item: Partial<Workflow>, params?: WorkflowApiServiceType.CreateEntityDetailParams) {
+  override async createRequest(
+    item: Pick<Workflow, "name" | "projectId">,
+    params?: WorkflowApiServiceType.CreateEntityDetailParams,
+  ) {
     const workflow = await super.createRequest(item, params);
     this.projectRepositoryService.addWorkflow(workflow);
     return workflow;
   }
 
-  async getByIdRequest(params: {
-    workflowId: Workflow["id"];
-    projectId: ProjectDetail["id"];
-  }): Promise<Workflow | undefined> {
-    let currentWorkflowDetail = this.entityDetail();
+  override async getRequest(params: WorkflowApiServiceType.GetEntityDetailParams) {
+    const currentWorkflowDetail = this.entityDetail();
 
-    if (
-      currentWorkflowDetail &&
-      currentWorkflowDetail.id === params.workflowId &&
-      currentWorkflowDetail.projectId === params.projectId
-    ) {
+    if (currentWorkflowDetail && currentWorkflowDetail.id === params.workflowId) {
       return currentWorkflowDetail;
     }
-    currentWorkflowDetail = await lastValueFrom(this.apiService.getById(params));
-
-    if (currentWorkflowDetail) {
-      this.entityDetailStore.setWorkflow(currentWorkflowDetail);
-      return currentWorkflowDetail;
-    }
-    return undefined;
+    return super.getRequest(params);
   }
 
-  async getBySlug(workflow: Pick<Workflow, "projectId" | "slug">): Promise<Workflow | undefined> {
+  async getBySlugRequest(workflow: Pick<Workflow, "projectId" | "slug">): Promise<Workflow | undefined> {
     const refreshedWorkflow = await lastValueFrom(
-      this.apiService.get({ projectId: workflow.projectId, workflowSlug: workflow.slug }),
+      this.apiService.getBySlug({ projectId: workflow.projectId, workflowSlug: workflow.slug }),
     );
     if (refreshedWorkflow) {
       this.entityDetailStore.setWorkflow(refreshedWorkflow);
@@ -85,46 +75,39 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     return undefined;
   }
 
-  override async patchRequest(
-    patchData: Partial<Omit<Workflow, "projectId" | "slug">>,
-    params: WorkflowApiServiceType.PatchEntityDetailParams,
-  ): Promise<Workflow> {
-    return super.patchRequest(patchData, params);
-  }
-
-  async createStatus(projectId: string, status: Pick<Status, "name" | "color">) {
+  async createStatus(status: Pick<Status, "name" | "color">) {
     const selectedWorkflow = this.entityDetailStore.item();
     if (selectedWorkflow) {
-      const newStatus = await lastValueFrom(this.apiService.createStatus(projectId, selectedWorkflow.slug, status));
+      const newStatus = await lastValueFrom(this.apiService.createStatus(selectedWorkflow.id, status));
       this.entityDetailStore.addStatus(newStatus);
       return newStatus;
     }
     return undefined;
   }
 
-  async editStatus(projectId: string, status: Pick<Status, "name" | "id">) {
+  async editStatus(status: Pick<Status, "name" | "id">) {
     const selectedWorkflow = this.entityDetailStore.item();
     if (selectedWorkflow) {
-      const editedStatus = await lastValueFrom(this.apiService.editStatus(projectId, selectedWorkflow.slug, status));
+      const editedStatus = await lastValueFrom(this.apiService.editStatus(selectedWorkflow.id, status));
       this.entityDetailStore.updateStatus(editedStatus);
       return editedStatus;
     }
     return undefined;
   }
 
-  async deleteStatus(projectId: string, statusId: string, moveToStatus: string | undefined) {
+  async deleteStatus(statusId: string, moveToStatus: string | undefined) {
     const selectedWorkflow = this.entityDetailStore.item();
     if (selectedWorkflow) {
-      await lastValueFrom(this.apiService.deleteStatus(projectId, selectedWorkflow.slug, statusId, moveToStatus));
+      await lastValueFrom(this.apiService.deleteStatus(selectedWorkflow.id, statusId, moveToStatus));
       this.entityDetailStore.removeStatus(statusId);
       return statusId;
     }
     return undefined;
   }
 
-  async reorder(projectId: string, workflowId: string, oldPosition: number, newPosition: number) {
+  async reorder(workflowId: string, oldPosition: number, newPosition: number) {
     const payload = this.entityDetailStore.reorder(oldPosition, newPosition);
-    await lastValueFrom(this.apiService.reorderStatus(projectId, workflowId, payload));
+    await lastValueFrom(this.apiService.reorderStatus(workflowId, payload));
   }
 
   wsAddStatus(status: StatusDetail) {

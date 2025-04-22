@@ -97,7 +97,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
         case content.updatesAttrs.includes("workflow"): {
           const workspace = workspaceService.entityDetail();
           if (workspace && router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}`) {
-            await workflowService.getBySlug(story.workflow);
+            await workflowService.getRequest({ workflowId: story.workflow.id });
           }
           if (
             workspace &&
@@ -277,7 +277,7 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
       const content = message.event.content as {
         reorder: ReorderWorkflowStatusesPayload & { workflow: WorkflowNested };
       };
-      await workflowService.getBySlug(content.reorder.workflow);
+      await workflowService.getRequest({ workflowId: content.reorder.workflow.id });
       break;
     }
   }
