@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.15](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.14...v0.1.0-staging.15) (2025-04-28)
+
+
+### Features
+
+* add a closable option for the user to log out if they want ([8d08bf9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8d08bf9c00011cefa54bec699a595e9b06d8d5b6))
+* add a new guard to redirect user into homepage when is logged ([424e8ba](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/424e8bacd3dfadb1a2b76bd32c4817933cb32799))
+* add denied in invitation status ([1299322](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/129932292357c64a18dc7203d8342b3129fa3f7f))
+* handle new format for user deletion info ([112b03b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/112b03baf47736c42c530b9edb867111e5990af1))
+* **project:** add accept special cards ([1b9a1ce](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/1b9a1ceea5fd9b27febfc9d10b271b0878be43ba))
+* **project:** add deny special cards ([67987fb](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/67987fbd8aa21231714c373fbf62b5eed44e9883))
+* remove my from api endpoints ([8bd6d5f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8bd6d5f3d503c1c4b412987565a96e6a90f53fff))
+* remove notion of workspace guests ([f67563d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f67563d95a7a3bd8dd6ded8849e984159af10e1c))
+* update models for workspace, user, project, invitation, membership and role in order to mirror backend serializers and validators, use statusId instead of status where relevant ([522dbc7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/522dbc735d5a5870691cda418e10d44daf253a15))
+* use new form of data from the api to display workspaces ([79b72ca](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/79b72cab04bf462dc401049b2dc46169c2b92f47))
+
+
+### Bug Fixes
+
+* add a badge to show unread notifications clearer, adjust margin to the notification unit for better presentation, darken the notif numbered badge ([56afea0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/56afea076c314bfa3269ff57e8216a8128270f0c))
+* add a check to avoid redirecting the user which is on a kanban on the selected story of another user ([8127637](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/81276376716d64302e32f4f299bb21911cb06f91))
+* add code to display kanban name when full-screen story display ([ee3c686](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/ee3c68610fb237540c593795f1c1f7c8330ee807))
+* add divider to notification menu header, reduce its size and the one of the toggle menu, label color lighter ([c4ae86d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c4ae86d4b7fcd8d4c91237c3b5e576fded35996b))
+* add error 400 catcher by using the Django error object detail as a translation key ([4a7c93a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4a7c93a725429bf6deb0d14c15d8196edd4ba3a1))
+* add more margin to the label of the toggle ([4c632f3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4c632f37b58fba5575af12e77e6a9aa064688085))
+* add project update event listener and display translated notification ([45aadd8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/45aadd8fd8cf5f68d5a7e806433f2800afb129d9))
+* add project update event type and rename delete one for more harmony ([6d2ff45](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/6d2ff4545ec1b8af785063eba4c9ea4971635804))
+* adjust styling of the adding button to delete the default ripple and focus styling, center the button with the same padding than the list item ([8bdcfea](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8bdcfea55e02a175c6356ef039c631598851978f))
+* change word inside the dialog modale ([1bf3ed3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/1bf3ed3a2e2b470ac7655be597b33638fe7a4040))
+* clean body ([7ece81d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7ece81d56514fca131680324cbe237868e913ac7))
+* clean code ([e8bb621](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e8bb62195c623625e77a5ee07bc9ca17806b30d2))
+* cover all the cases ([1cba8aa](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/1cba8aa0619abc1d289c1e5491053f773df19d2c))
+* create signal to check if workflows maximum is reached, add tooltip and disabled to the button, change <a> classes into mat-icon-button ([b8a1acc](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b8a1acca734c47bc9692fd2e4fa5c0c761798796))
+* fix default icon behavior to fix the oversized add member icon ([e29af85](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e29af859552ae64bdaf34a3106625da79461ccbc))
+* fix mistake ([41cfd45](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/41cfd456ad30bd269fdef84315cad2312e4bd938))
+* fix mistakes ([36cfa6e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/36cfa6e6403f88f24c14ad73b422adff9812a92f))
+* force the login user to be redirect to the home page if they try to access the login/reset-password/sign-up pages ([c41ef9f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c41ef9f9f384abec76b98a2ebe06bdd617fcbf06))
+* install ngx-file-saver to download correctly the file instead of browser link ([89d930e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/89d930ec51167666fe42e9dd6c841f842f79f35a))
+* lighten the secondary info in the notification description and center the avatar with the text ([a1c5db5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a1c5db5b85979dfa609a6b13dab999608b3c7550))
+* make stories movable in real time for user watching the same kanban ([92eb7d5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/92eb7d5bc9d221df3c36c7f4886be7137072a9d5))
+* make the tokens overrides as dynamic as possible ([4bd70d3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4bd70d34f5944b16129958d6cd2a362220124d6e))
+* missing commented lines and a little refactor of the breadcrumbs store ([cba4e01](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cba4e01c5af86267c51a6da68147d6f07244567a))
+* redirect to project invitation without depending on non-existent workspace invitation on user verification ([e85bf4e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e85bf4ee12b36b35412f1ed54d0eef016fc920cf))
+* replace the breadcrumb logic into a higher component than story-detail to adapt it to the story layout ([874532d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/874532d3a060f75fae24254b489b3315bd58f17b))
+* reset file typed input to force Chrome not refusing the deleted file to be upload again ([e96851a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e96851a9a7ee079bedc57b4d4b0c058bc6c506f3))
+* side-nav layout deleted story fixed ([488e1f6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/488e1f649609a949c1692cd9d0bd4cecd5035cf1))
+* simplify code to avoid repetition ([5c7f25b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5c7f25b04d329d2053979a08f03e3a26a8175837))
+* simplify the code ([824543b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/824543b2893d6e0b9aeaddd833480daa559bf722))
+* simplify the function which take the first two letters from a project name ([7430ac6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7430ac683cba2f41cb0d6b26e68f8b513f3b5225))
+* uninstall ngx-file-saver to keep only file-saver and reduce dependencies ([a1fffd7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a1fffd7b88b1752eeda7e19a01f4db96ea709cce))
+* update guests list after sending a invite to a project member ([576a4f5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/576a4f5106462dd0e0db7d60ee076f3cd78c8c58))
+* update guests list after sending a invite to a worskpace member ([8d1b9d3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8d1b9d3c057e629159a22f1ee2edd56632ce501e))
+* update workspaces or projects summary list without error after accepting or denying an invitation ([80b5a3e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/80b5a3e4ee68ced5964c74b4de0b9605376bcc85))
+* use new path for data manipulation ([5177735](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/517773522ca414200c5eccb7e8c37f273e007981))
+* wrong create url typing ([5bef599](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5bef59911358c7bc5f94890d66ae72073a82c062))
+
 ## [0.1.0-staging.14](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.13...v0.1.0-staging.14) (2025-02-27)
 
 ## [0.1.0-staging.13](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.12...v0.1.0-staging.13) (2025-02-04)

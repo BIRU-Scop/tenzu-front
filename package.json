@@ -1,6 +1,6 @@
 {
   "name": "tenzu",
-  "version": "0.1.0-staging.14",
+  "version": "0.1.0-staging.15",
   "scripts": {
     "ng": "ng",
     "start": "ng serve  tenzu --hmr --host 0.0.0.0 --allowed-hosts true",
