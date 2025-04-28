@@ -98,11 +98,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit {
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
   ngAfterViewInit(): void {
-    this.breadcrumbStore.setThirdLevel({
-      label: "workspace.general_title.workspaceListProjects",
-      link: "",
-      doTranslation: true,
-    });
+    this.breadcrumbStore.setPathComponent("workspaceProjectList");
   }
 
   async acceptProjectInvitation(project: ProjectSummary) {

@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
@@ -39,7 +38,6 @@ export class WorkspaceDetailComponent implements OnDestroy {
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);
   sideNavStore = inject(SideNavStore);
-  breadcrumbStore = inject(BreadcrumbStore);
 
   ngOnDestroy(): void {
     this.projectService.resetEntitySummaryList();
@@ -77,22 +75,5 @@ export class WorkspaceDetailComponent implements OnDestroy {
         testId: "settings-link",
       },
     ]);
-    this.breadcrumbStore.setFourthLevel(undefined);
-
-    this.breadcrumbStore.setFirstLevel({
-      label: "workspace.general_title.workspaces",
-      link: "/",
-      doTranslation: true,
-    });
-    toObservable(this.workspaceService.entityDetail)
-      .pipe(filterNotNull())
-      .subscribe((workspace) => {
-        this.breadcrumbStore.setSecondLevel({
-          label: workspace.name,
-          link: `workspace/${workspace.id}`,
-          doTranslation: false,
-        });
-        this.breadcrumbStore.setFourthLevel(undefined);
-      });
   }
 }

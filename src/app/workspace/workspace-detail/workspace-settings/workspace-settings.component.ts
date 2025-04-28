@@ -149,11 +149,7 @@ export default class WorkspaceSettingsComponent {
   }
 
   constructor() {
-    this.breadcrumbStore.setThirdLevel({
-      label: "workspace.general_title.workspaceSettings",
-      link: "",
-      doTranslation: true,
-    });
+    this.breadcrumbStore.setPathComponent("workspaceSettings");
     effect(() => {
       this.reset();
     });

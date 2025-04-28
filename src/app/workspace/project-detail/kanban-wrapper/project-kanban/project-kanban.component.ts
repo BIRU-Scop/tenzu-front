@@ -38,8 +38,6 @@ import { Status } from "@tenzu/repository/status";
 import { Step, WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
@@ -253,13 +251,7 @@ export class ProjectKanbanComponent {
   protected readonly Step = Step;
 
   constructor() {
-    toObservable(this.workflowService.entityDetail)
-      .pipe(filterNotNull())
-      .subscribe(async (workflow) => {
-        this.breadcrumbStore.setSixthLevel({ label: workflow.name, doTranslation: false });
-      });
-
-    this.breadcrumbStore.setFifthLevel({ label: "workspace.general_title.kanban", link: "", doTranslation: true });
+    this.breadcrumbStore.setPathComponent("projectKanban");
   }
 
   openCreateStory(event: MouseEvent, statusId: string): void {

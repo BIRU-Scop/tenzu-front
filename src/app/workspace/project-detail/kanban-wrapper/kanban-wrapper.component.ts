@@ -136,8 +136,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
 
   setUpBreadcrumbForFullView(storyView: string): void {
     if (storyView === "fullView") {
-      this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
-      this.breadcrumbStore.setSixthLevel(undefined);
+      this.breadcrumbStore.setPathComponent("storyDetail");
     }
   }
 
