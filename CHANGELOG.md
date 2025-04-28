@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.16](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.15...v0.1.0-staging.16) (2025-04-28)
+
+
+### Bug Fixes
+
+* improve story management and kanban workflow handling and fix assignees bug ([4b49dae](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4b49daef4072bb3c040b7b964b54a56d0e49a8f7))
+
 ## [0.1.0-staging.15](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.14...v0.1.0-staging.15) (2025-04-28)
 
 
