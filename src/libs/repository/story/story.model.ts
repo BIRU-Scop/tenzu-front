@@ -20,7 +20,7 @@
  */
 
 import { Status } from "../status";
-import { User, UserMinimal } from "../user";
+import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 
 export type StoryReorder = {
@@ -31,6 +31,7 @@ export type StoryReorderPayload = {
   reorder?: StoryReorder;
   statusId: string;
   stories: number[];
+  workflowSlug: string;
 };
 export type StoryReorderPayloadEvent = StoryReorderPayload & {
   status: Status;
@@ -44,7 +45,7 @@ export type Story = {
   workflowId: string;
   projectId: string;
   statusId: string;
-  assignees: Array<UserMinimal>;
+  assignees: Array<UserNested>;
 };
 
 export interface createdBy {
@@ -71,7 +72,8 @@ export type StoryDetail = Story & {
   descriptionUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
 };
 
-export type StoryCreate = Pick<Story, "title" | "statusId">;
+export type StoryCreate = Pick<Story, "title" | "statusId"> &
+  Partial<Pick<Story, "description">> & { workflowSlug: string };
 
 export type StoryUpdate = Partial<StoryDetail> & {
   workflowSlug?: string;
@@ -87,6 +89,6 @@ export type StoryAttachment = {
 };
 
 export type StoryAssign = {
-  user: UserMinimal;
+  user: UserNested;
   story: Pick<Story, "ref" | "title">;
 };

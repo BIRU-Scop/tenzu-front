@@ -21,8 +21,8 @@
 
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AbstractApiService } from "@tenzu/repository/base";
-import { ProjectDetail, ProjectBase, ProjectCreation, ProjectSummary } from "./project.model";
+import { AbstractApiService } from "../base";
+import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
 import type * as ProjectApiServiceTypes from "./project-api.type";
 
 @Injectable({
@@ -50,12 +50,12 @@ export class ProjectApiService extends AbstractApiService<
     return `${this.baseUrl}/${params.projectId}`;
   }
 
-  override create(newProject: ProjectCreation): Observable<ProjectDetail> {
+  override create(newProject: CreateProjectPayload): Observable<ProjectDetail> {
     return super.create(newProject, undefined, undefined, { dataIsFormData: true });
   }
 
   override patch(
-    item: Partial<ProjectBase>,
+    item: UpdateProjectPayload,
     params: ProjectApiServiceTypes.PatchEntityDetailParams,
   ): Observable<ProjectDetail> {
     return super.patch(item, params, undefined, { dataIsFormData: true });

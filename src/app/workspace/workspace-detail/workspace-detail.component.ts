@@ -19,13 +19,14 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-workspace-detail",
@@ -34,10 +35,15 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceDetailComponent {
+export class WorkspaceDetailComponent implements OnDestroy {
   workspaceService = inject(WorkspaceRepositoryService);
+  projectService = inject(ProjectRepositoryService);
   sideNavStore = inject(SideNavStore);
   breadcrumbStore = inject(BreadcrumbStore);
+
+  ngOnDestroy(): void {
+    this.projectService.resetEntitySummaryList();
+  }
 
   constructor() {
     toObservable(this.workspaceService.entityDetail)

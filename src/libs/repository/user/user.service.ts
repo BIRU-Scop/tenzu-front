@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { User, UserCreation, UserDeleteInfo, UserEdition, VerificationData } from "./user.model";
+import { User, CreateUserPayload, UserDeleteInfo, UpdateUserPayload, VerificationInfo } from "./user.model";
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "../auth";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
@@ -32,18 +32,18 @@ export class UserService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
   endpoint = `${this.configAppService.apiUrl()}`;
-  myUserUrl = `${this.endpoint}my/user`;
+  myUserUrl = `${this.endpoint}users/me`;
   usersUrl = `${this.endpoint}users`;
 
   getMyUser() {
     return this.http.get<User>(`${this.myUserUrl}`);
   }
 
-  patchMyUser(item: Partial<UserEdition>) {
+  patchMyUser(item: UpdateUserPayload) {
     return this.http.put<User>(`${this.myUserUrl}`, item);
   }
 
-  create(item: UserCreation) {
+  create(item: CreateUserPayload) {
     return this.http.post<User>(`${this.usersUrl}`, item);
   }
 
@@ -62,7 +62,7 @@ export class UserService {
   }
 
   verifyUsers(token: string) {
-    return this.http.post<VerificationData>(`${this.usersUrl}/verify`, { token: token });
+    return this.http.post<VerificationInfo>(`${this.usersUrl}/verify`, { token: token });
   }
 
   getDeleteInfo() {

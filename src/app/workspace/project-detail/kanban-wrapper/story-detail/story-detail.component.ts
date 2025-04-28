@@ -243,7 +243,7 @@ export default class StoryDetailComponent {
         this.form.setValue({ title: value?.title || "" });
         this.statusSelected.set(value.statusId);
         if (this.workflowService.entityDetail()?.id !== value.workflowId) {
-          await this.workflowService.getBySlug(value.workflow);
+          await this.workflowService.getBySlugRequest(value.workflow);
         }
       });
   }

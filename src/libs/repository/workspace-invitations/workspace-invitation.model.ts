@@ -19,29 +19,15 @@
  *
  */
 
-import { UserMinimal } from "../user";
-import { Workspace } from "../workspace";
+import { InvitationBase, PublicPendingInvitationBase } from "../membership";
+import { WorkspaceLinkNested } from "../workspace";
 
-export type WorkspaceInvitationContent = Pick<Workspace, "id" | "name" | "slug">;
-
-export type WorkspaceInvitation = {
-  id: string;
-  status: "pending" | "accepted" | "revoked";
-  workspace: WorkspaceInvitationContent;
-  user?: UserMinimal;
-  existingUser: boolean;
-  email?: string;
+export type PublicWorkspacePendingInvitation = PublicPendingInvitationBase & {
+  workspace: WorkspaceLinkNested;
 };
 
-export type CreateWorkspaceInvitationResponse = {
-  already_members: number;
-  invitations: WorkspaceInvitation[];
+export type WorkspaceInvitation = InvitationBase & {
+  workspace: WorkspaceLinkNested;
 };
 
-export type CreateWorkspaceInvitation = {
-  usernameOrEmail: string;
-};
-
-export type CreateWorkspaceInvitationRequest = {
-  invitations: CreateWorkspaceInvitation[];
-};
+export type WorkspaceInvitationNested = Pick<WorkspaceInvitation, "workspace" | "status">;

@@ -57,11 +57,11 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
           @let workspaceMembershipEntities = workspaceMembershipService.entities();
           @if (workspaceMembershipEntities.length > 0) {
             <mat-list>
-              @for (guest of workspaceMembershipEntities; track guest.user.username) {
+              @for (member of workspaceMembershipEntities; track member.user.username) {
                 <app-user-card
-                  [fullName]="guest.user.fullName"
-                  [username]="guest.user.username"
-                  [color]="guest.user.color"
+                  [fullName]="member.user.fullName"
+                  [username]="member.user.username"
+                  [color]="member.user.color"
                 ></app-user-card>
               }
             </mat-list>
@@ -141,12 +141,13 @@ export default class WorkspacePeopleComponent {
         description: this.translocoService.translate("workspace.people.description_modal"),
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationsMail: string[]) => {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
       const selectedWorkspace = this.workspaceService.entityDetail();
-      if (selectedWorkspace && invitationsMail.length) {
+      if (selectedWorkspace && invitationEmails.length) {
         await this.workspaceInvitationService.createBulkInvitations(
-          selectedWorkspace.id,
-          invitationsMail.map((email) => ({ usernameOrEmail: email })),
+          selectedWorkspace,
+          // TODO use dynamic role instead
+          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);

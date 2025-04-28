@@ -19,8 +19,8 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -31,9 +31,7 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
-import { ArrayElement } from "@tenzu/utils/functions/typing";
-import { Workspace } from "@tenzu/repository/workspace";
-import { WorkspaceUtilsService } from "../../workspace-utils.service";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -63,27 +61,24 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
-      @if (workspace) {
-        @for (project of workspace.invitedProjects; track project.id) {
-          <li>
-            <app-project-special-card
-              [name]="project.name"
-              [color]="project.color"
-              (submitted)="acceptProjectInvitation(project)"
-              (canceled)="denyProjectInvitation(project)"
-            ></app-project-special-card>
-          </li>
-        }
-      }
       @for (project of projectService.entitiesSummary(); track project.id) {
-        <app-project-card
-          class="basis-1/5"
-          [name]="project.name"
-          [color]="project.color"
-          [workspaceId]="project.workspaceId"
-          [description]="project.description ? project.description : null"
-          [landingPage]="getProjectLandingPageUrl(project)"
-        ></app-project-card>
+        @if (project.userIsInvited) {
+          <app-project-special-card
+            [name]="project.name"
+            [color]="project.color"
+            (submitted)="acceptProjectInvitation(project)"
+            (canceled)="denyProjectInvitation(project)"
+          ></app-project-special-card>
+        } @else {
+          <app-project-card
+            class="basis-1/5"
+            [name]="project.name"
+            [color]="project.color"
+            [workspaceId]="project.workspaceId"
+            [description]="project.description ? project.description : null"
+            [landingPage]="getProjectLandingPageUrl(project)"
+          ></app-project-card>
+        }
       } @empty {
         @for (skeleton of Array(6); track $index) {
           <li>
@@ -96,15 +91,11 @@ import { WorkspaceUtilsService } from "../../workspace-utils.service";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class WorkspaceProjectListComponent implements AfterViewInit, OnDestroy {
-  ngOnDestroy(): void {
-    this.projectService.resetEntitySummaryList();
-  }
-
-  workspaceUtilsService = inject(WorkspaceUtilsService);
-  workspaceService = inject(WorkspaceRepositoryService);
-  projectService = inject(ProjectRepositoryService);
-  breadcrumbStore = inject(BreadcrumbStore);
+export default class WorkspaceProjectListComponent implements AfterViewInit {
+  readonly workspaceService = inject(WorkspaceRepositoryService);
+  readonly projectService = inject(ProjectRepositoryService);
+  readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
+  readonly breadcrumbStore = inject(BreadcrumbStore);
 
   ngAfterViewInit(): void {
     this.breadcrumbStore.setThirdLevel({
@@ -114,12 +105,19 @@ export default class WorkspaceProjectListComponent implements AfterViewInit, OnD
     });
   }
 
-  async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
-    await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
+  async acceptProjectInvitation(project: ProjectSummary) {
+    const updatedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      project.userIsInvited = false;
+      this.projectService.updateEntitySummary(project.id, project);
+    }
   }
 
-  async denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
-    await this.workspaceUtilsService.denyInvitationForCurrentUser(project);
+  async denyProjectInvitation(project: ProjectSummary) {
+    const updatedInvitation = await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      this.projectService.deleteEntitySummary(project.id);
+    }
   }
 
   protected readonly Array = Array;

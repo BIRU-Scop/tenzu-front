@@ -19,32 +19,49 @@
  *
  */
 
-import { ProjectNested } from "../project";
-import { Role } from "../membership";
+import { UserNested } from "../user";
 
-type _WorkspaceBaseNested = {
-  id: string;
+export type Role = {
   name: string;
   slug: string;
+  isOwner: boolean;
+  order: number;
+  editable: boolean;
+  permissions: string[];
 };
 
-export type WorkspaceLinkNested = _WorkspaceBaseNested;
+export type InvitationStatus = "pending" | "accepted" | "revoked" | "denied";
 
-export type WorkspaceNested = _WorkspaceBaseNested & {
-  color: number;
+export type InvitationBase = {
+  id: string;
+  status: InvitationStatus;
+  user?: UserNested;
+  role: Role;
+  email: string;
 };
 
-type _WorkspaceListProjectsSummary = {
-  userMemberProjects: ProjectNested[];
-  userInvitedProjects: ProjectNested[];
+type _PrivateEmailInvitation = InvitationBase & {
+  email?: string;
 };
 
-export type WorkspaceSummary = WorkspaceNested &
-  _WorkspaceListProjectsSummary & {
-    userIsInvited: boolean;
-  };
+export type CreateInvitations = {
+  invitations: _PrivateEmailInvitation[];
+  alreadyMembers: number;
+};
 
-export type WorkspaceDetail = WorkspaceSummary & {
-  userRole?: Role;
-  totalProjects: number;
+export type PublicPendingInvitationBase = {
+  email: string;
+  existingUser: boolean;
+};
+
+export type InvitationsPayload = {
+  invitations: {
+    email?: string;
+    username?: string;
+    roleSlug: string;
+  }[];
+};
+
+export type UpdateInvitationPayload = {
+  roleSlug: string;
 };

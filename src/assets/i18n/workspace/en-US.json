@@ -41,13 +41,10 @@
     "title": "People",
     "invite_to_workspace": "Invite to workspace",
     "description_modal": "<p>Once they accept the invitation, they will be able to invite new members, create new projects and edit other workspace settings.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
-    "guests_tab": "Guests",
     "members_tab": "Members",
     "pending_tab": "Pending",
     "pending_empty": "There are no pending invitations to accept.",
-    "guest_empty": "There are no project members who are not members of this workspace.",
-    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them.",
-    "guest_description": "People that are part of the projects but not workspace members."
+    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them."
   },
   "placeholder": {
     "placeholder_title": "You are not member of any Workspace yet",

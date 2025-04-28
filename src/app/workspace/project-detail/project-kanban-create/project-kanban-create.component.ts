@@ -74,12 +74,8 @@ export class ProjectKanbanCreateComponent {
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       const project = this.projectService.entityDetail();
       if (name && project) {
-        const projectId = project.id;
         try {
-          const workflow = await this.workflowService.createRequest(
-            { projectId: projectId, name: name },
-            { projectId: projectId },
-          );
+          const workflow = await this.workflowService.createRequest({ projectId: project.id, name: name });
           await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
         } catch (e) {
           if (e instanceof HttpErrorResponse && e.status === 400) {

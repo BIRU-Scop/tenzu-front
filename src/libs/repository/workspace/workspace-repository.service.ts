@@ -23,7 +23,7 @@ import { inject, Injectable } from "@angular/core";
 import { WorkspaceApiService } from "./workspace-api.service";
 import { WorkspaceDetailStore, WorkspaceEntitiesSummaryStore } from "./workspace-entities-summary.store";
 import { WsService } from "@tenzu/utils/services/ws";
-import { Workspace } from "./workspace.model";
+import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
 import { BaseRepositoryService } from "../base";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
@@ -32,11 +32,11 @@ import { QueryParams } from "../base/utils";
   providedIn: "root",
 })
 export class WorkspaceRepositoryService extends BaseRepositoryService<
-  Workspace,
-  Workspace,
+  WorkspaceSummary,
+  WorkspaceDetail,
   WorkspaceApiServiceType.ListEntitiesSummaryParams,
-  WorkspaceApiServiceType.CreateEntityDetailParams,
   WorkspaceApiServiceType.GetEntityDetailParams,
+  WorkspaceApiServiceType.CreateEntityDetailParams,
   WorkspaceApiServiceType.PutEntityDetailParams,
   WorkspaceApiServiceType.PatchEntityDetailParams,
   WorkspaceApiServiceType.DeleteEntityDetailParams
@@ -47,10 +47,10 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   protected entityDetailStore = inject(WorkspaceDetailStore);
 
   override async deleteRequest(
-    item: Workspace,
+    item: WorkspaceDetail,
     params: WorkspaceApiServiceType.DeleteEntityDetailParams,
     queryParams?: QueryParams,
-  ): Promise<Workspace> {
+  ): Promise<WorkspaceDetail> {
     const workspace = await super.deleteRequest(item, params, queryParams);
     this.wsService.command({ command: "unsubscribe_to_workspace_events", workspace: workspace.id });
     return workspace;

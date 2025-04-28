@@ -19,17 +19,12 @@
  *
  */
 
-import { UserMinimal } from "../user";
-import { ProjectDetail } from "../project";
-import { MembershipRole } from "../base/misc.model";
-
-export type ProjectForProjectMembership = Pick<
-  ProjectDetail,
-  "logo" | "logoSmall" | "logoLarge" | "id" | "name" | "slug" | "description" | "color"
->;
+import { Role } from "../membership";
+import { ProjectNested } from "../project";
+import { UserNested } from "../user";
 
 export type ProjectMembership = {
-  user: UserMinimal;
-  role: MembershipRole;
-  project: ProjectForProjectMembership;
+  user: UserNested;
+  role: Role;
+  project: ProjectNested;
 };

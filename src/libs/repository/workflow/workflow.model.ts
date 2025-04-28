@@ -26,18 +26,21 @@ export enum Step {
   RIGHT = 1,
 }
 
-export type WorkflowStatusReorderPayload = {
-  statuses: string[];
-  reorder: {
-    place: "after" | "before";
-    status: string;
-  };
-};
-
-export type Workflow = {
+export type WorkflowNested = {
   id: string;
   name: string;
   slug: string;
   projectId: string;
+};
+
+export type Workflow = WorkflowNested & {
   statuses: Status[];
+};
+
+export type ReorderWorkflowStatusesPayload = {
+  statusIds: string[];
+  reorder: {
+    place: "after" | "before";
+    statusId: string;
+  };
 };

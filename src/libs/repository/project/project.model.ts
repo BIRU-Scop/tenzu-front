@@ -19,37 +19,44 @@
  *
  */
 
-import { Workspace } from "../workspace";
-import { Workflow } from "../workflow";
+import { Role } from "../membership";
+import { WorkflowNested } from "../workflow";
+import { WorkspaceNested } from "../workspace";
 
-export type ProjectBase = {
-  name: string;
-  description?: string;
-  color: number;
+export type ProjectLogoBase = {
   logo?: string;
   logoSmall?: string;
   logoLarge?: string;
 };
 
-export type ProjectCreation = ProjectBase & {
-  workspaceId: string;
-};
-
-export type ProjectSummary = ProjectBase & {
+type _ProjectBaseNested = {
   id: string;
   workspaceId: string;
+  name: string;
   slug: string;
   landingPage: string;
 };
 
-export type ProjectDetail = ProjectSummary & {
-  workspace: Pick<Workspace, "id" | "name" | "slug" | "color" | "userRole">;
-  workflows: Workflow[];
-  userIsAdmin: boolean;
-  userIsMember: boolean;
-  userPermissions: string[];
-  userHasPendingInvitation: boolean;
-  anonUserCanView?: boolean;
+export type ProjectNested = ProjectLogoBase &
+  _ProjectBaseNested & {
+    description: string;
+    color: number;
+  };
+
+export type ProjectLinkNested = _ProjectBaseNested;
+
+export type ProjectSummary = ProjectNested & {
+  userIsInvited: boolean;
 };
 
-export type ProjectFilter = Record<string, never>;
+export type ProjectDetail = ProjectSummary & {
+  workspace: WorkspaceNested;
+  workflows: WorkflowNested[];
+
+  userRole?: Role;
+};
+
+export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId"> &
+  Partial<Pick<ProjectNested, "description" | "color" | "logo">>;
+
+export type UpdateProjectPayload = Partial<Pick<ProjectNested, "description" | "name">>;

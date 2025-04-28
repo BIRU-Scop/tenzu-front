@@ -47,10 +47,10 @@ export class StoryApiService extends AbstractApiService<
   baseUrl = `${this.configAppService.apiUrl()}projects`;
 
   protected override getBaseUrl(params: { projectId: string }): string {
-    return `${this.baseUrl}/${params.projectId}`;
+    return `${this.baseUrl}/${params.projectId}/stories`;
   }
   protected override getEntityBaseUrl(params: StoryApiServiceType.BaseParams): string {
-    return `${this.getBaseUrl(params)}/stories/${params.ref}`;
+    return `${this.getBaseUrl(params)}/${params.ref}`;
   }
 
   protected baseStoryFilterByWorkflowSlugUrl(params: { projectId: string; workflowSlug: string }) {
@@ -61,10 +61,11 @@ export class StoryApiService extends AbstractApiService<
     return `${this.getEntityBaseUrl(params)}/attachments`;
   }
 
-  protected override listUrl(params: StoryApiServiceType.ListEntitiesSummaryParams) {
-    return `${this.baseStoryFilterByWorkflowSlugUrl(params)}`;
+  public baseStoryAssignmentUrl(params: StoryApiServiceType.BaseParams) {
+    return `${this.getEntityBaseUrl(params)}/assignments`;
   }
-  protected override createUrl(params: StoryApiServiceType.CreateEntityDetailParams) {
+
+  protected override listUrl(params: StoryApiServiceType.ListEntitiesSummaryParams) {
     return `${this.baseStoryFilterByWorkflowSlugUrl(params)}`;
   }
 
@@ -92,13 +93,13 @@ export class StoryApiService extends AbstractApiService<
   deleteStoryAttachment(params: StoryApiServiceType.GetEntityDetailParams & { attachmentId: string }) {
     return this.http.delete(`${this.baseStoryAttachmentUrl(params)}/${params.attachmentId}`);
   }
-  reorder(payload: StoryReorderPayload, params: { projectId: string; workflowSlug: string }) {
-    return this.http.post<never>(`${this.baseStoryFilterByWorkflowSlugUrl(params)}/reorder`, payload);
+  reorder(payload: StoryReorderPayload, params: { projectId: string }) {
+    return this.http.post<never>(`${this.getBaseUrl(params)}/reorder`, payload);
   }
   createAssignee(username: string, params: StoryApiServiceType.BaseParams) {
-    return this.http.post<StoryAssign>(`${this.getEntityBaseUrl(params)}/assignments`, { username });
+    return this.http.post<StoryAssign>(`${this.baseStoryAssignmentUrl(params)}`, { username });
   }
   deleteAssignee(params: StoryApiServiceType.BaseParams & { username: string }) {
-    return this.http.delete<void>(`${this.getEntityBaseUrl(params)}/${params.ref}/assignments/${params.username}`);
+    return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.username}`);
   }
 }

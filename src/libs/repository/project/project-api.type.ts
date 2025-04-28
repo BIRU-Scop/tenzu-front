@@ -20,10 +20,10 @@
  */
 
 import { ProjectDetail } from "./project.model";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
 
 export type BaseParams = { projectId: ProjectDetail["id"] };
-export type ListEntitiesSummaryParams = { workspaceId: Workspace["id"] };
+export type ListEntitiesSummaryParams = { workspaceId: WorkspaceSummary["id"] };
 export type GetEntityDetailParams = BaseParams;
 export type CreateEntityDetailParams = undefined;
 export type PutEntityDetailParams = BaseParams;

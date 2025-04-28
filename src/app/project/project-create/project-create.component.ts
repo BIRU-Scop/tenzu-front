@@ -32,7 +32,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { MatInput } from "@angular/material/input";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
-import { Workspace } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 
@@ -121,7 +121,7 @@ export default class ProjectCreateComponent {
   projectService = inject(ProjectRepositoryService);
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
-  selectedWorkspace = model<Workspace>();
+  selectedWorkspace = model<WorkspaceSummary>();
   $entities = toObservable(this.workspaceService.entitiesSummary).pipe(filter((entities) => entities.length > 0));
 
   fb = inject(FormBuilder);

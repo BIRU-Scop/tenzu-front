@@ -42,9 +42,9 @@ import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skele
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
-import { Workspace } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
-import { WorkspaceUtilsService } from "../workspace-utils.service";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
   selector: "app-workspace-list",
@@ -83,7 +83,7 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
                 [id]="workspace.id"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                @for (project of workspace.invitedProjects; track project.id) {
+                @for (project of workspace.userInvitedProjects; track project.id) {
                   <li>
                     <app-project-special-card
                       [name]="project.name"
@@ -93,7 +93,7 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
                     ></app-project-special-card>
                   </li>
                 }
-                @for (project of workspace.latestProjects; track project.id) {
+                @for (project of workspace.userMemberProjects; track project.id) {
                   <li>
                     <app-project-card
                       [workspaceId]="workspace.id"
@@ -105,8 +105,8 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
                   </li>
                 }
                 @if (
-                  (!workspace.latestProjects || workspace.latestProjects.length === 0) &&
-                  (!workspace.invitedProjects || workspace.invitedProjects.length === 0)
+                  (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
+                  (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
                 ) {
                   <li>
                     <app-project-card [workspaceId]="workspace.id"></app-project-card>
@@ -153,7 +153,7 @@ import { WorkspaceUtilsService } from "../workspace-utils.service";
 export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   readonly workspaceService = inject(WorkspaceRepositoryService);
   readonly projectService = inject(ProjectRepositoryService);
-  readonly workspaceUtilsService = inject(WorkspaceUtilsService);
+  readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -225,12 +225,28 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  async acceptProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
-    await this.workspaceUtilsService.acceptProjectInvitationForCurrentUser(project);
+  async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
+    const updatedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) =>
+          invitedProject.id !== updatedInvitation.project.id,
+      );
+      workspace.userMemberProjects = [...workspace.userMemberProjects, { ...project }];
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
   }
 
-  async denyProjectInvitation(project: ArrayElement<Workspace["invitedProjects"]>) {
-    await this.workspaceUtilsService.denyInvitationForCurrentUser(project);
+  async denyProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
+    const updatedInvitation = await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) => invitedProject.id !== project.id,
+      );
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
   }
 
   protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;

@@ -19,7 +19,7 @@
  *
  */
 
-import { UserMinimal } from "../user";
+import { UserNested } from "../user";
 import { Story } from "../story";
 import { ProjectDetail } from "../project";
 
@@ -34,7 +34,7 @@ export type NotificationType =
 export type NotificationBase = {
   id: string;
   type: NotificationType;
-  createdBy: UserMinimal;
+  createdBy: UserNested;
   createdAt: string;
   readAt: string;
   content: string;
@@ -51,8 +51,8 @@ export type StoryAssignNotification = NotificationBase & {
   content: {
     story: Story;
     project: ProjectDetail;
-    assignedBy: UserMinimal;
-    assignedTo: UserMinimal;
+    assignedBy: UserNested;
+    assignedTo: UserNested;
   };
 };
 export type StoryUnassignNotification = NotificationBase & {
@@ -60,8 +60,8 @@ export type StoryUnassignNotification = NotificationBase & {
   content: {
     story: Story;
     project: ProjectDetail;
-    unassignedBy: UserMinimal;
-    unassignedTo: UserMinimal;
+    unassignedBy: UserNested;
+    unassignedTo: UserNested;
   };
 };
 export type StoryStatusChangeNotification = NotificationBase & {
@@ -70,7 +70,7 @@ export type StoryStatusChangeNotification = NotificationBase & {
     story: Story;
     project: ProjectDetail;
     status: string;
-    changedBy: UserMinimal;
+    changedBy: UserNested;
   };
 };
 export type StoryDeleteNotification = NotificationBase & {
@@ -78,7 +78,7 @@ export type StoryDeleteNotification = NotificationBase & {
   content: {
     story: Story;
     project: ProjectDetail;
-    deletedBy: UserMinimal;
+    deletedBy: UserNested;
   };
 };
 export type StoryWorkflowChangeNotification = NotificationBase & {
@@ -86,7 +86,7 @@ export type StoryWorkflowChangeNotification = NotificationBase & {
   content: {
     story: Story;
     project: ProjectDetail;
-    changedBy: UserMinimal;
+    changedBy: UserNested;
     status: string;
     workflow: string;
   };

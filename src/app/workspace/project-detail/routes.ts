@@ -38,7 +38,7 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
       .getRequest({ projectId, ref: parseInt(route.paramMap.get("ref") || "", 10) })
       .then((story) => {
         workflowService
-          .getByIdRequest({ workflowId: story.workflowId, projectId: projectId })
+          .getRequest({ workflowId: story.workflowId })
           .then((workflow) =>
             storyService.listRequest(
               { projectId: projectId, workflowSlug: workflow?.slug || "" },
@@ -58,8 +58,8 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   return true;
 }
 export function workflowResolver(route: ActivatedRouteSnapshot) {
-  const projectId = route.paramMap.get("projectId")!;
-  const workflowSLug = route.paramMap.get("workflowSlug")!;
+  const projectId = route.paramMap.get("projectId");
+  const workflowSLug = route.paramMap.get("workflowSlug");
   const workflowService = inject(WorkflowRepositoryService);
   const storyService = inject(StoryRepositoryService);
   const router = inject(Router);
@@ -69,7 +69,7 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
     debug("workflowResolver", "load start");
     storyService.resetEntityDetail();
     workflowService
-      .getBySlug({
+      .getBySlugRequest({
         projectId: projectId,
         slug: workflowSLug,
       })

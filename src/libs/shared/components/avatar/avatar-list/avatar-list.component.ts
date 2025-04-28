@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { MatTooltip } from "@angular/material/tooltip";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { UserMinimal, UserStore } from "@tenzu/repository/user";
+import { UserNested, UserStore } from "@tenzu/repository/user";
 
 @Component({
   selector: "app-avatar-list",
@@ -58,7 +58,7 @@ import { UserMinimal, UserStore } from "@tenzu/repository/user";
 export class AvatarListComponent {
   userStore = inject(UserStore);
   userOverflowThreshold = input<number>(3);
-  users = input<UserMinimal[]>([]);
+  users = input<UserNested[]>([]);
   prioritizeCurrentUser = input<boolean>(false);
 
   filteredUsernames = computed(() => {

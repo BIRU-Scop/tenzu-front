@@ -29,7 +29,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { UserMinimal } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user";
 import { MatDialogContent } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";
@@ -82,7 +82,7 @@ export class NotificationUnitComponent {
   read = output();
 
   getContext(notification: Notification): {
-    user: UserMinimal;
+    user: UserNested;
     params: Record<string, string>;
     translateKey: string;
     link: boolean;

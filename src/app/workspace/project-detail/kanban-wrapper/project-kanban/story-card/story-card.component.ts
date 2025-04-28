@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
-import { UserMinimal } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
@@ -80,7 +80,7 @@ export class StoryCardComponent {
   title = input.required<string>();
   ref = input.required<number>();
   projectID = input.required<string>();
-  users = input.required<UserMinimal[]>();
+  users = input.required<UserNested[]>();
 
   // membershipStore = inject(MembershipStore);
   projectMembershipStore = inject(ProjectMembershipEntitiesStore);

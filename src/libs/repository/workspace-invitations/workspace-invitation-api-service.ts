@@ -21,16 +21,13 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
-import {
-  CreateWorkspaceInvitationRequest,
-  CreateWorkspaceInvitationResponse,
-  WorkspaceInvitation,
-} from "./workspace-invitation.model";
+import { PublicWorkspacePendingInvitation, WorkspaceInvitation } from "./workspace-invitation.model";
 import { Observable } from "rxjs";
-import { Workspace } from "../workspace";
+import { WorkspaceSummary } from "../workspace";
+import { CreateInvitations, InvitationsPayload } from "../membership";
 
 type ListParams = {
-  workspaceId: Workspace["id"];
+  workspaceId: WorkspaceSummary["id"];
 };
 
 @Injectable({
@@ -42,7 +39,7 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
   ListParams
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
-  protected override getBaseUrl(params: { workspaceId: Workspace["id"] }) {
+  protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/invitations`;
   }
   protected override getEntityBaseUrl(): string {
@@ -63,11 +60,11 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
   override delete(): Observable<void> {
     throw new Error("Method not implemented.");
   }
-  createBulkInvitations(data: CreateWorkspaceInvitationRequest, params: { workspaceId: Workspace["id"] }) {
-    return this.http.post<CreateWorkspaceInvitationResponse>(`${this.getBaseUrl(params)}`, data);
+  createBulkInvitations(data: InvitationsPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
+    return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
   getByToken(params: { token: string }) {
-    return this.http.get<WorkspaceInvitation>(`${this.baseUrl}/invitations/${params.token}`);
+    return this.http.get<PublicWorkspacePendingInvitation>(`${this.baseUrl}/invitations/${params.token}`);
   }
 
   acceptByToken(params: { token: string }) {
