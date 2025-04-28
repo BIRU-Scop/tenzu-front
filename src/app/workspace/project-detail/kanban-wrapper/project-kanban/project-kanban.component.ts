@@ -77,6 +77,7 @@ import { Location } from "@angular/common";
   ],
   template: `
     @let workflow = workflowService.entityDetail();
+    @let storySummaryEntityMap = storyService.entityMapSummary();
     @let statuses = workflowService.statuses();
     <div class="flex flex-row gap-x-2" *transloco="let t; prefix: 'workflow.edit_workflow'">
       <h1 class="mat-headline-small text-on-surface-variant">{{ workflow?.name }}</h1>
@@ -112,7 +113,7 @@ import { Location } from "@angular/common";
         cdkDropListGroup
       >
         @for (status of statuses; track status.id) {
-          @let stories = storyService.groupedByStatus()[status.id];
+          @let storiesRef = storyService.groupedByStatus()[status.id];
 
           <li class="group w-64 flex flex-col overflow-hidden">
             <app-status-card
@@ -121,7 +122,7 @@ import { Location } from "@angular/common";
               [config]="{ showLeft: !$first, showRight: !$last }"
               [name]="status.name"
               [id]="status.id"
-              [isEmpty]="!stories"
+              [isEmpty]="!storiesRef"
             />
             <ul
               [@newStoryFlyIn]="storyService.entitiesSummary().length || 0"
@@ -131,16 +132,17 @@ import { Location } from "@angular/common";
               [cdkDropListData]="status"
               (cdkDropListDropped)="drop($event)"
             >
-              @if (stories && stories.length > 10) {
+              @if (storiesRef && storiesRef.length > 10) {
                 <cdk-virtual-scroll-viewport [itemSize]="96" class="min-h-[100vh] w-full flex">
                   <li
-                    id="story-{{ story.ref }}"
+                    id="story-{{ storyRef }}"
                     cdkDrag
-                    [cdkDragData]="[story, idx]"
+                    [cdkDragData]="[storySummaryEntityMap[storyRef], idx]"
                     class="w-56 h-[96px]"
-                    *cdkVirtualFor="let story of stories; let idx = index"
+                    *cdkVirtualFor="let storyRef of storiesRef; let idx = index"
                     [attr.data-drag-index]="idx"
                   >
+                    @let story = storySummaryEntityMap[storyRef];
                     <app-story-card
                       [ref]="story.ref"
                       [title]="story.title"
@@ -150,7 +152,8 @@ import { Location } from "@angular/common";
                   </li>
                 </cdk-virtual-scroll-viewport>
               } @else {
-                @for (story of stories; track story.ref; let idx = $index) {
+                @for (storyRef of storiesRef; track storyRef; let idx = $index) {
+                  @let story = storySummaryEntityMap[storyRef];
                   <li
                     id="story-{{ story.ref }}"
                     cdkDrag

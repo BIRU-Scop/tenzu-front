@@ -138,7 +138,6 @@ export function withEntityDetailStore<T extends JsonObject>(
        */
       update(id: EntityId, partialItem: Partial<T>): T {
         const item = store.item();
-
         if (item && selectId(item) === id) {
           patchState(store, {
             item: {

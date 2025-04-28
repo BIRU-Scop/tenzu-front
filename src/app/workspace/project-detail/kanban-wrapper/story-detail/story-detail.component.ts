@@ -320,9 +320,9 @@ export default class StoryDetailComponent {
           teamMembers: teamMembers,
         },
       });
-      dialogRef.componentInstance.memberAssigned.subscribe((username) =>
-        this.projectKanbanService.assignStory(username, story.projectId, story.ref),
-      );
+      dialogRef.componentInstance.memberAssigned.subscribe((username) => {
+        this.projectKanbanService.assignStory(username, story.projectId, story.ref).then();
+      });
       dialogRef.componentInstance.memberUnassigned.subscribe((username) =>
         this.projectKanbanService.removeAssignStory(username, story.projectId, story.ref),
       );
