@@ -33,12 +33,13 @@ import { Status } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { Workflow } from "../workflow";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
   currentProjectId: null as string | null,
   currentWorkflowSlug: null as string | null,
-  groupedByStatus: {} as Record<string, Story[]>,
+  groupedByStatus: {} as Record<Story["statusId"], Story["ref"][]>,
 };
 export const StoryEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
@@ -53,11 +54,11 @@ export const StoryEntitiesSummaryStore = signalStore(
         (acc, story) => {
           const statusId = story.statusId;
           if (acc[statusId]) {
-            return { ...acc, [statusId]: [...acc[statusId], story] };
+            return { ...acc, [statusId]: [...acc[statusId], story.ref] };
           }
-          return { ...acc, [statusId]: [story] };
+          return { ...acc, [statusId]: [story.ref] };
         },
-        {} as Record<string, Story[]>,
+        {} as Record<Story["statusId"], Story["ref"][]>,
       );
       patchState(store, { groupedByStatus });
     },
@@ -65,6 +66,7 @@ export const StoryEntitiesSummaryStore = signalStore(
   withMethods((store) => ({
     addAssign(storyAssign: StoryAssign, ref: number) {
       const currentAssignees = store.entityMap()[ref].assignees;
+
       // avoid the double event from user event channel and project event channel
       if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
         const newAssignees = [storyAssign.user, ...store.entityMap()[ref].assignees];
@@ -105,14 +107,17 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>, workflowSlug: string) {
+    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>, workflowSlug: Workflow["slug"]) {
       const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
       const sameStatus = lastStatus.id === nextStatus.id;
       if (sameStatus && event.previousIndex === event.currentIndex) return;
 
-      const copyGroupedByStatus = JSON.parse(JSON.stringify(store.groupedByStatus()));
+      const copyGroupedByStatus = JSON.parse(JSON.stringify(store.groupedByStatus())) as Record<
+        Story["statusId"],
+        Story["ref"][]
+      >;
       const lastArray = copyGroupedByStatus[lastStatus.id] || [];
       debug("dropStoryBetweenStatus", "story_from_lastArray", lastArray[event.previousIndex]);
 
@@ -140,7 +145,7 @@ export const StoryEntitiesSummaryStore = signalStore(
 export const StoryDetailStore = signalStore(
   { providedIn: "root" },
   withState({ selectedStoryAttachments: [] as StoryAttachment[] }),
-  withEntityDetailStore<StoryDetail>(),
+  withEntityDetailStore<StoryDetail>({ selectId: selectId }),
   withMethods((store) => ({
     setStoryAttachments: (attachments: StoryAttachment[]) => {
       patchState(store, { selectedStoryAttachments: attachments });
@@ -164,7 +169,6 @@ export const StoryDetailStore = signalStore(
     },
     addAssign(storyAssign: StoryAssign) {
       const story = store.item();
-
       if (story && story.ref === storyAssign.story.ref) {
         const currentAssignees = story.assignees;
         if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
@@ -193,12 +197,12 @@ export const StoryDetailStore = signalStore(
 function calculatePayloadReorder(
   storyId: number,
   statusId: string,
-  stories: Story[],
+  storiesRef: Story["ref"][],
   index: number,
   workflowSlug: string,
 ) {
   let result: StoryReorderPayload;
-  if (index === stories.length - 1) {
+  if (index === storiesRef.length - 1) {
     result = {
       statusId: statusId,
       stories: [storyId],
@@ -207,7 +211,7 @@ function calculatePayloadReorder(
   } else {
     result = {
       statusId: statusId,
-      reorder: { place: "before", ref: stories[index + 1].ref },
+      reorder: { place: "before", ref: storiesRef[index + 1] },
       stories: [storyId],
       workflowSlug,
     };
