@@ -38,7 +38,6 @@ export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);
-  // breadcrumbStore = inject(BreadcrumbStore);
   baseUrl = computed(
     () => `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectService.entityDetail()?.id}`,
   );
@@ -79,15 +78,5 @@ export class ProjectDetailComponent {
         },
       ]);
     });
-
-    // toObservable(this.workspaceService.entityDetail).subscribe((workspace) => {
-    //   if (workspace) {
-    //     this.breadcrumbStore.setSecondLevel({
-    //       label: workspace.name,
-    //       link: `workspace/${workspace.id}`,
-    //       doTranslation: false,
-    //     });
-    //   }
-    // });
   }
 }

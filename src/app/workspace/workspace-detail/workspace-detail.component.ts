@@ -36,7 +36,6 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 export class WorkspaceDetailComponent {
   workspaceService = inject(WorkspaceRepositoryService);
   sideNavStore = inject(SideNavStore);
-  // breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
     toObservable(this.workspaceService.entityDetail)
@@ -70,22 +69,5 @@ export class WorkspaceDetailComponent {
         testId: "settings-link",
       },
     ]);
-    // this.breadcrumbStore.setFourthLevel(undefined);
-
-    // this.breadcrumbStore.setFirstLevel({
-    //   label: "workspace.general_title.workspaces",
-    //   link: "/",
-    //   doTranslation: true,
-    // });
-    // toObservable(this.workspaceService.entityDetail)
-    //   .pipe(filterNotNull())
-    //   .subscribe((workspace) => {
-    //     this.breadcrumbStore.setSecondLevel({
-    //       label: workspace.name,
-    //       link: `workspace/${workspace.id}`,
-    //       doTranslation: false,
-    //     });
-    //     this.breadcrumbStore.setFourthLevel(undefined);
-    //   });
   }
 }

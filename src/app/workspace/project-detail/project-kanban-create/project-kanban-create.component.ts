@@ -51,6 +51,7 @@ export class ProjectKanbanCreateComponent {
 
   constructor() {
     this.openCreateDialog();
+    this.breadcrumbStore.setPathComponent("projectCreateWorkflow");
   }
 
   public openCreateDialog(): void {

@@ -46,18 +46,39 @@ type KeyBreadcrumbNodeConfig =
   | "projectWorkflow"
   | "storyDetail";
 
-const pathBreadcrumbComponent = {
-  workspaceProjectList: "workspaces.workspaceDetail.workspaceDetailProjectList",
-  workspaceSettings: "workspaces.workspaceDetail.workspaceDetailSettings",
-  workspaceMembers: "workspaces.workspaceDetail.workspaceDetailMember",
-  projectMembers: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.projectMembers",
-  projectSettings: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.projectSettings",
-  projectKanban: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.projectKanban.projectWorkflow",
-  projectCreateWorkflow:
-    "workspaces.workspaceDetail.projectDetailRoot.projectDetail.projectCreateTitleWorkflow.projectCreateWorkflow",
-  storyDetail: "workspaces.workspaceDetail.workspaceDetailProjectList.projectDetail.storyDetail",
+type KeyPathBreadcrumbComponent =
+  | "workspaceProjectList"
+  | "workspaceSettings"
+  | "workspaceMembers"
+  | "projectMembers"
+  | "projectSettings"
+  | "projectKanban"
+  | "projectCreateWorkflow"
+  | "storyDetail";
+const pathBreadcrumbComponent: Record<KeyPathBreadcrumbComponent, KeyBreadcrumbNodeConfig[]> = {
+  workspaceProjectList: ["workspaces", "workspaceDetail", "workspaceDetailProjectList"],
+  workspaceSettings: ["workspaces", "workspaceDetail", "workspaceDetailSettings"],
+  workspaceMembers: ["workspaces", "workspaceDetail", "workspaceDetailMember"],
+  projectMembers: ["workspaces", "workspaceDetail", "workspaceDetailProjectList", "projectDetail", "projectMembers"],
+  projectSettings: ["workspaces", "workspaceDetail", "workspaceDetailProjectList", "projectDetail", "projectSettings"],
+  projectKanban: [
+    "workspaces",
+    "workspaceDetail",
+    "workspaceDetailProjectList",
+    "projectDetail",
+    "projectKanban",
+    "projectWorkflow",
+  ],
+  projectCreateWorkflow: [
+    "workspaces",
+    "workspaceDetail",
+    "workspaceDetailProjectList",
+    "projectDetail",
+    "projectKanban",
+    "projectCreateWorkflow",
+  ],
+  storyDetail: ["workspaces", "workspaceDetail", "workspaceDetailProjectList", "projectDetail", "storyDetail"],
 };
-type KeyPathBreadcrumbComponent = keyof typeof pathBreadcrumbComponent;
 
 export const BreadcrumbStore = signalStore(
   { providedIn: "root" },
@@ -148,8 +169,9 @@ export const BreadcrumbStore = signalStore(
       if (!keyPathComponent) {
         return [];
       }
-      const paths = pathBreadcrumbComponent[keyPathComponent].split(".") as KeyBreadcrumbNodeConfig[];
-      return paths.map((component) => breadcrumbNodeConfig[component] as BreadCrumbNodeConfig);
+      return pathBreadcrumbComponent[keyPathComponent].map(
+        (component) => breadcrumbNodeConfig[component] as BreadCrumbNodeConfig,
+      );
     }),
   })),
 );
