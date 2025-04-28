@@ -47,6 +47,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
   protected apiService = inject(StoryApiService);
   protected entitiesSummaryStore = inject(StoryEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryDetailStore);
+  override getEntityIdFn = (story: Story) => story.ref;
   selectedStoryAttachments = this.entityDetailStore.selectedStoryAttachments;
   groupedByStatus = this.entitiesSummaryStore.groupedByStatus;
   isLoading = signal(false);
@@ -131,6 +132,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
   }
   wsAddAssign(storyAssign: StoryAssign, ref: number) {
     this.entitiesSummaryStore.addAssign(storyAssign, ref);
+
     this.entityDetailStore.addAssign(storyAssign);
   }
 
