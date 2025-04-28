@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,40 +23,60 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list";
 import { RouterLink, RouterLinkActive } from "@angular/router";
-import { ProjectService } from "@tenzu/data/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { SideNavStore } from "@tenzu/data/sidenav";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { MatIconAnchor } from "@angular/material/button";
+import { MatTooltip } from "@angular/material/tooltip";
+import { SideNavStore } from "@tenzu/repository/sidenav";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 
 @Component({
   selector: "app-sidenav-list-workflow",
-  imports: [MatIcon, MatListItem, RouterLinkActive, RouterLink, TranslocoDirective, MatNavList, MatListItemIcon],
+  imports: [
+    MatIcon,
+    MatListItem,
+    RouterLinkActive,
+    RouterLink,
+    TranslocoDirective,
+    MatNavList,
+    MatListItemIcon,
+    MatIconAnchor,
+    MatTooltip,
+  ],
   template: `
     <ng-container *transloco="let t">
-      @let project = projectService.selectedEntity();
-      @let workspace = workspaceService.selectedEntity();
+      @let project = projectService.entityDetail();
+      @let workspace = workspaceService.entityDetail();
       @if (project && project?.workflows && workspace) {
         @if (!sideNavStore.resized()) {
-          <div class="flex flex-row items-center gap-2 px-2">
+          <div class="flex flex-row items-center gap-2 px-2 py-1">
             <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
+            <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
+              <a
+                mat-icon-button
+                [attr.aria-label]="t('workspace.general_title.create_kanban')"
+                [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
+                [disabled]="!canCreateWorkflow()"
+              >
+                <mat-icon>add</mat-icon>
+              </a>
+            </div>
+          </div>
+        } @else {
+          <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
             <a
-              class="nav-button flex flex-row items-center justify-center rounded-full"
-              [attr.aria-label]="t('workspace.general_title.new_kanban')"
+              class="resized"
+              mat-icon-button
+              [attr.aria-label]="t('workspace.general_title.create_kanban')"
               [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
+              [disabled]="!canCreateWorkflow()"
             >
               <mat-icon>add</mat-icon>
             </a>
           </div>
-        } @else {
-          <a
-            class="mb-1 nav-button w-full flex flex-row items-center justify-center"
-            [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
-          >
-            <mat-icon>add</mat-icon>
-          </a>
         }
 
-        <mat-nav-list attr.aria-label="{{ t('workflow.general_title.kanban') }}">
+        <mat-nav-list attr.aria-label="{{ t('workspace.general_title.kanban') }}">
           @for (workflow of project.workflows; track workflow.id) {
             @if (!sideNavStore.resized()) {
               <a
@@ -92,7 +112,8 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavListWorkflowComponent {
-  projectService = inject(ProjectService);
-  workspaceService = inject(WorkspaceService);
+  projectService = inject(ProjectRepositoryService);
+  workspaceService = inject(WorkspaceRepositoryService);
   sideNavStore = inject(SideNavStore);
+  canCreateWorkflow = this.projectService.canCreateWorkflow;
 }

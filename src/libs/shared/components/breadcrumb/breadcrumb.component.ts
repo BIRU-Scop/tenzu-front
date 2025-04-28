@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,14 +22,14 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { UpperCasePipe } from "@angular/common";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 
 @Component({
   selector: "app-breadcrumb",
   imports: [RouterLink, UpperCasePipe, TranslocoDirective],
   template: ` <div *transloco="let t" class="mat-label-medium text-on-surface-variant flex flex-wrap gap-1">
-    @for (breadCrumb of breadcrumbStore.breadCrumbConfig(); track breadCrumb.label; let last = $last) {
+    @for (breadCrumb of breadcrumbStore.breadcrumb(); track breadCrumb.label; let last = $last) {
       @if (!last) {
         <a [routerLink]="breadCrumb.link">
           @if (breadCrumb.doTranslation) {

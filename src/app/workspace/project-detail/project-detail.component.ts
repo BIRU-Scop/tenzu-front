@@ -21,12 +21,11 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { ProjectService } from "@tenzu/data/project";
-import { SideNavStore } from "@tenzu/data/sidenav";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { SideNavStore } from "@tenzu/repository/sidenav";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 
 @Component({
   selector: "app-project-detail",
@@ -37,38 +36,21 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
 })
 export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
-  workspaceService = inject(WorkspaceService);
-  projectService = inject(ProjectService);
-  breadcrumbStore = inject(BreadcrumbStore);
+  workspaceService = inject(WorkspaceRepositoryService);
+  projectService = inject(ProjectRepositoryService);
   baseUrl = computed(
-    () =>
-      `/workspace/${this.workspaceService.selectedEntity()?.id}/project/${this.projectService.selectedEntity()?.id}`,
+    () => `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectService.entityDetail()?.id}`,
   );
+
   constructor() {
-    toObservable(this.projectService.selectedEntity)
+    toObservable(this.projectService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((project) => {
         this.sideNavStore.setAvatar(
           project ? { name: project.name, type: "workspace.general_title.project", color: project.color } : undefined,
         );
-        if (project) {
-          this.breadcrumbStore.setThirdLevel({
-            label: "workspace.general_title.projects",
-            link: "/",
-            doTranslation: true,
-          });
-          this.breadcrumbStore.setFourthLevel({
-            label: project.name,
-            link: `project/${project.id}`,
-            doTranslation: false,
-          });
-        }
       });
-    this.breadcrumbStore.setFirstLevel({
-      label: "workspace.general_title.workspaces",
-      link: "/",
-      doTranslation: true,
-    });
+
     toObservable(this.baseUrl).subscribe((baseUrl) => {
       this.sideNavStore.setPrimaryNavItems([
         {
@@ -95,16 +77,6 @@ export class ProjectDetailComponent {
           testId: "settings-link",
         },
       ]);
-    });
-
-    toObservable(this.workspaceService.selectedEntity).subscribe((workspace) => {
-      if (workspace) {
-        this.breadcrumbStore.setSecondLevel({
-          label: workspace.name,
-          link: `workspace/${workspace.id}`,
-          doTranslation: false,
-        });
-      }
     });
   }
 }

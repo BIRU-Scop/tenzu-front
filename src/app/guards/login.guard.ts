@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,7 +22,7 @@
 import { CanActivateFn } from "@angular/router";
 import { inject } from "@angular/core";
 import { catchError, of, tap } from "rxjs";
-import { AuthService } from "@tenzu/data/auth";
+import { AuthService } from "@tenzu/repository/auth";
 
 export const loginGuard: CanActivateFn = () => {
   const authService = inject(AuthService);

@@ -25,7 +25,7 @@
       "@tenzu/shared/layouts/*": ["src/libs/shared/layouts/*"],
       "@tenzu/directives/*" : ["src/libs/shared/directives/*"],
       "@tenzu/pipes/*" : ["src/libs/shared/pipes/*"],
-      "@tenzu/data/*": ["src/libs/data/*"],
+      "@tenzu/repository/*": ["src/libs/repository/*"],
       "@tenzu/utils/*": ["src/libs/utils/*"],
       "@tenzu/utils/services/*": ["src/libs/utils/services/*"]
     }

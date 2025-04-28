@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,13 +19,13 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { SideNavStore } from "@tenzu/data/sidenav";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { SideNavStore } from "@tenzu/repository/sidenav";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-workspace-detail",
@@ -34,13 +34,17 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceDetailComponent {
-  workspaceService = inject(WorkspaceService);
+export class WorkspaceDetailComponent implements OnDestroy {
+  workspaceService = inject(WorkspaceRepositoryService);
+  projectService = inject(ProjectRepositoryService);
   sideNavStore = inject(SideNavStore);
-  breadcrumbStore = inject(BreadcrumbStore);
+
+  ngOnDestroy(): void {
+    this.projectService.resetEntitySummaryList();
+  }
 
   constructor() {
-    toObservable(this.workspaceService.selectedEntity)
+    toObservable(this.workspaceService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((workspace) => {
         this.sideNavStore.setAvatar(
@@ -71,22 +75,5 @@ export class WorkspaceDetailComponent {
         testId: "settings-link",
       },
     ]);
-    this.breadcrumbStore.setFourthLevel(undefined);
-
-    this.breadcrumbStore.setFirstLevel({
-      label: "workspace.general_title.workspaces",
-      link: "/",
-      doTranslation: true,
-    });
-    toObservable(this.workspaceService.selectedEntity)
-      .pipe(filterNotNull())
-      .subscribe((workspace) => {
-        this.breadcrumbStore.setSecondLevel({
-          label: workspace.name,
-          link: `workspace/${workspace.id}`,
-          doTranslation: false,
-        });
-        this.breadcrumbStore.setFourthLevel(undefined);
-      });
   }
 }

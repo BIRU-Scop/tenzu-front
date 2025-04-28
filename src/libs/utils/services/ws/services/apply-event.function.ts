@@ -21,10 +21,11 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
-import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/data/story";
+import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story";
 import {
   NotificationEventType,
   ProjectEventType,
+  ProjectInvitationEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
   StoryEventType,
@@ -34,27 +35,27 @@ import {
   WorkspaceEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
-import { ProjectService } from "@tenzu/data/project";
-import { Workflow, WorkflowStatusReorderPayload } from "@tenzu/data/workflow";
+import { ProjectRepositoryService, ProjectDetail } from "@tenzu/repository/project";
+import { Workflow, ReorderWorkflowStatusesPayload, WorkflowNested } from "@tenzu/repository/workflow";
 import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { UserMinimal } from "@tenzu/data/user";
-import { StatusDetail } from "@tenzu/data/status";
-import { AuthService } from "@tenzu/data/auth";
-import { Notification, NotificationsStore } from "@tenzu/data/notifications";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
-import { StoryService } from "@tenzu/data/story/story.service";
-import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
+import { UserNested } from "@tenzu/repository/user";
+import { StatusDetail } from "@tenzu/repository/status";
+import { AuthService } from "@tenzu/repository/auth";
+import { Notification, NotificationsStore } from "@tenzu/repository/notifications";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
+import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
+import { getStoryDetailUrl, getWorkflowUrl, getWorkspaceRootUrl, HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
-  const storyService = inject(StoryService);
+  const storyService = inject(StoryRepositoryService);
   switch (message.event.type) {
     case StoryAssignmentEventType.CreateStoryAssignment: {
       const content = message.event.content as { storyAssignment: StoryAssign };
       if (
-        storyService.entityMap()[content.storyAssignment.story.ref] ||
-        storyService.selectedEntity()?.ref === content.storyAssignment.story.ref
+        storyService.entityMapSummary()[content.storyAssignment.story.ref] ||
+        storyService.entityDetail()?.ref === content.storyAssignment.story.ref
       ) {
         storyService.wsAddAssign(content.storyAssignment, content.storyAssignment.story.ref);
       }
@@ -63,8 +64,8 @@ export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
     case StoryAssignmentEventType.DeleteStoryAssignment: {
       const content = message.event.content as { storyAssignment: StoryAssign };
       if (
-        storyService.entityMap()[content.storyAssignment.story.ref] ||
-        storyService.selectedEntity()?.ref === content.storyAssignment.story.ref
+        storyService.entityMapSummary()[content.storyAssignment.story.ref] ||
+        storyService.entityDetail()?.ref === content.storyAssignment.story.ref
       ) {
         storyService.wsRemoveAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
       }
@@ -75,28 +76,28 @@ export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
-  const workspaceService = inject(WorkspaceService);
-  const projectService = inject(ProjectService);
-  const storyService = inject(StoryService);
-  const workflowService = inject(WorkflowService);
+  const workspaceService = inject(WorkspaceRepositoryService);
+  const projectService = inject(ProjectRepositoryService);
+  const storyService = inject(StoryRepositoryService);
+  const workflowService = inject(WorkflowRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
     case StoryEventType.CreateStory: {
       const content = message.event.content as { story: StoryDetail };
-      storyService.add(content.story);
+      storyService.setEntitySummary(content.story);
       break;
     }
     case StoryEventType.UpdateStory: {
       const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
       const story = content.story;
-      storyService.update(story);
+      storyService.updateEntityDetail(story, story);
       switch (true) {
         case content.updatesAttrs.includes("workflow"): {
-          const workspace = workspaceService.selectedEntity();
+          const workspace = workspaceService.entityDetail();
           if (workspace && router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}`) {
-            await workflowService.getBySlug(story.workflow);
+            await workflowService.getRequest({ workflowId: story.workflow.id });
           }
           if (
             workspace &&
@@ -131,10 +132,16 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
           username: string;
         };
       };
-      const project = projectService.selectedEntity();
-      const workflow = workflowService.selectedEntity();
-      const workspace = workspaceService.selectedEntity();
-      storyService.wsRemoveStory(content.ref);
+      const project = projectService.entityDetail();
+      const workflow = workflowService.entityDetail();
+      const workspace = workspaceService.entityDetail();
+      const story =
+        storyService.entityMapSummary()[content.ref] || storyService.entityDetail()?.ref === content.ref
+          ? storyService.entityDetail()
+          : undefined;
+      if (story) {
+        storyService.deleteEntityDetail(story);
+      }
       if (router.url === `/workspace/${workspace?.id}/project/${project?.id}/story/${content.ref}`) {
         await router.navigateByUrl(`/workspace/${workspace?.id}/project/${project?.id}/kanban/${workflow?.slug}`);
         notificationService.warning({
@@ -151,10 +158,10 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
-  const projectService = inject(ProjectService);
-  const workspaceService = inject(WorkspaceService);
-  const workflowService = inject(WorkflowService);
-  const storyService = inject(StoryService);
+  const projectService = inject(ProjectRepositoryService);
+  const workspaceService = inject(WorkspaceRepositoryService);
+  const workflowService = inject(WorkflowRepositoryService);
+  const storyService = inject(StoryRepositoryService);
   const notificationService = inject(NotificationService);
   const router = inject(Router);
   const location = inject(Location);
@@ -162,9 +169,9 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
   switch (message.event.type) {
     case WorkflowEventType.CreateWorkflow: {
       const content = message.event.content as { workflow: Workflow };
-      const project = projectService.selectedEntity();
+      const project = projectService.entityDetail();
       if (project && project.id === content.workflow.projectId) {
-        projectService.wsAddWorkdlow(content.workflow);
+        projectService.addWorkflow(content.workflow);
       }
       break;
     }
@@ -172,14 +179,14 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
       const content = message.event.content as {
         workflow: Workflow;
       };
-      const selectedProject = projectService.selectedEntity();
-      const selectedWorkflow = workflowService.selectedEntity();
-      const workspace = workspaceService.selectedEntity();
-      const selectedStory = storyService.selectedEntity();
+      const selectedProject = projectService.entityDetail();
+      const selectedWorkflow = workflowService.entityDetail();
+      const workspace = workspaceService.entityDetail();
+      const selectedStory = storyService.entityDetail();
       if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
-        projectService.wsEditWorkflow(content.workflow);
+        projectService.editWorkflow(content.workflow);
         if (selectedWorkflow.id === content.workflow.id) {
-          workflowService.wsEditWorkflow(content.workflow);
+          workflowService.updateEntityDetail(content.workflow, content.workflow);
           const currentUrl = router.url;
           if (
             selectedProject &&
@@ -208,12 +215,12 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
         workflow: Workflow;
         targetWorkflow: Workflow;
       };
-      const selectedProject = projectService.selectedEntity();
-      const workspace = workspaceService.selectedEntity();
-      const selectedWorkflow = workflowService.selectedEntity();
+      const selectedProject = projectService.entityDetail();
+      const workspace = workspaceService.entityDetail();
+      const selectedWorkflow = workflowService.entityDetail();
       if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
-        projectService.wsRemoveWorkflow(content.workflow);
-        workflowService.wsDeleteWorkflow(content.workflow);
+        projectService.removeWorkflow(content.workflow);
+        workflowService.deleteEntityDetail(content.workflow);
         if (selectedWorkflow.id === content.workflow.id) {
           let redirectionUrl = "/404";
           if (content.targetWorkflow) {
@@ -246,8 +253,8 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>) {
-  const workflowService = inject(WorkflowService);
-  const storyService = inject(StoryService);
+  const workflowService = inject(WorkflowRepositoryService);
+  const storyService = inject(StoryRepositoryService);
 
   switch (message.event.type) {
     case WorkflowStatusEventType.CreateWorkflowStatus: {
@@ -268,16 +275,16 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
     }
     case WorkflowStatusEventType.ReorderWorkflowStatus: {
       const content = message.event.content as {
-        reorder: WorkflowStatusReorderPayload & { workflow: Workflow };
+        reorder: ReorderWorkflowStatusesPayload & { workflow: WorkflowNested };
       };
-      await workflowService.getBySlug(content.reorder.workflow);
+      await workflowService.getRequest({ workflowId: content.reorder.workflow.id });
       break;
     }
   }
 }
 
 export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
-  const storyService = inject(StoryService);
+  const storyService = inject(StoryRepositoryService);
 
   switch (message.event.type) {
     case StoryAttachmentEventType.CreateStoryAttachment: {
@@ -294,23 +301,23 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
-  const projectService = inject(ProjectService);
+  const projectService = inject(ProjectRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
-    case ProjectEventType.ProjectDelete: {
+    case ProjectEventType.DeleteProject: {
       const content = message.event.content as {
-        deletedBy: UserMinimal;
+        deletedBy: UserNested;
         project: string;
         workspace: string;
         name: string;
       };
-      const currentProject = projectService.selectedEntity();
-      projectService.wsRemoveEntity(content.project);
+      const currentProject = projectService.entityDetail();
+      projectService.deleteEntitySummary(content.project);
       if (currentProject && currentProject.id === content.project) {
         await router.navigateByUrl("/");
-        projectService.resetSelectedEntity();
+        projectService.deleteEntityDetail(currentProject);
       }
       notificationService.warning({
         title: "notification.events.delete_project",
@@ -321,22 +328,42 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       });
       break;
     }
+    case ProjectEventType.UpdateProject: {
+      const content = message.event.content as { project: ProjectDetail; updatedBy: UserNested };
+      const project = content.project;
+
+      const currentProject = projectService.entityDetail();
+
+      const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
+
+      if (!projectIsAlreadyUpdated) {
+        projectService.updateEntityDetail(project, project);
+        notificationService.info({
+          title: "notification.events.update_project",
+          translocoTitleParams: {
+            username: content.updatedBy?.fullName,
+            name: content.project.name,
+          },
+        });
+      }
+      break;
+    }
   }
 }
 
 export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
-  const workspaceService = inject(WorkspaceService);
+  const workspaceService = inject(WorkspaceRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
-  const content = message.event.content as { deletedBy: UserMinimal; workspace: string; name: string };
+  const content = message.event.content as { deletedBy: UserNested; workspace: string; name: string };
 
   switch (message.event.type) {
     case WorkspaceEventType.WorkspaceDelete: {
-      const currentWorkspace = workspaceService.selectedEntity();
-      workspaceService.wsRemoveEntity(content.workspace);
+      const currentWorkspace = workspaceService.entityDetail();
+      workspaceService.deleteEntitySummary(content.workspace);
       if (currentWorkspace && currentWorkspace.id === content.workspace) {
         await router.navigateByUrl("/");
-        workspaceService.resetSelectedEntity();
+        workspaceService.deleteEntityDetail(currentWorkspace);
       }
       notificationService.warning({
         title: "notification.events.delete_workspace",
@@ -375,6 +402,21 @@ export function applyNotificationEvent(message: WSResponseEvent<unknown>) {
         notificationsStore.markReadEvent(id);
         notificationsStore.decreaseUnreadCount();
       });
+      break;
+    }
+  }
+}
+
+export async function applyProjectInvitationEventType(message: WSResponseEvent<unknown>) {
+  const workspaceService = inject(WorkspaceRepositoryService);
+  const router = inject(Router);
+
+  switch (message.event.type) {
+    case ProjectInvitationEventType.CreateProjectInvitation: {
+      const currentWorkspace = workspaceService.entityDetail();
+      if (router.url === HOMEPAGE_URL || (currentWorkspace && router.url === getWorkspaceRootUrl(currentWorkspace))) {
+        await workspaceService.listRequest();
+      }
       break;
     }
   }

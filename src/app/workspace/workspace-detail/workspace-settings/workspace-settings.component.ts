@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,12 +27,11 @@ import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { TranslatedSnackbarComponent } from "@tenzu/shared/components/translated-snackbar/translated-snackbar.component";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-workspace-settings",
@@ -50,7 +49,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
     MatIcon,
   ],
   template: `
-    @let workspace = workspaceService.selectedEntity();
+    @let workspace = workspaceService.entityDetail();
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'workspace.settings'">
       <h1 class="mat-headline-medium">{{ t("title") }}</h1>
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-2">
@@ -79,7 +78,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
       <div class="flex flex-col gap-y-2">
         <h2 class="mat-headline-small">{{ t("delete_workspace") }}</h2>
         <div *transloco="let t; prefix: 'workspace.settings.delete'" class="flex flex-col gap-4">
-          @if (workspace?.hasProjects) {
+          @if (workspace?.totalProjects || 0 > 0) {
             <div class="flex flex-row">
               <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
               <p
@@ -89,7 +88,7 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
             </div>
           }
           <button
-            [disabled]="workspace?.hasProjects"
+            [disabled]="workspace?.totalProjects || 0 > 0"
             mat-flat-button
             class="error-button w-fit"
             appConfirm
@@ -106,49 +105,51 @@ import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceSettingsComponent {
-  workspaceService = inject(WorkspaceService);
+  workspaceService = inject(WorkspaceRepositoryService);
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
     name: ["", Validators.required],
   });
   router = inject(Router);
-  _snackBar = inject(MatSnackBar);
+  notificationService = inject(NotificationService);
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
   async onSubmit() {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
-      await this.workspaceService.updateSelected(this.form.getRawValue());
+    const workspace = this.workspaceService.entityDetail();
+    if (workspace) {
+      this.form.reset(this.form.value);
+      if (this.form.valid) {
+        await this.workspaceService.patchRequest(this.form.getRawValue(), { workspaceId: workspace.id });
+      }
     }
   }
 
   async onDelete() {
-    const deletedWorkspace = await this.workspaceService.deleteSelected();
-
-    await this.router.navigateByUrl("/");
-    this._snackBar.openFromComponent(TranslatedSnackbarComponent, {
-      duration: 3000,
-      data: {
-        message: "workspace.settings.delete.deleted_workspace",
-        var: deletedWorkspace?.name,
-      },
-    });
+    const workspace = this.workspaceService.entityDetail();
+    if (!workspace) {
+      return;
+    }
+    const deletedWorkspace = await this.workspaceService.deleteRequest(workspace, { workspaceId: workspace.id });
+    if (deletedWorkspace) {
+      await this.router.navigateByUrl("/");
+      this.notificationService.error({
+        translocoTitle: true,
+        title: "workspace.settings.delete.deleted_workspace",
+        translocoTitleParams: { var: deletedWorkspace.name },
+      });
+    }
   }
 
   reset() {
-    const selectedEntity = this.workspaceService.selectedEntity();
+    const selectedEntity = this.workspaceService.entityDetail();
     if (selectedEntity) {
       this.form.reset({ ...selectedEntity });
     }
   }
 
   constructor() {
-    this.breadcrumbStore.setThirdLevel({
-      label: "workspace.general_title.workspaceSettings",
-      link: "",
-      doTranslation: true,
-    });
+    this.breadcrumbStore.setPathComponent("workspaceSettings");
     effect(() => {
       this.reset();
     });

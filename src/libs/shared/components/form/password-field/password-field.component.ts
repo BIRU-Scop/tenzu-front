@@ -35,7 +35,7 @@ import {
   PasswordSeverity,
   stringDiversity,
 } from "./password-strength/_utils";
-import { AuthService } from "@tenzu/data/auth";
+import { AuthService } from "@tenzu/repository/auth";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor-directive.directive";
 import { injectNgControl } from "@tenzu/utils/injectors";
 

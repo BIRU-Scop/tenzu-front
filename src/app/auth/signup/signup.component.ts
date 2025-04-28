@@ -29,7 +29,7 @@ import { MatIcon } from "@angular/material/icon";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { UserCreation, UserService } from "@tenzu/data/user";
+import { CreateUserPayload, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
 import { AuthFormStateStore } from "../auth-form-state.store";
@@ -69,7 +69,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
           </button>
         </div>
       } @else if (displayForm()) {
-        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
             <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
@@ -157,7 +157,7 @@ export default class SignupComponent implements OnInit, OnDestroy {
       const params = this.route.snapshot.queryParams;
       this.userService
         .create({
-          ...(this.form.value as Pick<UserCreation, "email" | "fullName" | "password">),
+          ...(this.form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
           ...{ acceptTerms: true },
           ...params,
         })

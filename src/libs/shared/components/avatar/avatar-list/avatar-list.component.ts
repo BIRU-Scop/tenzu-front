@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { MatTooltip } from "@angular/material/tooltip";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { UserMinimal, UserStore } from "@tenzu/data/user";
+import { UserNested, UserStore } from "@tenzu/repository/user";
 
 @Component({
   selector: "app-avatar-list",
@@ -44,7 +44,7 @@ import { UserMinimal, UserStore } from "@tenzu/data/user";
             [matTooltip]="hiddenUsersNames()"
             [name]="'+ ' + hiddenNamesCount"
             [rounded]="true"
-            [color]="0"
+            [color]="1"
           ></app-avatar>
         } @else {
           <app-avatar [matTooltip]="hiddenUsersNames()" name="&hellip;" [rounded]="true" [color]="0"></app-avatar>
@@ -58,7 +58,7 @@ import { UserMinimal, UserStore } from "@tenzu/data/user";
 export class AvatarListComponent {
   userStore = inject(UserStore);
   userOverflowThreshold = input<number>(3);
-  users = input<UserMinimal[]>([]);
+  users = input<UserNested[]>([]);
   prioritizeCurrentUser = input<boolean>(false);
 
   filteredUsernames = computed(() => {

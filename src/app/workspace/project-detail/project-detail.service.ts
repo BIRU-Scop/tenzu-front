@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,39 +20,40 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { MembershipStore } from "@tenzu/data/membership";
 import { ActivatedRoute, Router } from "@angular/router";
 import { WsService } from "@tenzu/utils/services/ws";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
-import { ProjectService } from "@tenzu/data/project/project.service";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 
 @Injectable({
   providedIn: "root",
 })
 export class ProjectDetailService {
-  workspaceService = inject(WorkspaceService);
-  membershipStore = inject(MembershipStore);
+  workspaceService = inject(WorkspaceRepositoryService);
+  projectMembershipService = inject(ProjectMembershipRepositoryService);
   wsService = inject(WsService);
-  projectService = inject(ProjectService);
+  projectService = inject(ProjectRepositoryService);
   route = inject(ActivatedRoute);
   router = inject(Router);
 
   loadProject(projectId: string) {
-    this.projectService.get(projectId).then();
-    this.membershipStore.listProjectMembership(projectId).then();
-    this.membershipStore.listProjectInvitations(projectId).then();
+    this.projectService.getRequest({ projectId }).then();
+    this.projectMembershipService.listProjectMembership(projectId).then();
   }
+
   loadWorkspace(workspaceId: string) {
-    if (this.workspaceService.selectedEntity()?.id !== workspaceId) {
-      this.workspaceService.get(workspaceId).then();
+    if (this.workspaceService.entityDetail()?.id !== workspaceId) {
+      this.workspaceService.getRequest({ workspaceId }).then();
     }
   }
+
   load(workspaceId: string, projectId: string) {
     debug("project", "load start");
     try {
-      const oldSelectedProjectId = this.projectService.selectedEntity()?.id as string;
+      const oldSelectedProjectId = this.projectService.entityDetail()?.id as string;
       if (oldSelectedProjectId) {
         this.wsService.command({ command: "unsubscribe_from_project_events", project: oldSelectedProjectId });
       }

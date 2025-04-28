@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton, MatIconAnchor, MatIconButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -37,20 +37,18 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { MembershipStore } from "@tenzu/data/membership";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
-import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
-import { StoryService } from "@tenzu/data/story/story.service";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { StoryAttachment } from "@tenzu/repository/story";
+import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 
 @Component({
   selector: "app-story-detail",
@@ -69,7 +67,6 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
     ConfirmDirective,
     MatTableModule,
     MatIconButton,
-    MatIconAnchor,
     AvatarListComponent,
     MatDivider,
     MatSelect,
@@ -87,7 +84,7 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
         ></app-story-detail-menu>
         <div class="flex flex-row gap-8">
           <div class="basis-2/3 flex flex-col gap-y-6">
-            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+            <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
               <mat-form-field appearance="fill" class="title-field">
                 <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
               </mat-form-field>
@@ -101,7 +98,12 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
             </form>
             <mat-divider></mat-divider>
             <div class="flex flex-col gap-y-4">
-              <button class="primary-button w-fit" mat-flat-button type="button" (click)="fileUpload.click()">
+              <button
+                class="primary-button w-fit"
+                mat-flat-button
+                type="button"
+                (click)="resetInput(fileUpload); fileUpload.click()"
+              >
                 <mat-icon class="icon-full">attach_file</mat-icon>
                 {{ t("attachments.attach_file") }}
               </button>
@@ -134,22 +136,12 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
                     <ng-container matColumnDef="actions">
                       <mat-header-cell *matHeaderCellDef></mat-header-cell>
                       <mat-cell *matCellDef="let row">
-                        <a
-                          mat-icon-button
-                          target="_blank"
-                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}?is_view=true"
-                          type="button"
-                        >
+                        <button mat-icon-button (click)="previewFile(row)" type="button">
                           <mat-icon>visibility</mat-icon>
-                        </a>
-                        <a
-                          mat-icon-button
-                          download
-                          href="{{ this.storyDetailService.getStoryAttachmentUrlBack(row.id) }}"
-                          type="button"
-                        >
+                        </button>
+                        <button mat-icon-button (click)="downloadFile(row)" type="button">
                           <mat-icon>download</mat-icon>
-                        </a>
+                        </button>
                         <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
                           <mat-icon>delete</mat-icon>
                         </button>
@@ -225,19 +217,19 @@ import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class StoryDetailComponent {
-  workflowService = inject(WorkflowService);
-  workspaceService = inject(WorkspaceService);
-  storyService = inject(StoryService);
-  membershipStore = inject(MembershipStore);
-  breadcrumbStore = inject(BreadcrumbStore);
-  notificationService = inject(NotificationService);
   storyDetailService = inject(StoryDetailService);
+  workflowService = this.storyDetailService.workflowService;
+  workspaceService = inject(WorkspaceRepositoryService);
+  storyService = this.storyDetailService.storyService;
+  projectMembershipService = inject(ProjectMembershipRepositoryService);
+  notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
+  fileDownloaderService = inject(FileDownloaderService);
   fb = inject(FormBuilder);
   canBeClosed = input(false);
   closed = output<void>();
-  selectedStory = this.storyService.selectedEntity;
+  selectedStory = this.storyService.entityDetail;
   editor = viewChild.required<EditorComponent>("editorContainer");
   form = this.fb.nonNullable.group({
     title: ["", Validators.required],
@@ -250,15 +242,23 @@ export default class StoryDetailComponent {
       .subscribe(async (value) => {
         this.form.setValue({ title: value?.title || "" });
         this.statusSelected.set(value.statusId);
-        if (this.workflowService.selectedEntity()?.id !== value.workflowId) {
-          await this.workflowService.getBySlug(value.workflow);
+        if (this.workflowService.entityDetail()?.id !== value.workflowId) {
+          await this.workflowService.getBySlugRequest(value.workflow);
         }
       });
-    this.breadcrumbStore.setFifthLevel({ label: "workflow.detail_story.story", link: "", doTranslation: true });
-    this.breadcrumbStore.setSixthLevel(undefined);
   }
 
   assigned = computed(() => this.selectedStory()?.assignees || []);
+
+  previewFile(row: StoryAttachment) {
+    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
+    this.fileDownloaderService.previewFileFromUrl(attachmentUrl);
+  }
+
+  downloadFile(row: StoryAttachment) {
+    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
+    this.fileDownloaderService.downloadFileFromUrl(attachmentUrl, row.name);
+  }
 
   async submit() {
     const description = await this.editor().save();
@@ -270,6 +270,11 @@ export default class StoryDetailComponent {
   async cancel() {
     await this.editor().cancel();
     this.form.setValue({ title: this.selectedStory()?.title || "" });
+  }
+
+  // Necessary to avoid Chrome refusing to upload the file which has just been deleted
+  resetInput(fileUpload: HTMLInputElement) {
+    fileUpload.value = "";
   }
 
   onFileSelected(event: Event): void {
@@ -299,13 +304,13 @@ export default class StoryDetailComponent {
   }
 
   async onDelete() {
-    this.closed.emit();
     await this.storyDetailService.deleteSelectedStory();
+    this.closed.emit();
   }
 
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.selectedStory();
-    const teamMembers = this.membershipStore.projectEntities();
+    const teamMembers = this.projectMembershipService.entities();
     if (story) {
       const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
         ...matDialogConfig,
@@ -322,26 +327,6 @@ export default class StoryDetailComponent {
         this.projectKanbanService.removeAssignStory(username, story.projectId, story.ref),
       );
     }
-  }
-
-  openChooseWorkflowDialog(event: MouseEvent): void {
-    const story = this.selectedStory();
-    const dialogRef = this.relativeDialog.open(ChooseWorkflowDialogComponent, event?.target, {
-      ...matDialogConfig,
-      relativeXPosition: "right",
-      data: {
-        currentWorkflowSlug: story?.workflow.slug,
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (newWorkflowSlug: string) => {
-      if (newWorkflowSlug !== story?.workflow.slug) {
-        const patchedStory = await this.storyDetailService.patchSelectedStory({ workflowSlug: newWorkflowSlug });
-        if (patchedStory) {
-          this.notificationService.success({ title: "notification.action.changes_saved" });
-          this.statusSelected.set(patchedStory.statusId);
-        }
-      }
-    });
   }
 
   async changeStatus() {

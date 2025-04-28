@@ -19,12 +19,16 @@
  *
  */
 
-import { ProjectSummary } from "@tenzu/data/project";
-import { Workflow } from "@tenzu/data/workflow";
-import { WorkspaceProject } from "@tenzu/data/workspace";
-import { Story } from "@tenzu/data/story";
+import { ProjectLinkNested } from "@tenzu/repository/project";
+import { Workflow } from "@tenzu/repository/workflow";
+import { Story } from "@tenzu/repository/story";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 
-export type UrlableProject = ProjectSummary | WorkspaceProject;
+export type UrlableProject = ProjectLinkNested;
+
+export type UrlableWorkspace = WorkspaceLinkNested;
+
+export const HOMEPAGE_URL = "/";
 
 export function getProjectRootListUrl(project: UrlableProject) {
   return ["workspace", project.workspaceId, "project", project.id];
@@ -48,4 +52,12 @@ export function getStoryDetailListUrl(project: UrlableProject, ref: Story["ref"]
 
 export function getStoryDetailUrl(project: UrlableProject, ref: Story["ref"]) {
   return `/${getStoryDetailListUrl(project, ref).join("/")}`;
+}
+
+export function getWorkspaceRootListUrl(workspace: UrlableWorkspace) {
+  return ["workspace", workspace.id];
+}
+
+export function getWorkspaceRootUrl(workspace: UrlableWorkspace) {
+  return `/${getWorkspaceRootListUrl(workspace).join("/")}`;
 }

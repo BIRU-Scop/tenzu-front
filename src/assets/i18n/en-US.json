@@ -26,6 +26,7 @@
     },
     "events": {
       "edit_workflow": "The kanban {{oldName}} has been renamed to {{newName}}.",
+      "update_project": "The project {{name}} has been edited by {{username}}.",
       "delete_workflow": "The kanban {{name}} has been deleted.",
       "delete_workflow_and_moved_content": "{{name}} has been deleted, content was moved to <a href=\"{{workflowUrl}}\"> {{workflowName}} </a>",
       "delete_story": "{{username}} has deleted the story #{{ref}}",
@@ -94,6 +95,10 @@
     "project_card": {
       "create_first_project": "Create your first project"
     },
+    "project_special_card": {
+      "submit": "Accept invitation",
+      "cancel": "Deny invitation"
+    },
     "description": {
       "label": "Description",
       "placeholder": "Add a short description to help others better understand your project."
@@ -127,6 +132,7 @@
   "general": {
     "identity": {
       "fullname": "Full name",
+      "username": "Username",
       "lang": "Language",
       "email": "Email"
     }

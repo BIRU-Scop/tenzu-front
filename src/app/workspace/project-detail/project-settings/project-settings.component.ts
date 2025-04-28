@@ -20,7 +20,7 @@
  */
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
@@ -32,10 +32,11 @@ import { MatIcon } from "@angular/material/icon";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectService } from "@tenzu/data/project/project.service";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { tap } from "rxjs";
+import { ProjectDetail } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-project-settings",
@@ -53,15 +54,12 @@ import { tap } from "rxjs";
     AvatarComponent,
   ],
   template: `
+    @let project = projectService.entityDetail();
     <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings'">
       <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
         <h1 class="mat-headline-medium">{{ t("title") }}</h1>
         <div class="flex flex-row gap-4 items-center">
-          <app-avatar
-            size="xl"
-            [name]="form.controls.name.value!"
-            [color]="projectService.selectedEntity()?.color || 0"
-          ></app-avatar>
+          <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
           <mat-form-field>
             <mat-label>{{ t("name") }}</mat-label>
             <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
@@ -102,7 +100,7 @@ import { tap } from "rxjs";
           class="error-button w-fit"
           appConfirm
           [data]="{ deleteAction: true }"
-          (popupConfirm)="onDelete()"
+          (popupConfirm)="project ? onDelete(project) : null"
         >
           {{ t("buttons.delete") }}
         </button>
@@ -114,7 +112,7 @@ import { tap } from "rxjs";
 })
 export class ProjectSettingsComponent implements AfterViewInit {
   notificationService = inject(NotificationService);
-  projectService = inject(ProjectService);
+  projectService = inject(ProjectRepositoryService);
   breadcrumbStore = inject(BreadcrumbStore);
   router = inject(Router);
   fb = inject(FormBuilder);
@@ -123,7 +121,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
     description: [""],
   });
   constructor() {
-    toObservable(this.projectService.selectedEntity)
+    toObservable(this.projectService.entityDetail)
       .pipe(
         filterNotNull(),
         tap((project) =>
@@ -137,26 +135,22 @@ export class ProjectSettingsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.breadcrumbStore.setFifthLevel({
-      label: "workspace.general_title.projectSettings",
-      link: "",
-      doTranslation: true,
-    });
-    this.breadcrumbStore.setSixthLevel(undefined);
+    this.breadcrumbStore.setPathComponent("projectSettings");
   }
 
   async onSave() {
     this.form.reset(this.form.value);
-    if (this.form.valid) {
-      await this.projectService.updateSelected(this.form.getRawValue());
+    const project = this.projectService.entityDetail();
+    if (this.form.valid && project) {
+      await this.projectService.patchRequest(this.form.getRawValue(), { projectId: project.id });
       this.notificationService.success({
         title: "notification.action.changes_saved",
       });
     }
   }
 
-  async onDelete() {
-    const deletedProject = await this.projectService.deleteSelected();
+  async onDelete(item: ProjectDetail) {
+    const deletedProject = await this.projectService.deleteRequest(item, { projectId: item.id });
     await this.router.navigateByUrl("/");
     this.notificationService.warning({
       title: "notification.project.deleted",
@@ -165,7 +159,7 @@ export class ProjectSettingsComponent implements AfterViewInit {
   }
 
   reset() {
-    const selectedEntity = this.projectService.selectedEntity();
+    const selectedEntity = this.projectService.entityDetail();
     if (selectedEntity) {
       this.form.reset({ ...selectedEntity });
     }

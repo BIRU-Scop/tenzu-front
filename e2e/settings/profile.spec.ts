@@ -13,7 +13,7 @@ test.describe("profile", () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
   test("should modify the profile", async ({ page }) => {
-    const responsePromise = page.waitForResponse("/api/v1/my/user");
+    const responsePromise = page.waitForResponse("/api/v1/user");
     await page.getByTestId("fullName-input").fill("Toto");
     await page.getByTestId("saveProfileSettings-button").click();
     let response = await responsePromise;

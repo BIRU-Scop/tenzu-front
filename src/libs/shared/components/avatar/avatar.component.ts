@@ -53,23 +53,14 @@ export class AvatarComponent {
   ]);
 
   initials = computed(() => {
-    const chunks = this.name().split(" ").slice(0, 2);
-    const tempName: string[] = [];
-    let firstIsEmoji = false;
-    chunks.forEach((chunk, i) => {
-      if (this.isItAnEmoji(chunk) && i === 0) {
-        tempName.push(chunk);
-        firstIsEmoji = true;
-      } else if (!this.isItAnEmoji(chunk) && !firstIsEmoji) {
-        tempName.push(chunk[0]);
-      }
-    });
-    return tempName.join("");
-  });
+    const words = this.name().split(" ");
+    let chunks = "";
 
-  private isItAnEmoji(chunk: string) {
-    const regexExp =
-      /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
-    return regexExp.test(chunk);
-  }
+    if (words.length > 1) {
+      chunks = words[0].slice(0, 1) + words[1].slice(0, 1);
+    } else if (words.length === 1) {
+      chunks = words[0].slice(0, 2);
+    }
+    return chunks;
+  });
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -37,7 +37,7 @@ import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 
 type DeleteStatusDialogData = {
   statusName: string;
@@ -107,7 +107,7 @@ export class DeleteStatusDialogComponent {
   data = inject<DeleteStatusDialogData>(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<DeleteStatusDialogComponent>);
   fb = inject(FormBuilder);
-  workflowService = inject(WorkflowService);
+  workflowService = inject(WorkflowRepositoryService);
 
   form = this.fb.nonNullable.group({
     stories: ["move"],
@@ -115,7 +115,7 @@ export class DeleteStatusDialogComponent {
   });
 
   filteredStatus = computed(() => {
-    const currWorkflow = this.workflowService.selectedEntity();
+    const currWorkflow = this.workflowService.entityDetail();
     if (currWorkflow) {
       return currWorkflow.statuses.filter((it) => it.id !== this.data.statusId);
     }

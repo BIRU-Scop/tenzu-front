@@ -23,7 +23,8 @@
 
 @mixin tokens-overrides() {
   @include mat.badge-overrides((
-    background-color: var(--mat-sys-error-container),
-    text-color:  var(--mat-sys-on-error-container),
+    background-color: var(--mat-sys-on-error-container) ,
+    text-color:  var(--mat-sys-error-container),
+    small-size-container-overlap-offset: var(--mat-badge-large-size-container-overlap-offset) 0,
   ));
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { MatButton } from "@angular/material/button";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
-import { UserService, UserStore } from "@tenzu/data/user";
+import { UserService, UserStore } from "@tenzu/repository/user";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError } from "@angular/material/form-field";
 import { Router } from "@angular/router";
@@ -34,9 +34,9 @@ import { Router } from "@angular/router";
 @Component({
   selector: "app-delete",
   template: `
-    <div class="w-90 flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.delete'">
+    <div class="w-90 flex flex-col gap-y-8 max-w-2xl mx-auto" *transloco="let t; prefix: 'settings.delete'">
       <h1 class="mat-headline-medium">{{ t("delete") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="confirmDialog()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="confirmDialog()" class="flex flex-col gap-y-5">
         <p class="mat-body-medium text-on-surface">{{ t("consequences.sorry") }} (ㅠ﹏ㅠ)</p>
         <p class="mat-body-medium text-on-surface">{{ t("consequences.what") }}:</p>
         <ul class="pl-4">
@@ -61,6 +61,9 @@ import { Router } from "@angular/router";
   imports: [TranslocoDirective, MatCheckbox, MatButton, ReactiveFormsModule, MatError],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: "w-full",
+  },
 })
 export class DeleteComponent {
   readonly submit = model(false);
@@ -78,13 +81,17 @@ export class DeleteComponent {
     this.submit.set(true);
     if (this.form.value.consent) {
       this.userService.getDeleteInfo().subscribe((value) => {
-        if (value.projects.length !== 0 || value.workspaces.length !== 0) {
+        if (
+          value.onlyOwnerCollectiveWorkspaces.length !== 0 ||
+          value.onlyOwnerCollectiveProjects.length !== 0 ||
+          value.onlyMemberWorkspaces.length !== 0 ||
+          value.onlyMemberProjects.length !== 0
+        ) {
           const dialogRef = this.dialog.open(DeleteAccountDialogComponent, {
             ...matDialogConfig,
             minWidth: 600,
             data: {
-              workspaces: value.workspaces,
-              projects: value.projects,
+              ...value,
             },
           });
           dialogRef.afterClosed().subscribe((result) => {

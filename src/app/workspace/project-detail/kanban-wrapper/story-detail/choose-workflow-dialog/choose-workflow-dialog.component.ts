@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,7 +30,7 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectService } from "@tenzu/data/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 
 export type ChooseWorkflowDialogData = {
@@ -60,7 +60,7 @@ export type ChooseWorkflowDialogData = {
             class="flex flex-col"
             name="workflow"
           >
-            @let workflows = projectService.selectedEntity()?.workflows;
+            @let workflows = projectService.entityDetail()?.workflows || [];
             @for (workflow of workflows; track workflow.slug) {
               <mat-radio-button [value]="workflow.slug">{{ workflow.name }}</mat-radio-button>
             }
@@ -85,7 +85,7 @@ export class ChooseWorkflowDialogComponent {
   data = inject<ChooseWorkflowDialogData>(MAT_DIALOG_DATA);
   fb = inject(FormBuilder);
   newWorkflowSlug = this.fb.nonNullable.control(this.data.currentWorkflowSlug || "");
-  projectService = inject(ProjectService);
+  projectService = inject(ProjectRepositoryService);
 
   @HostListener("window:keyup.Enter", ["$event"])
   onPressEnter() {

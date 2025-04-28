@@ -24,22 +24,27 @@ import { inject, signal } from "@angular/core";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
-import { StoryService } from "@tenzu/data/story/story.service";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
+import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
-  const workflowService = inject(WorkflowService);
-  const storyService = inject(StoryService);
+  const workflowService = inject(WorkflowRepositoryService);
+  const storyService = inject(StoryRepositoryService);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
   if (projectId) {
     debug("[storyResolver]", "load start");
     storyService
-      .get(projectId, parseInt(route.paramMap.get("ref") || "", 10))
+      .getRequest({ projectId, ref: parseInt(route.paramMap.get("ref") || "", 10) })
       .then((story) => {
         workflowService
-          .get(projectId, story.workflowId)
-          .then((workflow) => storyService.list(projectId, workflow?.slug || "", 0, 100))
+          .getRequest({ workflowId: story.workflowId })
+          .then((workflow) =>
+            storyService.listRequest(
+              { projectId: projectId, workflowSlug: workflow?.slug || "" },
+              { offset: 0, limit: 100 },
+            ),
+          )
           .then();
       })
       .catch((error) => {
@@ -53,25 +58,27 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   return true;
 }
 export function workflowResolver(route: ActivatedRouteSnapshot) {
-  const projectId = route.paramMap.get("projectId")!;
-  const workflowSLug = route.paramMap.get("workflowSlug")!;
-  const workflowService = inject(WorkflowService);
-  const storyService = inject(StoryService);
+  const projectId = route.paramMap.get("projectId");
+  const workflowSLug = route.paramMap.get("workflowSlug");
+  const workflowService = inject(WorkflowRepositoryService);
+  const storyService = inject(StoryRepositoryService);
   const router = inject(Router);
   const limit = signal(100);
   const offset = 0;
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
-    storyService.resetSelectedEntity();
+    storyService.resetEntityDetail();
     workflowService
-      .getBySlug({
+      .getBySlugRequest({
         projectId: projectId,
         slug: workflowSLug,
       })
       .then((workflow) => {
         debug("story", "load stories start");
         if (workflow) {
-          storyService.list(workflow.projectId, workflow.slug, offset, limit()).then();
+          storyService
+            .listRequest({ projectId: workflow.projectId, workflowSlug: workflow.slug }, { offset, limit: limit() })
+            .then();
         }
         debug("story", "load stories end");
       })

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,27 +23,29 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
-import { AuthService } from "@tenzu/data/auth";
-import { ProjectInvitationInfo } from "@tenzu/data/workspace";
-import { ProjectInfraService } from "@tenzu/data/project";
+import { AuthService } from "@tenzu/repository/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { ProjectInvitationsApiService } from "@tenzu/repository/project-invitations/project-invitation-api.service";
+import { PublicProjectPendingInvitation } from "@tenzu/repository/project-invitations";
 
 export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
-  const projectService = inject(ProjectInfraService);
+  const projectInvitationApiService = inject(ProjectInvitationsApiService);
   const notificationService = inject(NotificationService);
   const router = inject(Router);
 
   const token = route.params["token"] as string;
 
-  return projectService.getProjectInvitationInfo(token).pipe(
-    switchMap((invitation: ProjectInvitationInfo) =>
+  return projectInvitationApiService.getByToken({ token }).pipe(
+    switchMap((invitation: PublicProjectPendingInvitation) =>
       authService.isLoginOk().pipe(
         switchMap((logged) => {
           if (logged) {
-            return projectService.acceptInvitation(token).pipe(
+            return projectInvitationApiService.acceptByToken({ token }).pipe(
               map((invitAccept) =>
-                router.parseUrl(`/workspace/${invitAccept.workspaceId}/project/${invitAccept.project.id}/kanban/main`),
+                router.parseUrl(
+                  `/workspace/${invitAccept.project.workspaceId}/project/${invitAccept.project.id}/kanban/main`,
+                ),
               ),
               catchError((err) => {
                 notificationService.error({ title: err });

@@ -32,10 +32,14 @@
     "confirm_consent": "Por favor, confirma que entiendes las consecuencias de eliminar tu cuenta.",
     "confirm_dialog": {
       "title": "Antes de eliminar tu cuenta",
-      "only_member_workspace": "Eres el único miembro en algunos espacios de trabajo",
-      "info_delete_workspace": "Esos espacios de trabajo serán eliminados, junto con los proyectos dentro de ellos. Puedes invitar a alguien para que sea miembro del espacio de trabajo.",
-      "only_admin_projects": "Eres el único administrador en algunos proyectos",
-      "info_admin_projects": "Tu rol como administrador de proyectos se transferirá a otro miembro del espacio de trabajo."
+      "only_owner_workspaces": "Usted es el único propietario de algunos espacios de trabajo",
+      "info_owner_workspaces": "No puedes eliminar tu cuenta mientras no haya otro propietario. Puedes promover a otro usuario al rol de propietario",
+      "only_owner_projects": "Usted es el único propietario de algunos proyectos",
+      "info_owner_projects": "No puedes eliminar tu cuenta mientras no haya otro propietario. Puedes promover a otro usuario al rol de propietario",
+      "only_member_workspace": "Usted es el único miembro en algunos espacios de trabajo",
+      "info_delete_workspace": "Esos espacios de trabajo se eliminarán, junto con los proyectos que contengan. Puedes invitar a alguien a ser miembro de un espacio de trabajo.",
+      "only_member_project": "Usted es el único miembro en algunos proyectos",
+      "info_delete_project": "Esos proyectos serán eliminados. Puedes invitar a alguien a ser miembro de un proyecto."
     }
   }
 }

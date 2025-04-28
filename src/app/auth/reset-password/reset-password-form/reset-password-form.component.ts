@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,9 +26,9 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { MatError } from "@angular/material/form-field";
 import { ActivatedRoute, Router } from "@angular/router";
-import { UserService, UserStore } from "@tenzu/data/user";
+import { UserService, UserStore } from "@tenzu/repository/user";
 import { HttpErrorResponse } from "@angular/common/http";
-import { AuthService, Tokens } from "@tenzu/data/auth";
+import { AuthService, Tokens } from "@tenzu/repository/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
 import { AuthFormStateStore } from "../../auth-form-state.store";

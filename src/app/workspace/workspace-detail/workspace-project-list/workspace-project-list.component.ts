@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,25 +19,35 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
-import { ProjectService } from "@tenzu/data/project";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
-import { BreadcrumbStore } from "@tenzu/data/breadcrumb/breadcrumb.store";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
+import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
   selector: "app-workspace-project-list",
-  imports: [ProjectCardComponent, TranslocoDirective, MatButton, MatIcon, RouterLink, CardSkeletonComponent],
+  imports: [
+    ProjectCardComponent,
+    TranslocoDirective,
+    MatButton,
+    MatIcon,
+    RouterLink,
+    CardSkeletonComponent,
+    ProjectSpecialCardComponent,
+  ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
-      @let workspace = workspaceService.selectedEntity();
+      @let workspace = workspaceService.entityDetail();
       @if (workspace) {
         <button
           class="primary-button"
@@ -51,15 +61,24 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
-      @for (project of projectService.entities(); track project.id) {
-        <app-project-card
-          class="basis-1/5"
-          [name]="project.name"
-          [color]="project.color"
-          [workspaceId]="project.workspaceId"
-          [description]="project.description ? project.description : null"
-          [landingPage]="getProjectLandingPageUrl(project)"
-        ></app-project-card>
+      @for (project of projectService.entitiesSummary(); track project.id) {
+        @if (project.userIsInvited) {
+          <app-project-special-card
+            [name]="project.name"
+            [color]="project.color"
+            (submitted)="acceptProjectInvitation(project)"
+            (canceled)="denyProjectInvitation(project)"
+          ></app-project-special-card>
+        } @else {
+          <app-project-card
+            class="basis-1/5"
+            [name]="project.name"
+            [color]="project.color"
+            [workspaceId]="project.workspaceId"
+            [description]="project.description ? project.description : null"
+            [landingPage]="getProjectLandingPageUrl(project)"
+          ></app-project-card>
+        }
       } @empty {
         @for (skeleton of Array(6); track $index) {
           <li>
@@ -72,21 +91,29 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class WorkspaceProjectListComponent implements AfterViewInit, OnDestroy {
-  ngOnDestroy(): void {
-    this.projectService.resetEntities();
-  }
-
-  workspaceService = inject(WorkspaceService);
-  projectService = inject(ProjectService);
-  breadcrumbStore = inject(BreadcrumbStore);
+export default class WorkspaceProjectListComponent implements AfterViewInit {
+  readonly workspaceService = inject(WorkspaceRepositoryService);
+  readonly projectService = inject(ProjectRepositoryService);
+  readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
+  readonly breadcrumbStore = inject(BreadcrumbStore);
 
   ngAfterViewInit(): void {
-    this.breadcrumbStore.setThirdLevel({
-      label: "workspace.general_title.workspaceListProjects",
-      link: "",
-      doTranslation: true,
-    });
+    this.breadcrumbStore.setPathComponent("workspaceProjectList");
+  }
+
+  async acceptProjectInvitation(project: ProjectSummary) {
+    const updatedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      project.userIsInvited = false;
+      this.projectService.updateEntitySummary(project.id, project);
+    }
+  }
+
+  async denyProjectInvitation(project: ProjectSummary) {
+    const updatedInvitation = await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      this.projectService.deleteEntitySummary(project.id);
+    }
   }
 
   protected readonly Array = Array;

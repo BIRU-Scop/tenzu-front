@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,23 +23,22 @@ import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { ProjectDetailService } from "./project-detail/project-detail.service";
 import { inject } from "@angular/core";
-import { debug } from "../../libs/utils/functions/logging";
-import { WorkspaceService } from "@tenzu/data/workspace";
+import { debug } from "@tenzu/utils/functions/logging";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
-import { MembershipStore } from "@tenzu/data/membership";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
-  const workspaceService = inject(WorkspaceService);
-  const membershipStore = inject(MembershipStore);
+  const workspaceService = inject(WorkspaceRepositoryService);
+  const workspaceMembershipService = inject(WorkspaceMembershipRepositoryService);
   const router = inject(Router);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
     try {
-      workspaceService.get(workspaceId).then();
-      membershipStore.listWorkspaceMembership(workspaceId).then();
-      membershipStore.listWorkspaceInvitations(workspaceId).then();
-      membershipStore.listWorkspaceGuest(workspaceId).then();
+      workspaceService.getRequest({ workspaceId }).then();
+      workspaceMembershipService.listWorkspaceMembership(workspaceId).then();
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -50,10 +49,22 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "end");
   return true;
 }
+
+export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
+  debug("workspaceListProjectsResolver", "start");
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const workspaceId = route.paramMap.get("workspaceId");
+  if (workspaceId) {
+    projectRepositoryService.listRequest({ workspaceId }).then();
+  }
+  debug("workspaceListProjectsResolver", "end");
+}
+
 export function projectResolver(route: ActivatedRouteSnapshot) {
   debug("projectResolver", "start");
   const projectService = inject(ProjectDetailService);
   const projectId = route.paramMap.get("projectId");
+
   const workspaceId = route.paramMap.get("workspaceId");
   if (projectId && workspaceId) {
     projectService.load(workspaceId, projectId);
@@ -84,6 +95,7 @@ export const routes: Routes = [
         path: "",
         loadComponent: () =>
           import("./workspace-detail/workspace-detail.component").then((m) => m.WorkspaceDetailComponent),
+        resolve: { projects: workspaceListProjectsResolver },
 
         loadChildren: () => import("./workspace-detail/routes").then((m) => m.routes),
       },

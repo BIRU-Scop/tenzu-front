@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,15 +23,15 @@ import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
-import { UserMinimal } from "@tenzu/data/user";
+import { UserNested } from "@tenzu/repository/user";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
-import { MembershipStore } from "@tenzu/data/membership";
 import { ProjectKanbanService } from "../project-kanban.service";
 import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
+import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership";
 
 @Component({
   selector: "app-story-card",
@@ -80,15 +80,16 @@ export class StoryCardComponent {
   title = input.required<string>();
   ref = input.required<number>();
   projectID = input.required<string>();
-  users = input.required<UserMinimal[]>();
+  users = input.required<UserNested[]>();
 
-  membershipStore = inject(MembershipStore);
+  // membershipStore = inject(MembershipStore);
+  projectMembershipStore = inject(ProjectMembershipEntitiesStore);
 
   relativeDialog = inject(RelativeDialogService);
   projectKanbanService = inject(ProjectKanbanService);
 
   openAssignStoryDialog(event: MouseEvent): void {
-    const teamMembers = this.membershipStore.projectEntities();
+    const teamMembers = this.projectMembershipStore.entities();
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "auto",

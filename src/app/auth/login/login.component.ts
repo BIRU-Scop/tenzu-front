@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,7 +30,7 @@ import { MatLabel } from "@angular/material/form-field";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { Credential } from "@tenzu/data/auth";
+import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
 import { AuthFormStateStore } from "../auth-form-state.store";
 
@@ -51,7 +51,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
   template: `
     <div *transloco="let t; prefix: 'login'" class="flex flex-col gap-y-4 ">
       <h1 class="mat-headline-medium">{{ t("title") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
         <mat-form-field subscriptSizing="fixed">
           <mat-label>
             {{ t("email_or_username") }}

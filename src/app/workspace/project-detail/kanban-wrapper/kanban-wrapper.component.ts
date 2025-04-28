@@ -25,12 +25,13 @@ import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dia
 import StoryDetailComponent from "./story-detail/story-detail.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ActivatedRoute, Router } from "@angular/router";
-import { WorkflowService } from "@tenzu/data/workflow";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { KanbanWrapperService } from "./kanban-wrapper.service";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { switchMap } from "rxjs/operators";
 import { MatDrawer, MatDrawerContainer } from "@angular/material/sidenav";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 
 @Component({
   selector: "app-story-detail-dialog",
@@ -56,7 +57,7 @@ export class StoryDetailDialogComponent {
         <app-project-kanban></app-project-kanban>
       }
       @case ("fullView") {
-        @if (this.kanbanWrapperService.storyService.selectedEntity()) {
+        @if (this.kanbanWrapperService.storyService.entityDetail()) {
           <app-story-detail></app-story-detail>
         } @else {
           <app-project-kanban></app-project-kanban>
@@ -68,7 +69,7 @@ export class StoryDetailDialogComponent {
           <mat-drawer
             #drawer
             mode="side"
-            [opened]="!!this.kanbanWrapperService.storyService.selectedEntity()"
+            [opened]="!!this.kanbanWrapperService.storyService.entityDetail()"
             position="end"
           >
             <app-story-detail [canBeClosed]="true" (closed)="navigateToKanban()"></app-story-detail>
@@ -97,17 +98,20 @@ export default class KanbanWrapperComponent implements OnDestroy {
   dialog = inject(MatDialog);
   router = inject(Router);
   kanbanWrapperService = inject(KanbanWrapperService);
-  workflowService = inject(WorkflowService);
+  workflowService = inject(WorkflowRepositoryService);
   activatedRoute = inject(ActivatedRoute);
+  breadcrumbStore = inject(BreadcrumbStore);
 
   constructor() {
     const storyView$ = toObservable(this.kanbanWrapperService.storyView);
-    toObservable(this.kanbanWrapperService.storyService.selectedEntity)
+    toObservable(this.kanbanWrapperService.storyService.entityDetail)
       .pipe(
         filterNotNull(),
         switchMap(() => storyView$),
       )
       .subscribe((storyView) => {
+        this.setUpBreadcrumbForFullView(storyView);
+
         if (storyView == "kanban" && this.kanbanWrapperService.firstOpened()) {
           this.kanbanWrapperService.setFirstOpened(false);
           const dialogRef = this.dialog.open(StoryDetailDialogComponent, {
@@ -120,24 +124,31 @@ export default class KanbanWrapperComponent implements OnDestroy {
             this.kanbanWrapperService.setFirstOpened(true);
             if (this.kanbanWrapperService.storyView() === "kanban") {
               this.router
-                .navigate(["../..", "kanban", this.workflowService.selectedEntity()?.slug], {
+                .navigate(["../..", "kanban", this.workflowService.entityDetail()?.slug], {
                   relativeTo: this.activatedRoute,
                 })
-                .then(() => this.kanbanWrapperService.storyService.resetSelectedEntity());
+                .then(() => this.kanbanWrapperService.storyService.resetEntityDetail());
             }
           });
         }
       });
   }
+
+  setUpBreadcrumbForFullView(storyView: string): void {
+    if (storyView === "fullView") {
+      this.breadcrumbStore.setPathComponent("storyDetail");
+    }
+  }
+
   navigateToKanban(): void {
-    this.kanbanWrapperService.storyService.resetSelectedEntity();
+    this.kanbanWrapperService.storyService.resetEntityDetail();
     this.router
-      .navigate(["../..", "kanban", this.workflowService.selectedEntity()?.slug], {
+      .navigate(["../..", "kanban", this.workflowService.entityDetail()?.slug], {
         relativeTo: this.activatedRoute,
       })
-      .then(() => this.kanbanWrapperService.storyService.resetSelectedEntity());
+      .then(() => this.kanbanWrapperService.storyService.resetEntityDetail());
   }
   ngOnDestroy(): void {
-    this.kanbanWrapperService.storyService.fullReset();
+    this.kanbanWrapperService.storyService.resetAll();
   }
 }

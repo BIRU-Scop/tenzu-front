@@ -34,7 +34,17 @@ import { TranslocoDirective } from "@jsverse/transloco";
         ><p>{{ t("placeholder.placeholder_text") }}</p>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button mat-dialog-close class="primary-button">{{ t("create.create_workspace") }}</button>
+        <button mat-flat-button class="primary-button" [mat-dialog-close]="true">
+          {{ t("create.create_workspace") }}
+        </button>
+        <button
+          *transloco="let t; prefix: 'commons'"
+          mat-dialog-close
+          mat-stroked-button
+          class="primary-button whitespace-nowrap shrink-0"
+        >
+          {{ t("close") }}
+        </button>
       </mat-dialog-actions>
     </ng-container>
   `,

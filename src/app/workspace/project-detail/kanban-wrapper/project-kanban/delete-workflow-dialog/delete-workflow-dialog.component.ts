@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -37,8 +37,8 @@ import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
-import { WorkflowService } from "@tenzu/data/workflow/workflow.service";
-import { ProjectService } from "@tenzu/data/project";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 export type DialogData = {
   workflowName: string;
@@ -110,8 +110,8 @@ export class DeleteWorkflowDialogComponent {
   data = inject<DialogData>(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<DeleteWorkflowDialogComponent>);
   fb = inject(FormBuilder);
-  workflowService = inject(WorkflowService);
-  projectService = inject(ProjectService);
+  workflowService = inject(WorkflowRepositoryService);
+  projectService = inject(ProjectRepositoryService);
 
   form = this.fb.nonNullable.group<FormData>({
     stories: "move",
@@ -119,8 +119,8 @@ export class DeleteWorkflowDialogComponent {
   });
 
   filteredWorkflows = computed(() => {
-    const currWorkflow = this.workflowService.selectedEntity();
-    const currProject = this.projectService.selectedEntity();
+    const currWorkflow = this.workflowService.entityDetail();
+    const currProject = this.projectService.entityDetail();
     if (currWorkflow && currProject) {
       return currProject.workflows.filter((it) => it.id !== this.data.workflowId);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,9 +26,9 @@ import {
   NotificationsStore,
   StoryAssignNotification,
   StoryUnassignNotification,
-} from "@tenzu/data/notifications";
+} from "@tenzu/repository/notifications";
 import { lastValueFrom } from "rxjs";
-import { UserStore } from "@tenzu/data/user";
+import { UserStore } from "@tenzu/repository/user";
 
 @Injectable({
   providedIn: "root",

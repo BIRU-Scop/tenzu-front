@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,8 +30,8 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
-import { ProjectService } from "@tenzu/data/project";
-import { WorkspaceService } from "@tenzu/data/workspace/workspace.service";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
 import { MatIcon } from "@angular/material/icon";
@@ -41,6 +41,10 @@ import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
+import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { ArrayElement } from "@tenzu/utils/functions/typing";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
   selector: "app-workspace-list",
@@ -52,6 +56,7 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
     ProjectCardComponent,
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
+    ProjectSpecialCardComponent,
   ],
   template: `
     <div *transloco="let t; prefix: 'commons'" class="p-4 max-w-7xl mx-auto">
@@ -67,7 +72,7 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
           {{ t("workspace") }}
         </button>
       </div>
-      @let workpaces = workspaceService.entities();
+      @let workpaces = workspaceService.entitiesSummary();
       @if (workpaces.length > 0) {
         <ul [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-8">
           @for (workspace of workpaces; track workspace.id) {
@@ -78,7 +83,17 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
                 [id]="workspace.id"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                @for (project of workspace.latestProjects; track project.id) {
+                @for (project of workspace.userInvitedProjects; track project.id) {
+                  <li>
+                    <app-project-special-card
+                      [name]="project.name"
+                      [color]="project.color"
+                      (submitted)="acceptProjectInvitation(project)"
+                      (canceled)="denyProjectInvitation(project)"
+                    ></app-project-special-card>
+                  </li>
+                }
+                @for (project of workspace.userMemberProjects; track project.id) {
                   <li>
                     <app-project-card
                       [workspaceId]="workspace.id"
@@ -89,7 +104,10 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
                     ></app-project-card>
                   </li>
                 }
-                @if (!workspace.latestProjects || workspace.latestProjects.length === 0) {
+                @if (
+                  (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
+                  (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
+                ) {
                   <li>
                     <app-project-card [workspaceId]="workspace.id"></app-project-card>
                   </li>
@@ -133,14 +151,15 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
-  readonly workspaceService = inject(WorkspaceService);
-  readonly projectService = inject(ProjectService);
+  readonly workspaceService = inject(WorkspaceRepositoryService);
+  readonly projectService = inject(ProjectRepositoryService);
+  readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
 
   private init = async () => {
-    this.workspaceService.list().then((workspaces) => {
+    this.workspaceService.listRequest().then((workspaces) => {
       if (workspaces.length === 0) {
         this.openPlaceholderDialog();
       }
@@ -148,13 +167,17 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   };
 
   ngOnDestroy(): void {
-    this.workspaceService.resetEntities();
+    this.workspaceService.resetEntitySummaryList();
   }
 
   private openPlaceholderDialog = (event?: MouseEvent) => {
-    const dialogRef = this.dialog.open(WorkspacePlaceholderDialogComponent, { ...matDialogConfig, disableClose: true });
-    dialogRef.afterClosed().subscribe(() => {
-      this.openCreateDialog(event);
+    const dialogRef = this.dialog.open(WorkspacePlaceholderDialogComponent, {
+      ...matDialogConfig,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.openCreateDialog(event);
+      }
     });
   };
 
@@ -183,7 +206,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     };
     const dialogRef = this.relativeDialog.open(EnterNameDialogComponent, event?.target, {
       ...matDialogConfig,
-      disableClose: this.workspaceService.entities().length === 0,
+      disableClose: this.workspaceService.entitiesSummary().length === 0,
       relativeXPosition: "left",
       id: "create-workspace",
       data: data,
@@ -192,14 +215,38 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
         const color = Math.floor(Math.random() * (8 - 1) + 1);
-        await this.workspaceService.create({
+        await this.workspaceService.createRequest({
           name,
           color,
         });
-      } else if (this.workspaceService.entities().length === 0) {
+      } else if (this.workspaceService.entitiesSummary().length === 0) {
         this.openPlaceholderDialog(event);
       }
     });
+  }
+
+  async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
+    const updatedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) =>
+          invitedProject.id !== updatedInvitation.project.id,
+      );
+      workspace.userMemberProjects = [...workspace.userMemberProjects, { ...project }];
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
+  }
+
+  async denyProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
+    const updatedInvitation = await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
+    if (updatedInvitation) {
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) => invitedProject.id !== project.id,
+      );
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
   }
 
   protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
