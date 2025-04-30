@@ -19,8 +19,17 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  model,
+  output,
+  signal,
+} from "@angular/core";
+import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
@@ -33,7 +42,6 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { UserNested } from "@tenzu/repository/user";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { debug } from "@tenzu/utils/functions/logging";
 
 type AssignDialogData = {
   assignees: UserNested[];
@@ -54,6 +62,7 @@ type AssignDialogData = {
     MatDivider,
     UserCardComponent,
     AvatarListComponent,
+    FormsModule,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'component.assign'">
@@ -73,7 +82,7 @@ type AssignDialogData = {
             <input
               #searchInput
               matInput
-              [formControl]="search_input"
+              [(ngModel)]="searchInputControl"
               data-testid="assigned-input"
               [placeholder]="t('search_placeholder')"
             />
@@ -110,14 +119,13 @@ export class AssignDialogComponent {
 
   readonly dialogRef = inject(MatDialogRef<AssignDialogComponent>);
 
-  protected filteredTeamMembers = signal<Array<UserNested>>([]);
+  protected filteredTeamMembers = linkedSignal(() => this.teamMembers() || []);
   protected sortedByFullName = computed(() => {
     const teamMembers = this.filteredTeamMembers();
-    debug("sortedByFullName", "", teamMembers);
     return teamMembers.sort(this.sortByFullName);
   });
   protected teamMembers = signal<Array<UserNested>>(this.data.teamMembers || []);
-  protected search_input = this.fb.control("");
+  protected searchInputControl = model<string>("");
 
   assignees = this.fb.control(this.data.assignees || []);
 
@@ -125,8 +133,7 @@ export class AssignDialogComponent {
   memberUnassigned = output<UserNested>();
 
   constructor() {
-    toObservable(this.teamMembers).subscribe((value) => this.filteredTeamMembers.set(value || []));
-    this.search_input.valueChanges
+    toObservable(this.searchInputControl)
       .pipe(
         startWith(""),
         tap((memberName: string | null) => {
