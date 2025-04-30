@@ -34,6 +34,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { Workflow } from "../workflow";
+import { UserNested } from "@tenzu/repository/user";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
@@ -64,18 +65,18 @@ export const StoryEntitiesSummaryStore = signalStore(
     },
   })),
   withMethods((store) => ({
-    addAssign(storyAssign: StoryAssign, ref: number) {
-      const currentAssignees = store.entityMap()[ref].assignees;
+    addAssign(storyAssign: StoryAssign, ref: Story["ref"]) {
+      const currentAssigneeIds = store.entityMap()[ref].assigneeIds;
 
       // avoid the double event from user event channel and project event channel
-      if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
-        const newAssignees = [storyAssign.user, ...store.entityMap()[ref].assignees];
-        store.updateEntity(ref, { assignees: newAssignees });
+      if (!currentAssigneeIds.find((assigneeId) => assigneeId === storyAssign.user.id)) {
+        const newAssigneeIds = [storyAssign.user.id, ...store.entityMap()[ref].assigneeIds];
+        store.updateEntity(ref, { assigneeIds: newAssigneeIds });
       }
     },
-    removeAssign(ref: number, username: string) {
-      const removedAssign = [...store.entityMap()[ref].assignees].filter((assignee) => assignee.username != username);
-      store.updateEntity(ref, { assignees: removedAssign });
+    removeAssign(ref: Story["ref"], userId: UserNested["id"]) {
+      const removedAssigneeIds = [...store.entityMap()[ref].assigneeIds].filter((assigneeId) => assigneeId != userId);
+      store.updateEntity(ref, { assigneeIds: removedAssigneeIds });
     },
     deleteStatusGroup(oldStatusId: string, newStatus: Status) {
       store.entities().forEach((story) => {
@@ -170,10 +171,10 @@ export const StoryDetailStore = signalStore(
     addAssign(storyAssign: StoryAssign) {
       const story = store.item();
       if (story && story.ref === storyAssign.story.ref) {
-        const currentAssignees = story.assignees;
-        if (!currentAssignees.find((assignee) => assignee.username === storyAssign.user.username)) {
-          const newAssignees = [storyAssign.user, ...story.assignees];
-          store.update(story.ref, { assignees: newAssignees });
+        const currentAssigneeIds = story.assigneeIds;
+        if (!currentAssigneeIds.find((assigneeId) => assigneeId === storyAssign.user.id)) {
+          const newAssigneeIds = [storyAssign.user.id, ...story.assigneeIds];
+          store.update(story.ref, { assigneeIds: newAssigneeIds });
         }
       }
     },
@@ -184,11 +185,11 @@ export const StoryDetailStore = signalStore(
         store.update(storyRef, { statusId: reorder.status.id });
       }
     },
-    removeAssign(ref: number, username: string) {
+    removeAssign(ref: Story["ref"], userId: UserNested["id"]) {
       const story = store.item();
       if (story && story.ref === ref) {
-        const removedAssign = [...story.assignees].filter((assignee) => assignee.username != username);
-        store.update(ref, { assignees: removedAssign });
+        const removedAssigneeIds = [...story.assigneeIds].filter((assigneeId) => assigneeId != userId);
+        store.update(ref, { assigneeIds: removedAssigneeIds });
       }
     },
   })),

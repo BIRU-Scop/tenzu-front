@@ -33,11 +33,11 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { UserNested } from "@tenzu/repository/user";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectMembership } from "@tenzu/repository/project-membership";
+import { debug } from "@tenzu/utils/functions/logging";
 
 type AssignDialogData = {
-  assigned: UserNested[];
-  teamMembers: ProjectMembership[];
+  assignees: UserNested[];
+  teamMembers: UserNested[];
 };
 
 @Component({
@@ -59,10 +59,10 @@ type AssignDialogData = {
     <ng-container *transloco="let t; prefix: 'component.assign'">
       <mat-dialog-content>
         <div class="flex flex-col gap-4 max-h-[45vh] overflow-y-hidden">
-          @if ((assignedMembers.value?.length || 0) > 0) {
+          @if ((assignees.value?.length || 0) > 0) {
             <div class="flex flex-row items-center">
               <p class="pr-2">{{ t("assigned_to") }}</p>
-              <app-avatar-list [users]="assignedMembers.value!" [prioritizeCurrentUser]="true" />
+              <app-avatar-list [users]="assignees.value!" [prioritizeCurrentUser]="true" />
             </div>
           } @else {
             <p class="mat-body-medium">{{ t("not_assigned") }}</p>
@@ -81,12 +81,12 @@ type AssignDialogData = {
           <div class="h-full overflow-y-auto">
             @if (filteredTeamMembers()) {
               <mat-selection-list (selectionChange)="optionSelected($event)">
-                @for (member of sortedByFullName(); track member.user.username) {
+                @for (member of sortedByFullName(); track member.username) {
                   <mat-list-option class="flex flex-row" [selected]="memberIsAssigned(member)" [value]="member">
                     <app-user-card
-                      [fullName]="member.user.fullName"
-                      [username]="member.user.username"
-                      [color]="member.user.color"
+                      [fullName]="member.fullName"
+                      [username]="member.username"
+                      [color]="member.color"
                       [textToHighlight]="searchInput.value"
                     ></app-user-card>
                   </mat-list-option>
@@ -110,18 +110,19 @@ export class AssignDialogComponent {
 
   readonly dialogRef = inject(MatDialogRef<AssignDialogComponent>);
 
-  protected filteredTeamMembers = signal<Array<ProjectMembership>>([]);
+  protected filteredTeamMembers = signal<Array<UserNested>>([]);
   protected sortedByFullName = computed(() => {
     const teamMembers = this.filteredTeamMembers();
+    debug("sortedByFullName", "", teamMembers);
     return teamMembers.sort(this.sortByFullName);
   });
-  protected teamMembers = signal<Array<ProjectMembership>>(this.data.teamMembers || []);
+  protected teamMembers = signal<Array<UserNested>>(this.data.teamMembers || []);
   protected search_input = this.fb.control("");
 
-  assignedMembers = this.fb.control(this.data.assigned || []);
+  assignees = this.fb.control(this.data.assignees || []);
 
-  memberAssigned = output<string>();
-  memberUnassigned = output<string>();
+  memberAssigned = output<UserNested>();
+  memberUnassigned = output<UserNested>();
 
   constructor() {
     toObservable(this.teamMembers).subscribe((value) => this.filteredTeamMembers.set(value || []));
@@ -133,7 +134,7 @@ export class AssignDialogComponent {
           filterValue = filterValue.toLowerCase() || "";
           this.filteredTeamMembers.set(
             this.teamMembers()?.filter((member) => {
-              return member.user.fullName.toLowerCase().includes(filterValue);
+              return member.fullName.toLowerCase().includes(filterValue);
             }) || [],
           );
         }),
@@ -141,41 +142,41 @@ export class AssignDialogComponent {
       .subscribe();
   }
 
-  sortByFullName(a: ProjectMembership, b: ProjectMembership) {
-    if (a.user.fullName < b.user.fullName) {
+  sortByFullName(a: UserNested, b: UserNested) {
+    if (a.fullName < b.fullName) {
       return -1;
     }
-    if (a.user.fullName > b.user.fullName) {
+    if (a.fullName > b.fullName) {
       return 1;
     }
     return 0;
   }
 
-  memberIsAssigned(member: ProjectMembership) {
-    const result = this.assignedMembers.value?.find(
-      (memberElement: UserNested) => memberElement.fullName === member.user.fullName,
+  memberIsAssigned(member: UserNested) {
+    const result = this.assignees.value?.find(
+      (memberElement: UserNested) => memberElement.fullName === member.fullName,
     );
     return !!result;
   }
 
   optionSelected(event: MatSelectionListChange) {
-    const member: ProjectMembership = event.options[0].value;
-    let newValue: UserNested[] = [...this.assignedMembers.value!];
+    const member: UserNested = event.options[0].value;
+    let newValue: UserNested[] = [...this.assignees.value!];
     if (!this.memberIsAssigned(member)) {
-      newValue = [member.user, ...newValue];
-      this.memberAssigned.emit(member.user.username);
+      newValue = [member, ...newValue];
+      this.memberAssigned.emit(member);
     } else if (this.memberIsAssigned(member)) {
       newValue.splice(
-        newValue.findIndex((assigned_member: UserNested) => assigned_member.username === member.user.username),
+        newValue.findIndex((assigned_member: UserNested) => assigned_member.username === member.username),
         1,
       );
-      this.memberUnassigned.emit(member.user.username);
+      this.memberUnassigned.emit(member);
     } else {
       this.notificationService.error({
         title: "Unexpected assign",
-        detail: `[ASSIGN][DIALOG] Could not assign member ${member.user.username}.`,
+        detail: `[ASSIGN][DIALOG] Could not assign member ${member.username}.`,
       });
     }
-    this.assignedMembers.setValue(newValue);
+    this.assignees.setValue(newValue);
   }
 }

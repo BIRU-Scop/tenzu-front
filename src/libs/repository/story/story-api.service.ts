@@ -30,6 +30,7 @@ import {
   StoryUpdate,
 } from "./story.model";
 import { AbstractApiService } from "../base";
+import { UserNested } from "@tenzu/repository/user";
 
 @Injectable({
   providedIn: "root",
@@ -96,10 +97,10 @@ export class StoryApiService extends AbstractApiService<
   reorder(payload: StoryReorderPayload, params: { projectId: string }) {
     return this.http.post<never>(`${this.getBaseUrl(params)}/reorder`, payload);
   }
-  createAssignee(username: string, params: StoryApiServiceType.BaseParams) {
+  createAssignee(username: UserNested["username"], params: StoryApiServiceType.BaseParams) {
     return this.http.post<StoryAssign>(`${this.baseStoryAssignmentUrl(params)}`, { username });
   }
-  deleteAssignee(params: StoryApiServiceType.BaseParams & { username: string }) {
+  deleteAssignee(params: StoryApiServiceType.BaseParams & { username: UserNested["username"] }) {
     return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.username}`);
   }
 }

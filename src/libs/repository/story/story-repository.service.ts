@@ -30,6 +30,7 @@ import { Status } from "../status";
 import { Workflow } from "../workflow";
 import { BaseRepositoryService } from "@tenzu/repository/base";
 import { EntityId } from "@ngrx/signals/entities";
+import { UserNested } from "@tenzu/repository/user";
 
 @Injectable({
   providedIn: "root",
@@ -108,41 +109,43 @@ export class StoryRepositoryService extends BaseRepositoryService<
       this.entityDetailStore.update(story.ref, { ...story, workflow: { ...workflow } });
     }
   }
-  getStoryAttachmentUrl(projectId: string, ref: number, attachmentId: string) {
+  getStoryAttachmentUrl(projectId: string, ref: Story["ref"], attachmentId: string) {
     return `${this.apiService.baseStoryAttachmentUrl({ projectId, ref })}/${attachmentId}`;
   }
-  async createAttachment(projectId: string, ref: number, attachment: Blob) {
+  async createAttachment(projectId: string, ref: Story["ref"], attachment: Blob) {
     const newAttachment = await lastValueFrom(this.apiService.addStoryAttachments(attachment, { projectId, ref }));
     this.wsAddAttachment(newAttachment, ref);
   }
-  wsAddAttachment(attachment: StoryAttachment, ref: number) {
+  wsAddAttachment(attachment: StoryAttachment, ref: Story["ref"]) {
     this.entityDetailStore.addAttachment(attachment, ref);
   }
-  async deleteAttachment(projectId: string, ref: number, attachmentId: string) {
+  async deleteAttachment(projectId: string, ref: Story["ref"], attachmentId: string) {
     await lastValueFrom(this.apiService.deleteStoryAttachment({ projectId, ref, attachmentId }));
     this.wsRemoveAttachment(attachmentId);
   }
   wsRemoveAttachment(attachmentId: string) {
     this.entityDetailStore.removeAttachment(attachmentId);
   }
-  async createAssign(projectId: string, ref: number, username: string) {
-    const storyAssign: StoryAssign = await lastValueFrom(this.apiService.createAssignee(username, { projectId, ref }));
+  async createAssign(projectId: string, ref: Story["ref"], user: UserNested) {
+    const storyAssign: StoryAssign = await lastValueFrom(
+      this.apiService.createAssignee(user.username, { projectId, ref }),
+    );
     this.wsAddAssign(storyAssign, ref);
     return storyAssign;
   }
-  wsAddAssign(storyAssign: StoryAssign, ref: number) {
+  wsAddAssign(storyAssign: StoryAssign, ref: Story["ref"]) {
     this.entitiesSummaryStore.addAssign(storyAssign, ref);
 
     this.entityDetailStore.addAssign(storyAssign);
   }
 
-  async deleteAssign(projectId: string, ref: number, username: string) {
-    await lastValueFrom(this.apiService.deleteAssignee({ projectId, ref, username }));
-    this.wsRemoveAssign(ref, username);
+  async deleteAssign(projectId: string, ref: Story["ref"], user: UserNested) {
+    await lastValueFrom(this.apiService.deleteAssignee({ projectId, ref, username: user.username }));
+    this.wsRemoveAssign(ref, user.id);
   }
-  wsRemoveAssign(ref: number, username: string) {
-    this.entitiesSummaryStore.removeAssign(ref, username);
-    this.entityDetailStore.removeAssign(ref, username);
+  wsRemoveAssign(ref: Story["ref"], userId: UserNested["id"]) {
+    this.entitiesSummaryStore.removeAssign(ref, userId);
+    this.entityDetailStore.removeAssign(ref, userId);
   }
   wsReorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
     this.entitiesSummaryStore.reorderStoryByEvent(reorder);
