@@ -219,9 +219,6 @@ app/**/*.js.map
 # dependencies
 bower_components/
 
-# IDEs and editors
-.idea/
-
 # misc
 .sass-cache/
 connect.lock/
