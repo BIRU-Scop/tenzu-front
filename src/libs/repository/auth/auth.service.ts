@@ -22,12 +22,12 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Credential, Tokens } from "./auth.model";
-import { catchError, map, of, tap } from "rxjs";
+import { catchError, map, of, Subscription, take, tap, timer } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
-import { clearAuthStorage } from "../auth/utils";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Injectable({
   providedIn: "root",
@@ -36,9 +36,11 @@ export class AuthService {
   jwtHelperService = inject(JwtHelperService);
   configAppService = inject(ConfigAppService);
   wsService = inject(WsService);
+  notificationService = inject(NotificationService);
   http = inject(HttpClient);
   router = inject(Router);
   url = `${this.configAppService.apiUrl()}auth`;
+  autoLogoutSubscribtion: Subscription | null = null;
 
   login(credentials: Credential) {
     return this.http
@@ -49,11 +51,36 @@ export class AuthService {
   }
 
   clear() {
-    clearAuthStorage();
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh");
+    localStorage.removeItem("username");
+    if (this.autoLogoutSubscribtion) {
+      this.autoLogoutSubscribtion.unsubscribe();
+      this.autoLogoutSubscribtion = null;
+    }
   }
 
+  autoLogout() {
+    this.applyLogout();
+    this.notificationService.error({ title: "notification.login.logout" });
+  }
+  userLogout() {
+    const tokens = this.getToken();
+    this.http
+      .post(`${this.url}/blacklist`, {
+        refresh: tokens.refresh,
+      })
+      .pipe(catchError(() => of(false))) // if blacklist fail, ignore silently for now
+      .subscribe();
+    this.logout();
+  }
   logout() {
     this.wsService.command({ command: "signout" });
+    this.applyLogout();
+  }
+  applyLogout() {
+    this.clear();
+    this.router.navigateByUrl("/login").then();
   }
 
   refresh(tokens: Tokens) {
@@ -82,16 +109,38 @@ export class AuthService {
     if (tokens.username) {
       localStorage.setItem("username", tokens.username);
     }
+    this.setupAutoLogout(tokens);
+  }
+
+  setupAutoLogout(tokens: Tokens) {
+    if (this.autoLogoutSubscribtion) {
+      this.autoLogoutSubscribtion.unsubscribe();
+      this.autoLogoutSubscribtion = null;
+    }
+    if (tokens.refresh) {
+      const expirationDate = this.jwtHelperService.getTokenExpirationDate(tokens.refresh);
+      if (expirationDate) {
+        this.autoLogoutSubscribtion = timer(expirationDate)
+          .pipe(
+            take(1),
+            tap(() => {
+              this.autoLogout();
+            }),
+          )
+          .subscribe();
+      }
+    }
   }
   isLoginOk() {
     const tokens = this.getToken();
-    if (tokens && tokens.refresh) {
+    if (tokens && tokens.refresh && !this.jwtHelperService.isTokenExpired(tokens.refresh)) {
       if (this.jwtHelperService.isTokenExpired(tokens.access)) {
         return this.refresh(tokens).pipe(
           map(() => true),
           catchError(() => of(false)),
         );
       } else {
+        this.setupAutoLogout(tokens);
         return of(true);
       }
     } else {

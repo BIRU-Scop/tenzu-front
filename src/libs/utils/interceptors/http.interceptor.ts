@@ -24,7 +24,6 @@ import { inject } from "@angular/core";
 import { AuthService } from "@tenzu/repository/auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
 import { JwtHelperService } from "@auth0/angular-jwt";
 
@@ -34,7 +33,6 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
   const jwtHelperService = inject(JwtHelperService);
   const notificationService = inject(NotificationService);
   const configAppService = inject(ConfigAppService);
-  const wsService = inject(WsService);
   request = request.clone({
     setHeaders: {
       "correlation-id": configAppService.correlationId,
@@ -51,8 +49,7 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
             }),
           );
         } else {
-          wsService.signout();
-          notificationService.error({ title: "notification.login.logout" });
+          authService.autoLogout();
           return EMPTY;
         }
       } else if (error instanceof HttpErrorResponse) {
