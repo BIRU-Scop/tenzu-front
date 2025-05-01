@@ -45,7 +45,7 @@ export type Story = {
   workflowId: string;
   projectId: string;
   statusId: string;
-  assignees: Array<UserNested>;
+  assigneeIds: Array<string>;
 };
 
 export interface createdBy {
