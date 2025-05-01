@@ -15,7 +15,9 @@
     "repeat_password": "Repetir contraseña",
     "password_not_match": "Las contraseñas no coinciden",
     "invalid_current_password": "Esta no es tu contraseña actual",
-    "change_password": "Cambiar contraseña"
+    "change_password": "Cambiar contraseña",
+    "warning": "Usted va a ser desconectado después de cambiar su contraseña",
+    "changes_saved": "Contraseña actualizada correctamente"
   },
   "delete": {
     "delete_account": "Eliminar mi cuenta",
