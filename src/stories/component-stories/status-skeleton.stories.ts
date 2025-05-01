@@ -19,27 +19,24 @@
  *
  */
 
-import { CanActivateFn, Router } from "@angular/router";
-import { inject } from "@angular/core";
-import { catchError, of, switchMap } from "rxjs";
-import { AuthService } from "@tenzu/repository/auth";
+import type { Meta, StoryObj } from "@storybook/angular";
+import { argsToTemplate } from "@storybook/angular";
+import { StatusSkeletonComponent } from "../../app/workspace/project-detail/project-kanban-skeleton/status-skeleton/status-skeleton.component";
 
-export const redirectHomepageGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+const meta: Meta<StatusSkeletonComponent> = {
+  title: "Components/Skeletons/Workflow/StatusSkeleton",
+  component: StatusSkeletonComponent,
+  render: (args: StatusSkeletonComponent) => ({
+    props: {
+      ...args,
+    },
+    template: `<app-status-skeleton ${argsToTemplate(args)}></app-status-skeleton>`,
+  }),
+};
 
-  return authService.isLoginOk().pipe(
-    switchMap((logged) => {
-      if (logged) {
-        const urlTree = router.parseUrl("/");
-        return of(urlTree);
-      } else {
-        return of(true);
-      }
-    }),
-    catchError(() => {
-      authService.logout();
-      return of(false);
-    }),
-  );
+export default meta;
+type Story = StoryObj<StatusSkeletonComponent>;
+
+export const Default: Story = {
+  args: {},
 };

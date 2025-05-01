@@ -7,7 +7,7 @@
   "profile": {
     "title": "My profile",
     "save": "Save",
-    "changes-saved": "Profile successfully updated"
+    "changes_saved": "Profile successfully updated"
   },
   "security": {
     "save": "Save",
@@ -17,7 +17,8 @@
     "password_not_match": "The passwords do not match",
     "invalid_current_password": "This is not your current password",
     "change_password": "Change password",
-    "changes-saved": "Password successfully updated"
+    "warning": "You are going to be disconnected after changing your password",
+    "changes_saved": "Password successfully updated"
   },
   "delete": {
     "delete_account": "Delete my account",

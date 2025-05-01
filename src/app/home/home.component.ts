@@ -119,7 +119,7 @@ export default class HomeComponent implements AfterViewInit {
   }
 
   logout() {
-    this.authService.logout();
+    this.authService.userLogout();
   }
   openNotificationDialog(even: MouseEvent) {
     this.relativeDialog.open(NotificationsComponent, even?.target, {

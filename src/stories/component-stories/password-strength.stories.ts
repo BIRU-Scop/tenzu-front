@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,18 +21,18 @@
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 
-import { PasswordFieldComponent } from "../password-field.component";
+import { PasswordFieldComponent } from "../../libs/shared/components/form/password-field/password-field.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
-import { PasswordStrengthComponent } from "./password-strength.component";
+import { PasswordStrengthComponent } from "../../libs/shared/components/form/password-field/password-strength/password-strength.component";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { PasswordSeverity } from "./_utils";
+import { PasswordSeverity } from "../../libs/shared/components/form/password-field/password-strength/_utils";
 
 @Component({
   selector: "app-form-password-strength",

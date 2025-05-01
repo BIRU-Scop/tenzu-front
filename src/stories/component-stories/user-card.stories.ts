@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,11 +20,11 @@
  */
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
-import { UserCardComponent } from "./user-card";
+import { UserCardComponent } from "../../libs/shared/components/user-card/user-card";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
 import { isDevMode } from "@angular/core";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
 
 const meta: Meta<UserCardComponent> = {
   title: "Components/UserCard",

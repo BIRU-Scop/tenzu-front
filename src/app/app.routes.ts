@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,12 +20,12 @@
  */
 
 import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, Routes } from "@angular/router";
-import { loginGuard } from "./guards/login.guard";
+import { loginGuard } from "./auth/login/login.guard";
 import { provideTranslocoScope } from "@jsverse/transloco";
-import { WorkspaceInvitationGuard } from "./guards/workspace-invitation.guard";
-import { VerifyEmailGuard } from "./guards/verify-email.guard";
-import { ProjectInvitationGuard } from "./guards/project-invitation.guard";
-import { redirectHomepageGuard } from "./guards/redirect-homepage.guard";
+import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace-people/workspace-invitation.guard";
+import { VerifyEmailGuard } from "./auth/signup/verify-email.guard";
+import { ProjectInvitationGuard } from "./workspace/project-detail/project-members/project-invitation.guard";
+import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";
 
 function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
   const story = "story/:ref";
@@ -103,7 +103,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
-    canActivateChild: [redirectHomepageGuard],
+    canActivateChild: [unloggedOnlyGuard],
     children: [
       {
         path: "",

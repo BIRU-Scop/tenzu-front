@@ -123,7 +123,7 @@ export class ProfileComponent {
     if (this.form.valid) {
       this.userStore.patchMe(this.form.getRawValue());
       this.notificationService.success({
-        title: "settings.profile.changes-saved",
+        title: "settings.profile.changes_saved",
         translocoTitle: true,
       });
     }

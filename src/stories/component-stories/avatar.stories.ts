@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { argsToTemplate, Meta, StoryObj } from "@storybook/angular";
-import { AvatarComponent } from "./avatar.component";
+import { AvatarComponent } from "../../libs/shared/components/avatar/avatar.component";
 
 const meta: Meta<AvatarComponent> = {
   title: "Components/Avatar",

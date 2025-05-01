@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,24 +19,27 @@
  *
  */
 
-import type { Meta, StoryObj } from "@storybook/angular";
-import { argsToTemplate } from "@storybook/angular";
-import { StatusSkeletonComponent } from "./status-skeleton.component";
+import { CanActivateFn, Router } from "@angular/router";
+import { inject } from "@angular/core";
+import { catchError, of, switchMap } from "rxjs";
+import { AuthService } from "@tenzu/repository/auth";
 
-const meta: Meta<StatusSkeletonComponent> = {
-  title: "Components/Skeletons/Workflow/StatusSkeleton",
-  component: StatusSkeletonComponent,
-  render: (args: StatusSkeletonComponent) => ({
-    props: {
-      ...args,
-    },
-    template: `<app-status-skeleton ${argsToTemplate(args)}></app-status-skeleton>`,
-  }),
-};
+export const unloggedOnlyGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-export default meta;
-type Story = StoryObj<StatusSkeletonComponent>;
-
-export const Default: Story = {
-  args: {},
+  return authService.isLoginOk().pipe(
+    switchMap((logged) => {
+      if (logged) {
+        const urlTree = router.parseUrl("/");
+        return of(urlTree);
+      } else {
+        return of(true);
+      }
+    }),
+    catchError(() => {
+      authService.logout();
+      return of(false);
+    }),
+  );
 };
