@@ -19,4 +19,27 @@
  *
  */
 
-export * from "./refresh-token.interceptor";
+import { CanActivateFn, Router } from "@angular/router";
+import { inject } from "@angular/core";
+import { catchError, of, switchMap } from "rxjs";
+import { AuthService } from "@tenzu/repository/auth";
+
+export const unloggedOnlyGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  return authService.isLoginOk().pipe(
+    switchMap((logged) => {
+      if (logged) {
+        const urlTree = router.parseUrl("/");
+        return of(urlTree);
+      } else {
+        return of(true);
+      }
+    }),
+    catchError(() => {
+      authService.logout();
+      return of(false);
+    }),
+  );
+};

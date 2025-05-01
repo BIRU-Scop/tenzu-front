@@ -39,7 +39,7 @@ import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
 import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { LanguageStore } from "@tenzu/repository/transloco";
-import { refreshTokenInterceptor } from "@tenzu/repository/interceptors";
+import { httpInterceptor } from "@tenzu/utils/interceptors";
 import { MICRO_SENTRY_CONFIG, provideMicroSentry } from "@micro-sentry/angular";
 import { ConfigAppService } from "./config-app/config-app.service";
 import { BrowserSentryClientOptions } from "@micro-sentry/browser";
@@ -125,6 +125,6 @@ export const appConfig: ApplicationConfig = {
         return {};
       },
     },
-    provideHttpClient(withFetch(), withInterceptors([refreshTokenInterceptor]), withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptors([httpInterceptor]), withInterceptorsFromDi()),
   ],
 };
