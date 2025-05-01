@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,47 +20,57 @@
  */
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
-import { JsonPipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { EmailFieldComponent } from "./email-field.component";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { userEvent, within } from "@storybook/test";
-import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
-import { provideHttpClient } from "@angular/common/http";
 
-type Story = StoryObj<FormEmailComponent>;
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { JsonPipe } from "@angular/common";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { provideTransloco } from "@jsverse/transloco";
+import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { provideHttpClient } from "@angular/common/http";
+import { PasswordFieldComponent } from "../../libs/shared/components/form/password-field";
+import {
+  DescriptionFieldComponent,
+  DescriptionOptions,
+} from "../../libs/shared/components/form/description-field/description-field.component";
 
 @Component({
-  selector: "app-form-email",
+  selector: "app-form-password-field",
   standalone: true,
-  imports: [ReactiveFormsModule, EmailFieldComponent, JsonPipe],
+  imports: [ReactiveFormsModule, PasswordFieldComponent, JsonPipe, DescriptionFieldComponent],
   template: `
     <form [formGroup]="form">
-      <app-email-field formControlName="email" />
+      {{ value() }} {{ form.value | json }}
+      <br />
+      <app-description-field [options]="options()" #descriptionComponent formControlName="description" />
     </form>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class FormEmailComponent {
+class StoryDescriptionFieldComponent {
+  options = input.required<Partial<DescriptionOptions>>();
   value = input<string>("");
   form = new FormGroup({
-    email: new FormControl<string | undefined>("", Validators.required),
+    description: new FormControl<string | undefined>(""),
   });
 
   constructor() {
     toObservable(this.value).subscribe((data) => {
-      this.form.setValue({ email: data });
+      this.form.setValue({ description: data });
     });
   }
 }
 
-const meta: Meta<FormEmailComponent> = {
-  component: FormEmailComponent,
-  title: "Components/FormFields/EmailField",
+type Story = StoryObj<StoryDescriptionFieldComponent>;
+
+const meta: Meta<StoryDescriptionFieldComponent> = {
+  title: "Components/FormFields/Description",
+  component: StoryDescriptionFieldComponent,
+  args: {
+    options: {},
+  },
   decorators: [
     applicationConfig({
       providers: [
@@ -84,34 +94,6 @@ const meta: Meta<FormEmailComponent> = {
   ],
 };
 
-export const EmailEmptyPristine: Story = {};
+export const Valid: Story = {};
 
-export const EmailEmptyRequired: Story = {
-  // Add the play to blur the field and display error
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const emailInput = await canvas.findByTestId("email-input");
-    await userEvent.click(emailInput);
-    await userEvent.keyboard("{Tab}");
-  },
-};
-
-export const EmailSimple: Story = {
-  args: {
-    value: "test@email.com",
-  },
-};
-
-export const EmailInvalid: Story = {
-  args: {
-    value: "test invalid mail",
-  },
-  // Add the play to blur the field and display error
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const emailInput = await canvas.findByTestId("email-input");
-    await userEvent.click(emailInput);
-    await userEvent.keyboard("{Tab}");
-  },
-};
 export default meta;

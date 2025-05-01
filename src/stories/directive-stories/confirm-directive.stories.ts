@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,9 +25,9 @@ import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/c
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
-import { ConfirmDirective, ConfirmPopupData } from "./confirm.directive";
+import { ConfirmDirective, ConfirmPopupData } from "../../libs/shared/directives/confirm/confirm.directive";
 import { MatButton } from "@angular/material/button";
 
 type Story = StoryObj<ConfirmStoryComponent>;

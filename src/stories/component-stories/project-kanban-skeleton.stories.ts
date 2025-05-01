@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import type { Meta, StoryObj } from "@storybook/angular";
 import { argsToTemplate } from "@storybook/angular";
-import { ProjectKanbanSkeletonComponent } from "./project-kanban-skeleton.component";
+import { ProjectKanbanSkeletonComponent } from "../../app/workspace/project-detail/project-kanban-skeleton/project-kanban-skeleton.component";
 
 const meta: Meta<ProjectKanbanSkeletonComponent> = {
   title: "Components/Skeletons/Workflow/KanbanSkeleton",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,21 +21,21 @@
 
 import type { Meta, StoryObj } from "@storybook/angular";
 import { argsToTemplate } from "@storybook/angular";
-import { StatusSkeletonComponent } from "./status-skeleton.component";
+import { CardSkeletonComponent } from "../../libs/shared/components/skeletons/card-skeleton/card-skeleton.component";
 
-const meta: Meta<StatusSkeletonComponent> = {
-  title: "Components/Skeletons/Workflow/StatusSkeleton",
-  component: StatusSkeletonComponent,
-  render: (args: StatusSkeletonComponent) => ({
+const meta: Meta<CardSkeletonComponent> = {
+  title: "Components/Skeletons/CardSkeleton",
+  component: CardSkeletonComponent,
+  render: (args: CardSkeletonComponent) => ({
     props: {
       ...args,
     },
-    template: `<app-status-skeleton ${argsToTemplate(args)}></app-status-skeleton>`,
+    template: `<app-card-skeleton ${argsToTemplate(args)}></app-card-skeleton>`,
   }),
 };
 
 export default meta;
-type Story = StoryObj<StatusSkeletonComponent>;
+type Story = StoryObj<CardSkeletonComponent>;
 
 export const Default: Story = {
   args: {},

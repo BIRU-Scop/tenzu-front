@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,54 +20,47 @@
  */
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
-
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { EmailFieldComponent } from "../../libs/shared/components/form/email-field/email-field.component";
 import { toObservable } from "@angular/core/rxjs-interop";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { userEvent, within } from "@storybook/test";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
-import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { DescriptionFieldComponent, DescriptionOptions } from "./description-field.component";
+
+type Story = StoryObj<FormEmailComponent>;
 
 @Component({
-  selector: "app-form-password-field",
+  selector: "app-form-email",
   standalone: true,
-  imports: [ReactiveFormsModule, PasswordFieldComponent, JsonPipe, DescriptionFieldComponent],
+  imports: [ReactiveFormsModule, EmailFieldComponent, JsonPipe],
   template: `
     <form [formGroup]="form">
-      {{ value() }} {{ form.value | json }}
-      <br />
-      <app-description-field [options]="options()" #descriptionComponent formControlName="description" />
+      <app-email-field formControlName="email" />
     </form>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class StoryDescriptionFieldComponent {
-  options = input.required<Partial<DescriptionOptions>>();
+class FormEmailComponent {
   value = input<string>("");
   form = new FormGroup({
-    description: new FormControl<string | undefined>(""),
+    email: new FormControl<string | undefined>("", Validators.required),
   });
 
   constructor() {
     toObservable(this.value).subscribe((data) => {
-      this.form.setValue({ description: data });
+      this.form.setValue({ email: data });
     });
   }
 }
 
-type Story = StoryObj<StoryDescriptionFieldComponent>;
-
-const meta: Meta<StoryDescriptionFieldComponent> = {
-  title: "Components/FormFields/Description",
-  component: StoryDescriptionFieldComponent,
-  args: {
-    options: {},
-  },
+const meta: Meta<FormEmailComponent> = {
+  component: FormEmailComponent,
+  title: "Components/FormFields/EmailField",
   decorators: [
     applicationConfig({
       providers: [
@@ -91,6 +84,34 @@ const meta: Meta<StoryDescriptionFieldComponent> = {
   ],
 };
 
-export const Valid: Story = {};
+export const EmailEmptyPristine: Story = {};
 
+export const EmailEmptyRequired: Story = {
+  // Add the play to blur the field and display error
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const emailInput = await canvas.findByTestId("email-input");
+    await userEvent.click(emailInput);
+    await userEvent.keyboard("{Tab}");
+  },
+};
+
+export const EmailSimple: Story = {
+  args: {
+    value: "test@email.com",
+  },
+};
+
+export const EmailInvalid: Story = {
+  args: {
+    value: "test invalid mail",
+  },
+  // Add the play to blur the field and display error
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const emailInput = await canvas.findByTestId("email-input");
+    await userEvent.click(emailInput);
+    await userEvent.keyboard("{Tab}");
+  },
+};
 export default meta;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 
-import { PasswordFieldComponent } from "./password-field.component";
+import { PasswordFieldComponent } from "../../libs/shared/components/form/password-field/password-field.component";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
 import { provideAnimations } from "@angular/platform-browser/animations";
@@ -29,8 +29,11 @@ import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/c
 import { toObservable } from "@angular/core/rxjs-interop";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
-import { PasswordRequirements, PasswordSettings } from "./password-strength/_utils";
+import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
+import {
+  PasswordRequirements,
+  PasswordSettings,
+} from "../../libs/shared/components/form/password-field/password-strength/_utils";
 
 const DEFAULT_STRENGTH_SETTINGS = { enabled: false, lengthSecureThreshold: 15, showBar: false };
 const DEFAULT_SETTINGS: PasswordSettings = {
