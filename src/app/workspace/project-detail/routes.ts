@@ -127,8 +127,14 @@ export const routes: Routes = [
   },
   {
     path: "settings",
-    loadComponent: () =>
-      import("./project-settings/project-settings.component").then((m) => m.ProjectSettingsComponent),
+
+    children: [
+      {
+        path: "",
+        loadComponent: () => import("./project-settings/project-settings.component"),
+        loadChildren: () => import("./project-settings/routes"),
+      },
+    ],
     providers: [provideTranslocoScope("project")],
   },
 ];
