@@ -37,6 +37,7 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.directive";
+import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 
 @Component({
   selector: "app-workspace-people",
@@ -50,6 +51,9 @@ import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.di
     UserCardComponent,
     MatTabLabel,
     HasWorkspacePermissionDirective,
+    MatTableModule,
+    MatRow,
+    MatRowDef,
   ],
   template: `
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
@@ -86,18 +90,28 @@ import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.di
         </mat-tab>
         <mat-tab *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER">
           <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">schedule</mat-icon>
-            {{ t("pending_tab") }}
+            <mat-icon class="icon-sm mr-1">mail</mat-icon>
+            {{ t("invitation_tab") }}
           </ng-template>
           @let workspaceInvitations = workspaceInvitationService.entities();
           @if (workspaceInvitations.length > 0) {
-            <mat-list [@newItemsFlyIn]="workspaceInvitations.length">
-              @for (pendingMember of workspaceInvitations; track pendingMember.id) {
-                <app-user-card [fullName]="pendingMember.email!"></app-user-card>
-              }
-            </mat-list>
+            <mat-table [@newItemsFlyIn]="workspaceInvitations.length" [dataSource]="workspaceInvitations">
+              <ng-container matColumnDef="user">
+                <mat-cell *matCellDef="let row">{{ row.email }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="role">
+                <mat-cell *matCellDef="let row">{{ row.role.name }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <mat-cell *matCellDef="let row">{{ row.status }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <mat-cell *matCellDef="let row"></mat-cell>
+              </ng-container>
+              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+            </mat-table>
           } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("invitation_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>

@@ -20,3 +20,4 @@
  */
 
 export * from "./membership.model";
+export * from "./invitation.model";
