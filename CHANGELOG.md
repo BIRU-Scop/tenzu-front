@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.17](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.16...v0.1.0-staging.17) (2025-05-02)
+
+
+### Features
+
+* add autologout on refresh token expiry and blacklist current token on user logout action ([9318300](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/931830072c5797cad8e252fe65b47ac285d2c9b4))
+* add warning about logout on change password security page ([db6364d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/db6364db640327ff93bc40e2040fd0e0ab6f7164))
+
+
+### Bug Fixes
+
+* use linkedsignal for search field and use autocleanup subscribe instead of leaking one ([bf6be16](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/bf6be16eaed5b0a53eb3e3ebc31e20e9de1d1cb2))
+
 ## [0.1.0-staging.16](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.15...v0.1.0-staging.16) (2025-04-28)
 
 
