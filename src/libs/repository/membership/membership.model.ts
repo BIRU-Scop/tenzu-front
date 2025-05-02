@@ -20,6 +20,7 @@
  */
 
 import { UserNested } from "../user";
+import { ProjectPermissions, WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 
 export type Role = {
   name: string;
@@ -27,7 +28,7 @@ export type Role = {
   isOwner: boolean;
   order: number;
   editable: boolean;
-  permissions: string[];
+  permissions: (WorkspacePermissions | ProjectPermissions)[];
 };
 
 export type InvitationStatus = "pending" | "accepted" | "revoked" | "denied";

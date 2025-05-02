@@ -35,15 +35,32 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.directive";
 
 @Component({
   selector: "app-workspace-people",
-  imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
+  imports: [
+    TranslocoDirective,
+    MatButton,
+    MatIcon,
+    MatList,
+    MatTabGroup,
+    MatTab,
+    UserCardComponent,
+    MatTabLabel,
+    HasWorkspacePermissionDirective,
+  ],
   template: `
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
-        <button (click)="openInviteDialog()" class="tertiary-button" mat-stroked-button>
+        <button
+          *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER"
+          (click)="openInviteDialog()"
+          class="tertiary-button"
+          mat-stroked-button
+        >
           {{ t("invite_to_workspace") }}
         </button>
       </div>
@@ -67,7 +84,7 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
             </mat-list>
           }
         </mat-tab>
-        <mat-tab>
+        <mat-tab *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER">
           <ng-template mat-tab-label>
             <mat-icon class="icon-sm mr-1">schedule</mat-icon>
             {{ t("pending_tab") }}
@@ -105,6 +122,7 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspacePeopleComponent {
+  WorkspacePermissions: typeof WorkspacePermissions = WorkspacePermissions;
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
   readonly workspaceService = inject(WorkspaceRepositoryService);
