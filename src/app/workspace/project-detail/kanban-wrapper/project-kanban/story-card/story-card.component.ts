@@ -19,11 +19,10 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
-import { UserNested } from "@tenzu/repository/user";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
@@ -31,7 +30,8 @@ import { ProjectKanbanService } from "../project-kanban.service";
 import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
-import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { Story } from "@tenzu/repository/story";
 
 @Component({
   selector: "app-story-card",
@@ -47,18 +47,20 @@ import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-member
     MatIconButton,
   ],
   template: `
+    @let _story = story();
     <mat-card appearance="outlined" *transloco="let t; prefix: 'workflow.detail_story'">
       <mat-card-header>
         <mat-card-title
-          ><a [routerLink]="['../..', 'story', ref()]" class="line-clamp-2 w-fit"
-            ><span class="text-on-tertiary-container">#{{ ref() }}</span> {{ title() }}</a
+          ><a [routerLink]="['../..', 'story', _story.ref]" class="line-clamp-2 w-fit"
+            ><span class="text-on-tertiary-container">#{{ _story.ref }}</span> {{ _story.title }}</a
           ></mat-card-title
         >
       </mat-card-header>
       <mat-card-content>
-        @if (users().length > 0) {
+        @let _assignees = assignees();
+        @if (_assignees.length > 0) {
           <button (click)="openAssignStoryDialog($event)">
-            <app-avatar-list [users]="users()" [prioritizeCurrentUser]="true" />
+            <app-avatar-list [users]="_assignees" [prioritizeCurrentUser]="true" />
           </button>
         } @else {
           <button
@@ -77,33 +79,34 @@ import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-member
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryCardComponent {
-  title = input.required<string>();
-  ref = input.required<number>();
-  projectID = input.required<string>();
-  users = input.required<UserNested[]>();
+  story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
 
-  // membershipStore = inject(MembershipStore);
-  projectMembershipStore = inject(ProjectMembershipEntitiesStore);
+  assignees = computed(() => {
+    const teamMembers = this.projectMembershipService.members();
+    return this.story().assigneeIds.map((userId) => teamMembers[userId]) || [];
+  });
+  projectMembershipService = inject(ProjectMembershipRepositoryService);
 
   relativeDialog = inject(RelativeDialogService);
   projectKanbanService = inject(ProjectKanbanService);
 
   openAssignStoryDialog(event: MouseEvent): void {
-    const teamMembers = this.projectMembershipStore.entities();
+    const story = this.story();
+    const teamMembers = Object.values(this.projectMembershipService.members());
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "auto",
       relativeYPosition: "auto",
       data: {
-        assigned: this.users(),
+        assignees: this.assignees(),
         teamMembers: teamMembers,
       },
     });
-    dialogRef.componentInstance.memberAssigned.subscribe(async (username) => {
-      await this.projectKanbanService.assignStory(username, this.projectID(), this.ref());
+    dialogRef.componentInstance.memberAssigned.subscribe(async (user) => {
+      await this.projectKanbanService.assignStory(user, story.projectId, story.ref);
     });
     dialogRef.componentInstance.memberUnassigned.subscribe(
-      async (username) => await this.projectKanbanService.removeAssignStory(username, this.projectID(), this.ref()),
+      async (user) => await this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
     );
   }
 }

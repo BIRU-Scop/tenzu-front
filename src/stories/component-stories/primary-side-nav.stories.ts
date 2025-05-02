@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { provideAnimations } from "@angular/platform-browser/animations";
-import { PrimarySideNavComponent } from "./primary-side-nav.component";
+import { PrimarySideNavComponent } from "../../libs/shared/components/primary-side-nav/primary-side-nav.component";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIconAnchor } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";

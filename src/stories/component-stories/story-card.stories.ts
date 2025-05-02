@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/c
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
-import { StoryCardComponent } from "./story-card.component";
+import { StoryCardComponent } from "../../app/workspace/project-detail/kanban-wrapper/project-kanban/story-card/story-card.component";
 import { provideRouter } from "@angular/router";
 
 @Component({

@@ -67,7 +67,7 @@ export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
         storyService.entityMapSummary()[content.storyAssignment.story.ref] ||
         storyService.entityDetail()?.ref === content.storyAssignment.story.ref
       ) {
-        storyService.wsRemoveAssign(content.storyAssignment.story.ref, content.storyAssignment.user.username);
+        storyService.wsRemoveAssign(content.storyAssignment.story.ref, content.storyAssignment.user.id);
       }
 
       break;

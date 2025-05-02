@@ -30,10 +30,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { UserStore } from "@tenzu/repository/user";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-security",
-  imports: [ReactiveFormsModule, TranslocoDirective, MatButton, MatError, PasswordFieldComponent],
+  imports: [ReactiveFormsModule, TranslocoDirective, MatButton, MatError, PasswordFieldComponent, MatIcon],
   template: `
     <div class="max-w-2xl mx-auto flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
       <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>
@@ -75,6 +76,10 @@ import { NotificationService } from "@tenzu/utils/services/notification";
               {{ t("password_not_match") }}
             </mat-error>
           }
+        </div>
+        <div class="flex flex-row">
+          <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
+          <p class="mat-body-medium text-on-error-container align-middle" [innerHTML]="t('warning')"></p>
         </div>
         <button
           data-testid="saveProfileSettings-button"
@@ -120,7 +125,7 @@ export class SecurityComponent {
           next: () => {
             this.userStore.changePassword(this.form.value.newPassword!);
             this.notificationService.success({
-              title: "settings.security.changes-saved",
+              title: "settings.security.changes_saved",
               translocoTitle: true,
             });
           },

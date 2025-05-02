@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,20 +19,24 @@
  *
  */
 
-import { TestBed } from "@angular/core/testing";
-import { CanActivateFn } from "@angular/router";
+import type { Meta, StoryObj } from "@storybook/angular";
+import { argsToTemplate } from "@storybook/angular";
+import { CardSkeletonComponent } from "../../libs/shared/components/skeletons/card-skeleton/card-skeleton.component";
 
-import { loginGuard } from "./login.guard";
+const meta: Meta<CardSkeletonComponent> = {
+  title: "Components/Skeletons/CardSkeleton",
+  component: CardSkeletonComponent,
+  render: (args: CardSkeletonComponent) => ({
+    props: {
+      ...args,
+    },
+    template: `<app-card-skeleton ${argsToTemplate(args)}></app-card-skeleton>`,
+  }),
+};
 
-describe("loginGuard", () => {
-  const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => loginGuard(...guardParameters));
+export default meta;
+type Story = StoryObj<CardSkeletonComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-  });
-
-  it("should be created", () => {
-    expect(executeGuard).toBeTruthy();
-  });
-});
+export const Default: Story = {
+  args: {},
+};

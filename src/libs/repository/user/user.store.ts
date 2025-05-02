@@ -77,11 +77,11 @@ export const UserStore = signalStore(
       },
       async changePassword(password: UpdateUserPayload["password"]) {
         await lastValueFrom(userService.patchMyUser({ password }));
-        return authService.logout();
+        return authService.userLogout();
       },
       async deleteUser() {
         userService.deleteUser().subscribe();
-        return authService.logout();
+        return authService.userLogout();
       },
       requestResetPassword(email: string) {
         return lastValueFrom(userService.requestResetPassword(email));

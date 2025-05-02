@@ -175,9 +175,10 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
                 </mat-select>
               </mat-form-field>
               <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
-              @if (assigned().length > 0) {
+              @let _assignees = assignees();
+              @if (_assignees.length > 0) {
                 <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
-                  <app-avatar-list [users]="assigned()" [prioritizeCurrentUser]="true"></app-avatar-list>
+                  <app-avatar-list [users]="_assignees" [prioritizeCurrentUser]="true"></app-avatar-list>
                 </button>
               } @else {
                 <button
@@ -248,7 +249,10 @@ export default class StoryDetailComponent {
       });
   }
 
-  assigned = computed(() => this.selectedStory()?.assignees || []);
+  assignees = computed(() => {
+    const teamMembers = this.projectMembershipService.members();
+    return this.selectedStory()?.assigneeIds.map((userId) => teamMembers[userId]) || [];
+  });
 
   previewFile(row: StoryAttachment) {
     const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
@@ -310,21 +314,21 @@ export default class StoryDetailComponent {
 
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.selectedStory();
-    const teamMembers = this.projectMembershipService.entities();
+    const teamMembers = Object.values(this.projectMembershipService.members());
     if (story) {
       const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
         ...matDialogConfig,
         relativeXPosition: "left",
         data: {
-          assigned: story?.assignees,
+          assignees: this.assignees(),
           teamMembers: teamMembers,
         },
       });
-      dialogRef.componentInstance.memberAssigned.subscribe((username) => {
-        this.projectKanbanService.assignStory(username, story.projectId, story.ref).then();
+      dialogRef.componentInstance.memberAssigned.subscribe((user) => {
+        this.projectKanbanService.assignStory(user, story.projectId, story.ref).then();
       });
-      dialogRef.componentInstance.memberUnassigned.subscribe((username) =>
-        this.projectKanbanService.removeAssignStory(username, story.projectId, story.ref),
+      dialogRef.componentInstance.memberUnassigned.subscribe((user) =>
+        this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
       );
     }
   }

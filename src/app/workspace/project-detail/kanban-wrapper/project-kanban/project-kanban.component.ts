@@ -143,12 +143,7 @@ import { Location } from "@angular/common";
                     [attr.data-drag-index]="idx"
                   >
                     @let story = storySummaryEntityMap[storyRef];
-                    <app-story-card
-                      [ref]="story.ref"
-                      [title]="story.title"
-                      [users]="story.assignees"
-                      [projectID]="story.projectId"
-                    />
+                    <app-story-card [story]="story" />
                   </li>
                 </cdk-virtual-scroll-viewport>
               } @else {
@@ -161,12 +156,7 @@ import { Location } from "@angular/common";
                     class="w-56 h-[96px]"
                     [attr.data-drag-index]="idx"
                   >
-                    <app-story-card
-                      [ref]="story.ref"
-                      [title]="story.title"
-                      [users]="story.assignees"
-                      [projectID]="story.projectId"
-                    />
+                    <app-story-card [story]="story" />
                   </li>
                 }
               }

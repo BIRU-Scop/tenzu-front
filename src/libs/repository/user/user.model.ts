@@ -27,6 +27,7 @@ import { ProjectInvitationNested } from "../project-invitations";
 import { WorkspaceInvitationNested } from "../workspace-invitations";
 
 export type UserNested = {
+  id: string;
   username: string;
   fullName: string;
   color: number;

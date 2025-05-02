@@ -48,8 +48,8 @@ import {
   applyWorkspaceEvent,
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
-import { clearAuthStorage } from "@tenzu/repository/auth/utils";
 import { ConfigAppService } from "../../../../../app/config-app/config-app.service";
+import { AuthService } from "@tenzu/repository/auth";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -116,7 +116,7 @@ export class WsService {
   async dispatch(message: WSResponse) {
     switch (message.type) {
       case "action": {
-        this.dispatchAction(message);
+        await this.dispatchAction(message);
         break;
       }
       case "event": {
@@ -136,7 +136,7 @@ export class WsService {
     }
   }
 
-  dispatchAction(message: WSResponseAction) {
+  async dispatchAction(message: WSResponseAction) {
     switch (message.status) {
       case "ok": {
         debug(
@@ -144,7 +144,7 @@ export class WsService {
           `from the channel ${message?.content?.channel} received a response of the command ${message?.action?.command}`,
           message,
         );
-        this.manageSubscription(message);
+        await this.manageSubscription(message);
         break;
       }
       case "error": {
@@ -157,14 +157,14 @@ export class WsService {
     }
   }
 
-  manageSubscription(message: WSResponseActionSuccess) {
+  async manageSubscription(message: WSResponseActionSuccess) {
     switch (message.action.command) {
       case "signin": {
         this.loggedSubject.next(true);
         break;
       }
       case "signout": {
-        this.signout();
+        await this.signoutFromServer();
         break;
       }
       case "subscribe_to_workspace_events": {
@@ -281,7 +281,7 @@ export class WsService {
       subject.next(command);
     } else if (command.command === "signout") {
       subject.next(command);
-      this.signout();
+      this.signoutFromLocal();
     } else {
       this.logged$
         .pipe(
@@ -305,9 +305,14 @@ export class WsService {
     }
   }
 
-  signout() {
+  signoutFromLocal() {
     this.loggedSubject.next(false);
-    clearAuthStorage();
-    this.router.navigateByUrl("/login").then();
+  }
+  async signoutFromServer() {
+    this.signoutFromLocal();
+    await runInInjectionContext(this.environmentInjector, async () => {
+      const authService = inject(AuthService);
+      authService.applyLogout();
+    });
   }
 }
