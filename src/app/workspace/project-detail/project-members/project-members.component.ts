@@ -37,6 +37,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
 import { HasProjectPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { MatCell, MatTableModule } from "@angular/material/table";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 
 @Component({
   selector: "app-project-members",
@@ -52,6 +53,7 @@ import { MatCell, MatTableModule } from "@angular/material/table";
     HasProjectPermissionDirective,
     MatCell,
     MatTableModule,
+    InvitationStatusComponent,
   ],
   template: `
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.members'">
@@ -95,16 +97,18 @@ import { MatCell, MatTableModule } from "@angular/material/table";
           @if (projectInvitations.length > 0) {
             <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
               <ng-container matColumnDef="user">
-                <mat-cell *matCellDef="let row">{{ row.email }}</mat-cell>
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
               </ng-container>
               <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row">{{ row.role.name }}</mat-cell>
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.role.name }}</mat-cell>
               </ng-container>
               <ng-container matColumnDef="status">
-                <mat-cell *matCellDef="let row">{{ row.status }}</mat-cell>
+                <mat-cell *matCellDef="let row" class="basis-full">
+                  <app-invitation-status [invitation]="row"></app-invitation-status>
+                </mat-cell>
               </ng-container>
               <ng-container matColumnDef="actions">
-                <mat-cell *matCellDef="let row"></mat-cell>
+                <mat-cell *matCellDef="let row" class="basis-1/3"></mat-cell>
               </ng-container>
               <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
             </mat-table>

@@ -98,6 +98,7 @@
     "invitation": {
       "accept": "Accept invitation",
       "deny": "Deny invitation",
+      "last_sent": "The last invitation was sent on {var}"
     },
     "description": {
       "label": "Description",

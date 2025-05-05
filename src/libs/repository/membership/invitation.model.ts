@@ -30,6 +30,8 @@ export type InvitationBase = {
   user?: UserNested;
   role: Role;
   email: string;
+  resentAt?: string;
+  createdAt: string;
 };
 
 type _PrivateEmailInvitation = InvitationBase & {
