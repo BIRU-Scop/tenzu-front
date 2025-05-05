@@ -95,9 +95,9 @@
     "project_card": {
       "create_first_project": "Create your first project"
     },
-    "project_special_card": {
-      "submit": "Accept invitation",
-      "cancel": "Deny invitation"
+    "invitation": {
+      "accept": "Accept invitation",
+      "deny": "Deny invitation",
     },
     "description": {
       "label": "Description",

@@ -19,4 +19,4 @@
  *
  */
 
-export * from "./project-special-card.component";
+export * from "./action-card.component";
