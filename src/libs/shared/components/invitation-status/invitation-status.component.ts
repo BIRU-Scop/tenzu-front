@@ -20,7 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
-import { InvitationBase } from "@tenzu/repository/membership";
+import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 import { ChipComponent } from "@tenzu/shared/components/chip/chip.component";
 import { TranslocoDirective } from "@jsverse/transloco";
 
@@ -28,20 +28,37 @@ import { TranslocoDirective } from "@jsverse/transloco";
   selector: "app-invitation-status",
   imports: [ChipComponent, TranslocoDirective],
   template: `
-    <div class="flex flex-row gap-2" *transloco="let t">
-      <app-chip [label]="invitation().status"></app-chip>
-      <span class="mat-label-large text-on-surface-variant">{{
-        t("component.invitation.last_sent", { var: lastSentAt() })
-      }}</span>
+    <div class="flex flex-row gap-2 items-center" *transloco="let t">
+      <app-chip [label]="t(translatedStatusKey())" [color]="statusColor()"></app-chip>
+      @if (invitation().status === InvitationStatus.PENDING) {
+        <p class="mat-label-large text-on-surface-variant">
+          {{ t("component.invitation.last_sent", { var: lastSentAt() }) }}
+        </p>
+      }
     </div>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationStatusComponent {
+  InvitationStatus: typeof InvitationStatus = InvitationStatus;
+
   invitation = input.required<InvitationBase>();
   lastSentAt = computed(() => {
     const invitation = this.invitation();
     return invitation.resentAt || invitation.createdAt;
+  });
+  translatedStatusKey = computed(() => `component.invitation.${this.invitation().status}`);
+  statusColor = computed(() => {
+    const status = this.invitation().status;
+    switch (status) {
+      case InvitationStatus.PENDING:
+        return "warning";
+      case InvitationStatus.ACCEPTED:
+        return "tertiary";
+      case InvitationStatus.REVOKED:
+      case InvitationStatus.DENIED:
+        return "error";
+    }
   });
 }

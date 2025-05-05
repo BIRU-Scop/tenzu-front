@@ -98,7 +98,11 @@
     "invitation": {
       "accept": "Accept invitation",
       "deny": "Deny invitation",
-      "last_sent": "The last invitation was sent on {var}"
+      "last_sent": "The last invitation was sent on {var}",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "revoked": "Revoked",
+      "denied": "Denied"
     },
     "description": {
       "label": "Description",

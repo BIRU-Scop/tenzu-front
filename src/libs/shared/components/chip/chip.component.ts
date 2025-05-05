@@ -24,10 +24,11 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 @Component({
   selector: "app-chip",
   imports: [],
-  template: ` <span>{{ label() }}</span> `,
+  template: ` <p class="app-chip {{ color() }}-chip">{{ label() }}</p>`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChipComponent {
   label = input.required<string>();
+  color = input.required<"primary" | "secondary" | "tertiary" | "error" | "warning">();
 }

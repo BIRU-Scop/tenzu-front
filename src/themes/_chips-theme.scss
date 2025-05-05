@@ -1,0 +1,92 @@
+/*
+ * Copyright (C) 2025 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+@use '@angular/material' as mat;
+
+.app-chip {
+  @apply rounded-lg flex flex-row place-content-center;
+  padding: 7.5px 16px 7.5px 16px;
+}
+
+.mat-mdc-chip {
+  @include mat.chips-overrides((  ));
+}
+
+.primary-chip {
+  @apply app-chip;
+  color: var(--mat-sys-on-primary-container);
+  background-color: var(--mat-sys-primary-container);
+  @include mat.chips-overrides((
+      outline-width: 0,
+      label-text-color: var(--mat-sys-on-primary-container),
+      elevated-container-color: var(--mat-sys-primary-container),
+      hover-state-layer-color: var(--mat-sys-on-primary),
+      hover-state-layer-opacity: 30%
+  ));
+}
+.secondary-chip {
+  @apply app-chip;
+  color: var(--mat-sys-on-secondary-container);
+  background-color: var(--mat-sys-secondary-container);
+  @include mat.chips-overrides((
+      outline-width: 0,
+      label-text-color: var(--mat-sys-on-secondary-container),
+      elevated-container-color: var(--mat-sys-secondary-container),
+      hover-state-layer-color: var(--mat-sys-on-secondary),
+      hover-state-layer-opacity: 30%
+  ));
+}
+.tertiary-chip {
+  @apply app-chip;
+  color: var(--mat-sys-on-tertiary-container);
+  background-color: var(--mat-sys-tertiary-container);
+  @include mat.chips-overrides((
+      outline-width: 0,
+      label-text-color: var(--mat-sys-on-tertiary-container),
+      elevated-container-color: var(--mat-sys-tertiary-container),
+      hover-state-layer-color: var(--mat-sys-on-tertiary),
+      hover-state-layer-opacity: 30%
+  ));
+}
+.error-chip {
+  color: var(--mat-sys-on-error-container);
+  background-color: var(--mat-sys-error-container);
+  @apply app-chip;
+  @include mat.chips-overrides((
+      outline-width: 0,
+      label-text-color: var(--mat-sys-on-error-container),
+      elevated-container-color: var(--mat-sys-error-container),
+      hover-state-layer-color: var(--mat-sys-on-error),
+      hover-state-layer-opacity: 30%
+  ));
+}
+.warning-chip {
+  color: var(--mat-sys-on-warning-container);
+  background-color: var(--mat-sys-warning-container);
+  @apply app-chip;
+  @include mat.chips-overrides((
+      outline-width: 0,
+      label-text-color: var(--mat-sys-on-warning-container),
+      elevated-container-color: var(--mat-sys-warning-container),
+      hover-state-layer-color: var(--mat-sys-on-warning),
+      hover-state-layer-opacity: 30%
+  ));
+}

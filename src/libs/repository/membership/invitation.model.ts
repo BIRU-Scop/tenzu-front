@@ -22,7 +22,12 @@
 import { UserNested } from "../user";
 import { Role } from "./membership.model";
 
-export type InvitationStatus = "pending" | "accepted" | "revoked" | "denied";
+export enum InvitationStatus {
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  REVOKED = "revoked",
+  DENIED = "denied",
+}
 
 export type InvitationBase = {
   id: string;
