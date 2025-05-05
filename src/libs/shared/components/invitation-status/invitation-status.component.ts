@@ -23,16 +23,21 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 import { ChipComponent } from "@tenzu/shared/components/chip/chip.component";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDatePipe } from "@jsverse/transloco-locale";
 
 @Component({
   selector: "app-invitation-status",
-  imports: [ChipComponent, TranslocoDirective],
+  imports: [ChipComponent, TranslocoDirective, TranslocoDatePipe],
   template: `
     <div class="flex flex-row gap-2 items-center" *transloco="let t">
       <app-chip [label]="t(translatedStatusKey())" [color]="statusColor()"></app-chip>
       @if (invitation().status === InvitationStatus.PENDING) {
         <p class="mat-label-large text-on-surface-variant">
-          {{ t("component.invitation.last_sent", { var: lastSentAt() }) }}
+          {{
+            t("component.invitation.last_sent", {
+              var: lastSentAt() | translocoDate: { dateStyle: "short", timeStyle: "short" },
+            })
+          }}
         </p>
       }
     </div>
