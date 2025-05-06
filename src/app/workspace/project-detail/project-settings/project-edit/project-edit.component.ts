@@ -54,7 +54,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
   ],
   template: `
     @let project = projectService.entityDetail();
-    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings'">
+    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings.project_edit'">
       <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
         <div class="flex flex-row gap-4 items-center">
           <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
