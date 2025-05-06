@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,13 +19,17 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ProjectDetail } from "../project";
 
-@Component({
-  selector: "app-project-roles",
-  imports: [],
-  template: ` <p>project-roles works!</p> `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export default class ProjectRolesComponent {}
+export type ProjectRolesSummary = {
+  id: string;
+  projectId: ProjectDetail["id"];
+  name: string;
+  slug: string;
+  totalMembers: number;
+  isOwner: boolean;
+  order: number;
+  editable: boolean;
+  permissions: string[];
+};
+export type ProjectRolesDetail = ProjectRolesSummary;
