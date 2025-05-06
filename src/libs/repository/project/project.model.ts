@@ -21,7 +21,6 @@
 
 import { Role } from "../membership";
 import { WorkflowNested } from "../workflow";
-import { WorkspaceNested } from "../workspace";
 
 export type ProjectLogoBase = {
   logo?: string;
@@ -50,9 +49,7 @@ export type ProjectSummary = ProjectNested & {
 };
 
 export type ProjectDetail = ProjectSummary & {
-  workspace: WorkspaceNested;
   workflows: WorkflowNested[];
-
   userRole?: Role;
 };
 
