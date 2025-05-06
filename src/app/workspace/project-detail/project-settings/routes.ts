@@ -35,8 +35,8 @@ const routes: Routes = [
     data: { state: 1 },
   },
   {
-    path: "project-roles",
-    loadComponent: () => import("./project-roles/project-roles.component"),
+    path: "list-project-roles",
+    loadComponent: () => import("./list-project-roles/list-project-roles.component"),
     providers: [provideTranslocoScope("project")],
     data: { state: 2 },
   },

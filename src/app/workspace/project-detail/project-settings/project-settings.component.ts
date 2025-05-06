@@ -66,8 +66,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 })
 export default class ProjectSettingsComponent implements AfterViewInit {
   links = [
-    { path: "./project-edit", labelKey: "title" },
-    { path: "./project-roles", labelKey: "title" },
+    { path: "./project-edit", labelKey: "project_edit.title" },
+    { path: "./list-project-roles", labelKey: "roles.title" },
   ];
   breadcrumbStore = inject(BreadcrumbStore);
   ngAfterViewInit(): void {
