@@ -41,7 +41,7 @@ import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
-import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
+import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
@@ -56,12 +56,12 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     ProjectCardComponent,
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
-    ProjectSpecialCardComponent,
+    ActionCardComponent,
   ],
   template: `
-    <div *transloco="let t; prefix: 'commons'" class="p-4 max-w-7xl mx-auto">
+    <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
       <div class="flex flex-row">
-        <h1 class="mat-headline-medium grow">{{ t("projects") }}</h1>
+        <h1 class="mat-headline-medium grow">{{ t("commons.projects") }}</h1>
         <button
           (click)="openCreateDialog($event)"
           data-testid="create-workspace-open"
@@ -69,7 +69,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
           mat-stroked-button
         >
           <mat-icon>add</mat-icon>
-          {{ t("workspace") }}
+          {{ t("commons.workspace") }}
         </button>
       </div>
       @let workpaces = workspaceService.entitiesSummary();
@@ -85,12 +85,14 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
                 @for (project of workspace.userInvitedProjects; track project.id) {
                   <li>
-                    <app-project-special-card
+                    <app-action-card
                       [name]="project.name"
                       [color]="project.color"
+                      [cancelLabel]="t('component.invitation.accept')"
+                      [submitLabel]="t('component.invitation.deny')"
                       (submitted)="acceptProjectInvitation(project)"
                       (canceled)="denyProjectInvitation(project)"
-                    ></app-project-special-card>
+                    ></app-action-card>
                   </li>
                 }
                 @for (project of workspace.userMemberProjects; track project.id) {

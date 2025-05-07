@@ -12,8 +12,7 @@
     "description": "Project description",
     "delete_project_title": "Delete project",
     "delete_project_warning": "This action will delete the project, along with all the stories and attachments in it.",
-    "buttons":
-    {
+    "buttons": {
       "cancel": "Cancel",
       "save": "Save",
       "delete": "Delete"
@@ -30,6 +29,7 @@
     "description_modal": "Start typing a email or enter multiple addresses separated by a comma.",
     "invite_to_project": "Invite to project",
     "members_tab": "Members",
-    "pending_tab": "Pending",
-    "pending_empty": "There are no pending invitations to accept."}
+    "invitation_tab": "Invitations",
+    "invitation_empty": "There are no invitations."
+  }
 }

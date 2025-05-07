@@ -49,6 +49,7 @@
     "@editorjs/table": "^2.4.1",
     "@editorjs/warning": "^1.4.0",
     "@jsverse/transloco": "^7.6.1",
+    "@jsverse/transloco-locale": "^7.0.1",
     "@jsverse/transloco-messageformat": "^7.0.1",
     "@micro-sentry/angular": "^7.1.1",
     "@ngrx/operators": "^19.0.1",

@@ -34,16 +34,38 @@ import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { HasProjectPermissionDirective } from "@tenzu/directives/permission.directive";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import { MatCell, MatTableModule } from "@angular/material/table";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 
 @Component({
   selector: "app-project-members",
-  imports: [TranslocoDirective, MatButton, MatList, MatTabGroup, MatTab, MatTabLabel, UserCardComponent, MatIcon],
+  imports: [
+    TranslocoDirective,
+    MatButton,
+    MatList,
+    MatTabGroup,
+    MatTab,
+    MatTabLabel,
+    UserCardComponent,
+    MatIcon,
+    HasProjectPermissionDirective,
+    MatCell,
+    MatTableModule,
+    InvitationStatusComponent,
+  ],
   template: `
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.members'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
 
-        <button (click)="openCreateDialog()" class="tertiary-button" mat-stroked-button>
+        <button
+          *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
+          (click)="openCreateDialog()"
+          class="tertiary-button"
+          mat-stroked-button
+        >
           {{ t("invite_to_project") }}
         </button>
       </div>
@@ -66,20 +88,32 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
             </mat-list>
           }
         </mat-tab>
-        <mat-tab [label]="t('pending_tab')">
+        <mat-tab *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER">
           <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">schedule</mat-icon>
-            {{ t("pending_tab") }}
+            <mat-icon class="icon-sm mr-1">mail</mat-icon>
+            {{ t("invitation_tab") }}
           </ng-template>
           @let projectInvitations = projectInvitationService.entities();
           @if (projectInvitations.length > 0) {
-            <mat-list [@newItemsFlyIn]="projectInvitations.length">
-              @for (pendingMember of projectInvitations; track pendingMember.id) {
-                <app-user-card [fullName]="pendingMember.email!"></app-user-card>
-              }
-            </mat-list>
+            <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
+              <ng-container matColumnDef="user">
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="role">
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.role.name }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <mat-cell *matCellDef="let row" class="basis-full">
+                  <app-invitation-status [invitation]="row"></app-invitation-status>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <mat-cell *matCellDef="let row" class="basis-1/3"></mat-cell>
+              </ng-container>
+              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+            </mat-table>
           } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("invitation_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>
@@ -104,6 +138,8 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMembersComponent {
+  ProjectPermissions: typeof ProjectPermissions = ProjectPermissions;
+
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
   projectService = inject(ProjectRepositoryService);

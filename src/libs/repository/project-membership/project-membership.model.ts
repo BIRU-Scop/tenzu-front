@@ -19,12 +19,10 @@
  *
  */
 
-import { Role } from "../membership";
-import { ProjectNested } from "../project";
 import { UserNested } from "../user";
 
 export type ProjectMembership = {
   user: UserNested;
-  role: Role;
-  project: ProjectNested;
+  role_id: string;
+  project_id: string;
 };

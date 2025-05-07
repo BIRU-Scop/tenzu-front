@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,11 +19,16 @@
  *
  */
 
-import { NoopValueAccessorDirective } from "./noop-value-accessor-directive.directive";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-describe("NoopValueAccessorDirectiveDirective", () => {
-  it("should create an instance", () => {
-    const directive = new NoopValueAccessorDirective();
-    expect(directive).toBeTruthy();
-  });
-});
+@Component({
+  selector: "app-chip",
+  imports: [],
+  template: ` <p class="app-chip {{ color() }}-chip">{{ label() }}</p>`,
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipComponent {
+  label = input.required<string>();
+  color = input.required<"primary" | "secondary" | "tertiary" | "error" | "warning">();
+}

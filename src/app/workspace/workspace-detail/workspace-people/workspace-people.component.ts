@@ -35,15 +35,38 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.directive";
+import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 
 @Component({
   selector: "app-workspace-people",
-  imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
+  imports: [
+    TranslocoDirective,
+    MatButton,
+    MatIcon,
+    MatList,
+    MatTabGroup,
+    MatTab,
+    UserCardComponent,
+    MatTabLabel,
+    HasWorkspacePermissionDirective,
+    MatTableModule,
+    MatRow,
+    MatRowDef,
+    InvitationStatusComponent,
+  ],
   template: `
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
-        <button (click)="openInviteDialog()" class="tertiary-button" mat-stroked-button>
+        <button
+          *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER"
+          (click)="openInviteDialog()"
+          class="tertiary-button"
+          mat-stroked-button
+        >
           {{ t("invite_to_workspace") }}
         </button>
       </div>
@@ -67,20 +90,32 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
             </mat-list>
           }
         </mat-tab>
-        <mat-tab>
+        <mat-tab *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER">
           <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">schedule</mat-icon>
-            {{ t("pending_tab") }}
+            <mat-icon class="icon-sm mr-1">mail</mat-icon>
+            {{ t("invitation_tab") }}
           </ng-template>
           @let workspaceInvitations = workspaceInvitationService.entities();
           @if (workspaceInvitations.length > 0) {
-            <mat-list [@newItemsFlyIn]="workspaceInvitations.length">
-              @for (pendingMember of workspaceInvitations; track pendingMember.id) {
-                <app-user-card [fullName]="pendingMember.email!"></app-user-card>
-              }
-            </mat-list>
+            <mat-table [@newItemsFlyIn]="workspaceInvitations.length" [dataSource]="workspaceInvitations">
+              <ng-container matColumnDef="user">
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="role">
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.role.name }}</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <mat-cell *matCellDef="let row" class="basis-full">
+                  <app-invitation-status [invitation]="row"></app-invitation-status>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <mat-cell *matCellDef="let row" class="basis-1/3"></mat-cell>
+              </ng-container>
+              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+            </mat-table>
           } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant">{{ t("invitation_empty") }}</p>
           }
         </mat-tab>
       </mat-tab-group>
@@ -105,6 +140,7 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspacePeopleComponent {
+  WorkspacePermissions: typeof WorkspacePermissions = WorkspacePermissions;
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
   readonly workspaceService = inject(WorkspaceRepositoryService);

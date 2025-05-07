@@ -22,27 +22,25 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
-import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatIcon } from "@angular/material/icon";
 
 @Component({
-  selector: "app-project-special-card",
+  selector: "app-action-card",
   imports: [
     AvatarComponent,
     MatCard,
     MatCardHeader,
     MatCardTitle,
     MatCardContent,
-    TranslocoDirective,
     MatButton,
     MatIconButton,
     MatTooltip,
     MatIcon,
   ],
   template: `
-    <mat-card appearance="outlined" class="min-h-[90px]" *transloco="let t; prefix: 'component.project_special_card'">
+    <mat-card appearance="outlined" class="min-h-[90px]">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
         <mat-card-title>
@@ -51,8 +49,8 @@ import { MatIcon } from "@angular/material/icon";
         <button
           mat-icon-button
           class="error-button"
-          [attr.aria-label]="t('cancel')"
-          [matTooltip]="t('cancel')"
+          [attr.aria-label]="cancelLabel()"
+          [matTooltip]="cancelLabel()"
           (click)="canceled.emit()"
         >
           <mat-icon>close</mat-icon>
@@ -63,10 +61,10 @@ import { MatIcon } from "@angular/material/icon";
           class="secondary-button"
           mat-flat-button
           type="button"
-          [attr.aria-label]="t('submit')"
+          [attr.aria-label]="submitLabel()"
           (click)="submitted.emit()"
         >
-          {{ t("submit") }}
+          {{ submitLabel() }}
         </button>
       </mat-card-content>
     </mat-card>
@@ -74,10 +72,11 @@ import { MatIcon } from "@angular/material/icon";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectSpecialCardComponent {
+export class ActionCardComponent {
   name = input("");
   color = input(0);
-  workspaceId = input<string | null>("");
+  cancelLabel = input("");
+  submitLabel = input("");
   canceled = output<void>();
   submitted = output<void>();
 }

@@ -154,7 +154,7 @@ export default class ProjectCreateComponent {
     this.form.reset(this.form.value);
     if (this.form.valid) {
       const project = await this.projectService.createRequest(this.form.getRawValue());
-      this.router.navigateByUrl(`/workspace/${project.workspace.id}/project/${project.id}/kanban/main`).then();
+      this.router.navigateByUrl(`/workspace/${project.workspaceId}/project/${project.id}/kanban/main`).then();
     }
   }
 }

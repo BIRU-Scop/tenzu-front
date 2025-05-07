@@ -19,12 +19,10 @@
  *
  */
 
-import { Role } from "../membership";
-import { WorkspaceNested } from "../workspace";
 import { UserNested } from "../user";
 
 export type WorkspaceMembership = {
   user: UserNested;
-  workspace: WorkspaceNested;
-  role: Role;
+  role_id: string;
+  workspace_id: string;
 };

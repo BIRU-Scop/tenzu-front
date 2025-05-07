@@ -19,7 +19,7 @@
  *
  */
 
-import { UserNested } from "../user";
+import { ProjectPermissions, WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 
 export type Role = {
   name: string;
@@ -27,41 +27,5 @@ export type Role = {
   isOwner: boolean;
   order: number;
   editable: boolean;
-  permissions: string[];
-};
-
-export type InvitationStatus = "pending" | "accepted" | "revoked" | "denied";
-
-export type InvitationBase = {
-  id: string;
-  status: InvitationStatus;
-  user?: UserNested;
-  role: Role;
-  email: string;
-};
-
-type _PrivateEmailInvitation = InvitationBase & {
-  email?: string;
-};
-
-export type CreateInvitations = {
-  invitations: _PrivateEmailInvitation[];
-  alreadyMembers: number;
-};
-
-export type PublicPendingInvitationBase = {
-  email: string;
-  existingUser: boolean;
-};
-
-export type InvitationsPayload = {
-  invitations: {
-    email?: string;
-    username?: string;
-    roleSlug: string;
-  }[];
-};
-
-export type UpdateInvitationPayload = {
-  roleSlug: string;
+  permissions: (WorkspacePermissions | ProjectPermissions)[];
 };
