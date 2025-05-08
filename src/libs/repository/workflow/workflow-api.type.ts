@@ -20,10 +20,11 @@
  */
 
 import { Workflow } from "./workflow.model";
+import { ProjectDetail } from "@tenzu/repository/project";
 
 export type BaseParams = { workflowId: Workflow["id"] };
 export type GetEntityDetailParams = BaseParams;
-export type CreateEntityDetailParams = undefined;
+export type CreateEntityDetailParams = { projectId: ProjectDetail["id"] };
 export type PutEntityDetailParams = BaseParams;
 export type PatchEntityDetailParams = BaseParams;
 export type DeleteEntityDetailParams = BaseParams;
