@@ -38,6 +38,7 @@ import { HasProjectPermissionDirective } from "@tenzu/directives/permission.dire
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { MatCell, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
+import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 
 @Component({
   selector: "app-project-members",
@@ -56,6 +57,7 @@ import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-s
     InvitationStatusComponent,
   ],
   template: `
+    @let projectRoleEntityMapSummary = projectRoleRepositoryService.entityMapSummary();
     <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.members'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
@@ -100,7 +102,9 @@ import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-s
                 <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
               </ng-container>
               <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.role.name }}</mat-cell>
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{
+                  projectRoleEntityMapSummary[row.roleId].name
+                }}</mat-cell>
               </ng-container>
               <ng-container matColumnDef="status">
                 <mat-cell *matCellDef="let row" class="basis-full">
@@ -145,6 +149,7 @@ export class ProjectMembersComponent {
   projectService = inject(ProjectRepositoryService);
   projectInvitationService = inject(ProjectInvitationRepositoryService);
   projectMembershipService = inject(ProjectMembershipRepositoryService);
+  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);

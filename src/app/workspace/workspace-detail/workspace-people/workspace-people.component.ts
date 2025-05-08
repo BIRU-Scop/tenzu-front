@@ -39,6 +39,7 @@ import { WorkspacePermissions } from "@tenzu/repository/permission/permission.mo
 import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.directive";
 import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
+import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 
 @Component({
   selector: "app-workspace-people",
@@ -58,6 +59,7 @@ import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-s
     InvitationStatusComponent,
   ],
   template: `
+    @let workspaceRoleEntityMapSummary = workspaceRoleRepositoryService.entityMapSummary();
     <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
@@ -102,7 +104,9 @@ import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-s
                 <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
               </ng-container>
               <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.role.name }}</mat-cell>
+                <mat-cell *matCellDef="let row" class="basis-1/3">{{
+                  workspaceRoleEntityMapSummary[row.roleId].name
+                }}</mat-cell>
               </ng-container>
               <ng-container matColumnDef="status">
                 <mat-cell *matCellDef="let row" class="basis-full">
@@ -147,7 +151,7 @@ export default class WorkspacePeopleComponent {
   translocoService = inject(TranslocoService);
   workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
   workspaceMembershipService = inject(WorkspaceMembershipRepositoryService);
-
+  workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
   selectedTabIndex = model(0);
 
   constructor() {
