@@ -28,7 +28,6 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-r
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { Workflow } from "@tenzu/repository/workflow";
-import { UserNested } from "@tenzu/repository/user";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -73,14 +72,6 @@ export class ProjectKanbanService {
         },
       );
     }
-  }
-
-  async assignStory(user: UserNested, projectId: string, storyRef: number) {
-    await this.storyService.createAssign(projectId, storyRef, user);
-  }
-
-  async removeAssignStory(user: UserNested, projectId: string, storyRef: number) {
-    await this.storyService.deleteAssign(projectId, storyRef, user);
   }
 
   async editSelectedWorkflow(

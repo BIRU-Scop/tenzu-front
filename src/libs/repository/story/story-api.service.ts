@@ -76,7 +76,7 @@ export class StoryApiService extends AbstractApiService<
   createAssignee(username: UserNested["username"], params: StoryApiServiceType.BaseParams) {
     return this.http.post<StoryAssign>(`${this.baseStoryAssignmentUrl(params)}`, { username });
   }
-  deleteAssignee(params: StoryApiServiceType.BaseParams & { username: UserNested["username"] }) {
-    return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.username}`);
+  deleteAssignee(params: { userId: UserNested["id"] }) {
+    return this.http.delete<void>(`${this.configAppService.apiUrl()}stories/assignments/${params.userId}`);
   }
 }

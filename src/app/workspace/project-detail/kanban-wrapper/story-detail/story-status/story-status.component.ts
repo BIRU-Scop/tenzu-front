@@ -31,7 +31,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
   selector: "app-story-status",
   imports: [MatOption, MatSelect, MatFormField, TranslocoDirective],
   template: `
-    <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
+    <div class="flex flex-row gap-4" *transloco="let t; prefix: 'workflow.detail_story'">
       <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
       <mat-form-field>
         <mat-select [(value)]="this.statusSelected" (selectionChange)="changeStatus($event.value, storyDetail())">
@@ -40,7 +40,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
           }
         </mat-select>
       </mat-form-field>
-    </ng-container>
+    </div>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

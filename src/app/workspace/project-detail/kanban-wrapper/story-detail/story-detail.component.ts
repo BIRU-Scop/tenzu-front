@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
@@ -32,22 +32,18 @@ import { DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
-import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
-import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { StoryDetailAttachementsComponent } from "./story-detail-attachements/story-detail-attachements.component";
 import { StoryStatusComponent } from "./story-status/story-status.component";
+import { StoryAssigneeComponent } from "./story-assignee/story-assignee.component";
 
 @Component({
   selector: "app-story-detail",
@@ -66,12 +62,12 @@ import { StoryStatusComponent } from "./story-status/story-status.component";
     ConfirmDirective,
     MatTableModule,
     MatIconButton,
-    AvatarListComponent,
     MatDivider,
     MatTooltip,
     StoryDetailMenuComponent,
     StoryDetailAttachementsComponent,
     StoryStatusComponent,
+    StoryAssigneeComponent,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -107,32 +103,17 @@ import { StoryStatusComponent } from "./story-status/story-status.component";
           <div
             class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline pl-8 pt-4"
           >
-            <div class="grid grid-cols-2 gap-y-4 content-start mb-2">
-              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
-              <app-user-card
-                [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
-                [username]="story.createdAt | date: 'short'"
-                [color]="story.createdBy?.color || 0"
-              ></app-user-card>
-
+            <div class="grid grid-cols-1 gap-y-4 content-start mb-2">
+              <div class="flex flex-row gap-4">
+                <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
+                <app-user-card
+                  [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
+                  [username]="story.createdAt | date: 'short'"
+                  [color]="story.createdBy?.color || 0"
+                ></app-user-card>
+              </div>
               <app-story-status [storyDetail]="story"></app-story-status>
-              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
-              @let _assignees = assignees();
-              @if (_assignees.length > 0) {
-                <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
-                  <app-avatar-list [users]="_assignees" [prioritizeCurrentUser]="true"></app-avatar-list>
-                </button>
-              } @else {
-                <button
-                  mat-icon-button
-                  type="button"
-                  (click)="openAssignStoryDialog($event)"
-                  [attr.aria-label]="t('add_assignees')"
-                  [matTooltip]="t('add_assignees')"
-                >
-                  <mat-icon>person_add</mat-icon>
-                </button>
-              }
+              <app-story-assignee [storyDetail]="story"></app-story-assignee>
             </div>
             <mat-divider></mat-divider>
             <button
@@ -164,10 +145,8 @@ export default class StoryDetailComponent {
   workflowService = this.storyDetailService.workflowService;
   workspaceService = inject(WorkspaceRepositoryService);
   storyService = this.storyDetailService.storyService;
-  projectMembershipService = inject(ProjectMembershipRepositoryService);
   notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
-  relativeDialog = inject(RelativeDialogService);
   fb = inject(FormBuilder);
   canBeClosed = input(false);
   closed = output<void>();
@@ -187,12 +166,6 @@ export default class StoryDetailComponent {
         }
       });
   }
-
-  assignees = computed(() => {
-    const teamMembers = this.projectMembershipService.members();
-    return this.selectedStory()?.assigneeIds.map((userId) => teamMembers[userId]) || [];
-  });
-
   async submit() {
     const description = await this.editor().save();
     const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
@@ -208,26 +181,5 @@ export default class StoryDetailComponent {
   async onDelete() {
     await this.storyDetailService.deleteSelectedStory();
     this.closed.emit();
-  }
-
-  openAssignStoryDialog(event: MouseEvent): void {
-    const story = this.selectedStory();
-    const teamMembers = Object.values(this.projectMembershipService.members());
-    if (story) {
-      const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
-        ...matDialogConfig,
-        relativeXPosition: "left",
-        data: {
-          assignees: this.assignees(),
-          teamMembers: teamMembers,
-        },
-      });
-      dialogRef.componentInstance.memberAssigned.subscribe((user) => {
-        this.projectKanbanService.assignStory(user, story.projectId, story.ref).then();
-      });
-      dialogRef.componentInstance.memberUnassigned.subscribe((user) =>
-        this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
-      );
-    }
   }
 }
