@@ -106,7 +106,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
     }
   }
   async createAssign(user: UserNested, params: { projectId: StoryDetail["projectId"]; ref: Story["ref"] }) {
-    const storyAssign: StoryAssign = await lastValueFrom(this.apiService.createAssignee(user.username, params));
+    const storyAssign: StoryAssign = await lastValueFrom(this.apiService.createAssignee(user.id, params));
     this.wsAddAssign(storyAssign, params.ref);
     return storyAssign;
   }
@@ -116,9 +116,11 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entityDetailStore.addAssign(storyAssign);
   }
 
-  async deleteAssign(assign: UserNested, params: { storyRef: Story["ref"] }) {
-    await lastValueFrom(this.apiService.deleteAssignee({ userId: assign.id }));
-    this.wsRemoveAssign(params.storyRef, assign.id);
+  async deleteAssign(assignee: UserNested, params: { projectId: StoryDetail["projectId"]; storyRef: Story["ref"] }) {
+    await lastValueFrom(
+      this.apiService.deleteAssignee({ projectId: params.projectId, ref: params.storyRef, userId: assignee.id }),
+    );
+    this.wsRemoveAssign(params.storyRef, assignee.id);
   }
   wsRemoveAssign(ref: Story["ref"], userId: UserNested["id"]) {
     this.entitiesSummaryStore.removeAssign(ref, userId);
