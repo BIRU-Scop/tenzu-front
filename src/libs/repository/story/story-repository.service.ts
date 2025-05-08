@@ -23,7 +23,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { StoryApiService } from "./story-api.service";
 import { lastValueFrom } from "rxjs";
 import type * as StoryApiServiceType from "./story-api.type";
-import { Story, StoryAssign, StoryAttachment, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
+import { Story, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Status } from "../status";
@@ -49,7 +49,6 @@ export class StoryRepositoryService extends BaseRepositoryService<
   protected entitiesSummaryStore = inject(StoryEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryDetailStore);
   override getEntityIdFn = (story: Story) => story.ref;
-  selectedStoryAttachments = this.entityDetailStore.selectedStoryAttachments;
   groupedByStatus = this.entitiesSummaryStore.groupedByStatus;
   isLoading = signal(false);
 
@@ -98,33 +97,13 @@ export class StoryRepositoryService extends BaseRepositoryService<
   }
 
   override async getRequest(params: StoryApiServiceType.GetEntityDetailParams) {
-    const story = super.getRequest(params);
-    const attachments = await lastValueFrom(this.apiService.getAttachments(params));
-    this.entityDetailStore.setStoryAttachments(attachments);
-    return story;
+    return super.getRequest(params);
   }
   updateWorkflowStoryDetail(workflow: Workflow) {
     const story = this.entityDetailStore.item();
     if (story) {
       this.entityDetailStore.update(story.ref, { ...story, workflow: { ...workflow } });
     }
-  }
-  getStoryAttachmentUrl(projectId: string, ref: Story["ref"], attachmentId: string) {
-    return `${this.apiService.baseStoryAttachmentUrl({ projectId, ref })}/${attachmentId}`;
-  }
-  async createAttachment(projectId: string, ref: Story["ref"], attachment: Blob) {
-    const newAttachment = await lastValueFrom(this.apiService.addStoryAttachments(attachment, { projectId, ref }));
-    this.wsAddAttachment(newAttachment, ref);
-  }
-  wsAddAttachment(attachment: StoryAttachment, ref: Story["ref"]) {
-    this.entityDetailStore.addAttachment(attachment, ref);
-  }
-  async deleteAttachment(projectId: string, ref: Story["ref"], attachmentId: string) {
-    await lastValueFrom(this.apiService.deleteStoryAttachment({ projectId, ref, attachmentId }));
-    this.wsRemoveAttachment(attachmentId);
-  }
-  wsRemoveAttachment(attachmentId: string) {
-    this.entityDetailStore.removeAttachment(attachmentId);
   }
   async createAssign(projectId: string, ref: Story["ref"], user: UserNested) {
     const storyAssign: StoryAssign = await lastValueFrom(

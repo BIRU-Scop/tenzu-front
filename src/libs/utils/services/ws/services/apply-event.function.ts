@@ -21,7 +21,7 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
-import { StoryAssign, StoryAttachment, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story";
+import { StoryAssign, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story";
 import {
   NotificationEventType,
   ProjectEventType,
@@ -47,6 +47,7 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { getStoryDetailUrl, getWorkflowUrl, getWorkspaceRootUrl, HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
+import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -284,17 +285,22 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
 }
 
 export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
-  const storyService = inject(StoryRepositoryService);
-
+  const storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
+  const currentStoryDetail = storyRepositoryService.entityDetail();
   switch (message.event.type) {
     case StoryAttachmentEventType.CreateStoryAttachment: {
       const content = message.event.content as { attachment: StoryAttachment; ref: number };
-      storyService.wsAddAttachment(content.attachment, content.ref);
+      if (currentStoryDetail?.ref === content.ref) {
+        storyAttachmentRepositoryService.setEntitySummary(content.attachment);
+      }
       break;
     }
     case StoryAttachmentEventType.DeleteStoryAttachment: {
       const content = message.event.content as { attachment: StoryAttachment; ref: number };
-      storyService.wsRemoveAttachment(content.attachment.id);
+      if (currentStoryDetail?.ref === content.ref) {
+        storyAttachmentRepositoryService.deleteEntitySummary(content.attachment.id);
+      }
       break;
     }
   }

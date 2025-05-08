@@ -79,15 +79,6 @@ export type StoryUpdate = Partial<StoryDetail> & {
   workflowSlug?: string;
 };
 
-export type StoryAttachment = {
-  id: string;
-  name: string;
-  contentType: string;
-  createdAt: string;
-  size: number;
-  file: string;
-};
-
 export type StoryAssign = {
   user: UserNested;
   story: Pick<Story, "ref" | "title">;

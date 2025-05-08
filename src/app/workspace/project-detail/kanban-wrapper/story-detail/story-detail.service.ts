@@ -77,30 +77,4 @@ export class StoryDetailService {
       );
     }
   }
-
-  public async addAttachment(file: File) {
-    const project = this.projectService.entityDetail();
-    const story = this.storyService.entityDetail();
-    if (project && story) {
-      await this.storyService.createAttachment(project.id, story.ref, file);
-    }
-  }
-
-  public async deleteAttachment(id: string) {
-    const project = this.projectService.entityDetail();
-    const story = this.storyService.entityDetail();
-    if (project && story) {
-      await this.storyService.deleteAttachment(project.id, story.ref, id);
-    }
-  }
-
-  public getStoryAttachmentUrlBack(attachmentId: string) {
-    const project = this.projectService.entityDetail();
-    const story = this.storyService.entityDetail();
-    if (project && story) {
-      return this.storyService.getStoryAttachmentUrl(project.id, story.ref, attachmentId);
-    } else {
-      return "";
-    }
-  }
 }

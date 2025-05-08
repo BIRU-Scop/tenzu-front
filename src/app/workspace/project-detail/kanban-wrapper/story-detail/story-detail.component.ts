@@ -47,8 +47,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { StoryAttachment } from "@tenzu/repository/story";
-import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
+import { StoryDetailAttachementsComponent } from "./story-detail-attachements/story-detail-attachements.component";
 
 @Component({
   selector: "app-story-detail",
@@ -73,6 +72,7 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
     MatOption,
     MatTooltip,
     StoryDetailMenuComponent,
+    StoryDetailAttachementsComponent,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -97,64 +97,13 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
               </div>
             </form>
             <mat-divider></mat-divider>
-            <div class="flex flex-col gap-y-4">
-              <button
-                class="primary-button w-fit"
-                mat-flat-button
-                type="button"
-                (click)="resetInput(fileUpload); fileUpload.click()"
-              >
-                <mat-icon class="icon-full">attach_file</mat-icon>
-                {{ t("attachments.attach_file") }}
-              </button>
-              <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
-              @let selectedStoryAttachments = storyService.selectedStoryAttachments();
-              @if (selectedStoryAttachments.length > 0) {
-                <mat-expansion-panel expanded>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <mat-icon>attachment</mat-icon>
-                      Attachments ({{ selectedStoryAttachments.length }})
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <mat-table [dataSource]="selectedStoryAttachments">
-                    <ng-container matColumnDef="name">
-                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
-                      <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
-                    </ng-container>
-
-                    <ng-container matColumnDef="size">
-                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
-                      <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
-                    </ng-container>
-
-                    <ng-container matColumnDef="date">
-                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
-                      <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
-                    </ng-container>
-
-                    <ng-container matColumnDef="actions">
-                      <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                      <mat-cell *matCellDef="let row">
-                        <button mat-icon-button (click)="previewFile(row)" type="button">
-                          <mat-icon>visibility</mat-icon>
-                        </button>
-                        <button mat-icon-button (click)="downloadFile(row)" type="button">
-                          <mat-icon>download</mat-icon>
-                        </button>
-                        <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
-                          <mat-icon>delete</mat-icon>
-                        </button>
-                      </mat-cell>
-                    </ng-container>
-
-                    <!-- Header and Row Declarations -->
-                    <mat-header-row *matHeaderRowDef="['name', 'size', 'date', 'actions']"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: ['name', 'size', 'date', 'actions']"></mat-row>
-                  </mat-table>
-                </mat-expansion-panel>
-              }
-            </div>
+            @let projectDetail = projectKanbanService.projectService.entityDetail();
+            @if (projectDetail && story) {
+              <app-story-detail-attachements
+                [projectDetail]="projectDetail"
+                [storyDetail]="story"
+              ></app-story-detail-attachements>
+            }
           </div>
           <div
             class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline pl-8 pt-4"
@@ -226,7 +175,6 @@ export default class StoryDetailComponent {
   notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
   relativeDialog = inject(RelativeDialogService);
-  fileDownloaderService = inject(FileDownloaderService);
   fb = inject(FormBuilder);
   canBeClosed = input(false);
   closed = output<void>();
@@ -254,16 +202,6 @@ export default class StoryDetailComponent {
     return this.selectedStory()?.assigneeIds.map((userId) => teamMembers[userId]) || [];
   });
 
-  previewFile(row: StoryAttachment) {
-    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
-    this.fileDownloaderService.previewFileFromUrl(attachmentUrl);
-  }
-
-  downloadFile(row: StoryAttachment) {
-    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
-    this.fileDownloaderService.downloadFileFromUrl(attachmentUrl, row.name);
-  }
-
   async submit() {
     const description = await this.editor().save();
     const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
@@ -274,37 +212,6 @@ export default class StoryDetailComponent {
   async cancel() {
     await this.editor().cancel();
     this.form.setValue({ title: this.selectedStory()?.title || "" });
-  }
-
-  // Necessary to avoid Chrome refusing to upload the file which has just been deleted
-  resetInput(fileUpload: HTMLInputElement) {
-    fileUpload.value = "";
-  }
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      // if exceed 100 MB
-      if (input.files[0].size > 104857600) {
-        this.notificationService.error({
-          translocoTitle: true,
-          title: "workflow.detail_story.attachments.exceed_size",
-          translocoTitleParams: { var: input.files[0].name },
-        });
-        return;
-      }
-      this.storyDetailService.addAttachment(input.files[0]).then();
-    }
-  }
-
-  deleteAttachment(id: string, filename: string) {
-    this.storyDetailService.deleteAttachment(id).then(() => {
-      this.notificationService.success({
-        translocoTitle: true,
-        title: "workflow.detail_story.attachments.deleted_attachment",
-        translocoTitleParams: { var: filename },
-      });
-    });
   }
 
   async onDelete() {
