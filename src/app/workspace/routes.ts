@@ -29,17 +29,21 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { WsService } from "@tenzu/utils/services/ws";
+import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
-  const workspaceService = inject(WorkspaceRepositoryService);
-  const workspaceMembershipService = inject(WorkspaceMembershipRepositoryService);
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+  const workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
   const router = inject(Router);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
     try {
-      workspaceService.getRequest({ workspaceId }).then();
-      workspaceMembershipService.listWorkspaceMembership(workspaceId).then();
+      workspaceRepositoryService.getRequest({ workspaceId }).then();
+      workspaceMembershipRepositoryService.listWorkspaceMembership(workspaceId).then();
+      workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -68,6 +72,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
   const wsService = inject(WsService);
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  const projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   const router = inject(Router);
   if (projectId) {
     try {
@@ -77,6 +82,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
       }
       projectRepositoryService.getRequest({ projectId }).then();
       projectMembershipRepositoryService.listProjectMembership(projectId).then();
+      projectRoleRepositoryService.listRequest({ projectId }).then();
       wsService.command({ command: "subscribe_to_project_events", project: projectId });
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
