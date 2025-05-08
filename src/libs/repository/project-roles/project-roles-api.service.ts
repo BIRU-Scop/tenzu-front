@@ -43,6 +43,6 @@ export class ProjectRolesApiService extends AbstractApiService<
     return `${this.baseUrl}/${params.projectId}/roles`;
   }
   protected override getEntityBaseUrl(params: ProjectRolesApiServiceType.GetEntityDetailParams): string {
-    return `${this.getBaseUrl(params)}/${params.roleId}`;
+    return `${this.baseUrl}/roles/${params.roleId}`;
   }
 }

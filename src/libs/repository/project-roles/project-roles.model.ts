@@ -19,17 +19,10 @@
  *
  */
 
-import { ProjectDetail } from "../project";
+import { ProjectSummary } from "../project";
+import { Role } from "../membership";
 
-export type ProjectRolesSummary = {
-  id: string;
-  projectId: ProjectDetail["id"];
-  name: string;
-  slug: string;
-  totalMembers: number;
-  isOwner: boolean;
-  order: number;
-  editable: boolean;
-  permissions: string[];
+export type ProjectRolesSummary = Role & {
+  projectId: ProjectSummary["id"];
 };
 export type ProjectRolesDetail = ProjectRolesSummary;
