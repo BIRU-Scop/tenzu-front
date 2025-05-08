@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
@@ -37,7 +37,6 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { MatOption, MatSelect } from "@angular/material/select";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -48,6 +47,7 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { StoryDetailAttachementsComponent } from "./story-detail-attachements/story-detail-attachements.component";
+import { StoryStatusComponent } from "./story-status/story-status.component";
 
 @Component({
   selector: "app-story-detail",
@@ -68,11 +68,10 @@ import { StoryDetailAttachementsComponent } from "./story-detail-attachements/st
     MatIconButton,
     AvatarListComponent,
     MatDivider,
-    MatSelect,
-    MatOption,
     MatTooltip,
     StoryDetailMenuComponent,
     StoryDetailAttachementsComponent,
+    StoryStatusComponent,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -115,14 +114,8 @@ import { StoryDetailAttachementsComponent } from "./story-detail-attachements/st
                 [username]="story.createdAt | date: 'short'"
                 [color]="story.createdBy?.color || 0"
               ></app-user-card>
-              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
-              <mat-form-field>
-                <mat-select [(value)]="this.statusSelected" (selectionChange)="changeStatus()">
-                  @for (status of workflowService.statuses(); track status.id) {
-                    <mat-option [value]="status.id">{{ status.name }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
+
+              <app-story-status [storyDetail]="story"></app-story-status>
               <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
               @let _assignees = assignees();
               @if (_assignees.length > 0) {
@@ -183,14 +176,12 @@ export default class StoryDetailComponent {
   form = this.fb.nonNullable.group({
     title: ["", Validators.required],
   });
-  statusSelected = model<string>("");
 
   constructor() {
     toObservable(this.selectedStory)
       .pipe(filterNotNull())
       .subscribe(async (value) => {
         this.form.setValue({ title: value?.title || "" });
-        this.statusSelected.set(value.statusId);
         if (this.workflowService.entityDetail()?.id !== value.workflowId) {
           await this.workflowService.getBySlugRequest(value.workflow);
         }
@@ -238,10 +229,5 @@ export default class StoryDetailComponent {
         this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
       );
     }
-  }
-
-  async changeStatus() {
-    await this.storyDetailService.patchSelectedStory({ statusId: this.statusSelected() });
-    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 }
