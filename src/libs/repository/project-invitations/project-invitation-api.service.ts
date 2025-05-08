@@ -73,11 +73,14 @@ export class ProjectInvitationsApiService extends AbstractApiService<
     return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
   getByToken(params: { token: string }) {
-    return this.http.get<PublicProjectPendingInvitation>(`${this.baseUrl}/invitations/${params.token}`);
+    return this.http.get<PublicProjectPendingInvitation>(`${this.baseUrl}/invitations/by_token/${params.token}`);
   }
 
   acceptByToken(params: { token: string }) {
-    return this.http.post<ProjectInvitation>(`${this.baseUrl}/invitations/${params.token}/accept`, params.token);
+    return this.http.post<ProjectInvitation>(
+      `${this.baseUrl}/invitations/by_token/${params.token}/accept`,
+      params.token,
+    );
   }
 
   acceptForCurrentUser(params: { projectId: ProjectDetail["id"] }) {
