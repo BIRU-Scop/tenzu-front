@@ -178,8 +178,8 @@ export default class WorkspacePeopleComponent {
       if (selectedWorkspace && invitationEmails.length) {
         await this.workspaceInvitationService.createBulkInvitations(
           selectedWorkspace,
-          // TODO use dynamic role instead
-          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
+          // TODO use dynamic role instead (not working)
+          invitationEmails.map((email) => ({ email, roleId: "member" })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);

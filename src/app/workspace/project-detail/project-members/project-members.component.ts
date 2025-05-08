@@ -177,8 +177,8 @@ export class ProjectMembersComponent {
       if (selectedProject && invitationEmails.length) {
         await this.projectInvitationService.createBulkInvitations(
           selectedProject,
-          // TODO use dynamic role instead
-          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
+          // TODO use dynamic role instead (not working)
+          invitationEmails.map((email) => ({ email, roleId: "member" })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);
