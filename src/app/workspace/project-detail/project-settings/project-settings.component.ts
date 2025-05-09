@@ -21,147 +21,56 @@
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
+import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
-import { MatButton } from "@angular/material/button";
-import { Router } from "@angular/router";
-import { MatIcon } from "@angular/material/icon";
-import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { tap } from "rxjs";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
+import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 
 @Component({
   selector: "app-project-settings",
   imports: [
-    MatError,
-    MatFormField,
-    MatInput,
-    MatLabel,
     ReactiveFormsModule,
     TranslocoDirective,
-    DescriptionFieldComponent,
-    MatButton,
-    MatIcon,
-    ConfirmDirective,
-    AvatarComponent,
+    RouterOutlet,
+    MatTabNav,
+    MatTabLink,
+    RouterLink,
+    RouterLinkActive,
+    MatTabNavPanel,
   ],
   template: `
-    @let project = projectService.entityDetail();
-    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings'">
-      <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
+    <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.settings'">
+      <div class="flex flex-row">
         <h1 class="mat-headline-medium">{{ t("title") }}</h1>
-        <div class="flex flex-row gap-4 items-center">
-          <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
-          <mat-form-field>
-            <mat-label>{{ t("name") }}</mat-label>
-            <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
-            @if (form.controls.name.hasError("required")) {
-              <mat-error data-testid="project-name-required-error">{{ t("errors.name_required") }}</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <app-description-field
-          [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
-          formControlName="description"
-        ></app-description-field>
-        <div class="flex gap-x-4 mt-2">
-          <button
-            mat-flat-button
-            type="submit"
-            class="tertiary-button"
-            data-testid="project-edit-submit"
-            [disabled]="form.pristine"
-          >
-            {{ t("buttons.save") }}
-          </button>
-          <button mat-flat-button (click)="reset()" class="secondary-button">
-            {{ t("buttons.cancel") }}
-          </button>
-        </div>
-      </form>
-      <div class="flex flex-col gap-y-2">
-        <h2 class="mat-headline-small">{{ t("delete_project_title") }}</h2>
-        <div class="flex flex-row">
-          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-on-error-container align-middle">
-            {{ t("delete_project_warning") }}
-          </p>
-        </div>
-        <button
-          mat-flat-button
-          class="error-button w-fit"
-          appConfirm
-          [data]="{ deleteAction: true }"
-          (popupConfirm)="project ? onDelete(project) : null"
-        >
-          {{ t("buttons.delete") }}
-        </button>
+      </div>
+      <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
+        @for (link of links; track link.path) {
+          <a
+            mat-tab-link
+            [routerLink]="link.path"
+            routerLinkActive
+            #RouterLinkActive="routerLinkActive"
+            [active]="RouterLinkActive.isActive"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >{{ t(link.labelKey) }}
+          </a>
+        }
+      </nav>
+      <div>
+        <mat-tab-nav-panel #tabPanel><router-outlet /></mat-tab-nav-panel>
       </div>
     </div>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectSettingsComponent implements AfterViewInit {
-  notificationService = inject(NotificationService);
-  projectService = inject(ProjectRepositoryService);
+export default class ProjectSettingsComponent implements AfterViewInit {
+  links = [
+    { path: "./project-edit", labelKey: "project_edit.title" },
+    { path: "./list-project-roles", labelKey: "roles.title" },
+  ];
   breadcrumbStore = inject(BreadcrumbStore);
-  router = inject(Router);
-  fb = inject(FormBuilder);
-  form = this.fb.nonNullable.group({
-    name: ["", Validators.required],
-    description: [""],
-  });
-  constructor() {
-    toObservable(this.projectService.entityDetail)
-      .pipe(
-        filterNotNull(),
-        tap((project) =>
-          this.form.patchValue({
-            name: project.name,
-            description: project.description,
-          }),
-        ),
-      )
-      .subscribe();
-  }
-
   ngAfterViewInit(): void {
     this.breadcrumbStore.setPathComponent("projectSettings");
-  }
-
-  async onSave() {
-    this.form.reset(this.form.value);
-    const project = this.projectService.entityDetail();
-    if (this.form.valid && project) {
-      await this.projectService.patchRequest(this.form.getRawValue(), { projectId: project.id });
-      this.notificationService.success({
-        title: "notification.action.changes_saved",
-      });
-    }
-  }
-
-  async onDelete(item: ProjectDetail) {
-    const deletedProject = await this.projectService.deleteRequest(item, { projectId: item.id });
-    await this.router.navigateByUrl("/");
-    this.notificationService.warning({
-      title: "notification.project.deleted",
-      translocoTitleParams: { name: deletedProject?.name },
-    });
-  }
-
-  reset() {
-    const selectedEntity = this.projectService.entityDetail();
-    if (selectedEntity) {
-      this.form.reset({ ...selectedEntity });
-    }
   }
 }

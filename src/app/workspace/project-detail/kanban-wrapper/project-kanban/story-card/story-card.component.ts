@@ -31,7 +31,7 @@ import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { Story } from "@tenzu/repository/story";
+import { Story, StoryRepositoryService } from "@tenzu/repository/story";
 
 @Component({
   selector: "app-story-card",
@@ -86,7 +86,7 @@ export class StoryCardComponent {
     return this.story().assigneeIds.map((userId) => teamMembers[userId]) || [];
   });
   projectMembershipService = inject(ProjectMembershipRepositoryService);
-
+  storyRepositoryService = inject(StoryRepositoryService);
   relativeDialog = inject(RelativeDialogService);
   projectKanbanService = inject(ProjectKanbanService);
 
@@ -103,10 +103,11 @@ export class StoryCardComponent {
       },
     });
     dialogRef.componentInstance.memberAssigned.subscribe(async (user) => {
-      await this.projectKanbanService.assignStory(user, story.projectId, story.ref);
+      await this.storyRepositoryService.createAssign(user, { projectId: story.projectId, ref: story.ref });
     });
     dialogRef.componentInstance.memberUnassigned.subscribe(
-      async (user) => await this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
+      async (user) =>
+        await this.storyRepositoryService.deleteAssign(user, { projectId: story.projectId, storyRef: story.ref }),
     );
   }
 }

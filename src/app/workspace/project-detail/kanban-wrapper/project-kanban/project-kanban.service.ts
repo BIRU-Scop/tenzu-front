@@ -28,7 +28,6 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-r
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { Workflow } from "@tenzu/repository/workflow";
-import { UserNested } from "@tenzu/repository/user";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -51,21 +50,15 @@ export class ProjectKanbanService {
   }
 
   public async deleteStatus(statusId: string, moveToStatus?: string) {
-    const selectedProject = this.projectService.entityDetail();
-    if (selectedProject) {
-      await this.workflowService.deleteStatus(statusId, moveToStatus);
-      const newStatus = this.workflowService.entityDetail()?.statuses.find((status) => status.id === moveToStatus);
-      if (newStatus) {
-        this.storyService.deleteStatusGroup(statusId, newStatus);
-      }
+    await this.workflowService.deleteStatus({ statusId, moveToStatus });
+    const newStatus = this.workflowService.entityDetail()?.statuses.find((status) => status.id === moveToStatus);
+    if (newStatus) {
+      this.storyService.deleteStatusGroup(statusId, newStatus);
     }
   }
 
   public async editStatus(status: Pick<Status, "name" | "id">) {
-    const selectedProject = this.projectService.entityDetail();
-    if (selectedProject) {
-      await this.workflowService.editStatus(status);
-    }
+    await this.workflowService.editStatus(status);
   }
 
   public async createStory(story: Pick<Story, "title" | "statusId">) {
@@ -79,14 +72,6 @@ export class ProjectKanbanService {
         },
       );
     }
-  }
-
-  async assignStory(user: UserNested, projectId: string, storyRef: number) {
-    await this.storyService.createAssign(projectId, storyRef, user);
-  }
-
-  async removeAssignStory(user: UserNested, projectId: string, storyRef: number) {
-    await this.storyService.deleteAssign(projectId, storyRef, user);
   }
 
   async editSelectedWorkflow(

@@ -57,6 +57,10 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     return selectedProjectWorkflows.length < MAX_WORKFLOWS;
   });
 
+  override async createRequest(item: Partial<ProjectDetail>, params: ProjectApiServiceType.CreateEntityDetailParams) {
+    return super.createRequest(item, params);
+  }
+
   override async deleteRequest(
     item: ProjectDetail,
     params: ProjectApiServiceType.BaseParams,

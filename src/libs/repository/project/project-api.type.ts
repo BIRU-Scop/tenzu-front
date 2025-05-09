@@ -25,7 +25,7 @@ import { WorkspaceSummary } from "../workspace";
 export type BaseParams = { projectId: ProjectDetail["id"] };
 export type ListEntitiesSummaryParams = { workspaceId: WorkspaceSummary["id"] };
 export type GetEntityDetailParams = BaseParams;
-export type CreateEntityDetailParams = undefined;
+export type CreateEntityDetailParams = { workspaceId: WorkspaceSummary["id"] };
 export type PutEntityDetailParams = BaseParams;
 export type PatchEntityDetailParams = BaseParams;
 export type DeleteEntityDetailParams = BaseParams;

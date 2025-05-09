@@ -21,14 +21,7 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
-import {
-  Story,
-  StoryAssign,
-  StoryAttachment,
-  StoryDetail,
-  StoryReorderPayload,
-  StoryReorderPayloadEvent,
-} from "./story.model";
+import { Story, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
 import { Status } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
@@ -145,28 +138,10 @@ export const StoryEntitiesSummaryStore = signalStore(
 
 export const StoryDetailStore = signalStore(
   { providedIn: "root" },
-  withState({ selectedStoryAttachments: [] as StoryAttachment[] }),
   withEntityDetailStore<StoryDetail>({ selectId: selectId }),
   withMethods((store) => ({
-    setStoryAttachments: (attachments: StoryAttachment[]) => {
-      patchState(store, { selectedStoryAttachments: attachments });
-    },
-    addAttachment(newAttachment: StoryAttachment, ref: number) {
-      if (store.item()?.ref === ref) {
-        patchState(store, { selectedStoryAttachments: [...store.selectedStoryAttachments(), newAttachment] });
-      }
-      return newAttachment;
-    },
-    removeAttachment(attachmentId: string) {
-      patchState(store, {
-        selectedStoryAttachments: store
-          .selectedStoryAttachments()
-          .filter((attachment) => attachment.id !== attachmentId),
-      });
-    },
     resetOverride() {
       store.reset();
-      patchState(store, { selectedStoryAttachments: [] });
     },
     addAssign(storyAssign: StoryAssign) {
       const story = store.item();

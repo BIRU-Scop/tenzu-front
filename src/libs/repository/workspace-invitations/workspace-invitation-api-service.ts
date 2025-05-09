@@ -64,10 +64,13 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
     return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
   getByToken(params: { token: string }) {
-    return this.http.get<PublicWorkspacePendingInvitation>(`${this.baseUrl}/invitations/${params.token}`);
+    return this.http.get<PublicWorkspacePendingInvitation>(`${this.baseUrl}/invitations/by_token/${params.token}`);
   }
 
   acceptByToken(params: { token: string }) {
-    return this.http.post<WorkspaceInvitation>(`${this.baseUrl}/invitations/${params.token}/accept`, params.token);
+    return this.http.post<WorkspaceInvitation>(
+      `${this.baseUrl}/invitations/by_token/${params.token}/accept`,
+      params.token,
+    );
   }
 }

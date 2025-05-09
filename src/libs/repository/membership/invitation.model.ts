@@ -33,7 +33,7 @@ export type InvitationBase = {
   id: string;
   status: InvitationStatus;
   user?: UserNested;
-  role: Role;
+  roleId: Role["id"];
   email: string;
   resentAt?: string;
   createdAt: string;
@@ -57,10 +57,10 @@ export type InvitationsPayload = {
   invitations: {
     email?: string;
     username?: string;
-    roleSlug: string;
+    roleId: Role["id"];
   }[];
 };
 
 export type UpdateInvitationPayload = {
-  roleSlug: string;
+  roleId: Role["id"];
 };

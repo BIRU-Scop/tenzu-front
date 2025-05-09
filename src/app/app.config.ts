@@ -57,7 +57,7 @@ export const appConfig: ApplicationConfig = {
       const languageStore = inject(LanguageStore);
       const wsService = inject(WsService);
       await configAppService.loadAppConfig();
-      await wsService.init();
+      wsService.init().then();
       languageStore.initLanguages().subscribe();
       return;
     }),

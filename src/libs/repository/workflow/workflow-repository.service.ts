@@ -46,10 +46,7 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
 
   statuses = this.entityDetailStore.entities;
 
-  override async createRequest(
-    item: Pick<Workflow, "name" | "projectId">,
-    params?: WorkflowApiServiceType.CreateEntityDetailParams,
-  ) {
+  override async createRequest(item: Pick<Workflow, "name">, params: WorkflowApiServiceType.CreateEntityDetailParams) {
     const workflow = await super.createRequest(item, params);
     this.projectRepositoryService.addWorkflow(workflow);
     return workflow;
@@ -86,23 +83,15 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
   }
 
   async editStatus(status: Pick<Status, "name" | "id">) {
-    const selectedWorkflow = this.entityDetailStore.item();
-    if (selectedWorkflow) {
-      const editedStatus = await lastValueFrom(this.apiService.editStatus(selectedWorkflow.id, status));
-      this.entityDetailStore.updateStatus(editedStatus);
-      return editedStatus;
-    }
-    return undefined;
+    const editedStatus = await lastValueFrom(this.apiService.editStatus(status));
+    this.entityDetailStore.updateStatus(editedStatus);
+    return editedStatus;
   }
 
-  async deleteStatus(statusId: string, moveToStatus: string | undefined) {
-    const selectedWorkflow = this.entityDetailStore.item();
-    if (selectedWorkflow) {
-      await lastValueFrom(this.apiService.deleteStatus(selectedWorkflow.id, statusId, moveToStatus));
-      this.entityDetailStore.removeStatus(statusId);
-      return statusId;
-    }
-    return undefined;
+  async deleteStatus(params: { statusId: string; moveToStatus?: string }) {
+    await lastValueFrom(this.apiService.deleteStatus(params));
+    this.entityDetailStore.removeStatus(params.statusId);
+    return params.statusId;
   }
 
   async reorder(workflowId: string, oldPosition: number, newPosition: number) {

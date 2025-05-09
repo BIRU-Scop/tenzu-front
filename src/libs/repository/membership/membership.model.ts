@@ -19,13 +19,15 @@
  *
  */
 
-import { ProjectPermissions, WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import { ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
 
 export type Role = {
+  id: string;
   name: string;
   slug: string;
   isOwner: boolean;
   order: number;
   editable: boolean;
+  totalMembers: number;
   permissions: (WorkspacePermissions | ProjectPermissions)[];
 };
