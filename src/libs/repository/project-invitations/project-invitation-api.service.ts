@@ -21,15 +21,15 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
-import { ProjectDetail } from "../project";
+import { ProjectDetail, ProjectSummary } from "../project";
 import { ProjectInvitation, PublicProjectPendingInvitation } from "./project-invitation.model";
 import { Observable } from "rxjs";
 import { CreateInvitations, InvitationsPayload } from "../membership";
 
 type ListProjectInvitationParams = {
-  projectId: string;
+  projectId: ProjectSummary["id"];
 };
-type PatchProjectInvitationParams = { projectId: ProjectDetail["id"]; invitationId: ProjectInvitation["id"] };
+type PatchProjectInvitationParams = { invitationId: ProjectInvitation["id"] };
 
 @Injectable({
   providedIn: "root",
@@ -48,11 +48,8 @@ export class ProjectInvitationsApiService extends AbstractApiService<
   protected override getBaseUrl(params: { projectId: ProjectDetail["id"] }) {
     return `${this.baseUrl}/${params.projectId}/invitations`;
   }
-  protected override getEntityBaseUrl(params: {
-    projectId: ProjectDetail["id"];
-    invitationId: ProjectInvitation["id"];
-  }) {
-    return `${this.getBaseUrl(params)}/${params.invitationId}`;
+  protected override getEntityBaseUrl(params: { invitationId: ProjectInvitation["id"] }) {
+    return `${this.baseUrl}/invitations/${params.invitationId}`;
   }
 
   override create(): Observable<ProjectInvitation> {
@@ -64,6 +61,14 @@ export class ProjectInvitationsApiService extends AbstractApiService<
 
   override put(): Observable<ProjectInvitation> {
     throw new Error("Method not implemented.");
+  }
+
+  resend(params: PatchProjectInvitationParams): Observable<ProjectInvitation> {
+    return this.http.post<ProjectInvitation>(`${this.patchUrl(params)}/resend`, {});
+  }
+
+  revoke(params: PatchProjectInvitationParams): Observable<ProjectInvitation> {
+    return this.http.post<ProjectInvitation>(`${this.patchUrl(params)}/revoke`, {});
   }
 
   override delete(): Observable<void> {

@@ -44,7 +44,13 @@
     "members_tab": "Members",
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
-    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them."
+    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them.",
+    "invitation_operations": {
+      "resend": "Resend an invitation",
+      "revoke": "Cancel an invitation",
+      "resend_too_much": "You can't resend an invitation to {email} because they have already received too many of them",
+      "resend_too_soon": "You can't resend an invitation to {email} because you've already reinvited them recently. Wait for {email} to respond or try again later."
+    }
   },
   "placeholder": {
     "placeholder_title": "You are not member of any Workspace yet",
