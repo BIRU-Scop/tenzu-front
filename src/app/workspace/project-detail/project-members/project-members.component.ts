@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
@@ -119,21 +119,30 @@ import { InvitationStatus } from "@tenzu/repository/membership";
                 <mat-cell *matCellDef="let row" class="basis-1/2 flex gap-2">
                   @if (row.status === InvitationStatus.PENDING) {
                     @let invitationResendDisableMessage = getInvitationResendDisableMessage(row);
-                    <div
-                      [matTooltip]="
-                        invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: row.email }) : ''
-                      "
-                      [matTooltipDisabled]="!invitationResendDisableMessage"
-                    >
-                      <button
-                        [disabled]="!!invitationResendDisableMessage"
-                        (click)="projectInvitationRepositoryService.resendProjectInvitation(row.id)"
-                        class="secondary-button"
-                        mat-stroked-button
-                      >
-                        {{ t("project.members.invitation_operations.resend") }}
+                    @if (resentInvitationId === row.id) {
+                      <button disabled class="secondary-button" mat-flat-button>
+                        {{ t("project.members.invitation_operations.resent_confirmation") }}
                       </button>
-                    </div>
+                    } @else {
+                      <div
+                        [matTooltip]="
+                          invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: row.email }) : ''
+                        "
+                        [matTooltipDisabled]="!invitationResendDisableMessage"
+                      >
+                        <button
+                          [disabled]="!!invitationResendDisableMessage"
+                          (click)="
+                            projectInvitationRepositoryService.resendProjectInvitation(row.id);
+                            resentInvitationId = row.id
+                          "
+                          class="secondary-button"
+                          mat-stroked-button
+                        >
+                          {{ t("project.members.invitation_operations.resend") }}
+                        </button>
+                      </div>
+                    }
                     <button
                       mat-icon-button
                       [attr.aria-label]="t('project.members.invitation_operations.revoke')"
@@ -185,6 +194,8 @@ export class ProjectMembersComponent {
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
+
+  resentInvitationId = signal<ProjectInvitation["id"] | null>(null);
 
   constructor() {
     this.breadcrumbStore.setPathComponent("projectMembers");

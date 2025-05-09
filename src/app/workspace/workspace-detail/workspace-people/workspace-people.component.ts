@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatButton, MatIconButton } from "@angular/material/button";
@@ -121,21 +121,30 @@ import { MatTooltip } from "@angular/material/tooltip";
                 <mat-cell *matCellDef="let row" class="basis-1/2 flex gap-2">
                   @if (row.status === InvitationStatus.PENDING) {
                     @let invitationResendDisableMessage = getInvitationResendDisableMessage(row);
-                    <div
-                      [matTooltip]="
-                        invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: row.email }) : ''
-                      "
-                      [matTooltipDisabled]="!invitationResendDisableMessage"
-                    >
-                      <button
-                        [disabled]="!!invitationResendDisableMessage"
-                        (click)="workspaceInvitationRepositoryService.resendWorkspaceInvitation(row.id)"
-                        class="secondary-button"
-                        mat-stroked-button
-                      >
-                        {{ t("workspace.people.invitation_operations.resend") }}
+                    @if (resentInvitationId === row.id) {
+                      <button disabled class="secondary-button" mat-flat-button>
+                        {{ t("workspace.people.invitation_operations.resent_confirmation") }}
                       </button>
-                    </div>
+                    } @else {
+                      <div
+                        [matTooltip]="
+                          invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: row.email }) : ''
+                        "
+                        [matTooltipDisabled]="!invitationResendDisableMessage"
+                      >
+                        <button
+                          [disabled]="!!invitationResendDisableMessage"
+                          (click)="
+                            workspaceInvitationRepositoryService.resendWorkspaceInvitation(row.id);
+                            resentInvitationId = row.id
+                          "
+                          class="secondary-button"
+                          mat-stroked-button
+                        >
+                          {{ t("workspace.people.invitation_operations.resend") }}
+                        </button>
+                      </div>
+                    }
                     <button
                       mat-icon-button
                       [attr.aria-label]="t('workspace.people.invitation_operations.revoke')"
@@ -187,6 +196,8 @@ export default class WorkspacePeopleComponent {
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
+
+  resentInvitationId = signal<WorkspaceInvitation["id"] | null>(null);
 
   constructor() {
     this.breadcrumbStore.setPathComponent("workspaceMembers");
