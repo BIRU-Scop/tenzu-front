@@ -124,10 +124,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
                       [item]="workspace"
                       itemType="workspace"
                       [resentInvitation]="resentInvitationId() === row.id"
-                      (resend)="
-                        workspaceInvitationRepositoryService.resendWorkspaceInvitation($event);
-                        resentInvitationId.set($event)
-                      "
+                      (resend)="resendInvitation($event)"
                       (revoke)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation($event)"
                     ></app-invitation-actions>
                   </mat-cell>
@@ -184,6 +181,11 @@ export default class WorkspacePeopleComponent {
           .then();
       }
     });
+  }
+
+  resendInvitation(invitationId: WorkspaceInvitation["id"]) {
+    this.workspaceInvitationRepositoryService.resendWorkspaceInvitation(invitationId);
+    this.resentInvitationId.set(invitationId);
   }
 
   public openInviteDialog(): void {

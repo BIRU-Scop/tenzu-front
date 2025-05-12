@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
@@ -28,6 +28,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
+import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 
 @Component({
   selector: "app-invitation-actions",
@@ -36,12 +37,12 @@ import { WorkspaceDetail } from "@tenzu/repository/workspace";
     @let _invitation = invitation();
     @if (_invitation.status === InvitationStatus.PENDING) {
       <ng-container *transloco="let t">
-        @let invitationResendDisableMessage = getInvitationResendDisableMessage(_invitation);
         @if (resentInvitation()) {
           <button type="button" disabled class="secondary-button" mat-flat-button>
             {{ t("component.invitation.resent_confirmation") }}
           </button>
         } @else {
+          @let invitationResendDisableMessage = getInvitationResendDisableMessage(_invitation);
           <div
             [matTooltip]="
               invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: _invitation.email }) : ''
@@ -60,25 +61,27 @@ import { WorkspaceDetail } from "@tenzu/repository/workspace";
           </div>
         }
 
-        <button
-          type="button"
-          mat-icon-button
-          [attr.aria-label]="t('component.invitation.revoke')"
-          [matTooltip]="t('component.invitation.revoke')"
-          appConfirm
-          [data]="{
-            deleteAction: true,
-            actionButtonContent: t('component.invitation.confirm_revoke_action'),
-            message: t('component.invitation.confirm_revoke_message', {
-              email: _invitation.email,
-              name: item().name,
-              item: itemType(),
-            }),
-          }"
-          (popupConfirm)="revoke.emit(_invitation.id)"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
+        @if (notOwnerInvitationOrHasOwnerPermission()) {
+          <button
+            type="button"
+            mat-icon-button
+            [attr.aria-label]="t('component.invitation.revoke')"
+            [matTooltip]="t('component.invitation.revoke')"
+            appConfirm
+            [data]="{
+              deleteAction: true,
+              actionButtonContent: t('component.invitation.confirm_revoke_action'),
+              message: t('component.invitation.confirm_revoke_message', {
+                email: _invitation.email,
+                name: item().name,
+                item: itemType(),
+              }),
+            }"
+            (popupConfirm)="revoke.emit(_invitation.id)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
       </ng-container>
     }
   `,
@@ -90,12 +93,22 @@ import { WorkspaceDetail } from "@tenzu/repository/workspace";
 })
 export class InvitationActionsComponent {
   protected readonly InvitationStatus = InvitationStatus;
+
+  workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
+
   invitation = input.required<InvitationBase>();
   itemType = input.required<"project" | "workspace">();
   item = input.required<ProjectDetail | WorkspaceDetail>();
   resentInvitation = input.required<boolean>();
   resend = output<InvitationBase["id"]>();
   revoke = output<InvitationBase["id"]>();
+
+  notOwnerInvitationOrHasOwnerPermission = computed(() => {
+    return (
+      !this.workspaceRoleRepositoryService.entityMapSummary()[this.invitation().roleId].isOwner ||
+      this.item().userRole?.isOwner
+    );
+  });
 
   getInvitationResendDisableMessage(invitation: InvitationBase): string | null {
     if (invitation.numEmailsSent >= 100) {

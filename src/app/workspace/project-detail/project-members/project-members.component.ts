@@ -123,10 +123,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
                       [item]="project"
                       itemType="project"
                       [resentInvitation]="resentInvitationId() === row.id"
-                      (resend)="
-                        projectInvitationRepositoryService.resendProjectInvitation($event);
-                        resentInvitationId.set($event)
-                      "
+                      (resend)="resendInvitation($event)"
                       (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
                     ></app-invitation-actions>
                   </mat-cell>
@@ -184,6 +181,11 @@ export class ProjectMembersComponent {
           .then();
       }
     });
+  }
+
+  resendInvitation(invitationId: ProjectInvitation["id"]) {
+    this.projectInvitationRepositoryService.resendProjectInvitation(invitationId);
+    this.resentInvitationId.set(invitationId);
   }
 
   public openCreateDialog(): void {
