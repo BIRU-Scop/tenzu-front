@@ -26,9 +26,10 @@ import { Observable } from "rxjs";
 import { WorkspaceSummary } from "../workspace";
 import { CreateInvitations, InvitationsPayload } from "../membership";
 
-type ListParams = {
+type ListWorkspaceInvitationParams = {
   workspaceId: WorkspaceSummary["id"];
 };
+type PatchWorkspaceInvitationParams = { invitationId: WorkspaceInvitation["id"] };
 
 @Injectable({
   providedIn: "root",
@@ -36,14 +37,19 @@ type ListParams = {
 export class WorkspaceInvitationsApiService extends AbstractApiService<
   WorkspaceInvitation,
   WorkspaceInvitation,
-  ListParams
+  ListWorkspaceInvitationParams,
+  unknown,
+  unknown,
+  unknown,
+  PatchWorkspaceInvitationParams,
+  unknown
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/invitations`;
   }
-  protected override getEntityBaseUrl(): string {
-    throw new Error("Method not implemented.");
+  protected override getEntityBaseUrl(params: { invitationId: WorkspaceInvitation["id"] }) {
+    return `${this.baseUrl}/invitations/${params.invitationId}`;
   }
 
   override create(): Observable<WorkspaceInvitation> {
@@ -55,6 +61,14 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
 
   override put(): Observable<WorkspaceInvitation> {
     throw new Error("Method not implemented.");
+  }
+
+  resend(params: PatchWorkspaceInvitationParams): Observable<WorkspaceInvitation> {
+    return this.http.post<WorkspaceInvitation>(`${this.patchUrl(params)}/resend`, {});
+  }
+
+  revoke(params: PatchWorkspaceInvitationParams): Observable<WorkspaceInvitation> {
+    return this.http.post<WorkspaceInvitation>(`${this.patchUrl(params)}/revoke`, {});
   }
 
   override delete(): Observable<void> {

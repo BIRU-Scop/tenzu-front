@@ -37,14 +37,11 @@ export type InvitationBase = {
   email: string;
   resentAt?: string;
   createdAt: string;
-};
-
-type _PrivateEmailInvitation = InvitationBase & {
-  email?: string;
+  numEmailsSent: number;
 };
 
 export type CreateInvitations = {
-  invitations: _PrivateEmailInvitation[];
+  invitations: InvitationBase[];
   alreadyMembers: number;
 };
 

@@ -26,6 +26,7 @@ import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-servi
 import { WorkspaceDetail, WorkspaceSummary } from "../workspace";
 import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
+import { WorkspaceInvitation } from "./workspace-invitation.model";
 
 @Injectable({
   providedIn: "root",
@@ -39,6 +40,16 @@ export class WorkspaceInvitationRepositoryService {
   async listWorkspaceInvitations(workspaceId: WorkspaceSummary["id"]) {
     const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.list({ workspaceId }));
     this.workspaceInvitationEntitiesStore.setAllEntities(workspaceInvitations);
+  }
+
+  async resendWorkspaceInvitation(invitationId: WorkspaceInvitation["id"]) {
+    const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.resend({ invitationId }));
+    this.workspaceInvitationEntitiesStore.updateEntity(invitationId, workspaceInvitations);
+  }
+
+  async revokeWorkspaceInvitation(invitationId: WorkspaceInvitation["id"]) {
+    const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.revoke({ invitationId }));
+    this.workspaceInvitationEntitiesStore.updateEntity(invitationId, workspaceInvitations);
   }
 
   async createBulkInvitations(workspace: WorkspaceDetail, invitations: InvitationsPayload["invitations"]) {
