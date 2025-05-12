@@ -49,7 +49,14 @@
       "pending": "Pendiente",
       "accepted": "Aceptado",
       "revoked": "Revocada",
-      "denied": "Denegado"
+      "denied": "Denegado",
+      "resend": "Reenviar una invitación",
+      "revoke": "Cancelar una invitación",
+      "resend_too_much": "No puedes reenviar una invitación a {email} porque ya ha recibido demasiadas",
+      "resend_too_soon": "No puedes reenviar una invitación a {email} porque ya le has vuelto a invitar recientemente. Espera a que {email} responda o inténtalo de nuevo más tarde.",
+      "resent_confirmation": "Invitación reenviada",
+      "confirm_revoke_action": "Revocar",
+      "confirm_revoke_message": "¿Estás seguro de que quieres cancelar la invitación de {email} para unirte al {item} «{name}»?"
     },
     "description": {
       "label": "Descripción",

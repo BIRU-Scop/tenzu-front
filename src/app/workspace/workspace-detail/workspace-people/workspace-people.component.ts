@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
@@ -40,8 +40,7 @@ import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.di
 import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
-import { InvitationStatus } from "@tenzu/repository/membership";
-import { MatTooltip } from "@angular/material/tooltip";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
 
 @Component({
   selector: "app-workspace-people",
@@ -59,111 +58,89 @@ import { MatTooltip } from "@angular/material/tooltip";
     MatRow,
     MatRowDef,
     InvitationStatusComponent,
-    MatIconButton,
-    MatTooltip,
+    InvitationActionsComponent,
   ],
   template: `
-    @let workspaceRoleEntityMapSummary = workspaceRoleRepositoryService.entityMapSummary();
-    <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
-      <div class="flex flex-row">
-        <h1 class="mat-headline-medium grow">{{ t("workspace.people.title") }}</h1>
-        <button
-          *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER"
-          (click)="openInviteDialog()"
-          class="tertiary-button"
-          mat-stroked-button
-        >
-          {{ t("workspace.people.invite_to_workspace") }}
-        </button>
+    @let workspace = workspaceRepositoryService.entityDetail();
+    @if (workspace) {
+      @let workspaceRoleEntityMapSummary = workspaceRoleRepositoryService.entityMapSummary();
+      <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
+        <div class="flex flex-row">
+          <h1 class="mat-headline-medium grow">{{ t("workspace.people.title") }}</h1>
+          <button
+            *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER"
+            (click)="openInviteDialog()"
+            class="tertiary-button"
+            mat-stroked-button
+          >
+            {{ t("workspace.people.invite_to_workspace") }}
+          </button>
+        </div>
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">group</mat-icon>
+              {{ t("workspace.people.members_tab") }}
+            </ng-template>
+            <p class="mat-body-medium text-on-surface mb-2">{{ t("workspace.people.members_description") }}</p>
+            @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
+            @if (workspaceMembershipEntities.length > 0) {
+              <mat-list>
+                @for (member of workspaceMembershipEntities; track member.user.username) {
+                  <app-user-card
+                    [fullName]="member.user.fullName"
+                    [username]="member.user.username"
+                    [color]="member.user.color"
+                  ></app-user-card>
+                }
+              </mat-list>
+            }
+          </mat-tab>
+          <mat-tab *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER">
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">mail</mat-icon>
+              {{ t("workspace.people.invitation_tab") }}
+            </ng-template>
+            @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
+            @if (workspaceInvitations.length > 0) {
+              <mat-table [@newItemsFlyIn]="workspaceInvitations.length" [dataSource]="workspaceInvitations">
+                <ng-container matColumnDef="user">
+                  <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                  <mat-cell *matCellDef="let row" class="basis-1/3"
+                    >{{ workspaceRoleEntityMapSummary[row.roleId].name }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <mat-cell *matCellDef="let row" class="basis-full">
+                    <app-invitation-status [invitation]="row"></app-invitation-status>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-cell *matCellDef="let row" class="basis-1/2">
+                    <app-invitation-actions
+                      [invitation]="row"
+                      [item]="workspace"
+                      itemType="workspace"
+                      [resentInvitation]="resentInvitationId() === row.id"
+                      (resend)="
+                        workspaceInvitationRepositoryService.resendWorkspaceInvitation($event);
+                        resentInvitationId.set($event)
+                      "
+                      (revoke)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation($event)"
+                    ></app-invitation-actions>
+                  </mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+              </mat-table>
+            } @else {
+              <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.people.invitation_empty") }}</p>
+            }
+          </mat-tab>
+        </mat-tab-group>
       </div>
-      <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">group</mat-icon>
-            {{ t("workspace.people.members_tab") }}
-          </ng-template>
-          <p class="mat-body-medium text-on-surface mb-2">{{ t("workspace.people.members_description") }}</p>
-          @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
-          @if (workspaceMembershipEntities.length > 0) {
-            <mat-list>
-              @for (member of workspaceMembershipEntities; track member.user.username) {
-                <app-user-card
-                  [fullName]="member.user.fullName"
-                  [username]="member.user.username"
-                  [color]="member.user.color"
-                ></app-user-card>
-              }
-            </mat-list>
-          }
-        </mat-tab>
-        <mat-tab *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER">
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">mail</mat-icon>
-            {{ t("workspace.people.invitation_tab") }}
-          </ng-template>
-          @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
-          @if (workspaceInvitations.length > 0) {
-            <mat-table [@newItemsFlyIn]="workspaceInvitations.length" [dataSource]="workspaceInvitations">
-              <ng-container matColumnDef="user">
-                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row" class="basis-1/3"
-                  >{{ workspaceRoleEntityMapSummary[row.roleId].name }}
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="status">
-                <mat-cell *matCellDef="let row" class="basis-full">
-                  <app-invitation-status [invitation]="row"></app-invitation-status>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <mat-cell *matCellDef="let row" class="basis-1/2 flex gap-2">
-                  @if (row.status === InvitationStatus.PENDING) {
-                    @let invitationResendDisableMessage = getInvitationResendDisableMessage(row);
-                    @if (resentInvitationId === row.id) {
-                      <button disabled class="secondary-button" mat-flat-button>
-                        {{ t("workspace.people.invitation_operations.resent_confirmation") }}
-                      </button>
-                    } @else {
-                      <div
-                        [matTooltip]="
-                          invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: row.email }) : ''
-                        "
-                        [matTooltipDisabled]="!invitationResendDisableMessage"
-                      >
-                        <button
-                          [disabled]="!!invitationResendDisableMessage"
-                          (click)="
-                            workspaceInvitationRepositoryService.resendWorkspaceInvitation(row.id);
-                            resentInvitationId = row.id
-                          "
-                          class="secondary-button"
-                          mat-stroked-button
-                        >
-                          {{ t("workspace.people.invitation_operations.resend") }}
-                        </button>
-                      </div>
-                    }
-                    <button
-                      mat-icon-button
-                      [attr.aria-label]="t('workspace.people.invitation_operations.revoke')"
-                      [matTooltip]="t('workspace.people.invitation_operations.revoke')"
-                      (click)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation(row.id)"
-                    >
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  }
-                </mat-cell>
-              </ng-container>
-              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
-            </mat-table>
-          } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.people.invitation_empty") }}</p>
-          }
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+    }
   `,
   animations: [
     trigger("newItemsFlyIn", [
@@ -185,7 +162,6 @@ import { MatTooltip } from "@angular/material/tooltip";
 })
 export default class WorkspacePeopleComponent {
   protected readonly WorkspacePermissions = WorkspacePermissions;
-  protected readonly InvitationStatus = InvitationStatus;
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
@@ -237,16 +213,5 @@ export default class WorkspacePeopleComponent {
         }
       }
     });
-  }
-  getInvitationResendDisableMessage(invitation: WorkspaceInvitation): string | null {
-    if (invitation.numEmailsSent >= 100) {
-      return "workspace.people.invitation_operations.resend_too_much";
-    }
-    const lastSentAt = new Date(invitation.resentAt || invitation.createdAt);
-    const now = new Date();
-    if (Math.round((now.getTime() - lastSentAt.getTime()) / 1000 / 60) <= 10) {
-      return "workspace.people.invitation_operations.resend_too_soon";
-    }
-    return null;
   }
 }
