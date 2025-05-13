@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -39,8 +39,8 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { MatCell, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { MatTooltip } from "@angular/material/tooltip";
 import { InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
 
 @Component({
   selector: "app-project-members",
@@ -57,111 +57,86 @@ import { InvitationStatus } from "@tenzu/repository/membership";
     MatCell,
     MatTableModule,
     InvitationStatusComponent,
-    MatIconButton,
-    MatTooltip,
+    InvitationActionsComponent,
   ],
   template: `
+    @let project = projectRepositoryService.entityDetail();
     @let projectRoleEntityMapSummary = projectRoleRepositoryService.entityMapSummary();
-    <div class="flex flex-col gap-y-8" *transloco="let t">
-      <div class="flex flex-row">
-        <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
+    @if (project) {
+      <div class="flex flex-col gap-y-8" *transloco="let t">
+        <div class="flex flex-row">
+          <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
 
-        <button
-          *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
-          (click)="openCreateDialog()"
-          class="tertiary-button"
-          mat-stroked-button
-        >
-          {{ t("project.members.invite_to_project") }}
-        </button>
+          <button
+            *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
+            (click)="openCreateDialog()"
+            class="tertiary-button"
+            mat-stroked-button
+          >
+            {{ t("project.members.invite_to_project") }}
+          </button>
+        </div>
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">group</mat-icon>
+              {{ t("project.members.members_tab") }}
+            </ng-template>
+            @let projectMemberships = projectMembershipRepositoryService.entities();
+            @if (projectMemberships.length > 0) {
+              <mat-list>
+                @for (member of projectMemberships; track member.user.username) {
+                  <app-user-card
+                    [fullName]="member.user.fullName"
+                    [username]="member.user.username"
+                    [color]="member.user.color"
+                  ></app-user-card>
+                }
+              </mat-list>
+            }
+          </mat-tab>
+          <mat-tab *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER">
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">mail</mat-icon>
+              {{ t("project.members.invitation_tab") }}
+            </ng-template>
+            @let projectInvitations = projectInvitationRepositoryService.entities();
+            @if (projectInvitations.length > 0) {
+              <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
+                <ng-container matColumnDef="user">
+                  <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                  <mat-cell *matCellDef="let row" class="basis-1/3"
+                    >{{ projectRoleEntityMapSummary[row.roleId].name }}
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <mat-cell *matCellDef="let row" class="basis-full">
+                    <app-invitation-status [invitation]="row"></app-invitation-status>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-cell *matCellDef="let row" class="basis-1/2">
+                    <app-invitation-actions
+                      [invitation]="row"
+                      [item]="project"
+                      itemType="project"
+                      [resentInvitation]="resentInvitationId() === row.id"
+                      (resend)="resendInvitation($event)"
+                      (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
+                    ></app-invitation-actions>
+                  </mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+              </mat-table>
+            } @else {
+              <p class="mat-body-medium text-on-surface-variant">{{ t("project.members.invitation_empty") }}</p>
+            }
+          </mat-tab>
+        </mat-tab-group>
       </div>
-      <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">group</mat-icon>
-            {{ t("project.members.members_tab") }}
-          </ng-template>
-          @let projectMemberships = projectMembershipRepositoryService.entities();
-          @if (projectMemberships.length > 0) {
-            <mat-list>
-              @for (member of projectMemberships; track member.user.username) {
-                <app-user-card
-                  [fullName]="member.user.fullName"
-                  [username]="member.user.username"
-                  [color]="member.user.color"
-                ></app-user-card>
-              }
-            </mat-list>
-          }
-        </mat-tab>
-        <mat-tab *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER">
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">mail</mat-icon>
-            {{ t("project.members.invitation_tab") }}
-          </ng-template>
-          @let projectInvitations = projectInvitationRepositoryService.entities();
-          @if (projectInvitations.length > 0) {
-            <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
-              <ng-container matColumnDef="user">
-                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row" class="basis-1/3"
-                  >{{ projectRoleEntityMapSummary[row.roleId].name }}
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="status">
-                <mat-cell *matCellDef="let row" class="basis-full">
-                  <app-invitation-status [invitation]="row"></app-invitation-status>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <mat-cell *matCellDef="let row" class="basis-1/2 flex gap-2">
-                  @if (row.status === InvitationStatus.PENDING) {
-                    @let invitationResendDisableMessage = getInvitationResendDisableMessage(row);
-                    @if (resentInvitationId === row.id) {
-                      <button disabled class="secondary-button" mat-flat-button>
-                        {{ t("project.members.invitation_operations.resent_confirmation") }}
-                      </button>
-                    } @else {
-                      <div
-                        [matTooltip]="
-                          invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: row.email }) : ''
-                        "
-                        [matTooltipDisabled]="!invitationResendDisableMessage"
-                      >
-                        <button
-                          [disabled]="!!invitationResendDisableMessage"
-                          (click)="
-                            projectInvitationRepositoryService.resendProjectInvitation(row.id);
-                            resentInvitationId = row.id
-                          "
-                          class="secondary-button"
-                          mat-stroked-button
-                        >
-                          {{ t("project.members.invitation_operations.resend") }}
-                        </button>
-                      </div>
-                    }
-                    <button
-                      mat-icon-button
-                      [attr.aria-label]="t('project.members.invitation_operations.revoke')"
-                      [matTooltip]="t('project.members.invitation_operations.revoke')"
-                      (click)="projectInvitationRepositoryService.revokeProjectInvitation(row.id)"
-                    >
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  }
-                </mat-cell>
-              </ng-container>
-              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
-            </mat-table>
-          } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("project.members.invitation_empty") }}</p>
-          }
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+    }
   `,
   animations: [
     trigger("newItemsFlyIn", [
@@ -208,6 +183,11 @@ export class ProjectMembersComponent {
     });
   }
 
+  resendInvitation(invitationId: ProjectInvitation["id"]) {
+    this.projectInvitationRepositoryService.resendProjectInvitation(invitationId);
+    this.resentInvitationId.set(invitationId);
+  }
+
   public openCreateDialog(): void {
     const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
       ...matDialogConfig,
@@ -235,16 +215,5 @@ export class ProjectMembersComponent {
         }
       }
     });
-  }
-  getInvitationResendDisableMessage(invitation: ProjectInvitation): string | null {
-    if (invitation.numEmailsSent >= 100) {
-      return "project.members.invitation_operations.resend_too_much";
-    }
-    const lastSentAt = new Date(invitation.resentAt || invitation.createdAt);
-    const now = new Date();
-    if (Math.round((now.getTime() - lastSentAt.getTime()) / 1000 / 60) <= 10) {
-      return "project.members.invitation_operations.resend_too_soon";
-    }
-    return null;
   }
 }

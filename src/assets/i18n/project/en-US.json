@@ -40,13 +40,6 @@
     "invite_to_project": "Invite to project",
     "members_tab": "Members",
     "invitation_tab": "Invitations",
-    "invitation_empty": "There are no invitations.",
-    "invitation_operations": {
-      "resend": "Resend an invitation",
-      "revoke": "Cancel an invitation",
-      "resend_too_much": "You can't resend an invitation to {email} because they have already received too many of them",
-      "resend_too_soon": "You can't resend an invitation to {email} because you've already reinvited them recently. Wait for {email} to respond or try again later.",
-      "resent_confirmation": "Invitation resent"
-    }
+    "invitation_empty": "There are no invitations."
   }
 }
