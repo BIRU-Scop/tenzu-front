@@ -90,13 +90,13 @@ export class StoryCardComponent {
 
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.story();
-    const teamMembers = this.projectMembershipRepositoryService.members();
+    const teamMembers = this.projectMembershipRepositoryService.members;
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "auto",
       relativeYPosition: "auto",
       data: {
-        assignees: this.assignees(),
+        assignees: this.assignees,
         teamMembers: teamMembers,
       },
     });

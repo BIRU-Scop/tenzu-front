@@ -68,14 +68,14 @@ export class StoryAssigneeComponent {
   });
 
   openAssignStoryDialog(event: MouseEvent): void {
-    const teamMembers = this.projectMembershipRepositoryService.members();
+    const teamMembers = this.projectMembershipRepositoryService.members;
     const storyDetail = this.storyDetail();
 
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "left",
       data: {
-        assignees: this.assignees(),
+        assignees: this.assignees,
         teamMembers: teamMembers,
       },
     });
