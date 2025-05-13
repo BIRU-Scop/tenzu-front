@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
   MAT_DIALOG_DATA,
@@ -31,35 +31,15 @@ import {
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
-import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { UserCardComponent } from "@tenzu/shared/components/user-card";
-import {
-  AbstractControl,
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-} from "@angular/forms";
-import { emailRegexPatternValidation } from "@tenzu/shared/components/form/email-field/utils";
+import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 
 export interface InvitePeopleDialogData {
   title: string;
   description: string;
 }
-
-export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  if (control.value) {
-    const invalid_mails = control.value
-      .split(",")
-      .filter((value: string) => !emailRegexPatternValidation.test(value.trim()));
-    if (invalid_mails.length > 0) {
-      return { invalidEmail: invalid_mails };
-    }
-  }
-  return null;
-};
 
 @Component({
   selector: "app-invite-peoples-dialog",
@@ -74,15 +54,14 @@ export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): Vali
     MatIcon,
     MatFormField,
     MatInput,
-    UserCardComponent,
     MatIconButton,
     FormsModule,
     ReactiveFormsModule,
-    MatError,
     MatLabel,
+    EmailFieldComponent,
   ],
   template: `
-    <ng-container *transloco="let t; prefix: 'component.invite_dialog'">
+    <ng-container *transloco="let t">
       <h2 id="aria-label" mat-dialog-title>{{ data.title }}</h2>
       <mat-dialog-content>
         <div class="flex flex-col gap-4">
@@ -92,50 +71,45 @@ export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): Vali
               <mat-icon class="icon-lg">group_add</mat-icon>
               <mat-form-field>
                 <mat-label>
-                  {{ t("mailing_list") }}
+                  {{ t("component.invite_dialog.mailing_list") }}
                 </mat-label>
                 <input
                   matInput
-                  placeholder="name1@amazing.com, sheepAreGreat@tenzu.sh, tenzu@missing.com"
+                  placeholder="name1@amazing.com,sheepAreGreat@tenzu.sh,tenzu@missing.com"
                   class="w-fit grow"
                   formControlName="emailsToAdd"
                 />
-                @if (form.controls.emailsToAdd.hasError("invalidEmail")) {
-                  <mat-error class="cross-validation-error-message alert alert-danger"
-                    >{{ t("at_least_one_invalid_email") }} :
-                    {{ form.controls.emailsToAdd.getError("invalidEmail") }}
-                  </mat-error>
-                }
               </mat-form-field>
               <button mat-flat-button class="primary-button" type="submit">
-                {{ t("add") }}
+                {{ t("component.invite_dialog.add") }}
               </button>
             </div>
+            <mat-divider></mat-divider>
+            <div class="flex flex-col gap-y-4 px-12 py-4" formArrayName="peopleEmails">
+              @for (peopleEmail of peopleEmails.controls; track peopleEmail) {
+                <div class="flex flex-row gap-x-4">
+                  <app-email-field [formControlName]="$index" [displayLabel]="false" class="grow" />
+                  <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+            <mat-divider></mat-divider>
           </form>
-          <mat-divider></mat-divider>
-          <div class="flex flex-col gap-y-4 px-12 py-4">
-            @for (people of peoplesList(); track people) {
-              <div class="flex flex-row">
-                <app-user-card fullName="{{ people }}" class="grow"></app-user-card>
-                <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
-            }
-          </div>
-          <mat-divider></mat-divider>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions>
+        @let _peopleEmails = peopleEmails;
+        <button mat-flat-button mat-dialog-close class="secondary-button">Cancel</button>
         <button
           mat-flat-button
           class="tertiary-button"
-          [mat-dialog-close]="peoplesList()"
-          [disabled]="!peoplesList().length"
+          [mat-dialog-close]="_peopleEmails.value"
+          [disabled]="!_peopleEmails.value.length || !_peopleEmails.valid"
         >
-          {{ t("invite_peoples") }}
+          {{ t("component.invite_dialog.invite_peoples") }}
         </button>
-        <button mat-flat-button mat-dialog-close class="secondary-button">Cancel</button>
       </mat-dialog-actions>
     </ng-container>
   `,
@@ -145,24 +119,31 @@ export const emailsShouldBeValid: ValidatorFn = (control: AbstractControl): Vali
 export class InvitePeoplesDialogComponent {
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
-    emailsToAdd: ["", emailsShouldBeValid],
+    emailsToAdd: [""],
+    peopleEmails: this.fb.array([]),
   });
   data = inject<InvitePeopleDialogData>(MAT_DIALOG_DATA);
-  peoplesList = model([] as string[]);
 
   addToPeopleList() {
-    this.form.updateValueAndValidity();
-    if (this.form.valid && this.form.value.emailsToAdd) {
-      this.form.value.emailsToAdd.split(",").forEach((value) => {
-        if (!this.peoplesList().includes(value)) {
-          this.peoplesList().push(value);
+    const emailsToAdd = this.form.controls["emailsToAdd"];
+    emailsToAdd.updateValueAndValidity();
+    if (emailsToAdd.valid && emailsToAdd.value) {
+      emailsToAdd.value.split(",").forEach((value) => {
+        if (value && !this.peopleEmails.value.includes(value)) {
+          const emailControl = new FormControl(value, [Validators.email, Validators.required]);
+          emailControl.updateValueAndValidity({ onlySelf: true });
+          this.peopleEmails.push(emailControl);
         }
       });
-      this.form.reset();
+      emailsToAdd.reset();
     }
   }
 
+  get peopleEmails() {
+    return this.form.controls["peopleEmails"] as FormArray;
+  }
+
   removeFromPeopleList(index: number) {
-    this.peoplesList().splice(index, 1);
+    this.peopleEmails.removeAt(index);
   }
 }

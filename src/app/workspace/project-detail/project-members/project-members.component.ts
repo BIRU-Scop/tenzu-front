@@ -69,7 +69,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
 
           <button
             *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
-            (click)="openCreateDialog()"
+            (click)="openInviteDialog()"
             class="tertiary-button"
             mat-stroked-button
           >
@@ -188,17 +188,14 @@ export class ProjectMembersComponent {
     this.resentInvitationId.set(invitationId);
   }
 
-  public openCreateDialog(): void {
+  public openInviteDialog(): void {
     const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
       ...matDialogConfig,
       minWidth: 800,
       data: {
-        title:
-          this.translocoService.translateObject("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translateObject("component.invite_dialog.to") +
-          " " +
-          this.projectRepositoryService.entityDetail()?.name,
+        title: this.translocoService.translate("component.invite_dialog.invite_peoples_to", {
+          name: this.projectRepositoryService.entityDetail()?.name,
+        }),
         description: this.translocoService.translateObject("project.members.description_modal"),
       },
     });

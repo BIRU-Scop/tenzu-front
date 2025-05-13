@@ -193,12 +193,9 @@ export default class WorkspacePeopleComponent {
       ...matDialogConfig,
       minWidth: 800,
       data: {
-        title:
-          this.translocoService.translate("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translate("component.invite_dialog.to") +
-          " " +
-          this.workspaceRepositoryService.entityDetail()?.name,
+        title: this.translocoService.translate("component.invite_dialog.invite_peoples_to", {
+          name: this.workspaceRepositoryService.entityDetail()?.name,
+        }),
         description: this.translocoService.translate("workspace.people.description_modal"),
       },
     });

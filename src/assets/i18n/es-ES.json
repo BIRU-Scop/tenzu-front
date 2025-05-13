@@ -67,6 +67,14 @@
     },
     "primary_side_nav": {
       "collapse": "Colapsar"
+    },
+    "invite_dialog": {
+      "pending": "Pendiente",
+      "non_members": "No miembros",
+      "add": "Agregar",
+      "invite_peoples": "Invitar personas",
+      "invite_peoples_to": "Invitar personas to {name}",
+      "mailing_list": "Lista de distribución"
     }
   },
   "commons": {
@@ -82,16 +90,6 @@
       "lang": "Idioma",
       "email": "Correo electrónico"
     }
-  },
-  "invitations": {
-    "pending": "Pendiente",
-    "non_members": "No miembros",
-    "invite_to_workspace": "Invitar al espacio de trabajo",
-    "invite_to_project": "Invitar al proyecto",
-    "to": "a",
-    "add": "Agregar",
-    "invite_peoples": "Invitar personas",
-    "at_least_one_invalid_email": "La entrada tiene al menos un correo electrónico incorrecto"
   },
   "directives": {
     "confirmPopupComponent": {

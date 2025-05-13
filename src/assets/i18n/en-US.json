@@ -128,8 +128,7 @@
       "non_members": "Non-members",
       "add": "Add",
       "invite_peoples": "Invite peoples",
-      "to": "to",
-      "at_least_one_invalid_email": "The input have at least one incorrect mail",
+      "invite_peoples_to": "Invite peoples to {name}",
       "mailing_list": "Mailing list"
     }
   },
