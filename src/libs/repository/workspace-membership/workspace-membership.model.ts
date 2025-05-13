@@ -23,6 +23,6 @@ import { UserNested } from "../user";
 
 export type WorkspaceMembership = {
   user: UserNested;
-  role_id: string;
-  workspace_id: string;
+  roleId: string;
+  workspaceId: string;
 };

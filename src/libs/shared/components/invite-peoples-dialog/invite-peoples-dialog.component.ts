@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
   MAT_DIALOG_DATA,
@@ -31,14 +31,77 @@ import {
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
-import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from "@angular/forms";
+import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
+import { injectNgControl } from "@tenzu/utils/injectors";
+import { UserNested } from "@tenzu/repository/user";
 
 export interface InvitePeopleDialogData {
   title: string;
   description: string;
+  existingMembers: Signal<UserNested[]>;
+}
+
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [NoopValueAccessorDirective],
+  imports: [MatInput, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError],
+  providers: [],
+  selector: "app-invite-peoples-dialog-field",
+  styles: ``,
+  template: `
+    <mat-form-field *transloco="let t" subscriptSizing="fixed">
+      <input
+        matInput
+        [attr.data-testid]="'invite-email-input-' + ngControl.value"
+        type="email"
+        [formControl]="ngControl.control"
+        autocomplete="email"
+      />
+      @if (ngControl.hasError("required")) {
+        <mat-error
+          [attr.data-testid]="'invite-email-required-error-' + ngControl.value"
+          [innerHTML]="t('component.email.errors.required')"
+        ></mat-error>
+      }
+      @if (ngControl.hasError("email")) {
+        <mat-error [attr.data-testid]="'invite-email-invalid-error-' + ngControl.value">{{
+          t("component.email.errors.email")
+        }}</mat-error>
+      }
+      @if (ngControl.hasError("memberExists")) {
+        <mat-error [attr.data-testid]="'invite-email-member-error-' + ngControl.value">{{
+          t("component.invite_dialog.member_error")
+        }}</mat-error>
+      }
+    </mat-form-field>
+  `,
+})
+export class InvitationEmailFieldComponent implements OnInit {
+  ngControl = injectNgControl();
+  memberEmails = input.required<UserNested["email"][]>();
+
+  ngOnInit() {
+    this.ngControl.control.addValidators([Validators.email, Validators.required, this.memberExistsValidator()]);
+  }
+
+  memberExistsValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.memberEmails().includes(control.value) ? { memberExists: true } : null;
+    };
+  }
 }
 
 @Component({
@@ -58,7 +121,7 @@ export interface InvitePeopleDialogData {
     FormsModule,
     ReactiveFormsModule,
     MatLabel,
-    EmailFieldComponent,
+    InvitationEmailFieldComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -88,7 +151,11 @@ export interface InvitePeopleDialogData {
             <div class="flex flex-col gap-y-4 px-12 py-4" formArrayName="peopleEmails">
               @for (peopleEmail of peopleEmails.controls; track peopleEmail) {
                 <div class="flex flex-row gap-x-4">
-                  <app-email-field [formControlName]="$index" [displayLabel]="false" class="grow" />
+                  <app-invite-peoples-dialog-field
+                    [formControlName]="$index"
+                    [memberEmails]="memberEmails()"
+                    class="grow"
+                  />
                   <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
                     <mat-icon>close</mat-icon>
                   </button>
@@ -123,6 +190,9 @@ export class InvitePeoplesDialogComponent {
     peopleEmails: this.fb.array([]),
   });
   data = inject<InvitePeopleDialogData>(MAT_DIALOG_DATA);
+  memberEmails = computed(() => {
+    return this.data.existingMembers().map((member) => member.email);
+  });
 
   addToPeopleList() {
     const emailsToAdd = this.form.controls["emailsToAdd"];

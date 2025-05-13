@@ -26,7 +26,6 @@ import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
-import { ProjectKanbanService } from "../project-kanban.service";
 import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
@@ -82,17 +81,16 @@ export class StoryCardComponent {
   story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
 
   assignees = computed(() => {
-    const teamMembers = this.projectMembershipService.members();
-    return this.story().assigneeIds.map((userId) => teamMembers[userId]) || [];
+    const teamMemberMap = this.projectMembershipRepositoryService.memberMap();
+    return this.story().assigneeIds.map((userId) => teamMemberMap[userId]) || [];
   });
-  projectMembershipService = inject(ProjectMembershipRepositoryService);
+  projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   storyRepositoryService = inject(StoryRepositoryService);
   relativeDialog = inject(RelativeDialogService);
-  projectKanbanService = inject(ProjectKanbanService);
 
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.story();
-    const teamMembers = Object.values(this.projectMembershipService.members());
+    const teamMembers = this.projectMembershipRepositoryService.members();
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "auto",

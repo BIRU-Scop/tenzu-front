@@ -129,7 +129,8 @@
       "add": "Add",
       "invite_peoples": "Invite peoples",
       "invite_peoples_to": "Invite peoples to {name}",
-      "mailing_list": "Mailing list"
+      "mailing_list": "Mailing list",
+      "member_error": "This address belongs to a member"
     }
   },
   "commons": {

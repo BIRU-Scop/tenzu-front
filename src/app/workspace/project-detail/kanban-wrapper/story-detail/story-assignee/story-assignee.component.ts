@@ -63,12 +63,12 @@ export class StoryAssigneeComponent {
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   relativeDialog = inject(RelativeDialogService);
   assignees = computed(() => {
-    const teamMembers = this.projectMembershipRepositoryService.members();
-    return this.storyDetail().assigneeIds.map((userId) => teamMembers[userId]);
+    const teamMemberMap = this.projectMembershipRepositoryService.memberMap();
+    return this.storyDetail().assigneeIds.map((userId) => teamMemberMap[userId]);
   });
 
   openAssignStoryDialog(event: MouseEvent): void {
-    const teamMembers = Object.values(this.projectMembershipRepositoryService.members());
+    const teamMembers = this.projectMembershipRepositoryService.members();
     const storyDetail = this.storyDetail();
 
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {

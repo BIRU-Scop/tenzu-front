@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { ReactiveFormsModule, Validators } from "@angular/forms";
@@ -36,11 +36,9 @@ import { injectNgControl } from "@tenzu/utils/injectors";
   styles: ``,
   template: `
     <mat-form-field *transloco="let t" subscriptSizing="fixed">
-      @if (displayLabel()) {
-        <mat-label>
-          {{ t("component.email.label") }}
-        </mat-label>
-      }
+      <mat-label>
+        {{ t("component.email.label") }}
+      </mat-label>
       <input matInput data-testid="email-input" type="email" [formControl]="ngControl.control" autocomplete="email" />
       @if (ngControl.hasError("required")) {
         <mat-error data-testid="email-required-error" [innerHTML]="t('component.email.errors.required')"></mat-error>
@@ -53,7 +51,6 @@ import { injectNgControl } from "@tenzu/utils/injectors";
 })
 export class EmailFieldComponent implements OnInit {
   ngControl = injectNgControl();
-  displayLabel = input(true);
 
   ngOnInit() {
     this.ngControl.control.addValidators([Validators.email, Validators.required]);

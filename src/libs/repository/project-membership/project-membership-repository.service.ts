@@ -34,13 +34,16 @@ export class ProjectMembershipRepositoryService {
   private projectMembershipStore = inject(ProjectMembershipEntitiesStore);
   entities = this.projectMembershipStore.entities;
   entityMap = this.projectMembershipStore.entityMap;
-  members = computed(() => {
+  memberMap = computed(() => {
     return this.entities().reduce(
       (acc, membership) => {
         return { ...acc, [membership.user.id]: membership.user };
       },
       {} as Record<UserNested["id"], UserNested>,
     );
+  });
+  members = computed(() => {
+    return Object.values(this.memberMap());
   });
 
   async listProjectMembership(projectId: string) {

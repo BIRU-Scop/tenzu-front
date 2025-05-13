@@ -74,7 +74,8 @@
       "add": "Agregar",
       "invite_peoples": "Invitar personas",
       "invite_peoples_to": "Invitar personas to {name}",
-      "mailing_list": "Lista de distribución"
+      "mailing_list": "Lista de distribución",
+      "member_error": "Esta dirección pertenece a un miembro"
     }
   },
   "commons": {

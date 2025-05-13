@@ -85,7 +85,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
             @let projectMemberships = projectMembershipRepositoryService.entities();
             @if (projectMemberships.length > 0) {
               <mat-list>
-                @for (member of projectMemberships; track member.user.username) {
+                @for (member of projectMemberships; track member.user.id) {
                   <app-user-card
                     [fullName]="member.user.fullName"
                     [username]="member.user.username"
@@ -197,6 +197,7 @@ export class ProjectMembersComponent {
           name: this.projectRepositoryService.entityDetail()?.name,
         }),
         description: this.translocoService.translateObject("project.members.description_modal"),
+        existingMembers: this.projectMembershipRepositoryService.members,
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {

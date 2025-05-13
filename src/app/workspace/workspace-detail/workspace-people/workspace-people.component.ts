@@ -86,7 +86,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
             @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
             @if (workspaceMembershipEntities.length > 0) {
               <mat-list>
-                @for (member of workspaceMembershipEntities; track member.user.username) {
+                @for (member of workspaceMembershipEntities; track member.user.id) {
                   <app-user-card
                     [fullName]="member.user.fullName"
                     [username]="member.user.username"
@@ -197,6 +197,7 @@ export default class WorkspacePeopleComponent {
           name: this.workspaceRepositoryService.entityDetail()?.name,
         }),
         description: this.translocoService.translate("workspace.people.description_modal"),
+        existingMembers: this.workspaceMembershipRepositoryService.members,
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
