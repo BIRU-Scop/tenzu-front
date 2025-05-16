@@ -43,13 +43,15 @@
 @use "themes/cdk-drag-theme" as cdk-drag;
 @use "themes/cdk-virtual-scroll" as cdk-virtual-scroll;
 @use "themes/slide-toggle-theme" as slide-toggle;
-
+@use "themes/app-table";
 @use "themes/skeleton";
 @use "themes/svg-logo";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 
 
 /************************ RESET CSS *************************/
