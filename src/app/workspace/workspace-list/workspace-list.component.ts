@@ -88,8 +88,8 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                     <app-action-card
                       [name]="project.name"
                       [color]="project.color"
-                      [cancelLabel]="t('component.invitation.accept')"
-                      [submitLabel]="t('component.invitation.deny')"
+                      [cancelLabel]="t('component.invitation.deny')"
+                      [submitLabel]="t('component.invitation.accept')"
                       (submitted)="acceptProjectInvitation(project)"
                       (canceled)="denyProjectInvitation(project)"
                     ></app-action-card>
