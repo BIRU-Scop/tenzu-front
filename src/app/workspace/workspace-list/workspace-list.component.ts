@@ -107,11 +107,26 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                   </li>
                 }
                 @if (
+                  !workspace.userIsInvited &&
                   (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
                   (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
                 ) {
                   <li>
                     <app-project-card [workspaceId]="workspace.id"></app-project-card>
+                  </li>
+                }
+                @if (
+                  workspace.userIsInvited &&
+                  (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
+                  (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
+                ) {
+                  <li>
+                    <app-project-card
+                      [name]="'Lorem Ipsum'"
+                      [color]="3"
+                      [description]="'Lorem Ipsum dolor sit amet'"
+                      [disabled]="true"
+                    ></app-project-card>
                   </li>
                 }
               </ul>
