@@ -72,10 +72,12 @@
       "pending": "Pendiente",
       "non_members": "No miembros",
       "add": "Agregar",
-      "invite_peoples": "Invitar personas",
-      "invite_peoples_to": "Invitar personas to {name}",
+      "invite_people": "Invitar personas",
+      "invite_people_to": "Invitar personas to {name}",
       "mailing_list": "Lista de distribución",
-      "member_error": "Esta dirección pertenece a un miembro"
+      "member_error": "Esta dirección pertenece a un miembro",
+      "duplicate_error": "Esta dirección ya ha sido invitada. ¿Desea volver a enviar una invitación?",
+      "duplicate_error_ok": "Sí"
     }
   },
   "commons": {

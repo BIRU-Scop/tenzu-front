@@ -26,7 +26,7 @@ import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invite-people-dialog/invite-people-dialog.component";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -189,15 +189,19 @@ export default class WorkspacePeopleComponent {
   }
 
   public openInviteDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
+    this.workspaceInvitationRepositoryService
+      .listWorkspaceInvitations(this.workspaceRepositoryService.entityDetail()!.id)
+      .then();
+    const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
       ...matDialogConfig,
       minWidth: 800,
       data: {
-        title: this.translocoService.translate("component.invite_dialog.invite_peoples_to", {
+        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
           name: this.workspaceRepositoryService.entityDetail()?.name,
         }),
         description: this.translocoService.translate("workspace.people.description_modal"),
         existingMembers: this.workspaceMembershipRepositoryService.members,
+        existingInvitations: this.workspaceInvitationRepositoryService.entities,
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {

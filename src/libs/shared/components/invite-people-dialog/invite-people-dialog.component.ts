@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, Signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
   MAT_DIALOG_DATA,
@@ -31,81 +31,23 @@ import {
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
-import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
-import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
-import { injectNgControl } from "@tenzu/utils/injectors";
+import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { UserNested } from "@tenzu/repository/user";
+import { InvitationEmailFieldComponent } from "./invitation-email-field.component";
+import { InvitationResendFieldComponent } from "@tenzu/shared/components/invite-people-dialog/invitation-resend-field.component";
+import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 
 export interface InvitePeopleDialogData {
   title: string;
   description: string;
   existingMembers: Signal<UserNested[]>;
+  existingInvitations: Signal<InvitationBase[]>;
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [NoopValueAccessorDirective],
-  imports: [MatInput, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError],
-  providers: [],
-  selector: "app-invite-peoples-dialog-field",
-  styles: ``,
-  template: `
-    <mat-form-field *transloco="let t" subscriptSizing="fixed">
-      <input
-        matInput
-        [attr.data-testid]="'invite-email-input-' + ngControl.value"
-        type="email"
-        [formControl]="ngControl.control"
-        autocomplete="email"
-      />
-      @if (ngControl.hasError("required")) {
-        <mat-error
-          [attr.data-testid]="'invite-email-required-error-' + ngControl.value"
-          [innerHTML]="t('component.email.errors.required')"
-        ></mat-error>
-      }
-      @if (ngControl.hasError("email")) {
-        <mat-error [attr.data-testid]="'invite-email-invalid-error-' + ngControl.value">{{
-          t("component.email.errors.email")
-        }}</mat-error>
-      }
-      @if (ngControl.hasError("memberExists")) {
-        <mat-error [attr.data-testid]="'invite-email-member-error-' + ngControl.value">{{
-          t("component.invite_dialog.member_error")
-        }}</mat-error>
-      }
-    </mat-form-field>
-  `,
-})
-export class InvitationEmailFieldComponent implements OnInit {
-  ngControl = injectNgControl();
-  memberEmails = input.required<UserNested["email"][]>();
-
-  ngOnInit() {
-    this.ngControl.control.addValidators([Validators.email, Validators.required, this.memberExistsValidator()]);
-  }
-
-  memberExistsValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      return this.memberEmails().includes(control.value) ? { memberExists: true } : null;
-    };
-  }
-}
-
-@Component({
-  selector: "app-invite-peoples-dialog",
+  selector: "app-invite-people-dialog",
   imports: [
     TranslocoDirective,
     MatDialogTitle,
@@ -122,6 +64,7 @@ export class InvitationEmailFieldComponent implements OnInit {
     ReactiveFormsModule,
     MatLabel,
     InvitationEmailFieldComponent,
+    InvitationResendFieldComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -150,12 +93,21 @@ export class InvitationEmailFieldComponent implements OnInit {
             <mat-divider></mat-divider>
             <div class="flex flex-col gap-y-4 px-12 py-4" formArrayName="peopleEmails">
               @for (peopleEmail of peopleEmails.controls; track peopleEmail) {
-                <div class="flex flex-row gap-x-4">
-                  <app-invite-peoples-dialog-field
-                    [formControlName]="$index"
-                    [memberEmails]="memberEmails()"
-                    class="grow"
-                  />
+                @let pastInvitationExists = doesPastInvitationExists(peopleEmail.value.email);
+                <div class="flex flex-row gap-x-4" [formGroupName]="$index">
+                  <div class="grow">
+                    <app-invitation-email-field
+                      formControlName="email"
+                      [memberEmails]="memberEmails()"
+                      [pastInvitationExistsError]="testError(pastInvitationExists, peopleEmail)"
+                    />
+                    @if (pastInvitationExists) {
+                      <app-invitation-resend-field
+                        formControlName="resendExisting"
+                        [pastInvitationExistsError]="pastInvitationExists"
+                      />
+                    }
+                  </div>
                   <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
                     <mat-icon>close</mat-icon>
                   </button>
@@ -175,7 +127,7 @@ export class InvitationEmailFieldComponent implements OnInit {
           [mat-dialog-close]="_peopleEmails.value"
           [disabled]="!_peopleEmails.value.length || !_peopleEmails.valid"
         >
-          {{ t("component.invite_dialog.invite_peoples") }}
+          {{ t("component.invite_dialog.invite_people") }}
         </button>
       </mat-dialog-actions>
     </ng-container>
@@ -183,7 +135,7 @@ export class InvitationEmailFieldComponent implements OnInit {
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InvitePeoplesDialogComponent {
+export class InvitePeopleDialogComponent {
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
     emailsToAdd: [""],
@@ -193,6 +145,12 @@ export class InvitePeoplesDialogComponent {
   memberEmails = computed(() => {
     return this.data.existingMembers().map((member) => member.email);
   });
+  notAcceptedInvitationEmails = computed(() => {
+    return this.data
+      .existingInvitations()
+      .filter((invitation) => invitation.status != InvitationStatus.ACCEPTED)
+      .map((invitation) => invitation.email);
+  });
 
   addToPeopleList() {
     const emailsToAdd = this.form.controls["emailsToAdd"];
@@ -200,9 +158,15 @@ export class InvitePeoplesDialogComponent {
     if (emailsToAdd.valid && emailsToAdd.value) {
       emailsToAdd.value.split(",").forEach((value) => {
         if (value && !this.peopleEmails.value.includes(value)) {
-          const emailControl = new FormControl(value, [Validators.email, Validators.required]);
-          emailControl.updateValueAndValidity({ onlySelf: true });
-          this.peopleEmails.push(emailControl);
+          const emailGroupControl = this.fb.nonNullable.group({
+            email: [value],
+            resendExisting: [false],
+          });
+          emailGroupControl.controls.resendExisting.valueChanges.subscribe(() => {
+            emailGroupControl.controls.email.updateValueAndValidity();
+          });
+          emailGroupControl.updateValueAndValidity({ onlySelf: true });
+          this.peopleEmails.push(emailGroupControl);
         }
       });
       emailsToAdd.reset();
@@ -210,10 +174,18 @@ export class InvitePeoplesDialogComponent {
   }
 
   get peopleEmails() {
-    return this.form.controls["peopleEmails"] as FormArray;
+    return this.form.controls.peopleEmails as FormArray;
   }
 
   removeFromPeopleList(index: number) {
     this.peopleEmails.removeAt(index);
+  }
+
+  doesPastInvitationExists(email: InvitationBase["email"]) {
+    return this.notAcceptedInvitationEmails().includes(email);
+  }
+
+  testError(pastInvitationExists: boolean, peopleEmail: FormControl) {
+    return pastInvitationExists && !!peopleEmail.value.resendExisting;
   }
 }

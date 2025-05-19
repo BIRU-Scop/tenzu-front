@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angu
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
@@ -189,15 +189,19 @@ export class ProjectMembersComponent {
   }
 
   public openInviteDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
+    this.projectInvitationRepositoryService
+      .listProjectInvitations(this.projectRepositoryService.entityDetail()!.id)
+      .then();
+    const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
       ...matDialogConfig,
       minWidth: 800,
       data: {
-        title: this.translocoService.translate("component.invite_dialog.invite_peoples_to", {
+        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
           name: this.projectRepositoryService.entityDetail()?.name,
         }),
         description: this.translocoService.translateObject("project.members.description_modal"),
         existingMembers: this.projectMembershipRepositoryService.members,
+        existingInvitations: this.projectInvitationRepositoryService.entities,
       },
     });
     dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
