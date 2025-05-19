@@ -81,6 +81,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                 [name]="workspace.name"
                 [color]="workspace.color"
                 [id]="workspace.id"
+                [userIsInvited]="workspace.userIsInvited"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
                 @for (project of workspace.userInvitedProjects; track project.id) {
