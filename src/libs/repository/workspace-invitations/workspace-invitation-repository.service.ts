@@ -65,4 +65,8 @@ export class WorkspaceInvitationRepositoryService {
     );
     this.workspaceInvitationEntitiesStore.addEntities(createWorkspaceInvitationResponse.invitations);
   }
+
+  async acceptInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
+    return await lastValueFrom(this.workspaceInvitationsApiService.acceptForCurrentUser({ workspaceId }));
+  }
 }

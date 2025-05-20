@@ -81,6 +81,10 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
     return this.http.get<PublicWorkspacePendingInvitation>(`${this.baseUrl}/invitations/by_token/${params.token}`);
   }
 
+  acceptForCurrentUser(params: { workspaceId: WorkspaceSummary["id"] }) {
+    return this.http.post<WorkspaceInvitation>(`${this.getBaseUrl(params)}/accept`, null);
+  }
+
   acceptByToken(params: { token: string }) {
     return this.http.post<WorkspaceInvitation>(
       `${this.baseUrl}/invitations/by_token/${params.token}/accept`,

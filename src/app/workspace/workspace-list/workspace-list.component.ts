@@ -45,6 +45,7 @@ import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 
 @Component({
   selector: "app-workspace-list",
@@ -82,6 +83,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                 [color]="workspace.color"
                 [id]="workspace.id"
                 [userIsInvited]="workspace.userIsInvited"
+                (submitted)="acceptWorkspaceInvitation(workspace)"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
                 @for (project of workspace.userInvitedProjects; track project.id) {
@@ -241,6 +243,14 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
         this.openPlaceholderDialog(event);
       }
     });
+  }
+
+  async acceptWorkspaceInvitation(workspace: WorkspaceSummary) {
+    const updatedInvitation = await this.workspaceInvitationService.acceptInvitationForCurrentUser(workspace.id);
+    if (updatedInvitation) {
+      workspace.userIsInvited = false;
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
   }
 
   async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {

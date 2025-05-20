@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { MatCard, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
@@ -65,6 +65,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
             mat-flat-button
             type="button"
             [attr.aria-label]="'component.invitation.accept'"
+            (click)="submitted.emit()"
           >
             {{ t("component.invitation.accept") }}
           </button>
@@ -83,4 +84,5 @@ export class WorkspaceCardComponent {
   color = input(1);
   id = input("");
   userIsInvited = input(false);
+  submitted = output<void>();
 }
