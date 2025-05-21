@@ -69,7 +69,13 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
           >
             {{ t("component.invitation.accept") }}
           </button>
-          <button class="error-button" mat-flat-button type="button" [attr.aria-label]="'component.invitation.deny'">
+          <button
+            class="error-button"
+            mat-flat-button
+            type="button"
+            [attr.aria-label]="'component.invitation.deny'"
+            (click)="canceled.emit()"
+          >
             {{ t("component.invitation.deny") }}
           </button>
         }
@@ -85,4 +91,5 @@ export class WorkspaceCardComponent {
   id = input("");
   userIsInvited = input(false);
   submitted = output<void>();
+  canceled = output<void>();
 }

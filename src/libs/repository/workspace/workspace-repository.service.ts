@@ -27,6 +27,7 @@ import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
 import { BaseRepositoryService } from "../base";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 
 @Injectable({
   providedIn: "root",
@@ -45,6 +46,18 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   protected apiService = inject(WorkspaceApiService);
   protected entitiesSummaryStore = inject(WorkspaceEntitiesSummaryStore);
   protected entityDetailStore = inject(WorkspaceDetailStore);
+  private workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
+
+  async denyInvitationWorkspace(params: { workspaceId: WorkspaceSummary["id"] }) {
+    await this.workspaceInvitationService.denyInvitationForCurrentUser(params.workspaceId);
+    this.deleteEntitySummary(params.workspaceId);
+  }
+
+  async acceptInvitationWorkspace(params: { workspace: WorkspaceSummary }) {
+    await this.workspaceInvitationService.acceptInvitationForCurrentUser(params.workspace.id);
+    params.workspace.userIsInvited = false;
+    this.updateEntitySummary(params.workspace.id, params.workspace);
+  }
 
   override async deleteRequest(
     item: WorkspaceDetail,

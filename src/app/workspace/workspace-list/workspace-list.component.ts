@@ -84,6 +84,7 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
                 [id]="workspace.id"
                 [userIsInvited]="workspace.userIsInvited"
                 (submitted)="acceptWorkspaceInvitation(workspace)"
+                (canceled)="denyWorkspaceInvitation(workspace)"
               ></app-workspace-card>
               <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
                 @for (project of workspace.userInvitedProjects; track project.id) {
@@ -246,11 +247,11 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   }
 
   async acceptWorkspaceInvitation(workspace: WorkspaceSummary) {
-    const updatedInvitation = await this.workspaceInvitationService.acceptInvitationForCurrentUser(workspace.id);
-    if (updatedInvitation) {
-      workspace.userIsInvited = false;
-      this.workspaceService.updateEntitySummary(workspace.id, workspace);
-    }
+    await this.workspaceService.acceptInvitationWorkspace({ workspace });
+  }
+
+  async denyWorkspaceInvitation(workspace: WorkspaceSummary) {
+    await this.workspaceService.denyInvitationWorkspace({ workspaceId: workspace.id });
   }
 
   async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
