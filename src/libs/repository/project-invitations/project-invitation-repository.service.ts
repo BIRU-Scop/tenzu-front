@@ -27,6 +27,8 @@ import { ProjectDetail } from "../project";
 import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
 import { ProjectInvitation } from "./project-invitation.model";
+import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+import { ArrayElement } from "@tenzu/utils/functions/typing";
 
 @Injectable({
   providedIn: "root",
@@ -36,6 +38,7 @@ export class ProjectInvitationRepositoryService {
   private projectInvitationEntitiesStore = inject(ProjectInvitationsEntitiesSummaryStore);
   entities = this.projectInvitationEntitiesStore.entities;
   entityMap = this.projectInvitationEntitiesStore.entityMap;
+  private workspaceService = inject(WorkspaceRepositoryService);
 
   async listProjectInvitations(projectId: ProjectDetail["id"]) {
     const projectInvitations = await lastValueFrom(this.projectInvitationsApiService.list({ projectId }));
@@ -45,6 +48,31 @@ export class ProjectInvitationRepositoryService {
   async resendProjectInvitation(invitationId: ProjectInvitation["id"]) {
     const projectInvitations = await lastValueFrom(this.projectInvitationsApiService.resend({ invitationId }));
     this.projectInvitationEntitiesStore.updateEntity(invitationId, projectInvitations);
+  }
+
+  async acceptProjectInvitation(params: { project: ArrayElement<WorkspaceSummary["userInvitedProjects"]> }) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[params.project.workspaceId] } as WorkspaceSummary;
+    const updatedInvitation = await this.acceptInvitationForCurrentUser(params.project.id);
+    if (updatedInvitation) {
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) =>
+          invitedProject.id !== updatedInvitation.project.id,
+      );
+      workspace.userMemberProjects = [...workspace.userMemberProjects, { ...params.project }];
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
+  }
+
+  async denyProjectInvitation(params: { project: ArrayElement<WorkspaceSummary["userInvitedProjects"]> }) {
+    const workspace = { ...this.workspaceService.entityMapSummary()[params.project.workspaceId] } as WorkspaceSummary;
+    const updatedInvitation = await this.denyInvitationForCurrentUser(params.project.id);
+    if (updatedInvitation) {
+      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
+        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) =>
+          invitedProject.id !== params.project.id,
+      );
+      this.workspaceService.updateEntitySummary(workspace.id, workspace);
+    }
   }
 
   async revokeProjectInvitation(invitationId: ProjectInvitation["id"]) {

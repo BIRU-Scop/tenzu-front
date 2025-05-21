@@ -45,7 +45,6 @@ import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 
 @Component({
   selector: "app-workspace-list",
@@ -255,27 +254,11 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   }
 
   async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
-    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
-    const updatedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
-    if (updatedInvitation) {
-      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
-        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) =>
-          invitedProject.id !== updatedInvitation.project.id,
-      );
-      workspace.userMemberProjects = [...workspace.userMemberProjects, { ...project }];
-      this.workspaceService.updateEntitySummary(workspace.id, workspace);
-    }
+    await this.projectInvitationService.acceptProjectInvitation({ project: project });
   }
 
   async denyProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
-    const workspace = { ...this.workspaceService.entityMapSummary()[project.workspaceId] } as WorkspaceSummary;
-    const updatedInvitation = await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
-    if (updatedInvitation) {
-      workspace.userInvitedProjects = workspace.userInvitedProjects.filter(
-        (invitedProject: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) => invitedProject.id !== project.id,
-      );
-      this.workspaceService.updateEntitySummary(workspace.id, workspace);
-    }
+    await this.projectInvitationService.denyProjectInvitation({ project: project });
   }
 
   protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
