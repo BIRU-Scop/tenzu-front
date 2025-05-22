@@ -19,12 +19,11 @@
  *
  */
 
-import { computed, inject, Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceMembershipApiService } from "./workspace-membership-api-service";
 import { WorkspaceMembership } from "./workspace-membership.model";
 import { WorkspaceMembershipEntitiesStore } from "@tenzu/repository/workspace-membership/workspace-membership.store";
-import { UserNested } from "@tenzu/repository/user";
 
 @Injectable({
   providedIn: "root",
@@ -34,17 +33,8 @@ export class WorkspaceMembershipRepositoryService {
   private workspaceMembershipStore = inject(WorkspaceMembershipEntitiesStore);
   entities = this.workspaceMembershipStore.entities;
   entityMap = this.workspaceMembershipStore.entityMap;
-  memberMap = computed(() => {
-    return this.entities().reduce(
-      (acc, membership) => {
-        return { ...acc, [membership.user.id]: membership.user };
-      },
-      {} as Record<UserNested["id"], UserNested>,
-    );
-  });
-  members = computed(() => {
-    return Object.values(this.memberMap());
-  });
+  memberMap = this.workspaceMembershipStore.memberMap;
+  members = this.workspaceMembershipStore.members;
 
   async listWorkspaceMembership(workspaceId: string) {
     const projectMemberships = await lastValueFrom(this.workspaceMembershipApiService.list({ workspaceId }));

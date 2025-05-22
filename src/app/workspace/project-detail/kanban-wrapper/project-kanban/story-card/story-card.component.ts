@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
@@ -30,7 +30,7 @@ import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { Story, StoryRepositoryService } from "@tenzu/repository/story";
+import { getAssignees, Story, StoryRepositoryService } from "@tenzu/repository/story";
 
 @Component({
   selector: "app-story-card",
@@ -80,10 +80,7 @@ import { Story, StoryRepositoryService } from "@tenzu/repository/story";
 export class StoryCardComponent {
   story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
 
-  assignees = computed(() => {
-    const teamMemberMap = this.projectMembershipRepositoryService.memberMap();
-    return this.story().assigneeIds.map((userId) => teamMemberMap[userId]) || [];
-  });
+  assignees = getAssignees(this.story);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   storyRepositoryService = inject(StoryRepositoryService);
   relativeDialog = inject(RelativeDialogService);
