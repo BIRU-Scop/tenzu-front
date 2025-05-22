@@ -204,9 +204,9 @@ export class ProjectMembersComponent {
         existingInvitations: this.projectInvitationRepositoryService.entities,
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[] | undefined) => {
       const selectedProject = this.projectRepositoryService.entityDetail();
-      if (selectedProject && invitationEmails.length) {
+      if (selectedProject && invitationEmails?.length) {
         await this.projectInvitationRepositoryService.createBulkInvitations(
           selectedProject,
           // TODO use dynamic role instead (not working)

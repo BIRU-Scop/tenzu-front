@@ -204,9 +204,9 @@ export default class WorkspacePeopleComponent {
         existingInvitations: this.workspaceInvitationRepositoryService.entities,
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[] | undefined) => {
       const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
-      if (selectedWorkspace && invitationEmails.length) {
+      if (selectedWorkspace && invitationEmails?.length) {
         await this.workspaceInvitationRepositoryService.createBulkInvitations(
           selectedWorkspace,
           // TODO use dynamic role instead (not working)

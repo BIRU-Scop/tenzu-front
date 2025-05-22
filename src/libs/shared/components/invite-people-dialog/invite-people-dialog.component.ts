@@ -110,7 +110,9 @@ export interface InvitePeopleDialogData {
         </div>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button mat-dialog-close class="secondary-button">{{ t("commons.cancel") }}</button>
+        <button mat-flat-button [mat-dialog-close]="undefined" class="secondary-button">
+          {{ t("commons.cancel") }}
+        </button>
         <button
           mat-flat-button
           class="tertiary-button"
