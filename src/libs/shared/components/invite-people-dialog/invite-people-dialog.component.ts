@@ -33,10 +33,9 @@ import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { UserNested } from "@tenzu/repository/user";
 import { InvitationEmailFieldComponent } from "./invitation-email-field.component";
-import { InvitationResendFieldComponent } from "@tenzu/shared/components/invite-people-dialog/invitation-resend-field.component";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 
 export interface InvitePeopleDialogData {
@@ -64,7 +63,6 @@ export interface InvitePeopleDialogData {
     ReactiveFormsModule,
     MatLabel,
     InvitationEmailFieldComponent,
-    InvitationResendFieldComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -72,7 +70,7 @@ export interface InvitePeopleDialogData {
       <mat-dialog-content>
         <div class="flex flex-col gap-4">
           <div [innerHTML]="data.description"></div>
-          <form [formGroup]="form" (ngSubmit)="addToPeopleList()">
+          <form [formGroup]="form" (ngSubmit)="addToPeopleList()" class="flex flex-col gap-4">
             <div class="flex flex-row gap-x-4 items-center">
               <mat-icon class="icon-lg">group_add</mat-icon>
               <mat-form-field>
@@ -91,41 +89,33 @@ export interface InvitePeopleDialogData {
               </button>
             </div>
             <mat-divider></mat-divider>
-            <div class="flex flex-col gap-y-4 px-12 py-4" formArrayName="peopleEmails">
-              @for (peopleEmail of peopleEmails.controls; track peopleEmail) {
-                @let pastInvitationExists = doesPastInvitationExists(peopleEmail.value.email);
-                <div class="flex flex-row gap-x-4" [formGroupName]="$index">
-                  <div class="grow">
+            @if (this.form.controls.peopleEmails.length) {
+              <div class="flex flex-col gap-y-4 px-12 py-4" formArrayName="peopleEmails">
+                @for (peopleEmail of this.form.controls.peopleEmails.controls; track peopleEmail) {
+                  <div class="flex flex-row gap-x-4">
                     <app-invitation-email-field
-                      formControlName="email"
+                      [formControlName]="$index"
                       [memberEmails]="memberEmails()"
-                      [pastInvitationExistsError]="testError(pastInvitationExists, peopleEmail)"
+                      [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
                     />
-                    @if (pastInvitationExists) {
-                      <app-invitation-resend-field
-                        formControlName="resendExisting"
-                        [pastInvitationExistsError]="pastInvitationExists"
-                      />
-                    }
+                    <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
+                      <mat-icon>close</mat-icon>
+                    </button>
                   </div>
-                  <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                </div>
-              }
-            </div>
-            <mat-divider></mat-divider>
+                }
+              </div>
+              <mat-divider></mat-divider>
+            }
           </form>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions>
-        @let _peopleEmails = peopleEmails;
-        <button mat-flat-button mat-dialog-close class="secondary-button">Cancel</button>
+        <button mat-flat-button mat-dialog-close class="secondary-button">{{ t("commons.cancel") }}</button>
         <button
           mat-flat-button
           class="tertiary-button"
-          [mat-dialog-close]="_peopleEmails.value"
-          [disabled]="!_peopleEmails.value.length || !_peopleEmails.valid"
+          [mat-dialog-close]="this.form.controls.peopleEmails.value"
+          [disabled]="!this.form.controls.peopleEmails.length || !this.form.valid"
         >
           {{ t("component.invite_dialog.invite_people") }}
         </button>
@@ -153,39 +143,21 @@ export class InvitePeopleDialogComponent {
   });
 
   addToPeopleList() {
-    const emailsToAdd = this.form.controls["emailsToAdd"];
+    const emailsToAdd = this.form.controls.emailsToAdd;
     emailsToAdd.updateValueAndValidity();
     if (emailsToAdd.valid && emailsToAdd.value) {
+      const peopleEmails = this.form.controls.peopleEmails;
       emailsToAdd.value.split(",").forEach((value) => {
-        if (value && !this.peopleEmails.value.includes(value)) {
-          const emailGroupControl = this.fb.nonNullable.group({
-            email: [value],
-            resendExisting: [false],
-          });
-          emailGroupControl.controls.resendExisting.valueChanges.subscribe(() => {
-            emailGroupControl.controls.email.updateValueAndValidity();
-          });
-          emailGroupControl.updateValueAndValidity({ onlySelf: true });
-          this.peopleEmails.push(emailGroupControl);
+        if (value && !peopleEmails.value.includes(value)) {
+          const emailControl = new FormControl(value);
+          peopleEmails.push(emailControl);
         }
       });
       emailsToAdd.reset();
     }
   }
 
-  get peopleEmails() {
-    return this.form.controls.peopleEmails as FormArray;
-  }
-
   removeFromPeopleList(index: number) {
-    this.peopleEmails.removeAt(index);
-  }
-
-  doesPastInvitationExists(email: InvitationBase["email"]) {
-    return this.notAcceptedInvitationEmails().includes(email);
-  }
-
-  testError(pastInvitationExists: boolean, peopleEmail: FormControl) {
-    return pastInvitationExists && !!peopleEmail.value.resendExisting;
+    this.form.controls.peopleEmails.removeAt(index);
   }
 }
