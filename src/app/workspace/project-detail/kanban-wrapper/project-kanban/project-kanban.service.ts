@@ -101,7 +101,7 @@ export class ProjectKanbanService {
     const deletedWorkflow = await this.workflowService.deleteRequest(
       workflowToDelete,
       { workflowId: workflowToDelete.id },
-      moveToWorkflow ? { moveToWorkflow: moveToWorkflow } : undefined,
+      moveToWorkflow ? { moveTo: moveToWorkflow } : undefined,
     );
     if (!deletedWorkflow) {
       return undefined;
