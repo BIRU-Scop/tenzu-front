@@ -19,12 +19,11 @@
  *
  */
 
-import { computed, inject, Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { ProjectMembership } from "./project-membership.model";
 import { ProjectMembershipApiService } from "./project-membership-api.service";
 import { lastValueFrom } from "rxjs";
 import { ProjectMembershipEntitiesStore } from "./project-membership-entities.store";
-import { UserNested } from "../user";
 
 @Injectable({
   providedIn: "root",
@@ -34,14 +33,8 @@ export class ProjectMembershipRepositoryService {
   private projectMembershipStore = inject(ProjectMembershipEntitiesStore);
   entities = this.projectMembershipStore.entities;
   entityMap = this.projectMembershipStore.entityMap;
-  members = computed(() => {
-    return this.entities().reduce(
-      (acc, membership) => {
-        return { ...acc, [membership.user.id]: membership.user };
-      },
-      {} as Record<UserNested["id"], UserNested>,
-    );
-  });
+  memberMap = this.projectMembershipStore.memberMap;
+  members = this.projectMembershipStore.members;
 
   async listProjectMembership(projectId: string) {
     const projectMemberships = await lastValueFrom(this.projectMembershipApiService.list({ projectId }));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,4 +19,14 @@
  *
  */
 
-export const emailRegexPatternValidation = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+import { Story } from "./story.model";
+import { computed, inject, Signal } from "@angular/core";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+
+export function getAssignees(story: Signal<Pick<Story, "assigneeIds">>) {
+  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  return computed(() => {
+    const teamMemberMap = projectMembershipRepositoryService.memberMap();
+    return story().assigneeIds.map((userId) => teamMemberMap[userId]);
+  });
+}

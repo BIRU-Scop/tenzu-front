@@ -127,10 +127,12 @@
       "pending": "Pending",
       "non_members": "Non-members",
       "add": "Add",
-      "invite_peoples": "Invite peoples",
-      "to": "to",
-      "at_least_one_invalid_email": "The input have at least one incorrect mail",
-      "mailing_list": "Mailing list"
+      "invite_people": "Invite peoples",
+      "invite_people_to": "Invite peoples to {name}",
+      "mailing_list": "Mailing list",
+      "member_error": "This address belongs to a member",
+      "duplicate_error": "This address has already been invited. Do you want to resend an invitation?",
+      "duplicate_error_ok": "Yes"
     }
   },
   "commons": {

@@ -23,6 +23,6 @@ import { UserNested } from "../user";
 
 export type ProjectMembership = {
   user: UserNested;
-  role_id: string;
-  project_id: string;
+  roleId: string;
+  projectId: string;
 };

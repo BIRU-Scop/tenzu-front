@@ -31,10 +31,10 @@ export type UserNested = {
   username: string;
   fullName: string;
   color: number;
+  email: string;
 };
 
 export type User = UserNested & {
-  email: string;
   lang: string;
 };
 

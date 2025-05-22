@@ -26,7 +26,7 @@ import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invite-people-dialog/invite-people-dialog.component";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -86,7 +86,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
             @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
             @if (workspaceMembershipEntities.length > 0) {
               <mat-list>
-                @for (member of workspaceMembershipEntities; track member.user.username) {
+                @for (member of workspaceMembershipEntities; track member.user.id) {
                   <app-user-card
                     [fullName]="member.user.fullName"
                     [username]="member.user.username"
@@ -189,22 +189,24 @@ export default class WorkspacePeopleComponent {
   }
 
   public openInviteDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
+    this.workspaceInvitationRepositoryService
+      .listWorkspaceInvitations(this.workspaceRepositoryService.entityDetail()!.id)
+      .then();
+    const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
       ...matDialogConfig,
       minWidth: 800,
       data: {
-        title:
-          this.translocoService.translate("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translate("component.invite_dialog.to") +
-          " " +
-          this.workspaceRepositoryService.entityDetail()?.name,
+        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+          name: this.workspaceRepositoryService.entityDetail()?.name,
+        }),
         description: this.translocoService.translate("workspace.people.description_modal"),
+        existingMembers: this.workspaceMembershipRepositoryService.members,
+        existingInvitations: this.workspaceInvitationRepositoryService.entities,
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[] | undefined) => {
       const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
-      if (selectedWorkspace && invitationEmails.length) {
+      if (selectedWorkspace && invitationEmails?.length) {
         await this.workspaceInvitationRepositoryService.createBulkInvitations(
           selectedWorkspace,
           // TODO use dynamic role instead (not working)

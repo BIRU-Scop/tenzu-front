@@ -22,10 +22,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { AbstractControl, ReactiveFormsModule, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { ReactiveFormsModule, Validators } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
-import { emailRegexPatternValidation } from "@tenzu/shared/components/form/email-field/utils";
 import { injectNgControl } from "@tenzu/utils/injectors";
 
 @Component({
@@ -36,16 +35,16 @@ import { injectNgControl } from "@tenzu/utils/injectors";
   selector: "app-email-field",
   styles: ``,
   template: `
-    <mat-form-field *transloco="let t; prefix: 'component.email'" subscriptSizing="fixed">
+    <mat-form-field *transloco="let t" subscriptSizing="fixed">
       <mat-label>
-        {{ t("label") }}
+        {{ t("component.email.label") }}
       </mat-label>
       <input matInput data-testid="email-input" type="email" [formControl]="ngControl.control" autocomplete="email" />
       @if (ngControl.hasError("required")) {
-        <mat-error data-testid="email-required-error" [innerHTML]="t('errors.required')"></mat-error>
+        <mat-error data-testid="email-required-error" [innerHTML]="t('component.email.errors.required')"></mat-error>
       }
-      @if (ngControl.hasError("invalidEmail")) {
-        <mat-error>{{ t("errors.email") }}</mat-error>
+      @if (ngControl.hasError("email")) {
+        <mat-error data-testid="email-invalid-error">{{ t("component.email.errors.email") }}</mat-error>
       }
     </mat-form-field>
   `,
@@ -54,17 +53,6 @@ export class EmailFieldComponent implements OnInit {
   ngControl = injectNgControl();
 
   ngOnInit() {
-    this.ngControl.control.addValidators(this.createEmailValidator());
-  }
-
-  createEmailValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.value) {
-        return {
-          required: true,
-        };
-      }
-      return !emailRegexPatternValidation.test(control.value) ? { invalidEmail: true } : null;
-    };
+    this.ngControl.control.addValidators([Validators.email, Validators.required]);
   }
 }

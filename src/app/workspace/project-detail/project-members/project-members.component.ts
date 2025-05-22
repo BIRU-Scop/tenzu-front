@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angu
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
@@ -69,7 +69,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
 
           <button
             *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
-            (click)="openCreateDialog()"
+            (click)="openInviteDialog()"
             class="tertiary-button"
             mat-stroked-button
           >
@@ -85,7 +85,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
             @let projectMemberships = projectMembershipRepositoryService.entities();
             @if (projectMemberships.length > 0) {
               <mat-list>
-                @for (member of projectMemberships; track member.user.username) {
+                @for (member of projectMemberships; track member.user.id) {
                   <app-user-card
                     [fullName]="member.user.fullName"
                     [username]="member.user.username"
@@ -188,23 +188,25 @@ export class ProjectMembersComponent {
     this.resentInvitationId.set(invitationId);
   }
 
-  public openCreateDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
+  public openInviteDialog(): void {
+    this.projectInvitationRepositoryService
+      .listProjectInvitations(this.projectRepositoryService.entityDetail()!.id)
+      .then();
+    const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
       ...matDialogConfig,
       minWidth: 800,
       data: {
-        title:
-          this.translocoService.translateObject("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translateObject("component.invite_dialog.to") +
-          " " +
-          this.projectRepositoryService.entityDetail()?.name,
+        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+          name: this.projectRepositoryService.entityDetail()?.name,
+        }),
         description: this.translocoService.translateObject("project.members.description_modal"),
+        existingMembers: this.projectMembershipRepositoryService.members,
+        existingInvitations: this.projectInvitationRepositoryService.entities,
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
+    dialogRef.afterClosed().subscribe(async (invitationEmails: string[] | undefined) => {
       const selectedProject = this.projectRepositoryService.entityDetail();
-      if (selectedProject && invitationEmails.length) {
+      if (selectedProject && invitationEmails?.length) {
         await this.projectInvitationRepositoryService.createBulkInvitations(
           selectedProject,
           // TODO use dynamic role instead (not working)

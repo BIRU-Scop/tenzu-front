@@ -46,14 +46,8 @@ export type Story = {
   workflowId: Workflow["id"];
   projectId: ProjectDetail["id"];
   statusId: Status["id"];
-  assigneeIds: Array<string>;
+  assigneeIds: Array<User["id"]>;
 };
-
-export interface createdBy {
-  username: string;
-  fullName: string;
-  color: number;
-}
 
 export type StoryDetail = Story & {
   workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;

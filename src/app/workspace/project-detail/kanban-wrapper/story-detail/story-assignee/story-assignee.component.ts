@@ -19,14 +19,14 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatIcon } from "@angular/material/icon";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
+import { getAssignees, StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -62,20 +62,17 @@ export class StoryAssigneeComponent {
 
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   relativeDialog = inject(RelativeDialogService);
-  assignees = computed(() => {
-    const teamMembers = this.projectMembershipRepositoryService.members();
-    return this.storyDetail().assigneeIds.map((userId) => teamMembers[userId]);
-  });
+  assignees = getAssignees(this.storyDetail);
 
   openAssignStoryDialog(event: MouseEvent): void {
-    const teamMembers = Object.values(this.projectMembershipRepositoryService.members());
+    const teamMembers = this.projectMembershipRepositoryService.members;
     const storyDetail = this.storyDetail();
 
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "left",
       data: {
-        assignees: this.assignees(),
+        assignees: this.assignees,
         teamMembers: teamMembers,
       },
     });
