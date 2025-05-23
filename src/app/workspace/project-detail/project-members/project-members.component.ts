@@ -39,7 +39,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { MatCell, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationStatus, Role } from "@tenzu/repository/membership";
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
 
 @Component({
@@ -204,15 +204,15 @@ export class ProjectMembersComponent {
         description: this.translocoService.translateObject("project.members.description_modal"),
         existingMembers: this.projectMembershipRepositoryService.members,
         existingInvitations: this.projectInvitationRepositoryService.entities,
+        itemType: "project",
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[] | undefined) => {
+    dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
       const selectedProject = this.projectRepositoryService.entityDetail();
-      if (selectedProject && invitationEmails?.length) {
+      if (selectedProject && invitations?.length) {
         await this.projectInvitationRepositoryService.createBulkInvitations(
           selectedProject,
-          // TODO use dynamic role instead (not working)
-          invitationEmails.map((email) => ({ email, roleId: "member" })),
+          invitations.map(({ email, role }) => ({ email, roleId: role })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);

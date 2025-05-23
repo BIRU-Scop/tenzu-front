@@ -41,6 +41,7 @@ import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
+import { Role } from "@tenzu/repository/membership";
 
 @Component({
   selector: "app-workspace-people",
@@ -210,15 +211,15 @@ export default class WorkspacePeopleComponent {
         description: this.translocoService.translate("workspace.people.description_modal"),
         existingMembers: this.workspaceMembershipRepositoryService.members,
         existingInvitations: this.workspaceInvitationRepositoryService.entities,
+        itemType: "workspace",
       },
     });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[] | undefined) => {
+    dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
       const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
-      if (selectedWorkspace && invitationEmails?.length) {
+      if (selectedWorkspace && invitations?.length) {
         await this.workspaceInvitationRepositoryService.createBulkInvitations(
           selectedWorkspace,
-          // TODO use dynamic role instead (not working)
-          invitationEmails.map((email) => ({ email, roleId: "member" })),
+          invitations.map(({ email, role }) => ({ email, roleId: role })),
         );
         if (this.selectedTabIndex() !== 1) {
           this.selectedTabIndex.set(1);
