@@ -59,6 +59,8 @@ export class RoleSelectorFieldComponent implements OnInit {
   workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
 
   itemType = input.required<"project" | "workspace">();
+  userRole = input<Role>();
+
   roles: Role[] = [];
   tooltips: Record<"project" | "workspace", Record<Role["slug"], string>> = {
     workspace: {
@@ -78,6 +80,10 @@ export class RoleSelectorFieldComponent implements OnInit {
     return this.roles.find((role) => role.slug === "readonly-member");
   }
 
+  getOwnerRole() {
+    return this.roles.find((role) => role.isOwner);
+  }
+
   ngOnInit() {
     switch (this.itemType()) {
       case "project": {
@@ -94,6 +100,9 @@ export class RoleSelectorFieldComponent implements OnInit {
       if (defaultRole) {
         this.ngControl.control.setValue(defaultRole.id);
       }
+    }
+    if (this.ngControl.control.value === this.getOwnerRole()?.id && !this.userRole()?.isOwner) {
+      this.ngControl.control.disable({ onlySelf: true });
     }
   }
 }

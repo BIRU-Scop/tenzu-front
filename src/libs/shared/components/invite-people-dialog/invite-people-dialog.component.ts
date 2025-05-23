@@ -36,7 +36,7 @@ import { MatInput } from "@angular/material/input";
 import { FormArray, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { UserNested } from "@tenzu/repository/user";
 import { InvitationEmailFieldComponent } from "./invitation-email-field.component";
-import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 
 export interface InvitePeopleDialogData {
@@ -45,6 +45,7 @@ export interface InvitePeopleDialogData {
   existingMembers: Signal<UserNested[]>;
   existingInvitations: Signal<InvitationBase[]>;
   itemType: "project" | "workspace";
+  userRole?: Role;
 }
 
 @Component({
@@ -101,7 +102,11 @@ export interface InvitePeopleDialogData {
                       [memberEmails]="memberEmails()"
                       [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
                     />
-                    <app-role-selector-field formControlName="role" [itemType]="data.itemType" />
+                    <app-role-selector-field
+                      formControlName="role"
+                      [itemType]="data.itemType"
+                      [userRole]="data.userRole"
+                    />
                     <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
                       <mat-icon>close</mat-icon>
                     </button>

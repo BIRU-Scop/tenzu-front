@@ -191,33 +191,34 @@ export class ProjectMembersComponent {
   }
 
   public openInviteDialog(): void {
-    this.projectInvitationRepositoryService
-      .listProjectInvitations(this.projectRepositoryService.entityDetail()!.id)
-      .then();
-    const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
-      ...matDialogConfig,
-      minWidth: 800,
-      data: {
-        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-          name: this.projectRepositoryService.entityDetail()?.name,
-        }),
-        description: this.translocoService.translateObject("project.members.description_modal"),
-        existingMembers: this.projectMembershipRepositoryService.members,
-        existingInvitations: this.projectInvitationRepositoryService.entities,
-        itemType: "project",
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
-      const selectedProject = this.projectRepositoryService.entityDetail();
-      if (selectedProject && invitations?.length) {
-        await this.projectInvitationRepositoryService.createBulkInvitations(
-          selectedProject,
-          invitations.map(({ email, role }) => ({ email, roleId: role })),
-        );
-        if (this.selectedTabIndex() !== 1) {
-          this.selectedTabIndex.set(1);
+    const selectedProject = this.projectRepositoryService.entityDetail();
+    if (selectedProject) {
+      this.projectInvitationRepositoryService.listProjectInvitations(selectedProject.id).then();
+      const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
+        ...matDialogConfig,
+        minWidth: 800,
+        data: {
+          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+            name: selectedProject.name,
+          }),
+          description: this.translocoService.translateObject("project.members.description_modal"),
+          existingMembers: this.projectMembershipRepositoryService.members,
+          existingInvitations: this.projectInvitationRepositoryService.entities,
+          itemType: "project",
+          userRole: selectedProject.userRole,
+        },
+      });
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
+        if (invitations?.length) {
+          await this.projectInvitationRepositoryService.createBulkInvitations(
+            selectedProject,
+            invitations.map(({ email, role }) => ({ email, roleId: role })),
+          );
+          if (this.selectedTabIndex() !== 1) {
+            this.selectedTabIndex.set(1);
+          }
         }
-      }
-    });
+      });
+    }
   }
 }

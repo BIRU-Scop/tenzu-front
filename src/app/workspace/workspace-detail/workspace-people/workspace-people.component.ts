@@ -198,33 +198,34 @@ export default class WorkspacePeopleComponent {
   }
 
   public openInviteDialog(): void {
-    this.workspaceInvitationRepositoryService
-      .listWorkspaceInvitations(this.workspaceRepositoryService.entityDetail()!.id)
-      .then();
-    const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
-      ...matDialogConfig,
-      minWidth: 800,
-      data: {
-        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-          name: this.workspaceRepositoryService.entityDetail()?.name,
-        }),
-        description: this.translocoService.translate("workspace.people.description_modal"),
-        existingMembers: this.workspaceMembershipRepositoryService.members,
-        existingInvitations: this.workspaceInvitationRepositoryService.entities,
-        itemType: "workspace",
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
-      const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
-      if (selectedWorkspace && invitations?.length) {
-        await this.workspaceInvitationRepositoryService.createBulkInvitations(
-          selectedWorkspace,
-          invitations.map(({ email, role }) => ({ email, roleId: role })),
-        );
-        if (this.selectedTabIndex() !== 1) {
-          this.selectedTabIndex.set(1);
+    const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
+    if (selectedWorkspace) {
+      this.workspaceInvitationRepositoryService.listWorkspaceInvitations(selectedWorkspace.id).then();
+      const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
+        ...matDialogConfig,
+        minWidth: 800,
+        data: {
+          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+            name: selectedWorkspace.name,
+          }),
+          description: this.translocoService.translate("workspace.people.description_modal"),
+          existingMembers: this.workspaceMembershipRepositoryService.members,
+          existingInvitations: this.workspaceInvitationRepositoryService.entities,
+          itemType: "workspace",
+          userRole: selectedWorkspace.userRole,
+        },
+      });
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
+        if (invitations?.length) {
+          await this.workspaceInvitationRepositoryService.createBulkInvitations(
+            selectedWorkspace,
+            invitations.map(({ email, role }) => ({ email, roleId: role })),
+          );
+          if (this.selectedTabIndex() !== 1) {
+            this.selectedTabIndex.set(1);
+          }
         }
-      }
-    });
+      });
+    }
   }
 }
