@@ -29,16 +29,23 @@ import { Role } from "@tenzu/repository/membership";
 import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: "app-role-selector-field",
   hostDirectives: [NoopValueAccessorDirective],
-  imports: [ReactiveFormsModule, TranslocoDirective, MatFormField, MatSelectModule],
+  imports: [ReactiveFormsModule, TranslocoDirective, MatFormField, MatSelectModule, MatTooltip],
   template: `
     <mat-form-field *transloco="let t">
       <mat-select [formControl]="ngControl.control">
         @for (role of roles; track role) {
-          <mat-option [value]="role.id">{{ role.name }}</mat-option>
+          @let tooltipKey = tooltips[itemType()][role.slug];
+          <mat-option
+            [matTooltip]="tooltipKey ? t(tooltipKey) : ''"
+            [matTooltipDisabled]="!tooltipKey"
+            [value]="role.id"
+            >{{ role.name }}</mat-option
+          >
         }
       </mat-select>
     </mat-form-field>
@@ -53,6 +60,19 @@ export class RoleSelectorFieldComponent implements OnInit {
 
   itemType = input.required<"project" | "workspace">();
   roles: Role[] = [];
+  tooltips: Record<"project" | "workspace", Record<Role["slug"], string>> = {
+    workspace: {
+      owner: "component.role_selector.workspace.owner",
+      admin: "component.role_selector.workspace.admin",
+      member: "component.role_selector.workspace.member",
+      "readonly-member": "component.role_selector.workspace.readonly_member",
+    },
+    project: {
+      owner: "component.role_selector.project.owner",
+      admin: "component.role_selector.project.admin",
+      "readonly-member": "component.role_selector.project.readonly_member",
+    },
+  };
 
   getDefaultRole() {
     return this.roles.find((role) => role.slug === "readonly-member");

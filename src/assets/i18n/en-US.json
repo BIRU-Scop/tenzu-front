@@ -133,6 +133,19 @@
       "member_error": "This address belongs to a member",
       "duplicate_error": "This address has already been invited. Do you want to resend an invitation?",
       "duplicate_error_ok": "Yes"
+    },
+    "role_selector": {
+      "workspace": {
+        "owner": "can invite/remove members, appoint/unassign any role, edit workspace info, delete workspace, create projects and view the workspace (but not its contents)",
+        "admin": "can invite/remove (except owner) members, appoint/unassign any role other than owner, edit workspace info, create projects and view the workspace (but not its contents)",
+        "member": "can create projects and see the workspace (but not its contents)",
+        "readonly_member": "can see the workspace (but not its contents)"
+      },
+      "project": {
+        "owner": "can invite/remove members, appoint/unassign any role, edit project info, delete project, edit dynamic roles and see all project's content",
+        "admin": "can invite/remove (except owner) members, appoint/unassign  any role other than owner, edit project info, edit dynamic roles and see all project's content",
+        "readonly_member": "can see the project content: kanbans, stories and comments"
+      }
     }
   },
   "commons": {
