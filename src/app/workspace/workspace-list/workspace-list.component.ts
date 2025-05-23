@@ -30,7 +30,7 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectNested, ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
@@ -43,7 +43,6 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ArrayElement } from "@tenzu/utils/functions/typing";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
@@ -93,8 +92,8 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                       [color]="project.color"
                       [cancelLabel]="t('component.invitation.deny')"
                       [submitLabel]="t('component.invitation.accept')"
-                      (submitted)="acceptProjectInvitation(project)"
-                      (canceled)="denyProjectInvitation(project)"
+                      (submitted)="acceptProjectInvitation(workspace, project)"
+                      (canceled)="denyProjectInvitation(workspace, project)"
                     ></app-action-card>
                   </li>
                 }
@@ -253,12 +252,12 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     await this.workspaceService.denyInvitationWorkspace({ workspaceId: workspace.id });
   }
 
-  async acceptProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
-    await this.projectInvitationService.acceptProjectInvitation({ project: project });
+  async acceptProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
+    await this.projectInvitationService.acceptProjectInvitation({ workspaceId: workspace.id, projectId: project.id });
   }
 
-  async denyProjectInvitation(project: ArrayElement<WorkspaceSummary["userInvitedProjects"]>) {
-    await this.projectInvitationService.denyProjectInvitation({ project: project });
+  async denyProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
+    await this.projectInvitationService.denyProjectInvitation({ workspaceId: workspace.id, projectId: project.id });
   }
 
   protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
