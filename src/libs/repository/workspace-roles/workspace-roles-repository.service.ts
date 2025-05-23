@@ -42,4 +42,6 @@ export class WorkspaceRolesRepositoryService extends BaseRepositoryService<
   protected apiService = inject(WorkspaceRolesApiService);
   protected entitiesSummaryStore = inject(ProjectRolesEntitiesSummaryStore);
   protected entityDetailStore = inject(ProjectRolesDetailStore);
+  defaultRole = this.entitiesSummaryStore.defaultRole;
+  ownerRole = this.entitiesSummaryStore.ownerRole;
 }

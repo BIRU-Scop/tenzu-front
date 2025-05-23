@@ -77,33 +77,27 @@ export class RoleSelectorFieldComponent implements OnInit {
     },
   };
 
-  getDefaultRole() {
-    return this.roles.find((role) => role.slug === "readonly-member");
-  }
-
-  getOwnerRole() {
-    return this.roles.find((role) => role.isOwner);
-  }
-
   ngOnInit() {
+    let roleRepositoryService: ProjectRolesRepositoryService | WorkspaceRolesRepositoryService;
     switch (this.itemType()) {
       case "project": {
-        this.roles = this.projectRoleRepositoryService.entitiesSummary();
+        roleRepositoryService = this.projectRoleRepositoryService;
         break;
       }
       case "workspace": {
-        this.roles = this.workspaceRoleRepositoryService.entitiesSummary();
+        roleRepositoryService = this.workspaceRoleRepositoryService;
         break;
       }
     }
+    this.roles = roleRepositoryService.entitiesSummary();
     if (!this.ngControl.control.value) {
-      const defaultRole = this.getDefaultRole();
+      const defaultRole = roleRepositoryService.defaultRole();
       if (defaultRole) {
         this.ngControl.control.setValue(defaultRole.id);
       }
     }
     if (!this.userRole()?.isOwner) {
-      if (this.ngControl.control.value === this.getOwnerRole()?.id) {
+      if (this.ngControl.control.value === roleRepositoryService.ownerRole()?.id) {
         this.ngControl.control.disable({ onlySelf: true });
       } else {
         this.roles = this.roles.filter((role) => !role.isOwner);

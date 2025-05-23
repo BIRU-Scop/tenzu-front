@@ -19,13 +19,22 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { signalStore, withComputed } from "@ngrx/signals";
 import { WorkspaceRolesSummary, WorkspaceRolesDetail } from "./workspace-roles.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { computed } from "@angular/core";
 
 export const ProjectRolesEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
   withEntityListFeature<WorkspaceRolesSummary>(),
+  withComputed((store) => ({
+    defaultRole: computed(() => {
+      return store.entities().find((role) => role.slug === "readonly-member");
+    }),
+    ownerRole: computed(() => {
+      return store.entities().find((role) => role.isOwner);
+    }),
+  })),
 );
 
 export const ProjectRolesDetailStore = signalStore(

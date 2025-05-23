@@ -44,4 +44,6 @@ export class ProjectRolesRepositoryService extends BaseRepositoryService<
   protected apiService = inject(ProjectRolesApiService);
   protected entitiesSummaryStore = inject(ProjectRolesEntitiesSummaryStore);
   protected entityDetailStore = inject(ProjectRolesDetailStore);
+  defaultRole = this.entitiesSummaryStore.defaultRole;
+  ownerRole = this.entitiesSummaryStore.ownerRole;
 }
