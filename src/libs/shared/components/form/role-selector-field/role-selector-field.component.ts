@@ -89,9 +89,11 @@ export class RoleSelectorFieldComponent implements OnInit {
         break;
       }
     }
-    const defaultRole = this.getDefaultRole();
-    if (defaultRole) {
-      this.ngControl.control.setValue(defaultRole.id);
+    if (!this.ngControl.control.value) {
+      const defaultRole = this.getDefaultRole();
+      if (defaultRole) {
+        this.ngControl.control.setValue(defaultRole.id);
+      }
     }
   }
 }

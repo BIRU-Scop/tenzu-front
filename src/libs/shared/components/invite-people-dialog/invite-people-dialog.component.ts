@@ -141,11 +141,11 @@ export class InvitePeopleDialogComponent {
   memberEmails = computed(() => {
     return this.data.existingMembers().map((member) => member.email);
   });
+  notAcceptedInvitations = computed(() => {
+    return this.data.existingInvitations().filter((invitation) => invitation.status != InvitationStatus.ACCEPTED);
+  });
   notAcceptedInvitationEmails = computed(() => {
-    return this.data
-      .existingInvitations()
-      .filter((invitation) => invitation.status != InvitationStatus.ACCEPTED)
-      .map((invitation) => invitation.email);
+    return this.notAcceptedInvitations().map((invitation) => invitation.email);
   });
 
   addToPeopleList() {
@@ -153,11 +153,13 @@ export class InvitePeopleDialogComponent {
     emailsToAdd.updateValueAndValidity();
     if (emailsToAdd.valid && emailsToAdd.value) {
       const peopleEmails = this.form.controls.peopleEmails as FormArray;
+      const notAcceptedInvitations = this.notAcceptedInvitations();
       emailsToAdd.value.split(",").forEach((value) => {
         if (value && !peopleEmails.value.some((peopleEmail: { email: string }) => peopleEmail.email === value)) {
+          const existingInvitation = notAcceptedInvitations.find((invitation) => invitation.email === value);
           const emailGroupControl = this.fb.group({
             email: [value, { nonNullable: true }],
-            role: [null, { validators: [Validators.required] }],
+            role: [existingInvitation?.roleId, { validators: [Validators.required] }],
           });
           peopleEmails.push(emailGroupControl);
         }
