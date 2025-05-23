@@ -43,6 +43,7 @@ import { MatTooltip } from "@angular/material/tooltip";
           <mat-option
             [matTooltip]="tooltipKey ? t(tooltipKey) : ''"
             [matTooltipDisabled]="!tooltipKey"
+            matTooltipPosition="after"
             [value]="role.id"
             >{{ role.name }}</mat-option
           >
@@ -101,8 +102,12 @@ export class RoleSelectorFieldComponent implements OnInit {
         this.ngControl.control.setValue(defaultRole.id);
       }
     }
-    if (this.ngControl.control.value === this.getOwnerRole()?.id && !this.userRole()?.isOwner) {
-      this.ngControl.control.disable({ onlySelf: true });
+    if (!this.userRole()?.isOwner) {
+      if (this.ngControl.control.value === this.getOwnerRole()?.id) {
+        this.ngControl.control.disable({ onlySelf: true });
+      } else {
+        this.roles = this.roles.filter((role) => !role.isOwner);
+      }
     }
   }
 }
