@@ -183,7 +183,17 @@ import { Location } from "@angular/common";
   `,
   styles: `
     .kanban-viewport {
-      height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 32px - 2rem - 12px - 16px);
+      --viewport-height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 32px - 2rem - 12px - 16px);
+      --status-card-wrapper-height: calc(var(--mdc-icon-button-state-layer-size, 40px) + 0.5rem);
+      --story-button-wrapper-height: 48px;
+      --tasks-list-padding: 1rem;
+      --sidenav-content-padding: 1rem;
+      --elements-around-virtual-scroll-height: calc(
+        var(--status-card-wrapper-height) + var(--tasks-list-padding) + var(--sidenav-content-padding) +
+          var(--story-button-wrapper-height)
+      );
+
+      height: var(--viewport-height);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
@@ -191,9 +201,7 @@ import { Location } from "@angular/common";
       overflow-y: hidden;
     }
     .virtual-scroll {
-      height: calc(
-        100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 32px - 2rem - 12px - 16px - 48px - 41px - 8px - 1rem
-      );
+      height: calc(var(--viewport-height) - var(--elements-around-virtual-scroll-height));
     }
   `,
   animations: [
