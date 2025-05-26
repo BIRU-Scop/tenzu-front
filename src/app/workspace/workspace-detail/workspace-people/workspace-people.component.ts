@@ -26,7 +26,7 @@ import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
-import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invite-people-dialog/invite-people-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -38,10 +38,10 @@ import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenz
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
-import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
-import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
-import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
 import { Role } from "@tenzu/repository/membership";
+import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 
 @Component({
   selector: "app-workspace-people",
@@ -60,11 +60,11 @@ import { Role } from "@tenzu/repository/membership";
     MatRowDef,
     InvitationStatusComponent,
     InvitationActionsComponent,
+    InvitationRoleComponent,
   ],
   template: `
     @let workspace = workspaceRepositoryService.entityDetail();
     @if (workspace) {
-      @let workspaceRoleEntityMapSummary = workspaceRoleRepositoryService.entityMapSummary();
       <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
         <div class="flex flex-row">
           <h1 class="mat-headline-medium grow">{{ t("workspace.people.title") }}</h1>
@@ -117,8 +117,12 @@ import { Role } from "@tenzu/repository/membership";
                   <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="role">
-                  <mat-cell *matCellDef="let row" class="basis-1/3"
-                    >{{ workspaceRoleEntityMapSummary[row.roleId].name }}
+                  <mat-cell *matCellDef="let row" class="basis-1/3">
+                    <app-invitation-role
+                      [roleId]="row.roleId"
+                      itemType="workspace"
+                      [userRole]="workspace.userRole"
+                    ></app-invitation-role>
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
@@ -174,7 +178,6 @@ export default class WorkspacePeopleComponent {
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
   workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
-  workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);

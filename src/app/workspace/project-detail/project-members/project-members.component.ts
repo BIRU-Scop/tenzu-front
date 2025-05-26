@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angu
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invite-people-dialog/invite-people-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
@@ -37,10 +37,10 @@ import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/re
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { MatCell, MatTableModule } from "@angular/material/table";
-import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
 import { InvitationStatus, Role } from "@tenzu/repository/membership";
-import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
+import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 
 @Component({
   selector: "app-project-members",
@@ -58,10 +58,10 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
     MatTableModule,
     InvitationStatusComponent,
     InvitationActionsComponent,
+    InvitationRoleComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
-    @let projectRoleEntityMapSummary = projectRoleRepositoryService.entityMapSummary();
     @if (project) {
       <div class="flex flex-col gap-y-8" *transloco="let t">
         <div class="flex flex-row">
@@ -109,8 +109,12 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
                   <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="role">
-                  <mat-cell *matCellDef="let row" class="basis-1/3"
-                    >{{ projectRoleEntityMapSummary[row.roleId].name }}
+                  <mat-cell *matCellDef="let row" class="basis-1/3">
+                    <app-invitation-role
+                      [roleId]="row.roleId"
+                      itemType="project"
+                      [userRole]="project.userRole"
+                    ></app-invitation-role>
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
@@ -167,7 +171,6 @@ export class ProjectMembersComponent {
   projectRepositoryService = inject(ProjectRepositoryService);
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
-  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
