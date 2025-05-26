@@ -23,10 +23,11 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectInvitationsEntitiesSummaryStore } from "./project-invitations-entities.store";
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
-import { ProjectDetail } from "../project";
+import { ProjectDetail, ProjectNested } from "../project";
 import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
 import { ProjectInvitation } from "./project-invitation.model";
+import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 
 @Injectable({
   providedIn: "root",
@@ -36,6 +37,7 @@ export class ProjectInvitationRepositoryService {
   private projectInvitationEntitiesStore = inject(ProjectInvitationsEntitiesSummaryStore);
   entities = this.projectInvitationEntitiesStore.entities;
   entityMap = this.projectInvitationEntitiesStore.entityMap;
+  private workspaceService = inject(WorkspaceRepositoryService);
 
   async listProjectInvitations(projectId: ProjectDetail["id"]) {
     const projectInvitations = await lastValueFrom(this.projectInvitationsApiService.list({ projectId }));
@@ -45,6 +47,16 @@ export class ProjectInvitationRepositoryService {
   async resendProjectInvitation(invitationId: ProjectInvitation["id"]) {
     const projectInvitations = await lastValueFrom(this.projectInvitationsApiService.resend({ invitationId }));
     this.projectInvitationEntitiesStore.updateEntity(invitationId, projectInvitations);
+  }
+
+  async acceptProjectInvitation(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
+    await this.acceptInvitationForCurrentUser(params.projectId);
+    this.workspaceService.updateUserInvitedProjects(params);
+  }
+
+  async denyProjectInvitation(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
+    await this.denyInvitationForCurrentUser(params.projectId);
+    this.workspaceService.updateUserInvitedProjects(params);
   }
 
   async revokeProjectInvitation(invitationId: ProjectInvitation["id"]) {

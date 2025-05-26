@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { MatCard, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
@@ -41,23 +41,44 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     TranslocoDirective,
   ],
   template: `
-    <mat-card appearance="outlined" class="heading-card" *transloco="let t; prefix: 'commons'">
+    <mat-card appearance="outlined" class="heading-card" *transloco="let t">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
         <mat-card-title>
           <a [routerLink]="['workspace', id()]">{{ name() }} </a></mat-card-title
         >
-        <button
-          class="primary-button"
-          routerLink="new-project"
-          [queryParams]="{ workspaceId: id() }"
-          routerLinkActive="active"
-          ariaCurrentWhenActive="page"
-          mat-stroked-button
-        >
-          <mat-icon>add</mat-icon>
-          {{ t("project") }}
-        </button>
+        @if (!userIsInvited()) {
+          <button
+            class="primary-button"
+            routerLink="new-project"
+            [queryParams]="{ workspaceId: id() }"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+            mat-stroked-button
+          >
+            <mat-icon>add</mat-icon>
+            {{ t("commons.project") }}
+          </button>
+        } @else {
+          <button
+            class="secondary-button"
+            mat-flat-button
+            type="button"
+            [attr.aria-label]="'component.invitation.accept'"
+            (click)="submitted.emit()"
+          >
+            {{ t("component.invitation.accept") }}
+          </button>
+          <button
+            class="error-button"
+            mat-flat-button
+            type="button"
+            [attr.aria-label]="'component.invitation.deny'"
+            (click)="canceled.emit()"
+          >
+            {{ t("component.invitation.deny") }}
+          </button>
+        }
       </mat-card-header>
     </mat-card>
   `,
@@ -68,4 +89,7 @@ export class WorkspaceCardComponent {
   name = input("");
   color = input(1);
   id = input("");
+  userIsInvited = input(false);
+  submitted = output<void>();
+  canceled = output<void>();
 }

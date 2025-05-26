@@ -24,12 +24,29 @@ import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
+import { MatIcon } from "@angular/material/icon";
+import { NgStyle } from "@angular/common";
 
 @Component({
   selector: "app-project-card",
-  imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, TranslocoDirective, RouterLink],
+  imports: [
+    AvatarComponent,
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    TranslocoDirective,
+    RouterLink,
+    MatIcon,
+    NgStyle,
+  ],
   template: `
-    <mat-card appearance="outlined" class="min-h-[100px]" *transloco="let t; prefix: 'component.project_card'">
+    <mat-card
+      appearance="outlined"
+      class="min-h-[100px] min-w-[200px]"
+      [ngStyle]="disabled() ? { position: 'absolute', filter: 'blur(3px)' } : {}"
+      *transloco="let t; prefix: 'component.project_card'"
+    >
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
         <mat-card-title class="!contents min-h-[40px]">
@@ -54,6 +71,11 @@ import { RouterLink } from "@angular/router";
         </p>
       </mat-card-content>
     </mat-card>
+    @if (disabled()) {
+      <div class="min-h-[100px] min-w-[200px] flex items-center justify-center relative">
+        <mat-icon>lock</mat-icon>
+      </div>
+    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,4 +86,5 @@ export class ProjectCardComponent {
   description = input<string | null>("");
   workspaceId = input<string | null>("");
   landingPage = input<string | null>("");
+  disabled = input<boolean>(false);
 }

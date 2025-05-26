@@ -51,6 +51,9 @@ export class WorkspaceInvitationRepositoryService {
     const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.revoke({ invitationId }));
     this.workspaceInvitationEntitiesStore.updateEntity(invitationId, workspaceInvitations);
   }
+  async denyInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
+    return await lastValueFrom(this.workspaceInvitationsApiService.denyForCurrentUser({ workspaceId }));
+  }
 
   async createBulkInvitations(workspace: WorkspaceDetail, invitations: InvitationsPayload["invitations"]) {
     const createWorkspaceInvitationResponse = await lastValueFrom(
@@ -64,5 +67,9 @@ export class WorkspaceInvitationRepositoryService {
       ),
     );
     this.workspaceInvitationEntitiesStore.addEntities(createWorkspaceInvitationResponse.invitations);
+  }
+
+  async acceptInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
+    return await lastValueFrom(this.workspaceInvitationsApiService.acceptForCurrentUser({ workspaceId }));
   }
 }
