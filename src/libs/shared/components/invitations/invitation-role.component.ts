@@ -19,10 +19,12 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, OnInit } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
   selector: "app-invitation-role",
@@ -36,12 +38,26 @@ import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationRoleComponent implements OnInit {
+  workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+
   invitation = input.required<InvitationBase>();
   itemType = input.required<"project" | "workspace">();
   userRole = input<Role>();
   roleControl?: FormControl;
 
   ngOnInit() {
+    let invitationRepositoryService: ProjectInvitationRepositoryService | WorkspaceInvitationRepositoryService;
+    switch (this.itemType()) {
+      case "project": {
+        invitationRepositoryService = this.projectInvitationRepositoryService;
+        break;
+      }
+      case "workspace": {
+        invitationRepositoryService = this.workspaceInvitationRepositoryService;
+        break;
+      }
+    }
     const invitation = this.invitation();
 
     this.roleControl = new FormControl(
@@ -49,8 +65,8 @@ export class InvitationRoleComponent implements OnInit {
       { validators: [Validators.required] },
     );
 
-    this.roleControl.valueChanges.subscribe(() => {
-      // TODO
+    this.roleControl.valueChanges.subscribe((value: Role["id"]) => {
+      invitationRepositoryService.patchRequest({ roleId: value }, { invitationId: invitation.id });
     });
   }
 }
