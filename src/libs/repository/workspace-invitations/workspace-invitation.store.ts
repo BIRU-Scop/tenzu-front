@@ -19,11 +19,19 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { withEntityListFeature } from "../base/features";
 import { WorkspaceInvitation } from "./workspace-invitation.model";
+import { sortInvitation } from "@tenzu/repository/membership";
+import { setAllEntities } from "@ngrx/signals/entities";
 
 export const WorkspaceInvitationEntitiesStore = signalStore(
   { providedIn: "root" },
   withEntityListFeature<WorkspaceInvitation>(),
+  withMethods((store) => ({
+    reorder() {
+      const entities = store.entities().sort(sortInvitation);
+      patchState(store, setAllEntities(entities));
+    },
+  })),
 );

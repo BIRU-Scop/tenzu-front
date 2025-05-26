@@ -20,8 +20,9 @@
  */
 
 import {
-  addEntities,
   EntityId,
+  addEntities,
+  prependEntities,
   removeAllEntities,
   removeEntity,
   SelectEntityId,
@@ -78,6 +79,15 @@ export function withEntityListFeature<T extends JsonObject, State extends object
        */
       addEntities(items: T[]) {
         patchState(store, addEntities(items, { selectId }));
+      },
+
+      /**
+       * Adds new entities to the store, to the beginning of the collection.
+       *
+       * @param {T[]} items - The entities to add. If the entities is already present, the entities are not updated
+       */
+      prependEntities(items: T[]) {
+        patchState(store, prependEntities(items, { selectId }));
       },
 
       /**

@@ -87,7 +87,8 @@ export class WorkspaceInvitationRepositoryService {
         }),
       ),
     );
-    this.workspaceInvitationEntitiesStore.addEntities(createWorkspaceInvitationResponse.invitations);
+    this.workspaceInvitationEntitiesStore.setEntities(createWorkspaceInvitationResponse.invitations);
+    this.workspaceInvitationEntitiesStore.reorder();
   }
 
   async acceptInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {

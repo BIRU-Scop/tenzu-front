@@ -96,7 +96,8 @@ export class ProjectInvitationRepositoryService {
         }),
       ),
     );
-    this.projectInvitationEntitiesStore.addEntities(createProjectInvitationResponse.invitations);
+    this.projectInvitationEntitiesStore.setEntities(createProjectInvitationResponse.invitations);
+    this.projectInvitationEntitiesStore.reorder();
   }
   async denyInvitationForCurrentUser(projectId: ProjectDetail["id"]) {
     return await lastValueFrom(this.projectInvitationsApiService.denyForCurrentUser({ projectId }));
