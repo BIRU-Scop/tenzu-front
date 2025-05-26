@@ -46,7 +46,7 @@ import { TranslocoDatePipe } from "@jsverse/transloco-locale";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationStatusComponent {
-  InvitationStatus: typeof InvitationStatus = InvitationStatus;
+  protected readonly InvitationStatus = InvitationStatus;
 
   invitation = input.required<InvitationBase>();
   lastSentAt = computed(() => {

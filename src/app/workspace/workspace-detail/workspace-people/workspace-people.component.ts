@@ -119,7 +119,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
                 <ng-container matColumnDef="role">
                   <mat-cell *matCellDef="let row" class="basis-1/3">
                     <app-invitation-role
-                      [roleId]="row.roleId"
+                      [invitation]="row"
                       itemType="workspace"
                       [userRole]="workspace.userRole"
                     ></app-invitation-role>

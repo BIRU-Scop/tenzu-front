@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, input, OnInit } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Role } from "@tenzu/repository/membership";
+import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 
 @Component({
@@ -36,13 +36,18 @@ import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationRoleComponent implements OnInit {
-  roleId = input.required<Role["id"]>();
+  invitation = input.required<InvitationBase>();
   itemType = input.required<"project" | "workspace">();
   userRole = input<Role>();
   roleControl?: FormControl;
 
   ngOnInit() {
-    this.roleControl = new FormControl(this.roleId(), { validators: [Validators.required] });
+    const invitation = this.invitation();
+
+    this.roleControl = new FormControl(
+      { value: invitation.roleId, disabled: invitation.status !== InvitationStatus.PENDING },
+      { validators: [Validators.required] },
+    );
 
     this.roleControl.valueChanges.subscribe(() => {
       // TODO

@@ -96,9 +96,9 @@ export class RoleSelectorFieldComponent implements OnInit {
         this.ngControl.control.setValue(defaultRole.id);
       }
     }
-    if (!this.userRole()?.isOwner) {
+    if (!this.ngControl.control.disabled && !this.userRole()?.isOwner) {
       if (this.ngControl.control.value === roleRepositoryService.ownerRole()?.id) {
-        this.ngControl.control.disable({ onlySelf: true });
+        this.ngControl.control.disable({ onlySelf: true, emitEvent: false });
       } else {
         this.roles = this.roles.filter((role) => !role.isOwner);
       }
