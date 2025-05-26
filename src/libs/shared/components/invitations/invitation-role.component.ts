@@ -35,6 +35,9 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     }
   `,
   styles: ``,
+  host: {
+    class: "w-full",
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationRoleComponent implements OnInit {

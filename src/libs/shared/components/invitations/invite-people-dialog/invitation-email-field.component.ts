@@ -111,9 +111,6 @@ export class InvitationErrorStateMatcher implements ErrorStateMatcher {
       }
     </form>
   `,
-  host: {
-    class: "grow",
-  },
 })
 export class InvitationEmailFieldComponent implements AfterViewInit {
   ngControl = injectNgControl();
