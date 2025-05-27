@@ -97,18 +97,20 @@ export interface InvitePeopleDialogData {
               <div class="flex flex-col gap-y-4 py-4" formArrayName="peopleEmails">
                 @for (peopleEmail of this.form.controls.peopleEmails.controls; track peopleEmail) {
                   <div class="flex flex-row gap-x-4" [formGroupName]="$index">
-                    <app-invitation-email-field
-                      formControlName="email"
-                      [memberEmails]="memberEmails()"
-                      [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
-                      class="grow"
-                    />
-                    <app-role-selector-field
-                      formControlName="role"
-                      [itemType]="data.itemType"
-                      [userRole]="data.userRole"
-                      class="max-w-45"
-                    />
+                    <div class="flex grow gap-x-4">
+                      <app-invitation-email-field
+                        formControlName="email"
+                        [memberEmails]="memberEmails()"
+                        [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
+                        class="w-4/5 grow"
+                      />
+                      <app-role-selector-field
+                        formControlName="role"
+                        [itemType]="data.itemType"
+                        [userRole]="data.userRole"
+                        class="w-1/5"
+                      />
+                    </div>
                     <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
                       <mat-icon>close</mat-icon>
                     </button>

@@ -206,7 +206,7 @@ export default class WorkspacePeopleComponent {
       this.workspaceInvitationRepositoryService.listWorkspaceInvitations(selectedWorkspace.id).then();
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
-        minWidth: 800,
+        minWidth: 850,
         data: {
           title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
             name: selectedWorkspace.name,

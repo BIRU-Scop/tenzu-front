@@ -199,7 +199,7 @@ export class ProjectMembersComponent {
       this.projectInvitationRepositoryService.listProjectInvitations(selectedProject.id).then();
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
-        minWidth: 800,
+        minWidth: 850,
         data: {
           title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
             name: selectedProject.name,

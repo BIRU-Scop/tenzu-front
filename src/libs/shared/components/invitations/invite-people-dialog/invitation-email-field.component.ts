@@ -100,7 +100,10 @@ export class InvitationErrorStateMatcher implements ErrorStateMatcher {
       @if (doesPastInvitationExists(form.controls.email.value)) {
         <div class="mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align">
           <div class="mat-mdc-form-field-error-wrapper">
-            <mat-error [class.mat-mdc-form-field-error]="!form.controls.resendExisting.valid">
+            <mat-error
+              class="flex justify-center items-center"
+              [class.mat-mdc-form-field-error]="!form.controls.resendExisting.valid"
+            >
               {{ t("component.invite_dialog.duplicate_error") }}
               <mat-checkbox formControlName="resendExisting">
                 {{ t("component.invite_dialog.duplicate_error_ok") }}
