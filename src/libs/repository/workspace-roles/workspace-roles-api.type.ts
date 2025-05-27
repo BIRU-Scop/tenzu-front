@@ -19,9 +19,9 @@
  *
  */
 
-import { WorkspaceRolesSummary } from "./workspace-roles.model";
+import { WorkspaceRoleSummary } from "./workspace-roles.model";
 
-export type BaseParams = { workspaceId: WorkspaceRolesSummary["id"] };
+export type BaseParams = { workspaceId: WorkspaceRoleSummary["id"] };
 export type ListEntitiesSummaryParams = BaseParams;
 export type CreateEntityDetailParams = undefined;
 export type GetEntityDetailParams = unknown;

@@ -19,7 +19,16 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  Injector,
+  input,
+  OnInit,
+  runInInjectionContext,
+} from "@angular/core";
 import { injectNgControl } from "@tenzu/utils/injectors";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatFormField } from "@angular/material/form-field";
@@ -30,6 +39,8 @@ import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
 import { MatTooltip } from "@angular/material/tooltip";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 
 @Component({
   selector: "app-role-selector-field",
@@ -38,7 +49,7 @@ import { MatTooltip } from "@angular/material/tooltip";
   template: `
     <mat-form-field *transloco="let t">
       <mat-select [formControl]="ngControl.control">
-        @for (role of roles; track role) {
+        @for (role of roles(); track role) {
           @let tooltipKey = tooltips[itemType()][role.slug];
           <mat-option
             [matTooltip]="tooltipKey ? t(tooltipKey) : ''"
@@ -55,14 +66,38 @@ import { MatTooltip } from "@angular/material/tooltip";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleSelectorFieldComponent implements OnInit {
+  injector = inject(Injector);
   ngControl = injectNgControl();
   projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
 
   itemType = input.required<"project" | "workspace">();
   userRole = input<Role>();
+  roleRepositoryService = computed(() => {
+    switch (this.itemType()) {
+      case "project": {
+        return this.projectRoleRepositoryService;
+      }
+      case "workspace": {
+        return this.workspaceRoleRepositoryService;
+      }
+    }
+  });
 
-  roles: Role[] = [];
+  roles = computed(() => {
+    const roleRepositoryService = this.roleRepositoryService();
+    let roles: Role[] = roleRepositoryService.entitiesSummary();
+
+    if (!this.ngControl.control.disabled && !this.userRole()?.isOwner) {
+      if (this.ngControl.control.value === roleRepositoryService.ownerRole()?.id) {
+        this.ngControl.control.disable({ onlySelf: true, emitEvent: false });
+      } else {
+        roles = roles.filter((role) => !role.isOwner);
+      }
+    }
+    return roles;
+  });
+  defaultRole = computed(() => this.roleRepositoryService().defaultRole());
   tooltips: Record<"project" | "workspace", Record<Role["slug"], string>> = {
     workspace: {
       owner: "component.role_selector.workspace.owner",
@@ -77,31 +112,15 @@ export class RoleSelectorFieldComponent implements OnInit {
     },
   };
 
-  ngOnInit() {
-    let roleRepositoryService: ProjectRolesRepositoryService | WorkspaceRolesRepositoryService;
-    switch (this.itemType()) {
-      case "project": {
-        roleRepositoryService = this.projectRoleRepositoryService;
-        break;
-      }
-      case "workspace": {
-        roleRepositoryService = this.workspaceRoleRepositoryService;
-        break;
-      }
-    }
-    this.roles = roleRepositoryService.entitiesSummary();
-    if (!this.ngControl.control.value) {
-      const defaultRole = roleRepositoryService.defaultRole();
-      if (defaultRole) {
-        this.ngControl.control.setValue(defaultRole.id);
-      }
-    }
-    if (!this.ngControl.control.disabled && !this.userRole()?.isOwner) {
-      if (this.ngControl.control.value === roleRepositoryService.ownerRole()?.id) {
-        this.ngControl.control.disable({ onlySelf: true, emitEvent: false });
-      } else {
-        this.roles = this.roles.filter((role) => !role.isOwner);
-      }
-    }
+  ngOnInit(): void {
+    runInInjectionContext(this.injector, () => {
+      toObservable(this.defaultRole)
+        .pipe(filterNotNull())
+        .subscribe((defaultRole) => {
+          if (!this.ngControl.control.value) {
+            this.ngControl.control.setValue(defaultRole.id);
+          }
+        });
+    });
   }
 }

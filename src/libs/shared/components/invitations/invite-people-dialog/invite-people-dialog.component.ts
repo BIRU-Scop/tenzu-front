@@ -105,7 +105,7 @@ export interface InvitePeopleDialogData {
                         class="w-4/5 grow"
                       />
                       <app-role-selector-field
-                        formControlName="role"
+                        formControlName="roleId"
                         [itemType]="data.itemType"
                         [userRole]="data.userRole"
                         class="w-1/5"
@@ -168,7 +168,7 @@ export class InvitePeopleDialogComponent {
           const existingInvitation = notAcceptedInvitations.find((invitation) => invitation.email === value);
           const emailGroupControl = this.fb.group({
             email: [value, { nonNullable: true }],
-            role: [existingInvitation?.roleId, { validators: [Validators.required] }],
+            roleId: [existingInvitation?.roleId, { validators: [Validators.required] }],
           });
           peopleEmails.push(emailGroupControl);
         }

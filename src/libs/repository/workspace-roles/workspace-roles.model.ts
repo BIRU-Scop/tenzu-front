@@ -22,7 +22,7 @@
 import { Role } from "../membership";
 import { WorkspaceSummary } from "../workspace";
 
-export type WorkspaceRolesSummary = Role & {
+export type WorkspaceRoleSummary = Role & {
   workspaceId: WorkspaceSummary["id"];
 };
-export type WorkspaceRolesDetail = WorkspaceRolesSummary;
+export type WorkspaceRoleDetail = WorkspaceRoleSummary;

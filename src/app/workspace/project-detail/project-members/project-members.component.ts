@@ -211,11 +211,11 @@ export class ProjectMembersComponent {
           userRole: selectedProject.userRole,
         },
       });
-      dialogRef.afterClosed().subscribe(async (invitations: { email: string; role: Role["id"] }[] | undefined) => {
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
           await this.projectInvitationRepositoryService.createBulkInvitations(
             selectedProject,
-            invitations.map(({ email, role }) => ({ email, roleId: role })),
+            invitations.map(({ email, roleId }) => ({ email, roleId })),
           );
           if (this.selectedTabIndex() !== 1) {
             this.selectedTabIndex.set(1);

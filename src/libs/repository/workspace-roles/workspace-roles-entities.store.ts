@@ -20,13 +20,13 @@
  */
 
 import { signalStore, withComputed } from "@ngrx/signals";
-import { WorkspaceRolesSummary, WorkspaceRolesDetail } from "./workspace-roles.model";
+import { WorkspaceRoleSummary, WorkspaceRoleDetail } from "./workspace-roles.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { computed } from "@angular/core";
 
 export const ProjectRolesEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
-  withEntityListFeature<WorkspaceRolesSummary>(),
+  withEntityListFeature<WorkspaceRoleSummary>(),
   withComputed((store) => ({
     defaultRole: computed(() => {
       return store.entities().find((role) => role.slug === "readonly-member");
@@ -39,5 +39,5 @@ export const ProjectRolesEntitiesSummaryStore = signalStore(
 
 export const ProjectRolesDetailStore = signalStore(
   { providedIn: "root" },
-  withEntityDetailStore<WorkspaceRolesDetail>(),
+  withEntityDetailStore<WorkspaceRoleDetail>(),
 );
