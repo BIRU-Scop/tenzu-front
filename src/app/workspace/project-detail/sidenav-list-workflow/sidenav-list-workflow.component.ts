@@ -48,28 +48,35 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
       @let project = projectService.entityDetail();
       @let workspace = workspaceService.entityDetail();
       @if (project && project?.workflows && workspace) {
+        @let _canCreateWorkflow = canCreateWorkflow();
         @if (!sideNavStore.resized()) {
           <div class="flex flex-row items-center gap-2 px-2 py-1">
             <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
-            <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
+            <div
+              [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
+              [matTooltipDisabled]="_canCreateWorkflow"
+            >
               <a
                 mat-icon-button
                 [attr.aria-label]="t('workspace.general_title.create_kanban')"
                 [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
-                [disabled]="!canCreateWorkflow()"
+                [disabled]="!_canCreateWorkflow"
               >
                 <mat-icon>add</mat-icon>
               </a>
             </div>
           </div>
         } @else {
-          <div [matTooltip]="!canCreateWorkflow() ? t('workflow.create_workflow.dialog.maximum_reached') : ''">
+          <div
+            [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
+            [matTooltipDisabled]="_canCreateWorkflow"
+          >
             <a
               class="resized"
               mat-icon-button
               [attr.aria-label]="t('workspace.general_title.create_kanban')"
               [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
-              [disabled]="!canCreateWorkflow()"
+              [disabled]="!_canCreateWorkflow"
             >
               <mat-icon>add</mat-icon>
             </a>

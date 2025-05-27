@@ -24,14 +24,14 @@ import { WorkspaceRolesApiService } from "./workspace-roles-api.service";
 import { ProjectRolesEntitiesSummaryStore, ProjectRolesDetailStore } from "./workspace-roles-entities.store";
 import { BaseRepositoryService } from "../base";
 import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
-import { WorkspaceRolesSummary, WorkspaceRolesDetail } from "./workspace-roles.model";
+import { WorkspaceRoleSummary, WorkspaceRoleDetail } from "./workspace-roles.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class WorkspaceRolesRepositoryService extends BaseRepositoryService<
-  WorkspaceRolesSummary,
-  WorkspaceRolesDetail,
+  WorkspaceRoleSummary,
+  WorkspaceRoleDetail,
   WorkspaceRolesApiServiceType.ListEntitiesSummaryParams,
   WorkspaceRolesApiServiceType.GetEntityDetailParams,
   WorkspaceRolesApiServiceType.CreateEntityDetailParams,
@@ -42,4 +42,6 @@ export class WorkspaceRolesRepositoryService extends BaseRepositoryService<
   protected apiService = inject(WorkspaceRolesApiService);
   protected entitiesSummaryStore = inject(ProjectRolesEntitiesSummaryStore);
   protected entityDetailStore = inject(ProjectRolesDetailStore);
+  defaultRole = this.entitiesSummaryStore.defaultRole;
+  ownerRole = this.entitiesSummaryStore.ownerRole;
 }

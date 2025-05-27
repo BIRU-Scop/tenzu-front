@@ -58,6 +58,18 @@ export type InvitationsPayload = {
   }[];
 };
 
-export type UpdateInvitationPayload = {
-  roleId: Role["id"];
-};
+export function sortInvitation(a: InvitationBase, b: InvitationBase) {
+  if (a.status !== b.status) {
+    if (a.status === InvitationStatus.PENDING) return -1;
+    if (b.status === InvitationStatus.PENDING) return 1;
+  }
+  if (a.user?.fullName === b.user?.fullName) {
+    if (a.email < b.email) return -1;
+    if (b.email < a.email) return 1;
+    return 0;
+  }
+  if (b.user?.fullName === undefined) return -1;
+  if (a.user?.fullName === undefined) return 1;
+  if (a.user.fullName < b.user.fullName) return -1;
+  return 1;
+}

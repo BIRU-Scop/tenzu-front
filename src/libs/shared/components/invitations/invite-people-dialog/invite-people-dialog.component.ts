@@ -33,16 +33,19 @@ import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormArray, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { UserNested } from "@tenzu/repository/user";
 import { InvitationEmailFieldComponent } from "./invitation-email-field.component";
-import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
+import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 
 export interface InvitePeopleDialogData {
   title: string;
   description: string;
   existingMembers: Signal<UserNested[]>;
   existingInvitations: Signal<InvitationBase[]>;
+  itemType: "project" | "workspace";
+  userRole?: Role;
 }
 
 @Component({
@@ -63,6 +66,7 @@ export interface InvitePeopleDialogData {
     ReactiveFormsModule,
     MatLabel,
     InvitationEmailFieldComponent,
+    RoleSelectorFieldComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -90,14 +94,23 @@ export interface InvitePeopleDialogData {
             </div>
             <mat-divider></mat-divider>
             @if (this.form.controls.peopleEmails.length) {
-              <div class="flex flex-col gap-y-4 px-12 py-4" formArrayName="peopleEmails">
+              <div class="flex flex-col gap-y-4 py-4" formArrayName="peopleEmails">
                 @for (peopleEmail of this.form.controls.peopleEmails.controls; track peopleEmail) {
-                  <div class="flex flex-row gap-x-4">
-                    <app-invitation-email-field
-                      [formControlName]="$index"
-                      [memberEmails]="memberEmails()"
-                      [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
-                    />
+                  <div class="flex flex-row gap-x-4" [formGroupName]="$index">
+                    <div class="flex grow gap-x-4">
+                      <app-invitation-email-field
+                        formControlName="email"
+                        [memberEmails]="memberEmails()"
+                        [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
+                        class="w-4/5 grow"
+                      />
+                      <app-role-selector-field
+                        formControlName="roleId"
+                        [itemType]="data.itemType"
+                        [userRole]="data.userRole"
+                        class="w-1/5"
+                      />
+                    </div>
                     <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
                       <mat-icon>close</mat-icon>
                     </button>
@@ -137,22 +150,27 @@ export class InvitePeopleDialogComponent {
   memberEmails = computed(() => {
     return this.data.existingMembers().map((member) => member.email);
   });
+  notAcceptedInvitations = computed(() => {
+    return this.data.existingInvitations().filter((invitation) => invitation.status != InvitationStatus.ACCEPTED);
+  });
   notAcceptedInvitationEmails = computed(() => {
-    return this.data
-      .existingInvitations()
-      .filter((invitation) => invitation.status != InvitationStatus.ACCEPTED)
-      .map((invitation) => invitation.email);
+    return this.notAcceptedInvitations().map((invitation) => invitation.email);
   });
 
   addToPeopleList() {
     const emailsToAdd = this.form.controls.emailsToAdd;
     emailsToAdd.updateValueAndValidity();
     if (emailsToAdd.valid && emailsToAdd.value) {
-      const peopleEmails = this.form.controls.peopleEmails;
+      const peopleEmails = this.form.controls.peopleEmails as FormArray;
+      const notAcceptedInvitations = this.notAcceptedInvitations();
       emailsToAdd.value.split(",").forEach((value) => {
-        if (value && !peopleEmails.value.includes(value)) {
-          const emailControl = new FormControl(value);
-          peopleEmails.push(emailControl);
+        if (value && !peopleEmails.value.some((peopleEmail: { email: string }) => peopleEmail.email === value)) {
+          const existingInvitation = notAcceptedInvitations.find((invitation) => invitation.email === value);
+          const emailGroupControl = this.fb.group({
+            email: [value, { nonNullable: true }],
+            roleId: [existingInvitation?.roleId, { validators: [Validators.required] }],
+          });
+          peopleEmails.push(emailGroupControl);
         }
       });
       emailsToAdd.reset();

@@ -78,6 +78,19 @@
       "member_error": "Esta dirección pertenece a un miembro",
       "duplicate_error": "Esta dirección ya ha sido invitada. ¿Desea volver a enviar una invitación?",
       "duplicate_error_ok": "Sí"
+    },
+    "role_selector": {
+      "workspace": {
+        "owner": "puede invitar/remover miembros, designar/desasignar cualquier rol, editar la información del espacio de trabajo, eliminar el espacio de trabajo, crear proyectos y ver el espacio de trabajo (pero no su contenido)",
+        "admin": "puede invitar/remover (excepto owner) miembros, designar/desasignar cualquier rol que no sea owner, editar información del espacio de trabajo, crear proyectos y ver el espacio de trabajo (pero no su contenido)",
+        "member": "puede crear proyectos y ver el espacio de trabajo (pero no su contenido)",
+        "readonly_member": "puede ver el espacio de trabajo (pero no su contenido)"
+      },
+      "project": {
+        "owner": "puede invitar/remover miembros, designar/desasignar cualquier rol, editar info del proyecto, borrar proyecto, editar roles dinámicos y ver todo el contenido del proyecto",
+        "admin": "puede invitar/remover (excepto owner) miembros, designar/desasignar cualquier rol que no sea owner, editar información del proyecto, editar roles dinámicos y ver todo el contenido del proyecto",
+        "readonly_member": "puede ver el contenido del proyecto: kanbans, historias y comentarios"
+      }
     }
   },
   "commons": {
