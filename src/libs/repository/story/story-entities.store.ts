@@ -27,7 +27,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { Workflow } from "../workflow";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "../user";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {

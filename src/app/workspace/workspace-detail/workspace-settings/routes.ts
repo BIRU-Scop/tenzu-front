@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,30 +22,18 @@
 import { Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 
-export const routes: Routes = [
+const routes: Routes = [
   {
     path: "",
-    redirectTo: "projects",
+    redirectTo: "workspace-edit",
     pathMatch: "prefix",
   },
   {
-    path: "projects",
-    loadComponent: () => import("./workspace-project-list/workspace-project-list.component"),
-  },
-  {
-    path: "people",
-    loadComponent: () => import("./workspace-people/workspace-people.component"),
-  },
-  {
-    path: "settings",
-
-    children: [
-      {
-        path: "",
-        loadComponent: () => import("./workspace-settings/workspace-settings.component"),
-        loadChildren: () => import("./workspace-settings/routes"),
-      },
-    ],
-    providers: [provideTranslocoScope("workspace")],
+    path: "workspace-edit",
+    loadComponent: () => import("./workspace-edit/workspace-edit.component"),
+    providers: [provideTranslocoScope("project")],
+    data: { state: 1 },
   },
 ];
+
+export default routes;
