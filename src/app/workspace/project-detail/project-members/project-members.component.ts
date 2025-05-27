@@ -34,7 +34,7 @@ import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { HasProjectPermissionDirective } from "@tenzu/directives/permission.directive";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { MatCell, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
@@ -53,7 +53,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
     MatTabLabel,
     UserCardComponent,
     MatIcon,
-    HasProjectPermissionDirective,
+    HasPermissionDirective,
     MatCell,
     MatTableModule,
     InvitationStatusComponent,
@@ -68,7 +68,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
           <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
 
           <button
-            *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
+            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
             (click)="openInviteDialog()"
             class="tertiary-button"
             mat-stroked-button
@@ -95,7 +95,9 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
               </mat-list>
             }
           </mat-tab>
-          <mat-tab *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER">
+          <mat-tab
+            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+          >
             <ng-template mat-tab-label>
               <mat-icon class="icon-sm mr-1">mail</mat-icon>
               {{ t("project.members.invitation_tab") }}

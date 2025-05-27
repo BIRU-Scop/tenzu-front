@@ -21,6 +21,8 @@
 
 import { ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
 
+export type Permission = WorkspacePermissions | ProjectPermissions;
+
 export type Role = {
   id: string;
   name: string;
@@ -28,6 +30,9 @@ export type Role = {
   isOwner: boolean;
   order: number;
   editable: boolean;
-  totalMembers: number;
-  permissions: (WorkspacePermissions | ProjectPermissions)[];
+  permissions: Permission[];
+};
+
+export type UserRole = {
+  userRole?: Role;
 };

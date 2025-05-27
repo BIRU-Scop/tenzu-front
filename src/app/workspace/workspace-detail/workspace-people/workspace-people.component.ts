@@ -36,7 +36,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
-import { HasWorkspacePermissionDirective } from "@tenzu/directives/permission.directive";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
 import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
@@ -53,7 +53,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
     MatTab,
     UserCardComponent,
     MatTabLabel,
-    HasWorkspacePermissionDirective,
+    HasPermissionDirective,
     MatTableModule,
     MatRow,
     MatRowDef,
@@ -68,7 +68,10 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
         <div class="flex flex-row">
           <h1 class="mat-headline-medium grow">{{ t("workspace.people.title") }}</h1>
           <button
-            *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER"
+            *appHasPermission="{
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+            }"
             (click)="openInviteDialog()"
             class="tertiary-button"
             mat-stroked-button
@@ -96,7 +99,12 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
               </mat-list>
             }
           </mat-tab>
-          <mat-tab *appHasWorkspacePermission="WorkspacePermissions.CREATE_MODIFY_MEMBER">
+          <mat-tab
+            *appHasPermission="{
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+            }"
+          >
             <ng-template mat-tab-label>
               <mat-icon class="icon-sm mr-1">mail</mat-icon>
               {{ t("workspace.people.invitation_tab") }}

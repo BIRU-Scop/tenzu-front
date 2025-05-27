@@ -20,12 +20,12 @@
  */
 
 import { signalStore } from "@ngrx/signals";
-import { ProjectRolesSummary, ProjectRolesDetail } from "./project-roles.model";
+import { ProjectRoleSummary, ProjectRoleDetail } from "./project-roles.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 
 export const ProjectRolesEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
-  withEntityListFeature<ProjectRolesSummary>(),
+  withEntityListFeature<ProjectRoleSummary>(),
 );
 
-export const ProjectRolesDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<ProjectRolesDetail>());
+export const ProjectRolesDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<ProjectRoleDetail>());

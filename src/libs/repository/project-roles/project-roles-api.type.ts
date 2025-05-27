@@ -19,12 +19,12 @@
  *
  */
 
-import { ProjectRolesDetail, ProjectRolesSummary } from "./project-roles.model";
+import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 
-export type BaseParams = { projectId: ProjectRolesSummary["id"] };
+export type BaseParams = { projectId: ProjectRoleSummary["id"] };
 export type ListEntitiesSummaryParams = BaseParams;
 export type CreateEntityDetailParams = BaseParams;
-export type GetEntityDetailParams = { roleId: ProjectRolesDetail["id"] };
-export type PutEntityDetailParams = { roleId: ProjectRolesDetail["id"] };
-export type PatchEntityDetailParams = { roleId: ProjectRolesDetail["id"] };
-export type DeleteEntityDetailParams = { roleId: ProjectRolesDetail["id"] };
+export type GetEntityDetailParams = { roleId: ProjectRoleDetail["id"] };
+export type PutEntityDetailParams = { roleId: ProjectRoleDetail["id"] };
+export type PatchEntityDetailParams = { roleId: ProjectRoleDetail["id"] };
+export type DeleteEntityDetailParams = { roleId: ProjectRoleDetail["id"] };
