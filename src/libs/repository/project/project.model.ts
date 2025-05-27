@@ -19,7 +19,7 @@
  *
  */
 
-import { Role } from "../membership";
+import { UserRole } from "../membership";
 import { WorkflowNested } from "../workflow";
 
 export type ProjectLogoBase = {
@@ -48,10 +48,10 @@ export type ProjectSummary = ProjectNested & {
   userIsInvited: boolean;
 };
 
-export type ProjectDetail = ProjectSummary & {
-  workflows: WorkflowNested[];
-  userRole?: Role;
-};
+export type ProjectDetail = ProjectSummary &
+  UserRole & {
+    workflows: WorkflowNested[];
+  };
 
 export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId"> &
   Partial<Pick<ProjectNested, "description" | "color" | "logo">>;

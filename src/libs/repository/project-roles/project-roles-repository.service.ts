@@ -25,14 +25,14 @@ import { ProjectRolesEntitiesSummaryStore, ProjectRolesDetailStore } from "./pro
 import { WsService } from "@tenzu/utils/services/ws";
 import { BaseRepositoryService } from "../base";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
-import { ProjectRolesDetail, ProjectRolesSummary } from "./project-roles.model";
+import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class ProjectRolesRepositoryService extends BaseRepositoryService<
-  ProjectRolesSummary,
-  ProjectRolesDetail,
+  ProjectRoleSummary,
+  ProjectRoleDetail,
   ProjectRolesApiServiceType.ListEntitiesSummaryParams,
   ProjectRolesApiServiceType.GetEntityDetailParams,
   ProjectRolesApiServiceType.CreateEntityDetailParams,

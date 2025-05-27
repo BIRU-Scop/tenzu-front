@@ -22,13 +22,22 @@
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from "@angular/core";
 import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 
 @Component({
   selector: "app-list-project-roles",
-  imports: [TranslocoDirective],
+  imports: [TranslocoDirective, PermissionOrRedirectDirective],
   template: `
     <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
-      <div class="app-table-row-group">
+      <div
+        class="app-table-row-group"
+        [appPermissionOrRedirect]="{
+          expectedId: projectId(),
+          requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+          type: 'project',
+        }"
+      >
         @for (role of entitiesSummary(); track role.id) {
           <div class="app-table-row">
             <div class="app-table-cell">{{ role.name }}</div>
@@ -47,7 +56,7 @@ export default class ListProjectRolesComponent implements OnInit {
   projectRolesRepositoryService = inject(ProjectRolesRepositoryService);
   entitiesSummary = this.projectRolesRepositoryService.entitiesSummary;
   projectId = input.required<string>();
-
+  protected readonly ProjectPermissions = ProjectPermissions;
   ngOnInit(): void {
     this.projectRolesRepositoryService.listRequest({ projectId: this.projectId() }).then();
   }

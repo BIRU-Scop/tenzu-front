@@ -22,7 +22,8 @@
 import { ProjectSummary } from "../project";
 import { Role } from "../membership";
 
-export type ProjectRolesSummary = Role & {
+export type ProjectRoleSummary = Role & {
   projectId: ProjectSummary["id"];
+  totalMembers: number;
 };
-export type ProjectRolesDetail = ProjectRolesSummary;
+export type ProjectRoleDetail = ProjectRoleSummary;

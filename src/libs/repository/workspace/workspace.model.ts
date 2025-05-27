@@ -20,7 +20,7 @@
  */
 
 import { ProjectNested } from "../project";
-import { Role } from "../membership";
+import { UserRole } from "../membership";
 
 type _WorkspaceBaseNested = {
   id: string;
@@ -44,7 +44,7 @@ export type WorkspaceSummary = WorkspaceNested &
     userIsInvited: boolean;
   };
 
-export type WorkspaceDetail = WorkspaceSummary & {
-  userRole?: Role;
-  totalProjects: number;
-};
+export type WorkspaceDetail = WorkspaceSummary &
+  UserRole & {
+    totalProjects: number;
+  };
