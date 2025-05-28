@@ -39,19 +39,19 @@ export class ProjectApiService extends AbstractApiService<
   ProjectApiServiceTypes.DeleteEntityDetailParams
 > {
   baseUrl = `${this.configAppService.apiUrl()}projects`;
-  protected override getBaseUrl() {
-    return this.baseUrl;
-  }
-  protected override listUrl(params?: ProjectApiServiceTypes.ListEntitiesSummaryParams): string {
-    return `${this.configAppService.apiUrl()}workspaces/${params?.workspaceId}/projects`;
+  protected override getBaseUrl(params: ProjectApiServiceTypes.ListEntitiesSummaryParams) {
+    return `${this.configAppService.apiUrl()}workspaces/${params.workspaceId}/projects`;
   }
 
   protected override getEntityBaseUrl(params: ProjectApiServiceTypes.BaseParams) {
     return `${this.baseUrl}/${params.projectId}`;
   }
 
-  override create(newProject: CreateProjectPayload): Observable<ProjectDetail> {
-    return super.create(newProject, undefined, undefined, { dataIsFormData: true });
+  override create(
+    newProject: CreateProjectPayload,
+    params: ProjectApiServiceTypes.CreateEntityDetailParams,
+  ): Observable<ProjectDetail> {
+    return super.create(newProject, params, undefined, { dataIsFormData: true });
   }
 
   override patch(

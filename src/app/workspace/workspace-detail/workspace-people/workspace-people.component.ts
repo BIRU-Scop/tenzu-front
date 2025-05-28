@@ -19,14 +19,14 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { MatDialog } from "@angular/material/dialog";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
@@ -34,57 +34,123 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
+import { Role } from "@tenzu/repository/membership";
+import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 
 @Component({
   selector: "app-workspace-people",
-  imports: [TranslocoDirective, MatButton, MatIcon, MatList, MatTabGroup, MatTab, UserCardComponent, MatTabLabel],
+  imports: [
+    TranslocoDirective,
+    MatButton,
+    MatIcon,
+    MatList,
+    MatTabGroup,
+    MatTab,
+    UserCardComponent,
+    MatTabLabel,
+    HasPermissionDirective,
+    MatTableModule,
+    MatRow,
+    MatRowDef,
+    InvitationStatusComponent,
+    InvitationActionsComponent,
+    InvitationRoleComponent,
+  ],
   template: `
-    <div class="flex flex-col gap-y-8 h-full" *transloco="let t; prefix: 'workspace.people'">
-      <div class="flex flex-row">
-        <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
-        <button (click)="openInviteDialog()" class="tertiary-button" mat-stroked-button>
-          {{ t("invite_to_workspace") }}
-        </button>
+    @let workspace = workspaceRepositoryService.entityDetail();
+    @if (workspace) {
+      <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
+        <div class="flex flex-row">
+          <h1 class="mat-headline-medium grow">{{ t("workspace.people.title") }}</h1>
+          <button
+            *appHasPermission="{
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+            }"
+            (click)="openInviteDialog()"
+            class="tertiary-button"
+            mat-stroked-button
+          >
+            {{ t("workspace.people.invite_to_workspace") }}
+          </button>
+        </div>
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">group</mat-icon>
+              {{ t("workspace.people.members_tab") }}
+            </ng-template>
+            <p class="mat-body-medium text-on-surface mb-2">{{ t("workspace.people.members_description") }}</p>
+            @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
+            @if (workspaceMembershipEntities.length > 0) {
+              <mat-list>
+                @for (member of workspaceMembershipEntities; track member.user.id) {
+                  <app-user-card
+                    [fullName]="member.user.fullName"
+                    [username]="member.user.username"
+                    [color]="member.user.color"
+                  ></app-user-card>
+                }
+              </mat-list>
+            }
+          </mat-tab>
+          <mat-tab
+            *appHasPermission="{
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+            }"
+          >
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">mail</mat-icon>
+              {{ t("workspace.people.invitation_tab") }}
+            </ng-template>
+            @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
+            @if (workspaceInvitations.length > 0) {
+              <mat-table [@newItemsFlyIn]="workspaceInvitations.length" [dataSource]="workspaceInvitations">
+                <ng-container matColumnDef="user">
+                  <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                  <mat-cell *matCellDef="let row" class="basis-1/3">
+                    <app-invitation-role
+                      [invitation]="row"
+                      itemType="workspace"
+                      [userRole]="workspace.userRole"
+                    ></app-invitation-role>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <mat-cell *matCellDef="let row" class="basis-full">
+                    <app-invitation-status [invitation]="row"></app-invitation-status>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-cell *matCellDef="let row" class="basis-1/2">
+                    <app-invitation-actions
+                      [invitation]="row"
+                      [item]="workspace"
+                      itemType="workspace"
+                      [resentInvitation]="resentInvitationId() === row.id"
+                      (resend)="resendInvitation($event)"
+                      (revoke)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation($event)"
+                    ></app-invitation-actions>
+                  </mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+              </mat-table>
+            } @else {
+              <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.people.invitation_empty") }}</p>
+            }
+          </mat-tab>
+        </mat-tab-group>
       </div>
-      <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">group</mat-icon>
-            {{ t("members_tab") }}
-          </ng-template>
-          <p class="mat-body-medium text-on-surface mb-2">{{ t("members_description") }}</p>
-          @let workspaceMembershipEntities = workspaceMembershipService.entities();
-          @if (workspaceMembershipEntities.length > 0) {
-            <mat-list>
-              @for (member of workspaceMembershipEntities; track member.user.username) {
-                <app-user-card
-                  [fullName]="member.user.fullName"
-                  [username]="member.user.username"
-                  [color]="member.user.color"
-                ></app-user-card>
-              }
-            </mat-list>
-          }
-        </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">schedule</mat-icon>
-            {{ t("pending_tab") }}
-          </ng-template>
-          @let workspaceInvitations = workspaceInvitationService.entities();
-          @if (workspaceInvitations.length > 0) {
-            <mat-list [@newItemsFlyIn]="workspaceInvitations.length">
-              @for (pendingMember of workspaceInvitations; track pendingMember.id) {
-                <app-user-card [fullName]="pendingMember.email!"></app-user-card>
-              }
-            </mat-list>
-          } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
-          }
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+    }
   `,
   animations: [
     trigger("newItemsFlyIn", [
@@ -105,50 +171,64 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspacePeopleComponent {
+  protected readonly WorkspacePermissions = WorkspacePermissions;
+
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  readonly workspaceService = inject(WorkspaceRepositoryService);
+  readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   translocoService = inject(TranslocoService);
-  workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
-  workspaceMembershipService = inject(WorkspaceMembershipRepositoryService);
 
   selectedTabIndex = model(0);
+
+  resentInvitationId = signal<WorkspaceInvitation["id"] | null>(null);
 
   constructor() {
     this.breadcrumbStore.setPathComponent("workspaceMembers");
     this.selectedTabIndex.subscribe((value) => {
       if (value === 1) {
-        this.workspaceInvitationService.listWorkspaceInvitations(this.workspaceService.entityDetail()!.id).then();
+        this.workspaceInvitationRepositoryService
+          .listWorkspaceInvitations(this.workspaceRepositoryService.entityDetail()!.id)
+          .then();
       }
     });
   }
 
+  resendInvitation(invitationId: WorkspaceInvitation["id"]) {
+    this.workspaceInvitationRepositoryService.resendWorkspaceInvitation(invitationId);
+    this.resentInvitationId.set(invitationId);
+  }
+
   public openInviteDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
-      ...matDialogConfig,
-      minWidth: 800,
-      data: {
-        title:
-          this.translocoService.translate("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translate("component.invite_dialog.to") +
-          " " +
-          this.workspaceService.entityDetail()?.name,
-        description: this.translocoService.translate("workspace.people.description_modal"),
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
-      const selectedWorkspace = this.workspaceService.entityDetail();
-      if (selectedWorkspace && invitationEmails.length) {
-        await this.workspaceInvitationService.createBulkInvitations(
-          selectedWorkspace,
-          // TODO use dynamic role instead
-          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
-        );
-        if (this.selectedTabIndex() !== 1) {
-          this.selectedTabIndex.set(1);
+    const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
+    if (selectedWorkspace) {
+      this.workspaceInvitationRepositoryService.listWorkspaceInvitations(selectedWorkspace.id).then();
+      const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
+        ...matDialogConfig,
+        minWidth: 850,
+        data: {
+          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+            name: selectedWorkspace.name,
+          }),
+          description: this.translocoService.translate("workspace.people.description_modal"),
+          existingMembers: this.workspaceMembershipRepositoryService.members,
+          existingInvitations: this.workspaceInvitationRepositoryService.entities,
+          itemType: "workspace",
+          userRole: selectedWorkspace.userRole,
+        },
+      });
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
+        if (invitations?.length) {
+          await this.workspaceInvitationRepositoryService.createBulkInvitations(
+            selectedWorkspace,
+            invitations.map(({ email, roleId }) => ({ email, roleId })),
+          );
+          if (this.selectedTabIndex() !== 1) {
+            this.selectedTabIndex.set(1);
+          }
         }
-      }
-    });
+      });
+    }
   }
 }

@@ -44,6 +44,7 @@ import { MICRO_SENTRY_CONFIG, provideMicroSentry } from "@micro-sentry/angular";
 import { ConfigAppService } from "./config-app/config-app.service";
 import { BrowserSentryClientOptions } from "@micro-sentry/browser";
 import { WsService } from "@tenzu/utils/services/ws";
+import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -56,7 +57,7 @@ export const appConfig: ApplicationConfig = {
       const languageStore = inject(LanguageStore);
       const wsService = inject(WsService);
       await configAppService.loadAppConfig();
-      await wsService.init();
+      wsService.init().then();
       languageStore.initLanguages().subscribe();
       return;
     }),
@@ -108,6 +109,7 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoaderService,
     }),
     provideTranslocoMessageformat(),
+    provideTranslocoLocale(),
     provideMicroSentry({}),
     {
       provide: MICRO_SENTRY_CONFIG,

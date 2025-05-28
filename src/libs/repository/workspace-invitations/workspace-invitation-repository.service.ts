@@ -26,6 +26,10 @@ import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-servi
 import { WorkspaceDetail, WorkspaceSummary } from "../workspace";
 import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
+import { WorkspaceInvitation } from "./workspace-invitation.model";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
+import { getEntityIdSelector } from "@tenzu/repository/base";
 
 @Injectable({
   providedIn: "root",
@@ -36,9 +40,40 @@ export class WorkspaceInvitationRepositoryService {
   entities = this.workspaceInvitationEntitiesStore.entities;
   entityMap = this.workspaceInvitationEntitiesStore.entityMap;
 
+  protected selectIdFn: SelectEntityId<NoInfer<WorkspaceInvitation>> | undefined = undefined;
+  protected getEntityIdFn = getEntityIdSelector({ selectId: this.selectIdFn });
+
+  updateEntitySummary(id: EntityId, partialItem: Partial<WorkspaceInvitation>): WorkspaceInvitation {
+    return this.workspaceInvitationEntitiesStore.updateEntity(id, partialItem);
+  }
+
+  async patchRequest(
+    item: Pick<WorkspaceInvitation, "roleId">,
+    params: { invitationId: WorkspaceInvitation["id"] },
+  ): Promise<WorkspaceInvitation> {
+    if (!this.entityMap()[this.getEntityIdFn(item)]) {
+      const entity = await lastValueFrom(this.workspaceInvitationsApiService.patch(item, params));
+      this.updateEntitySummary(this.getEntityIdFn(item), entity);
+    }
+    throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
+  }
+
   async listWorkspaceInvitations(workspaceId: WorkspaceSummary["id"]) {
     const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.list({ workspaceId }));
     this.workspaceInvitationEntitiesStore.setAllEntities(workspaceInvitations);
+  }
+
+  async resendWorkspaceInvitation(invitationId: WorkspaceInvitation["id"]) {
+    const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.resend({ invitationId }));
+    this.workspaceInvitationEntitiesStore.updateEntity(invitationId, workspaceInvitations);
+  }
+
+  async revokeWorkspaceInvitation(invitationId: WorkspaceInvitation["id"]) {
+    const workspaceInvitations = await lastValueFrom(this.workspaceInvitationsApiService.revoke({ invitationId }));
+    this.workspaceInvitationEntitiesStore.updateEntity(invitationId, workspaceInvitations);
+  }
+  async denyInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
+    return await lastValueFrom(this.workspaceInvitationsApiService.denyForCurrentUser({ workspaceId }));
   }
 
   async createBulkInvitations(workspace: WorkspaceDetail, invitations: InvitationsPayload["invitations"]) {
@@ -52,6 +87,11 @@ export class WorkspaceInvitationRepositoryService {
         }),
       ),
     );
-    this.workspaceInvitationEntitiesStore.addEntities(createWorkspaceInvitationResponse.invitations);
+    this.workspaceInvitationEntitiesStore.setEntities(createWorkspaceInvitationResponse.invitations);
+    this.workspaceInvitationEntitiesStore.reorder();
+  }
+
+  async acceptInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
+    return await lastValueFrom(this.workspaceInvitationsApiService.acceptForCurrentUser({ workspaceId }));
   }
 }

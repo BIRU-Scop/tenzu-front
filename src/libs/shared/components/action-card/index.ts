@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,11 +19,4 @@
  *
  */
 
-import { NoopValueAccessorDirective } from "./noop-value-accessor-directive.directive";
-
-describe("NoopValueAccessorDirectiveDirective", () => {
-  it("should create an instance", () => {
-    const directive = new NoopValueAccessorDirective();
-    expect(directive).toBeTruthy();
-  });
-});
+export * from "./action-card.component";

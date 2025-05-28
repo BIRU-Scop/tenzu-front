@@ -21,15 +21,15 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
-import { ProjectDetail } from "../project";
+import { ProjectDetail, ProjectSummary } from "../project";
 import { ProjectInvitation, PublicProjectPendingInvitation } from "./project-invitation.model";
 import { Observable } from "rxjs";
 import { CreateInvitations, InvitationsPayload } from "../membership";
 
 type ListProjectInvitationParams = {
-  projectId: string;
+  projectId: ProjectSummary["id"];
 };
-type PatchProjectInvitationParams = { projectId: ProjectDetail["id"]; invitationId: ProjectInvitation["id"] };
+type PatchProjectInvitationParams = { invitationId: ProjectInvitation["id"] };
 
 @Injectable({
   providedIn: "root",
@@ -48,11 +48,8 @@ export class ProjectInvitationsApiService extends AbstractApiService<
   protected override getBaseUrl(params: { projectId: ProjectDetail["id"] }) {
     return `${this.baseUrl}/${params.projectId}/invitations`;
   }
-  protected override getEntityBaseUrl(params: {
-    projectId: ProjectDetail["id"];
-    invitationId: ProjectInvitation["id"];
-  }) {
-    return `${this.getBaseUrl(params)}/${params.invitationId}`;
+  protected override getEntityBaseUrl(params: { invitationId: ProjectInvitation["id"] }) {
+    return `${this.baseUrl}/invitations/${params.invitationId}`;
   }
 
   override create(): Observable<ProjectInvitation> {
@@ -66,6 +63,14 @@ export class ProjectInvitationsApiService extends AbstractApiService<
     throw new Error("Method not implemented.");
   }
 
+  resend(params: PatchProjectInvitationParams): Observable<ProjectInvitation> {
+    return this.http.post<ProjectInvitation>(`${this.patchUrl(params)}/resend`, {});
+  }
+
+  revoke(params: PatchProjectInvitationParams): Observable<ProjectInvitation> {
+    return this.http.post<ProjectInvitation>(`${this.patchUrl(params)}/revoke`, {});
+  }
+
   override delete(): Observable<void> {
     throw new Error("Method not implemented.");
   }
@@ -73,11 +78,14 @@ export class ProjectInvitationsApiService extends AbstractApiService<
     return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
   getByToken(params: { token: string }) {
-    return this.http.get<PublicProjectPendingInvitation>(`${this.baseUrl}/invitations/${params.token}`);
+    return this.http.get<PublicProjectPendingInvitation>(`${this.baseUrl}/invitations/by_token/${params.token}`);
   }
 
   acceptByToken(params: { token: string }) {
-    return this.http.post<ProjectInvitation>(`${this.baseUrl}/invitations/${params.token}/accept`, params.token);
+    return this.http.post<ProjectInvitation>(
+      `${this.baseUrl}/invitations/by_token/${params.token}/accept`,
+      params.token,
+    );
   }
 
   acceptForCurrentUser(params: { projectId: ProjectDetail["id"] }) {

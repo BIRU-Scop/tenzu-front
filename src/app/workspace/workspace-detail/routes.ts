@@ -20,6 +20,7 @@
  */
 
 import { Routes } from "@angular/router";
+import { provideTranslocoScope } from "@jsverse/transloco";
 
 export const routes: Routes = [
   {
@@ -37,6 +38,14 @@ export const routes: Routes = [
   },
   {
     path: "settings",
-    loadComponent: () => import("./workspace-settings/workspace-settings.component"),
+
+    children: [
+      {
+        path: "",
+        loadComponent: () => import("./workspace-settings/workspace-settings.component"),
+        loadChildren: () => import("./workspace-settings/routes"),
+      },
+    ],
+    providers: [provideTranslocoScope("workspace")],
   },
 ];

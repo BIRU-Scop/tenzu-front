@@ -30,7 +30,7 @@ import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
-import { ProjectSpecialCardComponent } from "@tenzu/shared/components/project-special-card";
+import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 
 @Component({
@@ -42,7 +42,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     MatIcon,
     RouterLink,
     CardSkeletonComponent,
-    ProjectSpecialCardComponent,
+    ActionCardComponent,
   ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     <div class="flex flex-row justify-between">
@@ -63,12 +63,14 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     <div class="flex flex-row flex-wrap gap-4">
       @for (project of projectService.entitiesSummary(); track project.id) {
         @if (project.userIsInvited) {
-          <app-project-special-card
+          <app-action-card
             [name]="project.name"
             [color]="project.color"
+            [cancelLabel]="t('component.invitation.accept')"
+            [submitLabel]="t('component.invitation.deny')"
             (submitted)="acceptProjectInvitation(project)"
             (canceled)="denyProjectInvitation(project)"
-          ></app-project-special-card>
+          ></app-action-card>
         } @else {
           <app-project-card
             class="basis-1/5"

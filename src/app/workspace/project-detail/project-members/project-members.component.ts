@@ -19,11 +19,11 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
@@ -33,57 +33,116 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import { MatCell, MatTableModule } from "@angular/material/table";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
+import { InvitationStatus, Role } from "@tenzu/repository/membership";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
+import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 
 @Component({
   selector: "app-project-members",
-  imports: [TranslocoDirective, MatButton, MatList, MatTabGroup, MatTab, MatTabLabel, UserCardComponent, MatIcon],
+  imports: [
+    TranslocoDirective,
+    MatButton,
+    MatList,
+    MatTabGroup,
+    MatTab,
+    MatTabLabel,
+    UserCardComponent,
+    MatIcon,
+    HasPermissionDirective,
+    MatCell,
+    MatTableModule,
+    InvitationStatusComponent,
+    InvitationActionsComponent,
+    InvitationRoleComponent,
+  ],
   template: `
-    <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.members'">
-      <div class="flex flex-row">
-        <h1 class="mat-headline-medium grow">{{ t("title") }}</h1>
+    @let project = projectRepositoryService.entityDetail();
+    @if (project) {
+      <div class="flex flex-col gap-y-8" *transloco="let t">
+        <div class="flex flex-row">
+          <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
 
-        <button (click)="openCreateDialog()" class="tertiary-button" mat-stroked-button>
-          {{ t("invite_to_project") }}
-        </button>
+          <button
+            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+            (click)="openInviteDialog()"
+            class="tertiary-button"
+            mat-stroked-button
+          >
+            {{ t("project.members.invite_to_project") }}
+          </button>
+        </div>
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">group</mat-icon>
+              {{ t("project.members.members_tab") }}
+            </ng-template>
+            @let projectMemberships = projectMembershipRepositoryService.entities();
+            @if (projectMemberships.length > 0) {
+              <mat-list>
+                @for (member of projectMemberships; track member.user.id) {
+                  <app-user-card
+                    [fullName]="member.user.fullName"
+                    [username]="member.user.username"
+                    [color]="member.user.color"
+                  ></app-user-card>
+                }
+              </mat-list>
+            }
+          </mat-tab>
+          <mat-tab
+            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+          >
+            <ng-template mat-tab-label>
+              <mat-icon class="icon-sm mr-1">mail</mat-icon>
+              {{ t("project.members.invitation_tab") }}
+            </ng-template>
+            @let projectInvitations = projectInvitationRepositoryService.entities();
+            @if (projectInvitations.length > 0) {
+              <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
+                <ng-container matColumnDef="user">
+                  <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="role">
+                  <mat-cell *matCellDef="let row" class="basis-1/3">
+                    <app-invitation-role
+                      [invitation]="row"
+                      itemType="project"
+                      [userRole]="project.userRole"
+                    ></app-invitation-role>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <mat-cell *matCellDef="let row" class="basis-full">
+                    <app-invitation-status [invitation]="row"></app-invitation-status>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-cell *matCellDef="let row" class="basis-1/2">
+                    <app-invitation-actions
+                      [invitation]="row"
+                      [item]="project"
+                      itemType="project"
+                      [resentInvitation]="resentInvitationId() === row.id"
+                      (resend)="resendInvitation($event)"
+                      (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
+                    ></app-invitation-actions>
+                  </mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
+              </mat-table>
+            } @else {
+              <p class="mat-body-medium text-on-surface-variant">{{ t("project.members.invitation_empty") }}</p>
+            }
+          </mat-tab>
+        </mat-tab-group>
       </div>
-      <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">group</mat-icon>
-            {{ t("members_tab") }}
-          </ng-template>
-          @let projectMemberships = projectMembershipService.entities();
-          @if (projectMemberships.length > 0) {
-            <mat-list>
-              @for (member of projectMemberships; track member.user.username) {
-                <app-user-card
-                  [fullName]="member.user.fullName"
-                  [username]="member.user.username"
-                  [color]="member.user.color"
-                ></app-user-card>
-              }
-            </mat-list>
-          }
-        </mat-tab>
-        <mat-tab [label]="t('pending_tab')">
-          <ng-template mat-tab-label>
-            <mat-icon class="icon-sm mr-1">schedule</mat-icon>
-            {{ t("pending_tab") }}
-          </ng-template>
-          @let projectInvitations = projectInvitationService.entities();
-          @if (projectInvitations.length > 0) {
-            <mat-list [@newItemsFlyIn]="projectInvitations.length">
-              @for (pendingMember of projectInvitations; track pendingMember.id) {
-                <app-user-card [fullName]="pendingMember.email!"></app-user-card>
-              }
-            </mat-list>
-          } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("pending_empty") }}</p>
-          }
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+    }
   `,
   animations: [
     trigger("newItemsFlyIn", [
@@ -104,50 +163,65 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMembersComponent {
+  protected readonly ProjectPermissions = ProjectPermissions;
+  protected readonly InvitationStatus = InvitationStatus;
+
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  projectService = inject(ProjectRepositoryService);
-  projectInvitationService = inject(ProjectInvitationRepositoryService);
-  projectMembershipService = inject(ProjectMembershipRepositoryService);
+  projectRepositoryService = inject(ProjectRepositoryService);
+  projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+  projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
+
+  resentInvitationId = signal<ProjectInvitation["id"] | null>(null);
 
   constructor() {
     this.breadcrumbStore.setPathComponent("projectMembers");
     this.selectedTabIndex.subscribe((value) => {
       if (value === 1) {
-        this.projectInvitationService.listProjectInvitations(this.projectService.entityDetail()!.id).then();
+        this.projectInvitationRepositoryService
+          .listProjectInvitations(this.projectRepositoryService.entityDetail()!.id)
+          .then();
       }
     });
   }
 
-  public openCreateDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
-      ...matDialogConfig,
-      minWidth: 800,
-      data: {
-        title:
-          this.translocoService.translateObject("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translateObject("component.invite_dialog.to") +
-          " " +
-          this.projectService.entityDetail()?.name,
-        description: this.translocoService.translateObject("project.members.description_modal"),
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
-      const selectedProject = this.projectService.entityDetail();
-      if (selectedProject && invitationEmails.length) {
-        await this.projectInvitationService.createBulkInvitations(
-          selectedProject,
-          // TODO use dynamic role instead
-          invitationEmails.map((email) => ({ email, roleSlug: "member" })),
-        );
-        if (this.selectedTabIndex() !== 1) {
-          this.selectedTabIndex.set(1);
+  resendInvitation(invitationId: ProjectInvitation["id"]) {
+    this.projectInvitationRepositoryService.resendProjectInvitation(invitationId);
+    this.resentInvitationId.set(invitationId);
+  }
+
+  public openInviteDialog(): void {
+    const selectedProject = this.projectRepositoryService.entityDetail();
+    if (selectedProject) {
+      this.projectInvitationRepositoryService.listProjectInvitations(selectedProject.id).then();
+      const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
+        ...matDialogConfig,
+        minWidth: 850,
+        data: {
+          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+            name: selectedProject.name,
+          }),
+          description: this.translocoService.translateObject("project.members.description_modal"),
+          existingMembers: this.projectMembershipRepositoryService.members,
+          existingInvitations: this.projectInvitationRepositoryService.entities,
+          itemType: "project",
+          userRole: selectedProject.userRole,
+        },
+      });
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
+        if (invitations?.length) {
+          await this.projectInvitationRepositoryService.createBulkInvitations(
+            selectedProject,
+            invitations.map(({ email, roleId }) => ({ email, roleId })),
+          );
+          if (this.selectedTabIndex() !== 1) {
+            this.selectedTabIndex.set(1);
+          }
         }
-      }
-    });
+      });
+    }
   }
 }

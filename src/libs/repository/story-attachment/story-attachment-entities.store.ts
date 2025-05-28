@@ -19,4 +19,12 @@
  *
  */
 
-export * from "./project-special-card.component";
+import { signalStore } from "@ngrx/signals";
+import { StoryAttachment } from "./story-attachment.model";
+import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base";
+
+export const StoryAttachmentEntitiesSummaryStore = signalStore(
+  { providedIn: "root" },
+  withEntityListFeature<StoryAttachment>(),
+);
+export const StoryAttachmentDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<StoryAttachment>());

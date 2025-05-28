@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,6 +22,7 @@
 @use "@angular/material" as mat;
 @use "themes/icon-theme" as icon;
 @use "themes/button-theme" as button;
+@use "themes/chips-theme" as chips;
 @use "themes/toolbar-theme" as toolbar;
 @use "themes/card-theme" as card;
 @use "themes/form-field-theme" as form-field;
@@ -42,13 +43,15 @@
 @use "themes/cdk-drag-theme" as cdk-drag;
 @use "themes/cdk-virtual-scroll" as cdk-virtual-scroll;
 @use "themes/slide-toggle-theme" as slide-toggle;
-
+@use "themes/app-table";
 @use "themes/skeleton";
 @use "themes/svg-logo";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 
 
 /************************ RESET CSS *************************/

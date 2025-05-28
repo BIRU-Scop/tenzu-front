@@ -36,34 +36,40 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   WorkflowApiServiceType.PatchEntityDetailParams,
   WorkflowApiServiceType.DeleteEntityDetailParams
 > {
-  override baseUrl = `${this.configAppService.apiUrl()}workflows`;
+  override baseUrl = `${this.configAppService.apiUrl()}projects`;
 
-  protected override getBaseUrl(): string {
-    return this.baseUrl;
+  protected override getBaseUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
+    return `${this.baseUrl}/${params.projectId}/workflows`;
   }
+  protected override createUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
+    return super.createUrl(params);
+  }
+
   protected override getEntityBaseUrl(params: WorkflowApiServiceType.BaseParams): string {
-    return `${this.baseUrl}/${params.workflowId}`;
+    return `${this.configAppService.apiUrl()}workflows/${params.workflowId}`;
   }
   protected getStatusesBaseUrl(params: WorkflowApiServiceType.BaseParams): string {
     return `${this.getEntityBaseUrl(params)}/statuses`;
   }
 
   getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }) {
-    return this.http.get<Workflow>(`${this.getBaseUrl()}/by_slug/${params.workflowSlug}/projects/${params.projectId}`);
+    return this.http.get<Workflow>(
+      `${this.configAppService.apiUrl()}projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`,
+    );
   }
 
   createStatus(workflowId: Workflow["id"], newStatus: Pick<Status, "name">) {
     return this.http.post<Status>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus);
   }
 
-  deleteStatus(workflowId: Workflow["id"], statusId: string, moveToStatus: string | undefined) {
-    return this.http.delete(`${this.getStatusesBaseUrl({ workflowId })}/${statusId}`, {
-      params: moveToStatus ? { moveTo: moveToStatus } : {},
+  deleteStatus(params: { statusId: string; moveToStatus?: string }) {
+    return this.http.delete(`${this.configAppService.apiUrl()}workflows/statuses/${params.statusId}`, {
+      params: params.moveToStatus ? { moveTo: params.moveToStatus } : {},
     });
   }
 
-  editStatus(workflowId: Workflow["id"], status: Pick<Status, "name" | "id">) {
-    return this.http.patch<Status>(`${this.getStatusesBaseUrl({ workflowId })}/${status.id}`, {
+  editStatus(status: Pick<Status, "name" | "id">) {
+    return this.http.patch<Status>(`${this.configAppService.apiUrl()}workflows/statuses/${status.id}`, {
       name: status.name,
     });
   }

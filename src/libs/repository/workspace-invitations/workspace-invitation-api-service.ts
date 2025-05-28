@@ -26,9 +26,10 @@ import { Observable } from "rxjs";
 import { WorkspaceSummary } from "../workspace";
 import { CreateInvitations, InvitationsPayload } from "../membership";
 
-type ListParams = {
+type ListWorkspaceInvitationParams = {
   workspaceId: WorkspaceSummary["id"];
 };
+type PatchWorkspaceInvitationParams = { invitationId: WorkspaceInvitation["id"] };
 
 @Injectable({
   providedIn: "root",
@@ -36,14 +37,19 @@ type ListParams = {
 export class WorkspaceInvitationsApiService extends AbstractApiService<
   WorkspaceInvitation,
   WorkspaceInvitation,
-  ListParams
+  ListWorkspaceInvitationParams,
+  unknown,
+  unknown,
+  unknown,
+  PatchWorkspaceInvitationParams,
+  unknown
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/invitations`;
   }
-  protected override getEntityBaseUrl(): string {
-    throw new Error("Method not implemented.");
+  protected override getEntityBaseUrl(params: { invitationId: WorkspaceInvitation["id"] }) {
+    return `${this.baseUrl}/invitations/${params.invitationId}`;
   }
 
   override create(): Observable<WorkspaceInvitation> {
@@ -57,17 +63,35 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
     throw new Error("Method not implemented.");
   }
 
+  resend(params: PatchWorkspaceInvitationParams): Observable<WorkspaceInvitation> {
+    return this.http.post<WorkspaceInvitation>(`${this.patchUrl(params)}/resend`, {});
+  }
+
+  revoke(params: PatchWorkspaceInvitationParams): Observable<WorkspaceInvitation> {
+    return this.http.post<WorkspaceInvitation>(`${this.patchUrl(params)}/revoke`, {});
+  }
+
   override delete(): Observable<void> {
     throw new Error("Method not implemented.");
   }
   createBulkInvitations(data: InvitationsPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
     return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
+  denyForCurrentUser(params: { workspaceId: WorkspaceSummary["id"] }) {
+    return this.http.post<WorkspaceInvitation>(`${this.getBaseUrl(params)}/deny`, null);
+  }
   getByToken(params: { token: string }) {
-    return this.http.get<PublicWorkspacePendingInvitation>(`${this.baseUrl}/invitations/${params.token}`);
+    return this.http.get<PublicWorkspacePendingInvitation>(`${this.baseUrl}/invitations/by_token/${params.token}`);
+  }
+
+  acceptForCurrentUser(params: { workspaceId: WorkspaceSummary["id"] }) {
+    return this.http.post<WorkspaceInvitation>(`${this.getBaseUrl(params)}/accept`, null);
   }
 
   acceptByToken(params: { token: string }) {
-    return this.http.post<WorkspaceInvitation>(`${this.baseUrl}/invitations/${params.token}/accept`, params.token);
+    return this.http.post<WorkspaceInvitation>(
+      `${this.baseUrl}/invitations/by_token/${params.token}/accept`,
+      params.token,
+    );
   }
 }

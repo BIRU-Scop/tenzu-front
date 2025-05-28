@@ -19,19 +19,18 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
-import { ProjectKanbanService } from "../project-kanban.service";
 import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { Story } from "@tenzu/repository/story";
+import { getAssignees, Story, StoryRepositoryService } from "@tenzu/repository/story";
 
 @Component({
   selector: "app-story-card",
@@ -81,32 +80,29 @@ import { Story } from "@tenzu/repository/story";
 export class StoryCardComponent {
   story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
 
-  assignees = computed(() => {
-    const teamMembers = this.projectMembershipService.members();
-    return this.story().assigneeIds.map((userId) => teamMembers[userId]) || [];
-  });
-  projectMembershipService = inject(ProjectMembershipRepositoryService);
-
+  assignees = getAssignees(this.story);
+  projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  storyRepositoryService = inject(StoryRepositoryService);
   relativeDialog = inject(RelativeDialogService);
-  projectKanbanService = inject(ProjectKanbanService);
 
   openAssignStoryDialog(event: MouseEvent): void {
     const story = this.story();
-    const teamMembers = Object.values(this.projectMembershipService.members());
+    const teamMembers = this.projectMembershipRepositoryService.members;
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
       relativeXPosition: "auto",
       relativeYPosition: "auto",
       data: {
-        assignees: this.assignees(),
+        assignees: this.assignees,
         teamMembers: teamMembers,
       },
     });
     dialogRef.componentInstance.memberAssigned.subscribe(async (user) => {
-      await this.projectKanbanService.assignStory(user, story.projectId, story.ref);
+      await this.storyRepositoryService.createAssign(user, { projectId: story.projectId, ref: story.ref });
     });
     dialogRef.componentInstance.memberUnassigned.subscribe(
-      async (user) => await this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
+      async (user) =>
+        await this.storyRepositoryService.deleteAssign(user, { projectId: story.projectId, storyRef: story.ref }),
     );
   }
 }

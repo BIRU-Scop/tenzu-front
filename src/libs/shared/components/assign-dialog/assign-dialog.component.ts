@@ -27,7 +27,7 @@ import {
   linkedSignal,
   model,
   output,
-  signal,
+  Signal,
 } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
@@ -44,8 +44,8 @@ import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list
 import { NotificationService } from "@tenzu/utils/services/notification";
 
 type AssignDialogData = {
-  assignees: UserNested[];
-  teamMembers: UserNested[];
+  assignees: Signal<UserNested[]>;
+  teamMembers: Signal<UserNested[]>;
 };
 
 @Component({
@@ -66,12 +66,13 @@ type AssignDialogData = {
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'component.assign'">
+      @let _assignees = assignees();
       <mat-dialog-content>
         <div class="flex flex-col gap-4 max-h-[45vh] overflow-y-hidden">
-          @if ((assignees.value?.length || 0) > 0) {
+          @if ((_assignees.length || 0) > 0) {
             <div class="flex flex-row items-center">
               <p class="pr-2">{{ t("assigned_to") }}</p>
-              <app-avatar-list [users]="assignees.value!" [prioritizeCurrentUser]="true" />
+              <app-avatar-list [users]="_assignees" [prioritizeCurrentUser]="true" />
             </div>
           } @else {
             <p class="mat-body-medium">{{ t("not_assigned") }}</p>
@@ -119,15 +120,14 @@ export class AssignDialogComponent {
 
   readonly dialogRef = inject(MatDialogRef<AssignDialogComponent>);
 
-  protected filteredTeamMembers = linkedSignal(() => this.teamMembers() || []);
+  protected filteredTeamMembers = linkedSignal(() => this.data.teamMembers() || []);
   protected sortedByFullName = computed(() => {
     const teamMembers = this.filteredTeamMembers();
     return teamMembers.sort(this.sortByFullName);
   });
-  protected teamMembers = signal<Array<UserNested>>(this.data.teamMembers || []);
   protected searchInputControl = model<string>("");
 
-  assignees = this.fb.control(this.data.assignees || []);
+  assignees = linkedSignal(() => this.data.assignees() || []);
 
   memberAssigned = output<UserNested>();
   memberUnassigned = output<UserNested>();
@@ -140,7 +140,7 @@ export class AssignDialogComponent {
           let filterValue = memberName || "";
           filterValue = filterValue.toLowerCase() || "";
           this.filteredTeamMembers.set(
-            this.teamMembers()?.filter((member) => {
+            this.data.teamMembers()?.filter((member) => {
               return member.fullName.toLowerCase().includes(filterValue);
             }) || [],
           );
@@ -160,15 +160,13 @@ export class AssignDialogComponent {
   }
 
   memberIsAssigned(member: UserNested) {
-    const result = this.assignees.value?.find(
-      (memberElement: UserNested) => memberElement.fullName === member.fullName,
-    );
+    const result = this.assignees().find((memberElement: UserNested) => memberElement.id === member.id);
     return !!result;
   }
 
   optionSelected(event: MatSelectionListChange) {
     const member: UserNested = event.options[0].value;
-    let newValue: UserNested[] = [...this.assignees.value!];
+    let newValue: UserNested[] = [...this.assignees()];
     if (!this.memberIsAssigned(member)) {
       newValue = [member, ...newValue];
       this.memberAssigned.emit(member);
@@ -184,6 +182,6 @@ export class AssignDialogComponent {
         detail: `[ASSIGN][DIALOG] Could not assign member ${member.username}.`,
       });
     }
-    this.assignees.setValue(newValue);
+    this.assignees.set(newValue);
   }
 }

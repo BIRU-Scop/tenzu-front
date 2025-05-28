@@ -19,14 +19,30 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { signalStore, withComputed } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
 import { withEntityListFeature } from "../base";
 import { ProjectMembership } from "./project-membership.model";
+import { computed } from "@angular/core";
+import { UserNested } from "@tenzu/repository/user";
 
 const selectIdProjectMembership: SelectEntityId<ProjectMembership> = (membership) => membership.user.username;
 
 export const ProjectMembershipEntitiesStore = signalStore(
   { providedIn: "root" },
   withEntityListFeature<ProjectMembership>({ selectId: selectIdProjectMembership }),
+  withComputed((store) => {
+    const memberMap = computed(() => {
+      return store.entities().reduce(
+        (acc, membership) => {
+          return { ...acc, [membership.user.id]: membership.user };
+        },
+        {} as Record<UserNested["id"], UserNested>,
+      );
+    });
+    const members = computed(() => {
+      return Object.values(memberMap());
+    });
+    return { memberMap, members };
+  }),
 );

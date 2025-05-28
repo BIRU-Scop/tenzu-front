@@ -19,49 +19,20 @@
  *
  */
 
-import { UserNested } from "../user";
+import { ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
+
+export type Permission = WorkspacePermissions | ProjectPermissions;
 
 export type Role = {
+  id: string;
   name: string;
   slug: string;
   isOwner: boolean;
   order: number;
   editable: boolean;
-  permissions: string[];
+  permissions: Permission[];
 };
 
-export type InvitationStatus = "pending" | "accepted" | "revoked" | "denied";
-
-export type InvitationBase = {
-  id: string;
-  status: InvitationStatus;
-  user?: UserNested;
-  role: Role;
-  email: string;
-};
-
-type _PrivateEmailInvitation = InvitationBase & {
-  email?: string;
-};
-
-export type CreateInvitations = {
-  invitations: _PrivateEmailInvitation[];
-  alreadyMembers: number;
-};
-
-export type PublicPendingInvitationBase = {
-  email: string;
-  existingUser: boolean;
-};
-
-export type InvitationsPayload = {
-  invitations: {
-    email?: string;
-    username?: string;
-    roleSlug: string;
-  }[];
-};
-
-export type UpdateInvitationPayload = {
-  roleSlug: string;
+export type UserRole = {
+  userRole?: Role;
 };

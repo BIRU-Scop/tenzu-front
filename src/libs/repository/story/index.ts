@@ -21,3 +21,4 @@
 
 export * from "./story.model";
 export * from "./story-repository.service";
+export * from "./utils";

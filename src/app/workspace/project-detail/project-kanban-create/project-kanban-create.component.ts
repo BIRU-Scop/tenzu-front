@@ -69,7 +69,7 @@ export class ProjectKanbanCreateComponent {
       const project = this.projectService.entityDetail();
       if (name && project) {
         try {
-          const workflow = await this.workflowService.createRequest({ projectId: project.id, name: name });
+          const workflow = await this.workflowService.createRequest({ name: name }, { projectId: project.id });
           await this.router.navigate(["..", "kanban", workflow.slug], { relativeTo: this.activatedRoute });
         } catch (e) {
           if (e instanceof HttpErrorResponse && e.status === 400) {

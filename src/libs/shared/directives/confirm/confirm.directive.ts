@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -44,6 +44,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 export type ConfirmPopupData = {
   title?: string;
   message?: string;
+  actionButtonContent?: string;
   /* eslint-disable @typescript-eslint/no-explicit-any */
   component?: any;
   deleteAction: boolean;
@@ -55,17 +56,18 @@ export type ConfirmPopupData = {
   styles: [``],
   template: `
     <ng-container *transloco="let t; prefix: 'directives.confirmPopupComponent'">
-      @if (data().title) {
-        <h2 id="aria-label" mat-dialog-title>{{ data().title }}</h2>
+      @let _data = data();
+      @if (_data.title) {
+        <h2 id="aria-label" mat-dialog-title>{{ _data.title }}</h2>
       }
 
       <mat-dialog-content class=".mat-body-medium">
-        @if (data().component) {
-          <ng-container *ngComponentOutlet="data().component"></ng-container>
+        @if (_data.component) {
+          <ng-container *ngComponentOutlet="_data.component"></ng-container>
         } @else {
-          @if (data().message) {
-            <p>{{ data().message }}</p>
-          } @else if (data().deleteAction) {
+          @if (_data.message) {
+            <p>{{ _data.message }}</p>
+          } @else if (_data.deleteAction) {
             <p>{{ t("textDelete") }}</p>
           } @else {
             <p>{{ t("textConfirm") }}</p>
@@ -74,10 +76,14 @@ export type ConfirmPopupData = {
       </mat-dialog-content>
       <mat-dialog-actions [align]="'end'">
         <button mat-flat-button class="secondary-button" [mat-dialog-close]="false">{{ t("cancelAction") }}</button>
-        @if (data().deleteAction) {
-          <button mat-flat-button class="error-button" [mat-dialog-close]="true">{{ t("deleteAction") }}</button>
+        @if (_data.deleteAction) {
+          <button mat-flat-button class="error-button" [mat-dialog-close]="true">
+            {{ _data.actionButtonContent || t("deleteAction") }}
+          </button>
         } @else {
-          <button mat-flat-button class="tertiary-button" [mat-dialog-close]="true">{{ t("confirmAction") }}</button>
+          <button mat-flat-button class="tertiary-button" [mat-dialog-close]="true">
+            {{ _data.actionButtonContent || t("confirmAction") }}
+          </button>
         }
       </mat-dialog-actions>
     </ng-container>

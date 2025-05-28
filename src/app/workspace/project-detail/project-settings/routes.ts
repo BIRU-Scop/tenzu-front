@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,4 +19,27 @@
  *
  */
 
-export const emailRegexPatternValidation = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+import { Routes } from "@angular/router";
+import { provideTranslocoScope } from "@jsverse/transloco";
+
+const routes: Routes = [
+  {
+    path: "",
+    redirectTo: "project-edit",
+    pathMatch: "prefix",
+  },
+  {
+    path: "project-edit",
+    loadComponent: () => import("./project-edit/project-edit.component"),
+    providers: [provideTranslocoScope("project")],
+    data: { state: 1 },
+  },
+  {
+    path: "list-project-roles",
+    loadComponent: () => import("./list-project-roles/list-project-roles.component"),
+    providers: [provideTranslocoScope("project")],
+    data: { state: 2 },
+  },
+];
+
+export default routes;

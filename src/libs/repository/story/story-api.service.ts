@@ -20,15 +20,7 @@
  */
 import type * as StoryApiServiceType from "./story-api.type";
 import { Injectable } from "@angular/core";
-import {
-  Story,
-  StoryAssign,
-  StoryAttachment,
-  StoryCreate,
-  StoryDetail,
-  StoryReorderPayload,
-  StoryUpdate,
-} from "./story.model";
+import { Story, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayload, StoryUpdate } from "./story.model";
 import { AbstractApiService } from "../base";
 import { UserNested } from "@tenzu/repository/user";
 
@@ -58,14 +50,6 @@ export class StoryApiService extends AbstractApiService<
     return `${this.baseUrl}/${params.projectId}/workflows/${params.workflowSlug}/stories`;
   }
 
-  public baseStoryAttachmentUrl(params: StoryApiServiceType.BaseParams) {
-    return `${this.getEntityBaseUrl(params)}/attachments`;
-  }
-
-  public baseStoryAssignmentUrl(params: StoryApiServiceType.BaseParams) {
-    return `${this.getEntityBaseUrl(params)}/assignments`;
-  }
-
   protected override listUrl(params: StoryApiServiceType.ListEntitiesSummaryParams) {
     return `${this.baseStoryFilterByWorkflowSlugUrl(params)}`;
   }
@@ -81,26 +65,18 @@ export class StoryApiService extends AbstractApiService<
     return super.patch(story, params);
   }
 
-  addStoryAttachments(attachment: Blob, params: StoryApiServiceType.BaseParams) {
-    const formData = new FormData();
-    formData.append("file", attachment);
-    return this.http.post<StoryAttachment>(`${this.baseStoryAttachmentUrl(params)}`, formData);
-  }
-
-  getAttachments(params: StoryApiServiceType.BaseParams) {
-    return this.http.get<StoryAttachment[]>(`${this.baseStoryAttachmentUrl(params)}`);
-  }
-
-  deleteStoryAttachment(params: StoryApiServiceType.GetEntityDetailParams & { attachmentId: string }) {
-    return this.http.delete(`${this.baseStoryAttachmentUrl(params)}/${params.attachmentId}`);
-  }
   reorder(payload: StoryReorderPayload, params: { projectId: string }) {
     return this.http.post<never>(`${this.getBaseUrl(params)}/reorder`, payload);
   }
-  createAssignee(username: UserNested["username"], params: StoryApiServiceType.BaseParams) {
-    return this.http.post<StoryAssign>(`${this.baseStoryAssignmentUrl(params)}`, { username });
+
+  public baseStoryAssignmentUrl(params: StoryApiServiceType.BaseParams) {
+    return `${this.getEntityBaseUrl(params)}/assignments`;
   }
-  deleteAssignee(params: StoryApiServiceType.BaseParams & { username: UserNested["username"] }) {
-    return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.username}`);
+
+  createAssignee(userId: UserNested["id"], params: StoryApiServiceType.BaseParams) {
+    return this.http.post<StoryAssign>(`${this.baseStoryAssignmentUrl(params)}`, { userId });
+  }
+  deleteAssignee(params: StoryApiServiceType.BaseParams & { userId: UserNested["id"] }) {
+    return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.userId}`);
   }
 }

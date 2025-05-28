@@ -19,11 +19,19 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { withEntityListFeature } from "../base";
 import { ProjectInvitation } from "./project-invitation.model";
+import { setAllEntities } from "@ngrx/signals/entities";
+import { sortInvitation } from "../membership";
 
 export const ProjectInvitationsEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
   withEntityListFeature<ProjectInvitation>(),
+  withMethods((store) => ({
+    reorder() {
+      const entities = store.entities().sort(sortInvitation);
+      patchState(store, setAllEntities(entities));
+    },
+  })),
 );

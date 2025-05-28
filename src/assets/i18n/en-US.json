@@ -95,9 +95,21 @@
     "project_card": {
       "create_first_project": "Create your first project"
     },
-    "project_special_card": {
-      "submit": "Accept invitation",
-      "cancel": "Deny invitation"
+    "invitation": {
+      "accept": "Accept invitation",
+      "deny": "Deny invitation",
+      "last_sent": "The last invitation was sent on {var}",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "revoked": "Revoked",
+      "denied": "Denied",
+      "resend": "Resend an invitation",
+      "revoke": "Cancel an invitation",
+      "resend_too_much": "You can't resend an invitation to {email} because they have already received too many of them",
+      "resend_too_soon": "You can't resend an invitation to {email} because you've already reinvited them recently. Wait for {email} to respond or try again later.",
+      "resent_confirmation": "Invitation resent",
+      "confirm_revoke_action": "Revoke",
+      "confirm_revoke_message": "Are you sure you want to cancel {email}'s invitation to join the {item} \"{name}\"?"
     },
     "description": {
       "label": "Description",
@@ -115,10 +127,25 @@
       "pending": "Pending",
       "non_members": "Non-members",
       "add": "Add",
-      "invite_peoples": "Invite peoples",
-      "to": "to",
-      "at_least_one_invalid_email": "The input have at least one incorrect mail",
-      "mailing_list": "Mailing list"
+      "invite_people": "Invite peoples",
+      "invite_people_to": "Invite peoples to {name}",
+      "mailing_list": "Mailing list",
+      "member_error": "This address belongs to a member",
+      "duplicate_error": "This address has already been invited. Do you want to resend an invitation?",
+      "duplicate_error_ok": "Yes"
+    },
+    "role_selector": {
+      "workspace": {
+        "owner": "can invite/remove members, appoint/unassign any role, edit workspace info, delete workspace, create projects and view the workspace (but not its contents)",
+        "admin": "can invite/remove (except owner) members, appoint/unassign any role other than owner, edit workspace info, create projects and view the workspace (but not its contents)",
+        "member": "can create projects and see the workspace (but not its contents)",
+        "readonly_member": "can see the workspace (but not its contents)"
+      },
+      "project": {
+        "owner": "can invite/remove members, appoint/unassign any role, edit project info, delete project, edit dynamic roles and see all project's content",
+        "admin": "can invite/remove (except owner) members, appoint/unassign  any role other than owner, edit project info, edit dynamic roles and see all project's content",
+        "readonly_member": "can see the project content: kanbans, stories and comments"
+      }
     }
   },
   "commons": {

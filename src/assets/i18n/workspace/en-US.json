@@ -23,18 +23,17 @@
   },
   "settings": {
     "title": "Workspace settings",
-    "edit_profile": "Edit profile",
-    "delete_workspace": "Delete workspace",
-    "delete": {
-      "delete": "Delete",
-      "error": "You cannot delete a workspace that has projects in it. </br> This workspace has { totalProjects, plural, one {<strong class='number-projects'>#</strong> project} other {<strong class='number-projects'>#</strong> projects} }. Delete the { totalProjects, plural, one {project} other {projects} } first.",
-      "deleted_workspace": "The workspace {{ var }} has been deleted."
-    },
     "edit": {
       "title": "Edit workspace",
       "name": "Name",
       "name_required": "Workspace name can’t be empty",
-      "name_placeholder": "Add workspace name"
+      "name_placeholder": "Add workspace name",
+      "delete_workspace": "Delete workspace",
+      "delete": {
+        "delete": "Delete",
+        "error": "You cannot delete a workspace that has projects in it. </br> This workspace has { totalProjects, plural, one {<strong class='number-projects'>#</strong> project} other {<strong class='number-projects'>#</strong> projects} }. Delete the { totalProjects, plural, one {project} other {projects} } first.",
+        "deleted_workspace": "The workspace {{ var }} has been deleted."
+      }
     }
   },
   "people": {
@@ -42,8 +41,8 @@
     "invite_to_workspace": "Invite to workspace",
     "description_modal": "<p>Once they accept the invitation, they will be able to invite new members, create new projects and edit other workspace settings.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
     "members_tab": "Members",
-    "pending_tab": "Pending",
-    "pending_empty": "There are no pending invitations to accept.",
+    "invitation_tab": "Invitations",
+    "invitation_empty": "There are no invitations.",
     "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them."
   },
   "placeholder": {

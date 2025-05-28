@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
@@ -32,23 +32,18 @@ import { DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailService } from "./story-detail.service";
-import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
-import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { MatOption, MatSelect } from "@angular/material/select";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { MatTooltip } from "@angular/material/tooltip";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { StoryAttachment } from "@tenzu/repository/story";
-import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
+import { StoryDetailAttachementsComponent } from "./story-detail-attachements/story-detail-attachements.component";
+import { StoryStatusComponent } from "./story-status/story-status.component";
+import { StoryAssigneeComponent } from "./story-assignee/story-assignee.component";
 
 @Component({
   selector: "app-story-detail",
@@ -67,12 +62,12 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
     ConfirmDirective,
     MatTableModule,
     MatIconButton,
-    AvatarListComponent,
     MatDivider,
-    MatSelect,
-    MatOption,
     MatTooltip,
     StoryDetailMenuComponent,
+    StoryDetailAttachementsComponent,
+    StoryStatusComponent,
+    StoryAssigneeComponent,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
@@ -97,100 +92,28 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
               </div>
             </form>
             <mat-divider></mat-divider>
-            <div class="flex flex-col gap-y-4">
-              <button
-                class="primary-button w-fit"
-                mat-flat-button
-                type="button"
-                (click)="resetInput(fileUpload); fileUpload.click()"
-              >
-                <mat-icon class="icon-full">attach_file</mat-icon>
-                {{ t("attachments.attach_file") }}
-              </button>
-              <input type="file" [hidden]="true" (change)="onFileSelected($event)" #fileUpload />
-              @let selectedStoryAttachments = storyService.selectedStoryAttachments();
-              @if (selectedStoryAttachments.length > 0) {
-                <mat-expansion-panel expanded>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <mat-icon>attachment</mat-icon>
-                      Attachments ({{ selectedStoryAttachments.length }})
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <mat-table [dataSource]="selectedStoryAttachments">
-                    <ng-container matColumnDef="name">
-                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
-                      <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
-                    </ng-container>
-
-                    <ng-container matColumnDef="size">
-                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
-                      <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
-                    </ng-container>
-
-                    <ng-container matColumnDef="date">
-                      <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
-                      <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
-                    </ng-container>
-
-                    <ng-container matColumnDef="actions">
-                      <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                      <mat-cell *matCellDef="let row">
-                        <button mat-icon-button (click)="previewFile(row)" type="button">
-                          <mat-icon>visibility</mat-icon>
-                        </button>
-                        <button mat-icon-button (click)="downloadFile(row)" type="button">
-                          <mat-icon>download</mat-icon>
-                        </button>
-                        <button mat-icon-button type="button" (click)="deleteAttachment(row.id, row.name)">
-                          <mat-icon>delete</mat-icon>
-                        </button>
-                      </mat-cell>
-                    </ng-container>
-
-                    <!-- Header and Row Declarations -->
-                    <mat-header-row *matHeaderRowDef="['name', 'size', 'date', 'actions']"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: ['name', 'size', 'date', 'actions']"></mat-row>
-                  </mat-table>
-                </mat-expansion-panel>
-              }
-            </div>
+            @let projectDetail = projectKanbanService.projectService.entityDetail();
+            @if (projectDetail && story) {
+              <app-story-detail-attachements
+                [projectDetail]="projectDetail"
+                [storyDetail]="story"
+              ></app-story-detail-attachements>
+            }
           </div>
           <div
             class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline pl-8 pt-4"
           >
-            <div class="grid grid-cols-2 gap-y-4 content-start mb-2">
-              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
-              <app-user-card
-                [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
-                [username]="story.createdAt | date: 'short'"
-                [color]="story.createdBy?.color || 0"
-              ></app-user-card>
-              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
-              <mat-form-field>
-                <mat-select [(value)]="this.statusSelected" (selectionChange)="changeStatus()">
-                  @for (status of workflowService.statuses(); track status.id) {
-                    <mat-option [value]="status.id">{{ status.name }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-              <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
-              @let _assignees = assignees();
-              @if (_assignees.length > 0) {
-                <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
-                  <app-avatar-list [users]="_assignees" [prioritizeCurrentUser]="true"></app-avatar-list>
-                </button>
-              } @else {
-                <button
-                  mat-icon-button
-                  type="button"
-                  (click)="openAssignStoryDialog($event)"
-                  [attr.aria-label]="t('add_assignees')"
-                  [matTooltip]="t('add_assignees')"
-                >
-                  <mat-icon>person_add</mat-icon>
-                </button>
-              }
+            <div class="grid grid-cols-1 gap-y-4 content-start mb-2">
+              <div class="flex flex-row gap-4">
+                <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
+                <app-user-card
+                  [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
+                  [username]="story.createdAt | date: 'short'"
+                  [color]="story.createdBy?.color || 0"
+                ></app-user-card>
+              </div>
+              <app-story-status [storyDetail]="story"></app-story-status>
+              <app-story-assignee [storyDetail]="story"></app-story-assignee>
             </div>
             <mat-divider></mat-divider>
             <button
@@ -222,11 +145,8 @@ export default class StoryDetailComponent {
   workflowService = this.storyDetailService.workflowService;
   workspaceService = inject(WorkspaceRepositoryService);
   storyService = this.storyDetailService.storyService;
-  projectMembershipService = inject(ProjectMembershipRepositoryService);
   notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
-  relativeDialog = inject(RelativeDialogService);
-  fileDownloaderService = inject(FileDownloaderService);
   fb = inject(FormBuilder);
   canBeClosed = input(false);
   closed = output<void>();
@@ -235,35 +155,17 @@ export default class StoryDetailComponent {
   form = this.fb.nonNullable.group({
     title: ["", Validators.required],
   });
-  statusSelected = model<string>("");
 
   constructor() {
     toObservable(this.selectedStory)
       .pipe(filterNotNull())
       .subscribe(async (value) => {
         this.form.setValue({ title: value?.title || "" });
-        this.statusSelected.set(value.statusId);
         if (this.workflowService.entityDetail()?.id !== value.workflowId) {
           await this.workflowService.getBySlugRequest(value.workflow);
         }
       });
   }
-
-  assignees = computed(() => {
-    const teamMembers = this.projectMembershipService.members();
-    return this.selectedStory()?.assigneeIds.map((userId) => teamMembers[userId]) || [];
-  });
-
-  previewFile(row: StoryAttachment) {
-    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
-    this.fileDownloaderService.previewFileFromUrl(attachmentUrl);
-  }
-
-  downloadFile(row: StoryAttachment) {
-    const attachmentUrl = this.storyDetailService.getStoryAttachmentUrlBack(row.id);
-    this.fileDownloaderService.downloadFileFromUrl(attachmentUrl, row.name);
-  }
-
   async submit() {
     const description = await this.editor().save();
     const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
@@ -276,65 +178,8 @@ export default class StoryDetailComponent {
     this.form.setValue({ title: this.selectedStory()?.title || "" });
   }
 
-  // Necessary to avoid Chrome refusing to upload the file which has just been deleted
-  resetInput(fileUpload: HTMLInputElement) {
-    fileUpload.value = "";
-  }
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      // if exceed 100 MB
-      if (input.files[0].size > 104857600) {
-        this.notificationService.error({
-          translocoTitle: true,
-          title: "workflow.detail_story.attachments.exceed_size",
-          translocoTitleParams: { var: input.files[0].name },
-        });
-        return;
-      }
-      this.storyDetailService.addAttachment(input.files[0]).then();
-    }
-  }
-
-  deleteAttachment(id: string, filename: string) {
-    this.storyDetailService.deleteAttachment(id).then(() => {
-      this.notificationService.success({
-        translocoTitle: true,
-        title: "workflow.detail_story.attachments.deleted_attachment",
-        translocoTitleParams: { var: filename },
-      });
-    });
-  }
-
   async onDelete() {
     await this.storyDetailService.deleteSelectedStory();
     this.closed.emit();
-  }
-
-  openAssignStoryDialog(event: MouseEvent): void {
-    const story = this.selectedStory();
-    const teamMembers = Object.values(this.projectMembershipService.members());
-    if (story) {
-      const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
-        ...matDialogConfig,
-        relativeXPosition: "left",
-        data: {
-          assignees: this.assignees(),
-          teamMembers: teamMembers,
-        },
-      });
-      dialogRef.componentInstance.memberAssigned.subscribe((user) => {
-        this.projectKanbanService.assignStory(user, story.projectId, story.ref).then();
-      });
-      dialogRef.componentInstance.memberUnassigned.subscribe((user) =>
-        this.projectKanbanService.removeAssignStory(user, story.projectId, story.ref),
-      );
-    }
-  }
-
-  async changeStatus() {
-    await this.storyDetailService.patchSelectedStory({ statusId: this.statusSelected() });
-    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 }

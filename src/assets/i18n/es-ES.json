@@ -42,6 +42,22 @@
     "project_card": {
       "create_first_project": "Crea tu primer proyecto"
     },
+    "invitation": {
+      "accept": "Aceptar invitación",
+      "deny": "Denegar invitación",
+      "last_sent": "La última invitación se envió el {var}",
+      "pending": "Pendiente",
+      "accepted": "Aceptado",
+      "revoked": "Revocada",
+      "denied": "Denegado",
+      "resend": "Reenviar una invitación",
+      "revoke": "Cancelar una invitación",
+      "resend_too_much": "No puedes reenviar una invitación a {email} porque ya ha recibido demasiadas",
+      "resend_too_soon": "No puedes reenviar una invitación a {email} porque ya le has vuelto a invitar recientemente. Espera a que {email} responda o inténtalo de nuevo más tarde.",
+      "resent_confirmation": "Invitación reenviada",
+      "confirm_revoke_action": "Revocar",
+      "confirm_revoke_message": "¿Estás seguro de que quieres cancelar la invitación de {email} para unirte al {item} «{name}»?"
+    },
     "description": {
       "label": "Descripción",
       "placeholder": "Agrega una breve descripción para ayudar a otros a comprender mejor tu proyecto."
@@ -51,6 +67,30 @@
     },
     "primary_side_nav": {
       "collapse": "Colapsar"
+    },
+    "invite_dialog": {
+      "pending": "Pendiente",
+      "non_members": "No miembros",
+      "add": "Agregar",
+      "invite_people": "Invitar personas",
+      "invite_people_to": "Invitar personas to {name}",
+      "mailing_list": "Lista de distribución",
+      "member_error": "Esta dirección pertenece a un miembro",
+      "duplicate_error": "Esta dirección ya ha sido invitada. ¿Desea volver a enviar una invitación?",
+      "duplicate_error_ok": "Sí"
+    },
+    "role_selector": {
+      "workspace": {
+        "owner": "puede invitar/remover miembros, designar/desasignar cualquier rol, editar la información del espacio de trabajo, eliminar el espacio de trabajo, crear proyectos y ver el espacio de trabajo (pero no su contenido)",
+        "admin": "puede invitar/remover (excepto owner) miembros, designar/desasignar cualquier rol que no sea owner, editar información del espacio de trabajo, crear proyectos y ver el espacio de trabajo (pero no su contenido)",
+        "member": "puede crear proyectos y ver el espacio de trabajo (pero no su contenido)",
+        "readonly_member": "puede ver el espacio de trabajo (pero no su contenido)"
+      },
+      "project": {
+        "owner": "puede invitar/remover miembros, designar/desasignar cualquier rol, editar info del proyecto, borrar proyecto, editar roles dinámicos y ver todo el contenido del proyecto",
+        "admin": "puede invitar/remover (excepto owner) miembros, designar/desasignar cualquier rol que no sea owner, editar información del proyecto, editar roles dinámicos y ver todo el contenido del proyecto",
+        "readonly_member": "puede ver el contenido del proyecto: kanbans, historias y comentarios"
+      }
     }
   },
   "commons": {
@@ -66,16 +106,6 @@
       "lang": "Idioma",
       "email": "Correo electrónico"
     }
-  },
-  "invitations": {
-    "pending": "Pendiente",
-    "non_members": "No miembros",
-    "invite_to_workspace": "Invitar al espacio de trabajo",
-    "invite_to_project": "Invitar al proyecto",
-    "to": "a",
-    "add": "Agregar",
-    "invite_peoples": "Invitar personas",
-    "at_least_one_invalid_email": "La entrada tiene al menos un correo electrónico incorrecto"
   },
   "directives": {
     "confirmPopupComponent": {

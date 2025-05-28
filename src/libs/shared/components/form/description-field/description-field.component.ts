@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,7 +24,7 @@ import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor-directive.directive";
+import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
 import { injectNgControl } from "@tenzu/utils/injectors";
 
 export type DescriptionOptions = {

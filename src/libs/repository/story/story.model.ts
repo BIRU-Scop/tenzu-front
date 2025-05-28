@@ -22,6 +22,7 @@
 import { Status } from "../status";
 import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
+import { ProjectDetail } from "@tenzu/repository/project";
 
 export type StoryReorder = {
   place: "after" | "before";
@@ -42,17 +43,11 @@ export type Story = {
   title: string;
   version: number;
   description: string;
-  workflowId: string;
-  projectId: string;
-  statusId: string;
-  assigneeIds: Array<string>;
+  workflowId: Workflow["id"];
+  projectId: ProjectDetail["id"];
+  statusId: Status["id"];
+  assigneeIds: Array<User["id"]>;
 };
-
-export interface createdBy {
-  username: string;
-  fullName: string;
-  color: number;
-}
 
 export type StoryDetail = Story & {
   workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
@@ -77,15 +72,6 @@ export type StoryCreate = Pick<Story, "title" | "statusId"> &
 
 export type StoryUpdate = Partial<StoryDetail> & {
   workflowSlug?: string;
-};
-
-export type StoryAttachment = {
-  id: string;
-  name: string;
-  contentType: string;
-  createdAt: string;
-  size: number;
-  file: string;
 };
 
 export type StoryAssign = {
