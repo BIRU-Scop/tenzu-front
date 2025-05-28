@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,10 +19,21 @@
  *
  */
 
-import { UserNested } from "../user";
+import { Routes } from "@angular/router";
+import { provideTranslocoScope } from "@jsverse/transloco";
 
-export type WorkspaceMembership = {
-  user: UserNested;
-  roleId: string;
-  workspaceId: string;
-};
+const routes: Routes = [
+  {
+    path: "",
+    redirectTo: "workspace-edit",
+    pathMatch: "prefix",
+  },
+  {
+    path: "workspace-edit",
+    loadComponent: () => import("./workspace-edit/workspace-edit.component"),
+    providers: [provideTranslocoScope("project")],
+    data: { state: 1 },
+  },
+];
+
+export default routes;

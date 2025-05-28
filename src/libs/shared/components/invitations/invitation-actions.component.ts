@@ -29,6 +29,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
+import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 
 @Component({
   selector: "app-invitation-actions",
@@ -94,6 +95,7 @@ import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-rol
 export class InvitationActionsComponent {
   protected readonly InvitationStatus = InvitationStatus;
 
+  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
 
   invitation = input.required<InvitationBase>();
@@ -104,10 +106,18 @@ export class InvitationActionsComponent {
   revoke = output<InvitationBase["id"]>();
 
   notOwnerInvitationOrHasOwnerPermission = computed(() => {
-    return (
-      !this.workspaceRoleRepositoryService.entityMapSummary()[this.invitation().roleId].isOwner ||
-      this.item().userRole?.isOwner
-    );
+    let roleRepositoryService: ProjectRolesRepositoryService | WorkspaceRolesRepositoryService;
+    switch (this.itemType()) {
+      case "project": {
+        roleRepositoryService = this.projectRoleRepositoryService;
+        break;
+      }
+      case "workspace": {
+        roleRepositoryService = this.workspaceRoleRepositoryService;
+        break;
+      }
+    }
+    return !roleRepositoryService.entityMapSummary()[this.invitation().roleId].isOwner || this.item().userRole?.isOwner;
   });
 
   getInvitationResendDisableMessage(invitation: InvitationBase): string | null {

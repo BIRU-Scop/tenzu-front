@@ -19,13 +19,22 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
-import { ProjectRolesSummary, ProjectRolesDetail } from "./project-roles.model";
+import { signalStore, withComputed } from "@ngrx/signals";
+import { ProjectRoleSummary, ProjectRoleDetail } from "./project-roles.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { computed } from "@angular/core";
 
 export const ProjectRolesEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
-  withEntityListFeature<ProjectRolesSummary>(),
+  withEntityListFeature<ProjectRoleSummary>(),
+  withComputed((store) => ({
+    defaultRole: computed(() => {
+      return store.entities().find((role) => role.slug === "readonly-member");
+    }),
+    ownerRole: computed(() => {
+      return store.entities().find((role) => role.isOwner);
+    }),
+  })),
 );
 
-export const ProjectRolesDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<ProjectRolesDetail>());
+export const ProjectRolesDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<ProjectRoleDetail>());

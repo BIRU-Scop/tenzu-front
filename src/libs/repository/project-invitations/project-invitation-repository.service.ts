@@ -23,10 +23,14 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectInvitationsEntitiesSummaryStore } from "./project-invitations-entities.store";
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
-import { ProjectDetail } from "../project";
+import { ProjectDetail, ProjectNested } from "../project";
 import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
 import { ProjectInvitation } from "./project-invitation.model";
+import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
+import { getEntityIdSelector } from "@tenzu/repository/base";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -36,6 +40,25 @@ export class ProjectInvitationRepositoryService {
   private projectInvitationEntitiesStore = inject(ProjectInvitationsEntitiesSummaryStore);
   entities = this.projectInvitationEntitiesStore.entities;
   entityMap = this.projectInvitationEntitiesStore.entityMap;
+  private workspaceService = inject(WorkspaceRepositoryService);
+
+  protected selectIdFn: SelectEntityId<NoInfer<ProjectInvitation>> | undefined = undefined;
+  protected getEntityIdFn = getEntityIdSelector({ selectId: this.selectIdFn });
+
+  updateEntitySummary(id: EntityId, partialItem: Partial<ProjectInvitation>): ProjectInvitation {
+    return this.projectInvitationEntitiesStore.updateEntity(id, partialItem);
+  }
+
+  async patchRequest(
+    item: Pick<ProjectInvitation, "roleId">,
+    params: { invitationId: ProjectInvitation["id"] },
+  ): Promise<ProjectInvitation> {
+    if (!this.entityMap()[this.getEntityIdFn(item)]) {
+      const entity = await lastValueFrom(this.projectInvitationsApiService.patch(item, params));
+      this.updateEntitySummary(this.getEntityIdFn(item), entity);
+    }
+    throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
+  }
 
   async listProjectInvitations(projectId: ProjectDetail["id"]) {
     const projectInvitations = await lastValueFrom(this.projectInvitationsApiService.list({ projectId }));
@@ -45,6 +68,16 @@ export class ProjectInvitationRepositoryService {
   async resendProjectInvitation(invitationId: ProjectInvitation["id"]) {
     const projectInvitations = await lastValueFrom(this.projectInvitationsApiService.resend({ invitationId }));
     this.projectInvitationEntitiesStore.updateEntity(invitationId, projectInvitations);
+  }
+
+  async acceptProjectInvitation(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
+    await this.acceptInvitationForCurrentUser(params.projectId);
+    this.workspaceService.updateUserInvitedProjects(params);
+  }
+
+  async denyProjectInvitation(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
+    await this.denyInvitationForCurrentUser(params.projectId);
+    this.workspaceService.updateUserInvitedProjects(params);
   }
 
   async revokeProjectInvitation(invitationId: ProjectInvitation["id"]) {
@@ -63,7 +96,8 @@ export class ProjectInvitationRepositoryService {
         }),
       ),
     );
-    this.projectInvitationEntitiesStore.addEntities(createProjectInvitationResponse.invitations);
+    this.projectInvitationEntitiesStore.setEntities(createProjectInvitationResponse.invitations);
+    this.projectInvitationEntitiesStore.reorder();
   }
   async denyInvitationForCurrentUser(projectId: ProjectDetail["id"]) {
     return await lastValueFrom(this.projectInvitationsApiService.denyForCurrentUser({ projectId }));

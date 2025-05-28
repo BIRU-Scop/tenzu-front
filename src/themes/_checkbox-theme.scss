@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,15 +21,20 @@
 
 @use "@angular/material" as mat;
 
+
+mat-checkbox {
+  --checkbox-background-color: var(--mat-sys-primary);
+}
+
   .mdc-checkbox, .mat-mdc-checkbox {
     .mat-mdc-checkbox-touch-target {
       width: 36px;
       height: 36px;
     }
     .mdc-checkbox__background {
-      box-shadow: 0 0 3px var(--mat-sys-primary);
+      box-shadow: 0 0 3px var(--checkbox-background-color);
       border-width: 1px;
-      border-color: var(--mat-sys-primary);
+      border-color: var(--checkbox-background-color);
     }
   }
 

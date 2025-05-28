@@ -20,7 +20,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { ProjectRolesDetail, ProjectRolesSummary } from "./project-roles.model";
+import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 import { AbstractApiService } from "../base";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 
@@ -28,8 +28,8 @@ import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
   providedIn: "root",
 })
 export class ProjectRolesApiService extends AbstractApiService<
-  ProjectRolesSummary,
-  ProjectRolesDetail,
+  ProjectRoleSummary,
+  ProjectRoleDetail,
   ProjectRolesApiServiceType.ListEntitiesSummaryParams,
   ProjectRolesApiServiceType.GetEntityDetailParams,
   ProjectRolesApiServiceType.CreateEntityDetailParams,

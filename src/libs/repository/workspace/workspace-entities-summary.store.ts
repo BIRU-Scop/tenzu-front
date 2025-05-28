@@ -19,13 +19,22 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { signalStore, withMethods } from "@ngrx/signals";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { ProjectNested } from "@tenzu/repository/project";
 
 export const WorkspaceEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
   withEntityListFeature<WorkspaceSummary>(),
+  withMethods((store) => ({
+    removeUserInvitedProjects(workspaceId: WorkspaceDetail["id"], projectId: ProjectNested["id"]) {
+      const removedUserInvitedProject = store
+        .entityMap()
+        [workspaceId].userInvitedProjects.filter((project) => project.id != projectId);
+      store.updateEntity(workspaceId, { userInvitedProjects: removedUserInvitedProject });
+    },
+  })),
 );
 
 export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<WorkspaceDetail>());

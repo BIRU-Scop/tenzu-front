@@ -33,6 +33,8 @@ export class WorkspaceMembershipRepositoryService {
   private workspaceMembershipStore = inject(WorkspaceMembershipEntitiesStore);
   entities = this.workspaceMembershipStore.entities;
   entityMap = this.workspaceMembershipStore.entityMap;
+  memberMap = this.workspaceMembershipStore.memberMap;
+  members = this.workspaceMembershipStore.members;
 
   async listWorkspaceMembership(workspaceId: string) {
     const projectMemberships = await lastValueFrom(this.workspaceMembershipApiService.list({ workspaceId }));

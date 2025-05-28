@@ -19,11 +19,77 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, Injector, runInInjectionContext, Signal } from "@angular/core";
 import { ProjectPermissions, WorkspacePermissions } from "./permission.model";
 import { WorkspaceRepositoryService } from "../workspace";
 import { ProjectRepositoryService } from "../project";
-import { debug } from "@tenzu/utils/functions/logging";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { tap } from "rxjs";
+import { Router } from "@angular/router";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { EntityId } from "@ngrx/signals/entities";
+import { UserRole, Permission } from "@tenzu/repository/membership";
+
+type EntityRole = UserRole & {
+  id: EntityId;
+};
+export type RedirectIfNoPermissionParams = {
+  expectedId: EntityId;
+  requiredPermission: ProjectPermissions | WorkspacePermissions;
+  redirectUrl?: string[];
+};
+export type hasPermissionParams = {
+  expectedId: EntityId;
+  actualEntity?: EntityRole;
+  requiredPermission: Permission;
+};
+
+export type HasEntityRequiredPermissionConfig = {
+  actualEntity: EntityRole;
+  requiredPermission: Permission;
+};
+
+export function hasEntityRequiredPermission({ actualEntity, requiredPermission }: HasEntityRequiredPermissionConfig) {
+  const userPermissions = actualEntity?.userRole?.permissions ?? [];
+  return userPermissions.includes(requiredPermission);
+}
+
+export function hasPermission({ expectedId, actualEntity, requiredPermission }: hasPermissionParams) {
+  if (expectedId !== actualEntity?.id) {
+    return undefined;
+  }
+  return hasEntityRequiredPermission({ actualEntity, requiredPermission });
+}
+
+export function redirectIfNoPermission({
+  expectedId,
+  expectedEntity,
+  redirectUrl,
+  requiredPermission,
+}: RedirectIfNoPermissionParams & { expectedEntity: Signal<EntityRole | undefined> }) {
+  const router = inject(Router);
+  return toObservable(expectedEntity)
+    .pipe(
+      filterNotNull(),
+      tap((actualEntity) => {
+        if (
+          hasPermission({
+            expectedId,
+            actualEntity,
+            requiredPermission,
+          })
+        ) {
+          return;
+        }
+        router.navigate(redirectUrl || ["/"]).then();
+      }),
+    )
+    .subscribe();
+}
+
+export type RedirectIfNoPermissionServiceParams = RedirectIfNoPermissionParams & {
+  type: "workspace" | "project";
+};
 
 @Injectable({
   providedIn: "root",
@@ -31,21 +97,27 @@ import { debug } from "@tenzu/utils/functions/logging";
 export class PermissionService {
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);
+  router = inject(Router);
 
-  hasWorkspacePermission(permission: WorkspacePermissions): boolean {
-    const permissions = this.workspaceService.entityDetail()?.userRole?.permissions;
-    debug("ws-permission", permission, permissions);
-    if (!permissions) {
-      return false;
+  redirectIfNoPermission(
+    injector: Injector,
+    { expectedId, redirectUrl, requiredPermission, type }: RedirectIfNoPermissionServiceParams,
+  ) {
+    let expectedEntity: Signal<EntityRole | undefined>;
+    if (type === "workspace") {
+      expectedEntity = this.workspaceService.entityDetail;
+    } else if (type === "project") {
+      expectedEntity = this.projectService.entityDetail;
+    } else {
+      throw new Error(`Unknown type ${type}`);
     }
-    return permissions.includes(permission);
-  }
-  hasProjectPermission(permission: ProjectPermissions): boolean {
-    const permissions = this.projectService.entityDetail()?.userRole?.permissions;
-    debug("pj-permission", permission, permissions);
-    if (!permissions) {
-      return false;
-    }
-    return permissions.includes(permission);
+    runInInjectionContext(injector, () => {
+      redirectIfNoPermission({
+        expectedId,
+        redirectUrl,
+        requiredPermission,
+        expectedEntity,
+      });
+    });
   }
 }

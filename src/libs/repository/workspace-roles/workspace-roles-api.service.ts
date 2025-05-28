@@ -20,7 +20,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { WorkspaceRolesDetail, WorkspaceRolesSummary } from "./workspace-roles.model";
+import { WorkspaceRoleDetail, WorkspaceRoleSummary } from "./workspace-roles.model";
 import { AbstractApiService } from "../base";
 import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
 
@@ -28,8 +28,8 @@ import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
   providedIn: "root",
 })
 export class WorkspaceRolesApiService extends AbstractApiService<
-  WorkspaceRolesSummary,
-  WorkspaceRolesDetail,
+  WorkspaceRoleSummary,
+  WorkspaceRoleDetail,
   WorkspaceRolesApiServiceType.ListEntitiesSummaryParams,
   WorkspaceRolesApiServiceType.GetEntityDetailParams,
   WorkspaceRolesApiServiceType.CreateEntityDetailParams,

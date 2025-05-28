@@ -19,47 +19,44 @@
  *
  */
 
-import { Directive, inject, Input, TemplateRef } from "@angular/core";
+import { Directive, inject, Injector, Input, TemplateRef } from "@angular/core";
 import { NgIf } from "@angular/common";
-import { PermissionService } from "@tenzu/repository/permission/permission.service";
-import { ProjectPermissions, WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import {
+  hasEntityRequiredPermission,
+  HasEntityRequiredPermissionConfig,
+  PermissionService,
+  RedirectIfNoPermissionServiceParams,
+} from "@tenzu/repository/permission/permission.service";
 
 @Directive({
-  selector: "[appHasWorkspacePermission]",
+  selector: "[appHasPermission]",
   standalone: true,
   hostDirectives: [NgIf],
 })
-export class HasWorkspacePermissionDirective {
-  private readonly permissionService = inject(PermissionService);
+export class HasPermissionDirective {
   private readonly ngIfRef = inject(NgIf);
 
-  @Input()
-  set appHasWorkspacePermission(permission: WorkspacePermissions) {
-    this.ngIfRef.ngIf = this.permissionService.hasWorkspacePermission(permission);
+  @Input({ required: true })
+  set appHasPermission(config: HasEntityRequiredPermissionConfig) {
+    this.ngIfRef.ngIf = hasEntityRequiredPermission(config);
   }
 
   @Input()
-  set appHasWorkspacePermissionElse(template: TemplateRef<never>) {
+  set appHasPermissionElse(template: TemplateRef<never>) {
     this.ngIfRef.ngIfElse = template;
   }
 }
 
 @Directive({
-  selector: "[appHasProjectPermission]",
+  selector: "[appPermissionOrRedirect]",
   standalone: true,
-  hostDirectives: [NgIf],
 })
-export class HasProjectPermissionDirective {
-  private readonly permissionService = inject(PermissionService);
-  private readonly ngIfRef = inject(NgIf);
+export class PermissionOrRedirectDirective {
+  injector = inject(Injector, { self: true });
+  private permissionService = inject(PermissionService);
 
   @Input()
-  set appHasProjectPermission(permission: ProjectPermissions) {
-    this.ngIfRef.ngIf = this.permissionService.hasProjectPermission(permission);
-  }
-
-  @Input()
-  set appHasProjectPermissionElse(template: TemplateRef<never>) {
-    this.ngIfRef.ngIfElse = template;
+  set appPermissionOrRedirect(config: RedirectIfNoPermissionServiceParams) {
+    this.permissionService.redirectIfNoPermission(this.injector, config);
   }
 }

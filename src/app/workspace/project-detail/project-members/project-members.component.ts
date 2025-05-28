@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angu
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { InvitePeoplesDialogComponent } from "@tenzu/shared/components/invite-peoples-dialog/invite-peoples-dialog.component";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
@@ -34,13 +34,13 @@ import { MatIcon } from "@angular/material/icon";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { HasProjectPermissionDirective } from "@tenzu/directives/permission.directive";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { MatCell, MatTableModule } from "@angular/material/table";
-import { InvitationStatusComponent } from "@tenzu/shared/components/invitation-status/invitation-status.component";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { InvitationStatus } from "@tenzu/repository/membership";
-import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-actions/invitation-actions.component";
+import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
+import { InvitationStatus, Role } from "@tenzu/repository/membership";
+import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
+import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 
 @Component({
   selector: "app-project-members",
@@ -53,23 +53,23 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
     MatTabLabel,
     UserCardComponent,
     MatIcon,
-    HasProjectPermissionDirective,
+    HasPermissionDirective,
     MatCell,
     MatTableModule,
     InvitationStatusComponent,
     InvitationActionsComponent,
+    InvitationRoleComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
-    @let projectRoleEntityMapSummary = projectRoleRepositoryService.entityMapSummary();
     @if (project) {
       <div class="flex flex-col gap-y-8" *transloco="let t">
         <div class="flex flex-row">
           <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
 
           <button
-            *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER"
-            (click)="openCreateDialog()"
+            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+            (click)="openInviteDialog()"
             class="tertiary-button"
             mat-stroked-button
           >
@@ -85,7 +85,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
             @let projectMemberships = projectMembershipRepositoryService.entities();
             @if (projectMemberships.length > 0) {
               <mat-list>
-                @for (member of projectMemberships; track member.user.username) {
+                @for (member of projectMemberships; track member.user.id) {
                   <app-user-card
                     [fullName]="member.user.fullName"
                     [username]="member.user.username"
@@ -95,7 +95,9 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
               </mat-list>
             }
           </mat-tab>
-          <mat-tab *appHasProjectPermission="ProjectPermissions.CREATE_MODIFY_MEMBER">
+          <mat-tab
+            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+          >
             <ng-template mat-tab-label>
               <mat-icon class="icon-sm mr-1">mail</mat-icon>
               {{ t("project.members.invitation_tab") }}
@@ -107,8 +109,12 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitation-
                   <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="role">
-                  <mat-cell *matCellDef="let row" class="basis-1/3"
-                    >{{ projectRoleEntityMapSummary[row.roleId].name }}
+                  <mat-cell *matCellDef="let row" class="basis-1/3">
+                    <app-invitation-role
+                      [invitation]="row"
+                      itemType="project"
+                      [userRole]="project.userRole"
+                    ></app-invitation-role>
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
@@ -165,7 +171,6 @@ export class ProjectMembersComponent {
   projectRepositoryService = inject(ProjectRepositoryService);
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
-  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   translocoService = inject(TranslocoService);
 
   selectedTabIndex = model(0);
@@ -188,32 +193,35 @@ export class ProjectMembersComponent {
     this.resentInvitationId.set(invitationId);
   }
 
-  public openCreateDialog(): void {
-    const dialogRef = this.dialog.open(InvitePeoplesDialogComponent, {
-      ...matDialogConfig,
-      minWidth: 800,
-      data: {
-        title:
-          this.translocoService.translateObject("component.invite_dialog.invite_peoples") +
-          " " +
-          this.translocoService.translateObject("component.invite_dialog.to") +
-          " " +
-          this.projectRepositoryService.entityDetail()?.name,
-        description: this.translocoService.translateObject("project.members.description_modal"),
-      },
-    });
-    dialogRef.afterClosed().subscribe(async (invitationEmails: string[]) => {
-      const selectedProject = this.projectRepositoryService.entityDetail();
-      if (selectedProject && invitationEmails.length) {
-        await this.projectInvitationRepositoryService.createBulkInvitations(
-          selectedProject,
-          // TODO use dynamic role instead (not working)
-          invitationEmails.map((email) => ({ email, roleId: "member" })),
-        );
-        if (this.selectedTabIndex() !== 1) {
-          this.selectedTabIndex.set(1);
+  public openInviteDialog(): void {
+    const selectedProject = this.projectRepositoryService.entityDetail();
+    if (selectedProject) {
+      this.projectInvitationRepositoryService.listProjectInvitations(selectedProject.id).then();
+      const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
+        ...matDialogConfig,
+        minWidth: 850,
+        data: {
+          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
+            name: selectedProject.name,
+          }),
+          description: this.translocoService.translateObject("project.members.description_modal"),
+          existingMembers: this.projectMembershipRepositoryService.members,
+          existingInvitations: this.projectInvitationRepositoryService.entities,
+          itemType: "project",
+          userRole: selectedProject.userRole,
+        },
+      });
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
+        if (invitations?.length) {
+          await this.projectInvitationRepositoryService.createBulkInvitations(
+            selectedProject,
+            invitations.map(({ email, roleId }) => ({ email, roleId })),
+          );
+          if (this.selectedTabIndex() !== 1) {
+            this.selectedTabIndex.set(1);
+          }
         }
-      }
-    });
+      });
+    }
   }
 }

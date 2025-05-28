@@ -33,7 +33,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
   template: `
     <div class="flex flex-row gap-4" *transloco="let t; prefix: 'workflow.detail_story'">
       <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
-      <mat-form-field>
+      <mat-form-field class="w-52">
         <mat-select [(value)]="this.statusSelected" (selectionChange)="changeStatus($event.value, storyDetail())">
           @for (status of workflowRepositoryService.statuses(); track status.id) {
             <mat-option [value]="status.id">{{ status.name }}</mat-option>

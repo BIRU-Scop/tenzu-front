@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -43,7 +43,7 @@
   }
 
   .mat-mdc-form-field-infix {
-    @apply min-w-52 w-full;
+    @apply w-full;
     textarea {
       min-width: 480px;
     }

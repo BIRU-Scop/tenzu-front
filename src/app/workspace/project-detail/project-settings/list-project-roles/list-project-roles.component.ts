@@ -21,25 +21,32 @@
 
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from "@angular/core";
 import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { MatCell, MatCellDef, MatColumnDef, MatRow, MatRowDef, MatTable } from "@angular/material/table";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 
 @Component({
   selector: "app-list-project-roles",
-  imports: [MatTable, MatColumnDef, MatCell, MatCellDef, MatRow, MatRowDef, TranslocoDirective],
+  imports: [TranslocoDirective, PermissionOrRedirectDirective],
   template: `
-    <mat-table [dataSource]="entitiesSummary()" *transloco="let t; prefix: 'project.settings.roles'">
-      <ng-container matColumnDef="name">
-        <mat-cell *matCellDef="let entity">{{ entity.name }}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="totalMembers">
-        <mat-cell *matCellDef="let entity">{{ entity.totalMembers }} {{ t("total_members") }}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="editable">
-        <mat-cell *matCellDef="let entity">{{ entity.editable ? t("editable") : t("not_editable") }}</mat-cell>
-      </ng-container>
-      <mat-row *matRowDef="let row; columns: columns()"></mat-row>/
-    </mat-table>
+    <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
+      <div
+        class="app-table-row-group"
+        [appPermissionOrRedirect]="{
+          expectedId: projectId(),
+          requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+          type: 'project',
+        }"
+      >
+        @for (role of entitiesSummary(); track role.id) {
+          <div class="app-table-row">
+            <div class="app-table-cell">{{ role.name }}</div>
+            <div class="app-table-cell">{{ role.totalMembers }} {{ t("total_members") }}</div>
+            <div class="app-table-cell">{{ role.editable ? t("editable") : t("not_editable") }}</div>
+          </div>
+        }
+      </div>
+    </div>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,7 +56,7 @@ export default class ListProjectRolesComponent implements OnInit {
   projectRolesRepositoryService = inject(ProjectRolesRepositoryService);
   entitiesSummary = this.projectRolesRepositoryService.entitiesSummary;
   projectId = input.required<string>();
-
+  protected readonly ProjectPermissions = ProjectPermissions;
   ngOnInit(): void {
     this.projectRolesRepositoryService.listRequest({ projectId: this.projectId() }).then();
   }
