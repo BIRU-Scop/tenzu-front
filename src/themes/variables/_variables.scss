@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+// TYPOGRAPHY
+$material-medium-header-margin-bottom: 12px;
+
+// BUTTONS
+$story-button-wrapper-height: 48px;
+
+// BREADCRUMB
+$breadcrumb-margin-bottom: 2rem;
+
+// STATUS CARD
+$status-card-wrapper-height: calc(var(--mdc-icon-button-state-layer-size, 40px) + 0.5rem);
+
+// KANBAN
+$tasks-list-padding: 1rem;
+$sidenav-content-padding: 1rem;
+$elements-around-virtual-scroll-height: calc(
+       $status-card-wrapper-height + $tasks-list-padding + $sidenav-content-padding +
+        $story-button-wrapper-height
+);
+$viewport-height: calc(
+        100vh - var(--mat-toolbar-standard-height) - $sidenav-content-padding - var(
+                --mat-sys-label-medium-line-height
+        ) - $breadcrumb-margin-bottom - var(--mat-sys-headline-small-line-height) - $material-medium-header-margin-bottom
+);
+$virtual-scroll-height: calc($viewport-height - $elements-around-virtual-scroll-height);
+

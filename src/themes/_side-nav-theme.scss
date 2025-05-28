@@ -20,6 +20,7 @@
  */
 
 @use '@angular/material' as mat;
+@use "variables/variables" as variables;
 
 $sidenav-width: 250px;
 $list-item-spacing: 12px;
@@ -73,8 +74,7 @@ $list-item-spacing: 12px;
     transition-duration: 400ms;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-property: margin-left;
-    @apply px-4;
-    @apply py-4;
+    padding: variables.$sidenav-content-padding;
     margin-left: $sidenav-width;
   }
 }
