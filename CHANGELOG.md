@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.18](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.17...v0.1.0-staging.18) (2025-05-28)
+
+
+### Features
+
+* add a fake project card in the workspace list component for user which has been invited to a workspace and not accept it yet ([13c6a5f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/13c6a5fede01d48f5233d6c49e45997acc1369dd))
+* add a fake project card, blurred and locked, for when it has the disabled input as true ([e5422c2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e5422c278349335b833189797c52785e2632a95c))
+* add directive to check userRole and a permission, and a redirect permission, add permission to project roles ([677ff34](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/677ff34d197fdda1fa5aa137bf897ef75c4cd6b4))
+* add the accept workspace invitation function ([7c54170](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7c54170745244236782860f308df5070443c2f7f))
+* add the deny workspace invitation function, extract the logic from the component to the service ([8736560](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/873656054b4b83ac5588245a9d7adac9219cf4ae))
+* centralize story assignment logic ([79b65e3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/79b65e3453eb55cb6a21652b96e8ca3228066513))
+* check permission to chose whether to display invitation tab or not ([b72a992](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b72a99266fab2510a1d59348e696d6c4421785fa))
+* complete mail validation in invitation using synchronised sub forms ([76f3d36](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/76f3d36e31307a601b4cfee44a56b9e362ab8f83))
+* email conflicting validation ([349fead](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/349fead1f0ee38f575969150d29d46be861f36b6))
+* enhance role display with dynamic mapping ([716495e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/716495e4c69dfbf9171bfd29d9247dfc9466f200))
+* extract story status logic to standalone component ([059326e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/059326e7828b3beac7e02f7e911803b2575cb8ef))
+* invitation status display ([3750c1c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/3750c1c2eeed617beb6e78093be05775d52f621a))
+* invitation status stylised component ([62e33d2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/62e33d22924a45d13f015e21af74309df5f1d79c))
+* **invitation:** add resend invitation button ([0096270](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0096270169afd1ec43c9df82d9ecd89e842989e7))
+* **invitation:** add role field to create invitation dialog ([76bc43e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/76bc43e3aa904303bac64b39e5902b135cc593c3))
+* **invitation:** add validation to each invitation field and make it writable instead of validating on single mailing list field ([cb2d10e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cb2d10edde5cd7e5a05d59f69f6226fe200035e5))
+* **invitation:** change button display when resent has been emitted ([fe78f67](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/fe78f67cd0bcb8a1dc9d74b2b4bd9dbfaafcb1a6))
+* **invitation:** disabled changing role for non-pending invitation ([7b51f89](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7b51f897c7dcb0a6314647c28e598c47ad226770))
+* **invitation:** error on invitation field if using a member's email ([9bb938b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9bb938b57c0152bc21cdcf3004db82602d84f189))
+* **invitation:** hide revoke button if user doesn't have owner permission on owner object ([8200749](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8200749f5d4ba8784fd41b489998eb38d92e76da))
+* **invitation:** separate invitation action to their own component and add confirmation dialog ([5e08db2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5e08db2ed87acf667f9afc277b90c5a796d979a1))
+* **invitation:** update role when changing role selector value ([5415926](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5415926be605501efa3b11cca55e3f4bae1d5958))
+* **invitation:** use axisting invitation role as default if it exists ([a980f23](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a980f23518f6ed759d97e633a7e0aa2c054d8010))
+* **invitation:** use role selector in invitation list ([805a950](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/805a950e3ed31d023425d228f42f001777c8c6ec))
+* localize displayed date ([a96f22a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a96f22a023b032cfd363811c77ad4ea3fba72d76))
+* **project-roles:** simplify parameter handling in API types ([9de3ef3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9de3ef3a35889e42e3278fd2a67976e6826b104e))
+* **project:** require workspaceId for project creation ([9138348](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9138348fb9ba7d188182dc58053266fc9fa9cd58))
+* replace roleSlug with roleId in invitations and add totalMembers field ([497df02](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/497df02cabf46ed171fcbf644732408cf0a6fa01))
+* replace the new project button by buttons to accept workspace invitation when user is invited ([a8060d2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a8060d28d13460edba2b9d832c60d4d2027dbf26))
+* **repository:** add workspace roles module ([badaa09](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/badaa09a4d1242d9b35adab1db656fe66eba9d7a))
+* **role:** display tooltip in role selection ([1d2de7c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/1d2de7c7de45764872d01dbf111a347069e07601))
+* **role:** prevent modification of owner role if user does not have enough permission ([c67ff13](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c67ff13ef6e014d03b4c3f826fc973669d46d6bb))
+* **role:** remove owner role from selection if user does not have permission ([e1a1f57](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e1a1f57439b606dc591f7f1d0c07e96cd1adf518))
+* **routes:** add role repository services to resolvers ([b3884a1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b3884a10ebf51d6e58e58d4dc37ebabf43d9c259))
+* simplify workflow service and API methods ([f60098c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f60098caa051eb993d1ae506f88a05ca81649da7))
+* update API endpoint paths for token-based invitations ([551239d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/551239dcab8bffd1afcd0bfab4c950065225b869))
+* use router to edit workspace ([bf7fb8f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/bf7fb8ff84c0ece87d9255ee224bef17f606baee))
+* use table for invitation to display status ([141575b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/141575b2cbf5c74c2732da457aed260bca90ac4f))
+
+
+### Bug Fixes
+
+* **invitation:** one-line displayed error message and fix width of invitation fields ([93f8949](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/93f89493e1d97539348f9e668579f2049e6411ea))
+* **invitation:** prevent invitation action from using wrong service ([bc2583d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/bc2583dc1c0ae26c611dad4aff31b67a48fc92e7))
+* **invitation:** put invitation in correct order after creating some ([4f892f2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4f892f22e2d9fa31a091d3dd01dd31cdc9d4cd5c))
+* **invitation:** role not broken display in list and create and story status resize without losing the arrow ([28ee3b9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/28ee3b9a9dbdbdc2a5d29af881193ff483798913))
+* prevent crash when closing invitation window by clicking outside it ([d4cb459](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d4cb459de0bdf679c5ed60fd7efc56d2486b76e7))
+* **role:** make  role select field reactive ([dc30834](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/dc30834230e1be6c5159ddb70bb252eaed3e3880))
+* **story-assignment:** update methods to use user ID instead of username ([776f090](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/776f0907e66212e409091b00bbad4f09f403e1a2))
+* use correct name for move target workflow on deletion ([26d47ab](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/26d47ab492d396f06a7142192e3b1bdfb2310e36))
+
 ## [0.1.0-staging.17](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.16...v0.1.0-staging.17) (2025-05-02)
 
 
