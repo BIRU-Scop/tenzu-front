@@ -24,6 +24,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { MatTableModule } from "@angular/material/table";
+import { UserStore } from "@tenzu/repository/user";
 
 @Component({
   selector: "app-project-members",
@@ -31,6 +32,7 @@ import { MatTableModule } from "@angular/material/table";
   template: `
     <ng-container *transloco="let t">
       @let projectMemberships = projectMembershipRepositoryService.entities();
+      @let myUser = userStore.myUser();
       @if (projectMemberships.length > 0) {
         <div class="app-table">
           <div class="app-table-row-group">
@@ -41,6 +43,7 @@ import { MatTableModule } from "@angular/material/table";
                     [fullName]="membership.user.fullName"
                     [username]="membership.user.username"
                     [color]="membership.user.color"
+                    [isSelf]="myUser.id === membership.user.id"
                   ></app-user-card>
                 </div>
               </div>
@@ -54,5 +57,6 @@ import { MatTableModule } from "@angular/material/table";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent {
+  userStore = inject(UserStore);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
 }

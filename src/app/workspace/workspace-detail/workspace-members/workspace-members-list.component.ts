@@ -24,6 +24,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { MatTableModule } from "@angular/material/table";
+import { UserStore } from "@tenzu/repository/user";
 
 @Component({
   selector: "app-workspace-members",
@@ -31,16 +32,18 @@ import { MatTableModule } from "@angular/material/table";
   template: `
     <ng-container *transloco="let t">
       @let workspaceMemberships = workspaceMembershipRepositoryService.entities();
+      @let myUser = userStore.myUser();
       @if (workspaceMemberships.length > 0) {
         <div class="app-table">
           <div class="app-table-row-group">
-            @for (member of workspaceMemberships; track member.user.id) {
+            @for (membership of workspaceMemberships; track membership.user.id) {
               <div class="app-table-row">
                 <div class="app-table-cell">
                   <app-user-card
                     [fullName]="membership.user.fullName"
                     [username]="membership.user.username"
                     [color]="membership.user.color"
+                    [isSelf]="myUser.id === membership.user.id"
                   ></app-user-card>
                 </div>
                 <div class="app-table-cell">
@@ -59,5 +62,6 @@ import { MatTableModule } from "@angular/material/table";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceMembersComponent {
+  userStore = inject(UserStore);
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
 }

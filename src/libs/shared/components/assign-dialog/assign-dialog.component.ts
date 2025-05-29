@@ -39,7 +39,7 @@ import { MatDivider } from "@angular/material/divider";
 import { startWith, tap } from "rxjs";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested, UserStore } from "@tenzu/repository/user";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
 
@@ -90,6 +90,7 @@ type AssignDialogData = {
           </mat-form-field>
           <div class="h-full overflow-y-auto">
             @if (filteredTeamMembers()) {
+              @let myUser = userStore.myUser();
               <mat-selection-list (selectionChange)="optionSelected($event)">
                 @for (member of sortedByFullName(); track member.username) {
                   <mat-list-option class="flex flex-row" [selected]="memberIsAssigned(member)" [value]="member">
@@ -98,6 +99,7 @@ type AssignDialogData = {
                       [username]="member.username"
                       [color]="member.color"
                       [textToHighlight]="searchInput.value"
+                      [isSelf]="myUser.id === member.id"
                     ></app-user-card>
                   </mat-list-option>
                 }
@@ -114,6 +116,7 @@ type AssignDialogData = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssignDialogComponent {
+  userStore = inject(UserStore);
   fb = inject(FormBuilder);
   data = inject<AssignDialogData>(MAT_DIALOG_DATA);
   notificationService = inject(NotificationService);
