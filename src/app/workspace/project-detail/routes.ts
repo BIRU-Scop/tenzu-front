@@ -109,25 +109,28 @@ export const routes: Routes = [
   {
     path: "story/:ref",
     loadComponent: () => import("./kanban-wrapper/kanban-wrapper.component"),
-    // loadComponent: () => import("./story-detail/story-detail.component"),
     providers: [provideTranslocoScope("workflow")],
     resolve: { story: storyResolver },
     data: { reuseComponent: true },
   },
   {
     path: "new-workflow",
-    loadComponent: () =>
-      import("./project-kanban-create/project-kanban-create.component").then((m) => m.ProjectKanbanCreateComponent),
+    loadComponent: () => import("./project-kanban-create/project-kanban-create.component"),
     providers: [provideTranslocoScope("workflow")],
   },
   {
     path: "members",
-    loadComponent: () => import("./project-members/project-members.component").then((m) => m.ProjectMembersComponent),
+    children: [
+      {
+        path: "",
+        loadComponent: () => import("./project-members/project-members.component"),
+        loadChildren: () => import("./project-members/routes"),
+      },
+    ],
     providers: [provideTranslocoScope("project")],
   },
   {
     path: "settings",
-
     children: [
       {
         path: "",

@@ -8,14 +8,13 @@
   },
   "settings": {
     "title": "Project settings",
-    "project_edit": {
-      "title": "Informations",
+    "edit": {
+      "title": "Information",
       "name": "Project name",
       "description": "Project description",
       "delete_project_title": "Delete project",
       "delete_project_warning": "This action will delete the project, along with all the stories and attachments in it.",
-      "buttons":
-      {
+      "buttons": {
         "cancel": "Cancel",
         "save": "Save",
         "delete": "Delete"

@@ -28,6 +28,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-project-settings",
@@ -41,6 +42,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
     RouterLinkActive,
     MatTabNavPanel,
     HasPermissionDirective,
+    MatIcon,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -59,6 +61,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
               #RouterLinkActive="routerLinkActive"
               [active]="RouterLinkActive.isActive"
               [routerLinkActiveOptions]="{ exact: true }"
+              ><mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
               >{{ t(link.labelKey) }}
             </a>
           }
@@ -77,10 +80,16 @@ export default class ProjectSettingsComponent implements AfterViewInit {
   links = [
     {
       path: "./project-edit",
-      labelKey: "project_edit.title",
+      labelKey: "edit.title",
       permission: ProjectPermissions.MODIFY_PROJECT,
+      iconName: "info",
     },
-    { path: "./list-project-roles", labelKey: "roles.title", permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE },
+    {
+      path: "./list-project-roles",
+      labelKey: "roles.title",
+      permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+      iconName: "assignment_ind",
+    },
   ];
   breadcrumbStore = inject(BreadcrumbStore);
   ngAfterViewInit(): void {
