@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.19](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.18...v0.1.0-staging.19) (2025-05-29)
+
+
+### Bug Fixes
+
+* **invitation:** prevent crash on invitation action permission check ([d8a10b1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d8a10b1c1bd3a83570c2a3b5fc5ff6b59c017186))
+
 ## [0.1.0-staging.18](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.17...v0.1.0-staging.18) (2025-05-28)
 
 
