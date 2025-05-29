@@ -257,7 +257,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   }
 
   async acceptProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
-    await this.projectInvitationService.acceptProjectInvitation({ workspaceId: workspace.id, projectId: project.id });
+    await this.projectInvitationService.acceptProjectInvitation({ workspaceId: workspace.id, project: project });
   }
 
   async denyProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {

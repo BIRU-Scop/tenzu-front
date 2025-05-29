@@ -49,8 +49,11 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   protected entityDetailStore = inject(WorkspaceDetailStore);
   private workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
 
-  updateUserInvitedProjects(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
+  removeUserInvitedProjects(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
     this.entitiesSummaryStore.removeUserInvitedProjects(params.workspaceId, params.projectId);
+  }
+  addUserMemberProjects(params: { workspaceId: WorkspaceSummary["id"]; project: ProjectNested }) {
+    this.entitiesSummaryStore.addUserMemberProjects(params.workspaceId, params.project);
   }
 
   async denyInvitationWorkspace(params: { workspaceId: WorkspaceSummary["id"] }) {
