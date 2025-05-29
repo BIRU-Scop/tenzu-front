@@ -25,6 +25,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-workspace-settings",
@@ -38,6 +39,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
     RouterLinkActive,
     MatTabNavPanel,
     RouterOutlet,
+    MatIcon,
   ],
   template: `
     <div class="flex flex-col gap-y-8" *transloco="let t">
@@ -53,6 +55,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
             #RouterLinkActive="routerLinkActive"
             [active]="RouterLinkActive.isActive"
             [routerLinkActiveOptions]="{ exact: true }"
+            ><mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
             >{{ t(link.labelKey) }}
           </a>
         }
@@ -66,10 +69,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceSettingsComponent implements AfterViewInit {
-  links = [
-    { path: "./workspace-edit", labelKey: "workspace.settings.edit.title" },
-    { path: "./list-workspace-roles", labelKey: "workspace.settings.roles.title" },
-  ];
+  links = [{ path: "./workspace-edit", labelKey: "workspace.settings.edit.title", iconName: "info" }];
   breadcrumbStore = inject(BreadcrumbStore);
   ngAfterViewInit(): void {
     this.breadcrumbStore.setPathComponent("workspaceSettings");

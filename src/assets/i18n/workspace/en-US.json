@@ -24,7 +24,7 @@
   "settings": {
     "title": "Workspace settings",
     "edit": {
-      "title": "Edit workspace",
+      "title": "Information",
       "name": "Name",
       "name_required": "Workspace name can’t be empty",
       "name_placeholder": "Add workspace name",

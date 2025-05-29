@@ -28,7 +28,7 @@
       "deleted_workspace": "El espacio de trabajo {{ var }} ha sido eliminado"
     },
     "edit": {
-      "title": "Editar espacio de trabajo",
+      "title": "Información",
       "name": "Nombre",
       "name_required": "El nombre del espacio de trabajo no puede estar vacío",
       "name_placeholder": "Añadir nombre del espacio de trabajo"
