@@ -234,10 +234,14 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
         const color = Math.floor(Math.random() * (8 - 1) + 1);
-        await this.workspaceService.createRequest({
-          name,
-          color,
-        });
+        await this.workspaceService.createRequest(
+          {
+            name,
+            color,
+          },
+          undefined,
+          { prepend: true },
+        );
       } else if (this.workspaceService.entitiesSummary().length === 0) {
         this.openPlaceholderDialog(event);
       }

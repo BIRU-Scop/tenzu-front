@@ -50,8 +50,13 @@ export interface ServiceEntitySummaryList<EntitySummary extends JsonObject, List
   entityMapSummary: Signal<EntityMap<EntitySummary>>;
   setAllEntitiesSummary(items: EntitySummary[]): void;
   setMultipleEntitiesSummary(items: EntitySummary[]): void;
-  addEntitiesSummary(items: EntitySummary[]): void;
   setEntitySummary(item: EntitySummary): void;
+  addMultipleEntitiesSummary(items: EntitySummary[]): void;
+  addEntitySummary(item: EntitySummary): void;
+  prependMultipleEntitiesSummary(items: EntitySummary[]): void;
+  prependEntitySummary(item: EntitySummary): void;
+  upsertMultipleEntitiesSummary(items: EntitySummary[]): void;
+  upsertEntitySummary(item: EntitySummary): void;
   updateEntitySummary(id: EntityId, partialItem: Partial<EntitySummary>): EntitySummary;
   deleteEntitySummary(id: EntityId): void;
   resetEntitySummaryList(): void;
@@ -68,7 +73,7 @@ export interface ServiceEntityDetail<
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
 > {
   setEntityDetail(item: EntityDetailModel): void;
-  updateEntityDetail(id: EntityDetailModel, partialItem: Partial<EntityDetailModel>): EntityDetailModel;
+  updateEntityDetail(id: EntityDetailModel): EntityDetailModel;
   deleteEntityDetail(item: EntityDetailModel): void;
   resetEntityDetail(): void;
 
@@ -119,14 +124,14 @@ export abstract class BaseRepositoryDetailService<
   ): Promise<EntityDetail> {
     if (this.getEntityIdFn(item) === this.getEntityIdFn(this.entityDetail())) {
       const entity = await lastValueFrom(this.apiService.patch(item, params, queryParams));
-      return this.updateEntityDetail(entity, entity);
+      return this.updateEntityDetail(entity);
     }
     throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
   }
   async putRequest(item: EntityDetail, params: PutParams, queryParams?: QueryParams): Promise<EntityDetail> {
     if (this.getEntityIdFn(item) === this.getEntityIdFn(this.entityDetail())) {
       const entity = await lastValueFrom(this.apiService.put(item, params, queryParams));
-      return this.updateEntityDetail(entity, entity);
+      return this.updateEntityDetail(entity);
     }
     throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
   }
@@ -144,8 +149,8 @@ export abstract class BaseRepositoryDetailService<
   setEntityDetail(item: EntityDetail): void {
     this.entityDetailStore.set(item);
   }
-  updateEntityDetail(item: EntityDetail, partialItem: Partial<EntityDetail>): EntityDetail {
-    return this.entityDetailStore.update(this.getEntityIdFn(item), partialItem);
+  updateEntityDetail(item: EntityDetail): EntityDetail {
+    return this.entityDetailStore.update(this.getEntityIdFn(item), item);
   }
   deleteEntityDetail(item: EntityDetail): EntityDetail {
     return this.entityDetailStore.delete(this.getEntityIdFn(item));
@@ -186,6 +191,15 @@ export abstract class BaseRepositoryService<
   get entityMapSummary(): Signal<EntityMap<EntitySummary>> {
     return this.entitiesSummaryStore.entityMap;
   }
+  override async createRequest(
+    item: Partial<EntityDetail>,
+    params?: CreateParams,
+    options: { prepend: boolean } = { prepend: false },
+  ): Promise<EntityDetail> {
+    const entity = await lastValueFrom(this.apiService.create(item, params));
+    this.setEntityDetail(entity, options);
+    return entity;
+  }
 
   setAllEntitiesSummary(items: EntitySummary[]): void {
     this.entitiesSummaryStore.setAllEntities(items);
@@ -193,12 +207,26 @@ export abstract class BaseRepositoryService<
   setMultipleEntitiesSummary(items: EntitySummary[]): void {
     this.entitiesSummaryStore.setEntities(items);
   }
-  addEntitiesSummary(items: EntitySummary[]) {
-    this.entitiesSummaryStore.addEntities(items);
-  }
-
   setEntitySummary(item: EntitySummary): void {
     this.entitiesSummaryStore.setEntity(item);
+  }
+  addMultipleEntitiesSummary(items: EntitySummary[]) {
+    this.entitiesSummaryStore.addEntities(items);
+  }
+  addEntitySummary(item: EntitySummary): void {
+    this.entitiesSummaryStore.addEntity(item);
+  }
+  prependMultipleEntitiesSummary(items: EntitySummary[]) {
+    this.entitiesSummaryStore.prependEntities(items);
+  }
+  prependEntitySummary(item: EntitySummary): void {
+    this.entitiesSummaryStore.prependEntity(item);
+  }
+  upsertMultipleEntitiesSummary(items: EntitySummary[]) {
+    this.entitiesSummaryStore.upsertEntities(items);
+  }
+  upsertEntitySummary(item: EntitySummary): void {
+    this.entitiesSummaryStore.upsertEntity(item);
   }
 
   updateEntitySummary(id: EntityId, partialItem: Partial<EntitySummary>): EntitySummary {
@@ -216,21 +244,17 @@ export abstract class BaseRepositoryService<
     return entities;
   }
 
-  override setEntityDetail(item: EntityDetail): void {
-    if (!this.entityMapSummary()[this.getEntityIdFn(item)]) {
-      this.setEntitySummary(item);
+  override setEntityDetail(item: EntityDetail, options: { prepend: boolean } = { prepend: false }): void {
+    if (options.prepend && !this.entityMapSummary()[this.getEntityIdFn(item)]) {
+      this.prependEntitySummary(item);
     } else {
-      this.updateEntitySummary(this.getEntityIdFn(item), item);
+      this.upsertEntitySummary(item);
     }
     super.setEntityDetail(item);
   }
-  override updateEntityDetail(item: EntityDetail, partialItem: Partial<EntityDetail>): EntityDetail {
-    if (!this.entityMapSummary()[this.getEntityIdFn(item)]) {
-      this.setEntitySummary(item);
-    } else {
-      this.updateEntitySummary(this.getEntityIdFn(item), partialItem);
-    }
-    return super.updateEntityDetail(item, partialItem);
+  override updateEntityDetail(item: EntityDetail): EntityDetail {
+    this.upsertEntitySummary(item);
+    return super.updateEntityDetail(item);
   }
   override deleteEntityDetail(item: EntityDetail): EntityDetail {
     try {

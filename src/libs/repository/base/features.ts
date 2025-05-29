@@ -22,7 +22,9 @@
 import {
   EntityId,
   addEntities,
+  addEntity,
   prependEntities,
+  prependEntity,
   removeAllEntities,
   removeEntity,
   SelectEntityId,
@@ -31,6 +33,8 @@ import {
   setEntity,
   updateEntity,
   withEntities,
+  upsertEntities,
+  upsertEntity,
 } from "@ngrx/signals/entities";
 import { patchState, signalStoreFeature, withMethods, withState } from "@ngrx/signals";
 import { NotFoundEntityError } from "./errors";
@@ -75,19 +79,54 @@ export function withEntityListFeature<T extends JsonObject, State extends object
       /**
        * Adds new entities to the store.
        *
-       * @param {T[]} items - The entities to add. If the entities is already present, the entities are not updated
+       * @param {T[]} items - The entities to add.  For already present entities, the entities are not updated
        */
       addEntities(items: T[]) {
         patchState(store, addEntities(items, { selectId }));
       },
 
       /**
+       * Adds a single entity to the store.
+       *
+       * @param {T} entity - The entity to add. If the entity is already present, the entity is not updated
+       */
+      addEntity(entity: T) {
+        patchState(store, addEntity(entity, { selectId }));
+      },
+
+      /**
        * Adds new entities to the store, to the beginning of the collection.
        *
-       * @param {T[]} items - The entities to add. If the entities is already present, the entities are not updated
+       * @param {T[]} items - The entities to add. For already present entities, the entities are not updated
        */
       prependEntities(items: T[]) {
         patchState(store, prependEntities(items, { selectId }));
+      },
+
+      /**
+       * Adds a single entity to the store, to the beginning of the collection.
+       *
+       * @param {T} entity - The entity to add. If the entity is already present, the entity is not updated
+       */
+      prependEntity(entity: T) {
+        patchState(store, prependEntity(entity, { selectId }));
+      },
+
+      /**
+       * Adds or updates new entities in the store.
+       *
+       * @param {T[]} items - The entities to add or update.  For already present entities, the existing entities are merged with provided ones
+       */
+      upsertEntities(items: T[]) {
+        patchState(store, upsertEntities(items, { selectId }));
+      },
+
+      /**
+       Adds or updates a single entity in the store.
+
+       @param {T} entity - The entity to add or update. If the entity is already present, it is merged with provided one       */
+      upsertEntity(entity: T) {
+        patchState(store, upsertEntity(entity, { selectId }));
       },
 
       /**
