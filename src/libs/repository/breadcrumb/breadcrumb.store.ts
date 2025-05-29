@@ -125,8 +125,8 @@ export const BreadcrumbStore = signalStore(
           doTranslation: true,
         },
         workspaceDetailMember: {
-          label: "workspace.general_title.workspacePeople",
-          link: `/workspace/${workspaceDetail?.id}/people`,
+          label: "workspace.general_title.workspaceMembers",
+          link: `/workspace/${workspaceDetail?.id}/members`,
           doTranslation: true,
         },
         projectDetail: {

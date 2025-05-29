@@ -22,7 +22,7 @@
 import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, Routes } from "@angular/router";
 import { loginGuard } from "./auth/login/login.guard";
 import { provideTranslocoScope } from "@jsverse/transloco";
-import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace-people/workspace-invitation.guard";
+import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace-members/workspace-invitation.guard";
 import { VerifyEmailGuard } from "./auth/signup/verify-email.guard";
 import { ProjectInvitationGuard } from "./workspace/project-detail/project-members/project-invitation.guard";
 import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";

@@ -44,7 +44,7 @@ import { Role } from "@tenzu/repository/membership";
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 
 @Component({
-  selector: "app-workspace-people",
+  selector: "app-workspace-members",
   imports: [
     TranslocoDirective,
     MatButton,
@@ -67,7 +67,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
     @if (workspace) {
       <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
         <div class="flex flex-row">
-          <h1 class="mat-headline-medium grow">{{ t("workspace.people.title") }}</h1>
+          <h1 class="mat-headline-medium grow">{{ t("workspace.members.title") }}</h1>
           <button
             *appHasPermission="{
               actualEntity: workspace,
@@ -77,16 +77,16 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
             class="tertiary-button"
             mat-stroked-button
           >
-            {{ t("workspace.people.invite_to_workspace") }}
+            {{ t("workspace.members.invite_to_workspace") }}
           </button>
         </div>
         <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
           <mat-tab>
             <ng-template mat-tab-label>
               <mat-icon class="icon-sm mr-1">group</mat-icon>
-              {{ t("workspace.people.members_tab") }}
+              {{ t("workspace.members.members_tab") }}
             </ng-template>
-            <p class="mat-body-medium text-on-surface mb-2">{{ t("workspace.people.members_description") }}</p>
+            <p class="mat-body-medium text-on-surface mb-2">{{ t("workspace.members.members_description") }}</p>
             @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
             @if (workspaceMembershipEntities.length > 0) {
               <mat-list>
@@ -108,7 +108,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
           >
             <ng-template mat-tab-label>
               <mat-icon class="icon-sm mr-1">mail</mat-icon>
-              {{ t("workspace.people.invitation_tab") }}
+              {{ t("workspace.members.invitation_tab") }}
             </ng-template>
             @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
             @if (workspaceInvitations.length > 0) {
@@ -145,7 +145,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
                 <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
               </mat-table>
             } @else {
-              <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.people.invitation_empty") }}</p>
+              <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.members.invitation_empty") }}</p>
             }
           </mat-tab>
         </mat-tab-group>
@@ -170,7 +170,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class WorkspacePeopleComponent {
+export default class WorkspaceMembersComponent {
   protected readonly WorkspacePermissions = WorkspacePermissions;
 
   breadcrumbStore = inject(BreadcrumbStore);
@@ -211,7 +211,7 @@ export default class WorkspacePeopleComponent {
           title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
             name: selectedWorkspace.name,
           }),
-          description: this.translocoService.translate("workspace.people.description_modal"),
+          description: this.translocoService.translate("workspace.members.description_modal"),
           existingMembers: this.workspaceMembershipRepositoryService.members,
           existingInvitations: this.workspaceInvitationRepositoryService.entities,
           itemType: "workspace",

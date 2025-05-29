@@ -25,8 +25,12 @@
       "saved": "La información de tu proyecto ha sido guardada"
     }
   },
-  "people": {
-    "title": "Personas",
-    "description_modal": "<p>Empieza a escribir un correo electrónico o ingresa varias direcciones separadas por una coma.</p>"
+  "members": {
+    "title": "Miembros",
+    "description_modal": "Empiece a escribir un correo electrónico o introduzca varias direcciones separadas por una coma.",
+    "invite_to_project": "Invitar al proyecto",
+    "members_tab": "Miembros",
+    "invitation_tab": "Invitaciones",
+    "invitation_empty": "TNo hay invitaciones."
   }
 }
