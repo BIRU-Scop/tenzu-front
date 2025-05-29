@@ -107,6 +107,10 @@ export class InvitationActionsComponent {
 
   notOwnerInvitationOrHasOwnerPermission = computed(() => {
     let roleRepositoryService: ProjectRolesRepositoryService | WorkspaceRolesRepositoryService;
+    const invitation = this.invitation();
+    if (!invitation.roleId) {
+      return false;
+    }
     switch (this.itemType()) {
       case "project": {
         roleRepositoryService = this.projectRoleRepositoryService;
@@ -117,7 +121,7 @@ export class InvitationActionsComponent {
         break;
       }
     }
-    return !roleRepositoryService.entityMapSummary()[this.invitation().roleId].isOwner || this.item().userRole?.isOwner;
+    return !roleRepositoryService.entityMapSummary()[invitation.roleId]?.isOwner || !!this.item().userRole?.isOwner;
   });
 
   getInvitationResendDisableMessage(invitation: InvitationBase): string | null {
