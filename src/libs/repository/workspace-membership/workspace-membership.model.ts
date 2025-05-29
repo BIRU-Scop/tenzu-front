@@ -25,4 +25,5 @@ export type WorkspaceMembership = {
   user: UserNested;
   roleId: string;
   workspaceId: string;
+  totalProjectsIsMember: number;
 };

@@ -41,7 +41,7 @@
     "members_tab": "Miembros",
     "invitation_tab": "Invitaciones",
     "invitation_empty": "No hay invitaciones.",
-    "members_description": "Los miembros del espacio de trabajo pueden ver y gestionar todos los proyectos de este espacio de trabajo, crear nuevos y eliminarlos."
+    "total_projects": "{{ number }} proyectos"
   },
   "placeholder": {
     "placeholder_title": "Aún no eres miembro de ningún espacio de trabajo",

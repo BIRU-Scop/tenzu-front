@@ -21,27 +21,32 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { MatTableModule } from "@angular/material/table";
 
 @Component({
   selector: "app-project-members",
-  imports: [TranslocoDirective, MatList, UserCardComponent, MatTableModule],
+  imports: [TranslocoDirective, UserCardComponent, MatTableModule],
   template: `
     <ng-container *transloco="let t">
       @let projectMemberships = projectMembershipRepositoryService.entities();
       @if (projectMemberships.length > 0) {
-        <mat-list>
-          @for (member of projectMemberships; track member.user.id) {
-            <app-user-card
-              [fullName]="member.user.fullName"
-              [username]="member.user.username"
-              [color]="member.user.color"
-            ></app-user-card>
-          }
-        </mat-list>
+        <div class="app-table">
+          <div class="app-table-row-group">
+            @for (membership of projectMemberships; track membership.user.id) {
+              <div class="app-table-row">
+                <div class="app-table-cell">
+                  <app-user-card
+                    [fullName]="membership.user.fullName"
+                    [username]="membership.user.username"
+                    [color]="membership.user.color"
+                  ></app-user-card>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
       }
     </ng-container>
   `,

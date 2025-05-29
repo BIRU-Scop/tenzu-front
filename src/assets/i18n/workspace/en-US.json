@@ -43,7 +43,7 @@
     "members_tab": "Members",
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
-    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them."
+    "total_projects": "{{ number }} projects"
   },
   "placeholder": {
     "placeholder_title": "You are not member of any Workspace yet",

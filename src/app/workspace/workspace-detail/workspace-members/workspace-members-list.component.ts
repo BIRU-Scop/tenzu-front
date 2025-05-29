@@ -21,28 +21,37 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatList } from "@angular/material/list";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { MatTableModule } from "@angular/material/table";
 
 @Component({
   selector: "app-workspace-members",
-  imports: [TranslocoDirective, MatList, UserCardComponent, MatTableModule],
+  imports: [TranslocoDirective, UserCardComponent, MatTableModule],
   template: `
     <ng-container *transloco="let t">
-      <p class="mat-body-medium text-on-surface mb-2">{{ t("workspace.members.members_description") }}</p>
-      @let workspaceMembershipEntities = workspaceMembershipRepositoryService.entities();
-      @if (workspaceMembershipEntities.length > 0) {
-        <mat-list>
-          @for (member of workspaceMembershipEntities; track member.user.id) {
-            <app-user-card
-              [fullName]="member.user.fullName"
-              [username]="member.user.username"
-              [color]="member.user.color"
-            ></app-user-card>
-          }
-        </mat-list>
+      @let workspaceMemberships = workspaceMembershipRepositoryService.entities();
+      @if (workspaceMemberships.length > 0) {
+        <div class="app-table">
+          <div class="app-table-row-group">
+            @for (member of workspaceMemberships; track member.user.id) {
+              <div class="app-table-row">
+                <div class="app-table-cell">
+                  <app-user-card
+                    [fullName]="membership.user.fullName"
+                    [username]="membership.user.username"
+                    [color]="membership.user.color"
+                  ></app-user-card>
+                </div>
+                <div class="app-table-cell">
+                  <p class="text-on-surface-variant">
+                    {{ t("workspace.members.total_projects", { number: membership.totalProjectsIsMember }) }}
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
       }
     </ng-container>
   `,

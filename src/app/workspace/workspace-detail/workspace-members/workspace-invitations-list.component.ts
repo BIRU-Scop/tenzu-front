@@ -26,7 +26,6 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
 import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
-import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
@@ -36,9 +35,6 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
   imports: [
     TranslocoDirective,
     HasPermissionDirective,
-    MatTableModule,
-    MatRow,
-    MatRowDef,
     InvitationStatusComponent,
     InvitationActionsComponent,
     InvitationRoleComponent,
@@ -55,38 +51,35 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
         >
           @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
           @if (workspaceInvitations.length > 0) {
-            <mat-table [@newItemsFlyIn]="workspaceInvitations.length" [dataSource]="workspaceInvitations">
-              <ng-container matColumnDef="user">
-                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row" class="basis-1/3">
-                  <app-invitation-role
-                    [invitation]="row"
-                    itemType="workspace"
-                    [userRole]="workspace.userRole"
-                  ></app-invitation-role>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="status">
-                <mat-cell *matCellDef="let row" class="basis-full">
-                  <app-invitation-status [invitation]="row"></app-invitation-status>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <mat-cell *matCellDef="let row" class="basis-1/2">
-                  <app-invitation-actions
-                    [invitation]="row"
-                    [item]="workspace"
-                    itemType="workspace"
-                    [resentInvitation]="resentInvitationId() === row.id"
-                    (resend)="resendInvitation($event)"
-                    (revoke)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation($event)"
-                  ></app-invitation-actions>
-                </mat-cell>
-              </ng-container>
-              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
-            </mat-table>
+            <div class="app-table" [@newItemsFlyIn]="workspaceInvitations.length">
+              <div class="app-table-row-group">
+                @for (invitation of workspaceInvitations; track invitation.id) {
+                  <div class="app-table-row">
+                    <div class="app-table-cell basis-1/3">{{ invitation.email }}</div>
+                    <div class="app-table-cell basis-1/3">
+                      <app-invitation-role
+                        [invitation]="invitation"
+                        itemType="workspace"
+                        [userRole]="workspace.userRole"
+                      ></app-invitation-role>
+                    </div>
+                    <div class="app-table-cell basis-full">
+                      <app-invitation-status [invitation]="invitation"></app-invitation-status>
+                    </div>
+                    <div class="app-table-cell basis-1/2">
+                      <app-invitation-actions
+                        [invitation]="invitation"
+                        [item]="workspace"
+                        itemType="workspace"
+                        [resentInvitation]="resentInvitationId() === invitation.id"
+                        (resend)="resendInvitation($event)"
+                        (revoke)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation($event)"
+                      ></app-invitation-actions>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
           } @else {
             <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.members.invitation_empty") }}</p>
           }

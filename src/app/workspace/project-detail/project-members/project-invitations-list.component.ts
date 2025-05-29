@@ -26,7 +26,6 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { MatRow, MatRowDef, MatTableModule } from "@angular/material/table";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
@@ -36,9 +35,6 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
   imports: [
     TranslocoDirective,
     HasPermissionDirective,
-    MatTableModule,
-    MatRow,
-    MatRowDef,
     InvitationStatusComponent,
     InvitationActionsComponent,
     InvitationRoleComponent,
@@ -52,38 +48,35 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
         >
           @let projectInvitations = projectInvitationRepositoryService.entities();
           @if (projectInvitations.length > 0) {
-            <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
-              <ng-container matColumnDef="user">
-                <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="role">
-                <mat-cell *matCellDef="let row" class="basis-1/3">
-                  <app-invitation-role
-                    [invitation]="row"
-                    itemType="project"
-                    [userRole]="project.userRole"
-                  ></app-invitation-role>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="status">
-                <mat-cell *matCellDef="let row" class="basis-full">
-                  <app-invitation-status [invitation]="row"></app-invitation-status>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <mat-cell *matCellDef="let row" class="basis-1/2">
-                  <app-invitation-actions
-                    [invitation]="row"
-                    [item]="project"
-                    itemType="project"
-                    [resentInvitation]="resentInvitationId() === row.id"
-                    (resend)="resendInvitation($event)"
-                    (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
-                  ></app-invitation-actions>
-                </mat-cell>
-              </ng-container>
-              <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
-            </mat-table>
+            <div class="app-table" [@newItemsFlyIn]="projectInvitations.length">
+              <div class="app-table-row-group">
+                @for (invitation of projectInvitations; track invitation.id) {
+                  <div class="app-table-row">
+                    <div class="app-table-cell basis-1/3">{{ invitation.email }}</div>
+                    <div class="app-table-cell basis-1/3">
+                      <app-invitation-role
+                        [invitation]="invitation"
+                        itemType="project"
+                        [userRole]="project.userRole"
+                      ></app-invitation-role>
+                    </div>
+                    <div class="app-table-cell basis-full">
+                      <app-invitation-status [invitation]="invitation"></app-invitation-status>
+                    </div>
+                    <div class="app-table-cell basis-1/2">
+                      <app-invitation-actions
+                        [invitation]="invitation"
+                        [item]="project"
+                        itemType="project"
+                        [resentInvitation]="resentInvitationId() === invitation.id"
+                        (resend)="resendInvitation($event)"
+                        (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
+                      ></app-invitation-actions>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
           } @else {
             <p class="mat-body-medium text-on-surface-variant">{{ t("project.members.invitation_empty") }}</p>
           }
