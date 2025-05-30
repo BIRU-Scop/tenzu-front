@@ -79,7 +79,8 @@ export interface ServiceEntityDetail<
 
   getRequest(params: GetParams, queryParams?: QueryParams): Promise<EntityDetailModel>;
   patchRequest(
-    item: Partial<EntityDetailModel>,
+    itemId: EntityId,
+    partialData: Partial<EntityDetailModel>,
     params: PatchParams,
     queryParams?: QueryParams,
   ): Promise<EntityDetailModel>;
@@ -118,15 +119,16 @@ export abstract class BaseRepositoryDetailService<
     return item;
   }
   async patchRequest(
-    item: Partial<EntityDetail>,
+    itemId: EntityId,
+    partialData: Partial<EntityDetail>,
     params: PatchParams,
     queryParams?: QueryParams,
   ): Promise<EntityDetail> {
-    if (this.getEntityIdFn(item) === this.getEntityIdFn(this.entityDetail())) {
-      const entity = await lastValueFrom(this.apiService.patch(item, params, queryParams));
+    if (itemId === this.getEntityIdFn(this.entityDetail())) {
+      const entity = await lastValueFrom(this.apiService.patch(partialData, params, queryParams));
       return this.updateEntityDetail(entity);
     }
-    throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
+    throw new NotFoundEntityError(`Entity ${itemId} not found`);
   }
   async putRequest(item: EntityDetail, params: PutParams, queryParams?: QueryParams): Promise<EntityDetail> {
     if (this.getEntityIdFn(item) === this.getEntityIdFn(this.entityDetail())) {

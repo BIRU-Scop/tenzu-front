@@ -74,11 +74,8 @@ export class ProjectKanbanService {
     }
   }
 
-  async editSelectedWorkflow(
-    patchData: Pick<Workflow, "id"> & Partial<Omit<Workflow, "projectId" | "slug">>,
-    params: { workflowId: Workflow["id"] },
-  ) {
-    const updatedWorkflow = await this.workflowService.patchRequest(patchData, params);
+  async editSelectedWorkflow(workflowId: Workflow["id"], patchData: Partial<Omit<Workflow, "projectId" | "slug">>) {
+    const updatedWorkflow = await this.workflowService.patchRequest(workflowId, patchData, { workflowId });
     if (updatedWorkflow) {
       this.projectService.editWorkflow(updatedWorkflow);
     }

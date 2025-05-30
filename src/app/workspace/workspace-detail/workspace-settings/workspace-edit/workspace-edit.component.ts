@@ -125,7 +125,7 @@ export default class WorkspaceEditComponent {
     if (workspace) {
       this.form.reset(this.form.value);
       if (this.form.valid) {
-        await this.workspaceService.patchRequest(this.form.getRawValue(), { workspaceId: workspace.id });
+        await this.workspaceService.patchRequest(workspace.id, this.form.getRawValue(), { workspaceId: workspace.id });
       }
     }
   }

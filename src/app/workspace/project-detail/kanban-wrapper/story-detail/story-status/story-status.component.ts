@@ -54,9 +54,10 @@ export class StoryStatusComponent {
 
   async changeStatus(statusId: Status["id"], storyDetail: StoryDetail) {
     await this.storyRepositoryService.patchRequest(
+      storyDetail.ref,
       {
-        ...storyDetail,
         statusId: statusId,
+        version: storyDetail.version,
       },
       { projectId: storyDetail.projectId, ref: storyDetail.ref },
     );

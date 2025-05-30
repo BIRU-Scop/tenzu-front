@@ -135,7 +135,7 @@ export default class ProjectEditComponent {
     this.form.reset(this.form.value);
     const project = this.projectService.entityDetail();
     if (this.form.valid && project) {
-      await this.projectService.patchRequest(this.form.getRawValue(), { projectId: project.id });
+      await this.projectService.patchRequest(project.id, this.form.getRawValue(), { projectId: project.id });
       this.notificationService.success({
         title: "notification.action.changes_saved",
       });
