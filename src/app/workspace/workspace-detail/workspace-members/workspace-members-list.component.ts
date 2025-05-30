@@ -25,43 +25,57 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { MatTableModule } from "@angular/material/table";
 import { UserStore } from "@tenzu/repository/user";
+import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 
 @Component({
   selector: "app-workspace-members",
-  imports: [TranslocoDirective, UserCardComponent, MatTableModule],
+  imports: [TranslocoDirective, UserCardComponent, MatTableModule, MembershipRoleComponent],
   template: `
-    <ng-container *transloco="let t">
-      @let workspaceMemberships = workspaceMembershipRepositoryService.entities();
-      @let myUser = userStore.myUser();
-      @if (workspaceMemberships.length > 0) {
-        <div class="app-table">
-          <div class="app-table-row-group">
-            @for (membership of workspaceMemberships; track membership.user.id) {
-              <div class="app-table-row">
-                <div class="app-table-cell">
-                  <app-user-card
-                    [fullName]="membership.user.fullName"
-                    [username]="membership.user.username"
-                    [color]="membership.user.color"
-                    [isSelf]="myUser.id === membership.user.id"
-                  ></app-user-card>
+    @let workspace = workspaceRepositoryService.entityDetail();
+    @if (workspace) {
+      <ng-container *transloco="let t">
+        @let workspaceMemberships = workspaceMembershipRepositoryService.entities();
+        @let myUser = userStore.myUser();
+        @if (workspaceMemberships.length > 0) {
+          <div class="app-table">
+            <div class="app-table-row-group">
+              @for (membership of workspaceMemberships; track membership.user.id) {
+                <div class="app-table-row">
+                  <div class="app-table-cell">
+                    <app-user-card
+                      [fullName]="membership.user.fullName"
+                      [username]="membership.user.username"
+                      [color]="membership.user.color"
+                      [isSelf]="myUser.id === membership.user.id"
+                    ></app-user-card>
+                  </div>
+                  <div class="app-table-cell">
+                    <app-membership-role
+                      [membership]="membership"
+                      itemType="workspace"
+                      [entityRole]="workspace"
+                      [isSelf]="myUser.id === membership.user.id"
+                    ></app-membership-role>
+                  </div>
+                  <div class="app-table-cell">
+                    <p class="text-on-surface-variant">
+                      {{ t("workspace.members.total_projects", { number: membership.totalProjectsIsMember }) }}
+                    </p>
+                  </div>
                 </div>
-                <div class="app-table-cell">
-                  <p class="text-on-surface-variant">
-                    {{ t("workspace.members.total_projects", { number: membership.totalProjectsIsMember }) }}
-                  </p>
-                </div>
-              </div>
-            }
+              }
+            </div>
           </div>
-        </div>
-      }
-    </ng-container>
+        }
+      </ng-container>
+    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceMembersComponent {
-  userStore = inject(UserStore);
-  workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+  readonly userStore = inject(UserStore);
+  readonly workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+  readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
 }

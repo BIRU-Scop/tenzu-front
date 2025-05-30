@@ -19,6 +19,11 @@
  *
  */
 
+export enum PermissionsBase {
+  CREATE_MODIFY_MEMBER = "create_modify_member",
+  DELETE_MEMBER = "delete_member",
+}
+
 export enum WorkspacePermissions {
   CREATE_MODIFY_MEMBER = "create_modify_member",
   DELETE_MEMBER = "delete_member",

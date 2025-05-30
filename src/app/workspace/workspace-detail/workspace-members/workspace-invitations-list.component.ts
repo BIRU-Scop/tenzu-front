@@ -109,7 +109,7 @@ export default class WorkspaceMembersComponent {
   protected readonly WorkspacePermissions = WorkspacePermissions;
 
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
-  workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  readonly workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
 
   resentInvitationId = signal<WorkspaceInvitation["id"] | null>(null);
 

@@ -105,8 +105,8 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
 export default class ProjectMembersComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
 
-  projectRepositoryService = inject(ProjectRepositoryService);
-  projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+  readonly projectRepositoryService = inject(ProjectRepositoryService);
+  readonly projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
 
   resentInvitationId = signal<ProjectInvitation["id"] | null>(null);
 

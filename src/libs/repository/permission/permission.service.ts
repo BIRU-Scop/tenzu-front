@@ -20,7 +20,6 @@
  */
 
 import { inject, Injectable, Injector, runInInjectionContext, Signal } from "@angular/core";
-import { ProjectPermissions, WorkspacePermissions } from "./permission.model";
 import { WorkspaceRepositoryService } from "../workspace";
 import { ProjectRepositoryService } from "../project";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -35,7 +34,7 @@ type EntityRole = UserRole & {
 };
 export type RedirectIfNoPermissionParams = {
   expectedId: EntityId;
-  requiredPermission: ProjectPermissions | WorkspacePermissions;
+  requiredPermission: Permission;
   redirectUrl?: string[];
 };
 export type hasPermissionParams = {

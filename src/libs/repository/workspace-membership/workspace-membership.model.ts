@@ -19,11 +19,9 @@
  *
  */
 
-import { UserNested } from "../user";
+import { MembershipBase } from "../membership";
 
-export type WorkspaceMembership = {
-  user: UserNested;
-  roleId: string;
+export type WorkspaceMembership = MembershipBase & {
   workspaceId: string;
   totalProjectsIsMember: number;
 };

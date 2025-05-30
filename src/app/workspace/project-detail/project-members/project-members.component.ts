@@ -33,7 +33,7 @@ import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-me
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { InvitationStatus, Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 
@@ -100,7 +100,6 @@ export default class ProjectMembersComponent implements AfterViewInit {
     { path: "./list-project-invitations", labelKey: "project.members.invitation_tab", iconName: "schedule" },
   ];
   protected readonly ProjectPermissions = ProjectPermissions;
-  protected readonly InvitationStatus = InvitationStatus;
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);

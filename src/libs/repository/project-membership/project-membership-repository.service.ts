@@ -24,6 +24,7 @@ import { ProjectMembership } from "./project-membership.model";
 import { ProjectMembershipApiService } from "./project-membership-api.service";
 import { lastValueFrom } from "rxjs";
 import { ProjectMembershipEntitiesStore } from "./project-membership-entities.store";
+import { NotFoundEntityError } from "../base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -41,15 +42,19 @@ export class ProjectMembershipRepositoryService {
     this.projectMembershipStore.setAllEntities(projectMemberships);
   }
 
-  async patchProjectMembership(projectId: string, username: string, value: Partial<ProjectMembership>) {
-    const projectMembership = await lastValueFrom(
-      this.projectMembershipApiService.patch(value, { projectId, username }),
-    );
-    this.projectMembershipStore.updateEntity(projectMembership.user.username, projectMembership);
+  async patchRequest(
+    membershipId: ProjectMembership["id"],
+    partialData: Pick<ProjectMembership, "roleId">,
+  ): Promise<ProjectMembership> {
+    if (this.entityMap()[membershipId]) {
+      const entity = await lastValueFrom(this.projectMembershipApiService.patch(partialData, { membershipId }));
+      return this.projectMembershipStore.updateEntity(membershipId, entity);
+    }
+    throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }
 
-  async deleteProjectMembership(projectId: string, username: string) {
-    await lastValueFrom(this.projectMembershipApiService.delete({ projectId, username }));
-    this.projectMembershipStore.deleteEntity(username);
+  async deleteRequest(membershipId: ProjectMembership["id"]) {
+    await lastValueFrom(this.projectMembershipApiService.delete({ membershipId }));
+    this.projectMembershipStore.deleteEntity(membershipId);
   }
 }

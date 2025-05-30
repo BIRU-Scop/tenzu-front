@@ -20,17 +20,14 @@
  */
 
 import { signalStore, withComputed } from "@ngrx/signals";
-import { SelectEntityId } from "@ngrx/signals/entities";
 import { withEntityListFeature } from "../base";
 import { ProjectMembership } from "./project-membership.model";
 import { computed } from "@angular/core";
 import { UserNested } from "@tenzu/repository/user";
 
-const selectIdProjectMembership: SelectEntityId<ProjectMembership> = (membership) => membership.user.username;
-
 export const ProjectMembershipEntitiesStore = signalStore(
   { providedIn: "root" },
-  withEntityListFeature<ProjectMembership>({ selectId: selectIdProjectMembership }),
+  withEntityListFeature<ProjectMembership>(),
   withComputed((store) => {
     const memberMap = computed(() => {
       return store.entities().reduce(
