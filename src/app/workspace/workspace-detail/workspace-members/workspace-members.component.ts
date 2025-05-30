@@ -37,6 +37,7 @@ import { Role } from "@tenzu/repository/membership";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
+import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
   selector: "app-workspace-members",
@@ -54,6 +55,7 @@ import { MatIcon } from "@angular/material/icon";
     MatTabNavPanel,
     RouterOutlet,
     HasPermissionDirective,
+    NgTemplateOutlet,
   ],
   template: `
     @let workspace = workspaceRepositoryService.entityDetail();
@@ -75,17 +77,26 @@ import { MatIcon } from "@angular/material/icon";
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {
-            <a
-              mat-tab-link
-              [routerLink]="link.path"
-              routerLinkActive
-              #RouterLinkActive="routerLinkActive"
-              [active]="RouterLinkActive.isActive"
-              [routerLinkActiveOptions]="{ exact: true }"
-            >
-              <mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
-              >{{ t(link.labelKey) }}
-            </a>
+            <ng-template #RouterContent>
+              <a
+                mat-tab-link
+                [routerLink]="link.path"
+                routerLinkActive
+                #RouterLinkActive="routerLinkActive"
+                [active]="RouterLinkActive.isActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+              >
+                <mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
+                >{{ t(link.labelKey) }}
+              </a>
+            </ng-template>
+            @if (link.permission) {
+              <ng-container *appHasPermission="{ requiredPermission: link.permission, actualEntity: workspace }">
+                <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+              </ng-container>
+            } @else {
+              <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+            }
           }
         </nav>
         <div>
@@ -99,8 +110,18 @@ import { MatIcon } from "@angular/material/icon";
 })
 export default class WorkspaceMembersComponent implements AfterViewInit {
   links = [
-    { path: "./list-workspace-members", labelKey: "workspace.members.members_tab", iconName: "group" },
-    { path: "./list-workspace-invitations", labelKey: "workspace.members.invitation_tab", iconName: "schedule" },
+    {
+      path: "./list-workspace-members",
+      labelKey: "workspace.members.members_tab",
+      iconName: "group",
+      permission: null,
+    },
+    {
+      path: "./list-workspace-invitations",
+      labelKey: "workspace.members.invitation_tab",
+      iconName: "schedule",
+      permission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+    },
   ];
 
   protected readonly WorkspacePermissions = WorkspacePermissions;

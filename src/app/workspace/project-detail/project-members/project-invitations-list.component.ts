@@ -24,27 +24,34 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-project-members",
   imports: [
     TranslocoDirective,
-    HasPermissionDirective,
     InvitationStatusComponent,
     InvitationActionsComponent,
     InvitationRoleComponent,
+    PermissionOrRedirectDirective,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
     @if (project) {
       <ng-container *transloco="let t">
         <ng-container
-          *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+          [appPermissionOrRedirect]="{
+            expectedId: project.id,
+            requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER,
+            type: 'project',
+            redirectUrl: ['..'],
+            redirectUrlExtras: { relativeTo: activatedRoute },
+          }"
         >
           @let projectInvitations = projectInvitationRepositoryService.entities();
           @if (projectInvitations.length > 0) {
@@ -107,6 +114,7 @@ export default class ProjectMembersComponent {
 
   readonly projectRepositoryService = inject(ProjectRepositoryService);
   readonly projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+  readonly activatedRoute = inject(ActivatedRoute);
 
   resentInvitationId = signal<ProjectInvitation["id"] | null>(null);
 

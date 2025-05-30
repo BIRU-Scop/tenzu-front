@@ -36,6 +36,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { Role } from "@tenzu/repository/membership";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
+import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
   selector: "app-project-members",
@@ -53,6 +54,7 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
     MatTabNavPanel,
     RouterOutlet,
     HasPermissionDirective,
+    NgTemplateOutlet,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -72,17 +74,26 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {
-            <a
-              mat-tab-link
-              [routerLink]="link.path"
-              routerLinkActive
-              #RouterLinkActive="routerLinkActive"
-              [active]="RouterLinkActive.isActive"
-              [routerLinkActiveOptions]="{ exact: true }"
-            >
-              <mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
-              >{{ t(link.labelKey) }}
-            </a>
+            <ng-template #RouterContent>
+              <a
+                mat-tab-link
+                [routerLink]="link.path"
+                routerLinkActive
+                #RouterLinkActive="routerLinkActive"
+                [active]="RouterLinkActive.isActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+              >
+                <mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
+                >{{ t(link.labelKey) }}
+              </a>
+            </ng-template>
+            @if (link.permission) {
+              <ng-container *appHasPermission="{ requiredPermission: link.permission, actualEntity: project }">
+                <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+              </ng-container>
+            } @else {
+              <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+            }
           }
         </nav>
         <div>
@@ -96,8 +107,13 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
 })
 export default class ProjectMembersComponent implements AfterViewInit {
   links = [
-    { path: "./list-project-members", labelKey: "project.members.members_tab", iconName: "group" },
-    { path: "./list-project-invitations", labelKey: "project.members.invitation_tab", iconName: "schedule" },
+    { path: "./list-project-members", labelKey: "project.members.members_tab", iconName: "group", permission: null },
+    {
+      path: "./list-project-invitations",
+      labelKey: "project.members.invitation_tab",
+      iconName: "schedule",
+      permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+    },
   ];
   protected readonly ProjectPermissions = ProjectPermissions;
 

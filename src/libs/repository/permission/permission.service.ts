@@ -24,7 +24,7 @@ import { WorkspaceRepositoryService } from "../workspace";
 import { ProjectRepositoryService } from "../project";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { tap } from "rxjs";
-import { Router } from "@angular/router";
+import { NavigationExtras, Router } from "@angular/router";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { EntityId } from "@ngrx/signals/entities";
 import { UserRole, Permission } from "@tenzu/repository/membership";
@@ -36,6 +36,7 @@ export type RedirectIfNoPermissionParams = {
   expectedId: EntityId;
   requiredPermission: Permission;
   redirectUrl?: string[];
+  redirectUrlExtras?: NavigationExtras;
 };
 export type hasPermissionParams = {
   expectedId: EntityId;
@@ -65,6 +66,7 @@ export function redirectIfNoPermission({
   expectedEntity,
   redirectUrl,
   requiredPermission,
+  redirectUrlExtras,
 }: RedirectIfNoPermissionParams & { expectedEntity: Signal<EntityRole | undefined> }) {
   const router = inject(Router);
   return toObservable(expectedEntity)
@@ -80,7 +82,7 @@ export function redirectIfNoPermission({
         ) {
           return;
         }
-        router.navigate(redirectUrl || ["/"]).then();
+        router.navigate(redirectUrl || ["/"], redirectUrlExtras).then();
       }),
     )
     .subscribe();
@@ -100,7 +102,7 @@ export class PermissionService {
 
   redirectIfNoPermission(
     injector: Injector,
-    { expectedId, redirectUrl, requiredPermission, type }: RedirectIfNoPermissionServiceParams,
+    { expectedId, redirectUrl, redirectUrlExtras, requiredPermission, type }: RedirectIfNoPermissionServiceParams,
   ) {
     let expectedEntity: Signal<EntityRole | undefined>;
     if (type === "workspace") {
@@ -116,6 +118,7 @@ export class PermissionService {
         redirectUrl,
         requiredPermission,
         expectedEntity,
+        redirectUrlExtras,
       });
     });
   }

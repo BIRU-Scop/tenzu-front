@@ -25,28 +25,32 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
-import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-workspace-members",
   imports: [
     TranslocoDirective,
-    HasPermissionDirective,
     InvitationStatusComponent,
     InvitationActionsComponent,
     InvitationRoleComponent,
+    PermissionOrRedirectDirective,
   ],
   template: `
     @let workspace = workspaceRepositoryService.entityDetail();
     @if (workspace) {
       <ng-container *transloco="let t">
         <ng-container
-          *appHasPermission="{
-            actualEntity: workspace,
+          [appPermissionOrRedirect]="{
+            expectedId: workspace.id,
             requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+            type: 'workspace',
+            redirectUrl: ['..'],
+            redirectUrlExtras: { relativeTo: activatedRoute },
           }"
         >
           @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
@@ -110,6 +114,7 @@ export default class WorkspaceMembersComponent {
 
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
   readonly workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  readonly activatedRoute = inject(ActivatedRoute);
 
   resentInvitationId = signal<WorkspaceInvitation["id"] | null>(null);
 
