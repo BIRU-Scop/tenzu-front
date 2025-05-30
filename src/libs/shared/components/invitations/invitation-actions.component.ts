@@ -28,8 +28,8 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
-import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 
 @Component({
   selector: "app-invitation-actions",
@@ -95,8 +95,8 @@ import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 export class InvitationActionsComponent {
   protected readonly InvitationStatus = InvitationStatus;
 
-  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
-  workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
+  projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
   invitation = input.required<InvitationBase>();
   itemType = input.required<"project" | "workspace">();
@@ -106,7 +106,7 @@ export class InvitationActionsComponent {
   revoke = output<InvitationBase["id"]>();
 
   notOwnerInvitationOrHasOwnerPermission = computed(() => {
-    let roleRepositoryService: ProjectRolesRepositoryService | WorkspaceRolesRepositoryService;
+    let roleRepositoryService: ProjectRoleRepositoryService | WorkspaceRoleRepositoryService;
     const invitation = this.invitation();
     if (!invitation.roleId) {
       return false;

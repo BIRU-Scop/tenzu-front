@@ -29,14 +29,14 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { WsService } from "@tenzu/utils/services/ws";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
-  const workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
+  const workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
   const router = inject(Router);
   const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
@@ -72,7 +72,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
   const wsService = inject(WsService);
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
-  const projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
+  const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   const router = inject(Router);
   if (projectId) {
     try {

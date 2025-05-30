@@ -29,7 +29,7 @@ import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 @Injectable({
   providedIn: "root",
 })
-export class ProjectRolesRepositoryService extends BaseRepositoryService<
+export class ProjectRoleRepositoryService extends BaseRepositoryService<
   ProjectRoleSummary,
   ProjectRoleDetail,
   ProjectRolesApiServiceType.ListEntitiesSummaryParams,
