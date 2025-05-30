@@ -28,8 +28,7 @@ import { InvitationsPayload } from "../membership";
 import { map } from "rxjs/operators";
 import { ProjectInvitation } from "./project-invitation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
-import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
-import { getEntityIdSelector } from "@tenzu/repository/base";
+import { EntityId } from "@ngrx/signals/entities";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 @Injectable({
@@ -42,22 +41,19 @@ export class ProjectInvitationRepositoryService {
   entityMap = this.projectInvitationEntitiesStore.entityMap;
   private workspaceService = inject(WorkspaceRepositoryService);
 
-  protected selectIdFn: SelectEntityId<NoInfer<ProjectInvitation>> | undefined = undefined;
-  protected getEntityIdFn = getEntityIdSelector({ selectId: this.selectIdFn });
-
   updateEntitySummary(id: EntityId, partialItem: Partial<ProjectInvitation>): ProjectInvitation {
     return this.projectInvitationEntitiesStore.updateEntity(id, partialItem);
   }
 
   async patchRequest(
-    item: Pick<ProjectInvitation, "roleId">,
-    params: { invitationId: ProjectInvitation["id"] },
+    invitationId: ProjectInvitation["id"],
+    partialData: Pick<ProjectInvitation, "roleId">,
   ): Promise<ProjectInvitation> {
-    if (!this.entityMap()[this.getEntityIdFn(item)]) {
-      const entity = await lastValueFrom(this.projectInvitationsApiService.patch(item, params));
-      this.updateEntitySummary(this.getEntityIdFn(item), entity);
+    if (this.entityMap()[invitationId]) {
+      const entity = await lastValueFrom(this.projectInvitationsApiService.patch(partialData, { invitationId }));
+      return this.updateEntitySummary(invitationId, entity);
     }
-    throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
+    throw new NotFoundEntityError(`Entity ${invitationId} not found`);
   }
 
   async listProjectInvitations(projectId: ProjectDetail["id"]) {
