@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit, output } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
@@ -45,13 +45,13 @@ import { ProjectDetail } from "@tenzu/repository/project";
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MembershipRoleComponent implements OnInit {
+export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> implements OnInit {
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
 
   membership = input.required<MembershipBase>();
   itemType = input.required<"project" | "workspace">();
-  entityRole = input.required<WorkspaceDetail | ProjectDetail>();
+  entityRole = input.required<T>();
   isSelf = input(false);
   membershipRepositoryService = computed(() => {
     switch (this.itemType()) {
@@ -64,6 +64,7 @@ export class MembershipRoleComponent implements OnInit {
     }
   });
   roleControl = new FormControl<Role["id"] | null>(null, { validators: [Validators.required] });
+  changedSelf = output<{ roleId: Role["id"]; entityRole: T }>();
 
   constructor() {
     effect(() => {
@@ -88,6 +89,9 @@ export class MembershipRoleComponent implements OnInit {
       await this.membershipRepositoryService().patchRequest(this.membership().id, {
         roleId: value,
       });
+      if (this.isSelf()) {
+        this.changedSelf.emit({ roleId: value, entityRole: this.entityRole() });
+      }
     });
   }
 }

@@ -25,8 +25,10 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { MatTableModule } from "@angular/material/table";
 import { UserStore } from "@tenzu/repository/user";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
+import { Role } from "@tenzu/repository/membership";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 
 @Component({
   selector: "app-project-members",
@@ -56,6 +58,7 @@ import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/me
                       itemType="project"
                       [entityRole]="project"
                       [isSelf]="myUser.id === membership.user.id"
+                      (changedSelf)="changeUserRole($event)"
                     ></app-membership-role>
                   </div>
                 </div>
@@ -73,4 +76,10 @@ export default class ProjectMembersComponent {
   readonly userStore = inject(UserStore);
   readonly projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   readonly projectRepositoryService = inject(ProjectRepositoryService);
+  readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+
+  changeUserRole({ roleId, entityRole }: { roleId: Role["id"]; entityRole: ProjectDetail }) {
+    const role = this.projectRoleRepositoryService.entityMapSummary()[roleId];
+    this.projectRepositoryService.updateEntityDetail({ ...entityRole, userRole: role });
+  }
 }

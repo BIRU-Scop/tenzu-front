@@ -26,7 +26,9 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { MatTableModule } from "@angular/material/table";
 import { UserStore } from "@tenzu/repository/user";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { WorkspaceDetail, WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { Role } from "@tenzu/repository/membership";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 
 @Component({
   selector: "app-workspace-members",
@@ -56,6 +58,7 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
                       itemType="workspace"
                       [entityRole]="workspace"
                       [isSelf]="myUser.id === membership.user.id"
+                      (changedSelf)="changeUserRole($event)"
                     ></app-membership-role>
                   </div>
                   <div class="app-table-cell">
@@ -78,4 +81,10 @@ export default class WorkspaceMembersComponent {
   readonly userStore = inject(UserStore);
   readonly workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  readonly workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
+
+  changeUserRole({ roleId, entityRole }: { roleId: Role["id"]; entityRole: WorkspaceDetail }) {
+    const role = this.workspaceRoleRepositoryService.entityMapSummary()[roleId];
+    this.workspaceRepositoryService.updateEntityDetail({ ...entityRole, userRole: role });
+  }
 }
