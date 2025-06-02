@@ -54,15 +54,17 @@ import { TranslocoDirective } from "@jsverse/transloco";
   ],
   template: `
     @let project = projectService.entityDetail();
-    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings.edit'">
+    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; scope: 'project'">
       <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
         <div class="flex flex-row gap-4 items-center">
           <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
           <mat-form-field>
-            <mat-label>{{ t("name") }}</mat-label>
+            <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
             <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
             @if (form.controls.name.hasError("required")) {
-              <mat-error data-testid="project-name-required-error">{{ t("errors.name_required") }}</mat-error>
+              <mat-error data-testid="project-name-required-error">{{
+                t("project.settings.project_edit.errors.name_required")
+              }}</mat-error>
             }
           </mat-form-field>
         </div>
@@ -78,19 +80,19 @@ import { TranslocoDirective } from "@jsverse/transloco";
             data-testid="project-edit-submit"
             [disabled]="form.pristine"
           >
-            {{ t("buttons.save") }}
+            {{ t("project.buttons.save") }}
           </button>
           <button mat-flat-button (click)="reset()" class="secondary-button">
-            {{ t("buttons.cancel") }}
+            {{ t("project.buttons.cancel") }}
           </button>
         </div>
       </form>
       <div class="flex flex-col gap-y-2">
-        <h2 class="mat-headline-small">{{ t("delete_project_title") }}</h2>
+        <h2 class="mat-headline-small">{{ t("project.settings.project_edit.delete_project_title") }}</h2>
         <div class="flex flex-row">
           <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
           <p class="mat-body-medium text-on-error-container align-middle">
-            {{ t("delete_project_warning") }}
+            {{ t("project.settings.project_edit.delete_project_warning") }}
           </p>
         </div>
         <button
@@ -100,7 +102,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
           [data]="{ deleteAction: true }"
           (popupConfirm)="project ? onDelete(project) : null"
         >
-          {{ t("buttons.delete") }}
+          {{ t("project.buttons.delete") }}
         </button>
       </div>
     </div>

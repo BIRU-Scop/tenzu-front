@@ -24,10 +24,11 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-list-project-roles",
-  imports: [TranslocoDirective, PermissionOrRedirectDirective],
+  imports: [TranslocoDirective, PermissionOrRedirectDirective, RouterLink],
   template: `
     <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
       <div
@@ -42,7 +43,11 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
           <div class="app-table-row">
             <div class="app-table-cell">{{ role.name }}</div>
             <div class="app-table-cell">{{ role.totalMembers }} {{ t("total_members") }}</div>
-            <div class="app-table-cell">{{ role.editable ? t("editable") : t("not_editable") }}</div>
+            <div class="app-table-cell">
+              <a [routerLink]="['..', 'edit-role', role.id]">
+                {{ role.editable ? t("editable") : t("not_editable") }}</a
+              >
+            </div>
           </div>
         }
       </div>

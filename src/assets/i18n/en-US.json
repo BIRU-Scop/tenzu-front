@@ -15,7 +15,8 @@
       "preview_warning": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly."
     },
     "action": {
-      "changes_saved": "Changes saved"
+      "changes_saved": "Changes saved",
+      "created_success": "Create success"
     },
     "project": {
       "deleted": "The project {{ name }} has been deleted"
