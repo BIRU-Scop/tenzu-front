@@ -182,10 +182,8 @@ import { Location } from "@angular/common";
     }
   `,
   styles: `
-    @use "../../../../../themes/variables/variables" as variables;
-
     .kanban-viewport {
-      height: variables.$viewport-height;
+      height: var(--tz-viewport-height);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
@@ -193,7 +191,7 @@ import { Location } from "@angular/common";
       overflow-y: hidden;
     }
     .virtual-scroll {
-      height: variables.$virtual-scroll-height;
+      height: var(--tz-virtual-scroll-height);
     }
   `,
   animations: [

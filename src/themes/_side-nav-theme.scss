@@ -20,10 +20,6 @@
  */
 
 @use '@angular/material' as mat;
-@use "variables/variables" as variables;
-
-$sidenav-width: 250px;
-$list-item-spacing: 12px;
 
 .mat-sidenav-container {
   .mat-sidenav {
@@ -61,8 +57,8 @@ $list-item-spacing: 12px;
     }
     .mat-mdc-icon-button{
       &.resized {
-        padding-left: $list-item-spacing;
-        padding-right: $list-item-spacing;
+        padding-left: var(--tw-4);
+        padding-right: var(--tw-4);
       }
     }
     .mat-divider {
@@ -74,8 +70,8 @@ $list-item-spacing: 12px;
     transition-duration: 400ms;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-property: margin-left;
-    padding: variables.$sidenav-content-padding;
-    margin-left: $sidenav-width;
+    padding: var(--tw-4);
+    margin-left: var(--tz-sidenav-width);
   }
 }
 
@@ -88,7 +84,7 @@ $list-item-spacing: 12px;
   .mat-sidenav {
     @include mat.sidenav-overrides((
       container-shape: 0px,
-      container-width: $sidenav-width,
+      container-width: var(--tz-sidenav-width),
       container-background-color: var(--mat-sys-surface-dim),
       container-divider-color: var(--mat-sys-background),
     ));

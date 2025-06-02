@@ -19,29 +19,26 @@
  *
  */
 
-// TYPOGRAPHY
-$material-medium-header-margin-bottom: 12px;
-
-// BUTTONS
-$story-button-wrapper-height: 48px;
-
-// BREADCRUMB
-$breadcrumb-margin-bottom: 2rem;
-
-// STATUS CARD
-$status-card-wrapper-height: calc(var(--mdc-icon-button-state-layer-size, 40px) + 0.5rem);
-
-// KANBAN
-$tasks-list-padding: 1rem;
-$sidenav-content-padding: 1rem;
-$elements-around-virtual-scroll-height: calc(
-       $status-card-wrapper-height + $tasks-list-padding + $sidenav-content-padding +
-        $story-button-wrapper-height
-);
-$viewport-height: calc(
-        100vh - var(--mat-toolbar-standard-height) - $sidenav-content-padding - var(
-                --mat-sys-label-medium-line-height
-        ) - $breadcrumb-margin-bottom - var(--mat-sys-headline-small-line-height) - $material-medium-header-margin-bottom
-);
-$virtual-scroll-height: calc($viewport-height - $elements-around-virtual-scroll-height);
-
+body {
+        --tw-8: 2rem;
+        --tw-4: 1rem;
+        --tw-2: 0.5rem;
+        --mat-sys-headline-small-margin-bottom: 12px;
+        --mat-outlined-button-height: 48px;
+        --tz-story-button-wrapper-height: var(--mat-outlined-button-height);
+        --tz-status-card-wrapper-height: calc(var(--mdc-icon-button-state-layer-size, 40px) + var(--tw-2));
+        --tz-project-detail-container-margin-top: var(--tw-8);
+        --tz-tasks-list-padding: var(--tw-4);
+        --tz-sidenav-content-padding: var(--tw-4);
+        --tz-sidenav-width: 250px;
+        --tz-elements-around-virtual-scroll-height: calc(
+                var(--tz-status-card-wrapper-height) + var(--tz-tasks-list-padding) + var(--tz-sidenav-content-padding) +
+                var(--tz-story-button-wrapper-height)
+        );
+        --tz-viewport-height: calc(
+                100vh - var(--mat-toolbar-standard-height) - var(--tz-sidenav-content-padding) - var(
+                        --mat-sys-label-medium-line-height
+                ) - var(--tz-project-detail-container-margin-top) - var(--mat-sys-headline-small-line-height) - var(--mat-sys-headline-small-margin-bottom)
+        );
+       --tz-virtual-scroll-height: calc(var(--tz-viewport-height) - var(--tz-elements-around-virtual-scroll-height));
+}
