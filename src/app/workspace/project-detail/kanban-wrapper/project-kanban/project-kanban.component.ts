@@ -127,13 +127,14 @@ import { Location } from "@angular/common";
             <ul
               [@newStoryFlyIn]="storyService.entitiesSummary().length || 0"
               [id]="status.id"
-              class="flex flex-col items-center gap-4 min-h-20 max-h-full overflow-y-auto py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+              class="flex flex-col items-center gap-4 min-h-20 max-h-full py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+              [class]="storiesRef && storiesRef.length > 10 ? 'overflow-y-visible' : 'overflow-y-auto'"
               cdkDropList
               [cdkDropListData]="status"
               (cdkDropListDropped)="drop($event)"
             >
               @if (storiesRef && storiesRef.length > 10) {
-                <cdk-virtual-scroll-viewport [itemSize]="96" class="min-h-[100vh] w-full flex">
+                <cdk-virtual-scroll-viewport [itemSize]="96" class="virtual-scroll w-full flex">
                   <li
                     id="story-{{ storyRef }}"
                     cdkDrag
@@ -182,12 +183,15 @@ import { Location } from "@angular/common";
   `,
   styles: `
     .kanban-viewport {
-      height: calc(100vh - var(--mat-toolbar-standard-height) - 16px - 1rem - 32px - 2rem - 12px - 16px);
+      height: var(--tz-viewport-height);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
       overflow-x: auto;
       overflow-y: hidden;
+    }
+    .virtual-scroll {
+      height: var(--tz-virtual-scroll-height);
     }
   `,
   animations: [
