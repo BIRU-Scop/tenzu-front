@@ -29,10 +29,14 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
   withEntityListFeature<WorkspaceSummary>(),
   withMethods((store) => ({
     removeUserInvitedProjects(workspaceId: WorkspaceDetail["id"], projectId: ProjectNested["id"]) {
-      const removedUserInvitedProject = store
+      const removedUserInvitedProjects = store
         .entityMap()
         [workspaceId].userInvitedProjects.filter((project) => project.id != projectId);
-      store.updateEntity(workspaceId, { userInvitedProjects: removedUserInvitedProject });
+      store.updateEntity(workspaceId, { userInvitedProjects: removedUserInvitedProjects });
+    },
+    addUserMemberProjects(workspaceId: WorkspaceDetail["id"], project: ProjectNested) {
+      const addedUserMemberProjects = [...store.entityMap()[workspaceId].userMemberProjects, project];
+      store.updateEntity(workspaceId, { userMemberProjects: addedUserMemberProjects });
     },
   })),
 );

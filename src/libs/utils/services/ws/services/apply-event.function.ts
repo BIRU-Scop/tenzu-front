@@ -93,7 +93,7 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
     case StoryEventType.UpdateStory: {
       const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
       const story = content.story;
-      storyService.updateEntityDetail(story, story);
+      storyService.updateEntityDetail(story);
       switch (true) {
         case content.updatesAttrs.includes("workflow"): {
           const workspace = workspaceService.entityDetail();
@@ -187,7 +187,7 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
       if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
         projectService.editWorkflow(content.workflow);
         if (selectedWorkflow.id === content.workflow.id) {
-          workflowService.updateEntityDetail(content.workflow, content.workflow);
+          workflowService.updateEntityDetail(content.workflow);
           const currentUrl = router.url;
           if (
             selectedProject &&
@@ -343,7 +343,7 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
 
       if (!projectIsAlreadyUpdated) {
-        projectService.updateEntityDetail(project, project);
+        projectService.updateEntityDetail(project);
         notificationService.info({
           title: "notification.events.update_project",
           translocoTitleParams: {

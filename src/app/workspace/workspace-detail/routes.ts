@@ -33,12 +33,17 @@ export const routes: Routes = [
     loadComponent: () => import("./workspace-project-list/workspace-project-list.component"),
   },
   {
-    path: "people",
-    loadComponent: () => import("./workspace-people/workspace-people.component"),
+    path: "members",
+    children: [
+      {
+        path: "",
+        loadComponent: () => import("./workspace-members/workspace-members.component"),
+        loadChildren: () => import("./workspace-members/routes"),
+      },
+    ],
   },
   {
     path: "settings",
-
     children: [
       {
         path: "",

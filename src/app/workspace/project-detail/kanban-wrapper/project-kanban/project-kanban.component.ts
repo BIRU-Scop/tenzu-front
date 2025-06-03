@@ -376,10 +376,7 @@ export class ProjectKanbanComponent {
         if (!currentWorkflow) {
           return;
         }
-        const editedWorkflow = await this.projectKanbanService.editSelectedWorkflow(
-          { name: name, id: currentWorkflow.id },
-          { workflowId: currentWorkflow.id },
-        );
+        const editedWorkflow = await this.projectKanbanService.editSelectedWorkflow(currentWorkflow.id, { name: name });
         this.notificationService.success({
           title: "notification.workflow.renamed",
         });

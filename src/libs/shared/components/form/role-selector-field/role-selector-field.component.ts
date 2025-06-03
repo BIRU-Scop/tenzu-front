@@ -35,8 +35,8 @@ import { MatFormField } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Role } from "@tenzu/repository/membership";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
 import { MatTooltip } from "@angular/material/tooltip";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -68,8 +68,8 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 export class RoleSelectorFieldComponent implements OnInit {
   injector = inject(Injector);
   ngControl = injectNgControl();
-  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
-  workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
+  projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
   itemType = input.required<"project" | "workspace">();
   userRole = input<Role>();

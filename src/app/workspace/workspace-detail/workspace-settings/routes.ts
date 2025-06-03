@@ -32,7 +32,6 @@ const routes: Routes = [
     path: "workspace-edit",
     loadComponent: () => import("./workspace-edit/workspace-edit.component"),
     providers: [provideTranslocoScope("project")],
-    data: { state: 1 },
   },
 ];
 

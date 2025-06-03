@@ -243,10 +243,10 @@ export class PasswordFieldComponent implements OnInit {
   ngOnInit() {
     this.ngControl.control.addValidators(this.requirementsValidator(this.requirements()));
 
-    this.ngControl.control.valueChanges.subscribe(() => {
+    this.ngControl.control.valueChanges.subscribe((value) => {
       let result = DEFAULT_STRENGTH;
       if (this.settings().strength.enabled) {
-        result = this.getStrength(this.ngControl.value);
+        result = this.getStrength(value);
       }
       this.strength.set(result);
     });

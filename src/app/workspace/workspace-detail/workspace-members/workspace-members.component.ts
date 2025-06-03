@@ -20,26 +20,27 @@
  */
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { MatButton } from "@angular/material/button";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
-import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { MatButton } from "@angular/material/button";
+
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
-import { MatIcon } from "@angular/material/icon";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
-import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { Role } from "@tenzu/repository/membership";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
+import { MatIcon } from "@angular/material/icon";
 import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
-  selector: "app-project-members",
+  selector: "app-workspace-members",
   imports: [
     TranslocoDirective,
     MatIcon,
@@ -57,19 +58,21 @@ import { NgTemplateOutlet } from "@angular/common";
     NgTemplateOutlet,
   ],
   template: `
-    @let project = projectRepositoryService.entityDetail();
-    @if (project) {
-      <div class="flex flex-col gap-y-8" *transloco="let t">
+    @let workspace = workspaceRepositoryService.entityDetail();
+    @if (workspace) {
+      <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
         <div class="flex flex-row">
-          <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
-
+          <h1 class="mat-headline-medium grow">{{ t("workspace.members.title") }}</h1>
           <button
-            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
+            *appHasPermission="{
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
+            }"
             (click)="openInviteDialog()"
             class="tertiary-button"
             mat-stroked-button
           >
-            {{ t("project.members.invite_to_project") }}
+            {{ t("workspace.members.invite_to_workspace") }}
           </button>
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
@@ -88,7 +91,7 @@ import { NgTemplateOutlet } from "@angular/common";
               </a>
             </ng-template>
             @if (link.permission) {
-              <ng-container *appHasPermission="{ requiredPermission: link.permission, actualEntity: project }">
+              <ng-container *appHasPermission="{ requiredPermission: link.permission, actualEntity: workspace }">
                 <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
               </ng-container>
             } @else {
@@ -105,56 +108,62 @@ import { NgTemplateOutlet } from "@angular/common";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ProjectMembersComponent implements AfterViewInit {
+export default class WorkspaceMembersComponent implements AfterViewInit {
   links = [
-    { path: "./list-project-members", labelKey: "project.members.members_tab", iconName: "group", permission: null },
     {
-      path: "./list-project-invitations",
-      labelKey: "project.members.invitation_tab",
+      path: "./list-workspace-members",
+      labelKey: "workspace.members.members_tab",
+      iconName: "group",
+      permission: null,
+    },
+    {
+      path: "./list-workspace-invitations",
+      labelKey: "workspace.members.invitation_tab",
       iconName: "schedule",
-      permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+      permission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
     },
   ];
-  protected readonly ProjectPermissions = ProjectPermissions;
+
+  protected readonly WorkspacePermissions = WorkspacePermissions;
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
-  projectRepositoryService = inject(ProjectRepositoryService);
-  projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
-  projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   translocoService = inject(TranslocoService);
   readonly router = inject(Router);
   readonly activatedRoute = inject(ActivatedRoute);
 
   ngAfterViewInit(): void {
-    this.breadcrumbStore.setPathComponent("projectMembers");
+    this.breadcrumbStore.setPathComponent("workspaceMembers");
   }
 
   public openInviteDialog(): void {
-    const selectedProject = this.projectRepositoryService.entityDetail();
-    if (selectedProject) {
-      this.projectInvitationRepositoryService.listProjectInvitations(selectedProject.id).then();
+    const selectedWorkspace = this.workspaceRepositoryService.entityDetail();
+    if (selectedWorkspace) {
+      this.workspaceInvitationRepositoryService.listWorkspaceInvitations(selectedWorkspace.id).then();
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
         minWidth: 850,
         data: {
           title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-            name: selectedProject.name,
+            name: selectedWorkspace.name,
           }),
-          description: this.translocoService.translateObject("project.members.description_modal"),
-          existingMembers: this.projectMembershipRepositoryService.members,
-          existingInvitations: this.projectInvitationRepositoryService.entities,
-          itemType: "project",
-          userRole: selectedProject.userRole,
+          description: this.translocoService.translate("workspace.members.description_modal"),
+          existingMembers: this.workspaceMembershipRepositoryService.members,
+          existingInvitations: this.workspaceInvitationRepositoryService.entities,
+          itemType: "workspace",
+          userRole: selectedWorkspace.userRole,
         },
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
-          await this.projectInvitationRepositoryService.createBulkInvitations(
-            selectedProject,
+          await this.workspaceInvitationRepositoryService.createBulkInvitations(
+            selectedWorkspace,
             invitations.map(({ email, roleId }) => ({ email, roleId })),
           );
-          await this.router.navigate(["list-project-invitations"], { relativeTo: this.activatedRoute });
+          await this.router.navigate(["list-workspace-invitations"], { relativeTo: this.activatedRoute });
         }
       });
     }

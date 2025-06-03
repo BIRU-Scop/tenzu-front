@@ -48,14 +48,14 @@ export class WorkspaceInvitationRepositoryService {
   }
 
   async patchRequest(
-    item: Pick<WorkspaceInvitation, "roleId">,
-    params: { invitationId: WorkspaceInvitation["id"] },
+    invitationId: WorkspaceInvitation["id"],
+    partialData: Pick<WorkspaceInvitation, "roleId">,
   ): Promise<WorkspaceInvitation> {
-    if (!this.entityMap()[this.getEntityIdFn(item)]) {
-      const entity = await lastValueFrom(this.workspaceInvitationsApiService.patch(item, params));
-      this.updateEntitySummary(this.getEntityIdFn(item), entity);
+    if (this.entityMap()[invitationId]) {
+      const entity = await lastValueFrom(this.workspaceInvitationsApiService.patch(partialData, { invitationId }));
+      return this.updateEntitySummary(invitationId, entity);
     }
-    throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
+    throw new NotFoundEntityError(`Entity ${invitationId} not found`);
   }
 
   async listWorkspaceInvitations(workspaceId: WorkspaceSummary["id"]) {

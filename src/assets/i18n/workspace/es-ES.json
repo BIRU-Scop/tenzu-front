@@ -3,7 +3,7 @@
     "workspace": "Espacio de trabajo",
     "workspaceListProjects": "Proyectos",
     "workspaceSettings": "Configuraciones",
-    "workspacePeople": "Personas",
+    "workspaceMembers": "Miembros",
     "project": "Proyecto",
     "kanban": "Kanban",
     "projectMembers": "Miembros",
@@ -28,14 +28,20 @@
       "deleted_workspace": "El espacio de trabajo {{ var }} ha sido eliminado"
     },
     "edit": {
-      "title": "Editar espacio de trabajo",
+      "title": "Información",
       "name": "Nombre",
       "name_required": "El nombre del espacio de trabajo no puede estar vacío",
       "name_placeholder": "Añadir nombre del espacio de trabajo"
     }
   },
-  "people": {
-    "description_modal": "<p>Una vez que acepten la invitación, podrán invitar a nuevos miembros, crear nuevos proyectos y editar otros ajustes del espacio de trabajo.</p><br><p>Empieza a escribir un correo electrónico o ingresa varias direcciones separadas por una coma.</p>"
+  "members": {
+    "title": "Miembros",
+    "invite_to_workspace": "Invitar al espacio de trabajo",
+    "description_modal": "<p>Una vez que acepten la invitación, podrán invitar a nuevos miembros, crear nuevos proyectos y editar otros ajustes del espacio de trabajo.</p><br><p>Comienza a escribir un correo electrónico o introduce varias direcciones separadas por una coma.</p>",
+    "members_tab": "Miembros",
+    "invitation_tab": "Invitaciones",
+    "invitation_empty": "No hay invitaciones.",
+    "total_projects": "{{ number }} proyectos"
   },
   "placeholder": {
     "placeholder_title": "Aún no eres miembro de ningún espacio de trabajo",

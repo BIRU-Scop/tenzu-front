@@ -39,7 +39,7 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectKanbanCreateComponent {
+export default class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);
 
   readonly projectService = inject(ProjectRepositoryService);

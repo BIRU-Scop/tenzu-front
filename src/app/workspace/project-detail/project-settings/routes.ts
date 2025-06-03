@@ -20,7 +20,6 @@
  */
 
 import { Routes } from "@angular/router";
-import { provideTranslocoScope } from "@jsverse/transloco";
 
 const routes: Routes = [
   {
@@ -31,14 +30,10 @@ const routes: Routes = [
   {
     path: "project-edit",
     loadComponent: () => import("./project-edit/project-edit.component"),
-    providers: [provideTranslocoScope("project")],
-    data: { state: 1 },
   },
   {
     path: "list-project-roles",
     loadComponent: () => import("./list-project-roles/list-project-roles.component"),
-    providers: [provideTranslocoScope("project")],
-    data: { state: 2 },
   },
 ];
 

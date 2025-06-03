@@ -22,8 +22,9 @@
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceMembershipApiService } from "./workspace-membership-api-service";
-import { WorkspaceMembership } from "./workspace-membership.model";
-import { WorkspaceMembershipEntitiesStore } from "@tenzu/repository/workspace-membership/workspace-membership.store";
+import { WorkspaceMembershipDetail } from "./workspace-membership.model";
+import { WorkspaceMembershipEntitiesStore } from "./workspace-membership.store";
+import { NotFoundEntityError } from "../base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -41,15 +42,19 @@ export class WorkspaceMembershipRepositoryService {
     this.workspaceMembershipStore.setAllEntities(projectMemberships);
   }
 
-  async patchWorkspaceMembership(workspaceId: string, username: string, value: Partial<WorkspaceMembership>) {
-    const projectMembership = await lastValueFrom(
-      this.workspaceMembershipApiService.patch(value, { workspaceId, username }),
-    );
-    this.workspaceMembershipStore.updateEntity(projectMembership.user.username, projectMembership);
+  async patchRequest(
+    membershipId: WorkspaceMembershipDetail["id"],
+    partialData: Pick<WorkspaceMembershipDetail, "roleId">,
+  ): Promise<WorkspaceMembershipDetail> {
+    if (this.entityMap()[membershipId]) {
+      const entity = await lastValueFrom(this.workspaceMembershipApiService.patch(partialData, { membershipId }));
+      return this.workspaceMembershipStore.updateEntity(membershipId, entity);
+    }
+    throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }
 
-  async deleteWorkspaceMembership(workspaceId: string, username: string) {
-    await lastValueFrom(this.workspaceMembershipApiService.delete({ workspaceId, username }));
-    this.workspaceMembershipStore.deleteEntity(username);
+  async deleteRequest(membershipId: WorkspaceMembershipDetail["id"]) {
+    await lastValueFrom(this.workspaceMembershipApiService.delete({ membershipId }));
+    this.workspaceMembershipStore.deleteEntity(membershipId);
   }
 }

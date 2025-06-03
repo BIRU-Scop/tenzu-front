@@ -20,7 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from "@angular/core";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
@@ -53,11 +53,11 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
 })
 export default class ListProjectRolesComponent implements OnInit {
   columns = signal(["name", "totalMembers", "editable"]);
-  projectRolesRepositoryService = inject(ProjectRolesRepositoryService);
-  entitiesSummary = this.projectRolesRepositoryService.entitiesSummary;
+  projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  entitiesSummary = this.projectRoleRepositoryService.entitiesSummary;
   projectId = input.required<string>();
   protected readonly ProjectPermissions = ProjectPermissions;
   ngOnInit(): void {
-    this.projectRolesRepositoryService.listRequest({ projectId: this.projectId() }).then();
+    this.projectRoleRepositoryService.listRequest({ projectId: this.projectId() }).then();
   }
 }

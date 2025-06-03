@@ -20,4 +20,4 @@
  */
 
 export * from "./workspace-roles.model";
-export * from "./workspace-roles-repository.service";
+export * from "./workspace-role-repository.service";

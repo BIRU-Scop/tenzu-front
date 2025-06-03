@@ -19,10 +19,8 @@
  *
  */
 
-import { UserNested } from "../user";
+import { MembershipBase } from "../membership";
 
-export type ProjectMembership = {
-  user: UserNested;
-  roleId: string;
+export type ProjectMembership = MembershipBase & {
   projectId: string;
 };

@@ -4,7 +4,7 @@
     "workspaces": "Workspaces",
     "workspaceListProjects": "Projects",
     "workspaceSettings": "Settings",
-    "workspacePeople": "People",
+    "workspaceMembers": "Members",
     "project": "Project",
     "projects": "Projects",
     "kanban": "Kanban",
@@ -24,7 +24,7 @@
   "settings": {
     "title": "Workspace settings",
     "edit": {
-      "title": "Edit workspace",
+      "title": "Information",
       "name": "Name",
       "name_required": "Workspace name can’t be empty",
       "name_placeholder": "Add workspace name",
@@ -36,14 +36,14 @@
       }
     }
   },
-  "people": {
-    "title": "People",
+  "members": {
+    "title": "Members",
     "invite_to_workspace": "Invite to workspace",
     "description_modal": "<p>Once they accept the invitation, they will be able to invite new members, create new projects and edit other workspace settings.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
     "members_tab": "Members",
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
-    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them."
+    "total_projects": "{{ number }} projects"
   },
   "placeholder": {
     "placeholder_title": "You are not member of any Workspace yet",

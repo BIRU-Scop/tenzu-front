@@ -63,10 +63,10 @@ export class WorkspaceDetailComponent implements OnDestroy {
     ]);
     this.sideNavStore.setSecondaryNavItems([
       {
-        label: "workspace.general_title.workspacePeople",
+        label: "workspace.general_title.workspaceMembers",
         iconName: "group",
-        href: "people",
-        testId: "people-link",
+        href: "members",
+        testId: "members-link",
       },
       {
         label: "workspace.general_title.workspaceSettings",
