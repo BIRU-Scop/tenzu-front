@@ -29,10 +29,21 @@ import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/proje
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
 import { Role } from "@tenzu/repository/membership";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { MembershipActionsComponent } from "@tenzu/shared/components/memberships/membership-actions.component";
+import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
+import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
+import { LowerCasePipe } from "@angular/common";
 
 @Component({
   selector: "app-project-members",
-  imports: [TranslocoDirective, UserCardComponent, MatTableModule, MembershipRoleComponent],
+  imports: [
+    TranslocoDirective,
+    UserCardComponent,
+    MatTableModule,
+    MembershipRoleComponent,
+    MembershipActionsComponent,
+    LowerCasePipe,
+  ],
   template: `
     @let project = projectRepositoryService.entityDetail();
     @if (project) {
@@ -61,6 +72,21 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
                       (changedSelf)="changeUserRole($event)"
                     ></app-membership-role>
                   </div>
+                  <div class="app-table-cell">
+                    <app-membership-actions
+                      [membership]="membership"
+                      [itemLabel]="t('commons.project') | lowercase"
+                      [hasDeletePermission]="
+                        hasEntityRequiredPermission({
+                          requiredPermission: PermissionsBase.DELETE_MEMBER,
+                          actualEntity: project,
+                        })
+                      "
+                      [userRole]="project.userRole"
+                      [ownerRole]="projectRoleRepositoryService.ownerRole()"
+                      [isSelf]="myUser.id === membership.user.id"
+                    ></app-membership-actions>
+                  </div>
                 </div>
               }
             </div>
@@ -73,6 +99,9 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent {
+  protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;
+  protected readonly PermissionsBase = PermissionsBase;
+
   readonly userStore = inject(UserStore);
   readonly projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   readonly projectRepositoryService = inject(ProjectRepositoryService);
