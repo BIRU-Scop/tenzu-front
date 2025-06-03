@@ -113,11 +113,11 @@ body {
       list-item-hover-state-layer-opacity: 0.15,
       list-item-focus-state-layer-opacity: 0.15,
       list-item-one-line-container-height: auto,
-      list-item-hover-state-layer-color: var(--mat-sys-secondary),
-      list-item-focus-state-layer-color: var(--mat-sys-secondary),
-      list-item-label-text-color: var(--mat-sys-on-secondary-container),
-      list-item-hover-label-text-color: var(--mat-sys-on-secondary-container),
-      list-item-focus-label-text-color: var(--mat-sys-on-secondary-container),
+      list-item-hover-state-layer-color: var(--mat-sys-primary),
+      list-item-focus-state-layer-color: var(--mat-sys-primary),
+      list-item-label-text-color: var(--mat-sys-on-primary-container),
+      list-item-hover-label-text-color: var(--mat-sys-on-primary-container),
+      list-item-focus-label-text-color: var(--mat-sys-on-primary-container),
     ));
   }
 }
