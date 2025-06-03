@@ -21,7 +21,10 @@
 
 import { MembershipBase } from "../membership";
 
-export type WorkspaceMembership = MembershipBase & {
+export type WorkspaceMembershipSummary = MembershipBase & {
   workspaceId: string;
+};
+
+export type WorkspaceMembershipDetail = WorkspaceMembershipSummary & {
   totalProjectsIsMember: number;
 };

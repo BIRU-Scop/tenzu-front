@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceMembershipApiService } from "./workspace-membership-api-service";
-import { WorkspaceMembership } from "./workspace-membership.model";
+import { WorkspaceMembershipDetail } from "./workspace-membership.model";
 import { WorkspaceMembershipEntitiesStore } from "./workspace-membership.store";
 import { NotFoundEntityError } from "../base/errors";
 
@@ -43,9 +43,9 @@ export class WorkspaceMembershipRepositoryService {
   }
 
   async patchRequest(
-    membershipId: WorkspaceMembership["id"],
-    partialData: Pick<WorkspaceMembership, "roleId">,
-  ): Promise<WorkspaceMembership> {
+    membershipId: WorkspaceMembershipDetail["id"],
+    partialData: Pick<WorkspaceMembershipDetail, "roleId">,
+  ): Promise<WorkspaceMembershipDetail> {
     if (this.entityMap()[membershipId]) {
       const entity = await lastValueFrom(this.workspaceMembershipApiService.patch(partialData, { membershipId }));
       return this.workspaceMembershipStore.updateEntity(membershipId, entity);
@@ -53,7 +53,7 @@ export class WorkspaceMembershipRepositoryService {
     throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }
 
-  async deleteRequest(membershipId: WorkspaceMembership["id"]) {
+  async deleteRequest(membershipId: WorkspaceMembershipDetail["id"]) {
     await lastValueFrom(this.workspaceMembershipApiService.delete({ membershipId }));
     this.workspaceMembershipStore.deleteEntity(membershipId);
   }
