@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -50,7 +50,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
         @if (!userIsInvited()) {
           <button
             class="primary-button"
-            routerLink="new-project"
+            routerLink="/new-project"
             [queryParams]="{ workspaceId: id() }"
             routerLinkActive="active"
             ariaCurrentWhenActive="page"

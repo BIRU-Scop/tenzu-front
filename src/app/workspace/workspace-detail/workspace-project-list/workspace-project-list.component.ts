@@ -82,10 +82,14 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
           ></app-project-card>
         }
       } @empty {
-        @for (skeleton of Array(6); track $index) {
-          <li>
-            <app-card-skeleton></app-card-skeleton>
-          </li>
+        @if (workspace) {
+          <app-project-card [workspaceId]="workspace.id"></app-project-card>
+        } @else {
+          @for (skeleton of Array(6); track $index) {
+            <li>
+              <app-card-skeleton></app-card-skeleton>
+            </li>
+          }
         }
       }
     </div>
