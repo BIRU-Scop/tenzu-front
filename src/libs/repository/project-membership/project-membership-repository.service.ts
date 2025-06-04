@@ -25,6 +25,7 @@ import { ProjectMembershipApiService } from "./project-membership-api.service";
 import { lastValueFrom } from "rxjs";
 import { ProjectMembershipEntitiesStore } from "./project-membership-entities.store";
 import { NotFoundEntityError } from "../base/errors";
+import { UserNested } from "@tenzu/repository/user";
 
 @Injectable({
   providedIn: "root",
@@ -53,8 +54,13 @@ export class ProjectMembershipRepositoryService {
     throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }
 
-  async deleteRequest(membershipId: ProjectMembership["id"]) {
-    await lastValueFrom(this.projectMembershipApiService.delete({ membershipId }));
+  async deleteRequest(membershipId: ProjectMembership["id"], successorId?: UserNested["id"]) {
+    await lastValueFrom(
+      this.projectMembershipApiService.delete(
+        { membershipId },
+        successorId ? { successorUserId: successorId } : undefined,
+      ),
+    );
     this.projectMembershipStore.deleteEntity(membershipId);
   }
 }

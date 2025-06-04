@@ -143,9 +143,8 @@ export abstract class BaseRepositoryDetailService<
     return entity;
   }
   async deleteRequest(item: EntityDetail, params: DeleteParams, queryParams?: QueryParams): Promise<EntityDetail> {
-    const result = this.deleteEntityDetail(item);
     await lastValueFrom(this.apiService.delete(params, queryParams));
-    return result;
+    return this.deleteEntityDetail(item);
   }
 
   setEntityDetail(item: EntityDetail): void {

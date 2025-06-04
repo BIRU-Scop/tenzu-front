@@ -39,6 +39,12 @@
     "invite_to_project": "Invite to project",
     "members_tab": "Members",
     "invitation_tab": "Invitations",
-    "invitation_empty": "There are no invitations."
+    "invitation_empty": "There are no invitations.",
+    "delete": {
+      "leave_title": "Are you sure you want to leave the project \"{name}\"?",
+      "project_will_be_deleted": "The project will be permanently deleted",
+      "sole_owner_succession": "You are the sole owner of the project, you must designate someone to take this role",
+      "successor_label": "New owner"
+    }
   }
 }

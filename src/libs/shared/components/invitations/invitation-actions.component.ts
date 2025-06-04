@@ -30,10 +30,11 @@ import { ProjectDetail } from "@tenzu/repository/project";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { LowerCasePipe } from "@angular/common";
 
 @Component({
   selector: "app-invitation-actions",
-  imports: [ConfirmDirective, MatButton, MatIcon, MatIconButton, MatTooltip, TranslocoDirective],
+  imports: [ConfirmDirective, MatButton, MatIcon, MatIconButton, MatTooltip, TranslocoDirective, LowerCasePipe],
   template: `
     @let _invitation = invitation();
     @if (_invitation.status === InvitationStatus.PENDING) {
@@ -75,7 +76,7 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
               message: t('component.invitation.confirm_revoke_message', {
                 email: _invitation.email,
                 name: item().name,
-                item: itemType(),
+                item: (itemType() === 'project' ? t('commons.project') : t('commons.workspace')) | lowercase,
               }),
             }"
             (popupConfirm)="revoke.emit(_invitation.id)"

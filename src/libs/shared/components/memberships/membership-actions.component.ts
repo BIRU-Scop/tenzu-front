@@ -19,24 +19,41 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output, Signal } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
+import { ConfirmDirective } from "@tenzu/directives/confirm";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: "app-membership-actions",
-  imports: [MatIcon, MatIconButton, TranslocoDirective, MatButton],
+  imports: [MatIcon, MatIconButton, TranslocoDirective, MatButton, ConfirmDirective, MatTooltip],
   template: `
+    @let _membership = membership();
     <ng-container *transloco="let t">
       @if (isSelf()) {
-        <button type="submit" mat-flat-button class="error-button">
-          {{ t("component.membership.leave", { itemLabel: itemLabel() }) }}
+        <button type="submit" mat-flat-button class="error-button" (click)="leave.emit(membership)">
+          {{ t("component.membership.leave", { item: itemLabel() }) }}
         </button>
-      } @else if (hasDeletePermission() && (membership().roleId !== ownerRole()?.id || userRole()?.isOwner)) {
-        <button mat-icon-button [attr.aria-label]="t('component.membership.remove')">
+      } @else if (hasDeletePermission() && (_membership.roleId !== ownerRole()?.id || userRole()?.isOwner)) {
+        <button
+          mat-icon-button
+          [attr.aria-label]="t('component.membership.remove')"
+          [matTooltip]="t('component.membership.remove')"
+          appConfirm
+          [data]="{
+            deleteAction: true,
+            actionButtonContent: t('component.membership.confirm_remove_action'),
+            message: t('component.membership.confirm_remove_message', {
+              member: _membership.user.fullName,
+              name: itemName(),
+              item: itemLabel(),
+            }),
+          }"
+          (popupConfirm)="confirmedRemove.emit(_membership)"
+        >
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -48,13 +65,15 @@ import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
     class: "flex gap-2 justify-end w-full",
   },
 })
-export class MembershipActionsComponent {
-  protected readonly PermissionsBase = PermissionsBase;
-
+export class MembershipActionsComponent<T extends MembershipBase> {
   itemLabel = input.required<string>();
-  membership = input.required<MembershipBase>();
+  itemName = input.required<string>();
+  membership = input.required<T>();
   hasDeletePermission = input.required<boolean>();
   isSelf = input(false);
   ownerRole = input<Role>();
   userRole = input<Role>();
+
+  confirmedRemove = output<T>();
+  leave = output<Signal<T>>();
 }

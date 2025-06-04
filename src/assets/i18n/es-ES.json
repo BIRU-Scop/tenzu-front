@@ -60,7 +60,9 @@
     },
     "membership": {
       "remove": "Eliminar este miembro",
-      "leave": "Deja el {itemLabel}"
+      "leave": "Deja el {item}",
+      "confirm_remove_action": "Eliminar",
+      "confirm_remove_message": "¿Estás seguro de que quieres eliminar {member} de {item} \"{name}\"?"
     },
     "description": {
       "label": "Descripción",
