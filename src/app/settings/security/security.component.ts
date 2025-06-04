@@ -78,7 +78,7 @@ import { MatIcon } from "@angular/material/icon";
           }
         </div>
         <div class="flex flex-row">
-          <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
+          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
           <p class="mat-body-medium text-on-error-container align-middle" [innerHTML]="t('warning')"></p>
         </div>
         <button

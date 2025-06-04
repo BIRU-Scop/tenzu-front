@@ -76,7 +76,7 @@ export interface InvitePeopleDialogData {
           <div [innerHTML]="data.description"></div>
           <form [formGroup]="form" (ngSubmit)="addToPeopleList()" class="flex flex-col gap-4">
             <div class="flex flex-row gap-x-4 items-center">
-              <mat-icon class="icon-lg">group_add</mat-icon>
+              <mat-icon class="icon-lg text-on-primary-container">group_add</mat-icon>
               <mat-form-field>
                 <mat-label>
                   {{ t("component.invite_dialog.mailing_list") }}

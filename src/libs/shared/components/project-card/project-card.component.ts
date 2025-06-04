@@ -43,7 +43,7 @@ import { NgStyle } from "@angular/common";
   template: `
     <mat-card
       appearance="outlined"
-      class="min-h-[100px] min-w-[200px]"
+      class="min-h-[100px] w-[200px]"
       [ngStyle]="disabled() ? { position: 'absolute', filter: 'blur(3px)' } : {}"
       *transloco="let t; prefix: 'component.project_card'"
     >
@@ -72,8 +72,8 @@ import { NgStyle } from "@angular/common";
       </mat-card-content>
     </mat-card>
     @if (disabled()) {
-      <div class="min-h-[100px] min-w-[200px] flex items-center justify-center relative">
-        <mat-icon>lock</mat-icon>
+      <div class="min-h-[100px] w-[200px] flex items-center justify-center relative">
+        <mat-icon class="text-on-primary-container">lock</mat-icon>
       </div>
     }
   `,
