@@ -73,7 +73,7 @@ import { NgStyle } from "@angular/common";
     </mat-card>
     @if (disabled()) {
       <div class="min-h-[100px] w-[200px] flex items-center justify-center relative">
-        <mat-icon>lock</mat-icon>
+        <mat-icon class="text-on-primary-container">lock</mat-icon>
       </div>
     }
   `,
