@@ -21,11 +21,9 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
@@ -35,22 +33,22 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { tap } from "rxjs";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
 
 @Component({
   selector: "app-project-edit",
   imports: [
     AvatarComponent,
-    ConfirmDirective,
     DescriptionFieldComponent,
     FormsModule,
     MatButton,
     MatError,
     MatLabel,
     MatFormField,
-    MatIcon,
     MatInput,
     ReactiveFormsModule,
     TranslocoDirective,
+    DeleteWarningButtonComponent,
   ],
   template: `
     @let project = projectService.entityDetail();
@@ -87,24 +85,11 @@ import { TranslocoDirective } from "@jsverse/transloco";
           </button>
         </div>
       </form>
-      <div class="flex flex-col gap-y-2">
-        <h2 class="mat-headline-small">{{ t("project.settings.project_edit.delete_project_title") }}</h2>
-        <div class="flex flex-row">
-          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-on-error-container align-middle">
-            {{ t("project.settings.project_edit.delete_project_warning") }}
-          </p>
-        </div>
-        <button
-          mat-flat-button
-          class="error-button w-fit"
-          appConfirm
-          [data]="{ deleteAction: true }"
-          (popupConfirm)="project ? onDelete(project) : null"
-        >
-          {{ t("project.buttons.delete") }}
-        </button>
-      </div>
+      <app-delete-warning-button
+        [translocoKeyTitle]="'project.settings.project_edit.delete_project_title'"
+        [translocoKeyWarningMessage]="'project.settings.project_edit.delete_project_warning'"
+        (popupConfirm)="project ? onDelete(project) : null"
+      ></app-delete-warning-button>
     </div>
   `,
   styles: ``,
