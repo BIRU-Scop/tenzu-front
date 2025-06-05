@@ -29,7 +29,7 @@ import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-create-role",
@@ -40,6 +40,7 @@ import { ActivatedRoute, Router } from "@angular/router";
     TranslocoDirective,
     ReactiveFormsModule,
     PermissionOrRedirectDirective,
+    RouterLink,
   ],
   template: ` @let projectDetail = currentProjectDetail();
     @if (projectDetail) {
@@ -57,7 +58,10 @@ import { ActivatedRoute, Router } from "@angular/router";
             class="flex flex-col"
           >
             <app-form-role [form]="form" />
-            <div class="flex">
+            <div class="flex flex-row gap-x-4 mt-2">
+              <a mat-flat-button routerLink="../list-project-roles" class="secondary-button">
+                {{ t("commons.cancel") }}
+              </a>
               <button mat-flat-button [disabled]="form.pristine" type="submit" class="tertiary-button">
                 {{ t("project.settings.roles.create_role") }}
               </button>

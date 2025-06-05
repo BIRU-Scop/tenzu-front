@@ -98,6 +98,9 @@ import { PermissionsFormGroupControl } from "../role.facade";
     </ng-container>
   `,
   styles: ``,
+  host: {
+    class: "flex flex-col gap-y-4",
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormRoleComponent {

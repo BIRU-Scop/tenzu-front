@@ -32,15 +32,26 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
 import { FormValue, RoleFacade } from "../role.facade";
 import { FormRoleComponent } from "../form-role/form-role.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
+import { ProjectDetail } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-edit-role",
-  imports: [TranslocoDirective, ReactiveFormsModule, MatButton, FormRoleComponent, PermissionOrRedirectDirective],
+  imports: [
+    TranslocoDirective,
+    ReactiveFormsModule,
+    MatButton,
+    FormRoleComponent,
+    PermissionOrRedirectDirective,
+    RouterLink,
+    DeleteWarningButtonComponent,
+  ],
   template: `
     @let _currentRole = currentRole();
     @let projectDetail = currentProjectDetail();
     @if (_currentRole && projectDetail) {
-      <ng-container *transloco="let t; scope: 'project'">
+      <div class="flex flex-col gap-y-8" *transloco="let t">
         <ng-container
           [appPermissionOrRedirect]="{
             requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
@@ -49,13 +60,16 @@ import { NotificationService } from "@tenzu/utils/services/notification";
           }"
         >
           <form
+            class="flex flex-col gap-y-4"
             [formGroup]="form"
             (submit)="onSave({ values: form.getRawValue(), currentRole: _currentRole })"
-            class="flex flex-col"
           >
             <app-form-role [form]="form" />
-            @if (_currentRole.editable) {
-              <div class="flex">
+            <div class="flex gap-x-4 mt-2">
+              @if (_currentRole.editable) {
+                <a mat-flat-button routerLink="../../list-project-roles" class="secondary-button">
+                  {{ t("commons.cancel") }}
+                </a>
                 <button
                   mat-flat-button
                   [disabled]="form.pristine || form.invalid"
@@ -64,11 +78,22 @@ import { NotificationService } from "@tenzu/utils/services/notification";
                 >
                   {{ t("project.buttons.save") }}
                 </button>
-              </div>
-            }
+              } @else {
+                <a mat-flat-button routerLink="../../list-project-roles" class="secondary-button">
+                  {{ t("commons.close") }}
+                </a>
+              }
+            </div>
           </form>
+          @if (_currentRole.editable) {
+            <app-delete-warning-button
+              [translocoKeyTitle]="'project.settings.permissions.delete_role_title'"
+              [translocoKeyWarningMessage]="'project.settings.permissions.delete_role_warning'"
+              (popupConfirm)="deleteRole(_currentRole, projectDetail)"
+            ></app-delete-warning-button>
+          }
         </ng-container>
-      </ng-container>
+      </div>
     }
   `,
   styles: ``,
@@ -78,6 +103,8 @@ export default class EditRoleComponent {
   readonly roleId = input.required<Role["id"]>();
   readonly roleFacade = inject(RoleFacade);
   readonly notificationService = inject(NotificationService);
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
   readonly currentRole = this.roleFacade.currentRole;
   readonly currentProjectDetail = this.roleFacade.currentProjectDetail;
   form = this.roleFacade.buildForm();
@@ -100,5 +127,8 @@ export default class EditRoleComponent {
         title: "notification.action.changes_saved",
       });
     });
+  }
+  async deleteRole(currentRole: ProjectRoleSummary, projectDetail: ProjectDetail) {
+    await this.roleFacade.deleteRole(currentRole, projectDetail);
   }
 }

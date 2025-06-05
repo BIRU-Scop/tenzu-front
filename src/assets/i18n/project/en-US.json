@@ -1,7 +1,7 @@
 {
   "buttons": {
     "cancel": "Cancel",
-    "save": "Save",
+    "save": "Save changes",
     "delete": "Delete"
   },
   "new_project": {
@@ -20,6 +20,15 @@
       "no_permission": "No permissions",
       "name_required": "The name is required",
       "name_forbidden": "This role already exists. Please choose another name.",
+      "delete_role_title": "Delete role",
+      "delete_role_warning": "This action will delete the role, existing membership with this role will need to use a new one.",
+      "delete_role_dialog": {
+        "title": "This role is assigned, you must assign a new role to these members to be able to delete it",
+        "cancel": "Cancel",
+        "confirm": "Reassign",
+        "project_role_select_title": "Roles"
+      },
+
       "role": {
         "label": "Role",
         "no_member_permissions": "to give a role permission you must set a member permission",
