@@ -23,6 +23,7 @@ import { Injectable } from "@angular/core";
 import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 import { AbstractApiService } from "../base";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -44,5 +45,12 @@ export class ProjectRolesApiService extends AbstractApiService<
   }
   protected override getEntityBaseUrl(params: ProjectRolesApiServiceType.GetEntityDetailParams): string {
     return `${this.baseUrl}/roles/${params.roleId}`;
+  }
+
+  override delete(
+    params: ProjectRolesApiServiceType.DeleteEntityDetailParams,
+    queryParams?: { moveTo: ProjectRoleDetail["id"] },
+  ): Observable<void> {
+    return super.delete(params, queryParams);
   }
 }
