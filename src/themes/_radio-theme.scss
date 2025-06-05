@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,6 @@
  */
 
 @use "@angular/material" as mat;
-
   .mdc-radio {
     .mat-mdc-radio-touch-target {
       width: 36px;
@@ -50,6 +49,7 @@
     unselected-pressed-icon-color: var(--mat-sys-on-primary-container),
     label-text-size: var(--mat-sys-label-large-size),
     label-text-color: var(--mat-sys-on-surface),
+    disabled-label-color: var(--mat-sys-on-surface),
     label-text-line-height: var(--mat-sys-label-large-line-height),
     label-text-weight: var(--mat-sys-label-large-line-weight),
     ripple-color: var(--mat-sys-on-primary-container),

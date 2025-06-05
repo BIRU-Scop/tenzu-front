@@ -242,3 +242,5 @@ test-results
 # Storybook
 storybook-static
 documentation.json
+
+.junie/
