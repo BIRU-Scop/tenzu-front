@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -189,7 +189,7 @@
   &.mat-mdc-outlined-button {
     box-shadow: 0 0 4px var(--mat-sys-tertiary);
     &.mat-mdc-button-disabled {
-      box-shadow: none;
+      box-shadow: 0 0 4px var(--mat-sys-outline-variant);
     }
   }
   &.mdc-button--unelevated {
@@ -197,7 +197,7 @@
     border: solid 1px  var(--mat-sys-tertiary);
     margin: 3px;
     &.mat-mdc-button-disabled {
-      box-shadow: none;
+      box-shadow:  0 0 6px var(--mat-sys-outline-variant);
       border: solid 1px var(--mat-sys-outline-variant);
       margin: 3px;
     }
