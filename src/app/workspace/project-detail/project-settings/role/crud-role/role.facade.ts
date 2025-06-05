@@ -166,6 +166,8 @@ export class RoleFacade {
     data.form.setValue({ ...values, name: data.role.name }, { emitEvent: true });
     if (!data.role.editable) {
       data.form.disable();
+    } else {
+      data.form.enable();
     }
   }
   mapPermissionsToFormValue(permissions: ProjectPermissions[]): PermissionsFormValue {
