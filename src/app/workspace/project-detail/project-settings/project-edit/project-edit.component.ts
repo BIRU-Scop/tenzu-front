@@ -52,45 +52,47 @@ import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-wa
   ],
   template: `
     @let project = projectService.entityDetail();
-    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; scope: 'project'">
-      <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
-        <div class="flex flex-row gap-4 items-center">
-          <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
-          <mat-form-field>
-            <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
-            <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
-            @if (form.controls.name.hasError("required")) {
-              <mat-error data-testid="project-name-required-error">{{
-                t("project.settings.project_edit.errors.name_required")
-              }}</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <app-description-field
-          [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
-          formControlName="description"
-        ></app-description-field>
-        <div class="flex gap-x-4 mt-2">
-          <button
-            mat-flat-button
-            type="submit"
-            class="tertiary-button"
-            data-testid="project-edit-submit"
-            [disabled]="form.pristine"
-          >
-            {{ t("project.buttons.save") }}
-          </button>
-          <button mat-flat-button (click)="reset()" class="secondary-button">
-            {{ t("project.buttons.cancel") }}
-          </button>
-        </div>
-      </form>
-      <app-delete-warning-button
-        [translocoKeyTitle]="'project.settings.project_edit.delete_project_title'"
-        [translocoKeyWarningMessage]="'project.settings.project_edit.delete_project_warning'"
-        (popupConfirm)="project ? onDelete(project) : null"
-      ></app-delete-warning-button>
-    </div>
+    @if (project) {
+      <div class="flex flex-col gap-y-8 w-min" *transloco="let t; scope: 'project'">
+        <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave(project)">
+          <div class="flex flex-row gap-4 items-center">
+            <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project.color || 0"></app-avatar>
+            <mat-form-field>
+              <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
+              <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
+              @if (form.controls.name.hasError("required")) {
+                <mat-error data-testid="project-name-required-error">{{
+                  t("project.settings.project_edit.errors.name_required")
+                }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <app-description-field
+            [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
+            formControlName="description"
+          ></app-description-field>
+          <div class="flex gap-x-4 mt-2">
+            <button
+              mat-flat-button
+              type="submit"
+              class="tertiary-button"
+              data-testid="project-edit-submit"
+              [disabled]="form.pristine"
+            >
+              {{ t("project.buttons.save") }}
+            </button>
+            <button mat-flat-button (click)="reset()" class="secondary-button">
+              {{ t("project.buttons.cancel") }}
+            </button>
+          </div>
+        </form>
+        <app-delete-warning-button
+          [translocoKeyTitle]="'project.settings.project_edit.delete_project_title'"
+          [translocoKeyWarningMessage]="'project.settings.project_edit.delete_project_warning'"
+          (popupConfirm)="onDelete(project)"
+        ></app-delete-warning-button>
+      </div>
+    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -118,10 +120,9 @@ export default class ProjectEditComponent {
       .subscribe();
   }
 
-  async onSave() {
+  async onSave(project: ProjectDetail) {
     this.form.reset(this.form.value);
-    const project = this.projectService.entityDetail();
-    if (this.form.valid && project) {
+    if (this.form.valid) {
       await this.projectService.patchRequest(project.id, this.form.getRawValue(), { projectId: project.id });
       this.notificationService.success({
         title: "notification.action.changes_saved",
