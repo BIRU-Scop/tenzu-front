@@ -43,7 +43,17 @@
     "members_tab": "Members",
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
-    "total_projects": "{{ number }} projects"
+    "total_projects": "{{ number }} projects",
+    "delete": {
+      "leave_title": "Are you sure you want to leave the workspace \"{name}\"?",
+      "forbidden_existing_projects_self": "You cannot leave the workspace while you are a member of the following projects: {names}",
+      "workspace_will_be_deleted": "The workspace will be permanently deleted",
+      "sole_owner_succession": "You are the sole owner of the workspace, you must designate someone to take this role",
+      "successor_label": "New owner",
+      "existing_projects_succession_warning": "This member is the sole owner of the following projects: {names}. You are going to become the new owner of those projects",
+      "forbidden_existing_projects_other": "This member is the sole owner of the following projects: {names}. Only an owner of the workspace can delete this member",
+      "forbidden_confirm": "Got it!"
+    }
   },
   "placeholder": {
     "placeholder_title": "You are not member of any Workspace yet",

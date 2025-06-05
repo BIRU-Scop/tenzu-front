@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -60,7 +60,7 @@ import { NgStyle } from "@angular/common";
       <mat-card-content>
         <p>
           @if (!name() && !description() && !color()) {
-            <a [routerLink]="'new-project'" [queryParams]="{ workspaceId: workspaceId() }">{{
+            <a routerLink="/new-project" [queryParams]="{ workspaceId: workspaceId() }">{{
               t("create_first_project")
             }}</a>
           } @else {

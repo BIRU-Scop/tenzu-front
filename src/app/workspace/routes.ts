@@ -42,7 +42,7 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
   if (workspaceId) {
     try {
       workspaceRepositoryService.getRequest({ workspaceId }).then();
-      workspaceMembershipRepositoryService.listWorkspaceMembership(workspaceId).then();
+      workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(workspaceId).then();
       workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
@@ -81,7 +81,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
         wsService.command({ command: "unsubscribe_from_project_events", project: oldProjectDetail.id });
       }
       projectRepositoryService.getRequest({ projectId }).then();
-      projectMembershipRepositoryService.listProjectMembership(projectId).then();
+      projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();
       projectRoleRepositoryService.listRequest({ projectId }).then();
       wsService.command({ command: "subscribe_to_project_events", project: projectId });
     } catch (error) {

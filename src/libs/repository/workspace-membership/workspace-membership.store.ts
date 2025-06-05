@@ -21,13 +21,13 @@
 
 import { signalStore, withComputed } from "@ngrx/signals";
 import { withEntityListFeature } from "@tenzu/repository/base/features";
-import { WorkspaceMembershipDetail } from "@tenzu/repository/workspace-membership/workspace-membership.model";
+import { WorkspaceMembership } from "@tenzu/repository/workspace-membership/workspace-membership.model";
 import { computed } from "@angular/core";
 import { UserNested } from "@tenzu/repository/user";
 
 export const WorkspaceMembershipEntitiesStore = signalStore(
   { providedIn: "root" },
-  withEntityListFeature<WorkspaceMembershipDetail>(),
+  withEntityListFeature<WorkspaceMembership>(),
   withComputed((store) => {
     const memberMap = computed(() => {
       return store.entities().reduce(
