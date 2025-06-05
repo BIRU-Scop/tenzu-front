@@ -41,7 +41,17 @@
     "members_tab": "Miembros",
     "invitation_tab": "Invitaciones",
     "invitation_empty": "No hay invitaciones.",
-    "total_projects": "{{ number }} proyectos"
+    "total_projects": "{{ number }} proyectos",
+    "delete": {
+      "leave_title": "¿Estás seguro de que quieres dejar el espacio de trabajo \"{name}\"?",
+      "forbidden_existing_projects_self": "No puede abandonar el espacio de trabajo mientras sea miembro de los siguientes proyectos: {names}",
+      "workspace_will_be_deleted": "El espacio de trabajo se borrará permanentemente",
+      "sole_owner_succession": "Usted es el único propietario del espacio de trabajo, debe designar a alguien que asuma esta función",
+      "successor_label": "Nuevo propietario",
+      "existing_projects_succession_warning": "Este miembro es el único propietario de los siguientes proyectos: {names}. Va a convertirse en el nuevo propietario de esos proyectos",
+      "forbidden_existing_projects_other": "Este miembro es el único propietario de los siguientes proyectos: {names}. Sólo un propietario del espacio de trabajo puede eliminar este miembro",
+      "forbidden_confirm": "¡La tengo!"
+    }
   },
   "placeholder": {
     "placeholder_title": "Aún no eres miembro de ningún espacio de trabajo",

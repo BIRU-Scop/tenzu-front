@@ -38,24 +38,35 @@ import { MatTooltip } from "@angular/material/tooltip";
           {{ t("component.membership.leave", { item: itemLabel() }) }}
         </button>
       } @else if (hasDeletePermission() && (_membership.roleId !== ownerRole()?.id || userRole()?.isOwner)) {
-        <button
-          mat-icon-button
-          [attr.aria-label]="t('component.membership.remove')"
-          [matTooltip]="t('component.membership.remove')"
-          appConfirm
-          [data]="{
-            deleteAction: true,
-            actionButtonContent: t('component.membership.confirm_remove_action'),
-            message: t('component.membership.confirm_remove_message', {
-              member: _membership.user.fullName,
-              name: itemName(),
-              item: itemLabel(),
-            }),
-          }"
-          (popupConfirm)="confirmedRemove.emit(_membership)"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
+        @if (simpleConfirmForRemove()) {
+          <button
+            mat-icon-button
+            [attr.aria-label]="t('component.membership.remove')"
+            [matTooltip]="t('component.membership.remove')"
+            appConfirm
+            [data]="{
+              deleteAction: true,
+              actionButtonContent: t('component.membership.confirm_remove_action'),
+              message: t('component.membership.confirm_remove_message', {
+                member: _membership.user.fullName,
+                name: itemName(),
+                item: itemLabel(),
+              }),
+            }"
+            (popupConfirm)="confirmedRemove.emit(_membership)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        } @else {
+          <button
+            mat-icon-button
+            [attr.aria-label]="t('component.membership.remove')"
+            [matTooltip]="t('component.membership.remove')"
+            (click)="remove.emit(membership)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
       }
     </ng-container>
   `,
@@ -73,7 +84,9 @@ export class MembershipActionsComponent<T extends MembershipBase> {
   isSelf = input(false);
   ownerRole = input<Role>();
   userRole = input<Role>();
+  simpleConfirmForRemove = input(true);
 
   confirmedRemove = output<T>();
   leave = output<Signal<T>>();
+  remove = output<Signal<T>>();
 }

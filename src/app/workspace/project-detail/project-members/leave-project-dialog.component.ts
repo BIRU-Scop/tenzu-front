@@ -89,9 +89,11 @@ type DeleteMembershipDialogData = {
         }
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button mat-dialog-close class="secondary-button">{{ t("cancel") }}</button>
+        <button mat-flat-button mat-dialog-close class="secondary-button">
+          {{ t("directives.confirmPopupComponent.cancelAction") }}
+        </button>
         <button mat-flat-button (click)="submit()" class="error-button" [disabled]="isLastOwner() && form.invalid">
-          {{ t("confirm") }}
+          {{ t("directives.confirmPopupComponent.confirmAction") }}
         </button>
       </mat-dialog-actions>
     </ng-container>

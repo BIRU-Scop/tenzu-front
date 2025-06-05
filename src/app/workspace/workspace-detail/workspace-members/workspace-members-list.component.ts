@@ -19,20 +19,36 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { WorkspaceMembership, WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { MatTableModule } from "@angular/material/table";
-import { UserStore } from "@tenzu/repository/user";
+import { UserNested, UserStore } from "@tenzu/repository/user";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
 import { WorkspaceDetail, WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { Role } from "@tenzu/repository/membership";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { LowerCasePipe } from "@angular/common";
+import { MembershipActionsComponent } from "@tenzu/shared/components/memberships/membership-actions.component";
+import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
+import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { MatDialog } from "@angular/material/dialog";
+import { Router } from "@angular/router";
+import { DeleteWorkspaceMembershipDialogComponent } from "./delete-workspace-membership-dialog.component";
 
 @Component({
   selector: "app-workspace-members",
-  imports: [TranslocoDirective, UserCardComponent, MatTableModule, MembershipRoleComponent],
+  imports: [
+    TranslocoDirective,
+    UserCardComponent,
+    MatTableModule,
+    MembershipRoleComponent,
+    LowerCasePipe,
+    MembershipActionsComponent,
+  ],
   template: `
     @let workspace = workspaceRepositoryService.entityDetail();
     @if (workspace) {
@@ -42,6 +58,11 @@ import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-role
         @if (workspaceMemberships.length > 0) {
           <div class="app-table">
             <div class="app-table-row-group">
+              @let hasDeletePermission =
+                hasEntityRequiredPermission({
+                  requiredPermission: PermissionsBase.DELETE_MEMBER,
+                  actualEntity: workspace,
+                });
               @for (membership of workspaceMemberships; track membership.user.id) {
                 <div class="app-table-row">
                   <div class="app-table-cell">
@@ -66,6 +87,19 @@ import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-role
                       {{ t("workspace.members.total_projects", { number: membership.totalProjectsIsMember }) }}
                     </p>
                   </div>
+                  <div class="app-table-cell">
+                    <app-membership-actions
+                      [membership]="membership"
+                      [itemLabel]="t('commons.workspace') | lowercase"
+                      [itemName]="workspace.name"
+                      [hasDeletePermission]="hasDeletePermission"
+                      [userRole]="workspace.userRole"
+                      [ownerRole]="workspaceRoleRepositoryService.ownerRole()"
+                      [isSelf]="myUser.id === membership.user.id"
+                      (leave)="openDeleteDialog({ membership: $event })"
+                      (remove)="openDeleteDialog({ membership: $event })"
+                    ></app-membership-actions>
+                  </div>
                 </div>
               }
             </div>
@@ -78,13 +112,51 @@ import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-role
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceMembersComponent {
+  protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;
+  protected readonly PermissionsBase = PermissionsBase;
+
   readonly userStore = inject(UserStore);
   readonly workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
   readonly workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
+  readonly dialog = inject(MatDialog);
+  readonly router = inject(Router);
 
   changeUserRole({ roleId, entityRole }: { roleId: Role["id"]; entityRole: WorkspaceDetail }) {
     const role = this.workspaceRoleRepositoryService.entityMapSummary()[roleId];
     this.workspaceRepositoryService.updateEntityDetail({ ...entityRole, userRole: role });
+  }
+
+  openDeleteDialog({ membership }: { membership: Signal<WorkspaceMembership> }) {
+    const dialogRef = this.dialog.open(DeleteWorkspaceMembershipDialogComponent, {
+      ...matDialogConfig,
+      data: {
+        membership: membership,
+      },
+    });
+    dialogRef
+      .afterClosed()
+      .subscribe(
+        async (closeValue?: { successorId?: UserNested["id"]; membership: WorkspaceMembership; delete: boolean }) => {
+          if (closeValue) {
+            if (closeValue.delete) {
+              const workspace = this.workspaceRepositoryService.entityDetail();
+              if (workspace && workspace.id === closeValue.membership.workspaceId) {
+                this.workspaceRepositoryService
+                  .deleteRequest(workspace, { workspaceId: closeValue.membership.workspaceId })
+                  .then();
+                await this.router.navigate(["/"]);
+              } else {
+                throw new NotFoundEntityError(`Entity ${closeValue.membership.workspaceId} not found`);
+              }
+            } else {
+              this.workspaceMembershipRepositoryService
+                .deleteRequest(closeValue.membership.id, closeValue.successorId)
+                .then();
+              await this.router.navigate(["/"]);
+            }
+          }
+        },
+      );
   }
 }

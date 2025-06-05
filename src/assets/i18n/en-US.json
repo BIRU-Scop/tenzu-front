@@ -115,7 +115,7 @@
       "remove": "Remove this member",
       "leave": "Leave the {item}",
       "confirm_remove_action": "Remove",
-      "confirm_remove_message": "Are you sure you want to remove {member} from {item} \"{name}\"'s members?"
+      "confirm_remove_message": "Are you sure you want to remove {member} from members of {item} \"{name}\"?"
     },
     "description": {
       "label": "Description",

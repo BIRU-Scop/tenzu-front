@@ -22,7 +22,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
 import { WorkspaceSummary } from "../workspace";
-import { WorkspaceMembershipDetail } from "./workspace-membership.model";
+import { WorkspaceMembership } from "./workspace-membership.model";
 import { Observable } from "rxjs";
 
 type ListWorkspaceMembershipParams = {
@@ -31,15 +31,15 @@ type ListWorkspaceMembershipParams = {
 type CreateWorkspaceMembershipParams = unknown;
 type GetWorkspaceMembershipParams = unknown;
 type PutWorkspaceMembershipParams = unknown;
-type PatchWorkspaceMembershipParams = { membershipId: WorkspaceMembershipDetail["id"] };
-type DeleteWorkspaceMembershipParams = { membershipId: WorkspaceMembershipDetail["id"] };
+type PatchWorkspaceMembershipParams = { membershipId: WorkspaceMembership["id"] };
+type DeleteWorkspaceMembershipParams = { membershipId: WorkspaceMembership["id"] };
 
 @Injectable({
   providedIn: "root",
 })
 export class WorkspaceMembershipApiService extends AbstractApiService<
-  WorkspaceMembershipDetail,
-  WorkspaceMembershipDetail,
+  WorkspaceMembership,
+  WorkspaceMembership,
   ListWorkspaceMembershipParams,
   GetWorkspaceMembershipParams,
   CreateWorkspaceMembershipParams,
@@ -51,19 +51,19 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/memberships`;
   }
-  protected override getEntityBaseUrl(params: { membershipId: WorkspaceMembershipDetail["id"] }): string {
+  protected override getEntityBaseUrl(params: { membershipId: WorkspaceMembership["id"] }): string {
     return `${this.baseUrl}/memberships/${params.membershipId}`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override create(item: Partial<WorkspaceMembershipDetail>): Observable<WorkspaceMembershipDetail> {
+  override create(item: Partial<WorkspaceMembership>): Observable<WorkspaceMembership> {
     throw new Error("Method not implemented.");
   }
-  override get(): Observable<WorkspaceMembershipDetail> {
+  override get(): Observable<WorkspaceMembership> {
     throw new Error("Method not implemented.");
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override put(item: Partial<WorkspaceMembershipDetail>): Observable<WorkspaceMembershipDetail> {
+  override put(item: Partial<WorkspaceMembership>): Observable<WorkspaceMembership> {
     throw new Error("Method not implemented.");
   }
 }

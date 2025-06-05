@@ -114,7 +114,7 @@ export default class ProjectMembersComponent {
   readonly projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   readonly projectRepositoryService = inject(ProjectRepositoryService);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
-  dialog = inject(MatDialog);
+  readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
 
   changeUserRole({ roleId, entityRole }: { roleId: Role["id"]; entityRole: ProjectDetail }) {
@@ -127,7 +127,6 @@ export default class ProjectMembersComponent {
       ...matDialogConfig,
       data: {
         membership: membership,
-        allMemberships: this.projectMembershipRepositoryService.entities,
       },
     });
     dialogRef

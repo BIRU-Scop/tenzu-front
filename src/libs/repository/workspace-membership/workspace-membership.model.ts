@@ -20,11 +20,15 @@
  */
 
 import { MembershipBase } from "../membership";
+import { ProjectNested } from "../project";
 
-export type WorkspaceMembershipSummary = MembershipBase & {
+export type WorkspaceMembership = MembershipBase & {
   workspaceId: string;
+  totalProjectsIsMember: number;
 };
 
-export type WorkspaceMembershipDetail = WorkspaceMembershipSummary & {
-  totalProjectsIsMember: number;
+export type WorkspaceMembershipDeleteInfo = {
+  isLastOwner: boolean;
+  memberOfProjects: ProjectNested["name"][];
+  uniqueOwnerOfProjects: ProjectNested["name"][];
 };
