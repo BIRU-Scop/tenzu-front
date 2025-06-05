@@ -38,9 +38,13 @@ export class WorkspaceMembershipRepositoryService {
   memberMap = this.workspaceMembershipStore.memberMap;
   members = this.workspaceMembershipStore.members;
 
-  async listWorkspaceMembership(workspaceId: string) {
+  async listWorkspaceMembershipRequest(workspaceId: string) {
     const projectMemberships = await lastValueFrom(this.workspaceMembershipApiService.list({ workspaceId }));
     this.workspaceMembershipStore.setAllEntities(projectMemberships);
+  }
+
+  async getDeleteInfoRequest(item: WorkspaceMembership) {
+    return await lastValueFrom(this.workspaceMembershipApiService.getDeleteInfo(item));
   }
 
   async patchRequest(

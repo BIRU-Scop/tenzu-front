@@ -28,7 +28,7 @@ export type WorkspaceMembership = MembershipBase & {
 };
 
 export type WorkspaceMembershipDeleteInfo = {
-  isLastOwner: boolean;
+  isUniqueOwner: boolean;
   memberOfProjects: ProjectNested["name"][];
   uniqueOwnerOfProjects: ProjectNested["name"][];
 };

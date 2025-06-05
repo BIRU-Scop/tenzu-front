@@ -19,7 +19,16 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal, Signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  Signal,
+  WritableSignal,
+} from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -42,6 +51,7 @@ import {
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { UserStore } from "@tenzu/repository/user";
 import { LowerCasePipe } from "@angular/common";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 
 type DeleteMembershipDialogData = {
   membership: Signal<WorkspaceMembership>;
@@ -63,6 +73,7 @@ type DeleteMembershipDialogData = {
     MatLabel,
     MatFormField,
     LowerCasePipe,
+    MatProgressSpinner,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -71,107 +82,113 @@ type DeleteMembershipDialogData = {
       @let _deleteInfo = deleteInfo();
       @let _userRole = userRole();
       @let _isLastMembership = isLastMembership();
-      <h2 id="aria-label" mat-dialog-title>
-        @if (_isSelf) {
-          {{ t("workspace.members.delete.leave_title", { name: workspaceRepositoryService.entityDetail()?.name }) }}
-        } @else {
-          {{
-            t("component.membership.confirm_remove_message", {
-              member: membership.user.fullName,
-              item: t("commons.workspace") | lowercase,
-              name: workspaceRepositoryService.entityDetail()?.name,
-            })
-          }}
-        }
-      </h2>
-      <mat-dialog-content>
-        @if (_isSelf) {
-          @if (membership.totalProjectsIsMember) {
-            <h3 class="mat-title-small mb-2 flex flex-row items-center">
-              <mat-icon class="text-on-error mr-3">warning</mat-icon>
-              <p class="text-on-error">
-                {{
-                  t("workspace.members.delete.forbidden_existing_projects_self", {
-                    names: _deleteInfo.memberOfProjects,
-                  })
-                }}
-              </p>
-            </h3>
+      @if (_deleteInfo) {
+        <h2 id="aria-label" mat-dialog-title>
+          @if (_isSelf) {
+            {{ t("workspace.members.delete.leave_title", { name: workspaceRepositoryService.entityDetail()?.name }) }}
           } @else {
-            @if (_isLastMembership) {
-              <h3 class="mat-title-small mb-2 flex flex-row items-center">
-                <mat-icon class="text-on-error mr-3">warning</mat-icon>
-                <p class="text-on-error">{{ t("workspace.members.delete.workspace_will_be_deleted") }}</p>
-              </h3>
-            } @else if (_deleteInfo.isLastOwner) {
-              <h3 class="mat-title-small mb-2 flex flex-row items-center">
-                <mat-icon class="text-on-error mr-3">warning</mat-icon>
-                <p class="text-on-error">{{ t("workspace.members.delete.sole_owner_succession") }}</p>
-              </h3>
-              <form class="flex flex-col gap-y-4" [formGroup]="form">
-                <mat-form-field>
-                  <mat-label>{{ t("workspace.members.delete.successor_label") }}</mat-label>
-                  <mat-select formControlName="successorId">
-                    @for (ms of filteredMemberships(); track ms.id) {
-                      <mat-option value="{{ ms.user.id }}">
-                        {{ ms.user.fullName }}
-                      </mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-              </form>
-            }
+            {{
+              t("component.membership.confirm_remove_message", {
+                member: membership.user.fullName,
+                item: t("commons.workspace") | lowercase,
+                name: workspaceRepositoryService.entityDetail()?.name,
+              })
+            }}
           }
-        } @else {
-          @if (_deleteInfo.uniqueOwnerOfProjects.length > 0) {
-            @if (_userRole?.isOwner) {
+        </h2>
+        <mat-dialog-content>
+          @if (_isSelf) {
+            @if (membership.totalProjectsIsMember) {
               <h3 class="mat-title-small mb-2 flex flex-row items-center">
                 <mat-icon class="text-on-error mr-3">warning</mat-icon>
                 <p class="text-on-error">
                   {{
-                    t("workspace.members.delete.existing_projects_succession_warning", {
-                      names: _deleteInfo.uniqueOwnerOfProjects,
+                    t("workspace.members.delete.forbidden_existing_projects_self", {
+                      names: _deleteInfo.memberOfProjects,
                     })
                   }}
                 </p>
               </h3>
             } @else {
-              <h3 class="mat-title-small mb-2 flex flex-row items-center">
-                <mat-icon class="text-on-error mr-3">warning</mat-icon>
-                <p class="text-on-error">
-                  {{
-                    t("workspace.members.delete.forbidden_existing_projects_other", {
-                      names: _deleteInfo.uniqueOwnerOfProjects,
-                    })
-                  }}
-                </p>
-              </h3>
+              @if (_isLastMembership) {
+                <h3 class="mat-title-small mb-2 flex flex-row items-center">
+                  <mat-icon class="text-on-error mr-3">warning</mat-icon>
+                  <p class="text-on-error">{{ t("workspace.members.delete.workspace_will_be_deleted") }}</p>
+                </h3>
+              } @else if (_deleteInfo.isUniqueOwner) {
+                <h3 class="mat-title-small mb-2 flex flex-row items-center">
+                  <mat-icon class="text-on-error mr-3">warning</mat-icon>
+                  <p class="text-on-error">{{ t("workspace.members.delete.sole_owner_succession") }}</p>
+                </h3>
+                <form class="flex flex-col gap-y-4" [formGroup]="form">
+                  <mat-form-field>
+                    <mat-label>{{ t("workspace.members.delete.successor_label") }}</mat-label>
+                    <mat-select formControlName="successorId">
+                      @for (ms of filteredMemberships(); track ms.id) {
+                        <mat-option value="{{ ms.user.id }}">
+                          {{ ms.user.fullName }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </form>
+              }
+            }
+          } @else {
+            @if (_deleteInfo.uniqueOwnerOfProjects.length > 0) {
+              @if (_userRole?.isOwner) {
+                <h3 class="mat-title-small mb-2 flex flex-row items-center">
+                  <mat-icon class="text-on-error mr-3">warning</mat-icon>
+                  <p class="text-on-error">
+                    {{
+                      t("workspace.members.delete.existing_projects_succession_warning", {
+                        names: _deleteInfo.uniqueOwnerOfProjects,
+                      })
+                    }}
+                  </p>
+                </h3>
+              } @else {
+                <h3 class="mat-title-small mb-2 flex flex-row items-center">
+                  <mat-icon class="text-on-error mr-3">warning</mat-icon>
+                  <p class="text-on-error">
+                    {{
+                      t("workspace.members.delete.forbidden_existing_projects_other", {
+                        names: _deleteInfo.uniqueOwnerOfProjects,
+                      })
+                    }}
+                  </p>
+                </h3>
+              }
             }
           }
-        }
-      </mat-dialog-content>
-      @let forbidden =
-        (_isSelf && membership.totalProjectsIsMember) ||
-        (!_isSelf && _deleteInfo.uniqueOwnerOfProjects.length > 0 && !_userRole?.isOwner);
-      <mat-dialog-actions [align]="forbidden ? 'center' : 'end'">
-        @if (forbidden) {
-          <button matButton="outlined" mat-dialog-close class="primary-button">
-            {{ t("workspace.members.delete.forbidden_confirm") }}
-          </button>
-        } @else {
-          <button mat-flat-button mat-dialog-close class="secondary-button">
-            {{ t("directives.confirmPopupComponent.cancelAction") }}
-          </button>
-          <button
-            mat-flat-button
-            (click)="submit()"
-            class="error-button"
-            [disabled]="_isSelf && !_isLastMembership && _deleteInfo.isLastOwner && form.invalid"
-          >
-            {{ t("directives.confirmPopupComponent.confirmAction") }}
-          </button>
-        }
-      </mat-dialog-actions>
+        </mat-dialog-content>
+        @let forbidden =
+          (_isSelf && membership.totalProjectsIsMember) ||
+          (!_isSelf && _deleteInfo.uniqueOwnerOfProjects.length > 0 && !_userRole?.isOwner);
+        <mat-dialog-actions [align]="forbidden ? 'center' : 'end'">
+          @if (forbidden) {
+            <button matButton="outlined" mat-dialog-close class="primary-button">
+              {{ t("workspace.members.delete.forbidden_confirm") }}
+            </button>
+          } @else {
+            <button mat-flat-button mat-dialog-close class="secondary-button">
+              {{ t("directives.confirmPopupComponent.cancelAction") }}
+            </button>
+            <button
+              mat-flat-button
+              (click)="submit()"
+              class="error-button"
+              [disabled]="_isSelf && !_isLastMembership && _deleteInfo.isUniqueOwner && form.invalid"
+            >
+              {{ t("directives.confirmPopupComponent.confirmAction") }}
+            </button>
+          }
+        </mat-dialog-actions>
+      } @else {
+        <mat-dialog-content>
+          <mat-spinner></mat-spinner>
+        </mat-dialog-content>
+      }
     </ng-container>
   `,
   styles: ``,
@@ -192,11 +209,7 @@ export class DeleteWorkspaceMembershipDialogComponent {
     successorId: [undefined, Validators.required],
   });
 
-  deleteInfo: Signal<WorkspaceMembershipDeleteInfo> = signal({
-    isLastOwner: false,
-    memberOfProjects: ["1"],
-    uniqueOwnerOfProjects: ["1"],
-  });
+  deleteInfo: WritableSignal<WorkspaceMembershipDeleteInfo | undefined> = signal(undefined);
 
   filteredMemberships = computed(() => {
     return this.workspaceMembershipService
@@ -209,5 +222,12 @@ export class DeleteWorkspaceMembershipDialogComponent {
 
   submit() {
     this.dialogRef.close({ ...this.form.value, membership: this.data.membership(), delete: this.isLastMembership() });
+  }
+
+  constructor() {
+    effect(async () => {
+      const membership = this.data.membership();
+      this.deleteInfo.set(await this.workspaceMembershipService.getDeleteInfoRequest(membership));
+    });
   }
 }

@@ -38,6 +38,7 @@ import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { DeleteWorkspaceMembershipDialogComponent } from "./delete-workspace-membership-dialog.component";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-workspace-members",
@@ -96,8 +97,9 @@ import { DeleteWorkspaceMembershipDialogComponent } from "./delete-workspace-mem
                       [userRole]="workspace.userRole"
                       [ownerRole]="workspaceRoleRepositoryService.ownerRole()"
                       [isSelf]="myUser.id === membership.user.id"
-                      (leave)="openDeleteDialog({ membership: $event })"
-                      (remove)="openDeleteDialog({ membership: $event })"
+                      [simpleConfirmForRemove]="false"
+                      (leave)="openDeleteDialog({ membership: $event, isSelf: true })"
+                      (remove)="openDeleteDialog({ membership: $event, isSelf: false })"
                     ></app-membership-actions>
                   </div>
                 </div>
@@ -118,6 +120,7 @@ export default class WorkspaceMembersComponent {
   readonly userStore = inject(UserStore);
   readonly workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  readonly projectRepositoryService = inject(ProjectRepositoryService);
   readonly workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -127,7 +130,7 @@ export default class WorkspaceMembersComponent {
     this.workspaceRepositoryService.updateEntityDetail({ ...entityRole, userRole: role });
   }
 
-  openDeleteDialog({ membership }: { membership: Signal<WorkspaceMembership> }) {
+  openDeleteDialog({ membership, isSelf }: { membership: Signal<WorkspaceMembership>; isSelf: boolean }) {
     const dialogRef = this.dialog.open(DeleteWorkspaceMembershipDialogComponent, {
       ...matDialogConfig,
       data: {
@@ -150,10 +153,19 @@ export default class WorkspaceMembersComponent {
                 throw new NotFoundEntityError(`Entity ${closeValue.membership.workspaceId} not found`);
               }
             } else {
-              this.workspaceMembershipRepositoryService
-                .deleteRequest(closeValue.membership.id, closeValue.successorId)
-                .then();
-              await this.router.navigate(["/"]);
+              await this.workspaceMembershipRepositoryService.deleteRequest(
+                closeValue.membership.id,
+                closeValue.successorId,
+              );
+              if (isSelf) {
+                await this.router.navigate(["/"]);
+              } else {
+                const workspace = this.workspaceRepositoryService.entityDetail();
+                if (workspace) {
+                  // must be done after membership deletion
+                  this.projectRepositoryService.listRequest({ workspaceId: workspace.id }).then();
+                }
+              }
             }
           }
         },

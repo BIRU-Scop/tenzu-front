@@ -38,7 +38,7 @@ export class ProjectMembershipRepositoryService {
   memberMap = this.projectMembershipStore.memberMap;
   members = this.projectMembershipStore.members;
 
-  async listProjectMembership(projectId: string) {
+  async listProjectMembershipRequest(projectId: string) {
     const projectMemberships = await lastValueFrom(this.projectMembershipApiService.list({ projectId }));
     this.projectMembershipStore.setAllEntities(projectMemberships);
   }

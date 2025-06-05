@@ -22,7 +22,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
 import { WorkspaceSummary } from "../workspace";
-import { WorkspaceMembership } from "./workspace-membership.model";
+import { WorkspaceMembership, WorkspaceMembershipDeleteInfo } from "./workspace-membership.model";
 import { Observable } from "rxjs";
 
 type ListWorkspaceMembershipParams = {
@@ -65,5 +65,11 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override put(item: Partial<WorkspaceMembership>): Observable<WorkspaceMembership> {
     throw new Error("Method not implemented.");
+  }
+
+  getDeleteInfo(item: WorkspaceMembership) {
+    return this.http.get<WorkspaceMembershipDeleteInfo>(
+      `${this.getEntityBaseUrl({ membershipId: item.id })}/delete-info`,
+    );
   }
 }

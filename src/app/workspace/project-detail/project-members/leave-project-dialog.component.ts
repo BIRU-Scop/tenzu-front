@@ -69,7 +69,7 @@ type DeleteMembershipDialogData = {
             <mat-icon class="text-on-error mr-3">warning</mat-icon>
             <p class="text-on-error">{{ t("project.members.delete.project_will_be_deleted") }}</p>
           </h3>
-        } @else if (isLastOwner()) {
+        } @else if (isUniqueOwner()) {
           <h3 class="mat-title-small mb-2 flex flex-row items-center">
             <mat-icon class="text-on-error mr-3">warning</mat-icon>
             <p class="text-on-error">{{ t("project.members.delete.sole_owner_succession") }}</p>
@@ -92,7 +92,7 @@ type DeleteMembershipDialogData = {
         <button mat-flat-button mat-dialog-close class="secondary-button">
           {{ t("directives.confirmPopupComponent.cancelAction") }}
         </button>
-        <button mat-flat-button (click)="submit()" class="error-button" [disabled]="isLastOwner() && form.invalid">
+        <button mat-flat-button (click)="submit()" class="error-button" [disabled]="isUniqueOwner() && form.invalid">
           {{ t("directives.confirmPopupComponent.confirmAction") }}
         </button>
       </mat-dialog-actions>
@@ -119,7 +119,7 @@ export class LeaveProjectDialogComponent {
   isLastMembership = computed(() => {
     return this.filteredMemberships().length === 0;
   });
-  isLastOwner = computed(() => {
+  isUniqueOwner = computed(() => {
     const ownerRole = this.projectRoleRepositoryService.ownerRole();
     return (
       !this.isLastMembership() &&
