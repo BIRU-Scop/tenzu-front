@@ -27,7 +27,7 @@ import { tap } from "rxjs";
 import { NavigationExtras, Router } from "@angular/router";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { EntityId } from "@ngrx/signals/entities";
-import { UserRole, Permission } from "@tenzu/repository/membership";
+import { UserRole, Permission, MemberPermission } from "@tenzu/repository/membership";
 
 type EntityRole = UserRole & {
   id: EntityId;
@@ -50,6 +50,9 @@ export type HasEntityRequiredPermissionConfig = {
 };
 
 export function hasEntityRequiredPermission({ actualEntity, requiredPermission }: HasEntityRequiredPermissionConfig) {
+  if (requiredPermission == MemberPermission) {
+    return !!actualEntity?.userRole;
+  }
   const userPermissions = actualEntity?.userRole?.permissions ?? [];
   return userPermissions.includes(requiredPermission);
 }

@@ -44,9 +44,15 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     <mat-card appearance="outlined" class="heading-card" *transloco="let t">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
-        <mat-card-title>
-          <a [routerLink]="['workspace', id()]">{{ name() }} </a></mat-card-title
-        >
+        @if (linkAccess()) {
+          <mat-card-title>
+            <a [routerLink]="['workspace', id()]">{{ name() }} </a>
+          </mat-card-title>
+        } @else {
+          <mat-card-title>
+            {{ name() }}
+          </mat-card-title>
+        }
         @if (!userIsInvited()) {
           <button
             class="primary-button"
@@ -90,6 +96,7 @@ export class WorkspaceCardComponent {
   color = input(1);
   id = input("");
   userIsInvited = input(false);
+  linkAccess = input(false);
   submitted = output<void>();
   canceled = output<void>();
 }

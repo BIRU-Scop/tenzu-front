@@ -81,6 +81,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                 [color]="workspace.color"
                 [id]="workspace.id"
                 [userIsInvited]="workspace.userIsInvited"
+                [linkAccess]="workspace.userIsMember"
                 (submitted)="acceptWorkspaceInvitation(workspace)"
                 (canceled)="denyWorkspaceInvitation(workspace)"
               ></app-workspace-card>

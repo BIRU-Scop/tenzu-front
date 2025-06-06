@@ -42,6 +42,7 @@ type _WorkspaceListProjectsSummary = {
 export type WorkspaceSummary = WorkspaceNested &
   _WorkspaceListProjectsSummary & {
     userIsInvited: boolean;
+    userIsMember: boolean;
   };
 
 export type WorkspaceDetail = WorkspaceSummary &
