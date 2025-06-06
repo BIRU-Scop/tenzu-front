@@ -45,10 +45,10 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     ActionCardComponent,
   ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
+    @let workspace = workspaceService.entityDetail();
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
-      @let workspace = workspaceService.entityDetail();
-      @if (workspace) {
+      @if (workspace && workspace.userCanCreateProjects) {
         <button
           class="primary-button"
           routerLink="/new-project"
@@ -83,7 +83,16 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
         }
       } @empty {
         @if (workspace) {
-          <app-project-card [workspaceId]="workspace.id"></app-project-card>
+          @if (workspace.userCanCreateProjects) {
+            <app-project-card [workspaceId]="workspace.id"></app-project-card>
+          } @else {
+            <app-project-card
+              [name]="'Lorem Ipsum'"
+              [color]="3"
+              [description]="'Lorem Ipsum dolor sit amet'"
+              [disabled]="true"
+            ></app-project-card>
+          }
         } @else {
           @for (skeleton of Array(6); track $index) {
             <li>

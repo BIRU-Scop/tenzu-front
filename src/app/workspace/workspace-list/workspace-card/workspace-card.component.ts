@@ -26,6 +26,7 @@ import { MatIcon } from "@angular/material/icon";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
 
 @Component({
   selector: "app-workspace-card",
@@ -41,23 +42,24 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
     TranslocoDirective,
   ],
   template: `
+    @let _workspace = workspace();
     <mat-card appearance="outlined" class="heading-card" *transloco="let t">
       <mat-card-header>
-        <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
-        @if (linkAccess()) {
+        <app-avatar mat-card-avatar [name]="_workspace.name" [color]="_workspace.color" />
+        @if (_workspace.userIsMember) {
           <mat-card-title>
-            <a [routerLink]="['workspace', id()]">{{ name() }} </a>
+            <a [routerLink]="['workspace', _workspace.id]">{{ _workspace.name }} </a>
           </mat-card-title>
         } @else {
           <mat-card-title>
-            {{ name() }}
+            {{ _workspace.name }}
           </mat-card-title>
         }
-        @if (!userIsInvited()) {
+        @if (_workspace.userCanCreateProjects) {
           <button
             class="primary-button"
             routerLink="/new-project"
-            [queryParams]="{ workspaceId: id() }"
+            [queryParams]="{ workspaceId: _workspace.id }"
             routerLinkActive="active"
             ariaCurrentWhenActive="page"
             mat-stroked-button
@@ -65,7 +67,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
             <mat-icon>add</mat-icon>
             {{ t("commons.project") }}
           </button>
-        } @else {
+        } @else if (_workspace.userIsInvited) {
           <button
             class="secondary-button"
             mat-flat-button
@@ -92,11 +94,8 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceCardComponent {
-  name = input("");
-  color = input(1);
-  id = input("");
-  userIsInvited = input(false);
-  linkAccess = input(false);
+  workspace = input.required<WorkspaceSummary>();
+
   submitted = output<void>();
   canceled = output<void>();
 }

@@ -31,6 +31,8 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatError, MatFormField } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 
 @Component({
   selector: "app-workspace-edit",
@@ -46,65 +48,101 @@ import { TranslocoDirective } from "@jsverse/transloco";
     MatLabel,
     TranslocoDirective,
     ReactiveFormsModule,
+    HasPermissionDirective,
   ],
   template: `
     @let workspace = workspaceService.entityDetail();
-    <div class="flex flex-col gap-y-8" *transloco="let t">
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-2">
-        <div class="flex flex-row gap-4 items-center" *transloco="let t">
-          <app-avatar size="xl" [name]="form.controls.name.value" [color]="workspace?.color || 0"></app-avatar>
-          <div class="flex flex-col gap-y-4">
-            <mat-form-field>
-              <mat-label>{{ t("workspace.settings.edit.name") }}</mat-label>
-              <input formControlName="name" matInput required placeholder="name" data-testid="workspace-name-input" />
-              @if (form.controls.name.hasError("required")) {
-                <mat-error
-                  data-testid="workspace-name-required-error"
-                  [innerHTML]="t('workspace.settings.edit.name_required')"
-                ></mat-error>
-              }
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="flex gap-x-4 mt-2">
-          <button mat-flat-button type="submit" class="tertiary-button" data-testid="workspace-edit-submit">
-            {{ t("commons.save") }}
-          </button>
-          <button mat-flat-button (click)="reset()" class="secondary-button">
-            {{ t("commons.cancel") }}
-          </button>
-        </div>
-      </form>
-      <div class="flex flex-col gap-y-2">
-        <h2 class="mat-headline-small">{{ t("workspace.settings.edit.delete_workspace") }}</h2>
-        <div class="flex flex-col gap-4">
-          @if (workspace?.totalProjects || 0 > 0) {
-            <div class="flex flex-row">
-              <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
-              <p
-                class="mat-body-medium text-on-error-container align-middle"
-                [innerHTML]="t('workspace.settings.edit.delete.error', { totalProjects: workspace?.totalProjects })"
-              ></p>
+    @if (workspace) {
+      <div class="flex flex-col gap-y-8" *transloco="let t">
+        <ng-container
+          *appHasPermission="
+            {
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.MODIFY_WORKSPACE,
+            };
+            else noModifyPermission
+          "
+        >
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-2">
+            <div class="flex flex-row gap-4 items-center" *transloco="let t">
+              <app-avatar size="xl" [name]="form.controls.name.value" [color]="workspace.color || 0"></app-avatar>
+              <div class="flex flex-col gap-y-4">
+                <mat-form-field>
+                  <mat-label>{{ t("workspace.settings.edit.name") }}</mat-label>
+                  <input
+                    formControlName="name"
+                    matInput
+                    required
+                    placeholder="name"
+                    data-testid="workspace-name-input"
+                  />
+                  @if (form.controls.name.hasError("required")) {
+                    <mat-error
+                      data-testid="workspace-name-required-error"
+                      [innerHTML]="t('workspace.settings.edit.name_required')"
+                    ></mat-error>
+                  }
+                </mat-form-field>
+              </div>
             </div>
-          }
-          <button
-            [disabled]="workspace?.totalProjects || 0 > 0"
-            mat-flat-button
-            class="error-button w-fit"
-            appConfirm
-            [data]="{ deleteAction: true }"
-            (popupConfirm)="onDelete()"
+            <div class="flex gap-x-4 mt-2">
+              <button mat-flat-button type="submit" class="tertiary-button" data-testid="workspace-edit-submit">
+                {{ t("commons.save") }}
+              </button>
+              <button mat-flat-button (click)="reset()" class="secondary-button">
+                {{ t("commons.cancel") }}
+              </button>
+            </div>
+          </form>
+          <ng-container
+            *appHasPermission="{
+              actualEntity: workspace,
+              requiredPermission: WorkspacePermissions.DELETE_WORKSPACE,
+            }"
           >
-            {{ t("workspace.settings.edit.delete.delete") }}
-          </button>
-        </div>
+            <div class="flex flex-col gap-y-2">
+              <h2 class="mat-headline-small">{{ t("workspace.settings.edit.delete_workspace") }}</h2>
+              <div class="flex flex-col gap-4">
+                @if (workspace.totalProjects || 0 > 0) {
+                  <div class="flex flex-row">
+                    <mat-icon class="text-on-error pr-3 self-center">warning</mat-icon>
+                    <p
+                      class="mat-body-medium text-on-error-container align-middle"
+                      [innerHTML]="
+                        t('workspace.settings.edit.delete.error', { totalProjects: workspace.totalProjects })
+                      "
+                    ></p>
+                  </div>
+                }
+                <button
+                  [disabled]="workspace.totalProjects || 0 > 0"
+                  mat-flat-button
+                  class="error-button w-fit"
+                  appConfirm
+                  [data]="{ deleteAction: true }"
+                  (popupConfirm)="onDelete()"
+                >
+                  {{ t("workspace.settings.edit.delete.delete") }}
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
       </div>
-    </div>
+      <ng-template #noModifyPermission>
+        <div class="flex flex-row gap-4 items-center" *transloco="let t">
+          <app-avatar size="xl" [name]="form.controls.name.value" [color]="workspace.color || 0"></app-avatar>
+          {{ workspace.name }}
+        </div>
+      </ng-template>
+    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceEditComponent {
+  protected readonly WorkspacePermissions = WorkspacePermissions;
+
   workspaceService = inject(WorkspaceRepositoryService);
 
   fb = inject(FormBuilder);
