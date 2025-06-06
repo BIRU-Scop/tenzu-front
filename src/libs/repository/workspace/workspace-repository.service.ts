@@ -73,7 +73,7 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
     queryParams?: QueryParams,
   ): Promise<WorkspaceDetail> {
     const workspace = await super.deleteRequest(item, params, queryParams);
-    this.wsService.command({ command: "unsubscribe_to_workspace_events", workspace: workspace.id });
+    this.wsService.command({ command: "unsubscribe_from_workspace_events", workspace: workspace.id });
     return workspace;
   }
 }
