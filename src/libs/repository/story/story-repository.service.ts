@@ -93,7 +93,10 @@ export class StoryRepositoryService extends BaseRepositoryService<
     return this.entitiesSummary();
   }
   override async createRequest(item: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
-    return super.createRequest(item, params);
+    const entity = await lastValueFrom(this.apiService.create(item, params));
+    this.setEntitySummary(entity);
+    this.entitiesSummaryStore.reorder();
+    return entity;
   }
 
   override async getRequest(params: StoryApiServiceType.GetEntityDetailParams) {
