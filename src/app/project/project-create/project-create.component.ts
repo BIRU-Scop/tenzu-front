@@ -121,6 +121,7 @@ export default class ProjectCreateComponent {
   projectService = inject(ProjectRepositoryService);
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   selectedWorkspace = model<WorkspaceSummary>();
   $entities = toObservable(this.workspaceService.entitiesSummary).pipe(filter((entities) => entities.length > 0));
 
@@ -132,7 +133,7 @@ export default class ProjectCreateComponent {
     workspaceId: ["", Validators.required],
   });
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
     if (!this.workspaceService.entitiesSummary().length) {
       this.workspaceService.listRequest().then();
     }
