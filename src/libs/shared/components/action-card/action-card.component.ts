@@ -40,7 +40,7 @@ import { MatIcon } from "@angular/material/icon";
     MatIcon,
   ],
   template: `
-    <mat-card appearance="outlined" class="min-h-[90px]">
+    <mat-card appearance="outlined" class="min-h-[100px] w-[200px]">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
         <mat-card-title>
