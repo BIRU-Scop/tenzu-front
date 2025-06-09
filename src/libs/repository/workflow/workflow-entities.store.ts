@@ -21,16 +21,16 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
 import { removeEntity, setAllEntities, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { withEntityDetailStore } from "../base";
 
 export const WorkflowDetailStore = signalStore(
   { providedIn: "root" },
-  withEntities<Status>(),
+  withEntities<StatusSummary>(),
   withState({
-    statusesMap: {} as Record<string, Status>,
+    statusesMap: {} as Record<string, StatusSummary>,
   }),
   withEntityDetailStore<Workflow>(),
   withMethods((store) => ({
@@ -39,7 +39,7 @@ export const WorkflowDetailStore = signalStore(
       patchState(store, setAllEntities(refreshedWorkflow.statuses));
       return refreshedWorkflow;
     },
-    addStatus(status: Status) {
+    addStatus(status: StatusSummary) {
       const selectedWorkflow = store.item();
       if (selectedWorkflow) {
         patchState(store, setAllEntities([...store.entities(), status]));
@@ -75,7 +75,7 @@ export const WorkflowDetailStore = signalStore(
     removeStatus(statusId: string) {
       patchState(store, removeEntity(statusId));
     },
-    updateStatus(status: Status) {
+    updateStatus(status: StatusSummary) {
       patchState(store, updateEntity({ id: status.id, changes: { ...status } }));
     },
   })),

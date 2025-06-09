@@ -24,7 +24,7 @@ import { MatFormField, MatOption, MatSelect } from "@angular/material/select";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { Status } from "@tenzu/repository/status";
+import { StatusSummary } from "@tenzu/repository/status";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
@@ -52,7 +52,7 @@ export class StoryStatusComponent {
   storyDetail = input.required<StoryDetail>();
   statusSelected = linkedSignal(() => this.storyDetail().statusId);
 
-  async changeStatus(statusId: Status["id"], storyDetail: StoryDetail) {
+  async changeStatus(statusId: StatusSummary["id"], storyDetail: StoryDetail) {
     await this.storyRepositoryService.patchRequest(
       storyDetail.ref,
       {

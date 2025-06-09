@@ -34,7 +34,7 @@ import { animate, query, stagger, style, transition, trigger } from "@angular/an
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
-import { Status } from "@tenzu/repository/status";
+import { StatusSummary } from "@tenzu/repository/status";
 import { Step, WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
@@ -52,6 +52,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
 import { Location } from "@angular/common";
+import { HasPermissionDirective, PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-project-kanban",
@@ -70,95 +73,133 @@ import { Location } from "@angular/common";
     MatIconButton,
     MatTooltip,
     MatMenuItem,
+    HasPermissionDirective,
+    PermissionOrRedirectDirective,
   ],
   template: `
-    @let workflow = workflowService.entityDetail();
-    @let storySummaryEntityMap = storyService.entityMapSummary();
-    @let statuses = workflowService.statuses();
-    <div class="flex flex-row gap-x-2" *transloco="let t; prefix: 'workflow.edit_workflow'">
-      <h1 class="mat-headline-small text-on-surface-variant">{{ workflow?.name }}</h1>
-      <button
-        mat-icon-button
-        [attr.aria-label]="t('aria_label')"
-        [matTooltip]="t('aria_label')"
-        [matMenuTriggerFor]="workflowMenu"
+    @let workflow = workflowRepositoryService.entityDetail();
+    @let project = projectRepositoryService.entityDetail();
+    @let storySummaryEntityMap = storyRepositoryService.entityMapSummary();
+    @let statuses = workflowRepositoryService.statuses();
+    @if (project) {
+      <ng-container
+        [appPermissionOrRedirect]="{
+          expectedId: project.id,
+          requiredPermission: ProjectPermissions.VIEW_WORKFLOW,
+          type: 'project',
+        }"
       >
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #workflowMenu="matMenu">
-        <button mat-menu-item [attr.aria-label]="t('edit_name')" (click)="openEditWorkflow($event)">
-          <mat-icon>edit</mat-icon>
-          {{ t("edit_name") }}
-        </button>
-        <button
-          mat-menu-item
-          [attr.aria-label]="t('delete')"
-          (click)="openDeleteWorkflowDialog()"
-          [disabled]="onlyHasOneWorkflow()"
-        >
-          <mat-icon>delete</mat-icon>
-          {{ t("delete") }}
-        </button>
-      </mat-menu>
-    </div>
-    @if (!storyService.isLoading()) {
-      <ul
-        class="grid grid-flow-col gap-8 kanban-viewport"
-        *transloco="let t; prefix: 'workflow'"
-        [@newStatusFlyIn]="statuses.length"
-        cdkDropListGroup
-      >
-        @for (status of statuses; track status.id) {
-          @let storiesRef = storyService.groupedByStatus()[status.id];
-
-          <li class="group w-64 flex flex-col overflow-hidden">
-            <app-status-card
-              (movedLeft)="moveStatus($index, Step.LEFT)"
-              (movedRight)="moveStatus($index, Step.RIGHT)"
-              [config]="{ showLeft: !$first, showRight: !$last }"
-              [name]="status.name"
-              [id]="status.id"
-              [isEmpty]="!storiesRef"
-            />
-            <ul
-              [@newStoryFlyIn]="storyService.entitiesSummary().length || 0"
-              [id]="status.id"
-              class="flex flex-col items-center min-h-20 max-h-full overflow-y-auto dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
-              cdkDropList
-              [cdkDropListData]="status"
-              (cdkDropListDropped)="drop($event)"
+        @if (workflow) {
+          <div class="flex flex-row gap-x-2" *transloco="let t; prefix: 'workflow.edit_workflow'">
+            <h1 class="mat-headline-small text-on-surface-variant">{{ workflow.name }}</h1>
+            <ng-container
+              *appHasPermission="{
+                actualEntity: project,
+                requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
+              }"
             >
-              @for (storyRef of storiesRef; track storyRef; let idx = $index) {
-                @let story = storySummaryEntityMap[storyRef];
-                <li
-                  id="story-{{ story.ref }}"
-                  cdkDrag
-                  [cdkDragData]="[story, idx]"
-                  [attr.data-drag-index]="idx"
-                  class="w-56 py-[8px]"
+              <button
+                mat-icon-button
+                [attr.aria-label]="t('aria_label')"
+                [matTooltip]="t('aria_label')"
+                [matMenuTriggerFor]="workflowMenu"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #workflowMenu="matMenu">
+                <button mat-menu-item [attr.aria-label]="t('edit_name')" (click)="openEditWorkflow($event)">
+                  <mat-icon>edit</mat-icon>
+                  {{ t("edit_name") }}
+                </button>
+                <ng-container
+                  *appHasPermission="{
+                    actualEntity: project,
+                    requiredPermission: ProjectPermissions.DELETE_WORKFLOW,
+                  }"
                 >
-                  <app-story-card class="w-56 h-[96px]" [story]="story" />
+                  <button
+                    mat-menu-item
+                    [attr.aria-label]="t('delete')"
+                    (click)="openDeleteWorkflowDialog()"
+                    [disabled]="onlyHasOneWorkflow()"
+                  >
+                    <mat-icon>delete</mat-icon>
+                    {{ t("delete") }}
+                  </button>
+                </ng-container>
+              </mat-menu>
+            </ng-container>
+          </div>
+          @if (!storyRepositoryService.isLoading()) {
+            <ul
+              class="grid grid-flow-col gap-8 kanban-viewport"
+              *transloco="let t; prefix: 'workflow'"
+              [@newStatusFlyIn]="statuses.length"
+              cdkDropListGroup
+            >
+              @for (status of statuses; track status.id) {
+                @let storiesRef = storyRepositoryService.groupedByStatus()[status.id];
+
+                <li class="group w-64 flex flex-col overflow-hidden">
+                  <app-status-card
+                    (movedLeft)="moveStatus($index, Step.LEFT)"
+                    (movedRight)="moveStatus($index, Step.RIGHT)"
+                    [config]="{ showLeft: !$first, showRight: !$last }"
+                    [name]="status.name"
+                    [id]="status.id"
+                    [isEmpty]="!storiesRef"
+                    [project]="project"
+                  />
+                  <ul
+                    [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
+                    [id]="status.id"
+                    class="flex flex-col items-center min-h-20 max-h-full overflow-y-auto dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                    cdkDropList
+                    [cdkDropListData]="status"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    @for (storyRef of storiesRef; track storyRef; let idx = $index) {
+                      @let story = storySummaryEntityMap[storyRef];
+                      <li
+                        id="story-{{ story.ref }}"
+                        cdkDrag
+                        [cdkDragData]="[story, idx]"
+                        [attr.data-drag-index]="idx"
+                        class="w-56 py-[8px]"
+                      >
+                        <app-story-card class="w-56 h-[96px]" [story]="story" />
+                      </li>
+                    }
+                  </ul>
+                  <button
+                    mat-stroked-button
+                    class="primary-button whitespace-nowrap shrink-0 mt-4"
+                    (click)="openCreateStory($event, status.id)"
+                  >
+                    {{ t("add_story") }}
+                  </button>
                 </li>
               }
+              <li
+                *appHasPermission="{
+                  actualEntity: project,
+                  requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
+                }"
+              >
+                <button
+                  mat-stroked-button
+                  class="tertiary-button whitespace-nowrap w-64"
+                  (click)="openCreateStatus($event)"
+                >
+                  {{ t("add_status") }}
+                </button>
+              </li>
             </ul>
-
-            <button
-              mat-stroked-button
-              class="primary-button whitespace-nowrap shrink-0 mt-4"
-              (click)="openCreateStory($event, status.id)"
-            >
-              {{ t("add_story") }}
-            </button>
-          </li>
+          } @else {
+            <app-project-kanban-skeleton></app-project-kanban-skeleton>
+          }
         }
-        <li>
-          <button mat-stroked-button class="tertiary-button whitespace-nowrap w-64" (click)="openCreateStatus($event)">
-            {{ t("add_status") }}
-          </button>
-        </li>
-      </ul>
-    } @else {
-      <app-project-kanban-skeleton></app-project-kanban-skeleton>
+      </ng-container>
     }
   `,
   styles: `
@@ -205,9 +246,12 @@ import { Location } from "@angular/common";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectKanbanComponent {
+  protected readonly ProjectPermissions = ProjectPermissions;
+
   breadcrumbStore = inject(BreadcrumbStore);
-  workflowService = inject(WorkflowRepositoryService);
-  storyService = inject(StoryRepositoryService);
+  workflowRepositoryService = inject(WorkflowRepositoryService);
+  storyRepositoryService = inject(StoryRepositoryService);
+  projectRepositoryService = inject(ProjectRepositoryService);
   projectKanbanService = inject(ProjectKanbanService);
   readonly relativeDialog = inject(RelativeDialogService);
   dialog = inject(MatDialog);
@@ -301,8 +345,8 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<Status, Status, [Story, number]>) {
-    const workflow = this.workflowService.entityDetail();
+  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>) {
+    const workflow = this.workflowRepositoryService.entityDetail();
     if (!workflow) {
       return;
     }
@@ -316,13 +360,13 @@ export class ProjectKanbanComponent {
     if (dataIndex) {
       event.currentIndex = Number(dataIndex);
     }
-    await this.storyService.dropStoryIntoStatus(event, workflow.projectId, workflow.slug);
+    await this.storyRepositoryService.dropStoryIntoStatus(event, workflow.projectId, workflow.slug);
   }
 
   moveStatus(oldPosition: number, step: Step) {
-    const selectedWorkspace = this.workflowService.entityDetail();
+    const selectedWorkspace = this.workflowRepositoryService.entityDetail();
     if (selectedWorkspace) {
-      this.workflowService.reorder(selectedWorkspace.id, oldPosition, oldPosition + step).then();
+      this.workflowRepositoryService.reorder(selectedWorkspace.id, oldPosition, oldPosition + step).then();
     }
   }
 
@@ -330,7 +374,7 @@ export class ProjectKanbanComponent {
     const data: NameDialogData = {
       label: "workflow.edit_workflow_name.label",
       action: "workflow.edit_workflow_name.action",
-      defaultValue: this.workflowService.entityDetail()?.name,
+      defaultValue: this.workflowRepositoryService.entityDetail()?.name,
       validators: [
         {
           type: "required",
@@ -360,7 +404,7 @@ export class ProjectKanbanComponent {
         this.notificationService.success({
           title: "notification.workflow.renamed",
         });
-        const storySelected = this.storyService.entityDetail();
+        const storySelected = this.storyRepositoryService.entityDetail();
         const currentUrl = this.router.url;
         const currentProjet = this.projectKanbanService.projectService.entityDetail();
         if (
@@ -369,7 +413,7 @@ export class ProjectKanbanComponent {
           storySelected &&
           currentUrl === getStoryDetailUrl(currentProjet, storySelected.ref)
         ) {
-          this.storyService.updateWorkflowStoryDetail(editedWorkflow);
+          this.storyRepositoryService.updateWorkflowStoryDetail(editedWorkflow);
         } else if (currentProjet && editedWorkflow) {
           this.location.replaceState(getWorkflowUrl(currentProjet, editedWorkflow.slug));
         }
@@ -378,7 +422,7 @@ export class ProjectKanbanComponent {
   }
 
   openDeleteWorkflowDialog() {
-    const selectedWorkflow = this.workflowService.entityDetail();
+    const selectedWorkflow = this.workflowRepositoryService.entityDetail();
     if (selectedWorkflow) {
       const dialogRef = this.dialog.open(DeleteWorkflowDialogComponent, {
         ...matDialogConfig,

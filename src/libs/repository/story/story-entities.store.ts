@@ -22,7 +22,7 @@
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
 import { Story, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
@@ -71,7 +71,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       const removedAssigneeIds = [...store.entityMap()[ref].assigneeIds].filter((assigneeId) => assigneeId != userId);
       store.updateEntity(ref, { assigneeIds: removedAssigneeIds });
     },
-    deleteStatusGroup(oldStatusId: string, newStatus: Status) {
+    deleteStatusGroup(oldStatusId: string, newStatus: StatusSummary) {
       store.entities().forEach((story) => {
         if (story.statusId === oldStatusId) {
           store.deleteEntity(story.ref);
@@ -101,7 +101,10 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>, workflowSlug: Workflow["slug"]) {
+    dropStoryIntoStatus(
+      event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>,
+      workflowSlug: Workflow["slug"],
+    ) {
       const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;

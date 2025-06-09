@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { Status, StatusDetail } from "../status";
+import { StatusSummary, StatusDetail } from "../status";
 import { lastValueFrom } from "rxjs";
 import { WorkflowApiService } from "./workflow-api.service";
 import { Workflow } from "./workflow.model";
@@ -72,7 +72,7 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     return undefined;
   }
 
-  async createStatus(status: Pick<Status, "name" | "color">) {
+  async createStatus(status: Pick<StatusSummary, "name" | "color">) {
     const selectedWorkflow = this.entityDetailStore.item();
     if (selectedWorkflow) {
       const newStatus = await lastValueFrom(this.apiService.createStatus(selectedWorkflow.id, status));
@@ -82,7 +82,7 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     return undefined;
   }
 
-  async editStatus(status: Pick<Status, "name" | "id">) {
+  async editStatus(status: Pick<StatusSummary, "name" | "id">) {
     const editedStatus = await lastValueFrom(this.apiService.editStatus(status));
     this.entityDetailStore.updateStatus(editedStatus);
     return editedStatus;

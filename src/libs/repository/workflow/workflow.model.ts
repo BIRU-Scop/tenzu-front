@@ -19,7 +19,7 @@
  *
  */
 
-import { Status } from "../status/";
+import { StatusSummary } from "../status/";
 
 export enum Step {
   LEFT = -1,
@@ -34,7 +34,7 @@ export type WorkflowNested = {
 };
 
 export type Workflow = WorkflowNested & {
-  statuses: Status[];
+  statuses: StatusSummary[];
 };
 
 export type ReorderWorkflowStatusesPayload = {

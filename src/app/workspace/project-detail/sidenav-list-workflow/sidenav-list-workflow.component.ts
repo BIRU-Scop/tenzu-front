@@ -29,6 +29,8 @@ import { MatIconAnchor } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 
 @Component({
   selector: "app-sidenav-list-workflow",
@@ -42,76 +44,98 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
     MatListItemIcon,
     MatIconAnchor,
     MatTooltip,
+    HasPermissionDirective,
   ],
   template: `
     <ng-container *transloco="let t">
       @let project = projectService.entityDetail();
       @let workspace = workspaceService.entityDetail();
       @if (project && project?.workflows && workspace) {
-        @let _canCreateWorkflow = canCreateWorkflow();
-        @if (!sideNavStore.resized()) {
-          <div class="flex flex-row items-center gap-2 px-2 py-1">
-            <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
-            <div
-              [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
-              [matTooltipDisabled]="_canCreateWorkflow"
-            >
-              <a
-                mat-icon-button
-                [attr.aria-label]="t('workspace.general_title.create_kanban')"
-                [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
-                [disabled]="!_canCreateWorkflow"
+        <ng-container
+          *appHasPermission="{
+            actualEntity: project,
+            requiredPermission: ProjectPermissions.VIEW_WORKFLOW,
+          }"
+        >
+          @let _canCreateWorkflow = canCreateWorkflow();
+          @if (!sideNavStore.resized()) {
+            <div class="flex flex-row items-center gap-2 px-2 py-1">
+              <span class="text-on-surface-variant mat-body-medium">{{ t("workspace.general_title.kanban") }}</span>
+              <ng-container
+                *appHasPermission="{
+                  actualEntity: project,
+                  requiredPermission: ProjectPermissions.CREATE_WORKFLOW,
+                }"
               >
-                <mat-icon>add</mat-icon>
-              </a>
+                <div
+                  [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
+                  [matTooltipDisabled]="_canCreateWorkflow"
+                >
+                  <a
+                    mat-icon-button
+                    [attr.aria-label]="t('workspace.general_title.create_kanban')"
+                    [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
+                    [disabled]="!_canCreateWorkflow"
+                  >
+                    <mat-icon>add</mat-icon>
+                  </a>
+                </div>
+              </ng-container>
             </div>
-          </div>
-        } @else {
-          <div
-            [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
-            [matTooltipDisabled]="_canCreateWorkflow"
-          >
-            <a
-              class="resized"
-              mat-icon-button
-              [attr.aria-label]="t('workspace.general_title.create_kanban')"
-              [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
-              [disabled]="!_canCreateWorkflow"
+          } @else {
+            <ng-container
+              *appHasPermission="{
+                actualEntity: project,
+                requiredPermission: ProjectPermissions.CREATE_WORKFLOW,
+              }"
             >
-              <mat-icon>add</mat-icon>
-            </a>
-          </div>
-        }
-
-        <mat-nav-list attr.aria-label="{{ t('workspace.general_title.kanban') }}">
-          @for (workflow of project.workflows; track workflow.id) {
-            @if (!sideNavStore.resized()) {
-              <a
-                mat-list-item
-                href="#"
-                [routerLink]="['/workspace', workspace.id, 'project', project.id, 'kanban', workflow.slug]"
-                routerLinkActive
-                #routerLinkActive="routerLinkActive"
-                [activated]="routerLinkActive.isActive"
+              <div
+                [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
+                [matTooltipDisabled]="_canCreateWorkflow"
               >
-                <mat-icon matListItemIcon>view_column</mat-icon>
-                {{ workflow?.name }}
-              </a>
-            } @else {
-              <a
-                class="resized"
-                mat-list-item
-                href="#"
-                [routerLink]="['/workspace', workspace.id, 'project', project.id, 'kanban', workflow.slug]"
-                routerLinkActive
-                #routerLinkActive="routerLinkActive"
-                [activated]="routerLinkActive.isActive"
-              >
-                <mat-icon class="pt-1">view_column</mat-icon>
-              </a>
-            }
+                <a
+                  class="resized"
+                  mat-icon-button
+                  [attr.aria-label]="t('workspace.general_title.create_kanban')"
+                  [routerLink]="['/workspace', workspace.id, 'project', project.id, 'new-workflow']"
+                  [disabled]="!_canCreateWorkflow"
+                >
+                  <mat-icon>add</mat-icon>
+                </a>
+              </div>
+            </ng-container>
           }
-        </mat-nav-list>
+
+          <mat-nav-list attr.aria-label="{{ t('workspace.general_title.kanban') }}">
+            @for (workflow of project.workflows; track workflow.id) {
+              @if (!sideNavStore.resized()) {
+                <a
+                  mat-list-item
+                  href="#"
+                  [routerLink]="['/workspace', workspace.id, 'project', project.id, 'kanban', workflow.slug]"
+                  routerLinkActive
+                  #routerLinkActive="routerLinkActive"
+                  [activated]="routerLinkActive.isActive"
+                >
+                  <mat-icon matListItemIcon>view_column</mat-icon>
+                  {{ workflow?.name }}
+                </a>
+              } @else {
+                <a
+                  class="resized"
+                  mat-list-item
+                  href="#"
+                  [routerLink]="['/workspace', workspace.id, 'project', project.id, 'kanban', workflow.slug]"
+                  routerLinkActive
+                  #routerLinkActive="routerLinkActive"
+                  [activated]="routerLinkActive.isActive"
+                >
+                  <mat-icon class="pt-1">view_column</mat-icon>
+                </a>
+              }
+            }
+          </mat-nav-list>
+        </ng-container>
       }
     </ng-container>
   `,
@@ -119,6 +143,8 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavListWorkflowComponent {
+  protected readonly ProjectPermissions = ProjectPermissions;
+
   projectService = inject(ProjectRepositoryService);
   workspaceService = inject(WorkspaceRepositoryService);
   sideNavStore = inject(SideNavStore);
