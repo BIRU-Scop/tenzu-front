@@ -81,7 +81,6 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.isLoading.set(true);
     while (true) {
       const stories = await lastValueFrom(this.apiService.list(params, queryParams));
-      this.isLoading.set(false);
 
       this.entitiesSummaryStore.addEntities(stories);
       this.entitiesSummaryStore.reorder();
@@ -90,6 +89,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
       }
       queryParams.offset += queryParams.limit;
     }
+    this.isLoading.set(false);
     return this.entitiesSummary();
   }
   override async createRequest(item: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {

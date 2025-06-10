@@ -131,12 +131,13 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
               </mat-menu>
             </ng-container>
           </div>
-          @if (!storyRepositoryService.isLoading()) {
+          @if (storyRepositoryService.entitiesSummary().length !== 0) {
             @let hasModifyPermission =
               hasEntityRequiredPermission({
                 requiredPermission: ProjectPermissions.MODIFY_STORY,
                 actualEntity: project,
               });
+            @let isLoading = storyRepositoryService.isLoading();
             <ul
               class="grid grid-flow-col gap-8 kanban-viewport"
               *transloco="let t; prefix: 'workflow'"
@@ -162,7 +163,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
                     class="flex flex-col items-center min-h-20 max-h-full overflow-y-auto dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                     cdkDropList
                     [cdkDropListData]="status"
-                    [cdkDropListDisabled]="!hasModifyPermission"
+                    [cdkDropListDisabled]="!hasModifyPermission || isLoading"
                     (cdkDropListDropped)="drop($event, workflow)"
                   >
                     @for (storyRef of storiesRef; track storyRef; let idx = $index) {
@@ -172,7 +173,8 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
                         cdkDrag
                         [cdkDragData]="story"
                         class="w-56 py-[8px]"
-                        [class.cursor-not-allowed]="!hasModifyPermission"
+                        [class.cursor-no-drop]="!hasModifyPermission"
+                        [class.cursor-progress]="hasModifyPermission && isLoading"
                       >
                         <app-story-card
                           class="w-56 h-[96px]"
