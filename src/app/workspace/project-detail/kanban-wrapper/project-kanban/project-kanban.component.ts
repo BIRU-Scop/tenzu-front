@@ -171,13 +171,20 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
                       </li>
                     }
                   </ul>
-                  <button
-                    mat-stroked-button
-                    class="primary-button whitespace-nowrap shrink-0 mt-4"
-                    (click)="openCreateStory($event, status.id)"
+                  <ng-container
+                    *appHasPermission="{
+                      actualEntity: project,
+                      requiredPermission: ProjectPermissions.CREATE_STORY,
+                    }"
                   >
-                    {{ t("add_story") }}
-                  </button>
+                    <button
+                      mat-stroked-button
+                      class="primary-button whitespace-nowrap shrink-0 mt-4"
+                      (click)="openCreateStory($event, status.id)"
+                    >
+                      {{ t("add_story") }}
+                    </button>
+                  </ng-container>
                 </li>
               }
               <li

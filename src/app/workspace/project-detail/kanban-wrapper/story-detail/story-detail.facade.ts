@@ -29,7 +29,7 @@ import { StoryRepositoryService } from "@tenzu/repository/story/story-repository
 @Injectable({
   providedIn: "root",
 })
-export class StoryDetailService {
+export class StoryDetailFacade {
   projectService = inject(ProjectRepositoryService);
   workflowService = inject(WorkflowRepositoryService);
   storyService = inject(StoryRepositoryService);

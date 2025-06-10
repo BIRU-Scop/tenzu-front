@@ -34,7 +34,11 @@ import { TranslocoDirective } from "@jsverse/transloco";
     <div class="flex flex-row gap-4" *transloco="let t; prefix: 'workflow.detail_story'">
       <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
       <mat-form-field class="w-52">
-        <mat-select [(value)]="this.statusSelected" (selectionChange)="changeStatus($event.value, storyDetail())">
+        <mat-select
+          [(value)]="this.statusSelected"
+          (selectionChange)="changeStatus($event.value, storyDetail())"
+          [disabled]="!hasModifyPermission()"
+        >
           @for (status of workflowRepositoryService.statuses(); track status.id) {
             <mat-option [value]="status.id">{{ status.name }}</mat-option>
           }
@@ -49,7 +53,9 @@ export class StoryStatusComponent {
   workflowRepositoryService = inject(WorkflowRepositoryService);
   storyRepositoryService = inject(StoryRepositoryService);
   notificationService = inject(NotificationService);
+
   storyDetail = input.required<StoryDetail>();
+  hasModifyPermission = input(false);
   statusSelected = linkedSignal(() => this.storyDetail().statusId);
 
   async changeStatus(statusId: StatusSummary["id"], storyDetail: StoryDetail) {
