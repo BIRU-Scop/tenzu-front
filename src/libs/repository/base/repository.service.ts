@@ -25,9 +25,10 @@ import { getEntityIdSelector, withEntityDetailStore, withEntityListFeature } fro
 import { signalStore } from "@ngrx/signals";
 import { QueryParams } from "./utils";
 import { lastValueFrom } from "rxjs";
-import { Signal } from "@angular/core";
+import { inject, Signal } from "@angular/core";
 import { NotFoundEntityError } from "./errors";
 import { JsonObject } from "./misc.model";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function storeWithEntityListFeature<EntitySummary extends JsonObject>() {
@@ -87,6 +88,7 @@ export interface ServiceEntityDetail<
   putRequest(item: EntityDetailModel, params: PutParams, queryParams?: QueryParams): Promise<EntityDetailModel>;
   createRequest(item: Partial<EntityDetailModel>, params?: CreateParams): Promise<EntityDetailModel>;
   deleteRequest(item: EntityDetailModel, params: DeleteParams, queryParams?: QueryParams): Promise<EntityDetailModel>;
+  resetAll(): void;
 }
 
 export abstract class BaseRepositoryDetailService<
@@ -109,6 +111,11 @@ export abstract class BaseRepositoryDetailService<
   protected selectIdFn: SelectEntityId<NoInfer<EntityDetail>> | undefined = undefined;
   protected abstract entityDetailStore: StoreWithEntityDetailStore<EntityDetail>;
   protected getEntityIdFn = getEntityIdSelector({ selectId: this.selectIdFn });
+  readonly resetService = inject(ResetService);
+
+  constructor() {
+    this.resetService.register(this);
+  }
 
   get entityDetail(): Signal<EntityDetail | undefined> {
     return this.entityDetailStore.item;
@@ -158,6 +165,10 @@ export abstract class BaseRepositoryDetailService<
   }
   resetEntityDetail(): void {
     this.entityDetailStore.reset();
+  }
+
+  resetAll(): void {
+    this.resetEntityDetail();
   }
 }
 
@@ -268,8 +279,8 @@ export abstract class BaseRepositoryService<
     return super.deleteEntityDetail(item);
   }
 
-  resetAll(): void {
+  override resetAll(): void {
     this.resetEntitySummaryList();
-    this.resetEntityDetail();
+    super.resetAll();
   }
 }

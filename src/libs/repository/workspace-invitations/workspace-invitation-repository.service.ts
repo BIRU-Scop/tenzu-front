@@ -30,6 +30,7 @@ import { WorkspaceInvitation } from "./workspace-invitation.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
 import { getEntityIdSelector } from "@tenzu/repository/base";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -42,6 +43,11 @@ export class WorkspaceInvitationRepositoryService {
 
   protected selectIdFn: SelectEntityId<NoInfer<WorkspaceInvitation>> | undefined = undefined;
   protected getEntityIdFn = getEntityIdSelector({ selectId: this.selectIdFn });
+  readonly resetService = inject(ResetService);
+
+  constructor() {
+    this.resetService.register(this);
+  }
 
   updateEntitySummary(id: EntityId, partialItem: Partial<WorkspaceInvitation>): WorkspaceInvitation {
     return this.workspaceInvitationEntitiesStore.updateEntity(id, partialItem);
@@ -93,5 +99,12 @@ export class WorkspaceInvitationRepositoryService {
 
   async acceptInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
     return await lastValueFrom(this.workspaceInvitationsApiService.acceptForCurrentUser({ workspaceId }));
+  }
+
+  resetEntitySummaryList(): void {
+    this.workspaceInvitationEntitiesStore.reset();
+  }
+  resetAll(): void {
+    this.resetEntitySummaryList();
   }
 }

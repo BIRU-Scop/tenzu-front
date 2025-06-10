@@ -26,6 +26,7 @@ import { lastValueFrom } from "rxjs";
 import { ProjectMembershipEntitiesStore } from "./project-membership-entities.store";
 import { NotFoundEntityError } from "../base/errors";
 import { UserNested } from "@tenzu/repository/user";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -37,6 +38,11 @@ export class ProjectMembershipRepositoryService {
   entityMap = this.projectMembershipStore.entityMap;
   memberMap = this.projectMembershipStore.memberMap;
   members = this.projectMembershipStore.members;
+  readonly resetService = inject(ResetService);
+
+  constructor() {
+    this.resetService.register(this);
+  }
 
   async listProjectMembershipRequest(projectId: string) {
     const projectMemberships = await lastValueFrom(this.projectMembershipApiService.list({ projectId }));
@@ -62,5 +68,12 @@ export class ProjectMembershipRepositoryService {
       ),
     );
     this.projectMembershipStore.deleteEntity(membershipId);
+  }
+
+  resetEntitySummaryList(): void {
+    this.projectMembershipStore.reset();
+  }
+  resetAll(): void {
+    this.resetEntitySummaryList();
   }
 }

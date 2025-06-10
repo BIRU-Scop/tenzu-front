@@ -30,6 +30,7 @@ import { ProjectInvitation } from "./project-invitation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { EntityId } from "@ngrx/signals/entities";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -40,6 +41,11 @@ export class ProjectInvitationRepositoryService {
   entities = this.projectInvitationEntitiesStore.entities;
   entityMap = this.projectInvitationEntitiesStore.entityMap;
   private workspaceService = inject(WorkspaceRepositoryService);
+  readonly resetService = inject(ResetService);
+
+  constructor() {
+    this.resetService.register(this);
+  }
 
   updateEntitySummary(id: EntityId, partialItem: Partial<ProjectInvitation>): ProjectInvitation {
     return this.projectInvitationEntitiesStore.updateEntity(id, partialItem);
@@ -102,5 +108,12 @@ export class ProjectInvitationRepositoryService {
 
   async acceptInvitationForCurrentUser(projectId: ProjectDetail["id"]) {
     return await lastValueFrom(this.projectInvitationsApiService.acceptForCurrentUser({ projectId }));
+  }
+
+  resetEntitySummaryList(): void {
+    this.projectInvitationEntitiesStore.reset();
+  }
+  resetAll(): void {
+    this.resetEntitySummaryList();
   }
 }
