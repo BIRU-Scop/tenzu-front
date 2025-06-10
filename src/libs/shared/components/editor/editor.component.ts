@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -94,6 +94,8 @@ export class EditorComponent implements OnInit {
     return this.editor?.save();
   }
   async cancel() {
-    return this.editor?.render(this.data());
+    if (this.data()) {
+      return this.editor?.render(this.data());
+    }
   }
 }

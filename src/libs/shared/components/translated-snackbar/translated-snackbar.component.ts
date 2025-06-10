@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
 
@@ -35,5 +35,5 @@ import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TranslatedSnackbarComponent {
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: { message: string; var: string }) {}
+  data = inject<{ message: string; var: string }>(MAT_SNACK_BAR_DATA);
 }

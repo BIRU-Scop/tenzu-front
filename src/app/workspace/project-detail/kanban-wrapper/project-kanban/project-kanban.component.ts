@@ -40,7 +40,6 @@ import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -65,9 +64,6 @@ import { Location } from "@angular/common";
     CdkDrag,
     CdkDropListGroup,
     ProjectKanbanSkeletonComponent,
-    CdkVirtualScrollViewport,
-    CdkFixedSizeVirtualScroll,
-    CdkVirtualForOf,
     MatMenu,
     MatIcon,
     MatMenuTrigger,
@@ -127,41 +123,25 @@ import { Location } from "@angular/common";
             <ul
               [@newStoryFlyIn]="storyService.entitiesSummary().length || 0"
               [id]="status.id"
-              class="flex flex-col items-center gap-4 min-h-20 max-h-full py-2 dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
-              [class]="storiesRef && storiesRef.length > 10 ? 'overflow-y-visible' : 'overflow-y-auto'"
+              class="flex flex-col items-center min-h-20 max-h-full overflow-y-auto dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
               cdkDropList
               [cdkDropListData]="status"
               (cdkDropListDropped)="drop($event)"
             >
-              @if (storiesRef && storiesRef.length > 10) {
-                <cdk-virtual-scroll-viewport [itemSize]="96" class="virtual-scroll w-full flex">
-                  <li
-                    id="story-{{ storyRef }}"
-                    cdkDrag
-                    [cdkDragData]="[storySummaryEntityMap[storyRef], idx]"
-                    class="w-56 h-[96px]"
-                    *cdkVirtualFor="let storyRef of storiesRef; let idx = index"
-                    [attr.data-drag-index]="idx"
-                  >
-                    @let story = storySummaryEntityMap[storyRef];
-                    <app-story-card [story]="story" />
-                  </li>
-                </cdk-virtual-scroll-viewport>
-              } @else {
-                @for (storyRef of storiesRef; track storyRef; let idx = $index) {
-                  @let story = storySummaryEntityMap[storyRef];
-                  <li
-                    id="story-{{ story.ref }}"
-                    cdkDrag
-                    [cdkDragData]="[story, idx]"
-                    class="w-56 h-[96px]"
-                    [attr.data-drag-index]="idx"
-                  >
-                    <app-story-card [story]="story" />
-                  </li>
-                }
+              @for (storyRef of storiesRef; track storyRef; let idx = $index) {
+                @let story = storySummaryEntityMap[storyRef];
+                <li
+                  id="story-{{ story.ref }}"
+                  cdkDrag
+                  [cdkDragData]="[story, idx]"
+                  [attr.data-drag-index]="idx"
+                  class="w-56 py-[8px]"
+                >
+                  <app-story-card class="w-56 h-[96px]" [story]="story" />
+                </li>
               }
             </ul>
+
             <button
               mat-stroked-button
               class="primary-button whitespace-nowrap shrink-0 mt-4"

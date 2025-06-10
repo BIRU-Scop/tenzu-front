@@ -28,6 +28,9 @@ import {
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
 import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/repository/project-roles";
+import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
+import { DeleteRoleDialogComponent } from "./edit-role/delete-role-dialog/delete-role-dialog.component";
+import { ActivatedRoute, Router } from "@angular/router";
 
 export type PermissionValuesFor<K extends GroupPermissionKey> =
   | (typeof AllProjectPermissionsByTheme)[K]["permissions"][number]
@@ -64,9 +67,11 @@ export class RoleFacade {
   readonly fb = inject(FormBuilder);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   readonly projectRepositoryService = inject(ProjectRepositoryService);
-
+  readonly typedDialogService = inject(TypedDialogService);
   readonly currentRole = this.projectRoleRepositoryService.entityDetail;
   readonly currentProjectDetail = this.projectRepositoryService.entityDetail;
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
 
   readonly rolesName = computed(() => {
     const roles = this.projectRoleRepositoryService.entitiesSummary();
@@ -83,12 +88,12 @@ export class RoleFacade {
     currentRole?: Signal<ProjectRoleSummary | undefined>,
   ) {
     return (control: FormControl<ProjectRoleSummary["name"]>) => {
-      const value = control.value.toLowerCase().trim();
       if (currentRole) {
-        if (value === currentRole()?.name) {
+        if (control.value === currentRole()?.name) {
           return null;
         }
       }
+      const value = control.value.toLowerCase().trim();
       return existingRolesName().includes(value) ? { forbiddenName: true } : null;
     };
   }
@@ -161,6 +166,8 @@ export class RoleFacade {
     data.form.setValue({ ...values, name: data.role.name }, { emitEvent: true });
     if (!data.role.editable) {
       data.form.disable();
+    } else {
+      data.form.enable();
     }
   }
   mapPermissionsToFormValue(permissions: ProjectPermissions[]): PermissionsFormValue {
@@ -249,5 +256,47 @@ export class RoleFacade {
   async create({ values, projectId }: { values: FormValue; projectId: ProjectDetail["id"] }) {
     const clearedValues = this.clearValues(values);
     return this.projectRoleRepositoryService.createRequest(clearedValues, { projectId });
+  }
+
+  async deleteRole(currentRole: ProjectRoleSummary, projectDetail: ProjectDetail) {
+    // the currentRole has members and / or invitees
+    if (currentRole.totalMembers || currentRole.hasInvitees) {
+      this.typedDialogService
+        .open(DeleteRoleDialogComponent, { data: { projectRoleSummary: currentRole, projectDetail: projectDetail } })
+        .afterClosed()
+        .subscribe(async (moveToProjectRole) => {
+          if (moveToProjectRole) {
+            await this.projectRoleRepositoryService.deleteRequest(
+              currentRole,
+              { roleId: currentRole.id },
+              { moveTo: moveToProjectRole.id },
+            );
+            this.router
+              .navigate([
+                "/",
+                "workspace",
+                projectDetail.workspaceId,
+                "project",
+                projectDetail.id,
+                "settings",
+                "list-project-roles",
+              ])
+              .then();
+          }
+        });
+    } else {
+      await this.projectRoleRepositoryService.deleteRequest(currentRole, { roleId: currentRole.id });
+      this.router
+        .navigate([
+          "/",
+          "workspace",
+          projectDetail.workspaceId,
+          "project",
+          projectDetail.id,
+          "settings",
+          "list-project-roles",
+        ])
+        .then();
+    }
   }
 }
