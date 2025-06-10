@@ -42,7 +42,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 import { StoryDetailAttachmentsComponent } from "./story-detail-attachements/story-detail-attachments.component";
 import { StoryStatusComponent } from "./story-status/story-status.component";
-import { StoryAssigneeComponent } from "./story-assignee/story-assignee.component";
+import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
@@ -141,7 +141,14 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
                     [storyDetail]="story"
                     [hasModifyPermission]="hasModifyPermission"
                   ></app-story-status>
-                  <app-story-assignee [storyDetail]="story"></app-story-assignee>
+                  <div class="flex flex-row gap-4">
+                    <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
+                    <app-story-assignee
+                      [story]="story"
+                      [hasModifyPermission]="hasModifyPermission"
+                      [config]="{ relativeXPosition: 'left' }"
+                    ></app-story-assignee>
+                  </div>
                 </div>
                 <mat-divider></mat-divider>
                 <ng-container

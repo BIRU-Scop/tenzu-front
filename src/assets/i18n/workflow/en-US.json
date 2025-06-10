@@ -77,6 +77,7 @@
     "description": "Description",
     "edit_assignees": "Edit assignees",
     "add_assignees": "Add assignees",
+    "no_assignee": "No assignee",
     "edit_title": "Edit title",
     "edit_description": "Edit description",
     "empty_description": "Add a description to your story",

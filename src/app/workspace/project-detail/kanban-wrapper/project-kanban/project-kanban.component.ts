@@ -55,6 +55,7 @@ import { Location } from "@angular/common";
 import { HasPermissionDirective, PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 
 @Component({
   selector: "app-project-kanban",
@@ -131,6 +132,11 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
             </ng-container>
           </div>
           @if (!storyRepositoryService.isLoading()) {
+            @let hasModifyPermission =
+              hasEntityRequiredPermission({
+                requiredPermission: ProjectPermissions.MODIFY_STORY,
+                actualEntity: project,
+              });
             <ul
               class="grid grid-flow-col gap-8 kanban-viewport"
               *transloco="let t; prefix: 'workflow'"
@@ -156,6 +162,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
                     class="flex flex-col items-center min-h-20 max-h-full overflow-y-auto dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                     cdkDropList
                     [cdkDropListData]="status"
+                    [cdkDropListDisabled]="!hasModifyPermission"
                     (cdkDropListDropped)="drop($event)"
                   >
                     @for (storyRef of storiesRef; track storyRef; let idx = $index) {
@@ -166,8 +173,13 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
                         [cdkDragData]="[story, idx]"
                         [attr.data-drag-index]="idx"
                         class="w-56 py-[8px]"
+                        [class.cursor-not-allowed]="!hasModifyPermission"
                       >
-                        <app-story-card class="w-56 h-[96px]" [story]="story" />
+                        <app-story-card
+                          class="w-56 h-[96px]"
+                          [story]="story"
+                          [hasModifyPermission]="hasModifyPermission"
+                        />
                       </li>
                     }
                   </ul>
@@ -254,6 +266,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
 })
 export class ProjectKanbanComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
+  protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;
 
   breadcrumbStore = inject(BreadcrumbStore);
   workflowRepositoryService = inject(WorkflowRepositoryService);

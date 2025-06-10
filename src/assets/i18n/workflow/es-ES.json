@@ -45,6 +45,7 @@
     "description": "Descripción",
     "save": "Guardar",
     "add_assignees": "Agregar cesionarios",
+    "no_assignee": "Ningún cesionario",
     "confirm_delete_story": "¿Estás seguro de que quieres eliminar esta historia?",
     "confirm_delete_story_message": "Toda la información de la historia se eliminará permanentemente. No hay forma de deshacer esta acción.",
     "attachments": {
