@@ -41,12 +41,12 @@ import { RouterLink } from "@angular/router";
       >
         @for (role of entitiesSummary(); track role.id) {
           <div class="app-table-row">
-            <div class="app-table-cell">{{ role.name }}</div>
+            <div class="app-table-cell">
+              <a [routerLink]="['..', 'edit-role', role.id]">{{ role.name }}</a>
+            </div>
             <div class="app-table-cell">{{ role.totalMembers }} {{ t("total_members") }}</div>
             <div class="app-table-cell">
-              <a [routerLink]="['..', 'edit-role', role.id]">
-                {{ role.editable ? t("editable") : t("not_editable") }}</a
-              >
+              {{ role.editable ? t("editable") : t("not_editable") }}
             </div>
           </div>
         }
