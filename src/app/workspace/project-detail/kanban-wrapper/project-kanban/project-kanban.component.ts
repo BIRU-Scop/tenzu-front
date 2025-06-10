@@ -35,7 +35,7 @@ import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { StatusSummary } from "@tenzu/repository/status";
-import { Step, WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { Step, Workflow, WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -163,15 +163,14 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
                     cdkDropList
                     [cdkDropListData]="status"
                     [cdkDropListDisabled]="!hasModifyPermission"
-                    (cdkDropListDropped)="drop($event)"
+                    (cdkDropListDropped)="drop($event, workflow)"
                   >
                     @for (storyRef of storiesRef; track storyRef; let idx = $index) {
                       @let story = storySummaryEntityMap[storyRef];
                       <li
                         id="story-{{ story.ref }}"
                         cdkDrag
-                        [cdkDragData]="[story, idx]"
-                        [attr.data-drag-index]="idx"
+                        [cdkDragData]="story"
                         class="w-56 py-[8px]"
                         [class.cursor-not-allowed]="!hasModifyPermission"
                       >
@@ -365,21 +364,7 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>) {
-    const workflow = this.workflowRepositoryService.entityDetail();
-    if (!workflow) {
-      return;
-    }
-    // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
-    // so we use workarounds
-    const [, index] = event.item.data;
-    event.previousIndex = index;
-    const dataIndex = event.container.element.nativeElement
-      .getElementsByClassName("cdk-drag")
-      [event.currentIndex]?.getAttribute("data-drag-index");
-    if (dataIndex) {
-      event.currentIndex = Number(dataIndex);
-    }
+  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflow: Workflow) {
     await this.storyRepositoryService.dropStoryIntoStatus(event, workflow.projectId, workflow.slug);
   }
 

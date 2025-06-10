@@ -101,11 +101,8 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(
-      event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>,
-      workflowSlug: Workflow["slug"],
-    ) {
-      const story = event.item.data[0];
+    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflowSlug: Workflow["slug"]) {
+      const story = event.item.data;
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
       const sameStatus = lastStatus.id === nextStatus.id;

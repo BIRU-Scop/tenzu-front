@@ -134,7 +134,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
   async dropStoryIntoStatus(
-    event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>,
+    event: CdkDragDrop<StatusSummary, StatusSummary, Story>,
     projectId: string,
     workflowSlug: string,
   ) {
