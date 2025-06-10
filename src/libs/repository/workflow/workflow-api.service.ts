@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { AbstractApiServiceDetail } from "../base";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 
@@ -58,8 +58,8 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
     );
   }
 
-  createStatus(workflowId: Workflow["id"], newStatus: Pick<Status, "name">) {
-    return this.http.post<Status>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus);
+  createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">) {
+    return this.http.post<StatusSummary>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus);
   }
 
   deleteStatus(params: { statusId: string; moveToStatus?: string }) {
@@ -68,8 +68,8 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
     });
   }
 
-  editStatus(status: Pick<Status, "name" | "id">) {
-    return this.http.patch<Status>(`${this.configAppService.apiUrl()}workflows/statuses/${status.id}`, {
+  editStatus(status: Pick<StatusSummary, "name" | "id">) {
+    return this.http.patch<StatusSummary>(`${this.configAppService.apiUrl()}workflows/statuses/${status.id}`, {
       name: status.name,
     });
   }

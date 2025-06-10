@@ -26,6 +26,7 @@ import { WorkspaceMembership } from "./workspace-membership.model";
 import { WorkspaceMembershipEntitiesStore } from "./workspace-membership.store";
 import { NotFoundEntityError } from "../base/errors";
 import { UserNested } from "@tenzu/repository/user";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -37,6 +38,11 @@ export class WorkspaceMembershipRepositoryService {
   entityMap = this.workspaceMembershipStore.entityMap;
   memberMap = this.workspaceMembershipStore.memberMap;
   members = this.workspaceMembershipStore.members;
+  readonly resetService = inject(ResetService);
+
+  constructor() {
+    this.resetService.register(this);
+  }
 
   async listWorkspaceMembershipRequest(workspaceId: string) {
     const projectMemberships = await lastValueFrom(this.workspaceMembershipApiService.list({ workspaceId }));
@@ -66,5 +72,12 @@ export class WorkspaceMembershipRepositoryService {
       ),
     );
     this.workspaceMembershipStore.deleteEntity(membershipId);
+  }
+
+  resetEntitySummaryList(): void {
+    this.workspaceMembershipStore.reset();
+  }
+  resetAll(): void {
+    this.resetEntitySummaryList();
   }
 }

@@ -28,7 +28,7 @@ import { StoryDetail } from "@tenzu/repository/story";
 import { Router, RouterLink } from "@angular/router";
 import { ChooseWorkflowDialogComponent } from "../choose-workflow-dialog/choose-workflow-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { StoryDetailService } from "../story-detail.service";
+import { StoryDetailFacade } from "../story-detail.facade";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
@@ -61,16 +61,18 @@ import { MatDialog } from "@angular/material/dialog";
     <div class="flex gap-1 items-baseline mb-2" *transloco="let t; prefix: 'workflow.detail_story'">
       <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
       <span class="text-on-surface mat-title-medium">{{ story?.workflow?.name }}</span>
-      <button
-        class="icon-sm"
-        mat-icon-button
-        type="button"
-        [attr.aria-label]="t('change_workflow')"
-        (click)="openChooseWorkflowDialog($event)"
-        [matTooltip]="t('change_workflow')"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
+      @if (hasModifyPermission()) {
+        <button
+          class="icon-sm"
+          mat-icon-button
+          type="button"
+          [attr.aria-label]="t('change_workflow')"
+          (click)="openChooseWorkflowDialog($event)"
+          [matTooltip]="t('change_workflow')"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      }
       <span class="text-on-surface-variant mat-title-small">/</span>
       <span class="text-on-surface-variant mat-title-small">{{ t("story") }}</span>
       <span class="text-on-surface mat-title-medium">#{{ story.ref }}</span>
@@ -131,17 +133,23 @@ import { MatDialog } from "@angular/material/dialog";
 })
 export class StoryDetailMenuComponent {
   typeStoryView = { kanban: "capture", fullView: "fullscreen", "side-view": "view_sidebar" };
-  inputStory = input.required<StoryDetail>();
+
   relativeDialog = inject(RelativeDialogService);
   notificationService = inject(NotificationService);
-  storyDetailService = inject(StoryDetailService);
+  storyDetailService = inject(StoryDetailFacade);
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
-  storyView = new FormControl<StoryView>("kanban", { nonNullable: true });
   kanbanWrapperService = inject(KanbanWrapperService);
   dialogRef = inject(MatDialog);
+
+  storyView = new FormControl<StoryView>("kanban", { nonNullable: true });
+
   canBeClosed = input(false);
+  hasModifyPermission = input(false);
+  inputStory = input.required<StoryDetail>();
+
   closed = output<void>();
+
   constructor() {
     toObservable(this.kanbanWrapperService.storyView).subscribe((storyView) => {
       this.storyView.setValue(storyView);

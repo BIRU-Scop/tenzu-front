@@ -26,7 +26,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { MatIcon } from "@angular/material/icon";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { getAssignees, StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
+import { getAssignees, Story, StoryRepositoryService } from "@tenzu/repository/story";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -34,14 +34,13 @@ import { TranslocoDirective } from "@jsverse/transloco";
 @Component({
   selector: "app-story-assignee",
   imports: [AvatarListComponent, MatIcon, MatIconButton, MatTooltip, TranslocoDirective],
-  template: ` <div class="flex flex-row gap-4" *transloco="let t; prefix: 'workflow.detail_story'">
-    <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
+  template: ` <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
     @let _assignees = assignees();
     @if (_assignees.length > 0) {
       <button type="button" (click)="openAssignStoryDialog($event)" [attr.aria-label]="t('edit_assignees')">
         <app-avatar-list [users]="_assignees" [prioritizeCurrentUser]="true"></app-avatar-list>
       </button>
-    } @else {
+    } @else if (hasModifyPermission()) {
       <button
         mat-icon-button
         type="button"
@@ -51,39 +50,54 @@ import { TranslocoDirective } from "@jsverse/transloco";
       >
         <mat-icon>person_add</mat-icon>
       </button>
+    } @else {
+      <div class="w-min" [matTooltip]="t('no_assignee')">
+        <button mat-icon-button type="button" disabled [attr.aria-label]="t('no_assignee')">
+          <mat-icon>no_accounts</mat-icon>
+        </button>
+      </div>
     }
-  </div>`,
+  </ng-container>`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryAssigneeComponent {
-  storyDetail = input.required<StoryDetail>();
   storyRepositoryService = inject(StoryRepositoryService);
 
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   relativeDialog = inject(RelativeDialogService);
-  assignees = getAssignees(this.storyDetail);
+
+  story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
+  assignees = getAssignees(this.story);
+  hasModifyPermission = input(false);
+  config = input<{
+    relativeXPosition?: "left" | "center" | "right" | "auto";
+    relativeYPosition?: "above" | "below" | "auto";
+  }>({
+    relativeXPosition: "auto",
+    relativeYPosition: "auto",
+  });
 
   openAssignStoryDialog(event: MouseEvent): void {
+    if (!this.hasModifyPermission()) {
+      return;
+    }
     const teamMembers = this.projectMembershipRepositoryService.members;
-    const storyDetail = this.storyDetail();
+    const story = this.story();
 
     const dialogRef = this.relativeDialog.open(AssignDialogComponent, event?.target, {
       ...matDialogConfig,
-      relativeXPosition: "left",
+      ...this.config(),
       data: {
         assignees: this.assignees,
         teamMembers: teamMembers,
       },
     });
     dialogRef.componentInstance.memberAssigned.subscribe(async (user) => {
-      await this.storyRepositoryService.createAssign(user, { projectId: storyDetail.projectId, ref: storyDetail.ref });
+      await this.storyRepositoryService.createAssign(user, { projectId: story.projectId, ref: story.ref });
     });
     dialogRef.componentInstance.memberUnassigned.subscribe(async (user) => {
-      await this.storyRepositoryService.deleteAssign(user, {
-        projectId: storyDetail.projectId,
-        storyRef: storyDetail.ref,
-      });
+      await this.storyRepositoryService.deleteAssign(user, { projectId: story.projectId, storyRef: story.ref });
     });
   }
 }

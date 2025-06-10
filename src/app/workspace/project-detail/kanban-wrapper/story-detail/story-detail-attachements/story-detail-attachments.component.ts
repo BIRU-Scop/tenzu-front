@@ -43,7 +43,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 
 @Component({
-  selector: "app-story-detail-attachements",
+  selector: "app-story-detail-attachments",
   imports: [
     DatePipe,
     MatButton,
@@ -67,17 +67,25 @@ import { MatIcon } from "@angular/material/icon";
   ],
   template: `
     @let story = storyDetail();
+    @let _hasModifyPermission = hasModifyPermission();
     <div class="flex flex-col gap-y-4" *transloco="let t; prefix: 'workflow.detail_story'">
-      <button
-        class="primary-button w-fit"
-        mat-flat-button
-        type="button"
-        (click)="resetInput(fileUpload); fileUpload.click()"
-      >
-        <mat-icon class="icon-full">attach_file</mat-icon>
-        {{ t("attachments.attach_file") }}
-      </button>
-      <input type="file" [hidden]="true" (change)="onFileSelected({ event: $event, storyDetail: story })" #fileUpload />
+      @if (_hasModifyPermission) {
+        <button
+          class="primary-button w-fit"
+          mat-flat-button
+          type="button"
+          (click)="resetInput(fileUpload); fileUpload.click()"
+        >
+          <mat-icon class="icon-full">attach_file</mat-icon>
+          {{ t("attachments.attach_file") }}
+        </button>
+        <input
+          type="file"
+          [hidden]="true"
+          (change)="onFileSelected({ event: $event, storyDetail: story })"
+          #fileUpload
+        />
+      }
       @let selectedStoryAttachments = storyAttachmentRepositoryService.entitiesSummary();
       @if (selectedStoryAttachments.length > 0) {
         <mat-expansion-panel expanded>
@@ -112,9 +120,11 @@ import { MatIcon } from "@angular/material/icon";
                 <button mat-icon-button (click)="downloadFile(row)" type="button">
                   <mat-icon>download</mat-icon>
                 </button>
-                <button mat-icon-button type="button" (click)="deleteAttachment(row)">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                @if (_hasModifyPermission) {
+                  <button mat-icon-button type="button" (click)="deleteAttachment(row)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
               </mat-cell>
             </ng-container>
 
@@ -129,11 +139,13 @@ import { MatIcon } from "@angular/material/icon";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryDetailAttachementsComponent implements OnInit, OnDestroy {
+export class StoryDetailAttachmentsComponent implements OnInit, OnDestroy {
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
+  notificationService = inject(NotificationService);
+
   storyDetail = input.required<StoryDetail>();
   projectDetail = input.required<ProjectDetail>();
-  notificationService = inject(NotificationService);
+  hasModifyPermission = input(false);
 
   ngOnInit(): void {
     this.storyAttachmentRepositoryService

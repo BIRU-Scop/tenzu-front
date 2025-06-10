@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2025 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,7 +33,7 @@ export type CommandActionType =
   | "subscribe_to_project_events"
   | "unsubscribe_from_project_events"
   | "subscribe_to_workspace_events"
-  | "unsubscribe_to_workspace_events"
+  | "unsubscribe_from_workspace_events"
   | "ping";
 
 export type CommandBase = {
@@ -30,7 +51,7 @@ export type SubscribeToProjectEventsAction = CommandBase & {
   command: "subscribe_to_project_events";
   project: string;
 };
-export type UnsubscribeToProjectEventsAction = CommandBase & {
+export type UnsubscribeFromProjectEventsAction = CommandBase & {
   command: "unsubscribe_from_project_events";
   project: string;
 };
@@ -38,8 +59,8 @@ export type SubscribeToWorkspaceEventsAction = CommandBase & {
   command: "subscribe_to_workspace_events";
   workspace: string;
 };
-export type UnSubscribeToWorkspaceEventsAction = CommandBase & {
-  command: "unsubscribe_to_workspace_events";
+export type UnSubscribeFromWorkspaceEventsAction = CommandBase & {
+  command: "unsubscribe_from_workspace_events";
   workspace: string;
 };
 export type PingActions = CommandBase & {
@@ -51,9 +72,9 @@ export type Command =
   | SignOutAction
   | PingActions
   | SubscribeToProjectEventsAction
-  | UnsubscribeToProjectEventsAction
+  | UnsubscribeFromProjectEventsAction
   | SubscribeToWorkspaceEventsAction
-  | UnSubscribeToWorkspaceEventsAction;
+  | UnSubscribeFromWorkspaceEventsAction;
 
 export interface WSResponseActionBase {
   type: "action";

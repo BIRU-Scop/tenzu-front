@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,29 +19,25 @@
  *
  */
 
-import { PermissionsBase, ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
-import { UserNested } from "../user";
+import { Injectable } from "@angular/core";
 
-type MemberPermission = "is_member";
-export type Permission = PermissionsBase | WorkspacePermissions | ProjectPermissions | MemberPermission;
-export const MemberPermission = "is_member" as const satisfies MemberPermission;
+export interface CanReset {
+  resetAll(): void;
+}
 
-export type MembershipBase = {
-  id: string;
-  user: UserNested;
-  roleId: string;
-};
+@Injectable({
+  providedIn: "root",
+})
+export class ResetService {
+  registeredServices: CanReset[] = [];
 
-export type Role = {
-  id: string;
-  name: string;
-  slug: string;
-  isOwner: boolean;
-  order: number;
-  editable: boolean;
-  permissions: Permission[];
-};
+  register(service: CanReset) {
+    this.registeredServices.push(service);
+  }
 
-export type UserRole = {
-  userRole?: Role;
-};
+  reset() {
+    this.registeredServices.forEach((service) => {
+      service.resetAll();
+    });
+  }
+}

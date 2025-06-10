@@ -24,6 +24,7 @@ import {
   Component,
   ElementRef,
   inject,
+  Injector,
   input,
   OnInit,
   viewChild,
@@ -51,18 +52,21 @@ import { TranslocoService } from "@jsverse/transloco";
 })
 export class EditorComponent implements OnInit {
   translocoService = inject(TranslocoService);
+  injector = inject(Injector);
+
   data = input({} as OutputData, {
     transform: (value: OutputData | string | undefined) => {
       return typeof value === "string" ? JSON.parse(value) : value;
     },
   });
-  data$ = toObservable(this.data);
-  editor: EditorJS | undefined;
+  disabled = input(false);
   container = viewChild.required<ElementRef>("editorContainer");
+  editor: EditorJS | undefined;
 
   ngOnInit(): void {
     this.editor = new EditorJS({
       holder: this.container()?.nativeElement,
+      readOnly: this.disabled(),
       minHeight: 0,
       placeholder: this.translocoService.translateObject("workflow.detail_story.empty_description"),
       tools: {
@@ -83,10 +87,13 @@ export class EditorComponent implements OnInit {
       },
     });
     this.editor.isReady.then(() => {
-      this.data$.subscribe((value) => {
+      toObservable(this.data, { injector: this.injector }).subscribe((value) => {
         if (value) {
           this.editor?.render(value);
         }
+      });
+      toObservable(this.disabled, { injector: this.injector }).subscribe((disabled) => {
+        this.editor?.readOnly.toggle(disabled);
       });
     });
   }

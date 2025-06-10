@@ -30,6 +30,7 @@ import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatIcon } from "@angular/material/icon";
 import { MatButton } from "@angular/material/button";
+import { MemberPermission } from "@tenzu/repository/membership";
 
 @Component({
   selector: "app-project-settings",
@@ -53,7 +54,15 @@ import { MatButton } from "@angular/material/button";
         <div class="flex flex-row items-center">
           <h1 class="mat-headline-medium !mb-0">{{ t("project.settings.title") }}</h1>
           <div class="mx-auto"></div>
-          <a mat-stroked-button [routerLink]="['create-role']" class="tertiary-button flex">
+          <a
+            *appHasPermission="{
+              actualEntity: project,
+              requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+            }"
+            mat-stroked-button
+            [routerLink]="['create-role']"
+            class="tertiary-button flex"
+          >
             <mat-icon>add</mat-icon>
             {{ t("project.settings.roles.create_role") }}</a
           >
@@ -83,12 +92,14 @@ import { MatButton } from "@angular/material/button";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectSettingsComponent implements AfterViewInit {
+  protected readonly ProjectPermissions = ProjectPermissions;
+
   projectRepositoryService = inject(ProjectRepositoryService);
   links = [
     {
       path: "./project-edit",
       labelKey: "project.settings.project_edit.title",
-      permission: ProjectPermissions.MODIFY_PROJECT,
+      permission: MemberPermission,
       iconName: "info",
     },
     {

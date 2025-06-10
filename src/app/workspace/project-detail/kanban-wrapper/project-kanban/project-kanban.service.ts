@@ -21,7 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { Story } from "@tenzu/repository/story";
-import { Status } from "@tenzu/repository/status";
+import { StatusSummary } from "@tenzu/repository/status";
 import { Router } from "@angular/router";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
@@ -42,7 +42,7 @@ export class ProjectKanbanService {
   storyService = inject(StoryRepositoryService);
   router = inject(Router);
 
-  public async createStatus(status: Pick<Status, "name" | "color">) {
+  public async createStatus(status: Pick<StatusSummary, "name" | "color">) {
     const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
       await this.workflowService.createStatus(status);
@@ -57,7 +57,7 @@ export class ProjectKanbanService {
     }
   }
 
-  public async editStatus(status: Pick<Status, "name" | "id">) {
+  public async editStatus(status: Pick<StatusSummary, "name" | "id">) {
     await this.workflowService.editStatus(status);
   }
 

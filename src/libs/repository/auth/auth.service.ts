@@ -28,6 +28,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -39,8 +40,9 @@ export class AuthService {
   notificationService = inject(NotificationService);
   http = inject(HttpClient);
   router = inject(Router);
+  readonly resetService = inject(ResetService);
   url = `${this.configAppService.apiUrl()}auth`;
-  autoLogoutSubscribtion: Subscription | null = null;
+  autoLogoutSubscription: Subscription | null = null;
 
   login(credentials: Credential) {
     return this.http
@@ -54,10 +56,11 @@ export class AuthService {
     localStorage.removeItem("token");
     localStorage.removeItem("refresh");
     localStorage.removeItem("username");
-    if (this.autoLogoutSubscribtion) {
-      this.autoLogoutSubscribtion.unsubscribe();
-      this.autoLogoutSubscribtion = null;
+    if (this.autoLogoutSubscription) {
+      this.autoLogoutSubscription.unsubscribe();
+      this.autoLogoutSubscription = null;
     }
+    this.resetService.reset();
   }
 
   autoLogout() {
@@ -113,14 +116,14 @@ export class AuthService {
   }
 
   setupAutoLogout(tokens: Tokens) {
-    if (this.autoLogoutSubscribtion) {
-      this.autoLogoutSubscribtion.unsubscribe();
-      this.autoLogoutSubscribtion = null;
+    if (this.autoLogoutSubscription) {
+      this.autoLogoutSubscription.unsubscribe();
+      this.autoLogoutSubscription = null;
     }
     if (tokens.refresh) {
       const expirationDate = this.jwtHelperService.getTokenExpirationDate(tokens.refresh);
       if (expirationDate) {
-        this.autoLogoutSubscribtion = timer(expirationDate)
+        this.autoLogoutSubscription = timer(expirationDate)
           .pipe(
             take(1),
             tap(() => {

@@ -19,7 +19,7 @@
  *
  */
 
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 import { ProjectDetail } from "@tenzu/repository/project";
@@ -35,7 +35,7 @@ export type StoryReorderPayload = {
   workflowSlug: string;
 };
 export type StoryReorderPayloadEvent = StoryReorderPayload & {
-  status: Status;
+  status: StatusSummary;
 };
 
 export type Story = {
@@ -45,7 +45,7 @@ export type Story = {
   description: string;
   workflowId: Workflow["id"];
   projectId: ProjectDetail["id"];
-  statusId: Status["id"];
+  statusId: StatusSummary["id"];
   assigneeIds: Array<User["id"]>;
 };
 

@@ -29,6 +29,8 @@ import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { ProjectNested } from "@tenzu/repository/project";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 
 @Injectable({
   providedIn: "root",
@@ -48,6 +50,7 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   protected entitiesSummaryStore = inject(WorkspaceEntitiesSummaryStore);
   protected entityDetailStore = inject(WorkspaceDetailStore);
   private workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
+  private workspaceRoleService = inject(WorkspaceRoleRepositoryService);
 
   removeUserInvitedProjects(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
     this.entitiesSummaryStore.removeUserInvitedProjects(params.workspaceId, params.projectId);
@@ -62,8 +65,15 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   }
 
   async acceptInvitationWorkspace(params: { workspace: WorkspaceSummary }) {
-    await this.workspaceInvitationService.acceptInvitationForCurrentUser(params.workspace.id);
+    const workspaceInvitation = await this.workspaceInvitationService.acceptInvitationForCurrentUser(
+      params.workspace.id,
+    );
     params.workspace.userIsInvited = false;
+    params.workspace.userIsMember = true;
+    const userRole = this.workspaceRoleService.entityMapSummary()[workspaceInvitation.roleId];
+    if (userRole) {
+      params.workspace.userCanCreateProjects = userRole.permissions.includes(WorkspacePermissions.CREATE_PROJECT);
+    }
     this.updateEntitySummary(params.workspace.id, params.workspace);
   }
 
@@ -73,7 +83,7 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
     queryParams?: QueryParams,
   ): Promise<WorkspaceDetail> {
     const workspace = await super.deleteRequest(item, params, queryParams);
-    this.wsService.command({ command: "unsubscribe_to_workspace_events", workspace: workspace.id });
+    this.wsService.command({ command: "unsubscribe_from_workspace_events", workspace: workspace.id });
     return workspace;
   }
 }

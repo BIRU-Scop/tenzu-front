@@ -190,7 +190,7 @@ export class WsService {
         });
         break;
       }
-      case "unsubscribe_to_workspace_events": {
+      case "unsubscribe_from_workspace_events": {
         this.channelSubscribed.update((value) => {
           value.channelWorkspaces = value.channelWorkspaces.filter(
             (channelWorkspace) => channelWorkspace !== message.content.channel,
@@ -287,7 +287,7 @@ export class WsService {
         .pipe(
           filter((loggedIn) => loggedIn),
           switchMap(() => {
-            if (command.command === "unsubscribe_to_workspace_events") {
+            if (command.command === "unsubscribe_from_workspace_events") {
               if (!(`workspaces.${command.workspace}` in this.channelSubscribed().channelWorkspaces)) {
                 return of(null);
               }
