@@ -20,7 +20,7 @@
  */
 
 import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
-import { inject, signal } from "@angular/core";
+import { inject } from "@angular/core";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
@@ -40,8 +40,12 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
         workflowService
           .getRequest({ workflowId: story.workflowId })
           .then((workflow) =>
-            storyService.listRequest(
-              { projectId: projectId, workflowSlug: workflow?.slug || "" },
+            storyService.listAllRequest(
+              {
+                projectId: projectId,
+                workflowId: workflow.id,
+                statusIds: workflow.statuses.map((status) => status.id),
+              },
               { offset: 0, limit: 100 },
             ),
           )
@@ -63,8 +67,6 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   const workflowService = inject(WorkflowRepositoryService);
   const storyService = inject(StoryRepositoryService);
   const router = inject(Router);
-  const limit = signal(100);
-  const offset = 0;
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
     storyService.resetEntityDetail();
@@ -77,7 +79,14 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
         debug("story", "load stories start");
         if (workflow) {
           storyService
-            .listRequest({ projectId: workflow.projectId, workflowSlug: workflow.slug }, { offset, limit: limit() })
+            .listAllRequest(
+              {
+                projectId: workflow.projectId,
+                workflowId: workflow.id,
+                statusIds: workflow.statuses.map((status) => status.id),
+              },
+              { offset: 0, limit: 100 },
+            )
             .then();
         }
         debug("story", "load stories end");

@@ -46,12 +46,8 @@ export class StoryApiService extends AbstractApiService<
     return `${this.getBaseUrl(params)}/${params.ref}`;
   }
 
-  protected baseStoryFilterByWorkflowSlugUrl(params: { projectId: string; workflowSlug: string }) {
-    return `${this.baseUrl}/${params.projectId}/workflows/${params.workflowSlug}/stories`;
-  }
-
   protected override listUrl(params: StoryApiServiceType.ListEntitiesSummaryParams) {
-    return `${this.baseStoryFilterByWorkflowSlugUrl(params)}`;
+    return `${this.configAppService.apiUrl()}workflows/statuses/${params.statusId}/stories`;
   }
 
   override create(story: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {

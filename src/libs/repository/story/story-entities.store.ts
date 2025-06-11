@@ -32,7 +32,7 @@ import { UserNested } from "../user";
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
   currentProjectId: null as string | null,
-  currentWorkflowSlug: null as string | null,
+  currentWorkflowId: null as string | null,
   groupedByStatus: {} as Record<Story["statusId"], Story["ref"][]>,
 };
 export const StoryEntitiesSummaryStore = signalStore(
@@ -40,8 +40,8 @@ export const StoryEntitiesSummaryStore = signalStore(
   withState(initialState),
   withEntityListFeature<Story, typeof initialState>({ initialState, selectId }),
   withMethods((store) => ({
-    setCurrentWorkflowId(projectId: string, workflowSlug: string) {
-      patchState(store, { currentProjectId: projectId, currentWorkflowSlug: workflowSlug });
+    setCurrentWorkflowId(projectId: string, workflowId: string) {
+      patchState(store, { currentProjectId: projectId, currentWorkflowId: workflowId });
     },
     reorder() {
       const groupedByStatus = store.entities().reduce(
@@ -54,6 +54,17 @@ export const StoryEntitiesSummaryStore = signalStore(
         },
         {} as Record<Story["statusId"], Story["ref"][]>,
       );
+      patchState(store, { groupedByStatus });
+    },
+    addToGroupedByStatus({ statusId, storiesRef }: { statusId: Story["statusId"]; storiesRef: Story["ref"][] }) {
+      const currentGroupedByStatus = store.groupedByStatus();
+      const storiesForStatus: Story["ref"][] = currentGroupedByStatus[statusId]
+        ? [...currentGroupedByStatus[statusId], ...storiesRef]
+        : [...storiesRef];
+      const groupedByStatus: Record<Story["statusId"], Story["ref"][]> = {
+        ...currentGroupedByStatus,
+        [statusId]: storiesForStatus,
+      };
       patchState(store, { groupedByStatus });
     },
   })),

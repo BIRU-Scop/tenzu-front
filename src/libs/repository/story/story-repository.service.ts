@@ -70,28 +70,41 @@ export class StoryRepositoryService extends BaseRepositoryService<
     params: StoryApiServiceType.ListEntitiesSummaryParams,
     queryParams: { limit: number; offset: number },
   ) {
-    if (
-      this.entitiesSummaryStore.currentProjectId() === params.projectId &&
-      this.entitiesSummaryStore.currentWorkflowSlug() === params.workflowSlug
-    ) {
-      return this.entitiesSummary();
-    } else {
-      this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowSlug);
-    }
-    this.isLoading.set(true);
+    // Do not use this function directly, prefers listAllRequest instead
     while (true) {
       const stories = await lastValueFrom(this.apiService.list(params, queryParams));
-
       this.entitiesSummaryStore.addEntities(stories);
-      this.entitiesSummaryStore.reorder();
+      const storiesRef = stories.map((story) => story.ref);
+      this.entitiesSummaryStore.addToGroupedByStatus({ statusId: params.statusId, storiesRef });
       if (stories.length < queryParams.limit) {
         break;
       }
       queryParams.offset += queryParams.limit;
     }
+    return this.entitiesSummary();
+  }
+  async listAllRequest(
+    params: { projectId: Story["projectId"]; statusIds: Story["statusId"][]; workflowId: Workflow["id"] },
+    queryParams: { limit: number; offset: number },
+  ) {
+    if (
+      this.entitiesSummaryStore.currentProjectId() === params.projectId &&
+      this.entitiesSummaryStore.currentWorkflowId() === params.workflowId
+    ) {
+      return this.entitiesSummary();
+    } else {
+      this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
+    }
+    this.isLoading.set(true);
+    await Promise.all(
+      params.statusIds.map((statusId) =>
+        this.listRequest({ statusId }, { limit: queryParams.limit, offset: queryParams.offset }),
+      ),
+    );
     this.isLoading.set(false);
     return this.entitiesSummary();
   }
+
   override async createRequest(item: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
     const entity = await lastValueFrom(this.apiService.create(item, params));
     this.setEntitySummary(entity);
