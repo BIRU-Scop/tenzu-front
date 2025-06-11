@@ -10,16 +10,11 @@
     "test:coverage": "ng --no-watch --code-coverage",
     "test:watch": "ng test  --watch",
     "e2e:ui": "npx playwright test",
-    "storybook": "ng run tenzu:storybook",
-    "build-storybook": "ng run tenzu:build-storybook",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "transloco:optimize": "transloco-optimize dist/tenzu/browser/assets/i18n",
     "build:staging": "ng build --configuration staging && npm run transloco:optimize",
-    "build:production": "ng build --configuration production && npm run transloco:optimize",
-    "compodoc:build": "compodoc -p tsconfig.doc.json",
-    "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s -w",
-    "compodoc:serve": "compodoc -s"
+    "build:production": "ng build --configuration production && npm run transloco:optimize"
   },
   "private": true,
   "dependencies": {
