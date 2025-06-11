@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,14 +23,4 @@ import { EnvironmentConfig } from "./environment-type";
 
 export const environment: EnvironmentConfig = {
   appVersion: "dev",
-  production: false,
-  env: "dev",
-  api: {
-    prefix: "v1",
-    baseDomain: "local-tenzu.biru.ovh",
-    suffixDomain: "api",
-    scheme: "https",
-  },
-  wsUrl: "wss://local-tenzu.biru.ovh/events/",
-  sentry: {},
 };

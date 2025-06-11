@@ -65,27 +65,6 @@
                 }
               ]
             },
-            "staging": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "1MB",
-                  "maximumError": "2MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "10kB"
-                }
-              ],
-              "outputHashing": "all",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
-                }
-              ]
-            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -99,9 +78,6 @@
           "configurations": {
             "production": {
               "buildTarget": "tenzu:build:production"
-            },
-            "staging": {
-              "buildTarget": "tenzu:build:staging"
             },
             "development": {
               "buildTarget": "tenzu:build:development"
@@ -133,7 +109,6 @@
     }
   },
   "cli": {
-    "analytics": "e15c514f-b966-41d4-b811-aeb3a007a1f4",
     "schematicCollections": [
       "@angular-eslint/schematics"
     ]

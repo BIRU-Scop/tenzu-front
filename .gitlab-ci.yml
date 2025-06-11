@@ -10,10 +10,10 @@ include:
       build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG SENTRY_ENVIRONMENT=$CI_COMMIT_REF_SLUG SENTRY_DSN=$SENTRY_DSN BASE_DOMAIN=$BASE_DOMAIN'
       needs:
         - job: get-released-tag
-        - job: get-base-domain
   - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.16
     inputs:
       token: $DEV_TOKEN
+
   # deploy demo
   - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.5.1
     inputs:
@@ -55,20 +55,6 @@ stages:
   - merge
   - deploy-demo
 
-
-get-base-domain:
-  stage: .pre
-  script:
-    - BASE_DOMAIN=tenzu-api.biru.sh
-    - if [ "${CI_COMMIT_REF_SLUG}" = "staging" ]; then BASE_DOMAIN="tenzu-api-staging.biru.sh"; fi
-    - echo "BASE_DOMAIN=$BASE_DOMAIN" > build.env
-    - cat build.env
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
-    - if: '$CI_COMMIT_BRANCH == "production" && $CI_COMMIT_MESSAGE =~ /^chore\(release\)[^-]+$/'
-  artifacts:
-    reports:
-      dotenv: build.env
 
 launch-demo-deploy:
   stage: merge

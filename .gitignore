@@ -244,3 +244,6 @@ storybook-static
 documentation.json
 
 .junie/
+
+# config
+src/assets/configs/config.json
