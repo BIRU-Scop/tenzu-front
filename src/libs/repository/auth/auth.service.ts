@@ -64,7 +64,7 @@ export class AuthService {
   }
 
   autoLogout() {
-    this.applyLogout();
+    this.logout();
     this.notificationService.error({ title: "notification.login.logout" });
   }
   userLogout() {
