@@ -38,7 +38,7 @@ export class ProjectRolesApiService extends AbstractApiService<
   ProjectRolesApiServiceType.PatchEntityDetailParams,
   ProjectRolesApiServiceType.DeleteEntityDetailParams
 > {
-  override baseUrl = `${this.configAppService.apiUrl()}projects`;
+  override baseUrl = `${this.configAppService.apiUrl()}/projects`;
 
   protected override getBaseUrl(params: ProjectRolesApiServiceType.BaseParams): string {
     return `${this.baseUrl}/${params.projectId}/roles`;

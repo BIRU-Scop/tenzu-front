@@ -26,7 +26,6 @@ import { StatusSummary } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
-import { Workflow } from "../workflow";
 import { UserNested } from "../user";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
@@ -112,7 +111,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflowSlug: Workflow["slug"]) {
+    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>) {
       const story = event.item.data;
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
@@ -139,7 +138,7 @@ export const StoryEntitiesSummaryStore = signalStore(
         store.updateEntity(story.ref, { statusId: nextStatus.id });
       }
       copyGroupedByStatus[lastStatus.id] = lastArray;
-      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex, workflowSlug);
+      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
 
       patchState(store, { groupedByStatus: { ...copyGroupedByStatus } });
       return payload;
@@ -182,25 +181,22 @@ export const StoryDetailStore = signalStore(
 );
 
 function calculatePayloadReorder(
-  storyId: number,
-  statusId: string,
+  storyRef: Story["ref"],
+  statusId: Story["statusId"],
   storiesRef: Story["ref"][],
   index: number,
-  workflowSlug: string,
 ) {
   let result: StoryReorderPayload;
   if (index === storiesRef.length - 1) {
     result = {
       statusId: statusId,
-      stories: [storyId],
-      workflowSlug,
+      stories: [storyRef],
     };
   } else {
     result = {
       statusId: statusId,
       reorder: { place: "before", ref: storiesRef[index + 1] },
-      stories: [storyId],
-      workflowSlug,
+      stories: [storyRef],
     };
   }
   return result;

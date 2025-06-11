@@ -166,7 +166,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
                     [cdkDropListDisabled]="!hasModifyPermission || isLoading"
                     (cdkDropListDropped)="drop($event, workflow)"
                   >
-                    @for (storyRef of storiesRef; track storyRef; let idx = $index) {
+                    @for (storyRef of storiesRef; track storyRef) {
                       @let story = storySummaryEntityMap[storyRef];
                       <li
                         id="story-{{ story.ref }}"
@@ -367,7 +367,7 @@ export class ProjectKanbanComponent {
   }
 
   async drop(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflow: Workflow) {
-    await this.storyRepositoryService.dropStoryIntoStatus(event, workflow.projectId, workflow.slug);
+    await this.storyRepositoryService.dropStoryIntoStatus(event, workflow.id);
   }
 
   moveStatus(oldPosition: number, step: Step) {
@@ -440,9 +440,9 @@ export class ProjectKanbanComponent {
       });
       dialogRef.afterClosed().subscribe(async (formValue?: DeleteWorkflowFormData) => {
         if (formValue) {
-          const moveToWorkflow: string | undefined =
-            formValue.stories === "move" ? formValue.workflowTarget : undefined;
-          const deletedData = await this.projectKanbanService.deletesSelectedWorkflow(moveToWorkflow);
+          const moveToWorkflowId: Workflow["id"] | undefined =
+            formValue.stories === "move" ? formValue.workflowTargetId : undefined;
+          const deletedData = await this.projectKanbanService.deletesSelectedWorkflow(moveToWorkflowId);
           if (deletedData) {
             await this.router.navigate(["..", deletedData.redirectionSlug], { relativeTo: this.activatedRoute });
             this.notificationService.success({

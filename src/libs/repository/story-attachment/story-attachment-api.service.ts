@@ -38,14 +38,14 @@ export class StoryAttachmentApiService extends AbstractApiService<
   never,
   StoryAttachmentApiType.DeleteEntityDetailParams
 > {
-  baseUrl = `${this.configAppService.apiUrl()}projects`;
+  baseUrl = `${this.configAppService.apiUrl()}/projects`;
   fileDownloaderService = inject(FileDownloaderService);
 
   protected override getBaseUrl(params: StoryAttachmentApiType.BaseParams): string {
     return `${this.baseUrl}/${params.projectId}/stories/${params.ref}/attachments`;
   }
   protected override getEntityBaseUrl(): string {
-    return `${this.configAppService.apiUrl()}stories/attachments`;
+    return `${this.configAppService.apiUrl()}/stories/attachments`;
   }
   protected override createUrl(): string {
     throw new Error("Method not implemented.");

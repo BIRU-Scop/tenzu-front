@@ -24,7 +24,7 @@ import { Story } from "./story.model";
 export type BaseParams = { projectId: Story["projectId"]; ref: Story["ref"] };
 export type ListEntitiesSummaryParams = { statusId: Story["statusId"] };
 export type GetEntityDetailParams = BaseParams;
-export type CreateEntityDetailParams = { projectId: Story["projectId"] };
+export type CreateEntityDetailParams = { workflowId: Story["workflowId"] };
 export type PutEntityDetailParams = BaseParams;
 export type PatchEntityDetailParams = BaseParams;
 export type DeleteEntityDetailParams = BaseParams;

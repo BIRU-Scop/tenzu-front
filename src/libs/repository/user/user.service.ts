@@ -32,8 +32,8 @@ export class UserService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
   endpoint = `${this.configAppService.apiUrl()}`;
-  myUserUrl = `${this.endpoint}users/me`;
-  usersUrl = `${this.endpoint}users`;
+  myUserUrl = `${this.endpoint}/users/me`;
+  usersUrl = `${this.endpoint}/users`;
 
   getMyUser() {
     return this.http.get<User>(`${this.myUserUrl}`);
