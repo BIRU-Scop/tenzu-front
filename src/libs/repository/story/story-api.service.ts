@@ -37,21 +37,18 @@ export class StoryApiService extends AbstractApiService<
   StoryApiServiceType.PatchEntityDetailParams,
   StoryApiServiceType.DeleteEntityDetailParams
 > {
-  baseUrl = `${this.configAppService.apiUrl()}projects`;
+  baseUrl = `${this.configAppService.apiUrl()}`;
 
-  protected override getBaseUrl(params: { projectId: string }): string {
-    return `${this.baseUrl}/${params.projectId}/stories`;
-  }
   protected override getEntityBaseUrl(params: StoryApiServiceType.BaseParams): string {
-    return `${this.getBaseUrl(params)}/${params.ref}`;
-  }
-
-  protected baseStoryFilterByWorkflowSlugUrl(params: { projectId: string; workflowSlug: string }) {
-    return `${this.baseUrl}/${params.projectId}/workflows/${params.workflowSlug}/stories`;
+    return `${this.baseUrl}/projects/${params.projectId}/stories/${params.ref}`;
   }
 
   protected override listUrl(params: StoryApiServiceType.ListEntitiesSummaryParams) {
-    return `${this.baseStoryFilterByWorkflowSlugUrl(params)}`;
+    return `${this.baseUrl}/workflows/statuses/${params.statusId}/stories`;
+  }
+
+  protected override createUrl(params?: StoryApiServiceType.CreateEntityDetailParams): string {
+    return `${this.baseUrl}/workflows/${params?.workflowId}/stories`;
   }
 
   override create(story: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
@@ -65,8 +62,8 @@ export class StoryApiService extends AbstractApiService<
     return super.patch(story, params);
   }
 
-  reorder(payload: StoryReorderPayload, params: { projectId: string }) {
-    return this.http.post<never>(`${this.getBaseUrl(params)}/reorder`, payload);
+  reorder(payload: StoryReorderPayload, params: StoryApiServiceType.CreateEntityDetailParams) {
+    return this.http.post<never>(`${this.createUrl(params)}/reorder`, payload);
   }
 
   public baseStoryAssignmentUrl(params: StoryApiServiceType.BaseParams) {

@@ -66,9 +66,9 @@ export class ProjectKanbanService {
     const selectedWorkflow = this.workflowService.entityDetail();
     if (selectedProject && selectedWorkflow) {
       await this.storyService.createRequest(
-        { ...story, workflowSlug: selectedWorkflow.slug },
+        { ...story },
         {
-          projectId: selectedProject.id,
+          workflowId: selectedWorkflow.id,
         },
       );
     }
@@ -81,8 +81,19 @@ export class ProjectKanbanService {
     }
     return updatedWorkflow;
   }
+  private moveToWorkflowOrFirstUnselectedWorkflow = (
+    moveToWorkflowId: Workflow["id"] | undefined,
+    project: ProjectDetail,
+    selectedWorkflowId: Workflow["id"],
+  ) => {
+    if (moveToWorkflowId) {
+      return project.workflows.find((workflow) => workflow.id === moveToWorkflowId);
+    }
+    const firstWorkflow = project.workflows.filter((workflow) => workflow.id !== selectedWorkflowId);
+    return firstWorkflow.length > 0 ? firstWorkflow[0] : undefined;
+  };
 
-  async deletesSelectedWorkflow(moveToWorkflow: Workflow["slug"] | undefined): Promise<
+  async deletesSelectedWorkflow(moveToWorkflowId: Workflow["id"] | undefined): Promise<
     | {
         deletedWorkflow: Workflow | undefined;
         redirectionSlug: Workflow["slug"];
@@ -98,19 +109,17 @@ export class ProjectKanbanService {
     const deletedWorkflow = await this.workflowService.deleteRequest(
       workflowToDelete,
       { workflowId: workflowToDelete.id },
-      moveToWorkflow ? { moveTo: moveToWorkflow } : undefined,
+      moveToWorkflowId ? { moveTo: moveToWorkflowId } : undefined,
     );
     if (!deletedWorkflow) {
       return undefined;
     }
     await this.projectService.getRequest({ projectId: selectedProject.id });
-    let redirectionSlug = moveToWorkflow;
-    if (!moveToWorkflow) {
-      const workflowsExceptSelected = (project: ProjectDetail, selectedWorkflowSlug: Workflow["slug"]) => {
-        return project.workflows.filter((workflow) => workflow.slug !== selectedWorkflowSlug)[0];
-      };
-      redirectionSlug = workflowsExceptSelected(selectedProject, selectedWorkflow.slug).slug || undefined;
-    }
+    const redirectionSlug = this.moveToWorkflowOrFirstUnselectedWorkflow(
+      moveToWorkflowId,
+      selectedProject,
+      selectedWorkflow.id,
+    )?.slug;
 
     return redirectionSlug
       ? {

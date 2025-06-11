@@ -28,10 +28,10 @@ import { ProjectInvitationGuard } from "./workspace/project-detail/project-membe
 import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";
 
 function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
-  const story = "story/:ref";
-  const workflow = "kanban/:workflowSlug";
+  const storyUrl = "story/:ref";
+  const workflowUrl = "kanban/:workflowSlug";
 
-  const urls = [story, workflow];
+  const urls = [storyUrl, workflowUrl];
 
   const findUrl = (it: ActivatedRouteSnapshot): boolean => {
     const found = !!urls.find((url) => it.routeConfig?.path === url);

@@ -36,7 +36,7 @@ export class ConfigAppService {
   config = signal({} as EnvironmentConfig & ConfigModel);
   configApi = computed(() => this.config().api);
   apiUrl = computed(() => {
-    return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}/`;
+    return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}`;
   });
   wsUrl = computed(() => this.config().wsUrl);
   readonly correlationId = CORRELATION_ID;

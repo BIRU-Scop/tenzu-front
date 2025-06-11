@@ -41,7 +41,7 @@ export class AuthService {
   http = inject(HttpClient);
   router = inject(Router);
   readonly resetService = inject(ResetService);
-  url = `${this.configAppService.apiUrl()}auth`;
+  url = `${this.configAppService.apiUrl()}/auth`;
   autoLogoutSubscription: Subscription | null = null;
 
   login(credentials: Credential) {
@@ -64,7 +64,7 @@ export class AuthService {
   }
 
   autoLogout() {
-    this.applyLogout();
+    this.logout();
     this.notificationService.error({ title: "notification.login.logout" });
   }
   userLogout() {

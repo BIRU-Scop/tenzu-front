@@ -47,7 +47,7 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   PatchWorkspaceMembershipParams,
   DeleteWorkspaceMembershipParams
 > {
-  protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
+  protected override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/memberships`;
   }

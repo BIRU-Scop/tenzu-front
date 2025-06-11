@@ -24,20 +24,6 @@ import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 import { ProjectDetail } from "@tenzu/repository/project";
 
-export type StoryReorder = {
-  place: "after" | "before";
-  ref: number;
-};
-export type StoryReorderPayload = {
-  reorder?: StoryReorder;
-  statusId: string;
-  stories: number[];
-  workflowSlug: string;
-};
-export type StoryReorderPayloadEvent = StoryReorderPayload & {
-  status: StatusSummary;
-};
-
 export type Story = {
   ref: number;
   title: string;
@@ -67,12 +53,22 @@ export type StoryDetail = Story & {
   descriptionUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
 };
 
-export type StoryCreate = Pick<Story, "title" | "statusId"> &
-  Partial<Pick<Story, "description">> & { workflowSlug: string };
-
-export type StoryUpdate = Partial<StoryDetail> & {
-  workflowSlug?: string;
+export type StoryReorder = {
+  place: "after" | "before";
+  ref: Story["ref"];
 };
+export type StoryReorderPayload = {
+  reorder?: StoryReorder;
+  statusId: Story["statusId"];
+  stories: Story["ref"][];
+};
+export type StoryReorderPayloadEvent = StoryReorderPayload & {
+  status: StatusSummary;
+};
+
+export type StoryCreate = Pick<Story, "title" | "statusId"> & Partial<Pick<Story, "description">>;
+
+export type StoryUpdate = Partial<StoryDetail>;
 
 export type StoryAssign = {
   user: UserNested;

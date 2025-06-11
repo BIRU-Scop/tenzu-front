@@ -47,7 +47,7 @@ export class ProjectMembershipApiService extends AbstractApiService<
   PatchProjectMembershipParams,
   DeleteProjectMembershipParams
 > {
-  protected override baseUrl = `${this.configAppService.apiUrl()}projects`;
+  protected override baseUrl = `${this.configAppService.apiUrl()}/projects`;
   protected override getBaseUrl(params: { projectId: ProjectSummary["id"] }) {
     return `${this.baseUrl}/${params.projectId}/memberships`;
   }

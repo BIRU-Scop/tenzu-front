@@ -44,7 +44,7 @@ export class ProjectInvitationsApiService extends AbstractApiService<
   PatchProjectInvitationParams,
   unknown
 > {
-  protected override baseUrl = `${this.configAppService.apiUrl()}projects`;
+  protected override baseUrl = `${this.configAppService.apiUrl()}/projects`;
   protected override getBaseUrl(params: { projectId: ProjectDetail["id"] }) {
     return `${this.baseUrl}/${params.projectId}/invitations`;
   }

@@ -90,7 +90,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
         <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
           @if (this.selectedStory(); as story) {
             <app-story-detail-menu
-              [inputStory]="story"
+              [story]="story"
               [canBeClosed]="canBeClosed()"
               [hasModifyPermission]="hasModifyPermission"
               (closed)="closed.emit()"

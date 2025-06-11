@@ -25,32 +25,16 @@ import { inject } from "@angular/core";
 import { debug } from "@tenzu/utils/functions/logging";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { WsService } from "@tenzu/utils/services/ws";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
-  debug("workspaceResolver", "start");
   const workspaceId = route.paramMap.get("workspaceId");
-  const wsService = inject(WsService);
+  debug("workspaceResolver", "start", workspaceId);
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
-  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
-  const workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
   const router = inject(Router);
-  const oldWorkspaceDetail = workspaceRepositoryService.entityDetail();
-  if (workspaceId && oldWorkspaceDetail?.id != workspaceId) {
-    if (oldWorkspaceDetail) {
-      wsService.command({ command: "unsubscribe_from_workspace_events", workspace: oldWorkspaceDetail.id });
-    }
-    workspaceRepositoryService.resetEntityDetail();
+  if (workspaceId) {
     try {
-      workspaceRepositoryService.getRequest({ workspaceId }).then();
-      workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(workspaceId).then();
-      workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
-      wsService.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
+      workspaceRepositoryService.setup({ workspaceId });
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -63,10 +47,10 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
 }
 
 export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
-  debug("workspaceListProjectsResolver", "start");
+  const workspaceId = route.paramMap.get("workspaceId");
+  debug("workspaceListProjectsResolver", "start", workspaceId);
   const projectRepositoryService = inject(ProjectRepositoryService);
 
-  const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
     projectRepositoryService.listRequest({ workspaceId }).then();
   }
@@ -74,24 +58,13 @@ export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
 }
 
 export function projectResolver(route: ActivatedRouteSnapshot) {
-  debug("projectResolver", "start");
   const projectId = route.paramMap.get("projectId");
-  const wsService = inject(WsService);
+  debug("projectResolver", "start", projectId);
   const projectRepositoryService = inject(ProjectRepositoryService);
-  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
-  const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   const router = inject(Router);
-  const oldProjectDetail = projectRepositoryService.entityDetail();
-  if (projectId && oldProjectDetail?.id != projectId) {
-    if (oldProjectDetail) {
-      wsService.command({ command: "unsubscribe_from_project_events", project: oldProjectDetail.id });
-    }
-    projectRepositoryService.resetEntityDetail();
+  if (projectId) {
     try {
-      projectRepositoryService.getRequest({ projectId }).then();
-      projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();
-      projectRoleRepositoryService.listRequest({ projectId }).then();
-      wsService.command({ command: "subscribe_to_project_events", project: projectId });
+      projectRepositoryService.setup({ projectId });
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         router.navigate(["/404"]).then();

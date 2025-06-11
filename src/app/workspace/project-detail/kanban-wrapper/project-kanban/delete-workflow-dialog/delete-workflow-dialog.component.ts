@@ -39,13 +39,14 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { Workflow } from "@tenzu/repository/workflow";
 
 export type DialogData = {
-  workflowName: string;
-  workflowId: string;
+  workflowName: Workflow["name"];
+  workflowId: Workflow["id"];
 };
 
-export type FormData = { stories: "move" | "delete"; workflowTarget: string };
+export type FormData = { stories: "move" | "delete"; workflowTargetId: string };
 
 @Component({
   selector: "app-delete-status-dialog",
@@ -78,9 +79,9 @@ export type FormData = { stories: "move" | "delete"; workflowTarget: string };
               <div class="pl-9 flex flex-col gap-1">
                 <mat-form-field>
                   <mat-label>{{ t("workflow") }}</mat-label>
-                  <mat-select formControlName="workflowTarget" [placeholder]="t('select_placeholder')">
-                    @for (workflow of filteredWorkflows(); track workflow.slug) {
-                      <mat-option value="{{ workflow.slug }}">
+                  <mat-select formControlName="workflowTargetId" [placeholder]="t('select_placeholder')">
+                    @for (workflow of filteredWorkflows(); track workflow.id) {
+                      <mat-option value="{{ workflow.id }}">
                         {{ workflow.name }}
                       </mat-option>
                     }
@@ -115,7 +116,7 @@ export class DeleteWorkflowDialogComponent {
 
   form = this.fb.nonNullable.group<FormData>({
     stories: "move",
-    workflowTarget: "",
+    workflowTargetId: "",
   });
 
   filteredWorkflows = computed(() => {
@@ -137,7 +138,7 @@ export class DeleteWorkflowDialogComponent {
         take(1),
       )
       .subscribe((filteredWorkflows) => {
-        this.form.controls.workflowTarget.setValue(filteredWorkflows[0].slug);
+        this.form.controls.workflowTargetId.setValue(filteredWorkflows[0].id);
       });
   }
 

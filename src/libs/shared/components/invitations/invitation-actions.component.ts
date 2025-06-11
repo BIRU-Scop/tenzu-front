@@ -44,16 +44,16 @@ import { LowerCasePipe } from "@angular/common";
             {{ t("component.invitation.resent_confirmation") }}
           </button>
         } @else {
-          @let invitationResendDisableMessage = getInvitationResendDisableMessage(_invitation);
+          @let _invitationResendDisableMessage = invitationResendDisableMessage();
           <div
             [matTooltip]="
-              invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: _invitation.email }) : ''
+              _invitationResendDisableMessage ? t(_invitationResendDisableMessage, { email: _invitation.email }) : ''
             "
-            [matTooltipDisabled]="!invitationResendDisableMessage"
+            [matTooltipDisabled]="!_invitationResendDisableMessage"
           >
             <button
               type="button"
-              [disabled]="!!invitationResendDisableMessage"
+              [disabled]="!!_invitationResendDisableMessage"
               (click)="resend.emit(_invitation.id)"
               class="secondary-button"
               mat-stroked-button
@@ -103,6 +103,7 @@ export class InvitationActionsComponent {
   itemType = input.required<"project" | "workspace">();
   item = input.required<ProjectDetail | WorkspaceDetail>();
   resentInvitation = input.required<boolean>();
+
   resend = output<InvitationBase["id"]>();
   revoke = output<InvitationBase["id"]>();
 
@@ -124,8 +125,8 @@ export class InvitationActionsComponent {
     }
     return !roleRepositoryService.entityMapSummary()[invitation.roleId]?.isOwner || !!this.item().userRole?.isOwner;
   });
-
-  getInvitationResendDisableMessage(invitation: InvitationBase): string | null {
+  invitationResendDisableMessage = computed(() => {
+    const invitation = this.invitation();
     if (invitation.numEmailsSent >= 100) {
       return "component.invitation.resend_too_much";
     }
@@ -135,5 +136,5 @@ export class InvitationActionsComponent {
       return "component.invitation.resend_too_soon";
     }
     return null;
-  }
+  });
 }
