@@ -31,6 +31,7 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
 import { ProjectNested } from "@tenzu/repository/project";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 
 @Injectable({
   providedIn: "root",
@@ -49,8 +50,21 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   protected apiService = inject(WorkspaceApiService);
   protected entitiesSummaryStore = inject(WorkspaceEntitiesSummaryStore);
   protected entityDetailStore = inject(WorkspaceDetailStore);
-  private workspaceInvitationService = inject(WorkspaceInvitationRepositoryService);
-  private workspaceRoleService = inject(WorkspaceRoleRepositoryService);
+  private workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  private workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+  private workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
+
+  override async createRequest(
+    item: Partial<WorkspaceDetail>,
+    params: WorkspaceApiServiceType.CreateEntityDetailParams,
+    options: { prepend: boolean } = { prepend: false },
+  ) {
+    this.resetEntityDetail();
+    const result = await super.createRequest(item, params, options);
+    this.workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(result.id).then();
+    this.workspaceRoleRepositoryService.listRequest({ workspaceId: result.id }).then();
+    return result;
+  }
 
   removeUserInvitedProjects(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
     this.entitiesSummaryStore.removeUserInvitedProjects(params.workspaceId, params.projectId);
@@ -60,17 +74,17 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   }
 
   async denyInvitationWorkspace(params: { workspaceId: WorkspaceSummary["id"] }) {
-    await this.workspaceInvitationService.denyInvitationForCurrentUser(params.workspaceId);
+    await this.workspaceInvitationRepositoryService.denyInvitationForCurrentUser(params.workspaceId);
     this.deleteEntitySummary(params.workspaceId);
   }
 
   async acceptInvitationWorkspace(params: { workspace: WorkspaceSummary }) {
-    const workspaceInvitation = await this.workspaceInvitationService.acceptInvitationForCurrentUser(
+    const workspaceInvitation = await this.workspaceInvitationRepositoryService.acceptInvitationForCurrentUser(
       params.workspace.id,
     );
     params.workspace.userIsInvited = false;
     params.workspace.userIsMember = true;
-    const userRole = this.workspaceRoleService.entityMapSummary()[workspaceInvitation.roleId];
+    const userRole = this.workspaceRoleRepositoryService.entityMapSummary()[workspaceInvitation.roleId];
     if (userRole) {
       params.workspace.userCanCreateProjects = userRole.permissions.includes(WorkspacePermissions.CREATE_PROJECT);
     }
@@ -82,8 +96,39 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
     params: WorkspaceApiServiceType.DeleteEntityDetailParams,
     queryParams?: QueryParams,
   ): Promise<WorkspaceDetail> {
-    const workspace = await super.deleteRequest(item, params, queryParams);
-    this.wsService.command({ command: "unsubscribe_from_workspace_events", workspace: workspace.id });
-    return workspace;
+    this.unsubscribeFromPrevious();
+    const result = await super.deleteRequest(item, params, queryParams);
+    return result;
+  }
+
+  override async getRequest(params: WorkspaceApiServiceType.GetEntityDetailParams, queryParams?: QueryParams) {
+    this.unsubscribeFromPrevious();
+    const item = await super.getRequest(params, queryParams);
+    this.wsService.command({ command: "subscribe_to_workspace_events", workspace: params.workspaceId });
+    return item;
+  }
+  override resetEntityDetail() {
+    this.unsubscribeFromPrevious();
+    super.resetEntityDetail();
+    this.workspaceMembershipRepositoryService.resetAll();
+    this.workspaceRoleRepositoryService.resetAll();
+  }
+
+  unsubscribeFromPrevious() {
+    const currentEntityDetail = this.entityDetail();
+    if (currentEntityDetail) {
+      this.wsService.command({ command: "unsubscribe_from_workspace_events", workspace: currentEntityDetail.id });
+    }
+  }
+
+  setup({ workspaceId }: { workspaceId: WorkspaceSummary["id"] }) {
+    const oldWorkspaceDetail = this.entityDetail();
+    if (oldWorkspaceDetail?.id != workspaceId) {
+      this.resetEntityDetail();
+
+      this.getRequest({ workspaceId }).then();
+      this.workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(workspaceId).then();
+      this.workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
+    }
   }
 }

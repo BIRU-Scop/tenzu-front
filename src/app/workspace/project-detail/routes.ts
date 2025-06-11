@@ -34,8 +34,8 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId");
   const storyRef = parseInt(route.paramMap.get("ref") || "", 10);
   const oldStoryDetail = storyRepositoryService.entityDetail();
-  if (projectId && oldStoryDetail?.ref != storyRef) {
-    debug("storyResolver", "load start");
+  debug("storyResolver", "load start", `${projectId}-${storyRef}`);
+  if (projectId && (oldStoryDetail?.ref != storyRef || oldStoryDetail.projectId != projectId)) {
     storyRepositoryService.isLoading.set(true);
     workflowRepositoryService.resetEntityDetail();
     storyRepositoryService.resetEntityDetail();
@@ -73,8 +73,12 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   const oldWorkflowDetail = workflowRepositoryService.entityDetail();
-  if (projectId && workflowSLug && oldWorkflowDetail?.slug != workflowSLug) {
-    debug("workflowResolver", "load start");
+  debug("workflowResolver", "load start", workflowSLug);
+  if (
+    projectId &&
+    workflowSLug &&
+    (oldWorkflowDetail?.slug != workflowSLug || oldWorkflowDetail.projectId != projectId)
+  ) {
     storyRepositoryService.isLoading.set(true);
     workflowRepositoryService.resetEntityDetail();
     storyRepositoryService.resetEntityDetail();
@@ -84,7 +88,6 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
         slug: workflowSLug,
       })
       .then((workflow) => {
-        debug("story", "load stories start");
         if (workflow) {
           storyRepositoryService
             .listAllRequest(
@@ -97,7 +100,6 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
             )
             .then(() => storyRepositoryService.isLoading.set(false));
         }
-        debug("story", "load stories end");
       })
       .catch((error) => {
         if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
@@ -111,11 +113,6 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
 }
 
 export const routes: Routes = [
-  {
-    path: "",
-    redirectTo: "kanban/main",
-    pathMatch: "prefix",
-  },
   {
     path: "kanban/:workflowSlug",
     loadComponent: () => import("./kanban-wrapper/kanban-wrapper.component"),
