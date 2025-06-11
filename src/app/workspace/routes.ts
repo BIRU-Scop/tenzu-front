@@ -31,6 +31,7 @@ import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-me
 import { WsService } from "@tenzu/utils/services/ws";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { StoryRepositoryService } from "@tenzu/repository/story";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceResolver", "start");
@@ -80,6 +81,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   const oldProjectDetail = projectRepositoryService.entityDetail();
   if (projectId && oldProjectDetail?.id != projectId) {
@@ -87,6 +89,7 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
       wsService.command({ command: "unsubscribe_from_project_events", project: oldProjectDetail.id });
     }
     projectRepositoryService.resetEntityDetail();
+    storyRepositoryService.resetAll();
     try {
       projectRepositoryService.getRequest({ projectId }).then();
       projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();

@@ -28,19 +28,19 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-r
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
-  const workflowService = inject(WorkflowRepositoryService);
-  const storyService = inject(StoryRepositoryService);
+  const workflowRepositoryService = inject(WorkflowRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
   if (projectId) {
     debug("[storyResolver]", "load start");
-    storyService
+    storyRepositoryService
       .getRequest({ projectId, ref: parseInt(route.paramMap.get("ref") || "", 10) })
       .then((story) => {
-        workflowService
+        workflowRepositoryService
           .getRequest({ workflowId: story.workflowId })
           .then((workflow) =>
-            storyService.listAllRequest(
+            storyRepositoryService.listAllRequest(
               {
                 projectId: projectId,
                 workflowId: workflow.id,
@@ -64,13 +64,13 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
 export function workflowResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId");
   const workflowSLug = route.paramMap.get("workflowSlug");
-  const workflowService = inject(WorkflowRepositoryService);
-  const storyService = inject(StoryRepositoryService);
+  const workflowRepositoryService = inject(WorkflowRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   if (projectId && workflowSLug) {
     debug("workflowResolver", "load start");
-    storyService.resetEntityDetail();
-    workflowService
+    storyRepositoryService.resetEntityDetail();
+    workflowRepositoryService
       .getBySlugRequest({
         projectId: projectId,
         slug: workflowSLug,
@@ -78,7 +78,7 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
       .then((workflow) => {
         debug("story", "load stories start");
         if (workflow) {
-          storyService
+          storyRepositoryService
             .listAllRequest(
               {
                 projectId: workflow.projectId,

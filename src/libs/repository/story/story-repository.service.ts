@@ -71,11 +71,19 @@ export class StoryRepositoryService extends BaseRepositoryService<
     queryParams: { limit: number; offset: number },
   ) {
     // Do not use this function directly, prefers listAllRequest instead
+    if (this.groupedByStatus()[params.statusId]) {
+      // we previously loaded stories for this status already
+      return this.entitiesSummary();
+    }
+    this.entitiesSummaryStore.setStoriesForStatus({ statusId: params.statusId, storiesRefForStatus: [] });
     while (true) {
       const stories = await lastValueFrom(this.apiService.list(params, queryParams));
       this.entitiesSummaryStore.addEntities(stories);
-      const storiesRef = stories.map((story) => story.ref);
-      this.entitiesSummaryStore.addToGroupedByStatus({ statusId: params.statusId, storiesRef });
+
+      this.entitiesSummaryStore.setStoriesForStatus({
+        statusId: params.statusId,
+        storiesRefForStatus: [...this.groupedByStatus()[params.statusId], ...stories.map((story) => story.ref)],
+      });
       if (stories.length < queryParams.limit) {
         break;
       }
@@ -92,9 +100,8 @@ export class StoryRepositoryService extends BaseRepositoryService<
       this.entitiesSummaryStore.currentWorkflowId() === params.workflowId
     ) {
       return this.entitiesSummary();
-    } else {
-      this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
     }
+    this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
     this.isLoading.set(true);
     await Promise.all(
       params.statusIds.map((statusId) =>

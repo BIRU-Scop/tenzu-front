@@ -55,14 +55,17 @@ export const StoryEntitiesSummaryStore = signalStore(
       );
       patchState(store, { groupedByStatus });
     },
-    addToGroupedByStatus({ statusId, storiesRef }: { statusId: Story["statusId"]; storiesRef: Story["ref"][] }) {
+    setStoriesForStatus({
+      statusId,
+      storiesRefForStatus,
+    }: {
+      statusId: Story["statusId"];
+      storiesRefForStatus: Story["ref"][];
+    }) {
       const currentGroupedByStatus = store.groupedByStatus();
-      const storiesForStatus: Story["ref"][] = currentGroupedByStatus[statusId]
-        ? [...currentGroupedByStatus[statusId], ...storiesRef]
-        : [...storiesRef];
       const groupedByStatus: Record<Story["statusId"], Story["ref"][]> = {
         ...currentGroupedByStatus,
-        [statusId]: storiesForStatus,
+        [statusId]: storiesRefForStatus,
       };
       patchState(store, { groupedByStatus });
     },
@@ -150,9 +153,6 @@ export const StoryDetailStore = signalStore(
   { providedIn: "root" },
   withEntityDetailStore<StoryDetail>({ selectId: selectId }),
   withMethods((store) => ({
-    resetOverride() {
-      store.reset();
-    },
     addAssign(storyAssign: StoryAssign) {
       const story = store.item();
       if (story && story.ref === storyAssign.story.ref) {
