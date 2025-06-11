@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,18 +23,4 @@ import { EnvironmentConfig } from "./environment-type";
 
 export const environment: EnvironmentConfig = {
   appVersion: "$RELEASE_VERSION",
-  production: true,
-  env: "production",
-  wsUrl: "wss://$BASE_DOMAIN/events/",
-  api: {
-    prefix: "v1",
-    baseDomain: "$BASE_DOMAIN",
-    suffixDomain: "api",
-    scheme: "https",
-  },
-  sentry: {
-    dsn: "$SENTRY_DSN",
-    environment: "$SENTRY_ENVIRONMENT",
-    release: "$RELEASE_VERSION",
-  },
 };
