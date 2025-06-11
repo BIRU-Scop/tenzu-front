@@ -128,7 +128,7 @@ export class EnterNameDialogComponent {
     {} as Record<keyof typeof Validators, { message: string; translocoParams: TranslocoParams }>,
   );
 
-  @HostListener("window:keyup.Enter", ["$event"])
+  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.name.markAsTouched();
     this.submit();

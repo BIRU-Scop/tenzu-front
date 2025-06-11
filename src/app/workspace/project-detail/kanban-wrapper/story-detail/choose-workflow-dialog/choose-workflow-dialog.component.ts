@@ -87,7 +87,7 @@ export class ChooseWorkflowDialogComponent {
   newWorkflowSlug = this.fb.nonNullable.control(this.data.currentWorkflowSlug || "");
   projectService = inject(ProjectRepositoryService);
 
-  @HostListener("window:keyup.Enter", ["$event"])
+  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.submit();
   }
