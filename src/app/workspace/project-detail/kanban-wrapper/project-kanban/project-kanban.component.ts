@@ -131,13 +131,13 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
               </mat-menu>
             </ng-container>
           </div>
-          @if (storyRepositoryService.entitiesSummary().length !== 0) {
+          @let isLoading = storyRepositoryService.isLoading();
+          @if (storyRepositoryService.entitiesSummary().length !== 0 || !isLoading) {
             @let hasModifyPermission =
               hasEntityRequiredPermission({
                 requiredPermission: ProjectPermissions.MODIFY_STORY,
                 actualEntity: project,
               });
-            @let isLoading = storyRepositoryService.isLoading();
             <ul
               class="grid grid-flow-col gap-8 kanban-viewport"
               *transloco="let t; prefix: 'workflow'"
@@ -218,6 +218,8 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
           } @else {
             <app-project-kanban-skeleton></app-project-kanban-skeleton>
           }
+        } @else {
+          <app-project-kanban-skeleton></app-project-kanban-skeleton>
         }
       </ng-container>
     }

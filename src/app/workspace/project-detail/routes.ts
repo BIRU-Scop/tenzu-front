@@ -32,10 +32,15 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
-  if (projectId) {
-    debug("[storyResolver]", "load start");
+  const storyRef = parseInt(route.paramMap.get("ref") || "", 10);
+  const oldStoryDetail = storyRepositoryService.entityDetail();
+  if (projectId && oldStoryDetail?.ref != storyRef) {
+    debug("storyResolver", "load start");
+    storyRepositoryService.isLoading.set(true);
+    workflowRepositoryService.resetEntityDetail();
+    storyRepositoryService.resetEntityDetail();
     storyRepositoryService
-      .getRequest({ projectId, ref: parseInt(route.paramMap.get("ref") || "", 10) })
+      .getRequest({ projectId, ref: storyRef })
       .then((story) => {
         workflowRepositoryService
           .getRequest({ workflowId: story.workflowId })
@@ -49,7 +54,7 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
               { offset: 0, limit: 100 },
             ),
           )
-          .then();
+          .then(() => storyRepositoryService.isLoading.set(false));
       })
       .catch((error) => {
         if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
@@ -67,8 +72,11 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   const workflowRepositoryService = inject(WorkflowRepositoryService);
   const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
-  if (projectId && workflowSLug) {
+  const oldWorkflowDetail = workflowRepositoryService.entityDetail();
+  if (projectId && workflowSLug && oldWorkflowDetail?.slug != workflowSLug) {
     debug("workflowResolver", "load start");
+    storyRepositoryService.isLoading.set(true);
+    workflowRepositoryService.resetEntityDetail();
     storyRepositoryService.resetEntityDetail();
     workflowRepositoryService
       .getBySlugRequest({
@@ -87,7 +95,7 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
               },
               { offset: 0, limit: 100 },
             )
-            .then();
+            .then(() => storyRepositoryService.isLoading.set(false));
         }
         debug("story", "load stories end");
       })
