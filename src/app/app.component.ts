@@ -22,11 +22,13 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatIconRegistry } from "@angular/material/icon";
+import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet],
-  template: `<router-outlet />`,
+  imports: [RouterOutlet, EnvBannerComponent],
+  template: ` <app-env-banner></app-env-banner>
+    <router-outlet />`,
 })
 export class AppComponent implements OnInit {
   title = "tenzu";
