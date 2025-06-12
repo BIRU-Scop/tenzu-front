@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.20](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.19...v0.1.0-staging.20) (2025-06-12)
+
+
+### Features
+
+* add cache for stories and prevent accumulating stories in store inbetween projects ([b4445e6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b4445e638d59104f51e476571c84492820a48671))
+* add config system ([2da9d6d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/2da9d6de7c9523237fb82963ebc946e69d12338e))
+* add create role and edit role functionality ([648790f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/648790f426c563319de00b9b396d0b7ba5b71496))
+* add delete role functionality for role-edit ([25dffeb](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/25dffebe734d17c928286f2f401212a68ebbd491))
+* add delete-warning-button shared component ([8d03c93](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8d03c935608c945d03066a0fd83f1e46e53a64cb))
+* add me indicator in users lists ([269cefb](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/269cefb4507298fd032417a1be4d9e44eb92c6a9))
+* add new property of project-roles ([7b4b10b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7b4b10b42dade48842ee12f6cc437111252921c4))
+* add project membership action column with remove and leave buttons ([2b0b7ec](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/2b0b7ec90e6911621995b961c7190725668d5104))
+* add project membership remove and leave dialog and implementation ([d1d7978](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d1d79784328f1e6c24934cc36f5f74ad0e9bfa9d))
+* add typed-dialog service ([154f641](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/154f641cbaa512ceef35cf74fbbbdb99a70603c7))
+* better layout for name creation dialog ([37d8dcb](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/37d8dcb69ca028f5022e86320397fcf6477b437b))
+* correct style of disabled button ([29d2ac9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/29d2ac991b6fab00d39146e1e6a3658ef4b66a61))
+* dynamic display depending on permission for project and workflows ([4b0ae02](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4b0ae02f2035d183ad2cb4fc2c749f2624832b08))
+* dynamic display depending on permission for story assignees, drag&drop and content editor ([303e161](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/303e161f241c69caab71c1ff485b4d96b226034e))
+* dynamic display depending on permission for story title, attachments and status ([cb0a2dd](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cb0a2dd1ed214deb93f0cd345e25dca49ccc5ea2))
+* dynamic display depending on permission for workspace ([f8f4210](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f8f421007a684abb94a0bc3683b752221424ed78))
+* **invitation:** forbid access to invitation tab when user does not have necessary permissions ([0f77d22](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0f77d220d1163f196525c05eadfba1a03d2398c2))
+* **membership:** add role edition for memberships ([918d113](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/918d113c02f937185050e8a52c02a499d43c1687))
+* **membership:** see self demotion effect in real time ([c0e3f40](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c0e3f405688af4727a5fa46b46bf5125aa177783))
+* move role link to role name ([7753330](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7753330a98a084d9ca4f988d45af57cd3bce1555))
+* prevent access to workspace detail for invited users and add check permission for member only ([8512709](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/85127091042e58a294f6c547c93daeb22857e5f2))
+* remove virtual scroll ([e712b67](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e712b67372717f0d8ba771f6fbfe20b58b364006))
+* replace the delete button of project-edit by delete-warning-button ([eddfa1a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/eddfa1a479e8564d5510ebe9e6efa94cd6df0920))
+* standardise stories api by using workflow id instead or slug ([f983472](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f983472e023eac37a1d79385fc36cad6f604c97c))
+* support of moveTo option for deleteRequest of project-role ([eb32ee2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/eb32ee21ec5dbdc60bc425f22739a396f20b7f89))
+* switch mat-table to custom table and add column for total projects' number a user is member of ([bdee102](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/bdee102752199872387337f99bb6b019a65a341c))
+* workspace membership list actions to delete members ([6dd13b3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/6dd13b386b0218503e008f4bff4b203e281fe984))
+* workspace membership use api to retrieve all necessary info to delete a member ([cf8095a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cf8095ad4f34c6d309fa8b064f8bcab96af2b112))
+
+
+### Bug Fixes
+
+* add a padding to the scrollbar to avoid last card being overlaid, add css variables for dynamic use ([8ba81f0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8ba81f0b834df408aa34ca11a08dd328e9a051db))
+* add background tooltip ([7c7cca0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7c7cca0827853238d1a4d30a1c17b5300734fb3c))
+* add create project card in workspace projects list instead of loading skeleton ([3efc42c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/3efc42ca11630f465514bdf7e7b1b4a79c2d6d11))
+* add style for mat-select, put texts and hover color in dark blue, delete the border and box-shadow ([f069682](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f069682de0a1143249a436d191841de5ddb5f581))
+* change the colors of the icons for a harmonized look ([22da07f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/22da07f3f508a0830964b4718600027ac927affb))
+* correct double scrollbar with virtual scroll, fix the height of the card lists to avoid the add story button to be overlaid ([f0ce65b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f0ce65b4eba60d10910e34a35cd11b4e5379721b))
+* create story opened detail view ([2e55d3a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/2e55d3a02ab8d56325a93b6be58deff657603fd1))
+* edit-form doesn't switch mode ([8aa5735](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8aa5735e7c9ee9aef27dc81f73bd16855563e209))
+* editor js if data is empty ([e93ebe9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e93ebe903ec80a997b55dcb7b21fba067b839b41))
+* error if story assignee contains some id that is not a member of the project ([df9b2b1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/df9b2b186f7f4cd5ccbe340e3df1ecb2eed25cad))
+* fix a HostListener parameter ([fdf0e4f](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/fdf0e4f5625e456a0632e7a0efa3500840d1c0df))
+* force the width of mat-card project to center the locker icon and avoid different card sizes ([8e41f05](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8e41f05525dec6c62df08862672bd12066c690ee))
+* have action card use same size as project card ([332507d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/332507dea13326a53535c123842ebd89ed78128c))
+* in resolvers add entity cache, reset entity detail and ws subscription otherwise and fix command name for workspace unsubscribe ([90da943](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/90da943725797c91784c0260711278d1ddee684a))
+* make all calls to patchrequest pass object's id to prevent not found errors ([0f4ed6e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0f4ed6e24920133fd9bb39aad29c475f7a4b7669))
+* make invitation role component reactive and prevent console error on updating it ([734c862](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/734c862fab2f8bb1165cb9563305327c77a92d85))
+* prevent bad form synchronisation ([032d542](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/032d54261e8f065c42f294cfb1dc0c39fbb06f40))
+* prevent data in store to persist after a logout ([7794f9e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7794f9ebf302606f87983d1222b6077ce28659e9))
+* prevent drag&drop while stories are loading to prevent error ([83902c3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/83902c33d45d9010c1d1faf60f54fbb59b08086f))
+* prevent skeleton for new empty workflows ([69db92e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/69db92e20f3fcf8d4cec9a4d4ddc5607a3d0a2ec))
+* prevent stale store data not reloading on project or workspace creation or on navigation for same workflow slug or story ref in different projects ([76e4eea](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/76e4eeae09de5c327884ae617c1350e3a6ad0974))
+* send signout to socket on autologout ([64dcf88](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/64dcf889618a223a820aaece8ac50d0b41290726))
+* sync membership object fields with backend ([7590157](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/759015780bb4aff5454624da2ecb18ce92676356))
+
 ## [0.1.0-staging.19](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.18...v0.1.0-staging.19) (2025-05-29)
 
 
