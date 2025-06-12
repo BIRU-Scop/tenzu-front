@@ -93,10 +93,11 @@ export default class ResetPasswordFormComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
   authService = inject(AuthService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   readonly authFormStateStore = inject(AuthFormStateStore);
 
-  constructor(route: ActivatedRoute) {
-    route.paramMap.subscribe((value) => {
+  constructor() {
+    this.route.paramMap.subscribe((value) => {
       this.token = value.get("token");
       if (this.token) {
         this.userService.verifyResetTokenPassword(this.token).subscribe({

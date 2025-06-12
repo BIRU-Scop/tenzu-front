@@ -134,8 +134,8 @@ export class InvitationEmailFieldComponent implements AfterViewInit {
 
     this.form.controls.email.setValue(this.ngControl.control.value);
 
-    this.form.controls.email.valueChanges.subscribe(() => {
-      this.ngControl.control.setValue(this.form.value.email);
+    this.form.controls.email.valueChanges.subscribe((value) => {
+      this.ngControl.control.setValue(value);
     });
     this.form.statusChanges.subscribe(() => {
       this.ngControl.control.setErrors(this.form.errors || this.form.controls.email.errors);

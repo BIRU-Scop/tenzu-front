@@ -77,10 +77,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
           @for (workspace of workpaces; track workspace.id) {
             <li>
               <app-workspace-card
-                [name]="workspace.name"
-                [color]="workspace.color"
-                [id]="workspace.id"
-                [userIsInvited]="workspace.userIsInvited"
+                [workspace]="workspace"
                 (submitted)="acceptWorkspaceInvitation(workspace)"
                 (canceled)="denyWorkspaceInvitation(workspace)"
               ></app-workspace-card>
@@ -109,27 +106,23 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
                   </li>
                 }
                 @if (
-                  !workspace.userIsInvited &&
                   (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
                   (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
                 ) {
-                  <li>
-                    <app-project-card [workspaceId]="workspace.id"></app-project-card>
-                  </li>
-                }
-                @if (
-                  workspace.userIsInvited &&
-                  (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
-                  (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
-                ) {
-                  <li>
-                    <app-project-card
-                      [name]="'Lorem Ipsum'"
-                      [color]="3"
-                      [description]="'Lorem Ipsum dolor sit amet'"
-                      [disabled]="true"
-                    ></app-project-card>
-                  </li>
+                  @if (workspace.userCanCreateProjects) {
+                    <li>
+                      <app-project-card [workspaceId]="workspace.id"></app-project-card>
+                    </li>
+                  } @else {
+                    <li>
+                      <app-project-card
+                        [name]="'Lorem Ipsum'"
+                        [color]="3"
+                        [description]="'Lorem Ipsum dolor sit amet'"
+                        [disabled]="true"
+                      ></app-project-card>
+                    </li>
+                  }
                 }
               </ul>
             </li>
@@ -234,10 +227,14 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
         const color = Math.floor(Math.random() * (8 - 1) + 1);
-        await this.workspaceService.createRequest({
-          name,
-          color,
-        });
+        await this.workspaceService.createRequest(
+          {
+            name,
+            color,
+          },
+          undefined,
+          { prepend: true },
+        );
       } else if (this.workspaceService.entitiesSummary().length === 0) {
         this.openPlaceholderDialog(event);
       }
@@ -253,7 +250,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   }
 
   async acceptProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
-    await this.projectInvitationService.acceptProjectInvitation({ workspaceId: workspace.id, projectId: project.id });
+    await this.projectInvitationService.acceptProjectInvitation({ workspaceId: workspace.id, project: project });
   }
 
   async denyProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {

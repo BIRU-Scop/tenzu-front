@@ -26,7 +26,7 @@ import type * as StoryApiServiceType from "./story-api.type";
 import { Story, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { Workflow } from "../workflow";
 import { BaseRepositoryService } from "@tenzu/repository/base";
 import { EntityId } from "@ngrx/signals/entities";
@@ -70,21 +70,20 @@ export class StoryRepositoryService extends BaseRepositoryService<
     params: StoryApiServiceType.ListEntitiesSummaryParams,
     queryParams: { limit: number; offset: number },
   ) {
-    if (
-      this.entitiesSummaryStore.currentProjectId() === params.projectId &&
-      this.entitiesSummaryStore.currentWorkflowSlug() === params.workflowSlug
-    ) {
+    // Do not use this function directly, prefers listAllRequest instead
+    if (this.groupedByStatus()[params.statusId]) {
+      // we previously loaded stories for this status already
       return this.entitiesSummary();
-    } else {
-      this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowSlug);
     }
-    this.isLoading.set(true);
+    this.entitiesSummaryStore.setStoriesForStatus({ statusId: params.statusId, storiesRefForStatus: [] });
     while (true) {
       const stories = await lastValueFrom(this.apiService.list(params, queryParams));
-      this.isLoading.set(false);
-
       this.entitiesSummaryStore.addEntities(stories);
-      this.entitiesSummaryStore.reorder();
+
+      this.entitiesSummaryStore.setStoriesForStatus({
+        statusId: params.statusId,
+        storiesRefForStatus: [...this.groupedByStatus()[params.statusId], ...stories.map((story) => story.ref)],
+      });
       if (stories.length < queryParams.limit) {
         break;
       }
@@ -92,8 +91,32 @@ export class StoryRepositoryService extends BaseRepositoryService<
     }
     return this.entitiesSummary();
   }
+  async listAllRequest(
+    params: { projectId: Story["projectId"]; statusIds: Story["statusId"][]; workflowId: Workflow["id"] },
+    queryParams: { limit: number; offset: number },
+  ) {
+    if (
+      this.entitiesSummaryStore.currentProjectId() === params.projectId &&
+      this.entitiesSummaryStore.currentWorkflowId() === params.workflowId
+    ) {
+      return this.entitiesSummary();
+    }
+    this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
+    this.isLoading.set(true);
+    await Promise.all(
+      params.statusIds.map((statusId) =>
+        this.listRequest({ statusId }, { limit: queryParams.limit, offset: queryParams.offset }),
+      ),
+    );
+    this.isLoading.set(false);
+    return this.entitiesSummary();
+  }
+
   override async createRequest(item: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
-    return super.createRequest(item, params);
+    const entity = await lastValueFrom(this.apiService.create(item, params));
+    this.setEntitySummary(entity);
+    this.entitiesSummaryStore.reorder();
+    return entity;
   }
 
   override async getRequest(params: StoryApiServiceType.GetEntityDetailParams) {
@@ -130,17 +153,13 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entitiesSummaryStore.reorderStoryByEvent(reorder);
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
-  async dropStoryIntoStatus(
-    event: CdkDragDrop<Status, Status, [Story, number]>,
-    projectId: string,
-    workflowSlug: string,
-  ) {
-    const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event, workflowSlug);
+  async dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflowId: Story["workflowId"]) {
+    const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event);
     if (!payload) return;
-    await lastValueFrom(this.apiService.reorder(payload, { projectId }));
+    await lastValueFrom(this.apiService.reorder(payload, { workflowId }));
   }
 
-  deleteStatusGroup(oldStatusId: string, newStatus: Status) {
+  deleteStatusGroup(oldStatusId: string, newStatus: StatusSummary) {
     this.entitiesSummaryStore.deleteStatusGroup(oldStatusId, newStatus);
   }
 }

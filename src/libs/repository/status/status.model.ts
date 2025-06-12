@@ -21,13 +21,13 @@
 
 import { Workflow } from "../workflow";
 
-export type Status = {
+export type StatusSummary = {
   id: string;
   name: string;
   color: number;
   order?: number;
 };
 
-export type StatusDetail = Status & {
+export type StatusDetail = StatusSummary & {
   workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
 };

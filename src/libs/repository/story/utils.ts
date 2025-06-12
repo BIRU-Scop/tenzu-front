@@ -27,6 +27,8 @@ export function getAssignees(story: Signal<Pick<Story, "assigneeIds">>) {
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   return computed(() => {
     const teamMemberMap = projectMembershipRepositoryService.memberMap();
-    return story().assigneeIds.map((userId) => teamMemberMap[userId]);
+    return story()
+      .assigneeIds.map((userId) => teamMemberMap[userId])
+      .filter((item) => !!item);
   });
 }

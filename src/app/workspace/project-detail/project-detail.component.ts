@@ -26,15 +26,30 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { MemberPermission } from "@tenzu/repository/membership";
+import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 
 @Component({
   selector: "app-project-detail",
-  imports: [RouterOutlet],
-  template: ` <router-outlet />`,
+  imports: [RouterOutlet, PermissionOrRedirectDirective],
+  template: ` @let project = projectService.entityDetail();
+    @if (project) {
+      <ng-container
+        [appPermissionOrRedirect]="{
+          expectedId: project.id,
+          requiredPermission: MemberPermission,
+          type: 'project',
+        }"
+      >
+        <router-outlet />
+      </ng-container>
+    }`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailComponent {
+  protected readonly MemberPermission = MemberPermission;
+
   sideNavStore = inject(SideNavStore);
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);

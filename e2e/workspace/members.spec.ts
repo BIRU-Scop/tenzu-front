@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator(".avatar").nth(0)).toBeVisible();
 });
 
-test.describe("Workspace people", () => {
+test.describe("Workspace members", () => {
   test("should not have any automatically detectable accessibility issues", async ({ page }) => {
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
     expect(accessibilityScanResults.violations).toEqual([]);

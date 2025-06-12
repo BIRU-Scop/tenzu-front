@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -89,24 +89,24 @@ export type NameDialogData = {
           }
         </mat-form-field>
       </mat-dialog-content>
-      <mat-dialog-actions>
-        <button
-          data-testid="enter-name-submit"
-          mat-flat-button
-          class="tertiary-button"
-          [disabled]="!name.dirty || name.invalid || (name.dirty && name.invalid)"
-          (click)="submit()"
-        >
-          {{ t(data.action) }}
-        </button>
+      <mat-dialog-actions class="!flex-nowrap">
         <button
           data-testid="close-dialog"
           *transloco="let t; prefix: 'commons'"
           mat-flat-button
-          class="secondary-button"
+          class="secondary-button text-nowrap"
           mat-dialog-close
         >
           {{ t("cancel") }}
+        </button>
+        <button
+          data-testid="enter-name-submit"
+          mat-flat-button
+          class="tertiary-button text-nowrap"
+          [disabled]="!name.dirty || name.invalid || (name.dirty && name.invalid)"
+          (click)="submit()"
+        >
+          {{ t(data.action) }}
         </button>
       </mat-dialog-actions>
     </ng-container>
@@ -128,7 +128,7 @@ export class EnterNameDialogComponent {
     {} as Record<keyof typeof Validators, { message: string; translocoParams: TranslocoParams }>,
   );
 
-  @HostListener("window:keyup.Enter", ["$event"])
+  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.name.markAsTouched();
     this.submit();

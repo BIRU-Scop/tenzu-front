@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { AbstractApiServiceDetail } from "../base";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 
@@ -36,7 +36,7 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   WorkflowApiServiceType.PatchEntityDetailParams,
   WorkflowApiServiceType.DeleteEntityDetailParams
 > {
-  override baseUrl = `${this.configAppService.apiUrl()}projects`;
+  override baseUrl = `${this.configAppService.apiUrl()}/projects`;
 
   protected override getBaseUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
     return `${this.baseUrl}/${params.projectId}/workflows`;
@@ -46,7 +46,7 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   }
 
   protected override getEntityBaseUrl(params: WorkflowApiServiceType.BaseParams): string {
-    return `${this.configAppService.apiUrl()}workflows/${params.workflowId}`;
+    return `${this.configAppService.apiUrl()}/workflows/${params.workflowId}`;
   }
   protected getStatusesBaseUrl(params: WorkflowApiServiceType.BaseParams): string {
     return `${this.getEntityBaseUrl(params)}/statuses`;
@@ -54,22 +54,22 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
 
   getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }) {
     return this.http.get<Workflow>(
-      `${this.configAppService.apiUrl()}projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`,
+      `${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`,
     );
   }
 
-  createStatus(workflowId: Workflow["id"], newStatus: Pick<Status, "name">) {
-    return this.http.post<Status>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus);
+  createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">) {
+    return this.http.post<StatusSummary>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus);
   }
 
   deleteStatus(params: { statusId: string; moveToStatus?: string }) {
-    return this.http.delete(`${this.configAppService.apiUrl()}workflows/statuses/${params.statusId}`, {
+    return this.http.delete(`${this.configAppService.apiUrl()}/workflows/statuses/${params.statusId}`, {
       params: params.moveToStatus ? { moveTo: params.moveToStatus } : {},
     });
   }
 
-  editStatus(status: Pick<Status, "name" | "id">) {
-    return this.http.patch<Status>(`${this.configAppService.apiUrl()}workflows/statuses/${status.id}`, {
+  editStatus(status: Pick<StatusSummary, "name" | "id">) {
+    return this.http.patch<StatusSummary>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
       name: status.name,
     });
   }

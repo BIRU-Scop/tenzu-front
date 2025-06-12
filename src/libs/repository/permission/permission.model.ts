@@ -19,6 +19,11 @@
  *
  */
 
+export enum PermissionsBase {
+  CREATE_MODIFY_MEMBER = "create_modify_member",
+  DELETE_MEMBER = "delete_member",
+}
+
 export enum WorkspacePermissions {
   CREATE_MODIFY_MEMBER = "create_modify_member",
   DELETE_MEMBER = "delete_member",
@@ -45,3 +50,53 @@ export enum ProjectPermissions {
   CREATE_WORKFLOW = "create_workflow",
   DELETE_WORKFLOW = "delete_workflow",
 }
+
+export type GroupPermissionKey = "role" | "project" | "member" | "story" | "workflow" | "comment";
+export type GroupPermissions = {
+  labelTransloco: string;
+  permissions: ProjectPermissions[];
+};
+
+export const AllProjectPermissionsByTheme: Record<GroupPermissionKey, GroupPermissions> = {
+  role: {
+    labelTransloco: "project.settings.permissions.role.label",
+    permissions: [ProjectPermissions.CREATE_MODIFY_DELETE_ROLE],
+  },
+  project: {
+    labelTransloco: "project.settings.permissions.project.label",
+    permissions: [ProjectPermissions.MODIFY_PROJECT, ProjectPermissions.DELETE_PROJECT],
+  },
+
+  member: {
+    labelTransloco: "project.settings.permissions.member.label",
+    permissions: [ProjectPermissions.CREATE_MODIFY_MEMBER, ProjectPermissions.DELETE_MEMBER],
+  },
+
+  story: {
+    labelTransloco: "project.settings.permissions.story.label",
+    permissions: [
+      ProjectPermissions.VIEW_STORY,
+      ProjectPermissions.MODIFY_STORY,
+      ProjectPermissions.CREATE_STORY,
+      ProjectPermissions.DELETE_STORY,
+    ],
+  },
+
+  workflow: {
+    labelTransloco: "project.settings.permissions.workflow.label",
+    permissions: [
+      ProjectPermissions.VIEW_WORKFLOW,
+      ProjectPermissions.MODIFY_WORKFLOW,
+      ProjectPermissions.CREATE_WORKFLOW,
+      ProjectPermissions.DELETE_WORKFLOW,
+    ],
+  },
+  comment: {
+    labelTransloco: "project.settings.permissions.comment.label",
+    permissions: [
+      ProjectPermissions.VIEW_COMMENT,
+      ProjectPermissions.CREATE_MODIFY_DELETE_COMMENT,
+      ProjectPermissions.MODERATE_COMMENT,
+    ],
+  },
+};

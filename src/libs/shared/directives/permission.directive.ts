@@ -42,7 +42,8 @@ export class HasPermissionDirective {
   }
 
   @Input()
-  set appHasPermissionElse(template: TemplateRef<never>) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set appHasPermissionElse(template: TemplateRef<any>) {
     this.ngIfRef.ngIfElse = template;
   }
 }

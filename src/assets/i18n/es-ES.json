@@ -58,12 +58,18 @@
       "confirm_revoke_action": "Revocar",
       "confirm_revoke_message": "¿Estás seguro de que quieres cancelar la invitación de {email} para unirte al {item} «{name}»?"
     },
+    "membership": {
+      "remove": "Eliminar este miembro",
+      "leave": "Deja el {item}",
+      "confirm_remove_action": "Eliminar",
+      "confirm_remove_message": "¿Está seguro de que desea eliminar {member} de los miembros de {item} \"{name}\"?"
+    },
     "description": {
       "label": "Descripción",
       "placeholder": "Agrega una breve descripción para ayudar a otros a comprender mejor tu proyecto."
     },
     "user_card": {
-      "your_user": "Tú"
+      "your_user": "Yo"
     },
     "primary_side_nav": {
       "collapse": "Colapsar"

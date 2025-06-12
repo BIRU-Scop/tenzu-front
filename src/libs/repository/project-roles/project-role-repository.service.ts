@@ -21,8 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { ProjectRolesApiService } from "./project-roles-api.service";
-import { ProjectRolesEntitiesSummaryStore, ProjectRolesDetailStore } from "./project-roles-entities.store";
-import { WsService } from "@tenzu/utils/services/ws";
+import { ProjectRolesDetailStore, ProjectRolesEntitiesSummaryStore } from "./project-roles-entities.store";
 import { BaseRepositoryService } from "../base";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
@@ -30,7 +29,7 @@ import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 @Injectable({
   providedIn: "root",
 })
-export class ProjectRolesRepositoryService extends BaseRepositoryService<
+export class ProjectRoleRepositoryService extends BaseRepositoryService<
   ProjectRoleSummary,
   ProjectRoleDetail,
   ProjectRolesApiServiceType.ListEntitiesSummaryParams,
@@ -40,10 +39,17 @@ export class ProjectRolesRepositoryService extends BaseRepositoryService<
   ProjectRolesApiServiceType.PatchEntityDetailParams,
   ProjectRolesApiServiceType.DeleteEntityDetailParams
 > {
-  private wsService = inject(WsService);
   protected apiService = inject(ProjectRolesApiService);
   protected entitiesSummaryStore = inject(ProjectRolesEntitiesSummaryStore);
   protected entityDetailStore = inject(ProjectRolesDetailStore);
   defaultRole = this.entitiesSummaryStore.defaultRole;
   ownerRole = this.entitiesSummaryStore.ownerRole;
+
+  override async deleteRequest(
+    item: ProjectRoleSummary,
+    params: ProjectRolesApiServiceType.DeleteEntityDetailParams,
+    queryParams?: { moveTo: ProjectRoleDetail["id"] },
+  ): Promise<ProjectRoleDetail> {
+    return super.deleteRequest(item, params, queryParams);
+  }
 }

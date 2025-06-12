@@ -1,4 +1,9 @@
 {
+  "buttons": {
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "delete": "Delete"
+  },
   "new_project": {
     "title": "New Project",
     "create_project": "Create project",
@@ -8,6 +13,60 @@
   },
   "settings": {
     "title": "Project settings",
+    "permissions": {
+      "title": "Permissions",
+      "hint_permission": "For each category, selecting a permission necessarily induces the permissions above it",
+      "empty_permission": "You must select at least one permission to create a role",
+      "no_permission": "No permissions",
+      "name_required": "The name is required",
+      "name_forbidden": "This role already exists. Please choose another name.",
+      "delete_role_title": "Delete role",
+      "delete_role_warning": "This action will delete the role, existing membership with this role will need to use a new one.",
+      "delete_role_dialog": {
+        "title": "This role is assigned, you must assign a new role to these members to be able to delete it",
+        "cancel": "Cancel",
+        "confirm": "Reassign",
+        "project_role_select_title": "Roles"
+      },
+
+      "role": {
+        "label": "Role",
+        "no_member_permissions": "to give a role permission you must set a member permission",
+        "create_modify_delete_role": "Create / Modify / Delete"
+      },
+      "project": {
+        "label": "Project",
+        "modify_project": "Modify",
+        "delete_project": "Modify / Delete"
+      },
+      "member":{
+        "label": "Member",
+        "create_modify_member": "Create / Modify",
+        "delete_member": "Create / Modify / Delete"
+      },
+      "story":{
+        "label": "Story",
+        "view_story": "View",
+        "modify_story": "View / Modify",
+        "create_story": "View / Create / Modify",
+        "delete_story": "View / Create / Modify / Delete"
+      },
+      "workflow":{
+        "label": "Workflow",
+        "no_story_permissions": "to give a workflow permission you must set a story permission",
+        "view_workflow": "View",
+        "modify_workflow": "View / Modify",
+        "create_workflow": "View / Create / Modify",
+        "delete_workflow": "View / Create / Modify / Delete"
+      },
+      "comment":{
+        "label": "Comment",
+        "no_story_permissions": "to give a comment permission you must set a story permission",
+        "view_comment": "View",
+        "create_modify_delete_comment": "View / Create / Modify / Delete",
+        "moderate_comment": "View / Create / Modify / Delete / Moderate"
+      }
+    },
     "project_edit": {
       "title": "Informations",
       "name": "Project name",
@@ -31,7 +90,8 @@
       "title": "Role & Permission",
       "total_members": "members",
       "not_editable": "Not editable",
-      "editable": "Editable"
+      "editable": "Editable",
+      "create_role": "Create Role"
     }
   },
   "members": {
@@ -40,6 +100,12 @@
     "invite_to_project": "Invite to project",
     "members_tab": "Members",
     "invitation_tab": "Invitations",
-    "invitation_empty": "There are no invitations."
+    "invitation_empty": "There are no invitations.",
+    "delete": {
+      "leave_title": "Are you sure you want to leave the project \"{name}\"?",
+      "project_will_be_deleted": "The project will be permanently deleted",
+      "sole_owner_succession": "You are the sole owner of the project, you must designate someone to take this role",
+      "successor_label": "New owner"
+    }
   }
 }

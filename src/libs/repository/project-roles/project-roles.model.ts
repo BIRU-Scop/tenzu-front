@@ -25,5 +25,6 @@ import { Role } from "../membership";
 export type ProjectRoleSummary = Role & {
   projectId: ProjectSummary["id"];
   totalMembers: number;
+  hasInvitees: boolean;
 };
 export type ProjectRoleDetail = ProjectRoleSummary;

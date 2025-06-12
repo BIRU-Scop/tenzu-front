@@ -21,4 +21,4 @@
 
 export * from "./project-roles-api.service";
 export * from "./project-roles.model";
-export * from "./project-roles-repository.service";
+export * from "./project-role-repository.service";

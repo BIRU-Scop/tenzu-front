@@ -22,16 +22,17 @@
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
 import { WorkspaceSummary } from "../workspace";
-import { WorkspaceMembership } from "./workspace-membership.model";
+import { WorkspaceMembership, WorkspaceMembershipDeleteInfo } from "./workspace-membership.model";
+import { Observable } from "rxjs";
 
 type ListWorkspaceMembershipParams = {
-  workspaceId: string;
+  workspaceId: WorkspaceSummary["id"];
 };
 type CreateWorkspaceMembershipParams = unknown;
 type GetWorkspaceMembershipParams = unknown;
 type PutWorkspaceMembershipParams = unknown;
-type PatchWorkspaceMembershipParams = { workspaceId: WorkspaceSummary["id"]; username: string };
-type DeleteWorkspaceMembershipParams = { workspaceId: WorkspaceSummary["id"]; username: string };
+type PatchWorkspaceMembershipParams = { membershipId: WorkspaceMembership["id"] };
+type DeleteWorkspaceMembershipParams = { membershipId: WorkspaceMembership["id"] };
 
 @Injectable({
   providedIn: "root",
@@ -46,11 +47,29 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   PatchWorkspaceMembershipParams,
   DeleteWorkspaceMembershipParams
 > {
-  protected override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
+  protected override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/memberships`;
   }
-  protected override getEntityBaseUrl(params: { workspaceId: WorkspaceSummary["id"]; username: string }): string {
-    return `${this.getBaseUrl(params)}/${params.username}`;
+  protected override getEntityBaseUrl(params: { membershipId: WorkspaceMembership["id"] }): string {
+    return `${this.baseUrl}/memberships/${params.membershipId}`;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override create(item: Partial<WorkspaceMembership>): Observable<WorkspaceMembership> {
+    throw new Error("Method not implemented.");
+  }
+  override get(): Observable<WorkspaceMembership> {
+    throw new Error("Method not implemented.");
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override put(item: Partial<WorkspaceMembership>): Observable<WorkspaceMembership> {
+    throw new Error("Method not implemented.");
+  }
+
+  getDeleteInfo(item: WorkspaceMembership) {
+    return this.http.get<WorkspaceMembershipDeleteInfo>(
+      `${this.getEntityBaseUrl({ membershipId: item.id })}/delete-info`,
+    );
   }
 }

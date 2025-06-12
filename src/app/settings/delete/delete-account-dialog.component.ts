@@ -63,7 +63,7 @@ export type ConfirmDialogData = UserDeleteInfo;
               @for (workspace of data.onlyOwnerCollectiveWorkspaces; track workspace.id) {
                 <div class="flex flex-row gap-x-4 items-center">
                   <app-avatar [name]="workspace.name" [color]="workspace.color" />
-                  <a class="grow" target="_blank" [routerLink]="['workspace', workspace.id, 'people']">
+                  <a class="grow" target="_blank" [routerLink]="['workspace', workspace.id, 'members']">
                     {{ workspace.name }}
                   </a>
                 </div>
@@ -108,7 +108,7 @@ export type ConfirmDialogData = UserDeleteInfo;
               @for (workspace of data.onlyMemberWorkspaces; track workspace.id) {
                 <div class="flex flex-row gap-x-4 items-center">
                   <app-avatar [name]="workspace.name" [color]="workspace.color" />
-                  <a class="grow" target="_blank" [routerLink]="['workspace', workspace.id, 'people']">
+                  <a class="grow" target="_blank" [routerLink]="['workspace', workspace.id, 'members']">
                     {{ workspace.name }}
                   </a>
                   <button mat-flat-button class="primary-button" [matMenuTriggerFor]="menu" *transloco="let c">

@@ -28,6 +28,9 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { MatIcon } from "@angular/material/icon";
+import { MatButton } from "@angular/material/button";
+import { MemberPermission } from "@tenzu/repository/membership";
 
 @Component({
   selector: "app-project-settings",
@@ -41,13 +44,28 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
     RouterLinkActive,
     MatTabNavPanel,
     HasPermissionDirective,
+    MatIcon,
+    MatButton,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
     @if (project) {
-      <div class="flex flex-col gap-y-8" *transloco="let t; prefix: 'project.settings'">
-        <div class="flex flex-row">
-          <h1 class="mat-headline-medium">{{ t("title") }}</h1>
+      <div class="flex flex-col gap-y-8" *transloco="let t">
+        <div class="flex flex-row items-center">
+          <h1 class="mat-headline-medium !mb-0">{{ t("project.settings.title") }}</h1>
+          <div class="mx-auto"></div>
+          <a
+            *appHasPermission="{
+              actualEntity: project,
+              requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+            }"
+            mat-stroked-button
+            [routerLink]="['create-role']"
+            class="tertiary-button flex"
+          >
+            <mat-icon>add</mat-icon>
+            {{ t("project.settings.roles.create_role") }}</a
+          >
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {
@@ -59,6 +77,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
               #RouterLinkActive="routerLinkActive"
               [active]="RouterLinkActive.isActive"
               [routerLinkActiveOptions]="{ exact: true }"
+              ><mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
               >{{ t(link.labelKey) }}
             </a>
           }
@@ -73,14 +92,22 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectSettingsComponent implements AfterViewInit {
+  protected readonly ProjectPermissions = ProjectPermissions;
+
   projectRepositoryService = inject(ProjectRepositoryService);
   links = [
     {
       path: "./project-edit",
-      labelKey: "project_edit.title",
-      permission: ProjectPermissions.MODIFY_PROJECT,
+      labelKey: "project.settings.project_edit.title",
+      permission: MemberPermission,
+      iconName: "info",
     },
-    { path: "./list-project-roles", labelKey: "roles.title", permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE },
+    {
+      path: "./list-project-roles",
+      labelKey: "project.settings.roles.title",
+      permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+      iconName: "assignment_ind",
+    },
   ];
   breadcrumbStore = inject(BreadcrumbStore);
   ngAfterViewInit(): void {

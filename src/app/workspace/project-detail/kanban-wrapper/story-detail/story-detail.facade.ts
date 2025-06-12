@@ -29,7 +29,7 @@ import { StoryRepositoryService } from "@tenzu/repository/story/story-repository
 @Injectable({
   providedIn: "root",
 })
-export class StoryDetailService {
+export class StoryDetailFacade {
   projectService = inject(ProjectRepositoryService);
   workflowService = inject(WorkflowRepositoryService);
   storyService = inject(StoryRepositoryService);
@@ -40,11 +40,10 @@ export class StoryDetailService {
     const story = this.storyService.entityDetail();
     if (project && story) {
       return this.storyService.patchRequest(
+        story.ref,
         {
-          ...story,
           ...data,
           version: story.version,
-          ref: story.ref,
         },
         { projectId: project.id, ref: story.ref },
       );
@@ -55,13 +54,13 @@ export class StoryDetailService {
   async changeWorkflowSelectedStory(data: Partial<StoryUpdate>) {
     const project = this.projectService.entityDetail();
     const story = this.storyService.entityDetail();
-    const req = {
-      ...story,
-      ...data,
-    };
     if (project && story) {
+      const req = {
+        ...data,
+        version: story.version,
+      };
       delete req.statusId;
-      return this.storyService.patchRequest({ ...req }, { projectId: project.id, ref: story.ref });
+      return this.storyService.patchRequest(story.ref, { ...req }, { projectId: project.id, ref: story.ref });
     }
     return undefined;
   }

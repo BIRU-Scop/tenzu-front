@@ -36,10 +36,10 @@
     }
   }
   .mdc-list-item__primary-text {
-    color:  var(--mat-sys-on-secondary-container);
+    color:  var(--mat-sys-on-primary-container);
   }
   &:hover .mdc-list-item__primary-text {
-    color:  var(--mat-sys-on-secondary-container);
+    color:  var(--mat-sys-on-primary-container);
   }
 }
 .mat-mdc-form-field.transparent .mat-mdc-select-trigger{
@@ -55,7 +55,7 @@
   @include mat.select-overrides((
     trigger-text-size: var(--mat-sys-body-medium-size),
     trigger-text-line-height: var(--mat-sys-body-medium-line-heigh),
-    enabled-trigger-text-color: var(--mat-sys-on-secondary-container),
+    enabled-trigger-text-color: var(--mat-sys-on-primary-container),
     container-elevation-shadow: var(--mat-sys-level3)
   ));
   .mat-mdc-select-panel {
@@ -67,11 +67,11 @@
   @include mat.option-overrides((
     label-text-size : var(--mat-sys-body-medium-size),
     label-text-line-height : var(--mat-sys-body-line-heigh),
-    label-text-color:  var(--mat-sys-on-secondary-container),
-    selected-state-layer-color: var(--mat-sys-secondary-container),
-    selected-state-label-text-color: var(--mat-sys-on-secondary-container),
-    hover-state-layer-color: var(--mat-sys-secondary-container),
-    focus-state-layer-color: var(--mat-sys-secondary),
+    label-text-color:  var(--mat-sys-on-primary-container),
+    selected-state-layer-color: var(--mat-sys-primary-container),
+    selected-state-label-text-color: var(--mat-sys-on-primary-container),
+    hover-state-layer-color: var(--mat-sys-primary-container),
+    focus-state-layer-color: var(--mat-sys-primary),
   ));
   @include mat.pseudo-checkbox-overrides((
     full-selected-checkmark-color: var(--mat-sys-on-tertiary),

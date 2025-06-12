@@ -20,7 +20,7 @@
  */
 
 import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
-import { inject, signal } from "@angular/core";
+import { inject } from "@angular/core";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
@@ -28,24 +28,33 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-r
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
-  const workflowService = inject(WorkflowRepositoryService);
-  const storyService = inject(StoryRepositoryService);
+  const workflowRepositoryService = inject(WorkflowRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
-  if (projectId) {
-    debug("[storyResolver]", "load start");
-    storyService
-      .getRequest({ projectId, ref: parseInt(route.paramMap.get("ref") || "", 10) })
+  const storyRef = parseInt(route.paramMap.get("ref") || "", 10);
+  const oldStoryDetail = storyRepositoryService.entityDetail();
+  debug("storyResolver", "load start", `${projectId}-${storyRef}`);
+  if (projectId && (oldStoryDetail?.ref != storyRef || oldStoryDetail.projectId != projectId)) {
+    storyRepositoryService.isLoading.set(true);
+    workflowRepositoryService.resetEntityDetail();
+    storyRepositoryService.resetEntityDetail();
+    storyRepositoryService
+      .getRequest({ projectId, ref: storyRef })
       .then((story) => {
-        workflowService
+        workflowRepositoryService
           .getRequest({ workflowId: story.workflowId })
           .then((workflow) =>
-            storyService.listRequest(
-              { projectId: projectId, workflowSlug: workflow?.slug || "" },
+            storyRepositoryService.listAllRequest(
+              {
+                projectId: projectId,
+                workflowId: workflow.id,
+                statusIds: workflow.statuses.map((status) => status.id),
+              },
               { offset: 0, limit: 100 },
             ),
           )
-          .then();
+          .then(() => storyRepositoryService.isLoading.set(false));
       })
       .catch((error) => {
         if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
@@ -60,27 +69,37 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
 export function workflowResolver(route: ActivatedRouteSnapshot) {
   const projectId = route.paramMap.get("projectId");
   const workflowSLug = route.paramMap.get("workflowSlug");
-  const workflowService = inject(WorkflowRepositoryService);
-  const storyService = inject(StoryRepositoryService);
+  const workflowRepositoryService = inject(WorkflowRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
-  const limit = signal(100);
-  const offset = 0;
-  if (projectId && workflowSLug) {
-    debug("workflowResolver", "load start");
-    storyService.resetEntityDetail();
-    workflowService
+  const oldWorkflowDetail = workflowRepositoryService.entityDetail();
+  debug("workflowResolver", "load start", workflowSLug);
+  if (
+    projectId &&
+    workflowSLug &&
+    (oldWorkflowDetail?.slug != workflowSLug || oldWorkflowDetail.projectId != projectId)
+  ) {
+    storyRepositoryService.isLoading.set(true);
+    workflowRepositoryService.resetEntityDetail();
+    storyRepositoryService.resetEntityDetail();
+    workflowRepositoryService
       .getBySlugRequest({
         projectId: projectId,
         slug: workflowSLug,
       })
       .then((workflow) => {
-        debug("story", "load stories start");
         if (workflow) {
-          storyService
-            .listRequest({ projectId: workflow.projectId, workflowSlug: workflow.slug }, { offset, limit: limit() })
-            .then();
+          storyRepositoryService
+            .listAllRequest(
+              {
+                projectId: workflow.projectId,
+                workflowId: workflow.id,
+                statusIds: workflow.statuses.map((status) => status.id),
+              },
+              { offset: 0, limit: 100 },
+            )
+            .then(() => storyRepositoryService.isLoading.set(false));
         }
-        debug("story", "load stories end");
       })
       .catch((error) => {
         if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
@@ -95,11 +114,6 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
 
 export const routes: Routes = [
   {
-    path: "",
-    redirectTo: "kanban/main",
-    pathMatch: "prefix",
-  },
-  {
     path: "kanban/:workflowSlug",
     loadComponent: () => import("./kanban-wrapper/kanban-wrapper.component"),
     providers: [provideTranslocoScope("workflow")],
@@ -109,25 +123,28 @@ export const routes: Routes = [
   {
     path: "story/:ref",
     loadComponent: () => import("./kanban-wrapper/kanban-wrapper.component"),
-    // loadComponent: () => import("./story-detail/story-detail.component"),
     providers: [provideTranslocoScope("workflow")],
     resolve: { story: storyResolver },
     data: { reuseComponent: true },
   },
   {
     path: "new-workflow",
-    loadComponent: () =>
-      import("./project-kanban-create/project-kanban-create.component").then((m) => m.ProjectKanbanCreateComponent),
+    loadComponent: () => import("./project-kanban-create/project-kanban-create.component"),
     providers: [provideTranslocoScope("workflow")],
   },
   {
     path: "members",
-    loadComponent: () => import("./project-members/project-members.component").then((m) => m.ProjectMembersComponent),
+    children: [
+      {
+        path: "",
+        loadComponent: () => import("./project-members/project-members.component"),
+        loadChildren: () => import("./project-members/routes"),
+      },
+    ],
     providers: [provideTranslocoScope("project")],
   },
   {
     path: "settings",
-
     children: [
       {
         path: "",

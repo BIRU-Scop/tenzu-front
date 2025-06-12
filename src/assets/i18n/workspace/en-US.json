@@ -4,7 +4,7 @@
     "workspaces": "Workspaces",
     "workspaceListProjects": "Projects",
     "workspaceSettings": "Settings",
-    "workspacePeople": "People",
+    "workspaceMembers": "Members",
     "project": "Project",
     "projects": "Projects",
     "kanban": "Kanban",
@@ -24,7 +24,7 @@
   "settings": {
     "title": "Workspace settings",
     "edit": {
-      "title": "Edit workspace",
+      "title": "Information",
       "name": "Name",
       "name_required": "Workspace name can’t be empty",
       "name_placeholder": "Add workspace name",
@@ -36,14 +36,24 @@
       }
     }
   },
-  "people": {
-    "title": "People",
+  "members": {
+    "title": "Members",
     "invite_to_workspace": "Invite to workspace",
     "description_modal": "<p>Once they accept the invitation, they will be able to invite new members, create new projects and edit other workspace settings.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
     "members_tab": "Members",
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
-    "members_description": "Workspace members can view and manage all projects in this workspace, create new ones and delete them."
+    "total_projects": "{{ number }} projects",
+    "delete": {
+      "leave_title": "Are you sure you want to leave the workspace \"{name}\"?",
+      "forbidden_existing_projects_self": "You cannot leave the workspace while you are a member of the following projects: {names}",
+      "workspace_will_be_deleted": "The workspace will be permanently deleted",
+      "sole_owner_succession": "You are the sole owner of the workspace, you must designate someone to take this role",
+      "successor_label": "New owner",
+      "existing_projects_succession_warning": "This member is the sole owner of the following projects: {names}. You are going to become the new owner of those projects",
+      "forbidden_existing_projects_other": "This member is the sole owner of the following projects: {names}. Only an owner of the workspace can delete this member",
+      "forbidden_confirm": "Got it!"
+    }
   },
   "placeholder": {
     "placeholder_title": "You are not member of any Workspace yet",

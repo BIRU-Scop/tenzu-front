@@ -25,25 +25,16 @@ import { inject } from "@angular/core";
 import { debug } from "@tenzu/utils/functions/logging";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { WsService } from "@tenzu/utils/services/ws";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
-import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
 
 export function workspaceResolver(route: ActivatedRouteSnapshot) {
-  debug("workspaceResolver", "start");
-  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
-  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
-  const workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
-  const router = inject(Router);
   const workspaceId = route.paramMap.get("workspaceId");
+  debug("workspaceResolver", "start", workspaceId);
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const router = inject(Router);
   if (workspaceId) {
     try {
-      workspaceRepositoryService.getRequest({ workspaceId }).then();
-      workspaceMembershipRepositoryService.listWorkspaceMembership(workspaceId).then();
-      workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
+      workspaceRepositoryService.setup({ workspaceId });
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         return router.navigate(["/404"]);
@@ -56,10 +47,10 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
 }
 
 export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
-  debug("workspaceListProjectsResolver", "start");
+  const workspaceId = route.paramMap.get("workspaceId");
+  debug("workspaceListProjectsResolver", "start", workspaceId);
   const projectRepositoryService = inject(ProjectRepositoryService);
 
-  const workspaceId = route.paramMap.get("workspaceId");
   if (workspaceId) {
     projectRepositoryService.listRequest({ workspaceId }).then();
   }
@@ -67,23 +58,13 @@ export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
 }
 
 export function projectResolver(route: ActivatedRouteSnapshot) {
-  debug("projectResolver", "start");
   const projectId = route.paramMap.get("projectId");
-  const wsService = inject(WsService);
+  debug("projectResolver", "start", projectId);
   const projectRepositoryService = inject(ProjectRepositoryService);
-  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
-  const projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
   const router = inject(Router);
   if (projectId) {
     try {
-      const oldProjectDetail = projectRepositoryService.entityDetail();
-      if (oldProjectDetail && oldProjectDetail.id === projectId) {
-        wsService.command({ command: "unsubscribe_from_project_events", project: oldProjectDetail.id });
-      }
-      projectRepositoryService.getRequest({ projectId }).then();
-      projectMembershipRepositoryService.listProjectMembership(projectId).then();
-      projectRoleRepositoryService.listRequest({ projectId }).then();
-      wsService.command({ command: "subscribe_to_project_events", project: projectId });
+      projectRepositoryService.setup({ projectId });
     } catch (error) {
       if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
         router.navigate(["/404"]).then();

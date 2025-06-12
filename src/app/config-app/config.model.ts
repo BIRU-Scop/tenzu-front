@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -18,25 +18,21 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
-import { z } from "zod";
+import { z } from "zod/v4";
 
-export const ConfigSchema = z
-  .object({
-    api: z
-      .object({
-        baseDomain: z.string(),
-        scheme: z.enum(["http", "https"]),
-        port: z.number().optional(),
-      })
-      .nullable(),
-    wsUrl: z.string().optional(),
-    sentry: z
-      .object({
-        dsn: z.string().optional(),
-        environment: z.string().optional(),
-      })
-      .partial(),
-  })
-  .partial();
+export const ConfigSchema = z.object({
+  env: z.enum(["dev", "staging", "demo", "production"]),
+  wsUrl: z.string(),
+  api: z.object({
+    prefix: z.string(),
+    baseDomain: z.string(),
+    scheme: z.enum(["http", "https"]),
+    suffixDomain: z.string(),
+  }),
+  sentry: z.object({
+    dsn: z.string().optional(),
+    environment: z.string().optional(),
+  }),
+});
 
 export type ConfigModel = z.infer<typeof ConfigSchema>;

@@ -21,11 +21,9 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
@@ -35,80 +33,101 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { tap } from "rxjs";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 
 @Component({
   selector: "app-project-edit",
   imports: [
     AvatarComponent,
-    ConfirmDirective,
     DescriptionFieldComponent,
     FormsModule,
     MatButton,
     MatError,
     MatLabel,
     MatFormField,
-    MatIcon,
     MatInput,
     ReactiveFormsModule,
     TranslocoDirective,
+    DeleteWarningButtonComponent,
+    HasPermissionDirective,
   ],
   template: `
     @let project = projectService.entityDetail();
-    <div class="flex flex-col gap-y-8 w-min" *transloco="let t; prefix: 'project.settings.project_edit'">
-      <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave()">
-        <div class="flex flex-row gap-4 items-center">
-          <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
-          <mat-form-field>
-            <mat-label>{{ t("name") }}</mat-label>
-            <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
-            @if (form.controls.name.hasError("required")) {
-              <mat-error data-testid="project-name-required-error">{{ t("errors.name_required") }}</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <app-description-field
-          [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
-          formControlName="description"
-        ></app-description-field>
-        <div class="flex gap-x-4 mt-2">
-          <button
-            mat-flat-button
-            type="submit"
-            class="tertiary-button"
-            data-testid="project-edit-submit"
-            [disabled]="form.pristine"
-          >
-            {{ t("buttons.save") }}
-          </button>
-          <button mat-flat-button (click)="reset()" class="secondary-button">
-            {{ t("buttons.cancel") }}
-          </button>
-        </div>
-      </form>
-      <div class="flex flex-col gap-y-2">
-        <h2 class="mat-headline-small">{{ t("delete_project_title") }}</h2>
-        <div class="flex flex-row">
-          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-on-error-container align-middle">
-            {{ t("delete_project_warning") }}
-          </p>
-        </div>
-        <button
-          mat-flat-button
-          class="error-button w-fit"
-          appConfirm
-          [data]="{ deleteAction: true }"
-          (popupConfirm)="project ? onDelete(project) : null"
+    @if (project) {
+      <ng-container *transloco="let t; scope: 'project'">
+        <ng-container
+          *appHasPermission="
+            {
+              actualEntity: project,
+              requiredPermission: ProjectPermissions.MODIFY_PROJECT,
+            };
+            else noModifyPermission
+          "
         >
-          {{ t("buttons.delete") }}
-        </button>
-      </div>
-    </div>
+          <div class="flex flex-col gap-y-8 w-min">
+            <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave(project)">
+              <div class="flex flex-row gap-4 items-center">
+                <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
+                <mat-form-field>
+                  <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
+                  <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
+                  @if (form.controls.name.hasError("required")) {
+                    <mat-error data-testid="project-name-required-error">{{
+                      t("project.settings.project_edit.errors.name_required")
+                    }}</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <app-description-field
+                [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
+                formControlName="description"
+              ></app-description-field>
+              <div class="flex gap-x-4 mt-2">
+                <button
+                  mat-flat-button
+                  type="submit"
+                  class="tertiary-button"
+                  data-testid="project-edit-submit"
+                  [disabled]="form.pristine"
+                >
+                  {{ t("project.buttons.save") }}
+                </button>
+                <button mat-flat-button (click)="reset()" class="secondary-button">
+                  {{ t("project.buttons.cancel") }}
+                </button>
+              </div>
+            </form>
+            <ng-container
+              *appHasPermission="{
+                actualEntity: project,
+                requiredPermission: ProjectPermissions.DELETE_PROJECT,
+              }"
+            >
+              <app-delete-warning-button
+                [translocoKeyTitle]="'project.settings.project_edit.delete_project_title'"
+                [translocoKeyWarningMessage]="'project.settings.project_edit.delete_project_warning'"
+                (popupConfirm)="onDelete(project)"
+              ></app-delete-warning-button>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+      <ng-template #noModifyPermission>
+        <div class="flex flex-row gap-4 items-center" *transloco="let t">
+          <app-avatar size="xl" [name]="form.controls.name.value" [color]="project.color || 0"></app-avatar>
+          {{ project.name }}
+        </div>
+      </ng-template>
+    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectEditComponent {
+  protected readonly ProjectPermissions = ProjectPermissions;
+
   notificationService = inject(NotificationService);
   projectService = inject(ProjectRepositoryService);
   router = inject(Router);
@@ -131,11 +150,10 @@ export default class ProjectEditComponent {
       .subscribe();
   }
 
-  async onSave() {
+  async onSave(project: ProjectDetail) {
     this.form.reset(this.form.value);
-    const project = this.projectService.entityDetail();
-    if (this.form.valid && project) {
-      await this.projectService.patchRequest(this.form.getRawValue(), { projectId: project.id });
+    if (this.form.valid) {
+      await this.projectService.patchRequest(project.id, this.form.getRawValue(), { projectId: project.id });
       this.notificationService.success({
         title: "notification.action.changes_saved",
       });

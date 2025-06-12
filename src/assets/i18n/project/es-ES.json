@@ -8,25 +8,37 @@
   },
   "settings": {
     "title": "Configuración del proyecto",
-    "name": "Nombre del proyecto",
-    "description": "Descripción del proyecto",
-    "delete_project_title": "Eliminar proyecto",
-    "delete_project_warning": "Esta acción eliminará el proyecto, junto con todas las historias y archivos adjuntos en él.",
-    "buttons": {
-      "cancel": "Cancelar",
-      "save": "Guardar",
-      "delete": "Eliminar"
-    },
-    "errors": {
-      "name_required": "El nombre del proyecto no puede estar vacío"
-    },
-    "messages": {
-      "deleted": "Tu proyecto ha sido eliminado",
-      "saved": "La información de tu proyecto ha sido guardada"
+    "edit": {
+      "title": "Información",
+      "name": "Nombre del proyecto",
+      "description": "Eliminar proyecto",
+      "delete_project_title": "Delete project",
+      "delete_project_warning": "Esta acción eliminará el proyecto, junto con todas las historias y archivos adjuntos en él.",
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "delete": "Eliminar"
+      },
+      "errors": {
+        "name_required": "El nombre del proyecto no puede estar vacío"
+      },
+      "messages": {
+        "saved": "La información de tu proyecto ha sido guardada"
+      }
     }
   },
-  "people": {
-    "title": "Personas",
-    "description_modal": "<p>Empieza a escribir un correo electrónico o ingresa varias direcciones separadas por una coma.</p>"
+  "members": {
+    "title": "Miembros",
+    "description_modal": "Empiece a escribir un correo electrónico o introduzca varias direcciones separadas por una coma.",
+    "invite_to_project": "Invitar al proyecto",
+    "members_tab": "Miembros",
+    "invitation_tab": "Invitaciones",
+    "invitation_empty": "No hay invitaciones.",
+    "leave_project": {
+      "title": "¿Estás seguro de que quieres dejar el proyecto \"{name}\"?",
+      "project_will_be_deleted": "El proyecto se eliminará definitivamente",
+      "sole_owner_succession": "Usted es el único propietario del proyecto, debe designar a alguien que asuma este papel",
+      "successor_label": "Nuevo propietario"
+    }
   }
 }

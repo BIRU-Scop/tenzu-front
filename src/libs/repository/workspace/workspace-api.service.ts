@@ -37,7 +37,7 @@ export class WorkspaceApiService extends AbstractApiService<
   WorkspaceApiServiceType.PatchEntityDetailParams,
   WorkspaceApiServiceType.DeleteEntityDetailParams
 > {
-  override baseUrl = `${this.configAppService.apiUrl()}workspaces`;
+  override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
 
   protected override getBaseUrl(): string {
     return this.baseUrl;

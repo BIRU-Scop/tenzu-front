@@ -20,14 +20,15 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from "@angular/core";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-list-project-roles",
-  imports: [TranslocoDirective, PermissionOrRedirectDirective],
+  imports: [TranslocoDirective, PermissionOrRedirectDirective, RouterLink],
   template: `
     <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
       <div
@@ -40,9 +41,13 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
       >
         @for (role of entitiesSummary(); track role.id) {
           <div class="app-table-row">
-            <div class="app-table-cell">{{ role.name }}</div>
+            <div class="app-table-cell">
+              <a [routerLink]="['..', 'edit-role', role.id]">{{ role.name }}</a>
+            </div>
             <div class="app-table-cell">{{ role.totalMembers }} {{ t("total_members") }}</div>
-            <div class="app-table-cell">{{ role.editable ? t("editable") : t("not_editable") }}</div>
+            <div class="app-table-cell">
+              {{ role.editable ? t("editable") : t("not_editable") }}
+            </div>
           </div>
         }
       </div>
@@ -53,11 +58,11 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
 })
 export default class ListProjectRolesComponent implements OnInit {
   columns = signal(["name", "totalMembers", "editable"]);
-  projectRolesRepositoryService = inject(ProjectRolesRepositoryService);
-  entitiesSummary = this.projectRolesRepositoryService.entitiesSummary;
+  projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  entitiesSummary = this.projectRoleRepositoryService.entitiesSummary;
   projectId = input.required<string>();
   protected readonly ProjectPermissions = ProjectPermissions;
   ngOnInit(): void {
-    this.projectRolesRepositoryService.listRequest({ projectId: this.projectId() }).then();
+    this.projectRoleRepositoryService.listRequest({ projectId: this.projectId() }).then();
   }
 }

@@ -30,6 +30,7 @@ import { WorkspaceInvitation } from "./workspace-invitation.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
 import { getEntityIdSelector } from "@tenzu/repository/base";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -42,20 +43,25 @@ export class WorkspaceInvitationRepositoryService {
 
   protected selectIdFn: SelectEntityId<NoInfer<WorkspaceInvitation>> | undefined = undefined;
   protected getEntityIdFn = getEntityIdSelector({ selectId: this.selectIdFn });
+  readonly resetService = inject(ResetService);
+
+  constructor() {
+    this.resetService.register(this);
+  }
 
   updateEntitySummary(id: EntityId, partialItem: Partial<WorkspaceInvitation>): WorkspaceInvitation {
     return this.workspaceInvitationEntitiesStore.updateEntity(id, partialItem);
   }
 
   async patchRequest(
-    item: Pick<WorkspaceInvitation, "roleId">,
-    params: { invitationId: WorkspaceInvitation["id"] },
+    invitationId: WorkspaceInvitation["id"],
+    partialData: Pick<WorkspaceInvitation, "roleId">,
   ): Promise<WorkspaceInvitation> {
-    if (!this.entityMap()[this.getEntityIdFn(item)]) {
-      const entity = await lastValueFrom(this.workspaceInvitationsApiService.patch(item, params));
-      this.updateEntitySummary(this.getEntityIdFn(item), entity);
+    if (this.entityMap()[invitationId]) {
+      const entity = await lastValueFrom(this.workspaceInvitationsApiService.patch(partialData, { invitationId }));
+      return this.updateEntitySummary(invitationId, entity);
     }
-    throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
+    throw new NotFoundEntityError(`Entity ${invitationId} not found`);
   }
 
   async listWorkspaceInvitations(workspaceId: WorkspaceSummary["id"]) {
@@ -93,5 +99,12 @@ export class WorkspaceInvitationRepositoryService {
 
   async acceptInvitationForCurrentUser(workspaceId: WorkspaceSummary["id"]) {
     return await lastValueFrom(this.workspaceInvitationsApiService.acceptForCurrentUser({ workspaceId }));
+  }
+
+  resetEntitySummaryList(): void {
+    this.workspaceInvitationEntitiesStore.reset();
+  }
+  resetAll(): void {
+    this.resetEntitySummaryList();
   }
 }

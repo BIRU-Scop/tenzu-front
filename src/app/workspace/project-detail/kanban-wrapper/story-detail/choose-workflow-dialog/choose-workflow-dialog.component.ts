@@ -32,9 +32,10 @@ import {
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
+import { Story } from "@tenzu/repository/story";
 
 export type ChooseWorkflowDialogData = {
-  currentWorkflowSlug: string;
+  currentWorkflowId: Story["workflowId"];
 };
 
 @Component({
@@ -56,13 +57,13 @@ export type ChooseWorkflowDialogData = {
           <label for="workflow" id="aria-label">{{ t("workflow.detail_story.change_workflow") }}</label>
           <mat-radio-group
             aria-labelledby="aria-label"
-            [formControl]="newWorkflowSlug"
+            [formControl]="newWorkflowId"
             class="flex flex-col"
             name="workflow"
           >
             @let workflows = projectService.entityDetail()?.workflows || [];
-            @for (workflow of workflows; track workflow.slug) {
-              <mat-radio-button [value]="workflow.slug">{{ workflow.name }}</mat-radio-button>
+            @for (workflow of workflows; track workflow.id) {
+              <mat-radio-button [value]="workflow.id">{{ workflow.name }}</mat-radio-button>
             }
           </mat-radio-group>
         </div>
@@ -84,15 +85,15 @@ export class ChooseWorkflowDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ChooseWorkflowDialogComponent>);
   data = inject<ChooseWorkflowDialogData>(MAT_DIALOG_DATA);
   fb = inject(FormBuilder);
-  newWorkflowSlug = this.fb.nonNullable.control(this.data.currentWorkflowSlug || "");
+  newWorkflowId = this.fb.nonNullable.control(this.data.currentWorkflowId || "");
   projectService = inject(ProjectRepositoryService);
 
-  @HostListener("window:keyup.Enter", ["$event"])
+  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.submit();
   }
 
   submit() {
-    this.dialogRef.close(this.newWorkflowSlug.value);
+    this.dialogRef.close(this.newWorkflowId.value);
   }
 }

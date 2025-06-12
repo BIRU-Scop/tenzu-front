@@ -19,9 +19,18 @@
  *
  */
 
-import { ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
+import { PermissionsBase, ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
+import { UserNested } from "../user";
 
-export type Permission = WorkspacePermissions | ProjectPermissions;
+type MemberPermission = "is_member";
+export type Permission = PermissionsBase | WorkspacePermissions | ProjectPermissions | MemberPermission;
+export const MemberPermission = "is_member" as const satisfies MemberPermission;
+
+export type MembershipBase = {
+  id: string;
+  user: UserNested;
+  roleId: string;
+};
 
 export type Role = {
   id: string;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -35,6 +35,10 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatDialog } from "@angular/material/dialog";
 import { DeleteStatusDialogComponent } from "./delete-status-dialog/delete-status-dialog.component";
 import { Validators } from "@angular/forms";
+import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import { StatusSummary } from "@tenzu/repository/status";
+import { ProjectDetail } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-status-card",
@@ -48,6 +52,7 @@ import { Validators } from "@angular/forms";
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    HasPermissionDirective,
   ],
   template: `
     <mat-card appearance="outlined" class="heading-card" *transloco="let t; prefix: 'workflow'">
@@ -55,27 +60,35 @@ import { Validators } from "@angular/forms";
         <mat-card-title class="whitespace-nowrap truncate">
           {{ name() }}
         </mat-card-title>
-        <button mat-icon-button attr.aria-label="{{ t('edit_status.aria_label') }}" [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          @if (config().showLeft) {
-            <button mat-menu-item (click)="moveLeft()">
-              <mat-icon>arrow_back</mat-icon>
-              {{ t("edit_status.move_left") }}
-            </button>
-          }
-          @if (config().showRight) {
-            <button mat-menu-item (click)="moveRight()">
-              <mat-icon>arrow_forward</mat-icon>
-              {{ t("edit_status.move_right") }}
-            </button>
-          }
-          <button mat-menu-item (click)="openEditStatus($event)">
-            <mat-icon>edit</mat-icon>{{ t("edit_status.edit_name") }}
+
+        <ng-container
+          *appHasPermission="{
+            actualEntity: project(),
+            requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
+          }"
+        >
+          <button mat-icon-button attr.aria-label="{{ t('edit_status.aria_label') }}" [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
           </button>
-          <button mat-menu-item (click)="onDelete()"><mat-icon>delete</mat-icon>{{ t("edit_status.delete") }}</button>
-        </mat-menu>
+          <mat-menu #menu="matMenu">
+            @if (config().showLeft) {
+              <button mat-menu-item (click)="moveLeft()">
+                <mat-icon>arrow_back</mat-icon>
+                {{ t("edit_status.move_left") }}
+              </button>
+            }
+            @if (config().showRight) {
+              <button mat-menu-item (click)="moveRight()">
+                <mat-icon>arrow_forward</mat-icon>
+                {{ t("edit_status.move_right") }}
+              </button>
+            }
+            <button mat-menu-item (click)="openEditStatus($event)">
+              <mat-icon>edit</mat-icon>{{ t("edit_status.edit_name") }}
+            </button>
+            <button mat-menu-item (click)="onDelete()"><mat-icon>delete</mat-icon>{{ t("edit_status.delete") }}</button>
+          </mat-menu>
+        </ng-container>
       </mat-card-header>
     </mat-card>
   `,
@@ -86,8 +99,11 @@ import { Validators } from "@angular/forms";
   },
 })
 export class StatusCardComponent {
-  name = input("");
-  id = input("");
+  protected readonly ProjectPermissions = ProjectPermissions;
+
+  name = input.required<StatusSummary["name"]>();
+  id = input.required<StatusSummary["id"]>();
+  project = input.required<ProjectDetail>();
   isEmpty = input(false);
   config = input<{ showLeft: boolean; showRight: boolean }>({ showLeft: true, showRight: true });
   movedRight = output<boolean>();

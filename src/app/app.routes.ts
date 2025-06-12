@@ -22,16 +22,16 @@
 import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, Routes } from "@angular/router";
 import { loginGuard } from "./auth/login/login.guard";
 import { provideTranslocoScope } from "@jsverse/transloco";
-import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace-people/workspace-invitation.guard";
+import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace-members/workspace-invitation.guard";
 import { VerifyEmailGuard } from "./auth/signup/verify-email.guard";
 import { ProjectInvitationGuard } from "./workspace/project-detail/project-members/project-invitation.guard";
 import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";
 
 function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
-  const story = "story/:ref";
-  const workflow = "kanban/:workflowSlug";
+  const storyUrl = "story/:ref";
+  const workflowUrl = "kanban/:workflowSlug";
 
-  const urls = [story, workflow];
+  const urls = [storyUrl, workflowUrl];
 
   const findUrl = (it: ActivatedRouteSnapshot): boolean => {
     const found = !!urls.find((url) => it.routeConfig?.path === url);

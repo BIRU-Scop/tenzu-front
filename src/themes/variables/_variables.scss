@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2024 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+body {
+        --tw-8: 2rem;
+        --tw-4: 1rem;
+        --tw-2: 0.5rem;
+        --mat-sys-headline-small-margin-bottom: 12px;
+        --mat-outlined-button-height: 48px;
+        --tz-story-button-wrapper-height: var(--mat-outlined-button-height);
+        --tz-status-card-wrapper-height: calc(var(--mdc-icon-button-state-layer-size, 40px) + var(--tw-2));
+        --tz-project-detail-container-margin-top: var(--tw-8);
+        --tz-tasks-list-padding: var(--tw-4);
+        --tz-sidenav-content-padding: var(--tw-4);
+        --tz-sidenav-width: 250px;
+        --tz-elements-around-virtual-scroll-height: calc(
+                var(--tz-status-card-wrapper-height) + var(--tz-tasks-list-padding) + var(--tz-sidenav-content-padding) +
+                var(--tz-story-button-wrapper-height)
+        );
+        --tz-viewport-height: calc(
+                100vh - var(--mat-toolbar-standard-height) - var(--tz-sidenav-content-padding) - var(
+                        --mat-sys-label-medium-line-height
+                ) - var(--tz-project-detail-container-margin-top) - var(--mat-sys-headline-small-line-height) - var(--mat-sys-headline-small-margin-bottom)
+        );
+       --tz-virtual-scroll-height: calc(var(--tz-viewport-height) - var(--tz-elements-around-virtual-scroll-height));
+}

@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
-import { ProjectDetail } from "../project";
+import { ProjectSummary } from "../project";
 import { ProjectMembership } from "./project-membership.model";
 import { Observable } from "rxjs";
 
@@ -31,8 +31,8 @@ export type ListProjectMembershipParams = {
 export type CreateProjectMembershipParams = unknown;
 export type GetProjectMembershipParams = unknown;
 export type PutProjectMembershipParams = unknown;
-export type PatchProjectMembershipParams = { projectId: ProjectDetail["id"]; username: string };
-export type DeleteProjectMembershipParams = { projectId: ProjectDetail["id"]; username: string };
+export type PatchProjectMembershipParams = { membershipId: ProjectMembership["id"] };
+export type DeleteProjectMembershipParams = { membershipId: ProjectMembership["id"] };
 
 @Injectable({
   providedIn: "root",
@@ -47,12 +47,12 @@ export class ProjectMembershipApiService extends AbstractApiService<
   PatchProjectMembershipParams,
   DeleteProjectMembershipParams
 > {
-  protected override baseUrl = `${this.configAppService.apiUrl()}projects`;
-  protected override getBaseUrl(params: { projectId: ProjectDetail["id"] }) {
+  protected override baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override getBaseUrl(params: { projectId: ProjectSummary["id"] }) {
     return `${this.baseUrl}/${params.projectId}/memberships`;
   }
-  protected override getEntityBaseUrl(params: { projectId: ProjectDetail["id"]; username: string }): string {
-    return `${this.getBaseUrl(params)}/${params.username}`;
+  protected override getEntityBaseUrl(params: { membershipId: ProjectMembership["id"] }): string {
+    return `${this.baseUrl}/memberships/${params.membershipId}`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

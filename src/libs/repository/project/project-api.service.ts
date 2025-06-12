@@ -38,9 +38,9 @@ export class ProjectApiService extends AbstractApiService<
   ProjectApiServiceTypes.PatchEntityDetailParams,
   ProjectApiServiceTypes.DeleteEntityDetailParams
 > {
-  baseUrl = `${this.configAppService.apiUrl()}projects`;
+  baseUrl = `${this.configAppService.apiUrl()}/projects`;
   protected override getBaseUrl(params: ProjectApiServiceTypes.ListEntitiesSummaryParams) {
-    return `${this.configAppService.apiUrl()}workspaces/${params.workspaceId}/projects`;
+    return `${this.configAppService.apiUrl()}/workspaces/${params.workspaceId}/projects`;
   }
 
   protected override getEntityBaseUrl(params: ProjectApiServiceTypes.BaseParams) {

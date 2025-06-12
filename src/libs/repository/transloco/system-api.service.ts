@@ -53,6 +53,6 @@ export class SystemApiService {
     );
   }
   getLanguages() {
-    return this.http.get<Language[]>(`${this.configAppService.apiUrl()}system/languages`);
+    return this.http.get<Language[]>(`${this.configAppService.apiUrl()}/system/languages`);
   }
 }

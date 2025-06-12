@@ -29,6 +29,7 @@
 
 @mixin tokens-overrides() {
   @include mat.tooltip-overrides((
-    container-color: var(--mat-sys-surface-container)
+    container-color: var(--mat-sys-on-primary-container),
+    supporting-text-color: var(--mat-sys-surface),
   ));
 }

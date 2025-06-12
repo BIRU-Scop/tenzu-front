@@ -29,6 +29,9 @@ import { BaseRepositoryService } from "../base";
 
 import { QueryParams } from "../base/utils";
 import { WsService } from "@tenzu/utils/services/ws";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { StoryRepositoryService } from "@tenzu/repository/story";
 // todo temporary way to handle workflows maximum before implementing user settings
 const MAX_WORKFLOWS = 8;
 
@@ -49,6 +52,9 @@ export class ProjectRepositoryService extends BaseRepositoryService<
   protected entitiesSummaryStore = inject(ProjectEntitiesSummaryStore);
   protected entityDetailStore = inject(ProjectDetailStore);
   protected wsService = inject(WsService);
+  protected projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  protected projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  protected storyRepositoryService = inject(StoryRepositoryService);
 
   canCreateWorkflow = computed(() => {
     const selectedProject = this.entityDetail();
@@ -57,8 +63,16 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     return selectedProjectWorkflows.length < MAX_WORKFLOWS;
   });
 
-  override async createRequest(item: Partial<ProjectDetail>, params: ProjectApiServiceType.CreateEntityDetailParams) {
-    return super.createRequest(item, params);
+  override async createRequest(
+    item: Partial<ProjectDetail>,
+    params: ProjectApiServiceType.CreateEntityDetailParams,
+    options: { prepend: boolean } = { prepend: false },
+  ) {
+    this.resetEntityDetail();
+    const result = await super.createRequest(item, params, options);
+    this.projectMembershipRepositoryService.listProjectMembershipRequest(result.id).then();
+    this.projectRoleRepositoryService.listRequest({ projectId: result.id }).then();
+    return result;
   }
 
   override async deleteRequest(
@@ -66,19 +80,13 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     params: ProjectApiServiceType.BaseParams,
     queryParams?: QueryParams,
   ) {
-    const result = super.deleteRequest(item, params, queryParams);
-    this.wsService.command({
-      command: "unsubscribe_from_project_events",
-      project: item.id as string,
-    });
+    this.unsubscribeFromPrevious();
+    const result = await super.deleteRequest(item, params, queryParams);
     return result;
   }
 
   override async getRequest(params: ProjectApiServiceType.GetEntityDetailParams, queryParams?: QueryParams) {
-    const currentEntityDetail = this.entityDetail()?.id as string;
-    if (currentEntityDetail) {
-      this.wsService.command({ command: "unsubscribe_from_project_events", project: currentEntityDetail });
-    }
+    this.unsubscribeFromPrevious();
     const item = await super.getRequest(params, queryParams);
     this.wsService.command({ command: "subscribe_to_project_events", project: params.projectId });
     return item;
@@ -93,5 +101,30 @@ export class ProjectRepositoryService extends BaseRepositoryService<
 
   removeWorkflow(workflow: Workflow) {
     this.entityDetailStore.deleteWorkflow(workflow);
+  }
+  override resetEntityDetail() {
+    this.unsubscribeFromPrevious();
+    super.resetEntityDetail();
+    this.storyRepositoryService.resetAll();
+    this.projectMembershipRepositoryService.resetAll();
+    this.projectRoleRepositoryService.resetAll();
+  }
+
+  unsubscribeFromPrevious() {
+    const currentEntityDetail = this.entityDetail();
+    if (currentEntityDetail) {
+      this.wsService.command({ command: "unsubscribe_from_project_events", project: currentEntityDetail.id });
+    }
+  }
+
+  setup({ projectId }: { projectId: ProjectSummary["id"] }) {
+    const oldProjectDetail = this.entityDetail();
+    if (oldProjectDetail?.id != projectId) {
+      this.resetEntityDetail();
+
+      this.getRequest({ projectId }).then();
+      this.projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();
+      this.projectRoleRepositoryService.listRequest({ projectId }).then();
+    }
   }
 }

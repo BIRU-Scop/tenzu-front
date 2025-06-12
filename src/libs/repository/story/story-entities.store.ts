@@ -22,17 +22,16 @@
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
 import { Story, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
-import { Status } from "../status";
+import { StatusSummary } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
-import { Workflow } from "../workflow";
 import { UserNested } from "../user";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
   currentProjectId: null as string | null,
-  currentWorkflowSlug: null as string | null,
+  currentWorkflowId: null as string | null,
   groupedByStatus: {} as Record<Story["statusId"], Story["ref"][]>,
 };
 export const StoryEntitiesSummaryStore = signalStore(
@@ -40,8 +39,8 @@ export const StoryEntitiesSummaryStore = signalStore(
   withState(initialState),
   withEntityListFeature<Story, typeof initialState>({ initialState, selectId }),
   withMethods((store) => ({
-    setCurrentWorkflowId(projectId: string, workflowSlug: string) {
-      patchState(store, { currentProjectId: projectId, currentWorkflowSlug: workflowSlug });
+    setCurrentWorkflowId(projectId: string, workflowId: string) {
+      patchState(store, { currentProjectId: projectId, currentWorkflowId: workflowId });
     },
     reorder() {
       const groupedByStatus = store.entities().reduce(
@@ -54,6 +53,20 @@ export const StoryEntitiesSummaryStore = signalStore(
         },
         {} as Record<Story["statusId"], Story["ref"][]>,
       );
+      patchState(store, { groupedByStatus });
+    },
+    setStoriesForStatus({
+      statusId,
+      storiesRefForStatus,
+    }: {
+      statusId: Story["statusId"];
+      storiesRefForStatus: Story["ref"][];
+    }) {
+      const currentGroupedByStatus = store.groupedByStatus();
+      const groupedByStatus: Record<Story["statusId"], Story["ref"][]> = {
+        ...currentGroupedByStatus,
+        [statusId]: storiesRefForStatus,
+      };
       patchState(store, { groupedByStatus });
     },
   })),
@@ -71,7 +84,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       const removedAssigneeIds = [...store.entityMap()[ref].assigneeIds].filter((assigneeId) => assigneeId != userId);
       store.updateEntity(ref, { assigneeIds: removedAssigneeIds });
     },
-    deleteStatusGroup(oldStatusId: string, newStatus: Status) {
+    deleteStatusGroup(oldStatusId: string, newStatus: StatusSummary) {
       store.entities().forEach((story) => {
         if (story.statusId === oldStatusId) {
           store.deleteEntity(story.ref);
@@ -101,8 +114,8 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<Status, Status, [Story, number]>, workflowSlug: Workflow["slug"]) {
-      const story = event.item.data[0];
+    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>) {
+      const story = event.item.data;
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
       const sameStatus = lastStatus.id === nextStatus.id;
@@ -128,7 +141,7 @@ export const StoryEntitiesSummaryStore = signalStore(
         store.updateEntity(story.ref, { statusId: nextStatus.id });
       }
       copyGroupedByStatus[lastStatus.id] = lastArray;
-      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex, workflowSlug);
+      const payload = calculatePayloadReorder(story.ref, nextStatus.id, nextArray, event.currentIndex);
 
       patchState(store, { groupedByStatus: { ...copyGroupedByStatus } });
       return payload;
@@ -140,9 +153,6 @@ export const StoryDetailStore = signalStore(
   { providedIn: "root" },
   withEntityDetailStore<StoryDetail>({ selectId: selectId }),
   withMethods((store) => ({
-    resetOverride() {
-      store.reset();
-    },
     addAssign(storyAssign: StoryAssign) {
       const story = store.item();
       if (story && story.ref === storyAssign.story.ref) {
@@ -171,25 +181,22 @@ export const StoryDetailStore = signalStore(
 );
 
 function calculatePayloadReorder(
-  storyId: number,
-  statusId: string,
+  storyRef: Story["ref"],
+  statusId: Story["statusId"],
   storiesRef: Story["ref"][],
   index: number,
-  workflowSlug: string,
 ) {
   let result: StoryReorderPayload;
   if (index === storiesRef.length - 1) {
     result = {
       statusId: statusId,
-      stories: [storyId],
-      workflowSlug,
+      stories: [storyRef],
     };
   } else {
     result = {
       statusId: statusId,
       reorder: { place: "before", ref: storiesRef[index + 1] },
-      stories: [storyId],
-      workflowSlug,
+      stories: [storyRef],
     };
   }
   return result;

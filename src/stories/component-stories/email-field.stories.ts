@@ -23,12 +23,12 @@ import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 import { JsonPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { EmailFieldComponent } from "../../libs/shared/components/form/email-field/email-field.component";
+import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { userEvent, within } from "@storybook/test";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
 
 type Story = StoryObj<FormEmailComponent>;

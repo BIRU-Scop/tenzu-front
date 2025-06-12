@@ -19,18 +19,19 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 
 @Component({
   selector: "app-invitation-role",
   imports: [FormsModule, RoleSelectorFieldComponent, ReactiveFormsModule],
   template: `
-    @if (roleControl) {
+    @if (roleControl.value) {
       <app-role-selector-field [formControl]="roleControl" [itemType]="itemType()" [userRole]="userRole()" />
     }
   `,
@@ -47,29 +48,31 @@ export class InvitationRoleComponent implements OnInit {
   invitation = input.required<InvitationBase>();
   itemType = input.required<"project" | "workspace">();
   userRole = input<Role>();
-  roleControl?: FormControl;
-
-  ngOnInit() {
-    let invitationRepositoryService: ProjectInvitationRepositoryService | WorkspaceInvitationRepositoryService;
+  invitationRepositoryService = computed(() => {
     switch (this.itemType()) {
       case "project": {
-        invitationRepositoryService = this.projectInvitationRepositoryService;
-        break;
+        return this.projectInvitationRepositoryService;
       }
       case "workspace": {
-        invitationRepositoryService = this.workspaceInvitationRepositoryService;
-        break;
+        return this.workspaceInvitationRepositoryService;
       }
     }
-    const invitation = this.invitation();
+  });
+  roleControl = new FormControl<Role["id"] | null>(null, { validators: [Validators.required] });
 
-    this.roleControl = new FormControl(
-      { value: invitation.roleId, disabled: invitation.status !== InvitationStatus.PENDING },
-      { validators: [Validators.required] },
-    );
+  constructor() {
+    effect(() => {
+      const invitation = this.invitation();
+      this.roleControl.reset(
+        { value: invitation.roleId, disabled: invitation.status !== InvitationStatus.PENDING },
+        { onlySelf: true, emitEvent: false },
+      );
+    });
+  }
 
-    this.roleControl.valueChanges.subscribe((value: Role["id"]) => {
-      invitationRepositoryService.patchRequest({ roleId: value }, { invitationId: invitation.id });
+  ngOnInit() {
+    return this.roleControl.valueChanges.pipe(filterNotNull()).subscribe(async (value: Role["id"]) => {
+      await this.invitationRepositoryService().patchRequest(this.invitation().id, { roleId: value });
     });
   }
 }

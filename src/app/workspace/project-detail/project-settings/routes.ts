@@ -19,8 +19,28 @@
  *
  */
 
-import { Routes } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
+import { inject } from "@angular/core";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { HttpErrorResponse } from "@angular/common/http";
+
+function getProjectRoleResolver(route: ActivatedRouteSnapshot) {
+  const roleId = route.paramMap.get("roleId");
+  const router = inject(Router);
+  const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  if (roleId) {
+    projectRoleRepositoryService
+      .getRequest({ roleId })
+      .then()
+      .catch((error) => {
+        if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
+          return router.navigate(["/404"]);
+        }
+        throw error;
+      });
+  }
+}
 
 const routes: Routes = [
   {
@@ -29,16 +49,27 @@ const routes: Routes = [
     pathMatch: "prefix",
   },
   {
+    path: "create-role",
+    loadComponent: () => import("./role/crud-role/create-role/create-role.component"),
+    providers: [provideTranslocoScope("project")],
+  },
+  {
+    path: "edit-role/:roleId",
+    loadComponent: () => import("./role/crud-role/edit-role/edit-role.component"),
+    providers: [provideTranslocoScope("project")],
+    resolve: {
+      projectRole: getProjectRoleResolver,
+    },
+  },
+  {
     path: "project-edit",
     loadComponent: () => import("./project-edit/project-edit.component"),
     providers: [provideTranslocoScope("project")],
-    data: { state: 1 },
   },
   {
     path: "list-project-roles",
-    loadComponent: () => import("./list-project-roles/list-project-roles.component"),
+    loadComponent: () => import("./role/list-project-roles/list-project-roles.component"),
     providers: [provideTranslocoScope("project")],
-    data: { state: 2 },
   },
 ];
 

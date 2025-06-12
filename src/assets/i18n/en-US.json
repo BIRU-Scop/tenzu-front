@@ -15,7 +15,8 @@
       "preview_warning": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly."
     },
     "action": {
-      "changes_saved": "Changes saved"
+      "changes_saved": "Changes saved",
+      "created_success": "Create success"
     },
     "project": {
       "deleted": "The project {{ name }} has been deleted"
@@ -111,12 +112,18 @@
       "confirm_revoke_action": "Revoke",
       "confirm_revoke_message": "Are you sure you want to cancel {email}'s invitation to join the {item} \"{name}\"?"
     },
+    "membership": {
+      "remove": "Remove this member",
+      "leave": "Leave the {item}",
+      "confirm_remove_action": "Remove",
+      "confirm_remove_message": "Are you sure you want to remove {member} from members of {item} \"{name}\"?"
+    },
     "description": {
       "label": "Description",
       "placeholder": "Add a short description to help others better understand your project."
     },
     "user_card": {
-      "your_user": "You"
+      "your_user": "Me"
     },
     "primary_side_nav": {
       "collapse": "Collapse",

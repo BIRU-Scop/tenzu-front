@@ -28,12 +28,13 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
-import { WorkspaceRolesRepositoryService } from "@tenzu/repository/workspace-roles";
-import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { LowerCasePipe } from "@angular/common";
 
 @Component({
   selector: "app-invitation-actions",
-  imports: [ConfirmDirective, MatButton, MatIcon, MatIconButton, MatTooltip, TranslocoDirective],
+  imports: [ConfirmDirective, MatButton, MatIcon, MatIconButton, MatTooltip, TranslocoDirective, LowerCasePipe],
   template: `
     @let _invitation = invitation();
     @if (_invitation.status === InvitationStatus.PENDING) {
@@ -43,16 +44,16 @@ import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
             {{ t("component.invitation.resent_confirmation") }}
           </button>
         } @else {
-          @let invitationResendDisableMessage = getInvitationResendDisableMessage(_invitation);
+          @let _invitationResendDisableMessage = invitationResendDisableMessage();
           <div
             [matTooltip]="
-              invitationResendDisableMessage ? t(invitationResendDisableMessage, { email: _invitation.email }) : ''
+              _invitationResendDisableMessage ? t(_invitationResendDisableMessage, { email: _invitation.email }) : ''
             "
-            [matTooltipDisabled]="!invitationResendDisableMessage"
+            [matTooltipDisabled]="!_invitationResendDisableMessage"
           >
             <button
               type="button"
-              [disabled]="!!invitationResendDisableMessage"
+              [disabled]="!!_invitationResendDisableMessage"
               (click)="resend.emit(_invitation.id)"
               class="secondary-button"
               mat-stroked-button
@@ -75,7 +76,7 @@ import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
               message: t('component.invitation.confirm_revoke_message', {
                 email: _invitation.email,
                 name: item().name,
-                item: itemType(),
+                item: (itemType() === 'project' ? t('commons.project') : t('commons.workspace')) | lowercase,
               }),
             }"
             (popupConfirm)="revoke.emit(_invitation.id)"
@@ -95,18 +96,19 @@ import { ProjectRolesRepositoryService } from "@tenzu/repository/project-roles";
 export class InvitationActionsComponent {
   protected readonly InvitationStatus = InvitationStatus;
 
-  projectRoleRepositoryService = inject(ProjectRolesRepositoryService);
-  workspaceRoleRepositoryService = inject(WorkspaceRolesRepositoryService);
+  projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
   invitation = input.required<InvitationBase>();
   itemType = input.required<"project" | "workspace">();
   item = input.required<ProjectDetail | WorkspaceDetail>();
   resentInvitation = input.required<boolean>();
+
   resend = output<InvitationBase["id"]>();
   revoke = output<InvitationBase["id"]>();
 
   notOwnerInvitationOrHasOwnerPermission = computed(() => {
-    let roleRepositoryService: ProjectRolesRepositoryService | WorkspaceRolesRepositoryService;
+    let roleRepositoryService: ProjectRoleRepositoryService | WorkspaceRoleRepositoryService;
     const invitation = this.invitation();
     if (!invitation.roleId) {
       return false;
@@ -123,8 +125,8 @@ export class InvitationActionsComponent {
     }
     return !roleRepositoryService.entityMapSummary()[invitation.roleId]?.isOwner || !!this.item().userRole?.isOwner;
   });
-
-  getInvitationResendDisableMessage(invitation: InvitationBase): string | null {
+  invitationResendDisableMessage = computed(() => {
+    const invitation = this.invitation();
     if (invitation.numEmailsSent >= 100) {
       return "component.invitation.resend_too_much";
     }
@@ -134,5 +136,5 @@ export class InvitationActionsComponent {
       return "component.invitation.resend_too_soon";
     }
     return null;
-  }
+  });
 }

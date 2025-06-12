@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,22 +19,6 @@
  *
  */
 
-import { InjectionToken } from "@angular/core";
-import { BrowserSentryClientOptions } from "@micro-sentry/browser";
-
-export const ENVIRONMENT_CONFIG = new InjectionToken("ENVIRONMENT_CONFIG");
-
 export interface EnvironmentConfig {
   appVersion: string;
-  production: boolean;
-  env: "dev" | "staging" | "production";
-  wsUrl: string;
-  api: {
-    prefix: string;
-    baseDomain: string;
-    suffixDomain: string;
-    scheme: "http" | "https";
-  };
-
-  sentry: BrowserSentryClientOptions;
 }

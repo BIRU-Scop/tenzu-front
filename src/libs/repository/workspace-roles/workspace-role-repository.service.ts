@@ -29,7 +29,7 @@ import { WorkspaceRoleSummary, WorkspaceRoleDetail } from "./workspace-roles.mod
 @Injectable({
   providedIn: "root",
 })
-export class WorkspaceRolesRepositoryService extends BaseRepositoryService<
+export class WorkspaceRoleRepositoryService extends BaseRepositoryService<
   WorkspaceRoleSummary,
   WorkspaceRoleDetail,
   WorkspaceRolesApiServiceType.ListEntitiesSummaryParams,

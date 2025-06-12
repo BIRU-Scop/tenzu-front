@@ -32,7 +32,7 @@ export class NotificationsService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
   url = this.configAppService.apiUrl();
-  notificationsUrl = `${this.url}notifications`;
+  notificationsUrl = `${this.url}/notifications`;
 
   list() {
     return this.http.get<Notification[]>(`${this.notificationsUrl}`);

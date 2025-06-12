@@ -26,15 +26,30 @@ import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
+import { MemberPermission } from "@tenzu/repository/membership";
 
 @Component({
   selector: "app-workspace-detail",
-  imports: [RouterOutlet],
-  template: ` <router-outlet />`,
+  imports: [RouterOutlet, PermissionOrRedirectDirective],
+  template: ` @let workspace = workspaceService.entityDetail();
+    @if (workspace) {
+      <ng-container
+        [appPermissionOrRedirect]="{
+          expectedId: workspace.id,
+          requiredPermission: MemberPermission,
+          type: 'workspace',
+        }"
+      >
+        <router-outlet />
+      </ng-container>
+    }`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceDetailComponent implements OnDestroy {
+  protected readonly MemberPermission = MemberPermission;
+
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);
   sideNavStore = inject(SideNavStore);
@@ -63,10 +78,10 @@ export class WorkspaceDetailComponent implements OnDestroy {
     ]);
     this.sideNavStore.setSecondaryNavItems([
       {
-        label: "workspace.general_title.workspacePeople",
+        label: "workspace.general_title.workspaceMembers",
         iconName: "group",
-        href: "people",
-        testId: "people-link",
+        href: "members",
+        testId: "members-link",
       },
       {
         label: "workspace.general_title.workspaceSettings",

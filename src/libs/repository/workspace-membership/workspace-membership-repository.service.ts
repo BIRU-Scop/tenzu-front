@@ -23,7 +23,10 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceMembershipApiService } from "./workspace-membership-api-service";
 import { WorkspaceMembership } from "./workspace-membership.model";
-import { WorkspaceMembershipEntitiesStore } from "@tenzu/repository/workspace-membership/workspace-membership.store";
+import { WorkspaceMembershipEntitiesStore } from "./workspace-membership.store";
+import { NotFoundEntityError } from "../base/errors";
+import { UserNested } from "@tenzu/repository/user";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({
   providedIn: "root",
@@ -35,21 +38,46 @@ export class WorkspaceMembershipRepositoryService {
   entityMap = this.workspaceMembershipStore.entityMap;
   memberMap = this.workspaceMembershipStore.memberMap;
   members = this.workspaceMembershipStore.members;
+  readonly resetService = inject(ResetService);
 
-  async listWorkspaceMembership(workspaceId: string) {
+  constructor() {
+    this.resetService.register(this);
+  }
+
+  async listWorkspaceMembershipRequest(workspaceId: string) {
     const projectMemberships = await lastValueFrom(this.workspaceMembershipApiService.list({ workspaceId }));
     this.workspaceMembershipStore.setAllEntities(projectMemberships);
   }
 
-  async patchWorkspaceMembership(workspaceId: string, username: string, value: Partial<WorkspaceMembership>) {
-    const projectMembership = await lastValueFrom(
-      this.workspaceMembershipApiService.patch(value, { workspaceId, username }),
-    );
-    this.workspaceMembershipStore.updateEntity(projectMembership.user.username, projectMembership);
+  async getDeleteInfoRequest(item: WorkspaceMembership) {
+    return await lastValueFrom(this.workspaceMembershipApiService.getDeleteInfo(item));
   }
 
-  async deleteWorkspaceMembership(workspaceId: string, username: string) {
-    await lastValueFrom(this.workspaceMembershipApiService.delete({ workspaceId, username }));
-    this.workspaceMembershipStore.deleteEntity(username);
+  async patchRequest(
+    membershipId: WorkspaceMembership["id"],
+    partialData: Pick<WorkspaceMembership, "roleId">,
+  ): Promise<WorkspaceMembership> {
+    if (this.entityMap()[membershipId]) {
+      const entity = await lastValueFrom(this.workspaceMembershipApiService.patch(partialData, { membershipId }));
+      return this.workspaceMembershipStore.updateEntity(membershipId, entity);
+    }
+    throw new NotFoundEntityError(`Entity ${membershipId} not found`);
+  }
+
+  async deleteRequest(membershipId: WorkspaceMembership["id"], successorId?: UserNested["id"]) {
+    await lastValueFrom(
+      this.workspaceMembershipApiService.delete(
+        { membershipId },
+        successorId ? { successorUserId: successorId } : undefined,
+      ),
+    );
+    this.workspaceMembershipStore.deleteEntity(membershipId);
+  }
+
+  resetEntitySummaryList(): void {
+    this.workspaceMembershipStore.reset();
+  }
+  resetAll(): void {
+    this.resetEntitySummaryList();
   }
 }

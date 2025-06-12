@@ -19,10 +19,16 @@
  *
  */
 
-import { UserNested } from "../user";
+import { MembershipBase } from "../membership";
+import { ProjectNested } from "../project";
 
-export type WorkspaceMembership = {
-  user: UserNested;
-  roleId: string;
+export type WorkspaceMembership = MembershipBase & {
   workspaceId: string;
+  totalProjectsIsMember: number;
+};
+
+export type WorkspaceMembershipDeleteInfo = {
+  isUniqueOwner: boolean;
+  memberOfProjects: ProjectNested["name"][];
+  uniqueOwnerOfProjects: ProjectNested["name"][];
 };

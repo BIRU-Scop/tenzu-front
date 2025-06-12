@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
@@ -27,38 +27,34 @@ import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitation
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
-import { MatList } from "@angular/material/list";
-import { MatTab, MatTabGroup, MatTabLabel } from "@angular/material/tabs";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
+import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { MatIcon } from "@angular/material/icon";
-import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { MatCell, MatTableModule } from "@angular/material/table";
-import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
-import { InvitationStatus, Role } from "@tenzu/repository/membership";
-import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
-import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
+import { Role } from "@tenzu/repository/membership";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
+import { NgTemplateOutlet } from "@angular/common";
 
 @Component({
   selector: "app-project-members",
   imports: [
     TranslocoDirective,
-    MatButton,
-    MatList,
-    MatTabGroup,
-    MatTab,
-    MatTabLabel,
-    UserCardComponent,
     MatIcon,
+    MatButton,
+    FormsModule,
+    TranslocoDirective,
+    ReactiveFormsModule,
+    MatTabLink,
+    MatTabNav,
+    RouterLink,
+    RouterLinkActive,
+    MatTabNavPanel,
+    RouterOutlet,
     HasPermissionDirective,
-    MatCell,
-    MatTableModule,
-    InvitationStatusComponent,
-    InvitationActionsComponent,
-    InvitationRoleComponent,
+    NgTemplateOutlet,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -76,95 +72,50 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
             {{ t("project.members.invite_to_project") }}
           </button>
         </div>
-        <mat-tab-group [(selectedIndex)]="selectedTabIndex" mat-stretch-tabs="false" mat-align-tabs="start">
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon class="icon-sm mr-1">group</mat-icon>
-              {{ t("project.members.members_tab") }}
+        <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
+          @for (link of links; track link.path) {
+            <ng-template #RouterContent>
+              <a
+                mat-tab-link
+                [routerLink]="link.path"
+                routerLinkActive
+                #RouterLinkActive="routerLinkActive"
+                [active]="RouterLinkActive.isActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+              >
+                <mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
+                >{{ t(link.labelKey) }}
+              </a>
             </ng-template>
-            @let projectMemberships = projectMembershipRepositoryService.entities();
-            @if (projectMemberships.length > 0) {
-              <mat-list>
-                @for (member of projectMemberships; track member.user.id) {
-                  <app-user-card
-                    [fullName]="member.user.fullName"
-                    [username]="member.user.username"
-                    [color]="member.user.color"
-                  ></app-user-card>
-                }
-              </mat-list>
-            }
-          </mat-tab>
-          <mat-tab
-            *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
-          >
-            <ng-template mat-tab-label>
-              <mat-icon class="icon-sm mr-1">mail</mat-icon>
-              {{ t("project.members.invitation_tab") }}
-            </ng-template>
-            @let projectInvitations = projectInvitationRepositoryService.entities();
-            @if (projectInvitations.length > 0) {
-              <mat-table [@newItemsFlyIn]="projectInvitations.length" [dataSource]="projectInvitations">
-                <ng-container matColumnDef="user">
-                  <mat-cell *matCellDef="let row" class="basis-1/3">{{ row.email }}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="role">
-                  <mat-cell *matCellDef="let row" class="basis-1/3">
-                    <app-invitation-role
-                      [invitation]="row"
-                      itemType="project"
-                      [userRole]="project.userRole"
-                    ></app-invitation-role>
-                  </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="status">
-                  <mat-cell *matCellDef="let row" class="basis-full">
-                    <app-invitation-status [invitation]="row"></app-invitation-status>
-                  </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="actions">
-                  <mat-cell *matCellDef="let row" class="basis-1/2">
-                    <app-invitation-actions
-                      [invitation]="row"
-                      [item]="project"
-                      itemType="project"
-                      [resentInvitation]="resentInvitationId() === row.id"
-                      (resend)="resendInvitation($event)"
-                      (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
-                    ></app-invitation-actions>
-                  </mat-cell>
-                </ng-container>
-                <mat-row *matRowDef="let row; columns: ['user', 'role', 'status', 'actions']"></mat-row>
-              </mat-table>
+            @if (link.permission) {
+              <ng-container *appHasPermission="{ requiredPermission: link.permission, actualEntity: project }">
+                <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+              </ng-container>
             } @else {
-              <p class="mat-body-medium text-on-surface-variant">{{ t("project.members.invitation_empty") }}</p>
+              <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
             }
-          </mat-tab>
-        </mat-tab-group>
+          }
+        </nav>
+        <div>
+          <mat-tab-nav-panel #tabPanel><router-outlet /></mat-tab-nav-panel>
+        </div>
       </div>
     }
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMembersComponent {
+export default class ProjectMembersComponent implements AfterViewInit {
+  links = [
+    { path: "./list-project-members", labelKey: "project.members.members_tab", iconName: "group", permission: null },
+    {
+      path: "./list-project-invitations",
+      labelKey: "project.members.invitation_tab",
+      iconName: "schedule",
+      permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+    },
+  ];
   protected readonly ProjectPermissions = ProjectPermissions;
-  protected readonly InvitationStatus = InvitationStatus;
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
@@ -172,25 +123,11 @@ export class ProjectMembersComponent {
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   translocoService = inject(TranslocoService);
+  readonly router = inject(Router);
+  readonly activatedRoute = inject(ActivatedRoute);
 
-  selectedTabIndex = model(0);
-
-  resentInvitationId = signal<ProjectInvitation["id"] | null>(null);
-
-  constructor() {
+  ngAfterViewInit(): void {
     this.breadcrumbStore.setPathComponent("projectMembers");
-    this.selectedTabIndex.subscribe((value) => {
-      if (value === 1) {
-        this.projectInvitationRepositoryService
-          .listProjectInvitations(this.projectRepositoryService.entityDetail()!.id)
-          .then();
-      }
-    });
-  }
-
-  resendInvitation(invitationId: ProjectInvitation["id"]) {
-    this.projectInvitationRepositoryService.resendProjectInvitation(invitationId);
-    this.resentInvitationId.set(invitationId);
   }
 
   public openInviteDialog(): void {
@@ -217,9 +154,7 @@ export class ProjectMembersComponent {
             selectedProject,
             invitations.map(({ email, roleId }) => ({ email, roleId })),
           );
-          if (this.selectedTabIndex() !== 1) {
-            this.selectedTabIndex.set(1);
-          }
+          await this.router.navigate(["list-project-invitations"], { relativeTo: this.activatedRoute });
         }
       });
     }

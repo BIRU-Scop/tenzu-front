@@ -21,7 +21,7 @@
 
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { ConfigSchema } from "./config.model";
+import { ConfigModel, ConfigSchema } from "./config.model";
 import { environment } from "../../environments/environment";
 import { EnvironmentConfig } from "../../environments/environment-type";
 import { v4 } from "uuid";
@@ -33,10 +33,10 @@ export const CORRELATION_ID = v4();
 })
 export class ConfigAppService {
   http = inject(HttpClient);
-  config = signal({} as EnvironmentConfig);
+  config = signal({} as EnvironmentConfig & ConfigModel);
   configApi = computed(() => this.config().api);
   apiUrl = computed(() => {
-    return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}/`;
+    return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}`;
   });
   wsUrl = computed(() => this.config().wsUrl);
   readonly correlationId = CORRELATION_ID;
@@ -47,26 +47,14 @@ export class ConfigAppService {
         return res.json();
       })
       .catch(() => {
-        this.config.set(environment);
+        throw new Error("Could not load config");
       })
       .then((config) => {
-        if (!config) {
-          this.config.set(environment);
-        } else {
-          const schema = ConfigSchema.parse(config);
-          this.config.set({
-            ...environment,
-            wsUrl: schema.wsUrl || environment.wsUrl,
-            api: {
-              ...environment.api,
-              ...schema.api,
-            },
-            sentry: {
-              ...environment.sentry,
-              ...schema.sentry,
-            },
-          });
-        }
+        const schema = ConfigSchema.parse(config);
+        this.config.set({
+          ...environment,
+          ...schema,
+        });
         // TODO: change when microSentry lib accept useFactory
         localStorage.setItem("sentry", JSON.stringify(this.config().sentry));
       });
