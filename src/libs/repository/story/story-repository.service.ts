@@ -78,17 +78,24 @@ export class StoryRepositoryService extends BaseRepositoryService<
     }
     this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
     this.isLoading.set(true);
-
+    const cachedStories: Story[] = [];
+    const lengthMinStories = 9;
     while (true) {
       const stories = await lastValueFrom(this.apiService.list(params, queryParams));
-      this.entitiesSummaryStore.addEntities(stories);
-      this.entitiesSummaryStore.reorder();
+      if (this.entitiesSummaryStore.minStoriesPerStatus() < lengthMinStories) {
+        this.entitiesSummaryStore.addEntities(stories);
+        this.entitiesSummaryStore.reorder();
+      } else {
+        cachedStories.push(...stories);
+      }
 
       if (stories.length < queryParams.limit) {
         break;
       }
       queryParams.offset += queryParams.limit;
     }
+    this.entitiesSummaryStore.addEntities(cachedStories);
+    this.entitiesSummaryStore.reorder();
     this.isLoading.set(false);
     return this.entitiesSummary();
   }

@@ -19,7 +19,7 @@
  *
  */
 
-import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
+import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
 import { Story, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
 import { StatusSummary } from "../status";
@@ -27,6 +27,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { UserNested } from "../user";
+import { computed } from "@angular/core";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
@@ -38,6 +39,21 @@ export const StoryEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
   withState(initialState),
   withEntityListFeature<Story, typeof initialState>({ initialState, selectId }),
+  withComputed((store) => ({
+    minStoriesPerStatus: computed(() => {
+      const groupedByStatus = store.groupedByStatus();
+      // Get all status arrays
+      const statusArrays = Object.values(groupedByStatus);
+
+      // If there are no status arrays, return 0
+      if (statusArrays.length === 0) {
+        return 0;
+      }
+
+      // Find the minimum length using Math.min and map
+      return Math.min(...statusArrays.map((array) => array.length));
+    }),
+  })),
   withMethods((store) => ({
     setCurrentWorkflowId(projectId: string, workflowId: string) {
       patchState(store, { currentProjectId: projectId, currentWorkflowId: workflowId });
