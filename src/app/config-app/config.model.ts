@@ -29,10 +29,12 @@ export const ConfigSchema = z.object({
     scheme: z.enum(["http", "https"]),
     suffixDomain: z.string(),
   }),
-  sentry: z.object({
-    dsn: z.string().optional(),
-    environment: z.string().optional(),
-  }),
+  sentry: z
+    .object({
+      dsn: z.string().optional(),
+      environment: z.string().optional(),
+    })
+    .default({}),
 });
 
 export type ConfigModel = z.infer<typeof ConfigSchema>;
