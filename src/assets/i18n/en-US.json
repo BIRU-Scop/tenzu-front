@@ -182,5 +182,10 @@
   },
   "form_errors": {
     "max_length": "Characters limit is {{length}}"
+  },
+  "environment": {
+    "demo": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly. We do not keep your emails for any kind of marketing outreach.",
+    "staging": "This is the staging version of the product, for internal testing purposes only. Here you can unleash your passion for creating accounts.",
+    "dev": "This is the dev version of the product. Here is the natural habitat of unwitting bugs and haphazard dangers. Proceed with caution."
   }
 }
