@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.21](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.20...v0.1.0-staging.21) (2025-06-12)
+
+
+### Bug Fixes
+
+* make new config work when config folder does not exists ([019ef62](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/019ef62f4aa62825f3f67ed03e6952ebc5f7be23))
+* switch back to multi-status fetching of stories because of perf benchmark result and prevent workflow reload when navigating between stories ([0042dcd](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0042dcd9166f830225c0be4a9dc86378a028a2fd))
+
 ## [0.1.0-staging.20](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.19...v0.1.0-staging.20) (2025-06-12)
 
 
