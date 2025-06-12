@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.22](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.21...v0.1.0-staging.22) (2025-06-12)
+
+
+### Features
+
+* add computed properties and caching in story store ([5fddc7d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5fddc7dfbaea24738cbec98e996820d2b522f87c))
+
+
+### Bug Fixes
+
+* set default value for sentry configuration schema to avoid error when sentry is not enabled ([e4e2f61](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e4e2f618032e0ae2c445edee4b976c927dd08a50))
+
 ## [0.1.0-staging.21](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.20...v0.1.0-staging.21) (2025-06-12)
 
 
