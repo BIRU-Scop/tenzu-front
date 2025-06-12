@@ -9,5 +9,4 @@
     "emitDecoratorMetadata": true // 3
   },
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"],
-  "files": ["src/test-setup.ts"]
 }

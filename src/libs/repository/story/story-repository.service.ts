@@ -67,32 +67,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
   }
 
   override async listRequest(
-    params: StoryApiServiceType.ListEntitiesSummaryParams,
-    queryParams: { limit: number; offset: number },
-  ) {
-    // Do not use this function directly, prefers listAllRequest instead
-    if (this.groupedByStatus()[params.statusId]) {
-      // we previously loaded stories for this status already
-      return this.entitiesSummary();
-    }
-    this.entitiesSummaryStore.setStoriesForStatus({ statusId: params.statusId, storiesRefForStatus: [] });
-    while (true) {
-      const stories = await lastValueFrom(this.apiService.list(params, queryParams));
-      this.entitiesSummaryStore.addEntities(stories);
-
-      this.entitiesSummaryStore.setStoriesForStatus({
-        statusId: params.statusId,
-        storiesRefForStatus: [...this.groupedByStatus()[params.statusId], ...stories.map((story) => story.ref)],
-      });
-      if (stories.length < queryParams.limit) {
-        break;
-      }
-      queryParams.offset += queryParams.limit;
-    }
-    return this.entitiesSummary();
-  }
-  async listAllRequest(
-    params: { projectId: Story["projectId"]; statusIds: Story["statusId"][]; workflowId: Workflow["id"] },
+    params: { projectId: Story["projectId"]; workflowId: Workflow["id"] },
     queryParams: { limit: number; offset: number },
   ) {
     if (
@@ -103,11 +78,17 @@ export class StoryRepositoryService extends BaseRepositoryService<
     }
     this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
     this.isLoading.set(true);
-    await Promise.all(
-      params.statusIds.map((statusId) =>
-        this.listRequest({ statusId }, { limit: queryParams.limit, offset: queryParams.offset }),
-      ),
-    );
+
+    while (true) {
+      const stories = await lastValueFrom(this.apiService.list(params, queryParams));
+      this.entitiesSummaryStore.addEntities(stories);
+      this.entitiesSummaryStore.reorder();
+
+      if (stories.length < queryParams.limit) {
+        break;
+      }
+      queryParams.offset += queryParams.limit;
+    }
     this.isLoading.set(false);
     return this.entitiesSummary();
   }

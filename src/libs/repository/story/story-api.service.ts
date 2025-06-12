@@ -44,11 +44,11 @@ export class StoryApiService extends AbstractApiService<
   }
 
   protected override listUrl(params: StoryApiServiceType.ListEntitiesSummaryParams) {
-    return `${this.baseUrl}/workflows/statuses/${params.statusId}/stories`;
+    return `${this.baseUrl}/workflows/${params.workflowId}/stories`;
   }
 
-  protected override createUrl(params?: StoryApiServiceType.CreateEntityDetailParams): string {
-    return `${this.baseUrl}/workflows/${params?.workflowId}/stories`;
+  protected override createUrl(params: StoryApiServiceType.CreateEntityDetailParams): string {
+    return this.listUrl(params);
   }
 
   override create(story: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
@@ -62,7 +62,7 @@ export class StoryApiService extends AbstractApiService<
     return super.patch(story, params);
   }
 
-  reorder(payload: StoryReorderPayload, params: StoryApiServiceType.CreateEntityDetailParams) {
+  reorder(payload: StoryReorderPayload, params: StoryApiServiceType.ListEntitiesSummaryParams) {
     return this.http.post<never>(`${this.createUrl(params)}/reorder`, payload);
   }
 
