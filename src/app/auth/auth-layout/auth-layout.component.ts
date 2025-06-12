@@ -57,13 +57,5 @@ export default class AuthLayoutComponent {
       "logo-full-animated",
       this.sanitizer.bypassSecurityTrustResourceUrl("logo-full-tenzu-animated.svg"),
     );
-    this.notificationService.warning(
-      { title: "notification.login.preview_warning" },
-      {
-        duration: undefined,
-        verticalPosition: "bottom",
-        horizontalPosition: "center",
-      },
-    );
   }
 }
