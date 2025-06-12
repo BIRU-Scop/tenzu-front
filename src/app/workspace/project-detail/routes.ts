@@ -37,24 +37,28 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
   debug("storyResolver", "load start", `${projectId}-${storyRef}`);
   if (projectId && (oldStoryDetail?.ref != storyRef || oldStoryDetail.projectId != projectId)) {
     storyRepositoryService.isLoading.set(true);
-    workflowRepositoryService.resetEntityDetail();
     storyRepositoryService.resetEntityDetail();
     storyRepositoryService
       .getRequest({ projectId, ref: storyRef })
       .then((story) => {
-        workflowRepositoryService
-          .getRequest({ workflowId: story.workflowId })
-          .then((workflow) =>
-            storyRepositoryService.listAllRequest(
-              {
-                projectId: projectId,
-                workflowId: workflow.id,
-                statusIds: workflow.statuses.map((status) => status.id),
-              },
-              { offset: 0, limit: 100 },
-            ),
-          )
-          .then(() => storyRepositoryService.isLoading.set(false));
+        const oldWorkflowDetail = workflowRepositoryService.entityDetail();
+        if (oldWorkflowDetail?.id != story.workflowId) {
+          workflowRepositoryService.resetEntityDetail();
+          workflowRepositoryService
+            .getRequest({ workflowId: story.workflowId })
+            .then((workflow) =>
+              storyRepositoryService.listRequest(
+                {
+                  projectId: projectId,
+                  workflowId: workflow.id,
+                },
+                { offset: 0, limit: 100 },
+              ),
+            )
+            .then(() => storyRepositoryService.isLoading.set(false));
+        } else {
+          storyRepositoryService.isLoading.set(false);
+        }
       })
       .catch((error) => {
         if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
@@ -90,11 +94,10 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
       .then((workflow) => {
         if (workflow) {
           storyRepositoryService
-            .listAllRequest(
+            .listRequest(
               {
                 projectId: workflow.projectId,
                 workflowId: workflow.id,
-                statusIds: workflow.statuses.map((status) => status.id),
               },
               { offset: 0, limit: 100 },
             )

@@ -55,20 +55,6 @@ export const StoryEntitiesSummaryStore = signalStore(
       );
       patchState(store, { groupedByStatus });
     },
-    setStoriesForStatus({
-      statusId,
-      storiesRefForStatus,
-    }: {
-      statusId: Story["statusId"];
-      storiesRefForStatus: Story["ref"][];
-    }) {
-      const currentGroupedByStatus = store.groupedByStatus();
-      const groupedByStatus: Record<Story["statusId"], Story["ref"][]> = {
-        ...currentGroupedByStatus,
-        [statusId]: storiesRefForStatus,
-      };
-      patchState(store, { groupedByStatus });
-    },
   })),
   withMethods((store) => ({
     addAssign(storyAssign: StoryAssign, ref: Story["ref"]) {
