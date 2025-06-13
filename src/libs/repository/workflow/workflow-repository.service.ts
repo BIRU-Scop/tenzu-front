@@ -60,13 +60,21 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     }
     return super.getRequest(params);
   }
+  override setEntityDetail(item: Workflow): void {
+    this.entityDetailStore.setWorkflow(item);
+  }
+  override deleteEntityDetail(item: Workflow): Workflow {
+    item = super.deleteEntityDetail(item);
+    this.entityDetailStore.deleteAllStatuses();
+    return item;
+  }
 
   async getBySlugRequest(workflow: Pick<Workflow, "projectId" | "slug">): Promise<Workflow | undefined> {
     const refreshedWorkflow = await lastValueFrom(
       this.apiService.getBySlug({ projectId: workflow.projectId, workflowSlug: workflow.slug }),
     );
     if (refreshedWorkflow) {
-      this.entityDetailStore.setWorkflow(refreshedWorkflow);
+      this.setEntityDetail(refreshedWorkflow);
       return refreshedWorkflow;
     }
     return undefined;
