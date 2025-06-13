@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.23](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.22...v0.1.0-staging.23) (2025-06-13)
+
+
+### Features
+
+* add a new style for warning header ([50657a2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/50657a2773ac938465271f2c09b55705380b2730))
+* add text for the warning header regarding the env ([0a44838](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0a44838a9ec637a239623a79eececbb51724617b))
+* add warning header in the app.component ([614695b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/614695b540d74d8926c60befda42514fc326d386))
+* better permissions display and add warning about comment permissions ([33a404c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/33a404cf9b6fbc5a84755e1f7ea7f9f9d1648ef9))
+* create new component with conditional display ([fb4ed6d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/fb4ed6d2c3deb391b60911034a58b00a95f0749f))
+* delete obsolete old notification for the demo env ([58f045a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/58f045a55f602f67068404db10fe30c1ef12dc88))
+
+
+### Bug Fixes
+
+* prevent previous workflow statuses from being used for new workflow ([c45c07e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c45c07e124990a053235a001af63f52ba98fdc48))
+
 ## [0.1.0-staging.22](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.21...v0.1.0-staging.22) (2025-06-12)
 
 
