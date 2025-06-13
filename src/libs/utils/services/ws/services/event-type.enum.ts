@@ -49,9 +49,11 @@ export enum StoryAttachmentEventType {
 }
 export enum ProjectInvitationEventType {
   CreateProjectInvitation = "projectinvitations.create",
-  AcceptProjectInvitation = "projectmemberships.create",
+  UpdateProjectInvitation = "projectinvitations.update",
+  AcceptProjectInvitation = "projectinvitations.accept",
   RevokeProjectInvitation = "projectinvitations.revoke",
   DenyProjectInvitation = "projectinvitations.deny",
+  DeleteProjectInvitation = "projectinvitations.delete",
 }
 export enum ProjectMembershipEventType {
   CreateProjectMembership = "projectmemberships.create",
@@ -65,7 +67,9 @@ export enum ProjectEventType {
 export enum WorkspaceInvitationEventType {
   CreateWorkspaceInvitation = "workspaceinvitations.create",
   UpdateWorkspaceInvitation = "workspaceinvitations.update",
-  AcceptWorkspaceInvitation = "workspacememberships.create",
+  AcceptWorkspaceInvitation = "workspaceinvitations.accept",
+  RevokeWorkspaceInvitation = "workspaceinvitations.revoke",
+  DenyWorkspaceInvitation = "workspaceinvitations.deny",
   DeleteWorkspaceInvitation = "workspaceinvitations.delete",
 }
 export enum WorkspaceMembershipEventType {

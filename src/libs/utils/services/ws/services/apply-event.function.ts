@@ -33,6 +33,7 @@ import {
   WorkflowEventType,
   WorkflowStatusEventType,
   WorkspaceEventType,
+  WorkspaceInvitationEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
 import { ProjectRepositoryService, ProjectDetail } from "@tenzu/repository/project";
@@ -46,9 +47,18 @@ import { Notification, NotificationsStore } from "@tenzu/repository/notification
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { getStoryDetailUrl, getWorkflowUrl, getWorkspaceRootUrl, HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
+import {
+  getProjectMembersRootUrl,
+  getStoryDetailUrl,
+  getWorkflowUrl,
+  getWorkspaceMembersRootUrl,
+  getWorkspaceProjectsUrl,
+  HOMEPAGE_URL,
+} from "@tenzu/utils/functions/urls";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -435,14 +445,68 @@ export function applyNotificationEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyProjectInvitationEventType(message: WSResponseEvent<unknown>) {
-  const workspaceService = inject(WorkspaceRepositoryService);
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   const router = inject(Router);
 
   switch (message.event.type) {
     case ProjectInvitationEventType.CreateProjectInvitation: {
-      const currentWorkspace = workspaceService.entityDetail();
-      if (router.url === HOMEPAGE_URL || (currentWorkspace && router.url === getWorkspaceRootUrl(currentWorkspace))) {
-        await workspaceService.listRequest();
+      const content = message.event.content as { workspaceId: string; projectId: string; selfRecipient: boolean };
+      if (content.selfRecipient) {
+        // invitation is for this specific user
+        if (router.url === HOMEPAGE_URL) {
+          await workspaceRepositoryService.listRequest();
+          return;
+        }
+        const currentWorkspace = workspaceRepositoryService.entityDetail();
+        if (
+          currentWorkspace &&
+          content.workspaceId === currentWorkspace.id &&
+          router.url === getWorkspaceProjectsUrl(currentWorkspace)
+        ) {
+          projectRepositoryService.listRequest({ workspaceId: currentWorkspace.id }).then();
+        }
+      } else {
+        // invitation is not for this specific user
+        const currentProject = projectRepositoryService.entityDetail();
+        if (
+          currentProject &&
+          content.projectId === currentProject.id &&
+          router.url.startsWith(getProjectMembersRootUrl(currentProject))
+        ) {
+          projectInvitationRepositoryService.listProjectInvitations(currentProject.id).then();
+        }
+      }
+      break;
+    }
+  }
+}
+
+export async function applyWorkspaceInvitationEventType(message: WSResponseEvent<unknown>) {
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  const router = inject(Router);
+
+  switch (message.event.type) {
+    case WorkspaceInvitationEventType.CreateWorkspaceInvitation: {
+      const content = message.event.content as { workspaceId: string; selfRecipient: boolean };
+      if (content.selfRecipient) {
+        // invitation is for this specific user
+        if (router.url === HOMEPAGE_URL) {
+          await workspaceRepositoryService.listRequest();
+          return;
+        }
+      } else {
+        // invitation is not for this specific user
+        const currentWorkspace = workspaceRepositoryService.entityDetail();
+        if (
+          currentWorkspace &&
+          content.workspaceId === currentWorkspace.id &&
+          router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))
+        ) {
+          workspaceInvitationRepositoryService.listWorkspaceInvitations(currentWorkspace.id).then();
+        }
       }
       break;
     }

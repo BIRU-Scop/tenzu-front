@@ -46,6 +46,7 @@ import {
   applyWorkflowEvent,
   applyWorkflowStatusEvent,
   applyWorkspaceEvent,
+  applyWorkspaceInvitationEventType,
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
 import { ConfigAppService } from "../../../../../app/config-app/config-app.service";
@@ -251,7 +252,7 @@ export class WsService {
           break;
         }
         case FamilyEventType.WorkspaceInvitation: {
-          // Add handling logic if required
+          await applyWorkspaceInvitationEventType(message);
           break;
         }
         case FamilyEventType.WorkspaceMembership: {

@@ -24,40 +24,39 @@ import { Workflow } from "@tenzu/repository/workflow";
 import { Story } from "@tenzu/repository/story";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 
-export type UrlableProject = ProjectLinkNested;
-
-export type UrlableWorkspace = WorkspaceLinkNested;
-
 export const HOMEPAGE_URL = "/";
 
-export function getProjectRootListUrl(project: UrlableProject) {
-  return ["workspace", project.workspaceId, "project", project.id];
+export function getProjectRootUrl(project: ProjectLinkNested) {
+  const urlParts = ["workspace", project.workspaceId, "project", project.id];
+  return `/${urlParts.join("/")}`;
 }
 
-export function getProjectRootUrl(project: UrlableProject) {
-  return `/${getProjectRootListUrl(project).join("/")}`;
-}
-
-export function getProjectLandingPageUrl(project: UrlableProject) {
+export function getProjectLandingPageUrl(project: ProjectLinkNested) {
   return `${getProjectRootUrl(project)}/${project.landingPage}`;
 }
 
-export function getWorkflowUrl(project: UrlableProject, slug: Workflow["slug"]) {
+export function getProjectMembersRootUrl(project: ProjectLinkNested) {
+  return `${getProjectRootUrl(project)}/members`;
+}
+
+export function getWorkflowUrl(project: ProjectLinkNested, slug: Workflow["slug"]) {
   return `${getProjectRootUrl(project)}/kanban/${slug}`;
 }
 
-export function getStoryDetailListUrl(project: UrlableProject, ref: Story["ref"]) {
-  return [`workspace`, project.workspaceId, "project", project.id, "story", ref];
+export function getStoryDetailUrl(project: ProjectLinkNested, ref: Story["ref"]) {
+  const urlParts = [`workspace`, project.workspaceId, "project", project.id, "story", ref];
+  return `/${urlParts.join("/")}`;
 }
 
-export function getStoryDetailUrl(project: UrlableProject, ref: Story["ref"]) {
-  return `/${getStoryDetailListUrl(project, ref).join("/")}`;
+export function getWorkspaceRootUrl(workspace: WorkspaceLinkNested) {
+  const urlParts = ["workspace", workspace.id];
+  return `/${urlParts.join("/")}`;
 }
 
-export function getWorkspaceRootListUrl(workspace: UrlableWorkspace) {
-  return ["workspace", workspace.id];
+export function getWorkspaceMembersRootUrl(workspace: WorkspaceLinkNested) {
+  return `${getWorkspaceRootUrl(workspace)}/members`;
 }
 
-export function getWorkspaceRootUrl(workspace: UrlableWorkspace) {
-  return `/${getWorkspaceRootListUrl(workspace).join("/")}`;
+export function getWorkspaceProjectsUrl(workspace: WorkspaceLinkNested) {
+  return `${getWorkspaceRootUrl(workspace)}/projects`;
 }
