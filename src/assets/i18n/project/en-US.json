@@ -62,6 +62,7 @@
       "comment":{
         "label": "Comment",
         "no_story_permissions": "to give a comment permission you must set a story permission",
+        "coming_soon": "Feature coming soon",
         "view_comment": "View",
         "create_modify_delete_comment": "View / Create / Modify / Delete",
         "moderate_comment": "View / Create / Modify / Delete / Moderate"
