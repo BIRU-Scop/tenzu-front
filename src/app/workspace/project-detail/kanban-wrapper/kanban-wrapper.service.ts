@@ -28,7 +28,7 @@ import { StoryRepositoryService } from "@tenzu/repository/story";
 })
 export class KanbanWrapperService {
   private kanbanWrapperStore = inject(KanbanWrapperStore);
-  storyService = inject(StoryRepositoryService);
+  storyRepositoryService = inject(StoryRepositoryService);
   storyView = this.kanbanWrapperStore.storyView;
   firstOpened = this.kanbanWrapperStore.firstOpened;
 
