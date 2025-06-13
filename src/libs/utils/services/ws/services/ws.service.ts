@@ -152,7 +152,7 @@ export class WsService {
         break;
       }
       default: {
-        debug("WS", "this command is unknow", message);
+        debug("WS", "this command is unknown", message);
       }
     }
   }

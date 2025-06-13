@@ -48,6 +48,7 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-r
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { getStoryDetailUrl, getWorkflowUrl, getWorkspaceRootUrl, HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
+import { WorkspaceDetail } from "@tenzu/repository/workspace";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -364,7 +365,7 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
   const content = message.event.content as { deletedBy: UserNested; workspace: string; name: string };
 
   switch (message.event.type) {
-    case WorkspaceEventType.WorkspaceDelete: {
+    case WorkspaceEventType.DeleteWorkspace: {
       const currentWorkspace = workspaceService.entityDetail();
       workspaceService.deleteEntitySummary(content.workspace);
       if (currentWorkspace && currentWorkspace.id === content.workspace) {
@@ -378,6 +379,26 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
           name: content.name,
         },
       });
+      break;
+    }
+    case WorkspaceEventType.UpdateWorkspace: {
+      const content = message.event.content as { workspace: WorkspaceDetail; updatedBy: UserNested };
+      const workspace = content.workspace;
+
+      const currentProject = workspaceService.entityDetail();
+
+      const workspaceIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(workspace);
+
+      if (!workspaceIsAlreadyUpdated) {
+        workspaceService.updateEntityDetail(workspace);
+        notificationService.info({
+          title: "notification.events.update_workspace",
+          translocoTitleParams: {
+            username: content.updatedBy?.fullName,
+            name: content.workspace.name,
+          },
+        });
+      }
       break;
     }
   }

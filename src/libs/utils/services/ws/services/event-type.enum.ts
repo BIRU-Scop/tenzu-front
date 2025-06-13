@@ -72,7 +72,8 @@ export enum WorkspaceMembershipEventType {
   UpdateWorkspaceMembership = "workspacememberships.update",
 }
 export enum WorkspaceEventType {
-  WorkspaceDelete = "workspaces.delete",
+  UpdateWorkspace = "workspaces.update",
+  DeleteWorkspace = "workspaces.delete",
 }
 
 export enum UserEventType {
