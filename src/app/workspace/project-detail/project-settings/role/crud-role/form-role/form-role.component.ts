@@ -28,6 +28,7 @@ import { AllProjectPermissionsByTheme, GroupPermissionKey } from "@tenzu/reposit
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatFormField } from "@angular/material/form-field";
 import { PermissionsFormGroupControl } from "../role.facade";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-form-role",
@@ -41,6 +42,7 @@ import { PermissionsFormGroupControl } from "../role.facade";
     MatRadioGroup,
     TranslocoDirective,
     MatError,
+    MatIcon,
   ],
   template: `
     @let _form = form();
@@ -67,8 +69,14 @@ import { PermissionsFormGroupControl } from "../role.facade";
         <mat-error>{{ t("project.settings.permissions.empty_permission") }}</mat-error>
       }
       @for (permissionGroup of permissionsGroups; track permissionGroup) {
-        <div class="mat-title-medium mt-4 mb-10">
+        <div class="mat-title-medium mt-4 flex flex-row items-center gap-2">
           {{ t(AllProjectPermissionsByTheme[permissionGroup].labelTransloco) }}
+          @if (permissionGroup === "comment") {
+            <div class="mt-1 flex flex-row items-center mat-body-small text-on-surface">
+              <mat-icon class="icon-sm mr-1">schedule</mat-icon
+              >{{ t("project.settings.permissions.comment.coming_soon") }}
+            </div>
+          }
         </div>
         <mat-radio-group
           [formControl]="_form.controls[permissionGroup]"
@@ -77,13 +85,19 @@ import { PermissionsFormGroupControl } from "../role.facade";
         >
           @if (_form.enabled) {
             @if (permissionGroup === "comment" && !_form.value.story) {
-              <div>{{ t("project.settings.permissions.comment.no_story_permissions") }}</div>
+              <div class="mb-1">
+                {{ t("project.settings.permissions.comment.no_story_permissions") }}
+              </div>
             }
             @if (permissionGroup === "role" && !_form.value.member) {
-              <div>{{ t("project.settings.permissions.role.no_member_permissions") }}</div>
+              <div class="mb-1">
+                {{ t("project.settings.permissions.role.no_member_permissions") }}
+              </div>
             }
             @if (permissionGroup === "workflow" && !_form.value.story) {
-              <div>{{ t("project.settings.permissions.workflow.no_story_permissions") }}</div>
+              <div class="mb-1">
+                {{ t("project.settings.permissions.workflow.no_story_permissions") }}
+              </div>
             }
           }
           @for (permission of AllProjectPermissionsByTheme[permissionGroup].permissions; track permission) {
