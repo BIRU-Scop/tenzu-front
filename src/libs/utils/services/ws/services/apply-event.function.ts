@@ -450,11 +450,16 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
   const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   const router = inject(Router);
 
+  const content = message.event.content as { workspaceId: string; projectId: string; selfRecipient: boolean };
   switch (message.event.type) {
-    case ProjectInvitationEventType.CreateProjectInvitation: {
-      const content = message.event.content as { workspaceId: string; projectId: string; selfRecipient: boolean };
+    // invitation is for this specific user
+    case ProjectInvitationEventType.CreateProjectInvitation:
+    case ProjectInvitationEventType.AcceptProjectInvitation:
+    case ProjectInvitationEventType.RevokeProjectInvitation:
+    // @ts-expect-error FALLS THROUGH to other members case
+    case ProjectInvitationEventType.DenyProjectInvitation: {
       if (content.selfRecipient) {
-        // invitation is for this specific user
+        console.log("PROJECT_INVIT SELF");
         if (router.url === HOMEPAGE_URL) {
           await workspaceRepositoryService.listRequest();
           return;
@@ -467,8 +472,15 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
         ) {
           projectRepositoryService.listRequest({ workspaceId: currentWorkspace.id }).then();
         }
-      } else {
-        // invitation is not for this specific user
+      }
+    }
+    // invitation is for other members
+    // eslint-disable-next-line no-fallthrough
+    case ProjectInvitationEventType.UpdateProjectInvitation:
+    case ProjectInvitationEventType.DeleteProjectInvitation: {
+      // update and delete are transparent for invitation recipient
+      if (!content.selfRecipient) {
+        console.log("PROJECT_INVIT OTHER");
         const currentProject = projectRepositoryService.entityDetail();
         if (
           currentProject &&
@@ -488,17 +500,29 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
   const workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
   const router = inject(Router);
 
+  const content = message.event.content as { workspaceId: string; selfRecipient: boolean };
   switch (message.event.type) {
-    case WorkspaceInvitationEventType.CreateWorkspaceInvitation: {
-      const content = message.event.content as { workspaceId: string; selfRecipient: boolean };
+    // invitation is for this specific user
+    case WorkspaceInvitationEventType.CreateWorkspaceInvitation:
+    case WorkspaceInvitationEventType.AcceptWorkspaceInvitation:
+    case WorkspaceInvitationEventType.RevokeWorkspaceInvitation:
+    // @ts-expect-error FALLS THROUGH to other members case
+    case WorkspaceInvitationEventType.DenyWorkspaceInvitation: {
       if (content.selfRecipient) {
-        // invitation is for this specific user
+        console.log("WORKSPACE_INVIT SELF");
         if (router.url === HOMEPAGE_URL) {
           await workspaceRepositoryService.listRequest();
           return;
         }
-      } else {
-        // invitation is not for this specific user
+      }
+    }
+    // invitation is for other members
+    // eslint-disable-next-line no-fallthrough
+    case WorkspaceInvitationEventType.UpdateWorkspaceInvitation:
+    case WorkspaceInvitationEventType.DeleteWorkspaceInvitation: {
+      // update and delete are transparent for invitation recipient
+      if (!content.selfRecipient) {
+        console.log("WORKSPACE_INVIT OTHER");
         const currentWorkspace = workspaceRepositoryService.entityDetail();
         if (
           currentWorkspace &&
