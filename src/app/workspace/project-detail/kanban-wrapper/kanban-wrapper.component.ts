@@ -107,7 +107,7 @@ export default class KanbanWrapperComponent {
       .subscribe((storyView) => {
         this.setUpBreadcrumbForFullView(storyView);
         if (storyView == "side-view") {
-          const storyDetail = this.kanbanWrapperService.storyService.entityDetail();
+          const storyDetail = this.kanbanWrapperService.storyRepositoryService.entityDetail();
           if (storyDetail) {
             this.kanbanWrapperService.setOpenedSideview(storyDetail);
           }
