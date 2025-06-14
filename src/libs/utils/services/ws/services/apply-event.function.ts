@@ -26,6 +26,7 @@ import {
   NotificationEventType,
   ProjectEventType,
   ProjectInvitationEventType,
+  ProjectMembershipEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
   StoryEventType,
@@ -34,6 +35,7 @@ import {
   WorkflowStatusEventType,
   WorkspaceEventType,
   WorkspaceInvitationEventType,
+  WorkspaceMembershipEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
@@ -387,7 +389,7 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       }
       break;
     }
-    // TODO create project
+    // TODO create project (also handle workspace totalProjects and membership totalProjectsIsMembers)
   }
 }
 
@@ -539,20 +541,13 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
       if (!content.selfRecipient) {
         // invitation is for other members
         const currentProject = projectRepositoryService.entityDetail();
-        if (
-          currentProject &&
-          content.projectId === currentProject.id &&
-          router.url.startsWith(getProjectMembersRootUrl(currentProject))
-        ) {
-          {
+        if (currentProject && content.projectId === currentProject.id) {
+          if (router.url.startsWith(getProjectMembersRootUrl(currentProject))) {
             projectInvitationRepositoryService.listProjectInvitations(currentProject.id).then();
-            if (message.event.type === ProjectInvitationEventType.AcceptProjectInvitation) {
-              projectMembershipRepositoryService.listProjectMembershipRequest(currentProject.id).then();
-            }
           }
         }
-        break;
       }
+      break;
     }
   }
 }
@@ -600,6 +595,67 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
             };
             workspaceMembershipRepositoryService.addEntitySummary(content.membership);
           }
+        }
+      }
+      break;
+    }
+  }
+}
+
+export async function applyWorkspaceMembershipEventType(message: WSResponseEvent<unknown>) {
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+
+  switch (message.event.type) {
+    case WorkspaceMembershipEventType.UpdateWorkspaceMembership: {
+      const content = message.event.content as {
+        membership: WorkspaceMembershipNested;
+        role: Role;
+        selfRecipient: boolean;
+      };
+      const canCreateProject = content.role.permissions.includes(WorkspacePermissions.CREATE_PROJECT);
+      const currentWorkspace = workspaceRepositoryService.entityDetail();
+      if (currentWorkspace && content.membership.workspaceId === currentWorkspace.id) {
+        workspaceMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
+        if (content.selfRecipient) {
+          workspaceRepositoryService.updateEntityDetail({
+            ...currentWorkspace,
+            userCanCreateProjects: canCreateProject,
+            userRole: content.role,
+          });
+        }
+      } else if (content.selfRecipient) {
+        try {
+          workspaceRepositoryService.updateEntitySummary(content.membership.workspaceId, {
+            userCanCreateProjects: canCreateProject,
+          });
+        } catch (e) {
+          if (!(e instanceof NotFoundEntityError)) {
+            throw e;
+          }
+        }
+      }
+      break;
+    }
+  }
+}
+
+export async function applyProjectMembershipEventType(message: WSResponseEvent<unknown>) {
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+
+  switch (message.event.type) {
+    case ProjectMembershipEventType.UpdateProjectMembership: {
+      const content = message.event.content as {
+        membership: ProjectMembership;
+        role: Role;
+        selfRecipient: boolean;
+      };
+      const currentProject = projectRepositoryService.entityDetail();
+      if (currentProject && content.membership.projectId === currentProject.id) {
+        projectMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
+        if (content.selfRecipient) {
+          projectRepositoryService.updateEntityDetail({ ...currentProject, userRole: content.role });
         }
       }
       break;
