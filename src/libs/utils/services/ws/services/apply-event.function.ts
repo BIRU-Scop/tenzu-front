@@ -448,26 +448,46 @@ export function applyNotificationEvent(message: WSResponseEvent<unknown>) {
 
 export async function applyProjectInvitationEventType(message: WSResponseEvent<unknown>) {
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   const router = inject(Router);
 
-  const content = message.event.content as { workspaceId: string; projectId: string; selfRecipient: boolean };
+  const content = message.event.content as {
+    workspaceId: string;
+    projectId: string;
+    userId?: string;
+    selfRecipient: boolean;
+  };
+  const currentWorkspace = workspaceRepositoryService.entityDetail();
   switch (message.event.type) {
-    // invitation is for this specific user
+    // @ts-expect-error FALLS THROUGH
+    case ProjectInvitationEventType.AcceptProjectInvitation: {
+      if (
+        content.userId &&
+        currentWorkspace &&
+        content.workspaceId === currentWorkspace.id &&
+        router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))
+      ) {
+        workspaceMembershipRepositoryService.addToProjectCount({
+          userId: content.userId,
+          workspaceId: content.workspaceId,
+        });
+        return;
+      }
+    }
+    // eslint-disable-next-line no-fallthrough
     case ProjectInvitationEventType.CreateProjectInvitation:
-    case ProjectInvitationEventType.AcceptProjectInvitation:
     case ProjectInvitationEventType.RevokeProjectInvitation:
-    // @ts-expect-error FALLS THROUGH to other members case
+    // @ts-expect-error FALLS THROUGH
     case ProjectInvitationEventType.DenyProjectInvitation: {
       if (content.selfRecipient) {
-        console.log("PROJECT_INVIT SELF");
+        // invitation is for this specific user
         if (router.url === HOMEPAGE_URL) {
           await workspaceRepositoryService.listRequest();
           return;
         }
-        const currentWorkspace = workspaceRepositoryService.entityDetail();
         if (
           currentWorkspace &&
           content.workspaceId === currentWorkspace.id &&
@@ -475,28 +495,30 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
         ) {
           projectRepositoryService.listRequest({ workspaceId: currentWorkspace.id }).then();
         }
+        break;
       }
     }
-    // invitation is for other members
     // eslint-disable-next-line no-fallthrough
     case ProjectInvitationEventType.UpdateProjectInvitation:
     case ProjectInvitationEventType.DeleteProjectInvitation: {
       // update and delete are transparent for invitation recipient
       if (!content.selfRecipient) {
-        console.log("PROJECT_INVIT OTHER");
+        // invitation is for other members
         const currentProject = projectRepositoryService.entityDetail();
         if (
           currentProject &&
           content.projectId === currentProject.id &&
           router.url.startsWith(getProjectMembersRootUrl(currentProject))
         ) {
-          projectInvitationRepositoryService.listProjectInvitations(currentProject.id).then();
-          if (message.event.type === ProjectInvitationEventType.AcceptProjectInvitation) {
-            projectMembershipRepositoryService.listProjectMembershipRequest(currentProject.id).then();
+          {
+            projectInvitationRepositoryService.listProjectInvitations(currentProject.id).then();
+            if (message.event.type === ProjectInvitationEventType.AcceptProjectInvitation) {
+              projectMembershipRepositoryService.listProjectMembershipRequest(currentProject.id).then();
+            }
           }
         }
+        break;
       }
-      break;
     }
   }
 }
@@ -509,27 +531,26 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
 
   const content = message.event.content as { workspaceId: string; selfRecipient: boolean };
   switch (message.event.type) {
-    // invitation is for this specific user
     case WorkspaceInvitationEventType.CreateWorkspaceInvitation:
     case WorkspaceInvitationEventType.AcceptWorkspaceInvitation:
     case WorkspaceInvitationEventType.RevokeWorkspaceInvitation:
-    // @ts-expect-error FALLS THROUGH to other members case
+    // @ts-expect-error FALLS THROUGH
     case WorkspaceInvitationEventType.DenyWorkspaceInvitation: {
       if (content.selfRecipient) {
-        console.log("WORKSPACE_INVIT SELF");
+        // invitation is for this specific user
         if (router.url === HOMEPAGE_URL) {
           await workspaceRepositoryService.listRequest();
           return;
         }
+        break;
       }
     }
-    // invitation is for other members
     // eslint-disable-next-line no-fallthrough
     case WorkspaceInvitationEventType.UpdateWorkspaceInvitation:
     case WorkspaceInvitationEventType.DeleteWorkspaceInvitation: {
       // update and delete are transparent for invitation recipient
       if (!content.selfRecipient) {
-        console.log("WORKSPACE_INVIT OTHER");
+        // invitation is for other members
         const currentWorkspace = workspaceRepositoryService.entityDetail();
         if (
           currentWorkspace &&
