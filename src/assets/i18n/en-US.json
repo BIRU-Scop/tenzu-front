@@ -30,10 +30,14 @@
       "update_workspace": "The workspace {{name}} has been edited by {{username}}.",
       "delete_workflow": "The kanban {{name}} has been deleted.",
       "delete_workflow_and_moved_content": "{{name}} has been deleted, content was moved to <a href=\"{{workflowUrl}}\"> {{workflowName}} </a>",
+      "revoked_project_invitation": "Your invitation to project {{id}} was revoked",
+      "revoked_workspace_invitation": "Your invitation to workspace {{id}} was revoked",
       "delete_story": "{{username}} has deleted the story #{{ref}}",
       "delete_project": "{{username}} has deleted the project {{name}}",
       "delete_workspace": "{{username}} has deleted the workspace {{name}}",
-      "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow"
+      "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow",
+      "update_project_membership": "Your role for project {{name}} is now {{role}}",
+      "update_workspace_membership": "Your role for workspace {{name}} is now {{role}}"
     }
   },
   "notifications": {

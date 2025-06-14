@@ -476,6 +476,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
   const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   const router = inject(Router);
+  const notificationService = inject(NotificationService);
 
   const content = message.event.content as {
     workspaceId: string;
@@ -522,7 +523,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
         // invitation is for this specific user
         if (router.url === HOMEPAGE_URL) {
           await workspaceRepositoryService.listRequest();
-          return;
+          break;
         }
         if (
           currentWorkspace &&
@@ -550,6 +551,14 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
       break;
     }
   }
+  if (message.event.type === ProjectInvitationEventType.RevokeProjectInvitation && content.selfRecipient) {
+    notificationService.warning({
+      title: "notification.events.revoked_project_invitation",
+      translocoTitleParams: {
+        id: content.projectId,
+      },
+    });
+  }
 }
 
 export async function applyWorkspaceInvitationEventType(message: WSResponseEvent<unknown>) {
@@ -557,6 +566,7 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
   const workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
   const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   const router = inject(Router);
+  const notificationService = inject(NotificationService);
 
   const content = message.event.content as { workspaceId: string; selfRecipient: boolean };
   switch (message.event.type) {
@@ -569,7 +579,7 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
         // invitation is for this specific user
         if (router.url === HOMEPAGE_URL) {
           await workspaceRepositoryService.listRequest();
-          return;
+          break;
         }
         break;
       }
@@ -600,11 +610,20 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
       break;
     }
   }
+  if (message.event.type === WorkspaceInvitationEventType.RevokeWorkspaceInvitation && content.selfRecipient) {
+    notificationService.warning({
+      title: "notification.events.revoked_workspace_invitation",
+      translocoTitleParams: {
+        id: content.workspaceId,
+      },
+    });
+  }
 }
 
 export async function applyWorkspaceMembershipEventType(message: WSResponseEvent<unknown>) {
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+  const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
     case WorkspaceMembershipEventType.UpdateWorkspaceMembership: {
@@ -622,6 +641,13 @@ export async function applyWorkspaceMembershipEventType(message: WSResponseEvent
             ...currentWorkspace,
             userCanCreateProjects: canCreateProject,
             userRole: content.role,
+          });
+          notificationService.warning({
+            title: "notification.events.update_workspace_membership",
+            translocoTitleParams: {
+              name: currentWorkspace.name,
+              role: content.role.name,
+            },
           });
         }
       } else if (content.selfRecipient) {
@@ -643,6 +669,7 @@ export async function applyWorkspaceMembershipEventType(message: WSResponseEvent
 export async function applyProjectMembershipEventType(message: WSResponseEvent<unknown>) {
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
     case ProjectMembershipEventType.UpdateProjectMembership: {
@@ -656,6 +683,13 @@ export async function applyProjectMembershipEventType(message: WSResponseEvent<u
         projectMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
         if (content.selfRecipient) {
           projectRepositoryService.updateEntityDetail({ ...currentProject, userRole: content.role });
+          notificationService.warning({
+            title: "notification.events.update_project_membership",
+            translocoTitleParams: {
+              name: currentProject.name,
+              role: content.role.name,
+            },
+          });
         }
       }
       break;
