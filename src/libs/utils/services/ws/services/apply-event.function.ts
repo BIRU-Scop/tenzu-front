@@ -321,6 +321,8 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
 
 export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
   const projectService = inject(ProjectRepositoryService);
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
@@ -328,15 +330,26 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
     case ProjectEventType.DeleteProject: {
       const content = message.event.content as {
         deletedBy: UserNested;
-        project: string;
-        workspace: string;
+        projectId: string;
+        workspaceId: string;
         name: string;
       };
       const currentProject = projectService.entityDetail();
-      projectService.deleteEntitySummary(content.project);
-      if (currentProject && currentProject.id === content.project) {
+      const currentWorkspace = workspaceRepositoryService.entityDetail();
+      projectService.deleteEntitySummary(content.projectId);
+      if (currentProject && currentProject.id === content.projectId) {
         await router.navigateByUrl("/");
         projectService.deleteEntityDetail(currentProject);
+      }
+      if (currentWorkspace && content.workspaceId === currentWorkspace.id) {
+        workspaceRepositoryService.updateEntityDetail({
+          ...currentWorkspace,
+          totalProjects: currentWorkspace.totalProjects - 1,
+        });
+        if (router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))) {
+          // reload totalProjectsIsMembers
+          workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(currentWorkspace.id).then();
+        }
       }
       notificationService.warning({
         title: "notification.events.delete_project",
@@ -367,6 +380,7 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       }
       break;
     }
+    // TODO create project
   }
 }
 
@@ -374,13 +388,13 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
   const workspaceService = inject(WorkspaceRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
-  const content = message.event.content as { deletedBy: UserNested; workspace: string; name: string };
 
   switch (message.event.type) {
     case WorkspaceEventType.DeleteWorkspace: {
+      const content = message.event.content as { deletedBy: UserNested; workspaceId: string; name: string };
       const currentWorkspace = workspaceService.entityDetail();
-      workspaceService.deleteEntitySummary(content.workspace);
-      if (currentWorkspace && currentWorkspace.id === content.workspace) {
+      workspaceService.deleteEntitySummary(content.workspaceId);
+      if (currentWorkspace && currentWorkspace.id === content.workspaceId) {
         await router.navigateByUrl("/");
         workspaceService.deleteEntityDetail(currentWorkspace);
       }
