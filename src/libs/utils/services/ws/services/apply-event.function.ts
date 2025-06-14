@@ -59,6 +59,8 @@ import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/reposi
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -448,6 +450,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   const router = inject(Router);
 
   const content = message.event.content as { workspaceId: string; projectId: string; selfRecipient: boolean };
@@ -488,6 +491,9 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
           router.url.startsWith(getProjectMembersRootUrl(currentProject))
         ) {
           projectInvitationRepositoryService.listProjectInvitations(currentProject.id).then();
+          if (message.event.type === ProjectInvitationEventType.AcceptProjectInvitation) {
+            projectMembershipRepositoryService.listProjectMembershipRequest(currentProject.id).then();
+          }
         }
       }
       break;
@@ -498,6 +504,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
 export async function applyWorkspaceInvitationEventType(message: WSResponseEvent<unknown>) {
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
+  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   const router = inject(Router);
 
   const content = message.event.content as { workspaceId: string; selfRecipient: boolean };
@@ -530,6 +537,9 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
           router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))
         ) {
           workspaceInvitationRepositoryService.listWorkspaceInvitations(currentWorkspace.id).then();
+          if (message.event.type === WorkspaceInvitationEventType.AcceptWorkspaceInvitation) {
+            workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(currentWorkspace.id).then();
+          }
         }
       }
       break;

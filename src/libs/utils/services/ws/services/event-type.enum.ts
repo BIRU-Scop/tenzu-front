@@ -60,6 +60,10 @@ export enum ProjectMembershipEventType {
   UpdateProjectMembership = "projectmemberships.update",
   DeleteProjectMembership = "projectmemberships.delete",
 }
+export enum ProjectRoleEventType {
+  UpdateProjectRole = "projectroles.update",
+  DeleteProjectRole = "projectroles.delete",
+}
 export enum ProjectEventType {
   DeleteProject = "projects.delete",
   UpdateProject = "projects.update",
@@ -74,6 +78,7 @@ export enum WorkspaceInvitationEventType {
 }
 export enum WorkspaceMembershipEventType {
   UpdateWorkspaceMembership = "workspacememberships.update",
+  DeleteWorkspaceMembership = "workspacememberships.delete",
 }
 export enum WorkspaceEventType {
   UpdateWorkspace = "workspaces.update",
@@ -96,6 +101,7 @@ export enum FamilyEventType {
   StoryAttachment = "storiesattachments",
   ProjectInvitation = "projectinvitations",
   ProjectMembership = "projectmemberships",
+  ProjectRole = "projectroles",
   WorkspaceInvitation = "workspaceinvitations",
   WorkspaceMembership = "workspacememberships",
   Project = "projects",

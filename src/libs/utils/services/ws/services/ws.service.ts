@@ -251,6 +251,10 @@ export class WsService {
           // Add handling logic if required
           break;
         }
+        case FamilyEventType.ProjectRole: {
+          // Add handling logic if required
+          break;
+        }
         case FamilyEventType.WorkspaceInvitation: {
           await applyWorkspaceInvitationEventType(message);
           break;
