@@ -54,13 +54,21 @@ export class WorkspaceMembershipRepositoryService {
     return await lastValueFrom(this.workspaceMembershipApiService.getDeleteInfo(item));
   }
 
+  addEntitySummary(item: WorkspaceMembership): void {
+    this.workspaceMembershipStore.addEntity(item);
+  }
+
+  updateEntitySummary(id: WorkspaceMembership["id"], partialItem: Partial<WorkspaceMembership>): WorkspaceMembership {
+    return this.workspaceMembershipStore.updateEntity(id, partialItem);
+  }
+
   async patchRequest(
     membershipId: WorkspaceMembership["id"],
     partialData: Pick<WorkspaceMembership, "roleId">,
   ): Promise<WorkspaceMembership> {
     if (this.entityMap()[membershipId]) {
       const entity = await lastValueFrom(this.workspaceMembershipApiService.patch(partialData, { membershipId }));
-      return this.workspaceMembershipStore.updateEntity(membershipId, entity);
+      return this.updateEntitySummary(membershipId, entity);
     }
     throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }

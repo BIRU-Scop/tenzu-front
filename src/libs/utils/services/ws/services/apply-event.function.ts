@@ -36,8 +36,8 @@ import {
   WorkspaceInvitationEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
-import { ProjectRepositoryService, ProjectDetail } from "@tenzu/repository/project";
-import { Workflow, ReorderWorkflowStatusesPayload, WorkflowNested } from "@tenzu/repository/workflow";
+import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow";
 import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user";
@@ -59,8 +59,15 @@ import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/reposi
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import {
+  WorkspaceMembership,
+  WorkspaceMembershipNested,
+  WorkspaceMembershipRepositoryService,
+} from "@tenzu/repository/workspace-membership";
+import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { Role } from "@tenzu/repository/membership";
+import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -478,17 +485,30 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
   switch (message.event.type) {
     // @ts-expect-error FALLS THROUGH
     case ProjectInvitationEventType.AcceptProjectInvitation: {
-      if (
-        content.userId &&
-        currentWorkspace &&
-        content.workspaceId === currentWorkspace.id &&
-        router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))
-      ) {
-        workspaceMembershipRepositoryService.addToProjectCount({
-          userId: content.userId,
-          workspaceId: content.workspaceId,
-        });
-        return;
+      const content = message.event.content as {
+        workspaceId: string;
+        projectId: string;
+        userId?: string;
+        selfRecipient: boolean;
+        membership: ProjectMembership;
+        workspaceMembership?: WorkspaceMembership;
+      };
+      if (content.userId && currentWorkspace && content.workspaceId === currentWorkspace.id) {
+        if (content.workspaceMembership) {
+          // handle default workspace membership created as a consequence of accepting project invitation
+          workspaceMembershipRepositoryService.addEntitySummary(content.workspaceMembership);
+        } else {
+          workspaceMembershipRepositoryService.addToProjectCount({
+            userId: content.userId,
+            workspaceId: content.workspaceId,
+          });
+        }
+        if (!content.selfRecipient) {
+          const currentProject = projectRepositoryService.entityDetail();
+          if (currentProject && content.projectId === currentProject.id) {
+            projectMembershipRepositoryService.addEntitySummary(content.membership);
+          }
+        }
       }
     }
     // eslint-disable-next-line no-fallthrough
@@ -573,7 +593,12 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
         ) {
           workspaceInvitationRepositoryService.listWorkspaceInvitations(currentWorkspace.id).then();
           if (message.event.type === WorkspaceInvitationEventType.AcceptWorkspaceInvitation) {
-            workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(currentWorkspace.id).then();
+            const content = message.event.content as {
+              workspaceId: string;
+              selfRecipient: boolean;
+              membership: WorkspaceMembership;
+            };
+            workspaceMembershipRepositoryService.addEntitySummary(content.membership);
           }
         }
       }
