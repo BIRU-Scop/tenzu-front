@@ -329,7 +329,7 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
-  const projectService = inject(ProjectRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   const router = inject(Router);
@@ -343,12 +343,12 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
         workspaceId: string;
         name: string;
       };
-      const currentProject = projectService.entityDetail();
+      const currentProject = projectRepositoryService.entityDetail();
       const currentWorkspace = workspaceRepositoryService.entityDetail();
-      projectService.deleteEntitySummary(content.projectId);
+      projectRepositoryService.deleteEntitySummary(content.projectId);
       if (currentProject && currentProject.id === content.projectId) {
         await router.navigateByUrl("/");
-        projectService.deleteEntityDetail(currentProject);
+        projectRepositoryService.deleteEntityDetail(currentProject);
       }
       if (currentWorkspace && content.workspaceId === currentWorkspace.id) {
         workspaceRepositoryService.updateEntityDetail({
@@ -373,12 +373,12 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       const content = message.event.content as { project: ProjectDetail; updatedBy: UserNested };
       const project = content.project;
 
-      const currentProject = projectService.entityDetail();
+      const currentProject = projectRepositoryService.entityDetail();
 
       const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
 
       if (!projectIsAlreadyUpdated) {
-        projectService.updateEntityDetail(project);
+        projectRepositoryService.updateEntityDetail(project);
         notificationService.info({
           title: "notification.events.update_project",
           translocoTitleParams: {
@@ -389,7 +389,34 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       }
       break;
     }
-    // TODO create project (also handle workspace totalProjects and membership totalProjectsIsMembers)
+    case ProjectEventType.CreateProject: {
+      const content = message.event.content as {
+        project?: ProjectSummary;
+        createdById: UserNested["id"];
+        workspaceId: WorkspaceSummary["id"];
+      };
+      if (content.project) {
+        if (router.url === HOMEPAGE_URL) {
+          await workspaceRepositoryService.listRequest();
+          break;
+        }
+      }
+      const currentWorkspace = workspaceRepositoryService.entityDetail();
+      if (currentWorkspace && currentWorkspace.id === content.workspaceId) {
+        if (content.project) {
+          projectRepositoryService.addEntitySummary(content.project);
+        } else {
+          workspaceRepositoryService.updateEntityDetail({
+            ...currentWorkspace,
+            totalProjects: currentWorkspace.totalProjects + 1,
+          });
+          workspaceMembershipRepositoryService.addToProjectCount({
+            userId: content.createdById,
+            workspaceId: content.workspaceId,
+          });
+        }
+      }
+    }
   }
 }
 
