@@ -62,6 +62,10 @@ export class WorkspaceMembershipRepositoryService {
     return this.workspaceMembershipStore.updateEntity(id, partialItem);
   }
 
+  deleteEntitySummary(id: WorkspaceMembership["id"]): void {
+    return this.workspaceMembershipStore.deleteEntity(id);
+  }
+
   async patchRequest(
     membershipId: WorkspaceMembership["id"],
     partialData: Pick<WorkspaceMembership, "roleId">,

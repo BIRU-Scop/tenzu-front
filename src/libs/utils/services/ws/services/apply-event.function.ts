@@ -38,7 +38,7 @@ import {
   WorkspaceMembershipEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
 import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow";
 import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -58,7 +58,7 @@ import {
   HOMEPAGE_URL,
 } from "@tenzu/utils/functions/urls";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
-import { WorkspaceDetail } from "@tenzu/repository/workspace";
+import { WorkspaceDetail, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import {
@@ -624,6 +624,7 @@ export async function applyWorkspaceMembershipEventType(message: WSResponseEvent
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   const notificationService = inject(NotificationService);
+  const router = inject(Router);
 
   switch (message.event.type) {
     case WorkspaceMembershipEventType.UpdateWorkspaceMembership: {
@@ -635,7 +636,6 @@ export async function applyWorkspaceMembershipEventType(message: WSResponseEvent
       const canCreateProject = content.role.permissions.includes(WorkspacePermissions.CREATE_PROJECT);
       const currentWorkspace = workspaceRepositoryService.entityDetail();
       if (currentWorkspace && content.membership.workspaceId === currentWorkspace.id) {
-        workspaceMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
         if (content.selfRecipient) {
           workspaceRepositoryService.updateEntityDetail({
             ...currentWorkspace,
@@ -649,6 +649,9 @@ export async function applyWorkspaceMembershipEventType(message: WSResponseEvent
               role: content.role.name,
             },
           });
+        } else {
+          // event will be received twice so we only act on it once
+          workspaceMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
         }
       } else if (content.selfRecipient) {
         try {
@@ -663,24 +666,52 @@ export async function applyWorkspaceMembershipEventType(message: WSResponseEvent
       }
       break;
     }
+    case WorkspaceMembershipEventType.DeleteWorkspaceMembership: {
+      const content = message.event.content as {
+        membership: WorkspaceMembershipNested;
+        selfRecipient: boolean;
+      };
+      if (router.url === HOMEPAGE_URL && content.selfRecipient) {
+        await workspaceRepositoryService.listRequest();
+        break;
+      }
+      const currentWorkspace = workspaceRepositoryService.entityDetail();
+      if (currentWorkspace && content.membership.workspaceId === currentWorkspace.id) {
+        if (content.selfRecipient) {
+          await router.navigateByUrl("/");
+          workspaceRepositoryService.deleteEntityDetail(currentWorkspace);
+          notificationService.warning({
+            title: "notification.events.delete_workspace_membership_self",
+            translocoTitleParams: {
+              name: currentWorkspace.name,
+            },
+          });
+        } else {
+          workspaceMembershipRepositoryService.deleteEntitySummary(content.membership.id);
+        }
+      }
+      break;
+    }
   }
 }
 
 export async function applyProjectMembershipEventType(message: WSResponseEvent<unknown>) {
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   const notificationService = inject(NotificationService);
+  const router = inject(Router);
 
   switch (message.event.type) {
     case ProjectMembershipEventType.UpdateProjectMembership: {
       const content = message.event.content as {
         membership: ProjectMembership;
         role: Role;
+        project?: ProjectSummary;
         selfRecipient: boolean;
       };
       const currentProject = projectRepositoryService.entityDetail();
       if (currentProject && content.membership.projectId === currentProject.id) {
-        projectMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
         if (content.selfRecipient) {
           projectRepositoryService.updateEntityDetail({ ...currentProject, userRole: content.role });
           notificationService.warning({
@@ -690,6 +721,57 @@ export async function applyProjectMembershipEventType(message: WSResponseEvent<u
               role: content.role.name,
             },
           });
+        } else {
+          // event will be received twice so we only act on it once
+          projectMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
+        }
+      } else if (content.project && content.selfRecipient) {
+        const currentWorkspace = workspaceRepositoryService.entityDetail();
+        if (currentWorkspace && content.project.workspaceId === currentWorkspace.id) {
+          projectRepositoryService.addEntitySummary(content.project);
+        }
+      }
+      break;
+    }
+    case ProjectMembershipEventType.DeleteProjectMembership: {
+      const content = message.event.content as {
+        membership: ProjectMembership;
+        workspaceId: WorkspaceSummary["id"];
+        selfRecipient: boolean;
+      };
+
+      const currentProject = projectRepositoryService.entityDetail();
+      if (currentProject && content.membership.projectId === currentProject.id) {
+        if (content.selfRecipient) {
+          await router.navigateByUrl("/");
+          projectRepositoryService.deleteEntityDetail(currentProject);
+          notificationService.warning({
+            title: "notification.events.delete_project_membership_self",
+            translocoTitleParams: {
+              name: currentProject.name,
+            },
+          });
+        } else {
+          // event will be received twice so we only act on it once
+          projectMembershipRepositoryService.deleteEntitySummary(content.membership.id);
+        }
+        break;
+      }
+      if (content.selfRecipient) {
+        // invitation is for this specific user
+        if (router.url === HOMEPAGE_URL) {
+          await workspaceRepositoryService.listRequest();
+          break;
+        }
+        const currentWorkspace = workspaceRepositoryService.entityDetail();
+        if (currentWorkspace && content.workspaceId === currentWorkspace.id) {
+          try {
+            projectRepositoryService.deleteEntitySummary(content.membership.projectId);
+          } catch (e) {
+            if (!(e instanceof NotFoundEntityError)) {
+              throw e;
+            }
+          }
         }
       }
       break;

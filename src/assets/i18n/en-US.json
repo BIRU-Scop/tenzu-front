@@ -37,7 +37,9 @@
       "delete_workspace": "{{username}} has deleted the workspace {{name}}",
       "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow",
       "update_project_membership": "Your role for project {{name}} is now {{role}}",
-      "update_workspace_membership": "Your role for workspace {{name}} is now {{role}}"
+      "delete_project_membership_self": "You have been removed from project {{name}}",
+      "update_workspace_membership": "Your role for workspace {{name}} is now {{role}}",
+      "delete_workspace_membership_self": "You have been removed from workspace {{name}}"
     }
   },
   "notifications": {
