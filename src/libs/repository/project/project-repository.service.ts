@@ -120,9 +120,11 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     const oldProjectDetail = this.entityDetail();
     if (oldProjectDetail?.id != projectId) {
       this.resetEntityDetail();
-      this.getRequest({ projectId }).then();
+      const promise = this.getRequest({ projectId }).then();
       this.projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();
       this.projectRoleRepositoryService.listRequest({ projectId }).then();
+      return promise;
     }
+    return undefined;
   }
 }
