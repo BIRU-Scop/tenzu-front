@@ -31,6 +31,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-membership-role",
@@ -50,6 +51,7 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  notificationService = inject(NotificationService);
 
   membership = input.required<MembershipBase>();
   itemType = input.required<"project" | "workspace">();
@@ -93,6 +95,7 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
       await this.membershipRepositoryService().patchRequest(membership.id, {
         roleId: value,
       });
+      this.notificationService.success({ title: "notification.action.changes_saved" });
       if (this.isSelf()) {
         this.changedSelf.emit({ roleId: value, entityRole: this.entityRole() });
       }
