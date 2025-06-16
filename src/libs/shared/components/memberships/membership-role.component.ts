@@ -30,6 +30,7 @@ import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 
 @Component({
   selector: "app-membership-role",
@@ -48,6 +49,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
 export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> implements OnInit {
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
 
   membership = input.required<MembershipBase>();
   itemType = input.required<"project" | "workspace">();
@@ -86,7 +88,9 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
 
   ngOnInit() {
     return this.roleControl.valueChanges.pipe(filterNotNull()).subscribe(async (value: Role["id"]) => {
-      await this.membershipRepositoryService().patchRequest(this.membership().id, {
+      const membership = this.membership();
+      this.projectRoleRepositoryService.updateMembersCount(membership.roleId, value);
+      await this.membershipRepositoryService().patchRequest(membership.id, {
         roleId: value,
       });
       if (this.isSelf()) {

@@ -512,6 +512,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
@@ -547,6 +548,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
           const currentProject = projectRepositoryService.entityDetail();
           if (currentProject && content.projectId === currentProject.id) {
             projectMembershipRepositoryService.addEntitySummary(content.membership);
+            projectRoleRepositoryService.updateMembersCount(undefined, content.membership.roleId);
           }
         }
       }
@@ -730,6 +732,7 @@ export async function applyProjectMembershipEventType(message: WSResponseEvent<u
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const projectRepositoryService = inject(ProjectRepositoryService);
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   const notificationService = inject(NotificationService);
   const router = inject(Router);
 
@@ -754,7 +757,9 @@ export async function applyProjectMembershipEventType(message: WSResponseEvent<u
           });
         } else {
           // event will be received twice so we only act on it once
+          const previousRoleId = projectMembershipRepositoryService.entityMap()[content.membership.id]?.roleId;
           projectMembershipRepositoryService.updateEntitySummary(content.membership.id, content.membership);
+          projectRoleRepositoryService.updateMembersCount(previousRoleId, content.membership.roleId);
         }
       } else if (content.project && content.selfRecipient) {
         const currentWorkspace = workspaceRepositoryService.entityDetail();
@@ -785,6 +790,7 @@ export async function applyProjectMembershipEventType(message: WSResponseEvent<u
         } else {
           // event will be received twice so we only act on it once
           projectMembershipRepositoryService.deleteEntitySummary(content.membership.id);
+          projectRoleRepositoryService.updateMembersCount(content.membership.roleId);
         }
         break;
       }

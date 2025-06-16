@@ -25,6 +25,7 @@ import { ProjectRolesDetailStore, ProjectRolesEntitiesSummaryStore } from "./pro
 import { BaseRepositoryService } from "../base";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -51,5 +52,29 @@ export class ProjectRoleRepositoryService extends BaseRepositoryService<
     queryParams?: { moveTo: ProjectRoleDetail["id"] },
   ): Promise<ProjectRoleDetail> {
     return super.deleteRequest(item, params, queryParams);
+  }
+
+  updateMembersCount(previousRoleId?: ProjectRoleSummary["id"], newRoleId?: ProjectRoleSummary["id"]) {
+    const rolesMap = this.entityMapSummary();
+    const currentRole = this.entityDetail();
+
+    if (previousRoleId) {
+      const previousRole = rolesMap[previousRoleId];
+      if (!previousRole) throw new NotFoundEntityError(`Entity role ${previousRoleId} not found`);
+      if (currentRole && currentRole.id === previousRoleId) {
+        this.updateEntityDetail({ ...previousRole, totalMembers: previousRole.totalMembers - 1 });
+      } else {
+        this.updateEntitySummary(previousRoleId, { totalMembers: previousRole.totalMembers - 1 });
+      }
+    }
+    if (newRoleId) {
+      const newRole = rolesMap[newRoleId];
+      if (!newRole) throw new NotFoundEntityError(`Entity role ${newRoleId} not found`);
+      if (currentRole && currentRole.id === newRoleId) {
+        this.updateEntityDetail({ ...newRole, totalMembers: newRole.totalMembers + 1 });
+      } else {
+        this.updateEntitySummary(newRoleId, { totalMembers: newRole.totalMembers + 1 });
+      }
+    }
   }
 }
