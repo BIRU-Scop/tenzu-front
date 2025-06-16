@@ -51,6 +51,10 @@ export class ProjectInvitationRepositoryService {
     return this.projectInvitationEntitiesStore.updateEntity(id, partialItem);
   }
 
+  upsertMultipleEntitiesSummary(items: ProjectInvitation[]) {
+    this.projectInvitationEntitiesStore.upsertEntities(items);
+  }
+
   async patchRequest(
     invitationId: ProjectInvitation["id"],
     partialData: Pick<ProjectInvitation, "roleId">,

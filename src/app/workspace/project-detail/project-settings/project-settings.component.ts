@@ -103,7 +103,7 @@ export default class ProjectSettingsComponent implements AfterViewInit {
       iconName: "info",
     },
     {
-      path: "./list-project-roles",
+      path: "./list-roles",
       labelKey: "project.settings.roles.title",
       permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
       iconName: "assignment_ind",

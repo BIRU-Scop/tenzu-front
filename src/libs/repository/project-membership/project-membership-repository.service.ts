@@ -49,13 +49,29 @@ export class ProjectMembershipRepositoryService {
     this.projectMembershipStore.setAllEntities(projectMemberships);
   }
 
+  addEntitySummary(item: ProjectMembership): void {
+    this.projectMembershipStore.addEntity(item);
+  }
+
+  deleteEntitySummary(id: ProjectMembership["id"]): void {
+    this.projectMembershipStore.deleteEntity(id);
+  }
+
+  upsertMultipleEntitiesSummary(items: ProjectMembership[]) {
+    this.projectMembershipStore.upsertEntities(items);
+  }
+
+  updateEntitySummary(id: ProjectMembership["id"], partialItem: Partial<ProjectMembership>): ProjectMembership {
+    return this.projectMembershipStore.updateEntity(id, partialItem);
+  }
+
   async patchRequest(
     membershipId: ProjectMembership["id"],
     partialData: Pick<ProjectMembership, "roleId">,
   ): Promise<ProjectMembership> {
     if (this.entityMap()[membershipId]) {
       const entity = await lastValueFrom(this.projectMembershipApiService.patch(partialData, { membershipId }));
-      return this.projectMembershipStore.updateEntity(membershipId, entity);
+      return this.updateEntitySummary(membershipId, entity);
     }
     throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }

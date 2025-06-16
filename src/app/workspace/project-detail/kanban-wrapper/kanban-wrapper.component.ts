@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ProjectKanbanComponent } from "./project-kanban/project-kanban.component";
 import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import StoryDetailComponent from "./story-detail/story-detail.component";
@@ -57,7 +57,7 @@ export class StoryDetailDialogComponent {
         <app-project-kanban></app-project-kanban>
       }
       @case ("fullView") {
-        @if (this.kanbanWrapperService.storyService.entityDetail()) {
+        @if (this.kanbanWrapperService.storyRepositoryService.entityDetail()) {
           <app-story-detail></app-story-detail>
         } @else {
           <app-project-kanban></app-project-kanban>
@@ -66,12 +66,7 @@ export class StoryDetailDialogComponent {
       @case ("side-view") {
         <mat-drawer-container>
           <app-project-kanban></app-project-kanban>
-          <mat-drawer
-            #drawer
-            mode="side"
-            [opened]="!!this.kanbanWrapperService.storyService.entityDetail()"
-            position="end"
-          >
+          <mat-drawer #drawer mode="side" [opened]="kanbanWrapperService.isOpenedSideview()" position="end">
             <app-story-detail [canBeClosed]="true" (closed)="navigateToKanban()"></app-story-detail>
           </mat-drawer>
         </mat-drawer-container>
@@ -94,7 +89,7 @@ export class StoryDetailDialogComponent {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class KanbanWrapperComponent implements OnDestroy {
+export default class KanbanWrapperComponent {
   dialog = inject(MatDialog);
   router = inject(Router);
   kanbanWrapperService = inject(KanbanWrapperService);
@@ -104,14 +99,21 @@ export default class KanbanWrapperComponent implements OnDestroy {
 
   constructor() {
     const storyView$ = toObservable(this.kanbanWrapperService.storyView);
-    toObservable(this.kanbanWrapperService.storyService.entityDetail)
+    toObservable(this.kanbanWrapperService.storyRepositoryService.entityDetail)
       .pipe(
         filterNotNull(),
         switchMap(() => storyView$),
       )
       .subscribe((storyView) => {
         this.setUpBreadcrumbForFullView(storyView);
-
+        if (storyView == "side-view") {
+          const storyDetail = this.kanbanWrapperService.storyRepositoryService.entityDetail();
+          if (storyDetail) {
+            this.kanbanWrapperService.setOpenedSideview(storyDetail);
+          }
+        } else {
+          this.kanbanWrapperService.closeOpenedSideview();
+        }
         if (storyView == "kanban" && this.kanbanWrapperService.firstOpened()) {
           this.kanbanWrapperService.setFirstOpened(false);
           const dialogRef = this.dialog.open(StoryDetailDialogComponent, {
@@ -127,7 +129,7 @@ export default class KanbanWrapperComponent implements OnDestroy {
                 .navigate(["../..", "kanban", this.workflowService.entityDetail()?.slug], {
                   relativeTo: this.activatedRoute,
                 })
-                .then(() => this.kanbanWrapperService.storyService.resetEntityDetail());
+                .then(() => this.kanbanWrapperService.storyRepositoryService.resetEntityDetail());
             }
           });
         }
@@ -141,14 +143,11 @@ export default class KanbanWrapperComponent implements OnDestroy {
   }
 
   navigateToKanban(): void {
-    this.kanbanWrapperService.storyService.resetEntityDetail();
+    this.kanbanWrapperService.closeOpenedSideview();
     this.router
       .navigate(["../..", "kanban", this.workflowService.entityDetail()?.slug], {
         relativeTo: this.activatedRoute,
       })
-      .then(() => this.kanbanWrapperService.storyService.resetEntityDetail());
-  }
-  ngOnDestroy(): void {
-    this.kanbanWrapperService.storyService.resetAll();
+      .then(() => this.kanbanWrapperService.storyRepositoryService.resetEntityDetail());
   }
 }

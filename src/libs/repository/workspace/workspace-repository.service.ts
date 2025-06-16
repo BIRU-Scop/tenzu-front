@@ -126,9 +126,11 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
     if (oldWorkspaceDetail?.id != workspaceId) {
       this.resetEntityDetail();
 
-      this.getRequest({ workspaceId }).then();
+      const promise = this.getRequest({ workspaceId }).then();
       this.workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(workspaceId).then();
       this.workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
+      return promise;
     }
+    return undefined;
   }
 }

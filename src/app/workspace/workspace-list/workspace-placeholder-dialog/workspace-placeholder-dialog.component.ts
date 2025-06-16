@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -34,9 +34,6 @@ import { TranslocoDirective } from "@jsverse/transloco";
         ><p>{{ t("placeholder.placeholder_text") }}</p>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button class="primary-button" [mat-dialog-close]="true">
-          {{ t("create.create_workspace") }}
-        </button>
         <button
           *transloco="let t; prefix: 'commons'"
           mat-dialog-close
@@ -44,6 +41,9 @@ import { TranslocoDirective } from "@jsverse/transloco";
           class="primary-button whitespace-nowrap shrink-0"
         >
           {{ t("close") }}
+        </button>
+        <button mat-flat-button class="primary-button" [mat-dialog-close]="true" cdkFocusInitial>
+          {{ t("create.create_workspace") }}
         </button>
       </mat-dialog-actions>
     </ng-container>

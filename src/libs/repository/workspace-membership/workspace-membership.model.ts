@@ -22,8 +22,11 @@
 import { MembershipBase } from "../membership";
 import { ProjectNested } from "../project";
 
-export type WorkspaceMembership = MembershipBase & {
+export type WorkspaceMembershipNested = MembershipBase & {
   workspaceId: string;
+};
+
+export type WorkspaceMembership = WorkspaceMembershipNested & {
   totalProjectsIsMember: number;
 };
 

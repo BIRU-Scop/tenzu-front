@@ -49,30 +49,43 @@ export enum StoryAttachmentEventType {
 }
 export enum ProjectInvitationEventType {
   CreateProjectInvitation = "projectinvitations.create",
-  AcceptProjectInvitation = "projectmemberships.create",
+  UpdateProjectInvitation = "projectinvitations.update",
+  AcceptProjectInvitation = "projectinvitations.accept",
   RevokeProjectInvitation = "projectinvitations.revoke",
   DenyProjectInvitation = "projectinvitations.deny",
+  DeleteProjectInvitation = "projectinvitations.delete",
 }
 export enum ProjectMembershipEventType {
   CreateProjectMembership = "projectmemberships.create",
   UpdateProjectMembership = "projectmemberships.update",
   DeleteProjectMembership = "projectmemberships.delete",
 }
+export enum ProjectRoleEventType {
+  CreateProjectRole = "projectroles.create",
+  UpdateProjectRole = "projectroles.update",
+  DeleteProjectRole = "projectroles.delete",
+}
 export enum ProjectEventType {
+  CreateProject = "projects.create",
   DeleteProject = "projects.delete",
   UpdateProject = "projects.update",
 }
 export enum WorkspaceInvitationEventType {
   CreateWorkspaceInvitation = "workspaceinvitations.create",
   UpdateWorkspaceInvitation = "workspaceinvitations.update",
-  AcceptWorkspaceInvitation = "workspacememberships.create",
+  AcceptWorkspaceInvitation = "workspaceinvitations.accept",
+  RevokeWorkspaceInvitation = "workspaceinvitations.revoke",
+  DenyWorkspaceInvitation = "workspaceinvitations.deny",
   DeleteWorkspaceInvitation = "workspaceinvitations.delete",
 }
 export enum WorkspaceMembershipEventType {
   UpdateWorkspaceMembership = "workspacememberships.update",
+  DeleteWorkspaceMembership = "workspacememberships.delete",
 }
 export enum WorkspaceEventType {
-  WorkspaceDelete = "workspaces.delete",
+  CreateWorkspace = "workspaces.create",
+  UpdateWorkspace = "workspaces.update",
+  DeleteWorkspace = "workspaces.delete",
 }
 
 export enum UserEventType {
@@ -91,6 +104,7 @@ export enum FamilyEventType {
   StoryAttachment = "storiesattachments",
   ProjectInvitation = "projectinvitations",
   ProjectMembership = "projectmemberships",
+  ProjectRole = "projectroles",
   WorkspaceInvitation = "workspaceinvitations",
   WorkspaceMembership = "workspacememberships",
   Project = "projects",
