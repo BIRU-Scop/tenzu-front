@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.24](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.23...v0.1.0-staging.24) (2025-06-16)
+
+
+### Features
+
+* a new system to manage the view side-view on the kanban. ([ecd2031](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/ecd203194863525dfb19fbf9d4908947490094b4))
+* add notification in case of self invitation revoke or membership change ([5afe84a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5afe84ab59c075798f0848293bc97bd15024fdfd))
+* check user has sufficient permission in project creation form ([675bbb9](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/675bbb95b5177063186450f190dbd536c5a155d1))
+* for list-project-roles, shorten url, redirect to settings instead of home if no permission and don't make additional list query ([afe32d6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/afe32d67d1c5a13c9eae6a15b3ed0b31e8c98b35))
+* notification on membership change success ([10485e0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/10485e02c0468c1d70466434572529912b14f607))
+* realtime for roles' members count ([fa9605c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/fa9605c38a16cecdcc30cc9a09afc887d935a8e1))
+* realtime invitation accept, membership creation ([616ec37](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/616ec37eae36048b0a9a603a2b25ce98b9f467b8))
+* realtime invitation changes ([ddfdb48](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/ddfdb4891c2bb145d07870c64bc7503b8b05250c))
+* realtime invitation creation ([f6ba5ef](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f6ba5ef1688124920de917243370172adaf2d3dc))
+* realtime membership deletion ([e68ffa0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/e68ffa00fab59b8dc839b7fb1ace305dc40e7ff3))
+* realtime membership update ([a25368c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a25368ceb194d1223ac6e9bf9da6a373b04aff31))
+* realtime project creation ([98fb3f8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/98fb3f82ebc99ff7642c63be2b0129ee76059608))
+* realtime project deletion impact on workspace ([4803144](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4803144cc82ea576d65c807a67520d71acc4c88a))
+* realtime project invitation accept performant sync of memberships ([50fa3b5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/50fa3b59f6c74bb8923bcd1ff12e9f80defb68bb))
+* realtime project invitation accept, handle total project update ([042e3d8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/042e3d87d58f077f69926f3068ca650891b2f98a))
+* realtime roles ([72ccb29](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/72ccb2905957987164a6befe35f4bc18a95163c3))
+* realtime workspace creation ([13a2595](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/13a25958a6368f7edfbbb12cec73132c09dc90b9))
+* realtime workspace update ([b6f0288](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b6f028891d81eb9119f5895ef97126eba80bd925))
+
+
+### Bug Fixes
+
+* handle redirect on error in project en workspace resolver ([928076c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/928076cb20dd77952bf5b686913c23e153273365))
+* now the outlined select has the good border and correct a wrong size of icon ([4bf8f75](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4bf8f75062af2f78affc63db546b80d185551721))
+* potential security issue from SafeHtmlPipe ([71245b2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/71245b28cd6eda1d342e0ffb141dcafd09f4111d))
+* prevent reset of stories list causing empty list whe going back to same workflow ([c8825fd](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c8825fd77411a614b50c7dcfcf7fb1f97fab2dc9))
+
 ## [0.1.0-staging.23](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.22...v0.1.0-staging.23) (2025-06-13)
 
 
