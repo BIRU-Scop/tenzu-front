@@ -9,7 +9,8 @@
     "create_project": "Create project",
     "name": "Name",
     "name_required": "Please enter a name",
-    "workspace_required": "Please choose a workspace"
+    "workspace_required": "Please choose a workspace",
+    "workspace_forbidden": "You don't have the permission to create a project in this workspace"
   },
   "settings": {
     "title": "Project settings",

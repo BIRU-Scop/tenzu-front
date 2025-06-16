@@ -31,6 +31,7 @@ import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/reposit
 import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { DeleteRoleDialogComponent } from "./edit-role/delete-role-dialog/delete-role-dialog.component";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 
 export type PermissionValuesFor<K extends GroupPermissionKey> =
   | (typeof AllProjectPermissionsByTheme)[K]["permissions"][number]
@@ -66,6 +67,7 @@ export const EMPTY_ROLE_FORM_VALUE: FormValue = {
 export class RoleFacade {
   readonly fb = inject(FormBuilder);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  readonly projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   readonly projectRepositoryService = inject(ProjectRepositoryService);
   readonly typedDialogService = inject(TypedDialogService);
   readonly currentRole = this.projectRoleRepositoryService.entityDetail;
@@ -271,6 +273,13 @@ export class RoleFacade {
               { roleId: currentRole.id },
               { moveTo: moveToProjectRole.id },
             );
+            this.projectMembershipRepositoryService.upsertMultipleEntitiesSummary(
+              this.projectMembershipRepositoryService
+                .entities()
+                .filter((item) => item.roleId === currentRole.id)
+                .map((item) => ({ ...item, roleId: moveToProjectRole.id })),
+            );
+            this.projectRoleRepositoryService.listRequest({ projectId: projectDetail.id }).then();
             this.router
               .navigate([
                 "/",
@@ -279,7 +288,7 @@ export class RoleFacade {
                 "project",
                 projectDetail.id,
                 "settings",
-                "list-project-roles",
+                "list-roles",
               ])
               .then();
           }
@@ -287,15 +296,7 @@ export class RoleFacade {
     } else {
       await this.projectRoleRepositoryService.deleteRequest(currentRole, { roleId: currentRole.id });
       this.router
-        .navigate([
-          "/",
-          "workspace",
-          projectDetail.workspaceId,
-          "project",
-          projectDetail.id,
-          "settings",
-          "list-project-roles",
-        ])
+        .navigate(["/", "workspace", projectDetail.workspaceId, "project", projectDetail.id, "settings", "list-roles"])
         .then();
     }
   }

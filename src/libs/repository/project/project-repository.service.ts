@@ -86,7 +86,6 @@ export class ProjectRepositoryService extends BaseRepositoryService<
   }
 
   override async getRequest(params: ProjectApiServiceType.GetEntityDetailParams, queryParams?: QueryParams) {
-    this.unsubscribeFromPrevious();
     const item = await super.getRequest(params, queryParams);
     this.wsService.command({ command: "subscribe_to_project_events", project: params.projectId });
     return item;
@@ -121,10 +120,11 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     const oldProjectDetail = this.entityDetail();
     if (oldProjectDetail?.id != projectId) {
       this.resetEntityDetail();
-
-      this.getRequest({ projectId }).then();
+      const promise = this.getRequest({ projectId }).then();
       this.projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();
       this.projectRoleRepositoryService.listRequest({ projectId }).then();
+      return promise;
     }
+    return undefined;
   }
 }

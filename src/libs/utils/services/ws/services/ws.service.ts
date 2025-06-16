@@ -39,6 +39,8 @@ import {
   applyNotificationEvent,
   applyProjectEvent,
   applyProjectInvitationEventType,
+  applyProjectMembershipEventType,
+  applyProjectRoleEventType,
   applyStoryAssignmentEvent,
   applyStoryAttachmentEvent,
   applyStoryEvent,
@@ -46,6 +48,8 @@ import {
   applyWorkflowEvent,
   applyWorkflowStatusEvent,
   applyWorkspaceEvent,
+  applyWorkspaceInvitationEventType,
+  applyWorkspaceMembershipEventType,
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
 import { ConfigAppService } from "../../../../../app/config-app/config-app.service";
@@ -152,7 +156,7 @@ export class WsService {
         break;
       }
       default: {
-        debug("WS", "this command is unknow", message);
+        debug("WS", "this command is unknown", message);
       }
     }
   }
@@ -247,15 +251,19 @@ export class WsService {
           break;
         }
         case FamilyEventType.ProjectMembership: {
-          // Add handling logic if required
+          await applyProjectMembershipEventType(message);
+          break;
+        }
+        case FamilyEventType.ProjectRole: {
+          await applyProjectRoleEventType(message);
           break;
         }
         case FamilyEventType.WorkspaceInvitation: {
-          // Add handling logic if required
+          await applyWorkspaceInvitationEventType(message);
           break;
         }
         case FamilyEventType.WorkspaceMembership: {
-          // Add handling logic if required
+          await applyWorkspaceMembershipEventType(message);
           break;
         }
         case FamilyEventType.User: {

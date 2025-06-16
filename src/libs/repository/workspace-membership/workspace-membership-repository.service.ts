@@ -27,6 +27,7 @@ import { WorkspaceMembershipEntitiesStore } from "./workspace-membership.store";
 import { NotFoundEntityError } from "../base/errors";
 import { UserNested } from "@tenzu/repository/user";
 import { ResetService } from "@tenzu/repository/base/reset.service";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
 
 @Injectable({
   providedIn: "root",
@@ -53,13 +54,25 @@ export class WorkspaceMembershipRepositoryService {
     return await lastValueFrom(this.workspaceMembershipApiService.getDeleteInfo(item));
   }
 
+  addEntitySummary(item: WorkspaceMembership): void {
+    this.workspaceMembershipStore.addEntity(item);
+  }
+
+  updateEntitySummary(id: WorkspaceMembership["id"], partialItem: Partial<WorkspaceMembership>): WorkspaceMembership {
+    return this.workspaceMembershipStore.updateEntity(id, partialItem);
+  }
+
+  deleteEntitySummary(id: WorkspaceMembership["id"]): void {
+    return this.workspaceMembershipStore.deleteEntity(id);
+  }
+
   async patchRequest(
     membershipId: WorkspaceMembership["id"],
     partialData: Pick<WorkspaceMembership, "roleId">,
   ): Promise<WorkspaceMembership> {
     if (this.entityMap()[membershipId]) {
       const entity = await lastValueFrom(this.workspaceMembershipApiService.patch(partialData, { membershipId }));
-      return this.workspaceMembershipStore.updateEntity(membershipId, entity);
+      return this.updateEntitySummary(membershipId, entity);
     }
     throw new NotFoundEntityError(`Entity ${membershipId} not found`);
   }
@@ -79,5 +92,17 @@ export class WorkspaceMembershipRepositoryService {
   }
   resetAll(): void {
     this.resetEntitySummaryList();
+  }
+
+  addToProjectCount({ userId, workspaceId }: { userId: UserNested["id"]; workspaceId: WorkspaceSummary["id"] }) {
+    const membership = this.workspaceMembershipStore
+      .entities()
+      .find((membership) => membership.workspaceId === workspaceId && membership.user.id === userId);
+    if (membership) {
+      this.workspaceMembershipStore.updateEntity(membership.id, {
+        ...membership,
+        totalProjectsIsMember: membership.totalProjectsIsMember + 1,
+      });
+    }
   }
 }

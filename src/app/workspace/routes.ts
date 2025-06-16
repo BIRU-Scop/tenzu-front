@@ -33,13 +33,18 @@ export function workspaceResolver(route: ActivatedRouteSnapshot) {
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const router = inject(Router);
   if (workspaceId) {
-    try {
-      workspaceRepositoryService.setup({ workspaceId });
-    } catch (error) {
-      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-        return router.navigate(["/404"]);
-      }
-      throw error;
+    const promise = workspaceRepositoryService.setup({ workspaceId });
+    if (promise) {
+      promise.catch((error) => {
+        if (error instanceof HttpErrorResponse) {
+          if (error.status === 404 || error.status === 422) {
+            return router.navigate(["/404"]);
+          } else if (error.status === 403) {
+            return router.navigate(["/"]);
+          }
+        }
+        throw error;
+      });
     }
   }
   debug("workspaceResolver", "end");
@@ -63,16 +68,22 @@ export function projectResolver(route: ActivatedRouteSnapshot) {
   const projectRepositoryService = inject(ProjectRepositoryService);
   const router = inject(Router);
   if (projectId) {
-    try {
-      projectRepositoryService.setup({ projectId });
-    } catch (error) {
-      if (error instanceof HttpErrorResponse && (error.status === 404 || error.status === 422)) {
-        router.navigate(["/404"]).then();
-      }
-      throw error;
+    const promise = projectRepositoryService.setup({ projectId });
+    if (promise) {
+      promise.catch((error) => {
+        if (error instanceof HttpErrorResponse) {
+          if (error.status === 404 || error.status === 422) {
+            return router.navigate(["/404"]);
+          } else if (error.status === 403) {
+            return router.navigate(["/"]);
+          }
+        }
+        throw error;
+      });
     }
   }
   debug("projectResolver", "end");
+  return true;
 }
 
 export const routes: Routes = [

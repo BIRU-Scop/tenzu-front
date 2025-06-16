@@ -19,15 +19,15 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, signal } from "@angular/core";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
-import { RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 
 @Component({
-  selector: "app-list-project-roles",
+  selector: "app-list-roles",
   imports: [TranslocoDirective, PermissionOrRedirectDirective, RouterLink],
   template: `
     <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
@@ -37,6 +37,8 @@ import { RouterLink } from "@angular/router";
           expectedId: projectId(),
           requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
           type: 'project',
+          redirectUrl: ['..'],
+          redirectUrlExtras: { relativeTo: activatedRoute },
         }"
       >
         @for (role of entitiesSummary(); track role.id) {
@@ -56,13 +58,13 @@ import { RouterLink } from "@angular/router";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ListProjectRolesComponent implements OnInit {
-  columns = signal(["name", "totalMembers", "editable"]);
+export default class ListRolesComponent {
+  protected readonly ProjectPermissions = ProjectPermissions;
+
   projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  readonly activatedRoute = inject(ActivatedRoute);
+
   entitiesSummary = this.projectRoleRepositoryService.entitiesSummary;
   projectId = input.required<string>();
-  protected readonly ProjectPermissions = ProjectPermissions;
-  ngOnInit(): void {
-    this.projectRoleRepositoryService.listRequest({ projectId: this.projectId() }).then();
-  }
+  columns = signal(["name", "totalMembers", "editable"]);
 }

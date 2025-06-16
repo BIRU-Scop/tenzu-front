@@ -4,7 +4,8 @@
     "create_project": "Crear proyecto",
     "name": "Nombre",
     "name_required": "Por favor, introduce un nombre",
-    "workspace_required": "Por favor, elige un espacio de trabajo"
+    "workspace_required": "Por favor, elige un espacio de trabajo",
+    "workspace_forbidden": "No tiene permiso para crear un proyecto en este espacio de trabajo."
   },
   "settings": {
     "title": "Configuración del proyecto",

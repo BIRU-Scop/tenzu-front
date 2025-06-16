@@ -20,7 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
@@ -62,7 +62,7 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
             <mat-label>{{ t("commons.workspace") }}</mat-label>
             <mat-select required formControlName="workspaceId">
               <mat-select-trigger>{{ selectedWorkspace()?.name }}</mat-select-trigger>
-              @for (workspace of workspaceService.entitiesSummary(); track workspace.id) {
+              @for (workspace of workspaceRepositoryService.entitiesSummary(); track workspace.id) {
                 <mat-option value="{{ workspace.id }}">
                   <div class="flex gap-x-2 items-center">
                     <app-avatar size="sm" [name]="workspace.name" [color]="workspace.color" [rounded]="true" />
@@ -73,6 +73,9 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
             </mat-select>
             @if (form.controls.workspaceId.hasError("required")) {
               <mat-error [innerHTML]="t('project.new_project.workspace_required')"></mat-error>
+            }
+            @if (form.controls.workspaceId.hasError("forbiddenWorkspace")) {
+              <mat-error [innerHTML]="t('project.new_project.workspace_forbidden')"></mat-error>
             }
           </mat-form-field>
           <mat-form-field>
@@ -118,35 +121,48 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectCreateComponent {
-  projectService = inject(ProjectRepositoryService);
-  workspaceService = inject(WorkspaceRepositoryService);
+  projectRepositoryService = inject(ProjectRepositoryService);
+  workspaceRepositoryService = inject(WorkspaceRepositoryService);
   router = inject(Router);
   route = inject(ActivatedRoute);
   selectedWorkspace = model<WorkspaceSummary>();
-  $entities = toObservable(this.workspaceService.entitiesSummary).pipe(filter((entities) => entities.length > 0));
+  $entities = toObservable(this.workspaceRepositoryService.entitiesSummary).pipe(
+    filter((entities) => entities.length > 0),
+  );
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
     name: ["", [Validators.required, Validators.maxLength(80)]],
     description: [""],
     color: [RandomColorService.randomColorPicker(), Validators.required],
-    workspaceId: ["", Validators.required],
+    workspaceId: ["", [Validators.required, this.forbiddenWorkspaceValidator()]],
   });
 
+  forbiddenWorkspaceValidator() {
+    return (control: AbstractControl) => {
+      const workspace = this.workspaceRepositoryService.entityMapSummary()[control.value];
+      if (!workspace?.userCanCreateProjects) {
+        return { forbiddenWorkspace: true };
+      }
+      return null;
+    };
+  }
+
   constructor() {
-    if (!this.workspaceService.entitiesSummary().length) {
-      this.workspaceService.listRequest().then();
+    if (!this.workspaceRepositoryService.entitiesSummary().length) {
+      this.workspaceRepositoryService.listRequest().then();
     }
     this.route.queryParamMap.pipe(combineLatestWith(this.$entities)).subscribe(([paramMap]) => {
       const workspaceId = paramMap.get("workspaceId");
       if (workspaceId) {
         this.form.controls.workspaceId.setValue(workspaceId);
+        this.form.controls.workspaceId.markAsTouched();
       }
     });
 
     this.form.valueChanges.subscribe((value) => {
       if (value.workspaceId) {
-        this.selectedWorkspace.set(this.workspaceService.entityMapSummary()[value.workspaceId]);
+        this.selectedWorkspace.set(this.workspaceRepositoryService.entityMapSummary()[value.workspaceId]);
       }
     });
   }
@@ -155,7 +171,7 @@ export default class ProjectCreateComponent {
     this.form.reset(this.form.value);
     if (this.form.valid) {
       const { workspaceId, ...values } = this.form.getRawValue();
-      const project = await this.projectService.createRequest(values, { workspaceId });
+      const project = await this.projectRepositoryService.createRequest(values, { workspaceId });
       this.router.navigateByUrl(`/workspace/${project.workspaceId}/project/${project.id}/kanban/main`).then();
     }
   }
