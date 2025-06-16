@@ -431,18 +431,23 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
-  const workspaceService = inject(WorkspaceRepositoryService);
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
   const router = inject(Router);
   const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
+    case WorkspaceEventType.CreateWorkspace: {
+      const content = message.event.content as { workspace: WorkspaceDetail };
+      workspaceRepositoryService.prependEntitySummary(content.workspace);
+      break;
+    }
     case WorkspaceEventType.DeleteWorkspace: {
       const content = message.event.content as { deletedBy: UserNested; workspaceId: string; name: string };
-      const currentWorkspace = workspaceService.entityDetail();
-      workspaceService.deleteEntitySummary(content.workspaceId);
+      const currentWorkspace = workspaceRepositoryService.entityDetail();
+      workspaceRepositoryService.deleteEntitySummary(content.workspaceId);
       if (currentWorkspace && currentWorkspace.id === content.workspaceId) {
         await router.navigateByUrl("/");
-        workspaceService.deleteEntityDetail(currentWorkspace);
+        workspaceRepositoryService.deleteEntityDetail(currentWorkspace);
       }
       notificationService.warning({
         title: "notification.events.delete_workspace",
@@ -457,12 +462,12 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
       const content = message.event.content as { workspace: WorkspaceDetail; updatedBy: UserNested };
       const workspace = content.workspace;
 
-      const currentProject = workspaceService.entityDetail();
+      const currentProject = workspaceRepositoryService.entityDetail();
 
       const workspaceIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(workspace);
 
       if (!workspaceIsAlreadyUpdated) {
-        workspaceService.updateEntityDetail(workspace);
+        workspaceRepositoryService.updateEntityDetail(workspace);
         notificationService.info({
           title: "notification.events.update_workspace",
           translocoTitleParams: {
