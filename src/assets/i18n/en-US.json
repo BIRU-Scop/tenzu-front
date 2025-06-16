@@ -39,7 +39,8 @@
       "update_project_membership": "Your role for project {{name}} is now {{role}}",
       "delete_project_membership_self": "You have been removed from project {{name}}",
       "update_workspace_membership": "Your role for workspace {{name}} is now {{role}}",
-      "delete_workspace_membership_self": "You have been removed from workspace {{name}}"
+      "delete_workspace_membership_self": "You have been removed from workspace {{name}}",
+      "update_project_role": "Your role {{role}} for project {{name}} was edited"
     }
   },
   "notifications": {

@@ -57,6 +57,10 @@ export class ProjectMembershipRepositoryService {
     this.projectMembershipStore.deleteEntity(id);
   }
 
+  upsertMultipleEntitiesSummary(items: ProjectMembership[]) {
+    this.projectMembershipStore.upsertEntities(items);
+  }
+
   updateEntitySummary(id: ProjectMembership["id"], partialItem: Partial<ProjectMembership>): ProjectMembership {
     return this.projectMembershipStore.updateEntity(id, partialItem);
   }

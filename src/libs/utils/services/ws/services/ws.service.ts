@@ -40,6 +40,7 @@ import {
   applyProjectEvent,
   applyProjectInvitationEventType,
   applyProjectMembershipEventType,
+  applyProjectRoleEventType,
   applyStoryAssignmentEvent,
   applyStoryAttachmentEvent,
   applyStoryEvent,
@@ -254,7 +255,7 @@ export class WsService {
           break;
         }
         case FamilyEventType.ProjectRole: {
-          // Add handling logic if required
+          await applyProjectRoleEventType(message);
           break;
         }
         case FamilyEventType.WorkspaceInvitation: {

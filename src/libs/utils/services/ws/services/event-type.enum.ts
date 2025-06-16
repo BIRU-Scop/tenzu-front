@@ -61,6 +61,7 @@ export enum ProjectMembershipEventType {
   DeleteProjectMembership = "projectmemberships.delete",
 }
 export enum ProjectRoleEventType {
+  CreateProjectRole = "projectroles.create",
   UpdateProjectRole = "projectroles.update",
   DeleteProjectRole = "projectroles.delete",
 }

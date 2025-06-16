@@ -27,6 +27,7 @@ import {
   ProjectEventType,
   ProjectInvitationEventType,
   ProjectMembershipEventType,
+  ProjectRoleEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
   StoryEventType,
@@ -40,7 +41,7 @@ import {
 import { Location } from "@angular/common";
 import { ProjectDetail, ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
 import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user";
 import { StatusDetail } from "@tenzu/repository/status";
@@ -51,10 +52,11 @@ import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-r
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import {
   getProjectMembersRootUrl,
+  getProjectRoleDetailEndingUrl,
   getStoryDetailUrl,
+  getWorkflowRootUrl,
   getWorkflowUrl,
   getWorkspaceMembersRootUrl,
-  getWorkspaceProjectsUrl,
   HOMEPAGE_URL,
 } from "@tenzu/utils/functions/urls";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
@@ -70,6 +72,7 @@ import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/re
 import { Role } from "@tenzu/repository/membership";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -116,16 +119,16 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
       const story = content.story;
       storyService.updateEntityDetail(story);
-      switch (true) {
-        case content.updatesAttrs.includes("workflow"): {
-          const workspace = workspaceService.entityDetail();
-          if (workspace && router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}`) {
+      if (content.updatesAttrs.includes("workflow")) {
+        const workspace = workspaceService.entityDetail();
+        if (workspace) {
+          const storyDetailUrl = getStoryDetailUrl({ workspaceId: workspace.id, id: story.projectId }, story.ref);
+          if (router.url === storyDetailUrl) {
             await workflowService.getRequest({ workflowId: story.workflow.id });
           }
           if (
-            workspace &&
-            (router.url === `/workspace/${workspace.id}/project/${story.projectId}/story/${story.ref}` ||
-              router.url.includes(`/workspace/${workspace.id}/project/${story.projectId}/kanban`))
+            router.url === storyDetailUrl ||
+            router.url.startsWith(getWorkflowRootUrl({ workspaceId: workspace.id, id: story.projectId }))
           ) {
             notificationService.info({
               title: "notification.events.move_story_to_workflow",
@@ -165,8 +168,15 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       if (story) {
         storyService.deleteEntityDetail(story);
       }
-      if (router.url === `/workspace/${workspace?.id}/project/${project?.id}/story/${content.ref}`) {
-        await router.navigateByUrl(`/workspace/${workspace?.id}/project/${project?.id}/kanban/${workflow?.slug}`);
+      if (
+        workspace &&
+        project &&
+        router.url === getStoryDetailUrl({ workspaceId: workspace.id, id: project.id }, content.ref)
+      ) {
+        const workflowUrl = workflow
+          ? getWorkflowUrl({ workspaceId: workspace.id, id: project.id }, workflow.slug)
+          : getWorkflowRootUrl({ workspaceId: workspace.id, id: project.id });
+        await router.navigateByUrl(workflowUrl);
         notificationService.warning({
           title: "notification.events.delete_story",
           translocoTitleParams: {
@@ -470,7 +480,7 @@ export async function applyUserEvent(message: WSResponseEvent<unknown>) {
   const authService = inject(AuthService);
   switch (message.event.type) {
     case UserEventType.DeleteUser: {
-      await authService.logout();
+      authService.logout();
     }
   }
 }
@@ -552,11 +562,7 @@ export async function applyProjectInvitationEventType(message: WSResponseEvent<u
           await workspaceRepositoryService.listRequest();
           break;
         }
-        if (
-          currentWorkspace &&
-          content.workspaceId === currentWorkspace.id &&
-          router.url === getWorkspaceProjectsUrl(currentWorkspace)
-        ) {
+        if (currentWorkspace && content.workspaceId === currentWorkspace.id) {
           projectRepositoryService.listRequest({ workspaceId: currentWorkspace.id }).then();
         }
         break;
@@ -618,12 +624,10 @@ export async function applyWorkspaceInvitationEventType(message: WSResponseEvent
       if (!content.selfRecipient) {
         // invitation is for other members
         const currentWorkspace = workspaceRepositoryService.entityDetail();
-        if (
-          currentWorkspace &&
-          content.workspaceId === currentWorkspace.id &&
-          router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))
-        ) {
-          workspaceInvitationRepositoryService.listWorkspaceInvitations(currentWorkspace.id).then();
+        if (currentWorkspace && content.workspaceId === currentWorkspace.id) {
+          if (router.url.startsWith(getWorkspaceMembersRootUrl(currentWorkspace))) {
+            workspaceInvitationRepositoryService.listWorkspaceInvitations(currentWorkspace.id).then();
+          }
           if (message.event.type === WorkspaceInvitationEventType.AcceptWorkspaceInvitation) {
             const content = message.event.content as {
               workspaceId: string;
@@ -799,6 +803,116 @@ export async function applyProjectMembershipEventType(message: WSResponseEvent<u
               throw e;
             }
           }
+        }
+      }
+      break;
+    }
+  }
+}
+
+export async function applyProjectRoleEventType(message: WSResponseEvent<unknown>) {
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
+  const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+  const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  const notificationService = inject(NotificationService);
+  const router = inject(Router);
+  const activatedRoute = inject(ActivatedRoute);
+
+  switch (message.event.type) {
+    case ProjectRoleEventType.CreateProjectRole: {
+      const content = message.event.content as {
+        role: ProjectRoleDetail;
+      };
+      const currentProject = projectRepositoryService.entityDetail();
+      if (currentProject && content.role.projectId === currentProject.id) {
+        projectRoleRepositoryService.addEntitySummary(content.role);
+      }
+      break;
+    }
+    case ProjectRoleEventType.UpdateProjectRole: {
+      const content = message.event.content as {
+        role: ProjectRoleDetail;
+      };
+      const currentProject = projectRepositoryService.entityDetail();
+      if (currentProject && content.role.projectId === currentProject.id) {
+        const currentRole = projectRoleRepositoryService.entityDetail();
+        if (currentRole && currentRole.id === content.role.id) {
+          projectRoleRepositoryService.updateEntityDetail(content.role);
+        } else {
+          projectRoleRepositoryService.updateEntitySummary(content.role.id, content.role);
+        }
+        if (currentProject.userRole?.id === content.role.id) {
+          projectRepositoryService.updateEntityDetail({ ...currentProject, userRole: content.role });
+          notificationService.warning({
+            title: "notification.events.update_project_role",
+            translocoTitleParams: {
+              name: currentProject.name,
+              role: content.role.name,
+            },
+          });
+        }
+      }
+      break;
+    }
+    case ProjectRoleEventType.DeleteProjectRole: {
+      const content = message.event.content as {
+        roleId: Role["id"];
+        targetRole: Role;
+        projectId: ProjectSummary["id"];
+      };
+      const currentProject = projectRepositoryService.entityDetail();
+      if (currentProject && content.projectId === currentProject.id) {
+        const currentRole = projectRoleRepositoryService.entityDetail();
+
+        // update current user role if affected
+        if (currentProject.userRole?.id === content.roleId) {
+          projectRepositoryService.updateEntityDetail({ ...currentProject, userRole: content.targetRole });
+          notificationService.warning({
+            title: "notification.events.update_project_membership",
+            translocoTitleParams: {
+              name: currentProject.name,
+              role: content.targetRole.name,
+            },
+          });
+        }
+        //update affected memberships and invitations
+        const newMemberships = projectMembershipRepositoryService
+          .entities()
+          .filter((item) => item.roleId === content.roleId)
+          .map((item) => ({ ...item, roleId: content.targetRole.id }));
+        projectMembershipRepositoryService.upsertMultipleEntitiesSummary(newMemberships);
+        const newInvitees = projectInvitationRepositoryService
+          .entities()
+          .filter((item) => item.roleId === content.roleId)
+          .map((item) => ({ ...item, roleId: content.targetRole.id }));
+        projectInvitationRepositoryService.upsertMultipleEntitiesSummary(newInvitees);
+
+        // update meta info of target role
+        if (currentRole && currentRole.id === content.targetRole.id) {
+          projectRoleRepositoryService.updateEntityDetail({
+            ...currentRole,
+            totalMembers: currentRole.totalMembers + newMemberships.length,
+            hasInvitees: currentRole.hasInvitees || newInvitees.length > 0,
+          });
+        } else {
+          const targetRole = projectRoleRepositoryService.entityMapSummary()[content.targetRole.id];
+          if (targetRole) {
+            projectRoleRepositoryService.updateEntitySummary(content.targetRole.id, {
+              totalMembers: targetRole.totalMembers + newMemberships.length,
+              hasInvitees: targetRole.hasInvitees || newInvitees.length > 0,
+            });
+          }
+        }
+
+        //delete role
+        if (currentRole && currentRole.id === content.roleId) {
+          projectRoleRepositoryService.deleteEntityDetail(currentRole);
+          if (router.url.endsWith(getProjectRoleDetailEndingUrl(currentRole))) {
+            await router.navigate([".."], { relativeTo: activatedRoute });
+          }
+        } else {
+          projectRoleRepositoryService.deleteEntitySummary(content.roleId);
         }
       }
       break;
