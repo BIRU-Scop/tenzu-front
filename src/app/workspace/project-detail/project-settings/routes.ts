@@ -67,8 +67,8 @@ const routes: Routes = [
     providers: [provideTranslocoScope("project")],
   },
   {
-    path: "list-project-roles",
-    loadComponent: () => import("./role/list-project-roles/list-project-roles.component"),
+    path: "list-roles",
+    loadComponent: () => import("./role/list-roles/list-roles.component"),
     providers: [provideTranslocoScope("project")],
   },
 ];

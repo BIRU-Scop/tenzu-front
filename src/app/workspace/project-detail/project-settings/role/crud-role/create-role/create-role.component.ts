@@ -59,7 +59,7 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
           >
             <app-form-role [form]="form" />
             <div class="flex flex-row gap-x-4 mt-2">
-              <a mat-flat-button routerLink="../list-project-roles" class="secondary-button">
+              <a mat-flat-button routerLink="../list-roles" class="secondary-button">
                 {{ t("commons.cancel") }}
               </a>
               <button mat-flat-button [disabled]="form.pristine" type="submit" class="tertiary-button">

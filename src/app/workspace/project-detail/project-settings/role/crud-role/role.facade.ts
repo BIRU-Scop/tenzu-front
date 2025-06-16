@@ -288,7 +288,7 @@ export class RoleFacade {
                 "project",
                 projectDetail.id,
                 "settings",
-                "list-project-roles",
+                "list-roles",
               ])
               .then();
           }
@@ -296,15 +296,7 @@ export class RoleFacade {
     } else {
       await this.projectRoleRepositoryService.deleteRequest(currentRole, { roleId: currentRole.id });
       this.router
-        .navigate([
-          "/",
-          "workspace",
-          projectDetail.workspaceId,
-          "project",
-          projectDetail.id,
-          "settings",
-          "list-project-roles",
-        ])
+        .navigate(["/", "workspace", projectDetail.workspaceId, "project", projectDetail.id, "settings", "list-roles"])
         .then();
     }
   }

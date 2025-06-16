@@ -67,7 +67,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
             <app-form-role [form]="form" />
             <div class="flex gap-x-4 mt-2">
               @if (_currentRole.editable) {
-                <a mat-flat-button routerLink="../../list-project-roles" class="secondary-button">
+                <a mat-flat-button routerLink="../../list-roles" class="secondary-button">
                   {{ t("commons.cancel") }}
                 </a>
                 <button
@@ -79,7 +79,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
                   {{ t("project.buttons.save") }}
                 </button>
               } @else {
-                <a mat-flat-button routerLink="../../list-project-roles" class="secondary-button">
+                <a mat-flat-button routerLink="../../list-roles" class="secondary-button">
                   {{ t("commons.close") }}
                 </a>
               }
