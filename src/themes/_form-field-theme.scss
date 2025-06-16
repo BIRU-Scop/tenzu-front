@@ -131,10 +131,20 @@ form .mat-mdc-form-field-error {
 
   .mdc-text-field--outlined:has(.mat-mdc-select) {
     @include mat.form-field-overrides((
-      outlined-outline-width: 0px,
-      outlined-focus-outline-width: 0px,
+      outlined-outline-width: 1px,
+      outlined-focus-outline-width: 1px,
     ));
   }
+  .no-outlined {
+    .mdc-text-field--outlined:has(.mat-mdc-select) {
+      @include mat.form-field-overrides((
+              outlined-outline-width: 0px,
+              outlined-focus-outline-width: 0px,
+      ));
+
+    }
+  }
+
 
   .mat-mdc-form-field.title-field {
     @include mat.form-field-overrides(
@@ -153,6 +163,7 @@ form .mat-mdc-form-field-error {
       padding-bottom: 8px;
     }
   }
+
 
   .mat-mdc-form-field.transparent {
     @apply w-fit;
@@ -173,3 +184,4 @@ form .mat-mdc-form-field-error {
     }
   }
 }
+

@@ -26,6 +26,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
+import { KanbanWrapperService } from "./kanban-wrapper/kanban-wrapper.service";
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
   const workflowRepositoryService = inject(WorkflowRepositoryService);
@@ -77,6 +78,8 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   const storyRepositoryService = inject(StoryRepositoryService);
   const router = inject(Router);
   const oldWorkflowDetail = workflowRepositoryService.entityDetail();
+  const kanbanWrapperService = inject(KanbanWrapperService);
+  kanbanWrapperService.closeOpenedSideview();
   debug("workflowResolver", "load start", workflowSLug);
   if (
     projectId &&
@@ -85,7 +88,7 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
   ) {
     storyRepositoryService.isLoading.set(true);
     workflowRepositoryService.resetEntityDetail();
-    storyRepositoryService.resetEntityDetail();
+    storyRepositoryService.resetAll();
     workflowRepositoryService
       .getBySlugRequest({
         projectId: projectId,
@@ -111,6 +114,8 @@ export function workflowResolver(route: ActivatedRouteSnapshot) {
         throw error;
       });
     debug("workflowResolver", "load end");
+  } else {
+    storyRepositoryService.resetEntityDetail();
   }
   return true;
 }

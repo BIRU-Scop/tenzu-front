@@ -21,7 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { KanbanWrapperStore, StoryView } from "./kanban-wrapper.store";
-import { StoryRepositoryService } from "@tenzu/repository/story";
+import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
 
 @Injectable({
   providedIn: "root",
@@ -31,11 +31,24 @@ export class KanbanWrapperService {
   storyRepositoryService = inject(StoryRepositoryService);
   storyView = this.kanbanWrapperStore.storyView;
   firstOpened = this.kanbanWrapperStore.firstOpened;
-
+  isOpenedSideview = this.kanbanWrapperStore.isOpenedSideview;
   setStoryView(storyView: StoryView) {
     this.kanbanWrapperStore.setStoryView(storyView);
   }
   setFirstOpened(firstOpened: boolean) {
     this.kanbanWrapperStore.setFirstOpened(firstOpened);
+  }
+
+  setOpenedSideview(storyDetail?: StoryDetail) {
+    const isOpenedSideview = this.kanbanWrapperStore.isOpenedSideview();
+    if (storyDetail && !isOpenedSideview) {
+      this.openOpenedSideview();
+    }
+  }
+  closeOpenedSideview() {
+    this.kanbanWrapperStore.setSidenavStoryViewOpened(false);
+  }
+  openOpenedSideview() {
+    this.kanbanWrapperStore.setSidenavStoryViewOpened(true);
   }
 }

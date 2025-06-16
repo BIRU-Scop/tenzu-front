@@ -66,12 +66,7 @@ export class StoryDetailDialogComponent {
       @case ("side-view") {
         <mat-drawer-container>
           <app-project-kanban></app-project-kanban>
-          <mat-drawer
-            #drawer
-            mode="side"
-            [opened]="!!this.kanbanWrapperService.storyRepositoryService.entityDetail()"
-            position="end"
-          >
+          <mat-drawer #drawer mode="side" [opened]="kanbanWrapperService.isOpenedSideview()" position="end">
             <app-story-detail [canBeClosed]="true" (closed)="navigateToKanban()"></app-story-detail>
           </mat-drawer>
         </mat-drawer-container>
@@ -111,7 +106,14 @@ export default class KanbanWrapperComponent {
       )
       .subscribe((storyView) => {
         this.setUpBreadcrumbForFullView(storyView);
-
+        if (storyView == "side-view") {
+          const storyDetail = this.kanbanWrapperService.storyRepositoryService.entityDetail();
+          if (storyDetail) {
+            this.kanbanWrapperService.setOpenedSideview(storyDetail);
+          }
+        } else {
+          this.kanbanWrapperService.closeOpenedSideview();
+        }
         if (storyView == "kanban" && this.kanbanWrapperService.firstOpened()) {
           this.kanbanWrapperService.setFirstOpened(false);
           const dialogRef = this.dialog.open(StoryDetailDialogComponent, {
@@ -141,7 +143,7 @@ export default class KanbanWrapperComponent {
   }
 
   navigateToKanban(): void {
-    this.kanbanWrapperService.storyRepositoryService.resetEntityDetail();
+    this.kanbanWrapperService.closeOpenedSideview();
     this.router
       .navigate(["../..", "kanban", this.workflowService.entityDetail()?.slug], {
         relativeTo: this.activatedRoute,
