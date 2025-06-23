@@ -151,7 +151,7 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
               @for (status of statuses; track status.id) {
                 @let storiesRef = storyRepositoryService.groupedByStatus()[status.id];
 
-                <li class="group w-64 flex flex-col overflow-hidden">
+                <li class="group w-64 flex flex-col">
                   <app-status-card
                     (movedLeft)="moveStatus($index, Step.LEFT)"
                     (movedRight)="moveStatus($index, Step.RIGHT)"
@@ -161,22 +161,23 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                     [isEmpty]="!storiesRef"
                     [project]="project"
                   />
-                  <ul
-                    [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
-                    [id]="status.id"
-                    class="flex flex-col items-center min-h-20 max-h-full overflow-y-visible dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
-                    cdkDropList
-                    [cdkDropListData]="status"
-                    [cdkDropListDisabled]="!hasModifyPermission || isLoading"
-                    (cdkDropListDropped)="drop($event, workflow)"
-                  >
-                    <cdk-virtual-scroll-viewport [itemSize]="96" class="virtual-scroll w-full flex">
+
+                  <cdk-virtual-scroll-viewport [itemSize]="114" class="virtual-scroll">
+                    <ul
+                      [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
+                      [id]="status.id"
+                      class="flex flex-col items-center  min-h-28 h-full dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                      cdkDropList
+                      [cdkDropListData]="status"
+                      [cdkDropListDisabled]="!hasModifyPermission || isLoading"
+                      (cdkDropListDropped)="drop($event, workflow)"
+                    >
                       <li
                         id="story-{{ storyRef }}"
                         cdkDrag
                         [cdkDragData]="[storySummaryEntityMap[storyRef], idx]"
                         [attr.data-drag-index]="idx"
-                        class="w-56 h-[96px]"
+                        class="w-60 h-[102px] my-[6px] "
                         *cdkVirtualFor="
                           let storyRef of storiesRef;
                           templateCacheSize: 0;
@@ -187,14 +188,11 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                         [class.cursor-progress]="hasModifyPermission && isLoading"
                       >
                         @let story = storySummaryEntityMap[storyRef];
-                        <app-story-card
-                          class="w-56 h-[96px]"
-                          [story]="story"
-                          [hasModifyPermission]="hasModifyPermission"
-                        />
+                        <app-story-card class="w-56 min" [story]="story" [hasModifyPermission]="hasModifyPermission" />
                       </li>
-                    </cdk-virtual-scroll-viewport>
-                  </ul>
+                    </ul>
+                  </cdk-virtual-scroll-viewport>
+
                   <ng-container
                     *appHasPermission="{
                       actualEntity: project,
@@ -237,7 +235,6 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
   `,
   styles: `
     .kanban-viewport {
-      height: var(--tz-viewport-height);
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
