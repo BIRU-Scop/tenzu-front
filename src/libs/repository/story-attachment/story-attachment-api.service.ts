@@ -44,22 +44,22 @@ export class StoryAttachmentApiService extends AbstractApiService<
   protected override getBaseUrl(params: StoryAttachmentApiType.BaseParams): string {
     return `${this.baseUrl}/${params.projectId}/stories/${params.ref}/attachments`;
   }
-  protected override getEntityBaseUrl(): string {
-    return `${this.configAppService.apiUrl()}/stories/attachments`;
-  }
-  protected override createUrl(): string {
-    throw new Error("Method not implemented.");
+  protected override getEntityBaseUrl(params: StoryAttachmentApiType.GetEntityDetailParams): string {
+    return `${this.configAppService.apiUrl()}/stories/attachments/${params.attachmentId}`;
   }
 
   createAttachment(attachment: Blob, params: StoryAttachmentApiType.CreateEntityDetailParams) {
     const formData = new FormData();
     formData.append("file", attachment);
-    return this.http.post<StoryAttachment>(`${this.getBaseUrl(params)}`, formData);
+    return this.http.post<StoryAttachment>(`${this.createUrl(params)}`, formData);
   }
   downloadAttachment(attachment: StoryAttachment) {
-    this.fileDownloaderService.downloadFileFromUrl(`${this.getEntityBaseUrl()}/${attachment.id}`, attachment.name);
+    this.fileDownloaderService.downloadFileFromUrl(
+      this.getEntityBaseUrl({ attachmentId: attachment.id }),
+      attachment.name,
+    );
   }
   previewAttachement(attachment: StoryAttachment) {
-    this.fileDownloaderService.previewFileFromUrl(`${this.getEntityBaseUrl()}/${attachment.id}`);
+    this.fileDownloaderService.previewFileFromUrl(this.getEntityBaseUrl({ attachmentId: attachment.id }));
   }
 }
