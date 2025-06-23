@@ -56,6 +56,7 @@ import { HasPermissionDirective, PermissionOrRedirectDirective } from "@tenzu/di
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
+import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 
 @Component({
   selector: "app-project-kanban",
@@ -68,6 +69,9 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
     CdkDrag,
     CdkDropListGroup,
     ProjectKanbanSkeletonComponent,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
     MatMenu,
     MatIcon,
     MatMenuTrigger,
@@ -160,29 +164,36 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
                   <ul
                     [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
                     [id]="status.id"
-                    class="flex flex-col items-center min-h-20 max-h-full overflow-y-auto dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                    class="flex flex-col items-center min-h-20 max-h-full overflow-y-visible dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                     cdkDropList
                     [cdkDropListData]="status"
                     [cdkDropListDisabled]="!hasModifyPermission || isLoading"
                     (cdkDropListDropped)="drop($event, workflow)"
                   >
-                    @for (storyRef of storiesRef; track storyRef) {
-                      @let story = storySummaryEntityMap[storyRef];
+                    <cdk-virtual-scroll-viewport [itemSize]="96" class="virtual-scroll w-full flex">
                       <li
-                        id="story-{{ story.ref }}"
+                        id="story-{{ storyRef }}"
                         cdkDrag
-                        [cdkDragData]="story"
-                        class="w-56 py-[8px]"
+                        [cdkDragData]="[storySummaryEntityMap[storyRef], idx]"
+                        [attr.data-drag-index]="idx"
+                        class="w-56 h-[96px]"
+                        *cdkVirtualFor="
+                          let storyRef of storiesRef;
+                          templateCacheSize: 0;
+                          trackBy: trackByFn;
+                          let idx = index
+                        "
                         [class.cursor-no-drop]="!hasModifyPermission"
                         [class.cursor-progress]="hasModifyPermission && isLoading"
                       >
+                        @let story = storySummaryEntityMap[storyRef];
                         <app-story-card
                           class="w-56 h-[96px]"
                           [story]="story"
                           [hasModifyPermission]="hasModifyPermission"
                         />
                       </li>
-                    }
+                    </cdk-virtual-scroll-viewport>
                   </ul>
                   <ng-container
                     *appHasPermission="{
@@ -270,6 +281,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
 export class ProjectKanbanComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
   protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;
+  protected readonly Step = Step;
 
   breadcrumbStore = inject(BreadcrumbStore);
   workflowRepositoryService = inject(WorkflowRepositoryService);
@@ -292,10 +304,11 @@ export class ProjectKanbanComponent {
     return workflows.length === 1;
   });
 
-  protected readonly Step = Step;
-
   constructor() {
     this.breadcrumbStore.setPathComponent("projectKanban");
+  }
+  trackByFn(index: number, item: Story["ref"]) {
+    return item;
   }
 
   openCreateStory(event: MouseEvent, statusId: string): void {
@@ -368,7 +381,17 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflow: Workflow) {
+  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>, workflow: Workflow) {
+    // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
+    // so we use workarounds
+    const [, index] = event.item.data;
+    event.previousIndex = index;
+    const dataIndex = event.container.element.nativeElement
+      .getElementsByClassName("cdk-drag")
+      [event.currentIndex]?.getAttribute("data-drag-index");
+    if (dataIndex) {
+      event.currentIndex = Number(dataIndex);
+    }
     await this.storyRepositoryService.dropStoryIntoStatus(event, workflow.id);
   }
 

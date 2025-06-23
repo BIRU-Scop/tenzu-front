@@ -141,7 +141,10 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entitiesSummaryStore.reorderStoryByEvent(reorder);
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
-  async dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflowId: Story["workflowId"]) {
+  async dropStoryIntoStatus(
+    event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>,
+    workflowId: Story["workflowId"],
+  ) {
     const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event);
     if (!payload) return;
     await lastValueFrom(this.apiService.reorder(payload, { workflowId }));

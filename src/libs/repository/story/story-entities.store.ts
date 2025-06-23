@@ -116,8 +116,8 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>) {
-      const story = event.item.data;
+    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>) {
+      const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
       const sameStatus = lastStatus.id === nextStatus.id;
