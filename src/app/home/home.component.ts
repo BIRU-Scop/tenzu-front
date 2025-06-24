@@ -38,6 +38,7 @@ import { NotificationsComponent } from "./notifications/notifications.component"
 import { MatBadge } from "@angular/material/badge";
 import { NotificationsComponentService } from "./notifications/notifications-component.service";
 import { MatDivider } from "@angular/material/divider";
+import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 
 @Component({
   selector: "app-home",
@@ -55,13 +56,14 @@ import { MatDivider } from "@angular/material/divider";
     MatIconButton,
     MatBadge,
     MatDivider,
+    EnvBannerComponent,
   ],
   template: `
     <mat-toolbar role="banner" class="flex" *transloco="let t; prefix: 'home.navigation'">
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
         <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'"></mat-icon>
       </a>
-      <div class="mx-auto"></div>
+      <app-env-banner class="grow px-4"></app-env-banner>
       <button mat-icon-button (click)="openNotificationDialog($event)">
         <mat-icon
           [matBadge]="notificationsComponentService.count.unread()"
@@ -105,7 +107,6 @@ export default class HomeComponent implements AfterViewInit {
   darkModeOn = toSignal(darkModeOn$);
   relativeDialog = inject(RelativeDialogService);
   notificationsComponentService = inject(NotificationsComponentService);
-
   constructor() {
     this.iconRegistry.addSvgIcon("logo-text", this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu.svg"));
     this.iconRegistry.addSvgIcon(

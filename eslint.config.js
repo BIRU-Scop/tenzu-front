@@ -1,13 +1,15 @@
 // @ts-check
+
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
 const ngrx = require("@ngrx/eslint-plugin/v9");
-eslintConfigPrettier = require("eslint-config-prettier");
+const eslintConfigPrettier = require("eslint-config-prettier");
 
 const eslintPluginPrettierRecommended = require("eslint-plugin-prettier/recommended");
 module.exports = tseslint.config(
   {
+    ignores: [".cache/", ".git/", ".github/", "node_modules/"],
     files: ["**/*.ts"],
     extends: [
       eslint.configs.recommended,

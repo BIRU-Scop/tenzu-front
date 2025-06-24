@@ -42,7 +42,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
       </button>
     } @else if (hasModifyPermission()) {
       <button
-        mat-icon-button
+        matIconButton
         type="button"
         (click)="openAssignStoryDialog($event)"
         [attr.aria-label]="t('add_assignees')"

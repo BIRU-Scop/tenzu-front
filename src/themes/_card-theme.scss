@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,16 +22,16 @@
 @use '@angular/material' as mat;
 
 .mat-mdc-card.mat-mdc-card-outlined {
-  @apply gap-2 border-b-2;
+  @apply border-b-2;
   .mat-mdc-card-header {
     @apply px-3 pt-2;
     .mat-mdc-card-header-text {
-      @apply line-clamp-2 grow;
+      @apply line-clamp-1 grow;
     }
     @apply items-center gap-2;
   }
   .mat-mdc-card-content {
-    @apply px-3 pb-2;
+    @apply px-1;
     font-size: var(--mat-sys-body-small-size);
     line-height: var(--mat-sys-body-small-line-height);
     font-weight: var(--mat-sys-body-small-weight);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,6 +31,7 @@ body {
         --tz-tasks-list-padding: var(--tw-4);
         --tz-sidenav-content-padding: var(--tw-4);
         --tz-sidenav-width: 250px;
+        --tz-margin-top-viewport: var(--tw-4);
         --tz-elements-around-virtual-scroll-height: calc(
                 var(--tz-status-card-wrapper-height) + var(--tz-tasks-list-padding) + var(--tz-sidenav-content-padding) +
                 var(--tz-story-button-wrapper-height)
@@ -38,7 +39,7 @@ body {
         --tz-viewport-height: calc(
                 100vh - var(--mat-toolbar-standard-height) - var(--tz-sidenav-content-padding) - var(
                         --mat-sys-label-medium-line-height
-                ) - var(--tz-project-detail-container-margin-top) - var(--mat-sys-headline-small-line-height) - var(--mat-sys-headline-small-margin-bottom)
+                ) - var(--tz-project-detail-container-margin-top) - var(--mat-sys-headline-small-line-height) - var(--mat-sys-headline-small-margin-bottom) + var(--tz-margin-top-viewport)
         );
-       --tz-virtual-scroll-height: calc(var(--tz-viewport-height) - var(--tz-elements-around-virtual-scroll-height));
+       --tz-virtual-scroll-height: calc(var(--tz-viewport-height) - var(--tz-elements-around-virtual-scroll-height)) ;
 }
