@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.25](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.24...v0.1.0-staging.25) (2025-06-24)
+
+
+### Bug Fixes
+
+* add missing parameter in attachment delete ([a0b11a4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a0b11a488b55da20072d20c0d222a9e2784b4948))
+* add virtual-scroll back and make it work with angular 20 ([32d4805](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/32d4805693b0dc63a02288cb4718407022b321f4))
+* virtual-scroll display firefox and chrome ([c5a17ed](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c5a17ed51c4b73a5748252767489d17c1c33928b))
+
 ## [0.1.0-staging.24](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.23...v0.1.0-staging.24) (2025-06-16)
 
 
