@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -35,22 +35,6 @@
       font-size: var(--mat-sys-body-large-size);
     }
   }
-}
-
-
-.demo {
-  background-color: var(--mat-sys-warning-container);
-  color: var(--mat-sys-on-warning-container)
-}
-
-.dev {
-  color: var(--mat-sys-on-error-container);
-  background-color: var(--mat-sys-error-container);
-}
-
-.staging {
-  color: var(--mat-sys-on-tertiary-container);
-  background-color: var(--mat-sys-tertiary-container);
 }
 
 @mixin tokens-overrides() {

@@ -23,7 +23,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AbstractApiService } from "../base";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
-import type * as ProjectApiServiceTypes from "./project-api.type";
+import type * as ProjectApiServiceType from "./project-api.type";
 
 @Injectable({
   providedIn: "root",
@@ -31,32 +31,32 @@ import type * as ProjectApiServiceTypes from "./project-api.type";
 export class ProjectApiService extends AbstractApiService<
   ProjectSummary,
   ProjectDetail,
-  ProjectApiServiceTypes.ListEntitiesSummaryParams,
-  ProjectApiServiceTypes.GetEntityDetailParams,
-  ProjectApiServiceTypes.CreateEntityDetailParams,
-  ProjectApiServiceTypes.PutEntityDetailParams,
-  ProjectApiServiceTypes.PatchEntityDetailParams,
-  ProjectApiServiceTypes.DeleteEntityDetailParams
+  ProjectApiServiceType.ListEntitiesSummaryParams,
+  ProjectApiServiceType.GetEntityDetailParams,
+  ProjectApiServiceType.CreateEntityDetailParams,
+  ProjectApiServiceType.PutEntityDetailParams,
+  ProjectApiServiceType.PatchEntityDetailParams,
+  ProjectApiServiceType.DeleteEntityDetailParams
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
-  protected override getBaseUrl(params: ProjectApiServiceTypes.ListEntitiesSummaryParams) {
+  protected override getBaseUrl(params: ProjectApiServiceType.ListEntitiesSummaryParams) {
     return `${this.configAppService.apiUrl()}/workspaces/${params.workspaceId}/projects`;
   }
 
-  protected override getEntityBaseUrl(params: ProjectApiServiceTypes.BaseParams) {
+  protected override getEntityBaseUrl(params: ProjectApiServiceType.BaseParams) {
     return `${this.baseUrl}/${params.projectId}`;
   }
 
   override create(
     newProject: CreateProjectPayload,
-    params: ProjectApiServiceTypes.CreateEntityDetailParams,
+    params: ProjectApiServiceType.CreateEntityDetailParams,
   ): Observable<ProjectDetail> {
     return super.create(newProject, params, undefined, { dataIsFormData: true });
   }
 
   override patch(
     item: UpdateProjectPayload,
-    params: ProjectApiServiceTypes.PatchEntityDetailParams,
+    params: ProjectApiServiceType.PatchEntityDetailParams,
   ): Observable<ProjectDetail> {
     return super.patch(item, params, undefined, { dataIsFormData: true });
   }

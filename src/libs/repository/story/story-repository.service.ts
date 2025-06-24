@@ -78,24 +78,16 @@ export class StoryRepositoryService extends BaseRepositoryService<
     }
     this.entitiesSummaryStore.setCurrentWorkflowId(params.projectId, params.workflowId);
     this.isLoading.set(true);
-    const cachedStories: Story[] = [];
-    const lengthMinStories = 9;
     while (true) {
       const stories = await lastValueFrom(this.apiService.list(params, queryParams));
-      if (this.entitiesSummaryStore.minStoriesPerStatus() < lengthMinStories) {
-        this.entitiesSummaryStore.addEntities(stories);
-        this.entitiesSummaryStore.reorder();
-      } else {
-        cachedStories.push(...stories);
-      }
+      this.entitiesSummaryStore.addEntities(stories);
+      this.entitiesSummaryStore.reorder();
 
       if (stories.length < queryParams.limit) {
         break;
       }
       queryParams.offset += queryParams.limit;
     }
-    this.entitiesSummaryStore.addEntities(cachedStories);
-    this.entitiesSummaryStore.reorder();
     this.isLoading.set(false);
     return this.entitiesSummary();
   }
@@ -141,7 +133,10 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entitiesSummaryStore.reorderStoryByEvent(reorder);
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
-  async dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, Story>, workflowId: Story["workflowId"]) {
+  async dropStoryIntoStatus(
+    event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>,
+    workflowId: Story["workflowId"],
+  ) {
     const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event);
     if (!payload) return;
     await lastValueFrom(this.apiService.reorder(payload, { workflowId }));

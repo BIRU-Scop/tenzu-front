@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,11 +25,13 @@ import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { AuthFormStateStore } from "../auth-form-state.store";
+import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 
 @Component({
   selector: "app-auth-layout",
-  imports: [RouterOutlet, MatIcon],
+  imports: [RouterOutlet, MatIcon, EnvBannerComponent],
   template: `
+    <app-env-banner></app-env-banner>
     <main class="h-[100vh] flex flex-col items-center justify-center gap-4">
       <div class="h-[200px]">
         <mat-icon

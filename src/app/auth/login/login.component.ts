@@ -26,7 +26,6 @@ import { MatButton } from "@angular/material/button";
 import { LoginService } from "./login.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatLabel } from "@angular/material/form-field";
-
 import { HttpErrorResponse } from "@angular/common/http";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
@@ -96,6 +95,7 @@ export default class LoginComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authFormStateStore.updateHasError(this.form.events);
   }
+
   ngOnDestroy(): void {
     this.authFormStateStore.resetError();
   }
