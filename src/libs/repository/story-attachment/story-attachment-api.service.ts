@@ -48,7 +48,7 @@ export class StoryAttachmentApiService extends AbstractApiService<
     return `${this.configAppService.apiUrl()}/stories/attachments/${params.attachmentId}`;
   }
 
-  createAttachment(attachment: Blob, params: StoryAttachmentApiType.CreateEntityDetailParams) {
+  createAttachment(attachment: Blob | File, params: StoryAttachmentApiType.CreateEntityDetailParams) {
     const formData = new FormData();
     formData.append("file", attachment);
     return this.http.post<StoryAttachment>(`${this.createUrl(params)}`, formData);

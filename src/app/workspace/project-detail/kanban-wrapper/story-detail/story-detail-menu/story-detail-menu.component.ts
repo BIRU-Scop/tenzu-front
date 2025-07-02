@@ -59,7 +59,7 @@ import { MatDialog } from "@angular/material/dialog";
   template: `
     @let _story = story();
     @if (_story) {
-      <div class="flex gap-1 items-baseline mb-2" *transloco="let t; prefix: 'workflow.detail_story'">
+      <div class="flex flex-row gap-1 w-full items-baseline mb-2" *transloco="let t; prefix: 'workflow.detail_story'">
         <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
         <span class="text-on-surface mat-title-medium">{{ _story.workflow.name }}</span>
         @if (hasModifyPermission()) {

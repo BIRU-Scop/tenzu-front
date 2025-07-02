@@ -86,6 +86,7 @@
     "status": "Status",
     "save": "Save",
     "cancel": "Cancel",
+    "undo": "Undo",
     "attachments": {
       "attach_file": "Attach file",
       "name": "Name",
