@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import {
@@ -139,25 +139,27 @@ import { MatIcon } from "@angular/material/icon";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryDetailAttachmentsComponent implements OnInit, OnDestroy {
+export class StoryDetailAttachmentsComponent {
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   notificationService = inject(NotificationService);
 
   storyDetail = input.required<StoryDetail>();
   projectDetail = input.required<ProjectDetail>();
   hasModifyPermission = input(false);
+  constructor() {
+    effect(() => {
+      this.storyAttachmentRepositoryService.resetAll();
+      untracked(() =>
+        this.storyAttachmentRepositoryService
+          .listRequest({
+            projectId: this.storyDetail().projectId,
+            ref: this.storyDetail().ref,
+          })
+          .then(),
+      ).then();
+    });
+  }
 
-  ngOnInit(): void {
-    this.storyAttachmentRepositoryService
-      .listRequest({
-        projectId: this.projectDetail().id,
-        ref: this.storyDetail().ref,
-      })
-      .then();
-  }
-  ngOnDestroy(): void {
-    this.storyAttachmentRepositoryService.resetAll();
-  }
   previewFile(row: StoryAttachment) {
     this.storyAttachmentRepositoryService.previewAttachement(row);
   }
