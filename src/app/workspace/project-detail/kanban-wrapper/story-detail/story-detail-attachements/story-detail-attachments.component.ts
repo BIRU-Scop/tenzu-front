@@ -20,20 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from "@angular/core";
-import { DatePipe } from "@angular/common";
 import { MatButton, MatIconButton } from "@angular/material/button";
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-} from "@angular/material/table";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
@@ -45,24 +32,13 @@ import { MatIcon } from "@angular/material/icon";
 @Component({
   selector: "app-story-detail-attachments",
   imports: [
-    DatePipe,
     MatButton,
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
     TranslocoDirective,
     MatIcon,
-    MatTable,
-    MatHeaderCell,
-    MatHeaderCellDef,
     MatIconButton,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
     MatIcon,
   ],
   template: `
@@ -95,43 +71,42 @@ import { MatIcon } from "@angular/material/icon";
               Attachments ({{ selectedStoryAttachments.length }})
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <mat-table [dataSource]="selectedStoryAttachments">
-            <ng-container matColumnDef="name">
-              <mat-header-cell *matHeaderCellDef>{{ t("attachments.name") }}</mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{ row.name }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="size">
-              <mat-header-cell *matHeaderCellDef>{{ t("attachments.size") }}</mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{ row.size }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="date">
-              <mat-header-cell *matHeaderCellDef>{{ t("attachments.date") }}</mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{ row.createdAt | date: "medium" }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <mat-header-cell *matHeaderCellDef></mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <button mat-icon-button (click)="previewFile(row)" type="button">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-                <button mat-icon-button (click)="downloadFile(row)" type="button">
-                  <mat-icon>download</mat-icon>
-                </button>
-                @if (_hasModifyPermission) {
-                  <button mat-icon-button type="button" (click)="deleteAttachment(row)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                }
-              </mat-cell>
-            </ng-container>
-
-            <!-- Header and Row Declarations -->
-            <mat-header-row *matHeaderRowDef="['name', 'size', 'date', 'actions']"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: ['name', 'size', 'date', 'actions']"></mat-row>
-          </mat-table>
+          <div class="app-table">
+            <div class="app-table-header-group">
+              <div class="app-table-header-row">
+                <div class="app-table-header-cell">{{ t("attachments.name") }}</div>
+                <div class="app-table-header-cell">{{ t("attachments.size") }}</div>
+                <div class="app-table-header-cell">{{ t("attachments.date") }}</div>
+                <div class="app-table-header-cell"></div>
+              </div>
+            </div>
+            <div class="app-table-row-group">
+              @for (storyAttachement of selectedStoryAttachments; track storyAttachement.id) {
+                <div class="app-table-row">
+                  <div class="app-table-cell">
+                    {{ storyAttachement.name }}
+                  </div>
+                  <div class="app-table-cell">{{ storyAttachement.size }}</div>
+                  <div class="app-table-cell">
+                    {{ storyAttachement.createdAt }}
+                  </div>
+                  <div class="app-table-cell">
+                    <button mat-icon-button (click)="previewFile(storyAttachement)" type="button">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="downloadFile(storyAttachement)" type="button">
+                      <mat-icon>download</mat-icon>
+                    </button>
+                    @if (_hasModifyPermission) {
+                      <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachement)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
         </mat-expansion-panel>
       }
     </div>
