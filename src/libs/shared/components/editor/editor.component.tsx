@@ -15,7 +15,7 @@ import { createRoot, Root } from "react-dom/client";
 import { Block, BlockNoteEditor } from "@blocknote/core";
 import { codeBlock } from "@blocknote/code-block";
 
-import { Editor } from "@tenzu/shared/components/editor/_editor";
+import { BlockNoteView } from "@blocknote/mantine";
 
 @Component({
   selector: "app-editor-block",
@@ -76,7 +76,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
     if (this.root && this.editor) {
       this.root.render(
         <React.StrictMode>
-          <Editor editor={this.editor} editable={!this.disabled()} />
+          <BlockNoteView editor={this.editor} editable={!this.disabled()} />
         </React.StrictMode>,
       );
     }

@@ -25,6 +25,12 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "react-dom",
+              "react",
+              "@messageformat/core",
+              "extend"
+            ],
             "outputPath": "dist/tenzu",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -48,7 +54,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1MB",
+                  "maximumWarning": "1.5MB",
                   "maximumError": "2MB"
                 },
                 {
