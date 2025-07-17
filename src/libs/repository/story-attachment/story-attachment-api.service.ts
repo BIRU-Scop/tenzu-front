@@ -59,7 +59,7 @@ export class StoryAttachmentApiService extends AbstractApiService<
       attachment.name,
     );
   }
-  previewAttachement(attachment: StoryAttachment) {
+  previewAttachment(attachment: StoryAttachment) {
     this.fileDownloaderService.previewFileFromUrl(this.getEntityBaseUrl({ attachmentId: attachment.id }));
   }
 }

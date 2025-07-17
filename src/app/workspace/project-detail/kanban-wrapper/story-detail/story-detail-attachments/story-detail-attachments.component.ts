@@ -81,24 +81,24 @@ import { MatIcon } from "@angular/material/icon";
               </div>
             </div>
             <div class="app-table-row-group">
-              @for (storyAttachement of selectedStoryAttachments; track storyAttachement.id) {
+              @for (storyAttachment of selectedStoryAttachments; track storyAttachment.id) {
                 <div class="app-table-row">
                   <div class="app-table-cell">
-                    {{ storyAttachement.name }}
+                    {{ storyAttachment.name }}
                   </div>
-                  <div class="app-table-cell">{{ storyAttachement.size }}</div>
+                  <div class="app-table-cell">{{ storyAttachment.size }}</div>
                   <div class="app-table-cell">
-                    {{ storyAttachement.createdAt }}
+                    {{ storyAttachment.createdAt }}
                   </div>
                   <div class="app-table-cell">
-                    <button mat-icon-button (click)="previewFile(storyAttachement)" type="button">
+                    <button mat-icon-button (click)="previewFile(storyAttachment)" type="button">
                       <mat-icon>visibility</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="downloadFile(storyAttachement)" type="button">
+                    <button mat-icon-button (click)="downloadFile(storyAttachment)" type="button">
                       <mat-icon>download</mat-icon>
                     </button>
                     @if (_hasModifyPermission) {
-                      <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachement)">
+                      <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachment)">
                         <mat-icon>delete</mat-icon>
                       </button>
                     }
@@ -136,7 +136,7 @@ export class StoryDetailAttachmentsComponent {
   }
 
   previewFile(row: StoryAttachment) {
-    this.storyAttachmentRepositoryService.previewAttachement(row);
+    this.storyAttachmentRepositoryService.previewAttachment(row);
   }
   downloadFile(row: StoryAttachment) {
     this.storyAttachmentRepositoryService.downloadAttachment(row);
@@ -165,14 +165,14 @@ export class StoryDetailAttachmentsComponent {
     }
   }
 
-  deleteAttachment(storyAttachement: StoryAttachment) {
+  deleteAttachment(storyAttachment: StoryAttachment) {
     this.storyAttachmentRepositoryService
-      .deleteRequest(storyAttachement, { attachmentId: storyAttachement.id })
+      .deleteRequest(storyAttachment, { attachmentId: storyAttachment.id })
       .then(() => {
         this.notificationService.success({
           translocoTitle: true,
           title: "workflow.detail_story.attachments.deleted_attachment",
-          translocoTitleParams: { var: storyAttachement.name },
+          translocoTitleParams: { var: storyAttachment.name },
         });
       });
   }

@@ -39,7 +39,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatTooltip } from "@angular/material/tooltip";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
-import { StoryDetailAttachmentsComponent } from "./story-detail-attachements/story-detail-attachments.component";
+import { StoryDetailAttachmentsComponent } from "./story-detail-attachments/story-detail-attachments.component";
 import { StoryStatusComponent } from "./story-status/story-status.component";
 import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
 import { ProjectRepositoryService } from "@tenzu/repository/project";

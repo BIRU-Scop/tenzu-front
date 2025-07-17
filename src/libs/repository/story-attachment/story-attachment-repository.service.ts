@@ -53,7 +53,7 @@ export class StoryAttachmentRepositoryService extends BaseRepositoryService<
   downloadAttachment(attachment: StoryAttachment) {
     this.apiService.downloadAttachment(attachment);
   }
-  previewAttachement(attachment: StoryAttachment) {
-    this.apiService.previewAttachement(attachment);
+  previewAttachment(attachment: StoryAttachment) {
+    this.apiService.previewAttachment(attachment);
   }
 }
