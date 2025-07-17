@@ -47,10 +47,12 @@
 @use "themes/app-table";
 @use "themes/skeleton";
 @use "themes/svg-logo";
-
+@use "@blocknote/core/fonts/inter.css";
+@use "@blocknote/mantine/style.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 
 

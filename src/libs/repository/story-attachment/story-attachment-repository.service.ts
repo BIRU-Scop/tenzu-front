@@ -45,7 +45,7 @@ export class StoryAttachmentRepositoryService extends BaseRepositoryService<
   protected entitiesSummaryStore = inject(StoryAttachmentEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryAttachmentDetailStore);
 
-  async createAttachment(attachment: Blob, params: StoryAttachmentApiType.CreateEntityDetailParams) {
+  async createAttachment(attachment: Blob | File, params: StoryAttachmentApiType.CreateEntityDetailParams) {
     const entity = await lastValueFrom(this.apiService.createAttachment(attachment, params));
     this.setEntityDetail(entity);
     return entity;
@@ -53,7 +53,7 @@ export class StoryAttachmentRepositoryService extends BaseRepositoryService<
   downloadAttachment(attachment: StoryAttachment) {
     this.apiService.downloadAttachment(attachment);
   }
-  previewAttachement(attachment: StoryAttachment) {
-    this.apiService.previewAttachement(attachment);
+  previewAttachment(attachment: StoryAttachment) {
+    this.apiService.previewAttachment(attachment);
   }
 }
