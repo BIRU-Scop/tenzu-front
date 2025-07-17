@@ -74,8 +74,8 @@ export class StoryDetailDialogComponent {
     }`,
   styles: `
     .mat-drawer.mat-drawer-side.mat-drawer-end {
-      width: 50%;
-      padding-bottom: 0px;
+      width: 60%;
+      padding-bottom: 0;
       padding-left: 16px;
       padding-right: 16px;
       padding-top: 12px;

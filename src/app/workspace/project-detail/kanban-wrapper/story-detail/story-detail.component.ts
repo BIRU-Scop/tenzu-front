@@ -95,104 +95,94 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
         <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
           @let story = this.selectedStory();
           @if (story) {
-            <div class="flex flex-col !h-full px-2 overflow-hidden">
-              <app-story-detail-menu
-                class="p-4"
-                [story]="story"
-                [canBeClosed]="canBeClosed()"
-                [hasModifyPermission]="hasModifyPermission"
-                (closed)="closed.emit()"
-              ></app-story-detail-menu>
-              <div class="flex flex-row h-full gap-8">
-                <div class="block flex-col basis-2/3 gap-2 h-5/6">
-                  <form [formGroup]="form" class="flex flex-col min-h-full h-5/6 p-4">
-                    <mat-form-field appearance="fill" class="title-field">
-                      <input
-                        [attr.aria-label]="t('title')"
-                        matInput
-                        data-testid="title-input"
-                        formControlName="title"
-                      />
-                    </mat-form-field>
-                    <app-editor-block
-                      class="overflow-auto editor"
-                      [data]="story.description"
-                      [resolveFileUrl]="resolveFileUrl()"
-                      [uploadFile]="uploadFile(story)"
-                      [disabled]="!hasModifyPermission"
-                      #editorContainer
-                    />
-                    @if (hasModifyPermission) {
-                      <div class="flex flex-row justify-end gap-2 py-4 bg-surface-container">
-                        <button class="secondary-button" mat-flat-button type="button" (click)="undo()">
-                          {{ t("undo") }}
-                        </button>
-                        <button class="tertiary-button" mat-flat-button type="submit" (click)="submit()">
-                          {{ t("save") }}
-                        </button>
-                      </div>
-                    }
-                  </form>
+            <app-story-detail-menu
+              [story]="story"
+              [canBeClosed]="canBeClosed()"
+              [hasModifyPermission]="hasModifyPermission"
+              (closed)="closed.emit()"
+            ></app-story-detail-menu>
+            <div class="flex flex-row gap-2 h-5/6 w-full">
+              <form [formGroup]="form" class="basis-2/3 flex flex-col p-4">
+                <mat-form-field appearance="fill" class="title-field">
+                  <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
+                </mat-form-field>
+                <app-editor-block
+                  class="overflow-auto editor"
+                  [data]="story.description"
+                  [resolveFileUrl]="resolveFileUrl()"
+                  [uploadFile]="uploadFile(story)"
+                  [disabled]="!hasModifyPermission"
+                  #editorContainer
+                />
+                @if (hasModifyPermission) {
+                  <div class="flex flex-row justify-end gap-2 py-4 bg-surface-container">
+                    <button class="secondary-button" mat-flat-button type="button" (click)="undo()">
+                      {{ t("undo") }}
+                    </button>
+                    <button class="tertiary-button" mat-flat-button type="submit" (click)="submit()">
+                      {{ t("save") }}
+                    </button>
+                  </div>
+                }
+              </form>
+              <div
+                class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"
+              >
+                <div class="grid grid-cols-1 gap-y-4 content-start mb-2">
+                  <div class="flex flex-row gap-4">
+                    <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
+                    <app-user-card
+                      [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
+                      [username]="story.createdAt | date: 'short'"
+                      [color]="story.createdBy?.color || 0"
+                    ></app-user-card>
+                  </div>
+                  <app-story-status
+                    [storyDetail]="story"
+                    [hasModifyPermission]="hasModifyPermission"
+                  ></app-story-status>
+                  <div class="flex flex-row gap-4">
+                    <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
+                    <app-story-assignee
+                      [story]="story"
+                      [hasModifyPermission]="hasModifyPermission"
+                      [config]="{ relativeXPosition: 'left' }"
+                    ></app-story-assignee>
+                  </div>
                 </div>
-                <div
-                  class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline pl-8 pt-4"
+                <mat-divider></mat-divider>
+                <ng-container
+                  *appHasPermission="{
+                    actualEntity: project,
+                    requiredPermission: ProjectPermissions.DELETE_STORY,
+                  }"
                 >
-                  <div class="grid grid-cols-1 gap-y-4 content-start mb-2">
-                    <div class="flex flex-row gap-4">
-                      <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
-                      <app-user-card
-                        [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
-                        [username]="story.createdAt | date: 'short'"
-                        [color]="story.createdBy?.color || 0"
-                      ></app-user-card>
-                    </div>
-                    <app-story-status
+                  <button
+                    type="button"
+                    class="col-span-2"
+                    mat-icon-button
+                    appConfirm
+                    [data]="{
+                      deleteAction: true,
+                      title: t('confirm_delete_story'),
+                      message: t('confirm_delete_story_message'),
+                    }"
+                    (popupConfirm)="onDelete()"
+                    [attr.aria-label]="t('delete_story')"
+                    [matTooltip]="t('delete_story')"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <mat-divider></mat-divider>
+                  @let projectDetail = projectKanbanService.projectService.entityDetail();
+                  @if (projectDetail && story) {
+                    <app-story-detail-attachments
+                      [projectDetail]="projectDetail"
                       [storyDetail]="story"
                       [hasModifyPermission]="hasModifyPermission"
-                    ></app-story-status>
-                    <div class="flex flex-row gap-4">
-                      <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
-                      <app-story-assignee
-                        [story]="story"
-                        [hasModifyPermission]="hasModifyPermission"
-                        [config]="{ relativeXPosition: 'left' }"
-                      ></app-story-assignee>
-                    </div>
-                  </div>
-                  <mat-divider></mat-divider>
-                  <ng-container
-                    *appHasPermission="{
-                      actualEntity: project,
-                      requiredPermission: ProjectPermissions.DELETE_STORY,
-                    }"
-                  >
-                    <button
-                      type="button"
-                      class="col-span-2"
-                      mat-icon-button
-                      appConfirm
-                      [data]="{
-                        deleteAction: true,
-                        title: t('confirm_delete_story'),
-                        message: t('confirm_delete_story_message'),
-                      }"
-                      (popupConfirm)="onDelete()"
-                      [attr.aria-label]="t('delete_story')"
-                      [matTooltip]="t('delete_story')"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                    <mat-divider></mat-divider>
-                    @let projectDetail = projectKanbanService.projectService.entityDetail();
-                    @if (projectDetail && story) {
-                      <app-story-detail-attachments
-                        [projectDetail]="projectDetail"
-                        [storyDetail]="story"
-                        [hasModifyPermission]="hasModifyPermission"
-                      ></app-story-detail-attachments>
-                    }
-                  </ng-container>
-                </div>
+                    ></app-story-detail-attachments>
+                  }
+                </ng-container>
               </div>
             </div>
           }
@@ -204,7 +194,6 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
     .editor {
       padding: 1em;
       border-style: solid;
-
       border-color: var(--mat-sys-outline);
       border-width: 1px;
       border-top: 0;

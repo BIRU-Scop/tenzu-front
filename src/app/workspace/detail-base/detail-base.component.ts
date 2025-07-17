@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,10 +30,14 @@ import { RouterOutlet } from "@angular/router";
   template: `
     <app-primary-side-nav>
       <app-breadcrumb></app-breadcrumb>
-      <div class="mt-8"><router-outlet /></div>
+      <div class="mt-8 fullscreen"><router-outlet /></div>
     </app-primary-side-nav>
   `,
-  styles: ``,
+  styles: `
+    .fullscreen {
+      height: calc(100% - var(--mat-toolbar-standard-height));
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailBaseComponent {}
