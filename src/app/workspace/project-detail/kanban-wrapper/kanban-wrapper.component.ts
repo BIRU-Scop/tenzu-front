@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ProjectKanbanComponent } from "./project-kanban/project-kanban.component";
-import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import StoryDetailComponent from "./story-detail/story-detail.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -36,10 +36,10 @@ import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 @Component({
   selector: "app-story-detail-dialog",
   standalone: true,
-  imports: [StoryDetailComponent, MatDialogContent],
-  template: `<mat-dialog-content
-    ><app-story-detail [canBeClosed]="true" (closed)="dialogRef.close()"></app-story-detail
-  ></mat-dialog-content>`,
+  imports: [StoryDetailComponent],
+  template: `
+    <app-story-detail class="overflow-hidden" [canBeClosed]="true" (closed)="dialogRef.close()"></app-story-detail>
+  `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
