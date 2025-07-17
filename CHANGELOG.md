@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.26](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.25...v0.1.0-staging.26) (2025-07-17)
+
+
+### Features
+
+* add app-table-header system ([f3bfd8a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/f3bfd8a58c75b9a4076d9a612c92163aa9c29d18))
+* add BlockNoteEditor js ([2f2dad1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/2f2dad1f2ad2c5b0452ffe64680be87a9a63c2ac))
+* switch story-attachment mat-table to app-table ([99c5767](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/99c57677eba6872d163ee47909c3593957329239))
+
+
+### Bug Fixes
+
+*  problem with the importation of the blocknotejs font ([145b7e4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/145b7e4ef2328bd85f4952fb1dc3b0bb937e1c93))
+* empty attachment when switch from modal => full view ([4d15404](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4d154049c61359d495dac7b2e2fb24cec4347a3f))
+
 ## [0.1.0-staging.25](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.24...v0.1.0-staging.25) (2025-06-24)
 
 
