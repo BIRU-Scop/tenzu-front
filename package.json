@@ -1,6 +1,6 @@
 {
   "name": "tenzu",
-  "version": "0.1.0-staging.26",
+  "version": "0.1.0-staging.27",
   "scripts": {
     "ng": "ng",
     "start": "node ./init-config.js  && ng serve  tenzu --hmr --host 0.0.0.0 --allowed-hosts true",

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.27](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.26...v0.1.0-staging.27) (2025-07-18)
+
+
+### Bug Fixes
+
+* better display of card detail with new editor ([353c19e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/353c19ea3ee11f9fe03f7632de37fc6f687b3c0f))
+
 ## [0.1.0-staging.26](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.25...v0.1.0-staging.26) (2025-07-17)
 
 
