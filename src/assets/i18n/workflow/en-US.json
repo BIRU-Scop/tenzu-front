@@ -92,6 +92,7 @@
       "name": "Name",
       "size": "Size (bytes)",
       "date": "Date",
+      "action": "Action",
       "exceed_size": "{var} exceed the size of 100 MB",
       "deleted_attachment": "{var} has been deleted"
     },

@@ -28,6 +28,7 @@ import { StoryDetail } from "@tenzu/repository/story";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
+import { TranslocoDatePipe } from "@jsverse/transloco-locale";
 
 @Component({
   selector: "app-story-detail-attachments",
@@ -40,6 +41,7 @@ import { MatIcon } from "@angular/material/icon";
     MatIcon,
     MatIconButton,
     MatIcon,
+    TranslocoDatePipe,
   ],
   template: `
     @let story = storyDetail();
@@ -71,41 +73,45 @@ import { MatIcon } from "@angular/material/icon";
               Attachments ({{ selectedStoryAttachments.length }})
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <div class="app-table">
-            <div class="app-table-header-group">
-              <div class="app-table-header-row">
-                <div class="app-table-header-cell">{{ t("attachments.name") }}</div>
-                <div class="app-table-header-cell">{{ t("attachments.size") }}</div>
-                <div class="app-table-header-cell">{{ t("attachments.date") }}</div>
-                <div class="app-table-header-cell"></div>
-              </div>
-            </div>
-            <div class="app-table-row-group">
-              @for (storyAttachment of selectedStoryAttachments; track storyAttachment.id) {
-                <div class="app-table-row">
-                  <div class="app-table-cell">
-                    {{ storyAttachment.name }}
-                  </div>
-                  <div class="app-table-cell">{{ storyAttachment.size }}</div>
-                  <div class="app-table-cell">
-                    {{ storyAttachment.createdAt }}
-                  </div>
-                  <div class="app-table-cell">
-                    <button mat-icon-button (click)="previewFile(storyAttachment)" type="button">
-                      <mat-icon>visibility</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="downloadFile(storyAttachment)" type="button">
-                      <mat-icon>download</mat-icon>
-                    </button>
-                    @if (_hasModifyPermission) {
-                      <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachment)">
-                        <mat-icon>delete</mat-icon>
+          <div class="overflow-x-auto">
+            <table class="app-table table-auto w-full">
+              <thead class="app-table-header-group">
+                <tr class="app-table-header-row">
+                  <th class="app-table-header-cell">{{ t("attachments.name") }}</th>
+                  <th class="app-table-header-cell">{{ t("attachments.size") }}</th>
+                  <th class="app-table-header-cell">{{ t("attachments.date") }}</th>
+                  <th class="app-table-header-cell sticky end-0 bg-surface-container !pe-0">
+                    <span class="sr-only">{{ t("attachments.action") }}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="app-table-row-group">
+                @for (storyAttachment of selectedStoryAttachments; track storyAttachment.id) {
+                  <tr class="app-table-row">
+                    <td class="app-table-cell">
+                      {{ storyAttachment.name }}
+                    </td>
+                    <td class="app-table-cell">{{ storyAttachment.size }}</td>
+                    <td class="app-table-cell">
+                      {{ storyAttachment.createdAt | translocoDate: { dateStyle: "short", timeStyle: "short" } }}
+                    </td>
+                    <td class="app-table-cell sticky end-0 bg-surface-container !pe-0">
+                      <button mat-icon-button (click)="previewFile(storyAttachment)" type="button">
+                        <mat-icon>visibility</mat-icon>
                       </button>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
+                      <button mat-icon-button (click)="downloadFile(storyAttachment)" type="button">
+                        <mat-icon>download</mat-icon>
+                      </button>
+                      @if (_hasModifyPermission) {
+                        <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachment)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
         </mat-expansion-panel>
       }
