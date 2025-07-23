@@ -101,8 +101,8 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
               [hasModifyPermission]="hasModifyPermission"
               (closed)="closed.emit()"
             ></app-story-detail-menu>
-            <div class="flex flex-row gap-2 h-5/6 w-full">
-              <form [formGroup]="form" class="basis-2/3 flex flex-col p-4">
+            <div class="flex flex-row gap-2 h-5/6">
+              <form [formGroup]="form" class="basis-2/3 flex flex-col p-4 min-w-0">
                 <mat-form-field appearance="fill" class="title-field">
                   <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
                 </mat-form-field>
@@ -115,7 +115,7 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                   #editorContainer
                 />
                 @if (hasModifyPermission) {
-                  <div class="flex flex-row justify-end gap-2 py-4 bg-surface-container">
+                  <div class="flex flex-row justify-end gap-2 py-4">
                     <button class="secondary-button" mat-flat-button type="button" (click)="undo()">
                       {{ t("undo") }}
                     </button>
@@ -126,7 +126,7 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                 }
               </form>
               <div
-                class="col-span-2 flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"
+                class="basis-1/3 h-full min-w-0 overflow-y-auto flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"
               >
                 <div class="grid grid-cols-1 gap-y-4 content-start mb-2">
                   <div class="flex flex-row gap-4">

@@ -50,8 +50,8 @@
       line-height: var(--mat-table-row-item-label-text-line-height, var(--mat-sys-body-medium-line-height));
       font-size: var(--mat-table-row-item-label-text-size, var(--mat-sys-body-medium-size, 14px));
     }
-     .app-table-header-cell {
-      @apply table-cell;
+    .app-table-header-cell {
+      @apply table-cell last:pe-6 first:ps-6;
       letter-spacing: var(--mat-table-row-item-label-text-tracking, var(--mat-sys-body-medium-tracking));
       padding: 0 16px;
       box-sizing: border-box;
@@ -68,9 +68,6 @@
       line-height: var(--mat-table-header-headline-line-height, var(--mat-sys-title-small-line-height));
       font-size: var(--mat-table-header-headline-size, var(--mat-sys-title-small-size, 14px));
       font-weight: var(--mat-table-header-headline-weight, var(--mat-sys-title-small-weight, 500));
-    }
-    .app-table-header-cell:first-of-type {
-      padding-left: 24px;
     }
   }
 
@@ -100,14 +97,8 @@
     font-weight: var(--mat-table-row-item-label-text-weight, var(--mat-sys-body-medium-weight));
 
 
-    .app-table-cell:first-of-type {
-      padding-left: 24px;
-    }
-    .app-table-cell:last-of-type {
-      padding-right: 24px;
-    }
     .app-table-cell {
-      @apply table-cell;
+      @apply table-cell last:pe-6 first:ps-6;
 
       letter-spacing: var(--mat-table-row-item-label-text-tracking, var(--mat-sys-body-medium-tracking));
       line-height: inherit;
