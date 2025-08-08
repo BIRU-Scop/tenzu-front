@@ -29,6 +29,15 @@ export const ConfigSchema = z.object({
     scheme: z.enum(["http", "https"]),
     suffixDomain: z.string(),
   }),
+  legal: z
+    .union([
+      z.object({
+        tos: z.url(),
+        privacy: z.url(),
+      }),
+      z.null(),
+    ])
+    .default(null),
   sentry: z
     .object({
       dsn: z.string().optional(),
