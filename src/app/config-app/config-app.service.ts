@@ -35,6 +35,7 @@ export class ConfigAppService {
   http = inject(HttpClient);
   config = signal({} as EnvironmentConfig & ConfigModel);
   configApi = computed(() => this.config().api);
+  configLegal = computed(() => this.config().legal);
   apiUrl = computed(() => {
     return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}`;
   });

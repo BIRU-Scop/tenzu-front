@@ -33,6 +33,8 @@ import { CreateUserPayload, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
 import { AuthFormStateStore } from "../auth-form-state.store";
+import { ConfigAppService } from "../../config-app/config-app.service";
+import { MatCheckbox } from "@angular/material/checkbox";
 
 @Component({
   selector: "app-signup",
@@ -50,6 +52,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
     RouterLink,
     MatError,
     MatDivider,
+    MatCheckbox,
   ],
   template: ` <div *transloco="let t" class="flex flex-col gap-y-4">
     @if (!emailSent()) {
@@ -69,6 +72,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
           </button>
         </div>
       } @else if (displayForm()) {
+        @let configLegal = configAppService.configLegal();
         <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
@@ -87,10 +91,30 @@ import { AuthFormStateStore } from "../auth-form-state.store";
               strength: { enabled: true, showBar: true },
             }"
           ></app-password-field>
-          <div class="min-w-full w-min">
-            <small class="mat-body-small" [innerHTML]="t('signup.terms_and_privacy')"></small>
-          </div>
-          <button data-testid="submitCreateAccount-button" mat-flat-button class="primary-button" type="submit">
+          @if (configLegal) {
+            <div class="min-w-full w-min">
+              <mat-checkbox formControlName="acceptTerms" required>
+                <div class="flex flex-col">
+                  <small
+                    class="mat-body-small"
+                    [innerHTML]="
+                      t('signup.terms_and_privacy', {
+                        termsOfService: configLegal.tos,
+                        privacyPolicy: configLegal.privacy,
+                      })
+                    "
+                  ></small>
+                </div>
+              </mat-checkbox>
+            </div>
+          }
+          <button
+            [disabled]="form.invalid"
+            data-testid="submitCreateAccount-button"
+            mat-flat-button
+            class="primary-button"
+            type="submit"
+          >
             {{ t("signup.create_account") }}
           </button>
           <div class="flex justify-center">
@@ -128,12 +152,21 @@ import { AuthFormStateStore } from "../auth-form-state.store";
       </p>
     </footer>
   </div>`,
-  styles: ``,
+  styles: `
+    mat-checkbox.ng-invalid.ng-dirty {
+      --checkbox-background-color: var(--mat-sys-error);
+
+      ::ng-deep.mdc-label {
+        color: var(--mat-sys-on-error-container);
+      }
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SignupComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
   userService = inject(UserService);
+  configAppService = inject(ConfigAppService);
   displayForm = signal(false);
   emailSent = signal(false);
   fb = inject(NonNullableFormBuilder);
@@ -141,12 +174,17 @@ export default class SignupComponent implements OnInit, OnDestroy {
     email: ["", [Validators.required, Validators.email]],
     fullName: ["", [Validators.required, Validators.maxLength(256)]],
     password: [""],
+    acceptTerms: [false],
   });
   route = inject(ActivatedRoute);
   readonly authFormStateStore = inject(AuthFormStateStore);
 
   ngOnInit(): void {
     this.authFormStateStore.updateHasError(this.form.events);
+    const configLegal = this.configAppService.configLegal();
+    if (configLegal) {
+      this.form.controls.acceptTerms.addValidators([Validators.requiredTrue]);
+    }
   }
   ngOnDestroy(): void {
     this.authFormStateStore.resetError();
@@ -155,10 +193,11 @@ export default class SignupComponent implements OnInit, OnDestroy {
     this.form.reset(this.form.value);
     if (this.form.valid) {
       const params = this.route.snapshot.queryParams;
+      const acceptTerms = this.form.value.acceptTerms || false;
       this.userService
         .create({
           ...(this.form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
-          ...{ acceptTerms: true },
+          ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
           ...params,
         })
         .subscribe(() => this.emailSent.set(true));

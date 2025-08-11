@@ -7,5 +7,6 @@
     "scheme": "https"
   },
   "wsUrl": "wss://local-tenzu.biru.ovh/events/",
+  "legal": null,
   "sentry": {}
 }
