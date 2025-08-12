@@ -1,10 +1,14 @@
 {
   "name": "tenzu",
   "version": "0.0.1-staging.5",
+  "schematics": "schematics/collection.json",
   "scripts": {
     "ng": "ng",
     "start": "node ./init-config.js  && ng serve  tenzu --hmr --host 0.0.0.0 --allowed-hosts true",
     "build": "ng build",
+    "build-schematics": "./node_modules/.bin/tsc -p ./tsconfig.schematics.json",
+    "schematics:add-plugins": "schematics ./src/schematics/collection.json:add-plugins --dry-run=false",
+    "schematics:reset-plugins": "schematics ./src/schematics/collection.json:reset-plugins --dry-run=false",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:coverage": "ng --no-watch --code-coverage",
@@ -47,6 +51,7 @@
     "zod": "^3.25.61"
   },
   "devDependencies": {
+    "@angular-devkit/schematics-cli": "^20.1.5",
     "@angular/build": "^20.1.4",
     "@angular/cli": "^20.1.4",
     "@angular/compiler-cli": "^20.1.4",

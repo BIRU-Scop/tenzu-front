@@ -9,7 +9,13 @@ const eslintConfigPrettier = require("eslint-config-prettier");
 const eslintPluginPrettierRecommended = require("eslint-plugin-prettier/recommended");
 module.exports = tseslint.config(
   {
-    ignores: [".cache/", ".git/", ".github/", "node_modules/"],
+    ignores: [
+      ".cache/",
+      ".git/",
+      ".github/",
+      "node_modules/",
+      "src/schematics/**/index.d.ts",
+    ],
     files: ["**/*.ts"],
     extends: [
       eslint.configs.recommended,

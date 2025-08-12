@@ -27,3 +27,10 @@ repos:
         entry: npm run lint
         pass_filenames: false
         language: node
+  - repo: local
+    hooks:
+      - id: reset-plugins
+        name: run schematics:reset-plugins
+        entry: npm run schematics:reset-plugins
+        pass_filenames: false
+        language: node
