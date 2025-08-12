@@ -33,3 +33,5 @@ export function isPlainObject(a: unknown): a is object {
     typeof a === "object" && a !== null && a.constructor === Object
   );
 }
+
+export type MethodReturnType<T extends (...args: never) => unknown> = ReturnType<T>;

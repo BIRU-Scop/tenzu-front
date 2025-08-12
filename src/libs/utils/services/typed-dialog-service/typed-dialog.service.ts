@@ -22,6 +22,7 @@
 import { Directive, inject, Injectable } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
 import { ComponentType } from "@angular/cdk/overlay";
+type ExtractComponentType<T> = T extends ComponentType<infer U> ? U : never;
 
 @Directive()
 export abstract class TypedDialog<DialogData, DialogResult> {
@@ -36,7 +37,7 @@ export class TypedDialogService {
   open<DialogData, DialogResult>(
     component: ComponentType<TypedDialog<DialogData, DialogResult>>,
     config?: MatDialogConfig<DialogData>,
-  ): MatDialogRef<TypedDialog<DialogData, DialogResult>, DialogResult> {
+  ): MatDialogRef<ExtractComponentType<typeof component>, DialogResult> {
     return this.dialog.open(component, config);
   }
 }
