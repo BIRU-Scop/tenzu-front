@@ -247,3 +247,6 @@ documentation.json
 
 # config
 src/assets/configs/config.json
+
+src/app/providers-plugins.ts
+src/plugins/*

@@ -33,12 +33,15 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { darkModeOn$ } from "@tenzu/utils/observables";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
-import { MatIconButton } from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 import { NotificationsComponent } from "./notifications/notifications.component";
 import { MatBadge } from "@angular/material/badge";
 import { NotificationsComponentService } from "./notifications/notifications-component.service";
 import { MatDivider } from "@angular/material/divider";
 import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
+import { NgEventBus } from "ng-event-bus";
+import { ToolBarStore } from "@tenzu/repository/toolbar";
+import { PLUGINS_TOKEN } from "../app.config";
 
 @Component({
   selector: "app-home",
@@ -57,6 +60,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
     MatBadge,
     MatDivider,
     EnvBannerComponent,
+    MatButton,
   ],
   template: `
     <mat-toolbar role="banner" class="flex" *transloco="let t; prefix: 'home.navigation'">
@@ -64,6 +68,12 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
         <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'"></mat-icon>
       </a>
       <app-env-banner class="grow px-4"></app-env-banner>
+      @for (item of toolBarStore.items(); track item.eventName) {
+        <button *transloco="let t" mat-flat-button class="primary-button" (click)="emitEvent(item.eventName)">
+          <mat-icon>favorite</mat-icon>{{ t(item.label) }}
+        </button>
+      }
+
       <button mat-icon-button (click)="openNotificationDialog($event)">
         <mat-icon
           [matBadge]="notificationsComponentService.count.unread()"
@@ -100,6 +110,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class HomeComponent implements AfterViewInit {
+  readonly eventBus = inject(NgEventBus);
   userStore = inject(UserStore);
   authService = inject(AuthService);
   iconRegistry = inject(MatIconRegistry);
@@ -107,6 +118,8 @@ export default class HomeComponent implements AfterViewInit {
   darkModeOn = toSignal(darkModeOn$);
   relativeDialog = inject(RelativeDialogService);
   notificationsComponentService = inject(NotificationsComponentService);
+  toolBarStore = inject(ToolBarStore);
+  plugins = inject(PLUGINS_TOKEN);
   constructor() {
     this.iconRegistry.addSvgIcon("logo-text", this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu.svg"));
     this.iconRegistry.addSvgIcon(
@@ -127,5 +140,8 @@ export default class HomeComponent implements AfterViewInit {
       relativeXPosition: "left",
       relativeYPosition: "below",
     });
+  }
+  emitEvent(eventName: string) {
+    this.eventBus.cast(eventName);
   }
 }
