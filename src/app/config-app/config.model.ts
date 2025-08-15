@@ -19,6 +19,7 @@
  *
  */
 import { z } from "zod/v4";
+import { Injectable } from "@angular/core";
 
 export const ConfigSchema = z.object({
   env: z.enum(["dev", "staging", "demo", "production"]),
@@ -38,3 +39,10 @@ export const ConfigSchema = z.object({
 });
 
 export type ConfigModel = z.infer<typeof ConfigSchema>;
+
+@Injectable({ providedIn: "root" })
+export class ConfigSchemaService {
+  schema() {
+    return ConfigSchema;
+  }
+}
