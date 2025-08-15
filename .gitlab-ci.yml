@@ -7,7 +7,7 @@ include:
     inputs:
       project-name: tenzu
       application-name: front
-      build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG SENTRY_ENVIRONMENT=$CI_COMMIT_REF_SLUG SENTRY_DSN=$SENTRY_DSN BASE_DOMAIN=$BASE_DOMAIN'
+      build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
       needs:
         - job: get-released-tag
   - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.16
@@ -19,7 +19,7 @@ include:
     inputs:
       stage: deploy-demo
       prefix: demo-
-      build-arg: 'RELEASE_VERSION=$DEMO_VERSION CONFIGURATION=production SENTRY_ENVIRONMENT=demo SENTRY_DSN=$SENTRY_DSN BASE_DOMAIN=demo-api.tenzu.app'
+      build-arg: 'RELEASE_VERSION=$DEMO_VERSION CONFIGURATION=production PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
       destination: ${CI_REGISTRY_IMAGE}:${DEMO_VERSION}
       needs:
         - job: launch-demo-deploy
