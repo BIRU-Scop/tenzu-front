@@ -27,7 +27,6 @@ export type ToolBarItem = {
   label: string;
   eventName: string;
   eventData?: any;
-  translocoScope: string;
 };
 
 const initialState = {

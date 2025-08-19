@@ -69,8 +69,9 @@ import { PLUGINS_TOKEN } from "../app.config";
       </a>
       <app-env-banner class="grow px-4"></app-env-banner>
       @for (item of toolBarStore.items(); track item.eventName) {
-        <button *transloco="let t" mat-flat-button class="primary-button" (click)="emitEvent(item.eventName)">
-          <mat-icon>favorite</mat-icon>{{ t(item.label) }}
+        <button *transloco="let t" mat-button class="primary-button !me-2" (click)="emitEvent(item.eventName)">
+          <mat-icon>{{ item.iconName }}</mat-icon
+          >{{ t(item.label) }}
         </button>
       }
 
