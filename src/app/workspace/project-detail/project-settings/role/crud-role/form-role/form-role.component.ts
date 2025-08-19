@@ -80,7 +80,7 @@ import { MatIcon } from "@angular/material/icon";
         </div>
         <mat-radio-group
           [formControl]="_form.controls[permissionGroup]"
-          aria-label="Select an option"
+          [attr.aria-label]="t('commons.select_option')"
           class="flex flex-col mb-4"
         >
           @if (_form.enabled) {

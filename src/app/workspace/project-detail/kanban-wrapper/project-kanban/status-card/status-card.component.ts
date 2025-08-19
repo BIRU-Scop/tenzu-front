@@ -67,7 +67,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
             requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
           }"
         >
-          <button mat-icon-button attr.aria-label="{{ t('edit_status.aria_label') }}" [matMenuTriggerFor]="menu">
+          <button mat-icon-button [attr.aria-label]="t('edit_status.aria_label')" [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">

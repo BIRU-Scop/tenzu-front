@@ -168,7 +168,8 @@
     "workspace": "Workspace",
     "cancel": "Cancel",
     "close": "Close",
-    "save": "Save"
+    "save": "Save",
+    "select_option": "Select an option"
   },
   "general": {
     "identity": {
