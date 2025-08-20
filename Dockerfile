@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y gettext-base git && rm -rf /var/lib/apt
 RUN envsubst < src/environments/environment.production.ts > res.txt && \
 mv res.txt src/environments/environment.production.ts
 ## build the app in configuration passed
-RUN (if [ -n "${PLUGIN_GIT}" ] ; then git clone ${PLUGIN_PATH} src/plugins/${PLUGIN_PATH}; fi)  &&  \
+RUN (if [ -n "${PLUGIN_GIT}" ] ; then git clone ${PLUGIN_GIT} src/plugins/${PLUGIN_PATH}; fi)  &&  \
     (if [ -n "${PLUGIN_PATH}" ] ; then npx npm run schematics:add-plugins --  --path ${PLUGIN_PATH}; fi)&& \
     npx npm run build:production
 
