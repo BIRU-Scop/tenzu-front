@@ -104,7 +104,8 @@
     "projects": "Proyectos",
     "workspace": "Espacio de trabajo",
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "select_option": "Seleccione una opción"
   },
   "general": {
     "identity": {

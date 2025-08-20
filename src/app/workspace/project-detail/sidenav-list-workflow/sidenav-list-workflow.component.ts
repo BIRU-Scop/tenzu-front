@@ -106,7 +106,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
             </ng-container>
           }
 
-          <mat-nav-list attr.aria-label="{{ t('workspace.general_title.kanban') }}">
+          <mat-nav-list [attr.aria-label]="t('workspace.general_title.kanban')">
             @for (workflow of project.workflows; track workflow.id) {
               @if (!sideNavStore.resized()) {
                 <a

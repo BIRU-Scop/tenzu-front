@@ -19,19 +19,5 @@
  *
  */
 
-/**
- * A type returning the type of given array's element.
- * e.g: ArrayElement<string[]> === string
- */
-export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType extends readonly (infer ElementType)[]
-  ? ElementType
-  : never;
-
-export function isPlainObject(a: unknown): a is object {
-  return (
-    // Checking object constructor excludes other types like Date, Array, etc.
-    typeof a === "object" && a !== null && a.constructor === Object
-  );
-}
-
-export type MethodReturnType<T extends (...args: never) => unknown> = ReturnType<T>;
+import { Tree } from "@angular-devkit/schematics";
+export declare function resetPlugins(): (tree: Tree) => import("@angular-devkit/schematics/src/tree/interface").Tree;

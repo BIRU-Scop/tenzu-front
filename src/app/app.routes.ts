@@ -26,6 +26,7 @@ import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace
 import { VerifyEmailGuard } from "./auth/signup/verify-email.guard";
 import { ProjectInvitationGuard } from "./workspace/project-detail/project-members/project-invitation.guard";
 import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";
+import { providePluginsTransloco } from "./providers-plugins";
 
 function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
   const storyUrl = "story/:ref";
@@ -61,7 +62,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./home/home.component"),
-    providers: [provideTranslocoScope("home")],
+    providers: [provideTranslocoScope("home"), ...providePluginsTransloco()],
     canActivate: [loginGuard],
     canActivateChild: [loginGuard],
     children: [

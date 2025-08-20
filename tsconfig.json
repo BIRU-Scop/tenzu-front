@@ -28,7 +28,10 @@
       "@tenzu/pipes/*" : ["src/libs/shared/pipes/*"],
       "@tenzu/repository/*": ["src/libs/repository/*"],
       "@tenzu/utils/*": ["src/libs/utils/*"],
-      "@tenzu/utils/services/*": ["src/libs/utils/services/*"]
+      "@tenzu/plugins/*": ["src/plugins/*"],
+      "@tenzu/utils/services/*": [
+        "src/libs/utils/services/*"
+      ]
     }
   },
   "angularCompilerOptions": {

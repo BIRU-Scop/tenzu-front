@@ -18,40 +18,32 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
-import { z } from "zod/v4";
-import { Injectable } from "@angular/core";
 
-export const ConfigSchema = z.object({
-  env: z.enum(["dev", "staging", "demo", "production"]),
-  wsUrl: z.string(),
-  api: z.object({
-    prefix: z.string(),
-    baseDomain: z.string(),
-    scheme: z.enum(["http", "https"]),
-    suffixDomain: z.string(),
-  }),
-  legal: z
-    .union([
-      z.object({
-        tos: z.url(),
-        privacy: z.url(),
-      }),
-      z.null(),
-    ])
-    .default(null),
-  sentry: z
-    .object({
-      dsn: z.string().optional(),
-      environment: z.string().optional(),
-    })
-    .default({}),
-});
+import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 
-export type ConfigModel = z.infer<typeof ConfigSchema>;
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+export type ToolBarItem = {
+  iconName: string;
+  label: string;
+  eventName: string;
+  eventData?: any;
+};
 
-@Injectable({ providedIn: "root" })
-export class ConfigSchemaService {
-  schema() {
-    return ConfigSchema;
-  }
-}
+const initialState = {
+  items: [],
+};
+
+export const ToolBarStore = signalStore(
+  { providedIn: "root" },
+  withState<{
+    items: ToolBarItem[];
+  }>(initialState),
+  withMethods((store) => ({
+    setItems(items: ToolBarItem[]) {
+      patchState(store, { items });
+    },
+    reset() {
+      patchState(store, initialState);
+    },
+  })),
+);

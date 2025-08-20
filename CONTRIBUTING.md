@@ -32,19 +32,33 @@ See [SECURITY](SECURITY.md)
 
 ## App setup
 
+### Run
 See [INSTALL](INSTALL.md) to know how to set up your development environment, run the app,
 launch the test, etc.
 
-## Coding style
-
-We use [precommit](https://pre-commit.com/) to check for and automatically fix
-issues in coding style.
-[Install precommit](https://pre-commit.com/#install) the run the following command to 
+### Git hook
+To contribute, you'll need to [install precommit](https://pre-commit.com/#install) and then run the following command to
 add pre-commit into your git hooks and have it run on every commit:
 ```shell
 pre-commit install
 ```
 For more information on how it works, see the [precommit configuration file](.pre-commit-config.yaml).
+
+### Git repo config
+**TO BE RUN ONCE AFTER CLONING**: 
+```shell
+git update-index --skip-worktree src/app/providers-plugins.ts
+# Reverse command if one day you need to update this file on remote:
+# git update-index --no-skip-worktree src/app/providers-plugins.ts
+# List all files marked skipped with:
+# git ls-files -v . | grep ^S
+```
+This file will be changed if you work on plugins, the remote-version should not be plugin-dependant, 
+hence we prevent change from being staged.
+
+## Coding style
+
+We use [precommit](https://pre-commit.com/) to check for and automatically fix issues in coding style.
 
 ## Commit format
 
