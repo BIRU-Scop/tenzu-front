@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/schematics",
+  "schematics": {
+    "add-plugins": {
+      "description": "Add plugin imports and providers from a feature config.json into src/app/providers-plugins.ts",
+      "factory": "./add-plugins/index#addPlugins",
+      "schema": "./add-plugins/schema.json"
+    },
+    "reset-plugins": {
+      "description": "Reset src/app/providers-plugins.ts to its initial minimal content",
+      "factory": "./reset-plugins/index#resetPlugins",
+      "schema": "./reset-plugins/schema.json"
+    }
+  }
+}

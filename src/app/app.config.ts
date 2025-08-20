@@ -27,6 +27,7 @@ import {
   provideAppInitializer,
   provideZonelessChangeDetection,
 } from "@angular/core";
+import { NgEventBus } from "ng-event-bus";
 import { provideRouter, RouteReuseStrategy, withComponentInputBinding, withRouterConfig } from "@angular/router";
 
 import { CustomReuseStrategy, routes } from "./app.routes";
@@ -45,13 +46,25 @@ import { ConfigAppService } from "./config-app/config-app.service";
 import { BrowserSentryClientOptions } from "@micro-sentry/browser";
 import { WsService } from "@tenzu/utils/services/ws";
 import { provideTranslocoLocale } from "@jsverse/transloco-locale";
+import { providePlugins } from "./providers-plugins";
 
+import { InjectionToken } from "@angular/core";
+
+export type Plugin = object;
+
+export const PLUGINS_TOKEN = new InjectionToken<null | Plugin | Plugin[]>("PLUGINS_TOKEN");
 export function tokenGetter() {
   return localStorage.getItem("token");
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    {
+      provide: PLUGINS_TOKEN,
+      useValue: null,
+      multi: true,
+    },
+    ...providePlugins(),
     provideAppInitializer(async () => {
       const configAppService = inject(ConfigAppService);
       const languageStore = inject(LanguageStore);
@@ -111,6 +124,7 @@ export const appConfig: ApplicationConfig = {
     provideTranslocoMessageformat(),
     provideTranslocoLocale(),
     provideMicroSentry({}),
+
     {
       provide: MICRO_SENTRY_CONFIG,
       useFactory: () => {
@@ -128,5 +142,6 @@ export const appConfig: ApplicationConfig = {
       },
     },
     provideHttpClient(withFetch(), withInterceptors([httpInterceptor]), withInterceptorsFromDi()),
+    NgEventBus,
   ],
 };

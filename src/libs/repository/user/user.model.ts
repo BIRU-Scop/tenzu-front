@@ -57,7 +57,8 @@ export type UserDeleteInfo = {
 
 export type CreateUserPayload = Pick<User, "fullName" | "email"> & {
   password: string;
-  acceptTerms: boolean;
+  acceptTermsOfService: boolean;
+  acceptPrivacyPolicy: boolean;
   color?: number;
   lang?: string;
   projectInvitationToken?: string;

@@ -21,7 +21,7 @@
 
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { ConfigModel, ConfigSchema } from "./config.model";
+import { ConfigModel, ConfigSchemaService } from "./config.model";
 import { environment } from "../../environments/environment";
 import { EnvironmentConfig } from "../../environments/environment-type";
 import { v4 } from "uuid";
@@ -33,8 +33,10 @@ export const CORRELATION_ID = v4();
 })
 export class ConfigAppService {
   http = inject(HttpClient);
+  configSchemaService = inject(ConfigSchemaService);
   config = signal({} as EnvironmentConfig & ConfigModel);
   configApi = computed(() => this.config().api);
+  configLegal = computed(() => this.config().legal);
   apiUrl = computed(() => {
     return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}`;
   });
@@ -50,7 +52,7 @@ export class ConfigAppService {
         throw new Error("Could not load config");
       })
       .then((config) => {
-        const schema = ConfigSchema.parse(config);
+        const schema = this.configSchemaService.schema().parse(config);
         this.config.set({
           ...environment,
           ...schema,

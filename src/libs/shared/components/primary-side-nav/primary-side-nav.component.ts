@@ -78,7 +78,7 @@ import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-
               ></ng-container>
             }
           }
-          <mat-nav-list class="grow" attr.aria-label="{{ t('component.primary_side_nav.main_nav') }}">
+          <mat-nav-list class="grow" [attr.aria-label]="t('component.primary_side_nav.main_nav')">
             @for (item of sideNavStore.primaryNavItems(); track item.href) {
               @if (!item.componentConfig?.componentRef) {
                 @if (!sideNavStore.resized()) {
@@ -111,7 +111,7 @@ import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-
           </mat-nav-list>
           <div class="flex flex-col gap-y-2" appResizeSideNav (resized)="sideNavStore.setResized($event)">
             <mat-divider></mat-divider>
-            <mat-nav-list attr.aria-label="{{ t('component.primary_side_nav.secondary_nav') }}">
+            <mat-nav-list [attr.aria-label]="t('component.primary_side_nav.secondary_nav')">
               @for (item of sideNavStore.secondaryNavItems(); track item.href) {
                 @if (!sideNavStore.resized()) {
                   <a
