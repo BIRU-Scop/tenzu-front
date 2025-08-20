@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.29](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.28...v0.1.0-staging.29) (2025-08-20)
+
+
+### Features
+
+* add a starting plugin system ([410d62e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/410d62e349599fb7915da5c777d6f03e4881c639))
+* add active acceptation of legal terms when creating account ([7b54949](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7b54949b8e121db510ff39b905f98c54d8a825f0))
+* add additional assets ([4681d97](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4681d9785b2c369a3428fda635aa61c5f2341772))
+* add more typing ([7be3a04](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7be3a044a892b9e9c66d1382a98b4e41e6710be3))
+* add plugin schematics ([4b56901](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4b56901d5094261bf1fa874d82869a643f93371c))
+* configSchema can be overridden by plugin ([8120df7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8120df7bb8b350cf396b01d7a51e110ab5583f3d))
+
+
+### Bug Fixes
+
+* replace raw text with trad ([dce86fc](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/dce86fc32ca86d0ad8d20d039cdfe612bd794873))
+* use toolbar item icon, remove scope and fix layout ([d52b1af](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d52b1aff862c69f83c8aee42c5650f914d7e521d))
+
 ## [0.1.0-staging.28](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.27...v0.1.0-staging.28) (2025-07-23)
 
 
