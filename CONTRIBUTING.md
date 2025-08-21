@@ -48,7 +48,7 @@ For more information on how it works, see the [precommit configuration file](.pr
 **TO BE RUN ONCE AFTER CLONING**: 
 ```shell
 git update-index --skip-worktree src/app/providers-plugins.ts
-# Reverse command if one day you need to update this file on remote:
+# Reverse command if one day you need to update this file on remote or you have error on checkout:
 # git update-index --no-skip-worktree src/app/providers-plugins.ts
 # List all files marked skipped with:
 # git ls-files -v . | grep ^S
