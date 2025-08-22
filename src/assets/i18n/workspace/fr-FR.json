@@ -1,0 +1,63 @@
+{
+  "general_title": {
+    "workspace": "Espace de travail",
+    "workspaces": "Espaces de travail",
+    "workspace_list_projects": "Projets",
+    "workspace_settings": "Paramètres",
+    "workspace_members": "Membres",
+    "project": "Projet",
+    "projects": "Projets",
+    "kanban": "Kanban",
+    "create_kanban": "Créer un Kanban",
+    "project_members": "Membres",
+    "project_settings": "Paramètres"
+  },
+  "create": {
+    "create_workspace": "Créer un espace de travail",
+    "workspace_name": "Nom de l'espace de travail",
+    "name_required": "Le nom de l'espace de travail ne peut pas être vide",
+    "name_placeholder": "Donner un nom à l'espace de travail"
+  },
+  "list_projects": {
+    "title": "Liste des projets"
+  },
+  "settings": {
+    "title": "Paramètres de l'espace de travail",
+    "edit": {
+      "title": "Informations",
+      "name": "Nom",
+      "name_required": "Le nom de l'espace de travail ne peut pas être vide",
+      "name_placeholder": "Donner un nom à l'espace de travail",
+      "delete_workspace": "Supprimer l'espace de travail",
+      "delete": {
+        "delete": "Supprimer",
+        "error": "Tu ne peux pas supprimer un espace de travail qui contient des projets. </br> Cet espace de travail a { totalProjects, plural, one {<strong class='number-projects'>#</strong> projet} other {<strong class='number-projects'>#</strong> projets} }. Supprime d'abord { totalProjects, plural, one {le projet} other {les projets} }.",
+        "deleted_workspace": "L'espace de travail {{ var }} a été supprimé."
+      }
+    }
+  },
+  "members": {
+    "title": "Membres",
+    "invite_to_workspace": "Inviter à l'espace de travail",
+    "description_modal": "<p>Une fois qu'ils auront accepté l'invitation, ils auront un accès à l'espace de travail dans les limites du rôle qui leur est attribué.</p><br><p>Saisis une adresse e-mail ou entre plusieurs adresses séparées par une virgule.</p>",
+    "members_tab": "Membres",
+    "invitation_tab": "Invitations",
+    "invitation_empty": "Il n'y a pas d'invitation.",
+    "total_projects": "{{ number }} projets",
+    "delete": {
+      "leave_title": "Es-tu sûr de vouloir quitter l'espace de travail \"{name}\"?",
+      "forbidden_existing_projects_self": "Tu ne peux pas quitter l'espace de travail tant que tu es membre des projets suivants: {names}",
+      "workspace_will_be_deleted": "L'espace de travail sera définitivement supprimé",
+      "sole_owner_succession": "Tu es l'unique propriétaire de l'espace de travail, tu dois désigner quelqu'un pour te remplacer",
+      "successor_label": "Nouveau propriétaire",
+      "existing_projects_succession_warning": "Ce membre est l'unique propriétaire des projets suivants : {names}. Tu vas devenir le nouveau propriétaire de ces projets.",
+      "forbidden_existing_projects_other": "Ce membre est l'unique propriétaire des projets suivants : {names}. Seul un propriétaire de l'espace de travail peut supprimer ce membre.",
+      "forbidden_confirm": "J'ai compris !"
+    }
+  },
+  "placeholder": {
+    "placeholder_title": "Tu n'es encore membre d'aucun espace de travail.",
+    "placeholder_text": "Regroupe tes projets dans des espaces de travail. C'est toi qui décide leur périmètre : aussi vaste qu'une organisation ou aussi personnel que tes projets favoris.",
+    "placeholder_button": "Créer un espace de travail"
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "notification": {
+    "server_errors": {
+      "http500": {
+        "title": "Une erreur s'est produite !",
+        "message": "Réessaye dans quelques minutes."
+      },
+      "http403": {
+        "title": "Permission refusée",
+        "message": "Tu n'as pas l'autorisation de faire ça."
+      }
+    },
+    "login": {
+      "logout": "Tu es déconnecté"
+    },
+    "action": {
+      "changes_saved": "Modifications enregistrées",
+      "created_success": "La création a réussi"
+    },
+    "project": {
+      "deleted": "Le projet {{ name }} a été supprimé."
+    },
+    "workflow": {
+      "renamed": "Le kanban a été renommé avec succès",
+      "deleted": "Le kanban {{ name }} a été supprimé."
+    },
+    "events": {
+      "edit_workflow": "Le kanban {{oldName}} a été renommé {{newName}}.",
+      "update_project": "Le projet {{name}} a été édité par {{username}}.",
+      "update_workspace": "L'espace de travail {{name}} a été édité par {{username}}.",
+      "delete_workflow": "Le kanban {{name}} a été supprimé.",
+      "delete_workflow_and_moved_content": "{{name}} a été supprimé, son contenu a été déplacé dans <a href=\"{{workflowUrl}}\"> {{workflowName}} </a>",
+      "revoked_project_invitation": "Ton invitation au projet {{id}} a été révoquée",
+      "revoked_workspace_invitation": "Ton invitation à l'espace de travail {{id}} a été révoquée",
+      "delete_story": "{{username}} a supprimé la story #{{ref}}",
+      "delete_project": "{{username}} a supprimé le projet {{name}}",
+      "delete_workspace": "{{username}} a supprimé l'espace de travail {{name}}",
+      "move_story_to_workflow": "La story a été déplacé dans le kanban <a href=\"{{workflowURL}}\"> {{workflowName}} </a>",
+      "update_project_membership": "Ton rôle dans le projet {{name}} est désormais {{role}}",
+      "delete_project_membership_self": "Tu as été retiré du projet {{name}}",
+      "update_workspace_membership": "Ton rôle dans l'espace de travail {{name}} est désormais {{role}}",
+      "delete_workspace_membership_self": "Tu as été retiré de l'espace de travail {{name}}",
+      "update_project_role": "Ton rôle {{role}} au sein du projet {{name}} a été édité"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Tu n'as aucune notification.",
+    "only_unread": "Afficher uniquement les non lus",
+    "all_read": "Tu as lu toutes tes notifications.",
+    "types": {
+      "stories.assign.self": "<span class='text-on-background'>{{fullName}}</span> t'a assigné à la story",
+      "stories.unassign.self": "<span class='text-on-background'>{{fullName}}</span> t'a retiré des assignés de la story",
+      "stories.assign": "<span class='text-on-background'>{{fullName}}</span> a été assigné à la story",
+      "stories.unassign": "<span class='text-on-background'>{{fullName}}</span> a été retiré des assigné de la story",
+      "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> a changé le statut de la story en <span class='text-on-background'>{{status}}</span>",
+      "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> a commenté la story",
+      "stories.delete": "<span class='text-on-background'>{{fullName}}</span> a supprimé la story {{story}}",
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>"
+    }
+  },
+  "component": {
+    "password": {
+      "label": "Mot de passe",
+      "show": "Afficher le mot de passe",
+      "hide": "Masquer le mot de passe",
+      "placeholder": "Entre ton mot de passe",
+      "hints": {
+        "minLength": "Ton mot de passe doit comporter au moins {{ minLength }} caractères.",
+        "diversity": "Ton mot de passe doit avoir au moins {{ diversityDifference }} parmi :",
+        "diversityType": "1 {{ diversityType }}",
+        "symbolCharacters": "Note: Seuls les symboles <strong>{{ symbols }}</strong> compte pour la robustesse."
+      },
+      "errors": {
+        "required": "Un mot de passe est <strong>requis</strong>",
+        "minLength": "Ton mot de passe doit comporter au moins <strong>{{ minLength }} caractères</strong>.",
+        "maxLength": "Ton mot de passe ne peut pas dépasser <strong>{{ number }} caractères</strong>.",
+        "diversity": "Ton mot de passe doit avoir au moins <strong>{{ diversityDifference }}</strong> parmi :",
+        "diversityType": "1 caractères <strong>{{ diversityType }}</strong>"
+      },
+      "password-strength": {
+        "security_level": {
+          "weak": "Faible",
+          "medium": "Moyen",
+          "strong": "Fort"
+        }
+      }
+    },
+    "email": {
+      "label": "Email",
+      "errors": {
+        "required": "Un email is <strong>requis</strong>",
+        "email": "Merci de saisir une adresse e-mail valide."
+      }
+    },
+    "assign": {
+      "label": "Ajouter des assignés",
+      "assigned_to": "Assigné a:",
+      "not_assigned": "La story n'a pas été assignée.",
+      "no_members": "Ce projet ne compte aucun membre sélectionnables.",
+      "search_placeholder": "Rechercher des membres"
+    },
+    "project_card": {
+      "create_first_project": "Créé ton premier projet"
+    },
+    "invitation": {
+      "accept": "Accepter l'invitation",
+      "deny": "Refuser l'invitation",
+      "last_sent": "La dernière invitation a été envoyée le {{var}}",
+      "pending": "En attente",
+      "accepted": "Acceptée",
+      "revoked": "Révoquée",
+      "denied": "Refusée",
+      "resend": "Renvoyer une invitation",
+      "revoke": "Annuler une invitation",
+      "resend_too_much": "Tu ne peux pas renvoyer d'invitation à {{email}} car cette personne en a déjà trop reçu",
+      "resend_too_soon": "Tu ne peux pas renvoyer d'invitation à {{email}} car tu l'as déjà réinvité récemment. Attends que {{email}} réponde ou réessaye plus tard.",
+      "resent_confirmation": "Invitation renvoyée",
+      "confirm_revoke_action": "Révoquer",
+      "confirm_revoke_message": "Es-tu sûr de vouloir annuler l'invitation de {{email}} à rejoindre le {{item}} « {{name}} » ?"
+    },
+    "membership": {
+      "remove": "Supprimer ce membre",
+      "leave": "Quitter le {{item}}",
+      "confirm_remove_action": "Supprimer",
+      "confirm_remove_message": "Es-tu sûr de vouloir supprimer {{member}} des membres de {{item}} « {{name}} » ?"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Ajoute une brève description pour aider les autres à mieux comprendre ton projet."
+    },
+    "user_card": {
+      "your_user": "Moi"
+    },
+    "primary_side_nav": {
+      "collapse": "Réduire",
+      "main_nav": "Navigation principale",
+      "secondary_nav": "Navigation secondaire"
+    },
+    "invite_dialog": {
+      "pending": "En attente",
+      "non_members": "Non-membres",
+      "add": "Ajouter",
+      "invite_people": "Inviter des personnes",
+      "invite_people_to": "Invite des personnes dans {{name}}",
+      "mailing_list": "Liste d'envoi",
+      "member_error": "Cette adresse appartient à un membre",
+      "duplicate_error": "Cette adresse a déjà été invitée. Veux-tu renvoyer une invitation ?",
+      "duplicate_error_ok": "Oui"
+    },
+    "role_selector": {
+      "workspace": {
+        "owner": "peut inviter/supprimer des membres, attribuer/retirer n'importe quel rôle, modifier les informations relatives à l'espace de travail et le supprimer, créer des projets et voir l'espace de travail (mais pas son contenu)",
+        "admin": "peut inviter/supprimer des membres (sauf les owners), attribuer/retirer tout rôle autre que celui d'owner, modifier les informations relatives à l'espace de travail, créer des projets et voir l'espace de travail (mais pas son contenu)",
+        "member": "peut créer des projets et voir l'espace de travail (mais pas son contenu)",
+        "readonly_member": "peut voir l'espace de travail (mais pas son contenu)"
+      },
+      "project": {
+        "owner": "peut inviter/supprimer des membres, attribuer/retirer n'importe quel rôle, modifier les informations du projet et le supprimer, modifier les rôles dynamiques et consulter tout le contenu du projet.",
+        "admin": "peut inviter/supprimer des membres (sauf les owners), attribuer/retirer tout rôle autre que celui d'owner, modifier les informations du projet, modifier les rôles dynamiques et consulter tout le contenu du projet.",
+        "readonly_member": "peut voir le contenu du projet : kanbans, story et commentaires."
+      }
+    }
+  },
+  "commons": {
+    "project": "Projet",
+    "projects": "Projets",
+    "workspace": "Espace de travail",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "select_option": "Sélectionne une option"
+  },
+  "general": {
+    "identity": {
+      "fullname": "Nom complet",
+      "username": "Nom d'utilisateur",
+      "lang": "Langue",
+      "email": "Email"
+    }
+  },
+  "directives": {
+    "confirm_popup_component": {
+      "textDelete": "Cette action est irréversible.",
+      "textConfirm": "Es-tu sûr ?",
+      "cancelAction": "Annuler",
+      "deleteAction": "Supprimer",
+      "confirmAction": "Confirmer"
+    }
+  },
+  "form_errors": {
+    "max_length": "La limite de caractères est {{length}}"
+  },
+  "environment": {
+    "demo": "Ceci est une version de démo du produit, destinée uniquement à du test. Toutes les données enregistrées seront régulièrement supprimées. Nous ne conservons aucune adresses e-mail à des fins marketing.",
+    "staging": "Ceci est la version de staging du produit, destinée uniquement à des fins d'évaluation interne. Ici, tu peux donner libre cours à ta passion pour la création de comptes.",
+    "dev": "Ceci est la version de développement du produit. C'est ici que se cachent les bugs insoupçonnés et les dangers imprévisibles. Procéde avec prudence."
+  }
+}

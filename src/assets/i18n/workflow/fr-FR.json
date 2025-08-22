@@ -1,0 +1,105 @@
+{
+  "create_workflow": {
+    "dialog": {
+      "aria_label": "Créer un kanban",
+      "maximum_reached": "Le nombre maximal de kanbans a été atteint",
+      "create_workflow": "Créer un nouveau kanban",
+      "max-num-workflow-created-error": "Impossible de créer un nouveau kaban, tu as atteint le nombre maximum.",
+      "name_required": "Le nom du Kanban ne peut pas être vide",
+      "name_placeholder": "Donner un nom au kanban"
+    }
+  },
+  "edit_workflow": {
+    "aria_label": "Modifier le kanban",
+    "edit_name": "Modifier le nom du kanban",
+    "delete": "Supprimer le kanban"
+  },
+  "edit_workflow_name": {
+    "label": "Nom du kanban",
+    "action": "Enregistrer",
+    "name_required": "Le nom du Kanban ne peut pas être vide"
+  },
+  "delete_workflow": {
+    "title": "Supprimer le kanban {{ workflowName }} ?",
+    "stories_and_statuses_will_be_deleted": "Les stories et statuts de ce kanban seront automatiquement supprimés.",
+    "what_to_do": "Que souhaite-tu faire avec les stories et les statuts de ce kanban ?",
+    "move_to_another_workflow": "Les déplacer vers un autre kanban.",
+    "workflow": "Kanban",
+    "select_placeholder": "Choisis la destination",
+    "stories_and_statuses_target_location": "Les stories et les statuts seront placés après ceux qui existent déjà.",
+    "delete_all": "Supprimer également les stories et statuts",
+    "actions": {
+      "confirm": "Supprimer le kanban",
+      "cancel": "Annuler"
+    }
+  },
+  "edit_status": {
+    "aria_label": "Modifier le statut",
+    "edit_name": "Modifier le nom du statut",
+    "delete": "Supprimer le statut",
+    "move_left": "Déplacer à gauche",
+    "move_right": "Déplacer à droite"
+  },
+  "add_status": "Ajouter un statut",
+  "add_story": "Ajouter une story",
+  "create_story": {
+    "create_story": "Créer une story",
+    "story_name": "Nom de la story",
+    "name_required": "Le nom de la story ne peut pas être vide.",
+    "name_placeholder": "Donner un nom à la story"
+  },
+  "create_status": {
+    "create_status": "Créer un statut",
+    "status_name": "Nom du statut",
+    "name_required": "Le nom du statut ne peut pas être vide",
+    "name_placeholder": "Donner un nom au statut"
+  },
+  "edit_status_name": {
+    "edit_status_name": "Modifier le nom du statut",
+    "status_name": "Nom du statut",
+    "name_required": "Le nom du statut ne peut pas être vide"
+  },
+  "delete_status": {
+    "title": "Supprimer le statut {{ statusName }} ?",
+    "what_to_do_stories": "Que souhaite-tu faire des stories de ce statut ?",
+    "stories_will_be_deleted": "Les stories associées à ce statut seront automatiquement supprimées.",
+    "cancel": "Finalement, garder le statut",
+    "confirm": "Oui, supprimer le statut",
+    "move_stories_another_status": "Les déplacer vers un autre statut",
+    "delete_stories": "Supprimer également les stories",
+    "stories_placed_below": "Les stories seront placées sous celles qui existent déjà.",
+    "status": "Statut"
+  },
+  "detail_story": {
+    "story": "Story",
+    "workflow": "Kanban",
+    "title": "Titre",
+    "description": "Description",
+    "edit_assignees": "Modifier les assignés",
+    "add_assignees": "Ajouter des assignés",
+    "no_assignee": "Pas d'assigné",
+    "edit_title": "Modifier le titre",
+    "edit_description": "Modifier la description",
+    "empty_description": "Ajoute une description à ta story",
+    "created_by": "Créée par",
+    "assigned_to": "Assignée à",
+    "status": "Statut",
+    "save": "Enregistrer",
+    "undo": "Annuler",
+    "attachments": {
+      "attach_file": "Joindre un fichier",
+      "name": "Nom",
+      "size": "Taille (octets)",
+      "date": "Date",
+      "action": "Action",
+      "exceed_size": "{{var}} dépasse la taille de 100 MB",
+      "deleted_attachment": "{{var}} a été supprimé"
+    },
+    "change_workflow": "Déplacer la story vers un autre kanban",
+    "delete_story": "Supprimer cette story",
+    "confirm_delete_story": "Es-tu sûr(e) de vouloir supprimer cette story ?",
+    "confirm_delete_story_message": "Toutes les informations de la story seront définitivement supprimées. Il n'y a pas de retour en arrière possible.",
+    "story_previous": "Story précédente",
+    "story_next": "Story suivante"
+  }
+}

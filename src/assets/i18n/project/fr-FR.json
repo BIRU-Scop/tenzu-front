@@ -1,0 +1,113 @@
+{
+  "buttons": {
+    "cancel": "Annuler",
+    "save": "Enregistrer les modifications",
+    "delete": "Supprimer"
+  },
+  "new_project": {
+    "title": "Nouveau projet",
+    "create_project": "Créer un projet",
+    "name": "Nom",
+    "name_required": "Merci d'entrer un nom",
+    "workspace_required": "Merci de choisir un espace de travail",
+    "workspace_forbidden": "Tu n'as pas l'autorisation de créer un projet dans cet espace de travail."
+  },
+  "settings": {
+    "title": "Paramètres du projet",
+    "permissions": {
+      "title": "Permissions",
+      "hint_permission": "Pour chaque catégorie, la sélection d'une permission induit nécessairement les permissions situées au-dessus.",
+      "empty_permission": "Tu dois sélectionner au moins une permission pour créer un rôle.",
+      "no_permission": "Pas de permission",
+      "name_required": "Le nom est requis",
+      "name_forbidden": "Ce rôle existe déjà. Merci de choisir un autre nom.",
+      "delete_role_title": "Supprimer le rôle",
+      "delete_role_warning": "Cette action supprimera le rôle. Les membres actuels de ce rôle devront en utiliser un nouveau.",
+      "delete_role_dialog": {
+        "title": "Ce rôle est attribué, tu dois attribuer un nouveau rôle à ces membres pour pouvoir le supprimer.",
+        "cancel": "Annuler",
+        "confirm": "Réaffecter",
+        "project_role_select_title": "Rôles"
+      },
+
+      "role": {
+        "label": "Rôle",
+        "no_member_permissions": "pour attribuer une permission sur les rôles, tu dois définir une permission sur les membres au préalable",
+        "create_modify_delete_role": "Créer / Modifier / Supprimer"
+      },
+      "project": {
+        "label": "Projet",
+        "modify_project": "Modifier",
+        "delete_project": "Modifier / Supprimer"
+      },
+      "member":{
+        "label": "Membre",
+        "create_modify_member": "Créer / Modifier",
+        "delete_member": "Créer / Modifier / Supprimer"
+      },
+      "story":{
+        "label": "Story",
+        "view_story": "Voir",
+        "modify_story": "Voir / Modifier",
+        "create_story": "Voir / Créer / Modifier",
+        "delete_story": "Voir / Créer / Modifier / Supprimer"
+      },
+      "workflow":{
+        "label": "Kanban",
+        "no_story_permissions": "pour attribuer une permission sur les kanban, tu dois attribuer une permission sur les stories au préalable",
+        "view_workflow": "Voir",
+        "modify_workflow": "Voir / Modifier",
+        "create_workflow": "Voir / Créer / Modifier",
+        "delete_workflow": "Voir / Créer / Modifier / Supprimer"
+      },
+      "comment":{
+        "label": "Commentaires",
+        "no_story_permissions": "pour attribuer une permission sur les commentaires, tu dois attribuer une permission sur les stories au préalable",
+        "coming_soon": "Fonctionnalité bientôt disponible",
+        "view_comment": "Voir",
+        "create_modify_delete_comment": "Voir / Créer / Modifier / Supprimer",
+        "moderate_comment": "Voir / Créer / Modifier / Supprimer / Modérer"
+      }
+    },
+    "project_edit": {
+      "title": "Informations",
+      "name": "Nom du projet",
+      "description": "Description du projet",
+      "delete_project_title": "Supprimer le projet",
+      "delete_project_warning": "Cette action supprimera le projet, ainsi que toutes les stories et pièces jointes qu'il contient.",
+      "buttons":
+      {
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "delete": "Supprimer"
+      },
+      "errors": {
+        "name_required": "Le nom du projet ne peut pas être vide."
+      },
+      "messages": {
+        "saved": "Les informations du projet ont été enregistrées."
+      }
+    },
+    "roles": {
+      "title": "Rôles & Permissions",
+      "total_members": "membres",
+      "not_editable": "Non modifiable",
+      "editable": "Modifiable",
+      "create_role": "Créer un rôle"
+    }
+  },
+  "members": {
+    "title": "Membres",
+    "description_modal": "Saisis une adresse e-mail ou entre plusieurs adresses séparées par une virgule.",
+    "invite_to_project": "Inviter au projet",
+    "members_tab": "Membres",
+    "invitation_tab": "Invitations",
+    "invitation_empty": "Il n'y a pas d'invitations.",
+    "delete": {
+      "leave_title": "Es-tu sûr(e) de vouloir quitter le projet « {{name}} » ?",
+      "project_will_be_deleted": "Le projet sera définitivement supprimé",
+      "sole_owner_succession": "Tu es l'unique propriétaire du projet, tu dois désigner quelqu'un pour te remplacer.",
+      "successor_label": "Nouveau propriétaire"
+    }
+  }
+}
