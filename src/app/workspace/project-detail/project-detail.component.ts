@@ -80,13 +80,13 @@ export class ProjectDetailComponent {
       ]);
       this.sideNavStore.setSecondaryNavItems([
         {
-          label: "workspace.general_title.projectMembers",
+          label: "workspace.general_title.project_members",
           iconName: "group",
           href: `${baseUrl}/members`,
           testId: "members-link",
         },
         {
-          label: "workspace.general_title.projectSettings",
+          label: "workspace.general_title.project_settings",
           iconName: "settings",
           href: `${baseUrl}/settings`,
           testId: "settings-link",

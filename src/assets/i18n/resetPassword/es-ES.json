@@ -3,7 +3,17 @@
   "subtitle": "Introduce tu correo electrónico y te enviaremos un enlace para restablecerla.",
   "submit": "Enviar enlace de restablecimiento",
   "remember_the_password": "No, ya recuerdo la contraseña.",
-  "go_back": "Llévame de vuelta.",
+  "go_back": "Volver",
+  "new_password": "Nueva contraseña",
+  "repeat_password": "Repita la contraseña",
+  "choose_new_password" : "Elija una nueva contraseña",
+  "password_not_match" : "Las contraseñas no coinciden.",
+  "change_password": "Cambiar contraseña",
+  "token_error": {
+    "used-reset-password-token-error": "El token ya se ha utilizado.",
+    "expired-reset-password-token-error": "El token ha caducado.",
+    "bad-reset-password-token-error": "Token no válido o malformado"
+  },
   "confirm": {
     "title": "Revisa tu bandeja de entrada",
     "subtitle": "Si hay una cuenta asociada con esta dirección de correo electrónico, recibirás un correo con instrucciones para restablecer tu contraseña en:",

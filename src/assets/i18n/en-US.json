@@ -35,7 +35,7 @@
       "delete_story": "{{username}} has deleted the story #{{ref}}",
       "delete_project": "{{username}} has deleted the project {{name}}",
       "delete_workspace": "{{username}} has deleted the workspace {{name}}",
-      "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> workflow",
+      "move_story_to_workflow": "The story has been moved to the <a href=\"{{workflowURL}}\"> {{workflowName}} </a> kanban",
       "update_project_membership": "Your role for project {{name}} is now {{role}}",
       "delete_project_membership_self": "You have been removed from project {{name}}",
       "update_workspace_membership": "Your role for workspace {{name}} is now {{role}}",
@@ -56,7 +56,7 @@
       "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> changed the status of the story to <span class='text-on-background'>{{status}}</span>",
       "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> commented on the story",
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> deleted the story {{story}}",
-      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status on the  <span class='text-on-background'>{{workflow}}</span> workflow."
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status in the  <span class='text-on-background'>{{workflow}}</span> kanban"
     }
   },
   "component": {
@@ -72,7 +72,7 @@
         "symbolCharacters": "Note: Only <strong>{{ symbols }}</strong> symbols count toward strength."
       },
       "errors": {
-        "required": "{{ label }} is <strong>required</strong>",
+        "required": "Password is <strong>required</strong>",
         "minLength": "Password needs to be at least <strong>{{ number }} characters long</strong>.",
         "maxLength": "Password cannot be longer than <strong>{{ number }} characters</strong>.",
         "diversity": "Requires at least <strong>{{ diversityDifference }}</strong> the following types:",
@@ -96,7 +96,7 @@
     "assign": {
       "label": "Add assignees",
       "assigned_to": "Assigned to:",
-      "not_assigned": "Card is not assigned.",
+      "not_assigned": "Story is not assigned.",
       "no_members": "This project has no members to choose from.",
       "search_placeholder": "Search members"
     },
@@ -106,24 +106,24 @@
     "invitation": {
       "accept": "Accept invitation",
       "deny": "Deny invitation",
-      "last_sent": "The last invitation was sent on {var}",
+      "last_sent": "The last invitation was sent on {{var}}",
       "pending": "Pending",
       "accepted": "Accepted",
       "revoked": "Revoked",
       "denied": "Denied",
       "resend": "Resend an invitation",
       "revoke": "Cancel an invitation",
-      "resend_too_much": "You can't resend an invitation to {email} because they have already received too many of them",
-      "resend_too_soon": "You can't resend an invitation to {email} because you've already reinvited them recently. Wait for {email} to respond or try again later.",
+      "resend_too_much": "You can't resend an invitation to {{email}} because they have already received too many of them",
+      "resend_too_soon": "You can't resend an invitation to {{email}} because you've already reinvited them recently. Wait for {{email}} to respond or try again later.",
       "resent_confirmation": "Invitation resent",
       "confirm_revoke_action": "Revoke",
-      "confirm_revoke_message": "Are you sure you want to cancel {email}'s invitation to join the {item} \"{name}\"?"
+      "confirm_revoke_message": "Are you sure you want to cancel {{email}}'s invitation to join the {{item}} \"{{name}}\"?"
     },
     "membership": {
       "remove": "Remove this member",
-      "leave": "Leave the {item}",
+      "leave": "Leave the {{item}}",
       "confirm_remove_action": "Remove",
-      "confirm_remove_message": "Are you sure you want to remove {member} from members of {item} \"{name}\"?"
+      "confirm_remove_message": "Are you sure you want to remove {{member}} from members of {{item}} \"{{name}}\"?"
     },
     "description": {
       "label": "Description",
@@ -142,7 +142,7 @@
       "non_members": "Non-members",
       "add": "Add",
       "invite_people": "Invite peoples",
-      "invite_people_to": "Invite peoples to {name}",
+      "invite_people_to": "Invite peoples to {{name}}",
       "mailing_list": "Mailing list",
       "member_error": "This address belongs to a member",
       "duplicate_error": "This address has already been invited. Do you want to resend an invitation?",
@@ -180,9 +180,9 @@
     }
   },
   "directives": {
-    "confirmPopupComponent": {
+    "confirm_popup_component": {
       "textDelete": "This action is irreversible.",
-      "textConfirm": "Are you sure ?",
+      "textConfirm": "Are you sure?",
       "cancelAction": "Cancel",
       "deleteAction": "Delete",
       "confirmAction": "Confirm"

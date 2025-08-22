@@ -3,7 +3,7 @@
   "title": "Inicia sesión en tu cuenta Tenzu",
   "email_or_username": "Correo electrónico o nombre de usuario",
   "not_registered_yet": "¿Aún no estás registrado?",
-  "create_free_account": "Crea una cuenta gratis",
+  "create_account": "Crea una cuenta",
   "forgot_password": "¿Olvidaste tu contraseña?",
   "errors": {
     "401": "Tu correo electrónico, nombre de usuario o contraseña son incorrectos. Revísalos e inténtalo de nuevo",

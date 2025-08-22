@@ -172,7 +172,7 @@ type DeleteMembershipDialogData = {
             </button>
           } @else {
             <button mat-flat-button mat-dialog-close class="secondary-button">
-              {{ t("directives.confirmPopupComponent.cancelAction") }}
+              {{ t("directives.confirm_popup_component.cancelAction") }}
             </button>
             <button
               mat-flat-button
@@ -180,7 +180,7 @@ type DeleteMembershipDialogData = {
               class="error-button"
               [disabled]="_isSelf && !_isLastMembership && _deleteInfo.isUniqueOwner && form.invalid"
             >
-              {{ t("directives.confirmPopupComponent.confirmAction") }}
+              {{ t("directives.confirm_popup_component.confirmAction") }}
             </button>
           }
         </mat-dialog-actions>

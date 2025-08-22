@@ -136,10 +136,7 @@ const DEFAULT_REQUIREMENTS: PasswordRequirements = {
         </mat-hint>
       }
       @if (ngControl.control.hasError("required")) {
-        <mat-error
-          [innerHTML]="t('errors.required', { label: settings().label || t('label') })"
-          data-testid="password-required-error"
-        ></mat-error>
+        <mat-error [innerHTML]="t('errors.required')" data-testid="password-required-error"></mat-error>
       } @else if (ngControl.control.errors && settings().strength.enabled) {
         <mat-error>
           <ul>

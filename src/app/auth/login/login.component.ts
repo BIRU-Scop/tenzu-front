@@ -74,7 +74,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
       <mat-divider></mat-divider>
       <footer class="text-center">
         <p class="mat-body-medium">
-          {{ t("not_registered_yet") }} <a [routerLink]="['/signup']">{{ t("create_free_account") }}</a>
+          {{ t("not_registered_yet") }} <a [routerLink]="['/signup']">{{ t("create_account") }}</a>
         </p>
       </footer>
     </div>
