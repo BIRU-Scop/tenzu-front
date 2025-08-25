@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.31](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.30...v0.1.0-staging.31) (2025-08-25)
+
+
+### Features
+
+* add eventData for menu items ([001a4f8](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/001a4f89caf3e267f3816effb23554b7ce8648ed))
+* add French translations ([30e3dcb](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/30e3dcba597e32cd1f8d6c588a0707104f313480))
+* add more optional legal info ([9c56a1e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9c56a1eea5d294382ef488aaca70adf46504b183))
+
+
+### Bug Fixes
+
+* sync Spanish translations and standardise some keys ([35e8ea4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/35e8ea4bdc0953ace137d3aa09a995b08ada901c))
+
 ## [0.1.0-staging.30](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.29...v0.1.0-staging.30) (2025-08-20)
 
 ## [0.1.0-staging.29](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.28...v0.1.0-staging.29) (2025-08-20)
