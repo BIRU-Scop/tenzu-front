@@ -52,7 +52,7 @@ import { InjectionToken } from "@angular/core";
 
 export type Plugin = object;
 
-export const PLUGINS_TOKEN = new InjectionToken<null | Plugin | Plugin[]>("PLUGINS_TOKEN");
+export const PLUGINS_TOKEN = new InjectionToken<(Plugin | null)[]>("PLUGINS_TOKEN");
 export function tokenGetter() {
   return localStorage.getItem("token");
 }
