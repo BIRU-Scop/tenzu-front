@@ -55,7 +55,7 @@ export type ConfirmPopupData = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [``],
   template: `
-    <ng-container *transloco="let t; prefix: 'directives.confirmPopupComponent'">
+    <ng-container *transloco="let t; prefix: 'directives.confirm_popup_component'">
       @let _data = data();
       @if (_data.title) {
         <h2 id="aria-label" mat-dialog-title>{{ _data.title }}</h2>

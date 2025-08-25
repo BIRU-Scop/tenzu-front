@@ -70,7 +70,7 @@ export class WorkspaceDetailComponent implements OnDestroy {
       });
     this.sideNavStore.setPrimaryNavItems([
       {
-        label: "workspace.general_title.workspaceListProjects",
+        label: "workspace.general_title.workspace_list_projects",
         iconName: "lists",
         href: "projects",
         testId: "projects-link",
@@ -78,13 +78,13 @@ export class WorkspaceDetailComponent implements OnDestroy {
     ]);
     this.sideNavStore.setSecondaryNavItems([
       {
-        label: "workspace.general_title.workspaceMembers",
+        label: "workspace.general_title.workspace_members",
         iconName: "group",
         href: "members",
         testId: "members-link",
       },
       {
-        label: "workspace.general_title.workspaceSettings",
+        label: "workspace.general_title.workspace_settings",
         iconName: "settings",
         href: "settings",
         testId: "settings-link",

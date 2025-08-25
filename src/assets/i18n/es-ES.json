@@ -1,4 +1,64 @@
 {
+  "notification": {
+    "server_errors": {
+      "http500": {
+        "title": "¡Algo salió mal!",
+        "message": "Vuelve a intentarlo en unos minutos."
+      },
+      "http403": {
+        "title": "Permiso denegado",
+        "message": "No tienes permiso para hacer eso."
+      }
+    },
+    "login": {
+      "logout": "Ha cerrado sesión."
+    },
+    "action": {
+      "changes_saved": "Cambios guardados",
+      "created_success": "Crear éxito"
+    },
+    "project": {
+      "deleted": "El proyecto {{ name }} ha sido eliminado"
+    },
+    "workflow": {
+      "renamed": "Kanban ha sido renombrado con éxito",
+      "deleted": "El kanban {{ name }} ha sido eliminado."
+    },
+    "events": {
+      "edit_workflow": "El kanban {{oldName}} ha sido renombrado como {{newName}}.",
+      "update_project": "El proyecto {{name}} ha sido editado por {{username}}.",
+      "update_workspace": "El espacio de trabajo {{name}} ha sido editado por {{username}}.",
+      "delete_workflow": "El kanban {{name}} ha sido eliminado.",
+      "delete_workflow_and_moved_content": "{{name}} ha sido eliminado, el contenido se ha trasladado a <a href=\"{{workflowUrl}}\"> {{workflowName}} </a>",
+      "revoked_project_invitation": "Su invitación al proyecto {{id}} ha sido revocada",
+      "revoked_workspace_invitation": "Tu invitación al espacio de trabajo {{id}} ha sido revocada",
+      "delete_story": "{{username}} ha eliminado la historia #{{ref}}",
+      "delete_project": "{{username}} ha eliminado el proyecto {{name}}",
+      "delete_workspace": "{{username}} ha eliminado el espacio de trabajo {{name}}",
+      "move_story_to_workflow": "La historia se ha trasladado al kanban <a href=\"{{workflowURL}}\"> {{workflowName}} </a>",
+      "update_project_membership": "Tu rol en el proyecto {{name}} ahora es {{role}}.",
+      "delete_project_membership_self": "Has sido eliminado del proyecto {{name}}",
+      "update_workspace_membership": "Tu rol para el espacio de trabajo {{name}} ahora es {{role}}.",
+      "delete_workspace_membership_self": "Has sido eliminado del espacio de trabajo {{name}}",
+      "update_project_role": "Tu rol {{role}} para el proyecto {{name}} ha sido editado"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No tienes ninguna notificación.",
+    "only_unread": "Mostrar solo los no leídos",
+    "all_read": "Has leído todas tus notificaciones.",
+    "types": {
+      "stories.assign.self": "<span class='text-on-background'>{{fullName}}</span> te asignó la historia",
+      "stories.unassign.self": "<span class='text-on-background'>{{fullName}}</span> te ha eliminado de la historia",
+      "stories.assign": "<span class='text-on-background'>{{fullName}}</span> fue asignado a la historia",
+      "stories.unassign": "<span class='text-on-background'>{{fullName}}</span> no fue asignado a la historia",
+      "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> cambió el estado de la historia a <span class='text-on-background'>{{status}}</span>",
+      "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> comentó la historia",
+      "stories.delete": "<span class='text-on-background'>{{fullName}}</span> X eliminó la historia {{story}}",
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> ha movido la historia al estado <span class='text-on-background'>{{status}}</span> en el kanban  <span class='text-on-background'>{{workflow}}</span>"
+    }
+  },
   "component": {
     "password": {
       "label": "Contraseña",
@@ -12,10 +72,10 @@
         "symbolCharacters": "Nota: Solo <strong>{{ symbols }}</strong> símbolos cuentan para la fuerza."
       },
       "errors": {
-        "required": "El campo de contraseña es <strong>obligatorio</strong>",
+        "required": "Contraseña es <strong>obligatoria</strong>",
         "minLength": "La contraseña debe tener al menos <strong>{{ number }} caracteres</strong>.",
         "maxLength": "La contraseña no puede tener más de <strong>{{ number }} caracteres</strong>.",
-        "diversity": "Requiere al menos <strong>{{ diversityDifference }}</strong> de los siguientes tipos:",
+        "diversity": "Tu contraseña debe contener al menos {{ diversityDifference }} de los siguientes elementos:",
         "diversityType": "1 carácter <strong>{{ diversityType }}</strong>"
       },
       "password-strength": {
@@ -35,6 +95,7 @@
     },
     "assign": {
       "label": "Agregar cesionarios",
+      "assigned_to": "Asignado a:",
       "not_assigned": "La historia no está asignada.",
       "no_members": "Este proyecto no tiene miembros para elegir.",
       "search_placeholder": "Buscar miembros"
@@ -45,24 +106,24 @@
     "invitation": {
       "accept": "Aceptar invitación",
       "deny": "Denegar invitación",
-      "last_sent": "La última invitación se envió el {var}",
+      "last_sent": "La última invitación se envió el {{var}}",
       "pending": "Pendiente",
       "accepted": "Aceptado",
       "revoked": "Revocada",
       "denied": "Denegado",
       "resend": "Reenviar una invitación",
       "revoke": "Cancelar una invitación",
-      "resend_too_much": "No puedes reenviar una invitación a {email} porque ya ha recibido demasiadas",
-      "resend_too_soon": "No puedes reenviar una invitación a {email} porque ya le has vuelto a invitar recientemente. Espera a que {email} responda o inténtalo de nuevo más tarde.",
+      "resend_too_much": "No puedes reenviar una invitación a {{email}} porque ya ha recibido demasiadas",
+      "resend_too_soon": "No puedes reenviar una invitación a {{email}} porque ya le has vuelto a invitar recientemente. Espera a que {{email}} responda o inténtalo de nuevo más tarde.",
       "resent_confirmation": "Invitación reenviada",
       "confirm_revoke_action": "Revocar",
-      "confirm_revoke_message": "¿Estás seguro de que quieres cancelar la invitación de {email} para unirte al {item} «{name}»?"
+      "confirm_revoke_message": "¿Estás seguro de que quieres cancelar la invitación de {{email}} para unirte al {{item}} «{{name}}»?"
     },
     "membership": {
       "remove": "Eliminar este miembro",
-      "leave": "Deja el {item}",
+      "leave": "Deja el {{item}}",
       "confirm_remove_action": "Eliminar",
-      "confirm_remove_message": "¿Está seguro de que desea eliminar {member} de los miembros de {item} \"{name}\"?"
+      "confirm_remove_message": "¿Está seguro de que desea eliminar {{member}} de los miembros de {{item}} \"{{name}}\"?"
     },
     "description": {
       "label": "Descripción",
@@ -72,15 +133,17 @@
       "your_user": "Yo"
     },
     "primary_side_nav": {
-      "collapse": "Colapsar"
+      "collapse": "Colapsar",
+      "main_nav": "Navegación principal",
+      "secondary_nav": "Navegación secundaria"
     },
     "invite_dialog": {
       "pending": "Pendiente",
       "non_members": "No miembros",
       "add": "Agregar",
       "invite_people": "Invitar personas",
-      "invite_people_to": "Invitar personas to {name}",
-      "mailing_list": "Lista de distribución",
+      "invite_people_to": "Invitar personas to {{name}}",
+      "mailing_list": "Lista de correo",
       "member_error": "Esta dirección pertenece a un miembro",
       "duplicate_error": "Esta dirección ya ha sido invitada. ¿Desea volver a enviar una invitación?",
       "duplicate_error_ok": "Sí"
@@ -104,23 +167,33 @@
     "projects": "Proyectos",
     "workspace": "Espacio de trabajo",
     "cancel": "Cancelar",
+    "close": "Cerrar",
     "save": "Guardar",
     "select_option": "Seleccione una opción"
   },
   "general": {
     "identity": {
       "fullname": "Nombre completo",
+      "username": "Nombre de usuario",
       "lang": "Idioma",
       "email": "Correo electrónico"
     }
   },
   "directives": {
-    "confirmPopupComponent": {
+    "confirm_popup_component": {
       "textDelete": "Esta acción es irreversible.",
       "textConfirm": "¿Estás seguro?",
       "cancelAction": "Cancelar",
       "deleteAction": "Eliminar",
       "confirmAction": "Confirmar"
     }
+  },
+  "form_errors": {
+    "max_length": "El límite de caracteres es {{length}}"
+  },
+  "environment": {
+    "demo": "Esta es una versión de demostración del producto, solo para fines de prueba. Todos los datos registrados se eliminarán periódicamente. No conservamos sus correos electrónicos para ningún tipo de actividad de marketing.",
+    "staging": "Esta es la versión de prueba del producto, destinada exclusivamente a fines de pruebas internas. Aquí podrás dar rienda suelta a tu pasión por crear cuentas.",
+    "dev": "Esta es la versión de desarrollo del producto. Aquí es donde se encuentran los errores involuntarios y los peligros imprevistos. Proceda con precaución."
   }
 }

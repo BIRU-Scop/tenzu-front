@@ -85,7 +85,6 @@
     "assigned_to": "Assigned to",
     "status": "Status",
     "save": "Save",
-    "cancel": "Cancel",
     "undo": "Undo",
     "attachments": {
       "attach_file": "Attach file",
@@ -93,8 +92,8 @@
       "size": "Size (bytes)",
       "date": "Date",
       "action": "Action",
-      "exceed_size": "{var} exceed the size of 100 MB",
-      "deleted_attachment": "{var} has been deleted"
+      "exceed_size": "{{var}} exceed the size of 100 MB",
+      "deleted_attachment": "{{var}} has been deleted"
     },
     "change_workflow": "Move story to another kanban",
     "delete_story": "Delete this story",

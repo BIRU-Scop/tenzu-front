@@ -1,0 +1,48 @@
+{
+  "navigation": {
+    "profile": "Profil",
+    "security": "Sécurité",
+    "delete": "Suppression"
+  },
+  "profile": {
+    "title": "Mon profil",
+    "save": "Enregistrer",
+    "changes_saved": "Profil mis à jour avec succès"
+  },
+  "security": {
+    "save": "Enregistrer",
+    "current_password": "Mot de passe actuel",
+    "new_password": "Nouveau mot de passe",
+    "repeat_password": "Répéte le mot de passe",
+    "password_not_match": "Les mots de passe ne correspondent pas",
+    "invalid_current_password": "Ce n'est pas ton mot de passe actuel",
+    "change_password": "Modifier le mot de passe",
+    "warning": "Tu vas être déconnecté après avoir modifié ton mot de passe.",
+    "changes_saved": "Mot de passe mis à jour avec succès"
+  },
+  "delete": {
+    "delete_account": "Supprimer mon compte",
+    "keep_my_account": "Conserver mon compte",
+    "delete": "Supprimer le compte",
+    "consequences":{
+      "sorry": "Nous sommes désolé de te voir partir",
+      "what": "Ce qu'il va se passer",
+      "item1": "Tu vas perdre l'accès à Tenzu.",
+      "item2": "Nous supprimerons tes données personnelles et ton nom disparaîtra de la plateforme.",
+      "item3": "Le contenu que tu as créé et partagé avec d'autres personnes restera sur la plateforme."
+    },
+    "consent": "Je comprends que toute suppression est définitive et qu'il n'y aura aucun moyen de restaurer mon compte.",
+    "confirm_consent": "Merci de confirmer que tu comprends les conséquences de la suppression de ton compte.",
+    "confirm_dialog": {
+      "title": "Avant de supprimer ton compte",
+      "only_owner_workspaces": "Tu es le seul propriétaire de certains espaces de travail.",
+      "info_owner_workspaces": "Tu ne peux pas supprimer ton compte tant qu'il n'y a pas d'autre propriétaire. Tu peux promouvoir un autre utilisateur à ce rôle.",
+      "only_owner_projects": "Tu es le seul propriétaire de certains projets.",
+      "info_owner_projects": "Tu ne peux pas supprimer ton compte tant qu'il n'y a pas d'autre propriétaire. Tu peux promouvoir un autre utilisateur à ce rôle.",
+      "only_member_workspace": "Tu es le seul membre dans certains espaces de travail.",
+      "info_delete_workspace": "Ces espaces de travail seront supprimés, ainsi que les projets qu'ils contiennent. Pour l'éviter, tu peux inviter quelqu'un à devenir membre de ceux-ci.",
+      "only_member_project": "Tu es le seul membre dans certains projets",
+      "info_delete_project": "Ces projets seront supprimés. Pour l'éviter, tu peux inviter quelqu'un à devenir membre de ceux-ci."
+    }
+  }
+}

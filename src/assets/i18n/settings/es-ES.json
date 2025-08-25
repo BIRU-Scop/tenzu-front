@@ -6,7 +6,8 @@
   },
   "profile": {
     "title": "Mi perfil",
-    "save": "Guardar"
+    "save": "Guardar",
+    "changes_saved": "Perfil actualizado correctamente"
   },
   "security": {
     "save": "Guardar",
@@ -39,9 +40,9 @@
       "only_owner_projects": "Usted es el único propietario de algunos proyectos",
       "info_owner_projects": "No puedes eliminar tu cuenta mientras no haya otro propietario. Puedes promover a otro usuario al rol de propietario",
       "only_member_workspace": "Usted es el único miembro en algunos espacios de trabajo",
-      "info_delete_workspace": "Esos espacios de trabajo se eliminarán, junto con los proyectos que contengan. Puedes invitar a alguien a ser miembro de un espacio de trabajo.",
+      "info_delete_workspace": "Esos espacios de trabajo se eliminarán, junto con los proyectos que contengan. Para evitarlo, puedes invitar a alguien a ser miembro de un espacio de trabajo.",
       "only_member_project": "Usted es el único miembro en algunos proyectos",
-      "info_delete_project": "Esos proyectos serán eliminados. Puedes invitar a alguien a ser miembro de un proyecto."
+      "info_delete_project": "Esos proyectos serán eliminados. Para evitarlo, puedes invitar a alguien a ser miembro de un proyecto."
     }
   }
 }

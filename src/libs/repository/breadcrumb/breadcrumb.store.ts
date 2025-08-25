@@ -115,17 +115,17 @@ export const BreadcrumbStore = signalStore(
           doTranslation: false,
         },
         workspaceDetailProjectList: {
-          label: "workspace.general_title.workspaceListProjects",
+          label: "workspace.general_title.workspace_list_projects",
           link: `/workspace/${workspaceDetail?.id}/projects`,
           doTranslation: true,
         },
         workspaceDetailSettings: {
-          label: "workspace.general_title.workspaceSettings",
+          label: "workspace.general_title.workspace_settings",
           link: `/workspace/${workspaceDetail?.id}/settings`,
           doTranslation: true,
         },
         workspaceDetailMember: {
-          label: "workspace.general_title.workspaceMembers",
+          label: "workspace.general_title.workspace_members",
           link: `/workspace/${workspaceDetail?.id}/members`,
           doTranslation: true,
         },
@@ -135,12 +135,12 @@ export const BreadcrumbStore = signalStore(
           doTranslation: false,
         },
         projectSettings: {
-          label: "workspace.general_title.projectSettings",
+          label: "workspace.general_title.project_settings",
           link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/settings`,
           doTranslation: true,
         },
         projectMembers: {
-          label: "workspace.general_title.projectMembers",
+          label: "workspace.general_title.project_members",
           link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}/members`,
           doTranslation: true,
         },

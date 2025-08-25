@@ -18,7 +18,7 @@
       "title": "Permissions",
       "hint_permission": "For each category, selecting a permission necessarily induces the permissions above it",
       "empty_permission": "You must select at least one permission to create a role",
-      "no_permission": "No permissions",
+      "no_permission": "No permission",
       "name_required": "The name is required",
       "name_forbidden": "This role already exists. Please choose another name.",
       "delete_role_title": "Delete role",
@@ -53,8 +53,8 @@
         "delete_story": "View / Create / Modify / Delete"
       },
       "workflow":{
-        "label": "Workflow",
-        "no_story_permissions": "to give a workflow permission you must set a story permission",
+        "label": "Kanban",
+        "no_story_permissions": "to give a kanban permission you must set a story permission",
         "view_workflow": "View",
         "modify_workflow": "View / Modify",
         "create_workflow": "View / Create / Modify",
@@ -89,11 +89,11 @@
       }
     },
     "roles": {
-      "title": "Role & Permission",
+      "title": "Roles & Permissions",
       "total_members": "members",
       "not_editable": "Not editable",
       "editable": "Editable",
-      "create_role": "Create Role"
+      "create_role": "Create role"
     }
   },
   "members": {
@@ -104,7 +104,7 @@
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
     "delete": {
-      "leave_title": "Are you sure you want to leave the project \"{name}\"?",
+      "leave_title": "Are you sure you want to leave the project \"{{name}}\"?",
       "project_will_be_deleted": "The project will be permanently deleted",
       "sole_owner_succession": "You are the sole owner of the project, you must designate someone to take this role",
       "successor_label": "New owner"

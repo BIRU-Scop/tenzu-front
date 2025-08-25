@@ -1,13 +1,16 @@
 {
   "general_title": {
     "workspace": "Espacio de trabajo",
-    "workspaceListProjects": "Proyectos",
-    "workspaceSettings": "Configuraciones",
-    "workspaceMembers": "Miembros",
+    "workspaces": "Espacios de trabajo",
+    "workspace_list_projects": "Proyectos",
+    "workspace_settings": "Configuraciones",
+    "workspace_members": "Miembros",
     "project": "Proyecto",
+    "projects": "Proyectos",
     "kanban": "Kanban",
-    "projectMembers": "Miembros",
-    "projectSettings": "Configuraciones"
+    "create_kanban": "Crear Kanban",
+    "project_members": "Miembros",
+    "project_settings": "Configuraciones"
   },
   "create": {
     "create_workspace": "Crear espacio de trabajo",
@@ -20,24 +23,23 @@
   },
   "settings": {
     "title": "Configuraciones del espacio de trabajo",
-    "edit_profile": "Editar perfil",
-    "delete_workspace": "Eliminar espacio de trabajo",
-    "delete": {
-      "delete": "Eliminar",
-      "error": "No puedes eliminar un espacio de trabajo que tiene proyectos. </br> Este espacio de trabajo tiene { totalProjects, plural, one {<strong class='number-projects'>#</strong> proyecto} other {<strong class='number-projects'>#</strong> proyectos} }. Elimina primero el/los { totalProjects, plural, one {proyecto} other {proyectos} }.",
-      "deleted_workspace": "El espacio de trabajo {{ var }} ha sido eliminado"
-    },
     "edit": {
       "title": "Información",
       "name": "Nombre",
       "name_required": "El nombre del espacio de trabajo no puede estar vacío",
-      "name_placeholder": "Añadir nombre del espacio de trabajo"
+      "name_placeholder": "Añadir nombre del espacio de trabajo",
+      "delete_workspace": "Eliminar espacio de trabajo",
+      "delete": {
+        "delete": "Eliminar",
+        "error": "No puedes eliminar un espacio de trabajo que tiene proyectos. </br> Este espacio de trabajo tiene { totalProjects, plural, one {<strong class='number-projects'>#</strong> proyecto} other {<strong class='number-projects'>#</strong> proyectos} }. Elimina primero { totalProjects, plural, one {el proyecto} other {los proyectos} }.",
+        "deleted_workspace": "El espacio de trabajo {{ var }} ha sido eliminado"
+      }
     }
   },
   "members": {
     "title": "Miembros",
     "invite_to_workspace": "Invitar al espacio de trabajo",
-    "description_modal": "<p>Una vez que acepten la invitación, podrán invitar a nuevos miembros, crear nuevos proyectos y editar otros ajustes del espacio de trabajo.</p><br><p>Comienza a escribir un correo electrónico o introduce varias direcciones separadas por una coma.</p>",
+    "description_modal": "<p>Una vez que hayan aceptado la invitación, tendrán acceso al espacio de trabajo dentro de los límites del rol que se les haya asignado.</p><br><p>Comienza a escribir un correo electrónico o introduce varias direcciones separadas por una coma.</p>",
     "members_tab": "Miembros",
     "invitation_tab": "Invitaciones",
     "invitation_empty": "No hay invitaciones.",
