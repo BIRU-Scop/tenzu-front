@@ -1,8 +1,44 @@
 {
+  "create_workflow": {
+    "dialog": {
+      "aria_label": "Crear kanban",
+      "maximum_reached": "Se ha alcanzado el máximo de kanbans",
+      "create_workflow": "Crear nuevo kanban",
+      "max-num-workflow-created-error": "No es posible crear el nuevo kaban, ya que se ha alcanzado el número máximo",
+      "name_required": "El nombre del kanban no puede estar vacío",
+      "name_placeholder": "Añadir nombre de kanban"
+    }
+  },
+  "edit_workflow": {
+    "aria_label": "Editar kanban",
+    "edit_name": "Editar nombre del kanban",
+    "delete": "Eliminar kanban"
+  },
+  "edit_workflow_name": {
+    "label": "Nombre del kanban",
+    "action": "Guardar",
+    "name_required": "El nombre del kanban no puede estar vacío"
+  },
+  "delete_workflow": {
+    "title": "¿Eliminar {{ workflowName }} kanban?",
+    "stories_and_statuses_will_be_deleted": "Las historias y los estados de este kanban se eliminarán automáticamente.",
+    "what_to_do": "¿Qué quieres hacer con las historias y los estados de este kanban?",
+    "move_to_another_workflow": "Muévelos a otro kanban.",
+    "workflow": "Kanban",
+    "select_placeholder": "Seleccionar destino final",
+    "stories_and_statuses_target_location": "Las historias y los estados se colocarán después de los ya existentes.",
+    "delete_all": "Elimina también las historias y los estados.",
+    "actions": {
+      "confirm": "Eliminar kanban",
+      "cancel": "Cancelar"
+    }
+  },
   "edit_status": {
     "aria_label": "Editar estado",
     "edit_name": "Editar nombre del estado",
-    "delete": "Eliminar estado"
+    "delete": "Eliminar estado",
+    "move_left": "Mover a la izquierda",
+    "move_right": "Mover a la derecha"
   },
   "add_status": "Agregar estado",
   "add_story": "Agregar historia",
@@ -35,26 +71,35 @@
     "status": "Estado"
   },
   "detail_story": {
-    "label": "Historia de usuario",
+    "story": "Historia",
+    "workflow": "Kanban",
+    "title": "Título",
+    "description": "Descripción",
+    "edit_assignees": "Editar cesionarios",
+    "add_assignees": "Agregar cesionarios",
+    "no_assignee": "Ningún cesionario",
     "edit_title": "Editar título",
     "edit_description": "Editar descripción",
+    "empty_description": "Añade una descripción a tu historia.",
     "created_by": "Creado por",
     "assigned_to": "Asignado a",
     "status": "Estado",
-    "title": "Título",
-    "description": "Descripción",
     "save": "Guardar",
-    "add_assignees": "Agregar cesionarios",
-    "no_assignee": "Ningún cesionario",
-    "confirm_delete_story": "¿Estás seguro de que quieres eliminar esta historia?",
-    "confirm_delete_story_message": "Toda la información de la historia se eliminará permanentemente. No hay forma de deshacer esta acción.",
+    "undo": "Deshacer",
     "attachments": {
       "attach_file": "Adjuntar archivo",
       "name": "Nombre",
       "size": "Tamaño (bytes)",
       "date": "Fecha",
-      "exceed_size": "{var} supera el tamaño de 100 MB",
-      "deleted_attachment": "{var} ha sido eliminado"
-    }
+      "action": "Acción",
+      "exceed_size": "{{var}} supera el tamaño de 100 MB",
+      "deleted_attachment": "{{var}} ha sido eliminado"
+    },
+    "change_workflow": "Mover la historia a otro kanban",
+    "delete_story": "Eliminar esta historia",
+    "confirm_delete_story": "¿Estás seguro de que quieres eliminar esta historia?",
+    "confirm_delete_story_message": "Toda la información de la historia se eliminará permanentemente. No hay forma de deshacer esta acción.",
+    "story_previous": "Historia anterior",
+    "story_next": "Siguiente historia"
   }
 }

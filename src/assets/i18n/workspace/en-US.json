@@ -2,15 +2,15 @@
   "general_title": {
     "workspace": "Workspace",
     "workspaces": "Workspaces",
-    "workspaceListProjects": "Projects",
-    "workspaceSettings": "Settings",
-    "workspaceMembers": "Members",
+    "workspace_list_projects": "Projects",
+    "workspace_settings": "Settings",
+    "workspace_members": "Members",
     "project": "Project",
     "projects": "Projects",
     "kanban": "Kanban",
     "create_kanban": "Create Kanban",
-    "projectMembers": "Members",
-    "projectSettings": "Settings"
+    "project_members": "Members",
+    "project_settings": "Settings"
   },
   "create": {
     "create_workspace": "Create workspace",
@@ -39,7 +39,7 @@
   "members": {
     "title": "Members",
     "invite_to_workspace": "Invite to workspace",
-    "description_modal": "<p>Once they accept the invitation, they will be able to invite new members, create new projects and edit other workspace settings.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
+    "description_modal": "<p>Once they have accepted the invitation, they will have access to the workspace within the limits of their assigned role.</p><br><p>Start typing a email or enter multiple addresses separated by a comma.</p>",
     "members_tab": "Members",
     "invitation_tab": "Invitations",
     "invitation_empty": "There are no invitations.",
@@ -56,7 +56,7 @@
     }
   },
   "placeholder": {
-    "placeholder_title": "You are not member of any Workspace yet",
+    "placeholder_title": "You are not member of any workspace yet",
     "placeholder_text": "Group your projects into workspaces. You decide if they match something as big as an organization or as personal as your pet projects.",
     "placeholder_button": "Create workspace"
   }

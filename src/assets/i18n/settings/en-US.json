@@ -40,9 +40,9 @@
       "only_owner_projects": "You are the only owner for some projects",
       "info_owner_projects": "You can't delete your account while there is no other owner. You can promote another user to owner role",
       "only_member_workspace": "You are the only member in some workspaces",
-      "info_delete_workspace": "Those workspaces will be deleted, along with the projects within it. You can invite somebody to be a workspace member.",
+      "info_delete_workspace": "Those workspaces will be deleted, along with the projects within it. To prevent this, you can invite somebody to be a workspace member.",
       "only_member_project": "You are the only member in some projects",
-      "info_delete_project": "Those projects will be deleted. You can invite somebody to be a project member."
+      "info_delete_project": "Those projects will be deleted. To prevent this, you can invite somebody to be a project member."
     }
   }
 }

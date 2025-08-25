@@ -35,6 +35,10 @@ export const ConfigSchema = z.object({
       z.object({
         tos: z.url(),
         privacy: z.url(),
+        companyRegister: z.string().optional(),
+        companyNumber: z.string().optional(),
+        companyAddress: z.string().optional(),
+        contactEmail: z.email().optional(),
       }),
       z.null(),
     ])
