@@ -67,7 +67,7 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
     throw new Error("Method not implemented.");
   }
 
-  getDeleteInfo(item: WorkspaceMembership) {
+  getDeleteInfo(item: WorkspaceMembership): Observable<WorkspaceMembershipDeleteInfo> {
     return this.http.get<WorkspaceMembershipDeleteInfo>(
       `${this.getEntityBaseUrl({ membershipId: item.id })}/delete-info`,
     );

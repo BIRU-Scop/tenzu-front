@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Credential, Tokens } from "./auth.model";
-import { catchError, map, of, Subscription, take, tap, timer } from "rxjs";
+import { catchError, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
@@ -44,7 +44,7 @@ export class AuthService {
   url = `${this.configAppService.apiUrl()}/auth`;
   autoLogoutSubscription: Subscription | null = null;
 
-  login(credentials: Credential) {
+  login(credentials: Credential): Observable<Tokens> {
     return this.http
       .post<Tokens>(`${this.url}/token`, {
         ...credentials,
@@ -70,7 +70,7 @@ export class AuthService {
   userLogout() {
     const tokens = this.getToken();
     this.http
-      .post(`${this.url}/blacklist`, {
+      .post<Record<string, never>>(`${this.url}/blacklist`, {
         refresh: tokens.refresh,
       })
       .pipe(catchError(() => of(false))) // if blacklist fail, ignore silently for now
@@ -86,7 +86,7 @@ export class AuthService {
     this.router.navigateByUrl("/login").then();
   }
 
-  refresh(tokens: Tokens) {
+  refresh(tokens: Tokens): Observable<Tokens> {
     return this.http
       .post<Tokens>(`${this.url}/token/refresh`, {
         refresh: tokens.refresh,

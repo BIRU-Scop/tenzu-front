@@ -24,6 +24,9 @@ import { HttpClient } from "@angular/common/http";
 
 import { Notification, NotificationCount } from "./notifications.model";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -34,15 +37,19 @@ export class NotificationsService {
   url = this.configAppService.apiUrl();
   notificationsUrl = `${this.url}/notifications`;
 
-  list() {
-    return this.http.get<Notification[]>(`${this.notificationsUrl}`);
+  list(): Observable<Notification[]> {
+    return this.http
+      .get<BaseDataModel<Notification[]>>(`${this.notificationsUrl}`)
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  count() {
+  count(): Observable<NotificationCount> {
     return this.http.get<NotificationCount>(`${this.notificationsUrl}/count`);
   }
 
-  read(notificationId: string) {
-    return this.http.post<Notification>(`${this.notificationsUrl}/${notificationId}/read`, null);
+  read(notificationId: string): Observable<Notification> {
+    return this.http
+      .post<BaseDataModel<Notification>>(`${this.notificationsUrl}/${notificationId}/read`, null)
+      .pipe(map((dataObject) => dataObject.data));
   }
 }

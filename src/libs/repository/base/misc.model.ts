@@ -29,3 +29,7 @@ export interface JsonObject {
 type JsonArray = Array<JsonValue>;
 
 type JsonValue = Primitive | JsonObject | JsonArray;
+
+export type BaseDataModel<T> = {
+  data: T;
+};

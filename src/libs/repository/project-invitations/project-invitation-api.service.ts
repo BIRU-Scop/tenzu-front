@@ -25,6 +25,8 @@ import { ProjectDetail, ProjectSummary } from "../project";
 import { ProjectInvitation, PublicProjectPendingInvitation } from "./project-invitation.model";
 import { Observable } from "rxjs";
 import { CreateInvitations, InvitationsPayload } from "../membership";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 type ListProjectInvitationParams = {
   projectId: ProjectSummary["id"];
@@ -64,35 +66,49 @@ export class ProjectInvitationsApiService extends AbstractApiService<
   }
 
   resend(params: PatchProjectInvitationParams): Observable<ProjectInvitation> {
-    return this.http.post<ProjectInvitation>(`${this.patchUrl(params)}/resend`, {});
+    return this.http
+      .post<BaseDataModel<ProjectInvitation>>(`${this.patchUrl(params)}/resend`, {})
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   revoke(params: PatchProjectInvitationParams): Observable<ProjectInvitation> {
-    return this.http.post<ProjectInvitation>(`${this.patchUrl(params)}/revoke`, {});
+    return this.http
+      .post<BaseDataModel<ProjectInvitation>>(`${this.patchUrl(params)}/revoke`, {})
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   override delete(): Observable<void> {
     throw new Error("Method not implemented.");
   }
-  createBulkInvitations(data: InvitationsPayload, params: { projectId: ProjectDetail["id"] }) {
+  createBulkInvitations(
+    data: InvitationsPayload,
+    params: { projectId: ProjectDetail["id"] },
+  ): Observable<CreateInvitations> {
     return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
   }
-  getByToken(params: { token: string }) {
-    return this.http.get<PublicProjectPendingInvitation>(`${this.baseUrl}/invitations/by_token/${params.token}`);
+  getByToken(params: { token: string }): Observable<PublicProjectPendingInvitation> {
+    return this.http
+      .get<BaseDataModel<PublicProjectPendingInvitation>>(`${this.baseUrl}/invitations/by_token/${params.token}`)
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  acceptByToken(params: { token: string }) {
-    return this.http.post<ProjectInvitation>(
-      `${this.baseUrl}/invitations/by_token/${params.token}/accept`,
-      params.token,
-    );
+  acceptByToken(params: { token: string }): Observable<ProjectInvitation> {
+    return this.http
+      .post<
+        BaseDataModel<ProjectInvitation>
+      >(`${this.baseUrl}/invitations/by_token/${params.token}/accept`, params.token)
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  acceptForCurrentUser(params: { projectId: ProjectDetail["id"] }) {
-    return this.http.post<ProjectInvitation>(`${this.getBaseUrl(params)}/accept`, null);
+  acceptForCurrentUser(params: { projectId: ProjectDetail["id"] }): Observable<ProjectInvitation> {
+    return this.http
+      .post<BaseDataModel<ProjectInvitation>>(`${this.getBaseUrl(params)}/accept`, null)
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  denyForCurrentUser(params: { projectId: ProjectDetail["id"] }) {
-    return this.http.post<ProjectInvitation>(`${this.getBaseUrl(params)}/deny`, null);
+  denyForCurrentUser(params: { projectId: ProjectDetail["id"] }): Observable<ProjectInvitation> {
+    return this.http
+      .post<BaseDataModel<ProjectInvitation>>(`${this.getBaseUrl(params)}/deny`, null)
+      .pipe(map((dataObject) => dataObject.data));
   }
 }

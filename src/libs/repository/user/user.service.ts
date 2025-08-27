@@ -24,6 +24,9 @@ import { User, CreateUserPayload, UserDeleteInfo, UpdateUserPayload, Verificatio
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "../auth";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { Observable } from "rxjs";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -35,41 +38,41 @@ export class UserService {
   myUserUrl = `${this.endpoint}/users/me`;
   usersUrl = `${this.endpoint}/users`;
 
-  getMyUser() {
-    return this.http.get<User>(`${this.myUserUrl}`);
+  getMyUser(): Observable<User> {
+    return this.http.get<BaseDataModel<User>>(`${this.myUserUrl}`).pipe(map((dataObject) => dataObject.data));
   }
 
-  patchMyUser(item: UpdateUserPayload) {
-    return this.http.put<User>(`${this.myUserUrl}`, item);
+  patchMyUser(item: UpdateUserPayload): Observable<User> {
+    return this.http.put<BaseDataModel<User>>(`${this.myUserUrl}`, item).pipe(map((dataObject) => dataObject.data));
   }
 
-  create(item: CreateUserPayload) {
-    return this.http.post<User>(`${this.usersUrl}`, item);
+  create(item: CreateUserPayload): Observable<User> {
+    return this.http.post<BaseDataModel<User>>(`${this.usersUrl}`, item).pipe(map((dataObject) => dataObject.data));
   }
 
-  requestResetPassword(email: string) {
+  requestResetPassword(email: string): Observable<{ email: string }> {
     return this.http.post<{ email: string }>(`${this.usersUrl}/reset-password`, {
       email,
     });
   }
 
-  resetPassword(token: string, password: string) {
+  resetPassword(token: string, password: string): Observable<Tokens> {
     return this.http.post<Tokens>(`${this.usersUrl}/reset-password/${token}`, { password });
   }
 
-  verifyResetTokenPassword(token: string) {
+  verifyResetTokenPassword(token: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.usersUrl}/reset-password/${token}/verify`);
   }
 
-  verifyUsers(token: string) {
+  verifyUsers(token: string): Observable<VerificationInfo> {
     return this.http.post<VerificationInfo>(`${this.usersUrl}/verify`, { token: token });
   }
 
-  getDeleteInfo() {
+  getDeleteInfo(): Observable<UserDeleteInfo> {
     return this.http.get<UserDeleteInfo>(`${this.myUserUrl}/delete-info`);
   }
 
-  deleteUser() {
+  deleteUser(): Observable<void> {
     return this.http.delete<void>(`${this.myUserUrl}`);
   }
 }
