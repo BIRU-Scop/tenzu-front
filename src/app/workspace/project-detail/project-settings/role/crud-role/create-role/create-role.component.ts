@@ -62,7 +62,7 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
               <a mat-flat-button routerLink="../list-roles" class="secondary-button">
                 {{ t("commons.cancel") }}
               </a>
-              <button mat-flat-button [disabled]="form.pristine" type="submit" class="tertiary-button">
+              <button mat-flat-button [disabled]="!form.dirty || form.invalid" type="submit" class="tertiary-button">
                 {{ t("project.settings.roles.create_role") }}
               </button>
             </div>
@@ -86,6 +86,7 @@ export default class CreateRoleComponent {
     if (this.form.invalid) {
       return;
     }
+    this.form.reset(this.form.value);
     this.roleFacade.create(data).then((role) => {
       this.notificationService.success({
         title: "notification.action.created_success",
