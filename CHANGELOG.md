@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.32](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.31...v0.1.0-staging.32) (2025-08-28)
+
+
+### Features
+
+* use new api response structure ([476fc99](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/476fc9916286d995a6b9ae678ad63dc94fcb87bf))
+
+
+### Bug Fixes
+
+* prevent some ways for user to spam requests ([72dd5c6](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/72dd5c6868ffd6fdecd1b016f88405b642fe6523))
+
 ## [0.1.0-staging.31](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.30...v0.1.0-staging.31) (2025-08-25)
 
 
