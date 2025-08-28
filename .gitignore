@@ -250,3 +250,6 @@ src/assets/configs/config.json
 
 src/app/providers-plugins.ts
 src/plugins/*
+
+# Sentry Config File
+.sentryclirc
