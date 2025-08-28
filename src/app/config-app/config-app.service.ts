@@ -57,8 +57,6 @@ export class ConfigAppService {
           ...environment,
           ...schema,
         });
-        // TODO: change when microSentry lib accept useFactory
-        localStorage.setItem("sentry", JSON.stringify(this.config().sentry));
       });
   }
 }
