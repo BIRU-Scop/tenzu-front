@@ -3,10 +3,12 @@ include:
     inputs:
       dev-branch: main
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.18
+  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.20
     inputs:
       project-name: tenzu
       application-name: front
+      extra-file: $SENTRYCLIRC
+      destination-extra-file: '.sentryclirc'
       build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
       needs:
         - job: get-released-tag
