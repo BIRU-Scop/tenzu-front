@@ -21,11 +21,12 @@
 
 import { EntityId } from "@ngrx/signals/entities";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
 import { QueryParams, makeOptions } from "./utils";
-import { JsonObject } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel, JsonObject } from "@tenzu/repository/base/misc.model";
 
 type OptionRequest = {
   dataIsFormData?: boolean;
@@ -75,9 +76,11 @@ export abstract class AbstractApiServiceDetail<
   }
 
   get(params: GetParams, queryParams?: QueryParams): Observable<EntityDetailModel> {
-    return this.http.get<EntityDetailModel>(this.getUrl(params), {
-      params: queryParams ? makeOptions(queryParams) : {},
-    });
+    return this.http
+      .get<BaseDataModel<EntityDetailModel>>(this.getUrl(params), {
+        params: queryParams ? makeOptions(queryParams) : {},
+      })
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   patch(
@@ -92,9 +95,11 @@ export abstract class AbstractApiServiceDetail<
     } else {
       data = item;
     }
-    return this.http.patch<EntityDetailModel>(this.patchUrl(params), data, {
-      params: queryParams ? makeOptions(queryParams) : {},
-    });
+    return this.http
+      .patch<BaseDataModel<EntityDetailModel>>(this.patchUrl(params), data, {
+        params: queryParams ? makeOptions(queryParams) : {},
+      })
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   put(
@@ -109,12 +114,19 @@ export abstract class AbstractApiServiceDetail<
     } else {
       data = item;
     }
-    return this.http.put<EntityDetailModel>(this.putUrl(params), data, {
-      params: queryParams ? makeOptions(queryParams) : {},
-    });
+    return this.http
+      .put<BaseDataModel<EntityDetailModel>>(this.putUrl(params), data, {
+        params: queryParams ? makeOptions(queryParams) : {},
+      })
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  create(item: Partial<EntityDetailModel>, params?: CreateParams, queryParams?: QueryParams, options?: OptionRequest) {
+  create(
+    item: Partial<EntityDetailModel>,
+    params?: CreateParams,
+    queryParams?: QueryParams,
+    options?: OptionRequest,
+  ): Observable<EntityDetailModel> {
     const url = Object.keys(params || {}).length > 0 ? this.createUrl(params) : this.createUrl();
     let data: FormData | Partial<EntityDetailModel>;
     if (options?.dataIsFormData) {
@@ -122,9 +134,11 @@ export abstract class AbstractApiServiceDetail<
     } else {
       data = item;
     }
-    return this.http.post<EntityDetailModel>(url, data, {
-      params: queryParams ? makeOptions(queryParams) : {},
-    });
+    return this.http
+      .post<BaseDataModel<EntityDetailModel>>(url, data, {
+        params: queryParams ? makeOptions(queryParams) : {},
+      })
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   delete(params: DeleteParams, queryParams?: QueryParams): Observable<void> {
@@ -148,11 +162,13 @@ export abstract class AbstractApiService<
     return `${this.getBaseUrl(params)}`;
   }
 
-  list(params?: ListParams, queryParams?: QueryParams) {
+  list(params?: ListParams, queryParams?: QueryParams): Observable<EntityListModel[]> {
     const url = params ? this.listUrl(params) : this.listUrl();
-    return this.http.get<EntityListModel[]>(url, {
-      params: queryParams ? makeOptions(queryParams) : {},
-    });
+    return this.http
+      .get<BaseDataModel<EntityListModel[]>>(url, {
+        params: queryParams ? makeOptions(queryParams) : {},
+      })
+      .pipe(map((dataObject) => dataObject.data));
   }
 }
 

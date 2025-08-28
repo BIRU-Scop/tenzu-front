@@ -24,6 +24,9 @@ import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { StatusSummary } from "../status";
 import { AbstractApiServiceDetail } from "../base";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
+import { Observable } from "rxjs";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -52,29 +55,35 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
     return `${this.getEntityBaseUrl(params)}/statuses`;
   }
 
-  getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }) {
-    return this.http.get<Workflow>(
-      `${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`,
-    );
+  getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }): Observable<Workflow> {
+    return this.http
+      .get<
+        BaseDataModel<Workflow>
+      >(`${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`)
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">) {
-    return this.http.post<StatusSummary>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus);
+  createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">): Observable<StatusSummary> {
+    return this.http
+      .post<BaseDataModel<StatusSummary>>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus)
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  deleteStatus(params: { statusId: string; moveToStatus?: string }) {
-    return this.http.delete(`${this.configAppService.apiUrl()}/workflows/statuses/${params.statusId}`, {
+  deleteStatus(params: { statusId: string; moveToStatus?: string }): Observable<void> {
+    return this.http.delete<void>(`${this.configAppService.apiUrl()}/workflows/statuses/${params.statusId}`, {
       params: params.moveToStatus ? { moveTo: params.moveToStatus } : {},
     });
   }
 
-  editStatus(status: Pick<StatusSummary, "name" | "id">) {
-    return this.http.patch<StatusSummary>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
-      name: status.name,
-    });
+  editStatus(status: Pick<StatusSummary, "name" | "id">): Observable<StatusSummary> {
+    return this.http
+      .patch<BaseDataModel<StatusSummary>>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
+        name: status.name,
+      })
+      .pipe(map((dataObject) => dataObject.data));
   }
 
-  reorderStatus(workflowId: Workflow["id"], payload: ReorderWorkflowStatusesPayload) {
-    return this.http.post(`${this.getStatusesBaseUrl({ workflowId })}/reorder`, payload);
+  reorderStatus(workflowId: Workflow["id"], payload: ReorderWorkflowStatusesPayload): Observable<void> {
+    return this.http.post<void>(`${this.getStatusesBaseUrl({ workflowId })}/reorder`, payload);
   }
 }

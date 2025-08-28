@@ -21,10 +21,11 @@
 
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { map } from "rxjs";
+import { map, Observable } from "rxjs";
 import { Language } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 
 @Injectable({
   providedIn: "root",
@@ -52,7 +53,9 @@ export class SystemApiService {
       }),
     );
   }
-  getLanguages() {
-    return this.http.get<Language[]>(`${this.configAppService.apiUrl()}/system/languages`);
+  getLanguages(): Observable<Language[]> {
+    return this.http
+      .get<BaseDataModel<Language[]>>(`${this.configAppService.apiUrl()}/system/languages`)
+      .pipe(map((dataObject) => dataObject.data));
   }
 }

@@ -109,7 +109,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
             </div>
           }
           <button
-            [disabled]="form.invalid"
+            [disabled]="!form.dirty || form.invalid"
             data-testid="submitCreateAccount-button"
             mat-flat-button
             class="primary-button"
