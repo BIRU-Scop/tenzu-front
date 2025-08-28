@@ -1,6 +1,6 @@
 {
   "name": "tenzu",
-  "version": "0.1.0-staging.32",
+  "version": "0.1.0-staging.33",
   "schematics": "schematics/collection.json",
   "scripts": {
     "ng": "ng",
