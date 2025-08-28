@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node ./init-config.js  && ng serve  tenzu --hmr --host 0.0.0.0 --allowed-hosts true",
-    "build": "ng build",
+    "build": "ng build && npm run sentry:sourcemaps",
     "build-schematics": "./node_modules/.bin/tsc -p ./tsconfig.schematics.json",
     "schematics:add-plugins": "schematics ./src/schematics/collection.json:add-plugins --dry-run=false",
     "schematics:reset-plugins": "schematics ./src/schematics/collection.json:reset-plugins --dry-run=false",
@@ -18,7 +18,8 @@
     "lint:fix": "ng lint --fix",
     "transloco:optimize": "transloco-optimize dist/tenzu/browser/assets/i18n",
     "build:staging": "ng build --configuration staging && npm run transloco:optimize",
-    "build:production": "ng build --configuration production && npm run transloco:optimize"
+    "build:production": "ng build --configuration production && npm run transloco:optimize",
+    "serve-prod-local": "npx http-server dist/tenzu/browser -p 4200"
   },
   "private": true,
   "dependencies": {
@@ -40,9 +41,9 @@
     "@jsverse/transloco": "^7.6.1",
     "@jsverse/transloco-locale": "^7.0.1",
     "@jsverse/transloco-messageformat": "^7.0.1",
-    "@micro-sentry/angular": "^7.1.1",
     "@ngrx/operators": "^20.0.0",
     "@ngrx/signals": "^20.0.0",
+    "@sentry/angular": "^10.5.0",
     "file-saver-es": "^2.0.5",
     "ng-event-bus": "^9.0.0",
     "rxjs": "~7.8.0",
@@ -58,6 +59,7 @@
     "@eslint/js": "^10.0.0",
     "@jsverse/transloco-optimize": "^7.0.1",
     "@ngrx/eslint-plugin": "^20.0.0",
+    "@sentry/cli": "^2.52.0",
     "@types/file-saver-es": "^2.0.3",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -66,6 +68,7 @@
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
+    "http-serve": "^1.0.1",
     "jsdom": "^22.0.0",
     "postcss": "^8.4.38",
     "prettier": "^3.5.3",

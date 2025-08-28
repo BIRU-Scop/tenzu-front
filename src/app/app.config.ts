@@ -21,6 +21,7 @@
 
 import {
   ApplicationConfig,
+  ErrorHandler,
   importProvidersFrom,
   inject,
   isDevMode,
@@ -29,7 +30,7 @@ import {
 } from "@angular/core";
 import { NgEventBus } from "ng-event-bus";
 import { provideRouter, RouteReuseStrategy, withComponentInputBinding, withRouterConfig } from "@angular/router";
-
+import * as Sentry from "@sentry/angular";
 import { CustomReuseStrategy, routes } from "./app.routes";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
@@ -41,14 +42,13 @@ import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { httpInterceptor } from "@tenzu/utils/interceptors";
-import { MICRO_SENTRY_CONFIG, provideMicroSentry } from "@micro-sentry/angular";
 import { ConfigAppService } from "./config-app/config-app.service";
-import { BrowserSentryClientOptions } from "@micro-sentry/browser";
 import { WsService } from "@tenzu/utils/services/ws";
 import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 import { providePlugins } from "./providers-plugins";
 
 import { InjectionToken } from "@angular/core";
+import { environment } from "../environments/environment";
 
 export type Plugin = object;
 
@@ -70,6 +70,13 @@ export const appConfig: ApplicationConfig = {
       const languageStore = inject(LanguageStore);
       const wsService = inject(WsService);
       await configAppService.loadAppConfig();
+      if (configAppService.config().sentry.dsn) {
+        Sentry.init({
+          dsn: configAppService.config().sentry.dsn,
+          environment: configAppService.config().sentry.environment,
+          release: environment.appVersion,
+        });
+      }
       wsService.init().then();
       languageStore.initLanguages().subscribe();
       return;
@@ -123,23 +130,9 @@ export const appConfig: ApplicationConfig = {
     }),
     provideTranslocoMessageformat(),
     provideTranslocoLocale(),
-    provideMicroSentry({}),
-
     {
-      provide: MICRO_SENTRY_CONFIG,
-      useFactory: () => {
-        // const configAppService = inject(ConfigAppService);
-        // const sentryConfig = configAppService.configSentry();
-        const sentryConfig: BrowserSentryClientOptions = JSON.parse(localStorage.getItem("sentry") || "{}");
-        if (sentryConfig) {
-          return {
-            dsn: sentryConfig.dsn,
-            environment: sentryConfig.environment,
-            release: sentryConfig.release,
-          };
-        }
-        return {};
-      },
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler(),
     },
     provideHttpClient(withFetch(), withInterceptors([httpInterceptor]), withInterceptorsFromDi()),
     NgEventBus,

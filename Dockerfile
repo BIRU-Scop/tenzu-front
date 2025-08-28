@@ -11,8 +11,8 @@ FROM dev-env AS builder
 ENV NODE_ENV=production
 ## app args (don't put any quotes because quotes are already present in the environment file)
 ARG RELEASE_VERSION
-ARG PLUGIN_PATH
-ARG PLUGIN_GIT
+ARG PLUGIN_PATH=""
+ARG PLUGIN_GIT=""
 
 WORKDIR /app
 ## replace args in environment file
@@ -21,8 +21,13 @@ RUN envsubst < src/environments/environment.production.ts > res.txt && \
 mv res.txt src/environments/environment.production.ts
 ## build the app in configuration passed
 RUN (if [ -n "${PLUGIN_GIT}" ] ; then git clone ${PLUGIN_GIT} src/plugins/${PLUGIN_PATH}; fi)  &&  \
-    (if [ -n "${PLUGIN_PATH}" ] ; then npx npm run schematics:add-plugins --  --path ${PLUGIN_PATH}; fi)&& \
+    (if [ -n "${PLUGIN_PATH}" ] ; then npx npm run schematics:add-plugins --  --path ${PLUGIN_PATH}; fi) && \
     npx npm run build:production
+RUN  if [ -f "/app/.sentryclirc" ]; then \
+        npx sentry-cli sourcemaps inject /app/dist/tenzu/browser/ && \
+        npx sentry-cli sourcemaps upload --release ${RELEASE_VERSION} /app/dist/tenzu/browser/ && \
+        rm -f /app/.sentryclirc \
+    ;fi
 
 # Step 3: Serve the app with Caddy
 FROM caddy:2-alpine
