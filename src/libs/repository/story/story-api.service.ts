@@ -23,6 +23,9 @@ import { Injectable } from "@angular/core";
 import { Story, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayload, StoryUpdate } from "./story.model";
 import { AbstractApiService } from "../base";
 import { UserNested } from "@tenzu/repository/user";
+import { Observable } from "rxjs";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -62,16 +65,18 @@ export class StoryApiService extends AbstractApiService<
     return super.patch(story, params);
   }
 
-  reorder(payload: StoryReorderPayload, params: StoryApiServiceType.ListEntitiesSummaryParams) {
-    return this.http.post<never>(`${this.createUrl(params)}/reorder`, payload);
+  reorder(payload: StoryReorderPayload, params: StoryApiServiceType.ListEntitiesSummaryParams): Observable<void> {
+    return this.http.post<void>(`${this.createUrl(params)}/reorder`, payload);
   }
 
   public baseStoryAssignmentUrl(params: StoryApiServiceType.BaseParams) {
     return `${this.getEntityBaseUrl(params)}/assignments`;
   }
 
-  createAssignee(userId: UserNested["id"], params: StoryApiServiceType.BaseParams) {
-    return this.http.post<StoryAssign>(`${this.baseStoryAssignmentUrl(params)}`, { userId });
+  createAssignee(userId: UserNested["id"], params: StoryApiServiceType.BaseParams): Observable<StoryAssign> {
+    return this.http
+      .post<BaseDataModel<StoryAssign>>(`${this.baseStoryAssignmentUrl(params)}`, { userId })
+      .pipe(map((dataObject) => dataObject.data));
   }
   deleteAssignee(params: StoryApiServiceType.BaseParams & { userId: UserNested["id"] }) {
     return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.userId}`);

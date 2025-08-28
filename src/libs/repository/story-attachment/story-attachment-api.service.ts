@@ -24,6 +24,9 @@ import { AbstractApiService } from "../base";
 import { StoryAttachment } from "./story-attachment.model";
 import * as StoryAttachmentApiType from "./story-attachment-api.type";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
+import { Observable } from "rxjs";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -48,10 +51,15 @@ export class StoryAttachmentApiService extends AbstractApiService<
     return `${this.configAppService.apiUrl()}/stories/attachments/${params.attachmentId}`;
   }
 
-  createAttachment(attachment: Blob | File, params: StoryAttachmentApiType.CreateEntityDetailParams) {
+  createAttachment(
+    attachment: Blob | File,
+    params: StoryAttachmentApiType.CreateEntityDetailParams,
+  ): Observable<StoryAttachment> {
     const formData = new FormData();
     formData.append("file", attachment);
-    return this.http.post<StoryAttachment>(`${this.createUrl(params)}`, formData);
+    return this.http
+      .post<BaseDataModel<StoryAttachment>>(`${this.createUrl(params)}`, formData)
+      .pipe(map((dataObject) => dataObject.data));
   }
   downloadAttachment(attachment: StoryAttachment) {
     this.fileDownloaderService.downloadFileFromUrl(

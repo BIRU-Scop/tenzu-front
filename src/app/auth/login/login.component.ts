@@ -67,7 +67,7 @@ import { AuthFormStateStore } from "../auth-form-state.store";
           </div>
         }
         <a [routerLink]="['/reset-password']" class="mat-body-medium">{{ t("forgot_password") }}</a>
-        <button class="primary-button" mat-flat-button type="submit">
+        <button class="primary-button" mat-flat-button type="submit" [disabled]="!form.dirty || form.invalid">
           {{ t("action") }}
         </button>
       </form>
