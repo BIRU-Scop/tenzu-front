@@ -29,6 +29,8 @@ import { ProjectDetail } from "@tenzu/repository/project";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
+import { ConfigAppService } from "../../../../../config-app/config-app.service";
+import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 
 @Component({
   selector: "app-story-detail-attachments",
@@ -118,12 +120,15 @@ import { TranslocoDatePipe } from "@jsverse/transloco-locale";
     </div>
   `,
   styles: ``,
+  providers: [FileSizePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailAttachmentsComponent {
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   notificationService = inject(NotificationService);
 
+  readonly configAppService = inject(ConfigAppService);
+  readonly fileSizePipe = inject(FileSizePipe);
   storyDetail = input.required<StoryDetail>();
   projectDetail = input.required<ProjectDetail>();
   hasModifyPermission = input(false);
@@ -156,12 +161,12 @@ export class StoryDetailAttachmentsComponent {
   onFileSelected(data: { event: Event; storyDetail: StoryDetail }): void {
     const input = data.event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      // if exceed 100 MB
-      if (input.files[0].size > 104857600) {
+      const maxUploadFileSize = this.configAppService.config().maxUploadFileSize;
+      if (maxUploadFileSize && input.files[0].size > maxUploadFileSize) {
         this.notificationService.error({
           translocoTitle: true,
           title: "workflow.detail_story.attachments.exceed_size",
-          translocoTitleParams: { var: input.files[0].name },
+          translocoTitleParams: { var: input.files[0].name, maxSize: this.fileSizePipe.transform(maxUploadFileSize) },
         });
         return;
       }

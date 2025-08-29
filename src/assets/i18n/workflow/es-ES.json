@@ -92,7 +92,7 @@
       "size": "Tamaño (bytes)",
       "date": "Fecha",
       "action": "Acción",
-      "exceed_size": "{{var}} supera el tamaño de 100 MB",
+      "exceed_size": "{{var}} supera el tamaño de {{maxSize}}",
       "deleted_attachment": "{{var}} ha sido eliminado"
     },
     "change_workflow": "Mover la historia a otro kanban",
