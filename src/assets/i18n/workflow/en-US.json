@@ -82,6 +82,7 @@
     "edit_description": "Edit description",
     "empty_description": "Add a description to your story",
     "created_by": "Created by",
+    "former_user": "Deleted user",
     "assigned_to": "Assigned to",
     "status": "Status",
     "save": "Save",

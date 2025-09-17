@@ -132,8 +132,9 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                   <div class="flex flex-row gap-4">
                     <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
                     <app-user-card
-                      [fullName]="story.createdBy?.fullName ? story.createdBy?.fullName : t('former_user')"
-                      [username]="story.createdAt | date: 'short'"
+                      [fullName]="story.createdBy?.fullName || t('former_user')"
+                      [avatarName]="story.createdBy?.fullName || ''"
+                      [subtext]="story.createdAt | date: 'short'"
                       [color]="story.createdBy?.color || 0"
                     ></app-user-card>
                   </div>

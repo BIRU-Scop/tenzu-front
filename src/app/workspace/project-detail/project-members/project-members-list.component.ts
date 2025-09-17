@@ -68,7 +68,7 @@ import { Router } from "@angular/router";
                   <div class="app-table-cell">
                     <app-user-card
                       [fullName]="membership.user.fullName"
-                      [username]="membership.user.username"
+                      [subtext]="membership.user.username"
                       [color]="membership.user.color"
                       [isSelf]="myUser.id === membership.user.id"
                     ></app-user-card>

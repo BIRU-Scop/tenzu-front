@@ -96,7 +96,7 @@ type AssignDialogData = {
                   <mat-list-option class="flex flex-row" [selected]="memberIsAssigned(member)" [value]="member">
                     <app-user-card
                       [fullName]="member.fullName"
-                      [username]="member.username"
+                      [subtext]="member.username"
                       [color]="member.color"
                       [textToHighlight]="searchInput.value"
                       [isSelf]="myUser.id === member.id"

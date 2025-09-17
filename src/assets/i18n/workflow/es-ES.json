@@ -82,6 +82,7 @@
     "edit_description": "Editar descripción",
     "empty_description": "Añade una descripción a tu historia.",
     "created_by": "Creado por",
+    "former_user": "Usuario eliminado",
     "assigned_to": "Asignado a",
     "status": "Estado",
     "save": "Guardar",
