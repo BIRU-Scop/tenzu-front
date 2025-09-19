@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -28,9 +28,11 @@ import { DomSanitizer } from "@angular/platform-browser";
   selector: "app-user-card",
   imports: [AvatarComponent, TranslocoDirective],
   template: ` <div class="flex flex-row gap-2 items-center" *transloco="let t; prefix: 'component.user_card'">
-    <app-avatar [rounded]="true" [name]="fullName()" [color]="color()" />
+    @let _fullname = fullName();
+    @let _avatarname = avatarName();
+    <app-avatar [rounded]="true" [name]="_avatarname === null ? _fullname : _avatarname" [color]="color()" />
     <div class="flex flex-col min-h-9 justify-center">
-      @if (fullName()) {
+      @if (_fullname) {
         <div class="flex flex-row gap-1">
           <span class="mat-label-large text-on-surface" [innerHtml]="highlightedFullName()"> </span>
           @if (isSelf()) {
@@ -38,10 +40,10 @@ import { DomSanitizer } from "@angular/platform-browser";
           }
         </div>
       }
-      @if (username()) {
+      @if (subtext()) {
         <span
-          [class]="fullName() ? 'mat-label-medium text-on-surface-variant' : 'mat-label-large neutral-20'"
-          [innerHtml]="highlightedUsername()"
+          [class]="_fullname ? 'mat-label-medium text-on-surface-variant' : 'mat-label-large neutral-20'"
+          [innerHtml]="highlightedSubtext()"
         >
         </span>
       }
@@ -53,13 +55,14 @@ import { DomSanitizer } from "@angular/platform-browser";
 export class UserCardComponent {
   domSanitizer = inject(DomSanitizer);
   fullName = input("");
-  username = input<string | null>("");
+  avatarName = input<string | null>(null);
+  subtext = input<string | null>("");
   textToHighlight = input("");
   color = input(0);
   isSelf = input(false);
 
   highlightedFullName = computed(() => this.highlightString(this.fullName()) || "");
-  highlightedUsername = computed(() => this.highlightString(this.username()));
+  highlightedSubtext = computed(() => this.highlightString(this.subtext()));
 
   private highlightString(text: string | null) {
     if (!this.textToHighlight() || !text) {

@@ -96,7 +96,7 @@ import { PLUGINS_TOKEN } from "../app.config";
       </button>
       <mat-menu #userMenu="matMenu">
         <div class="px-3 py-1.5">
-          <app-user-card [username]="myUser.email" [fullName]="myUser.fullName" [color]="myUser.color"></app-user-card>
+          <app-user-card [subtext]="myUser.email" [fullName]="myUser.fullName" [color]="myUser.color"></app-user-card>
         </div>
         <button mat-menu-item [routerLink]="'settings'" [attr.aria-label]="t('settings')">
           <mat-icon>settings</mat-icon>
