@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0-staging.34](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.33...v0.1.0-staging.34) (2025-09-19)
+
+
+### Features
+
+* enable configuring the limit you wish to apply to max file size ([255e1c5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/255e1c586b6b0af7b8300b9c1aa75e452dad5fd3))
+
+
+### Bug Fixes
+
+* handle deleted creator user case for stories ([4058f2c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4058f2c6bb8fd78f2641e288d91aba27ec48abb3))
+
 ## [0.1.0-staging.33](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.32...v0.1.0-staging.33) (2025-08-28)
 
 ## [0.1.0-staging.32](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.31...v0.1.0-staging.32) (2025-08-28)
