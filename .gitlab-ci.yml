@@ -1,12 +1,12 @@
 include:
-  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.23
+  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.24
     inputs:
       dev-branch: main
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.23
+  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.24
     inputs:
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.23
+  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.24
     inputs:
       project-name: tenzu
       application-name: front
@@ -61,7 +61,7 @@ stages:
 launch-demo-deploy:
   stage: merge
   needs:
-    - job: tag-and-changelog
+    - job: staging-tag-and-changelog
   script:
     - DEMO_VERSION="${NEXT_VERSION//staging/demo}"
     - echo "DEMO_VERSION=$DEMO_VERSION" > demo.env
@@ -78,7 +78,7 @@ publish-demo-tag:
   rules:
     - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
   needs:
-    - job: tag-and-changelog
+    - job: staging-tag-and-changelog
     - job: launch-demo-deploy
   before_script:
     - git config --global user.email "bot@biru.sh"
