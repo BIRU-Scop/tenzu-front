@@ -1,12 +1,12 @@
 include:
-  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.23
+  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.24
     inputs:
       dev-branch: main
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.23
+  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.24
     inputs:
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.23
+  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.24
     inputs:
       project-name: tenzu
       application-name: front
