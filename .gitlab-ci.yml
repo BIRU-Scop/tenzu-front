@@ -1,16 +1,16 @@
 include:
-  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.21
+  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.23
     inputs:
       dev-branch: main
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.21
+  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.23
     inputs:
       project-name: tenzu
       application-name: front
       extra-file: $SENTRYCLIRC
       destination-extra-file: '.sentryclirc'
       build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
-  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.21
+  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.23
     inputs:
       token: $DEV_TOKEN
 
@@ -24,7 +24,7 @@ include:
       needs:
         - job: launch-demo-deploy
       rules:
-        - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+        - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
   # mirror
   - component: $CI_SERVER_FQDN/biru/component/push@v1.13.0
     inputs:
@@ -67,7 +67,7 @@ launch-demo-deploy:
     - echo "DEMO_VERSION=$DEMO_VERSION" > demo.env
     - cat demo.env
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
       when: manual
   artifacts:
     reports:
@@ -76,7 +76,7 @@ launch-demo-deploy:
 publish-demo-tag:
   stage: merge
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
   needs:
     - job: tag-and-changelog
     - job: launch-demo-deploy
@@ -91,7 +91,7 @@ publish-demo-tag:
 
 deploy-demo:
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE =~ /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
   variables:
     GIT_STRATEGY: none
     GIT_DISCOVERY_ACROSS_FILESYSTEM: 1
