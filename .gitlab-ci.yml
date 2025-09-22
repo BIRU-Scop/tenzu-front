@@ -3,6 +3,9 @@ include:
     inputs:
       dev-branch: main
       token: $DEV_TOKEN
+  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.23
+    inputs:
+      token: $DEV_TOKEN
   - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.23
     inputs:
       project-name: tenzu
@@ -10,9 +13,6 @@ include:
       extra-file: $SENTRYCLIRC
       destination-extra-file: '.sentryclirc'
       build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
-  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.23
-    inputs:
-      token: $DEV_TOKEN
 
   # deploy demo
   - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.13.0
