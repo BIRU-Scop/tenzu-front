@@ -82,6 +82,7 @@
     "edit_description": "Modifier la description",
     "empty_description": "Ajoute une description à ta story",
     "created_by": "Créée par",
+    "former_user": "Utilisateur supprimé",
     "assigned_to": "Assignée à",
     "status": "Statut",
     "save": "Enregistrer",
@@ -92,7 +93,7 @@
       "size": "Taille (octets)",
       "date": "Date",
       "action": "Action",
-      "exceed_size": "{{var}} dépasse la taille de 100 MB",
+      "exceed_size": "{{var}} dépasse la taille de {{maxSize}}",
       "deleted_attachment": "{{var}} a été supprimé"
     },
     "change_workflow": "Déplacer la story vers un autre kanban",

@@ -30,6 +30,7 @@ export const ConfigSchema = z.object({
     scheme: z.enum(["http", "https"]),
     suffixDomain: z.string(),
   }),
+  maxUploadFileSize: z.union([z.uint32(), z.null()]).default(100 * 1024 * 1024), //100 MB
   legal: z
     .union([
       z.object({

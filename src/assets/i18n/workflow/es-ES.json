@@ -82,6 +82,7 @@
     "edit_description": "Editar descripción",
     "empty_description": "Añade una descripción a tu historia.",
     "created_by": "Creado por",
+    "former_user": "Usuario eliminado",
     "assigned_to": "Asignado a",
     "status": "Estado",
     "save": "Guardar",
@@ -92,7 +93,7 @@
       "size": "Tamaño (bytes)",
       "date": "Fecha",
       "action": "Acción",
-      "exceed_size": "{{var}} supera el tamaño de 100 MB",
+      "exceed_size": "{{var}} supera el tamaño de {{maxSize}}",
       "deleted_attachment": "{{var}} ha sido eliminado"
     },
     "change_workflow": "Mover la historia a otro kanban",
