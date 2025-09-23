@@ -1,12 +1,12 @@
 include:
-  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.24
+  - component: $CI_SERVER_FQDN/biru/project-components/merge-branches@0.0.25
     inputs:
       dev-branch: main
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.24
+  - component: $CI_SERVER_FQDN/biru/project-components/release@0.0.25
     inputs:
       token: $DEV_TOKEN
-  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.24
+  - component: $CI_SERVER_FQDN/biru/project-components/build-deploy@0.0.25
     inputs:
       project-name: tenzu
       application-name: front
@@ -15,7 +15,7 @@ include:
       build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
 
   # deploy demo
-  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.13.0
+  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.15.0
     inputs:
       stage: deploy-demo
       prefix: demo-
@@ -24,13 +24,15 @@ include:
       needs:
         - job: launch-demo-deploy
       rules:
-        - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
+        - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\).*/'
+          when: never
+        - if: '$CI_COMMIT_BRANCH == "staging"'
   # mirror
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.13.0
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.15.0
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       fetch-args: "origin --no-tags"
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.13.0
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.15.0
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       job-name: mirror-demo-tags
@@ -39,7 +41,7 @@ include:
       rules:
         - if: $CI_COMMIT_TAG =~ /^.*-demo.*/
   # test
-  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.13.0
+  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.15.0
     inputs:
       stage: test
       rules:
@@ -67,7 +69,9 @@ launch-demo-deploy:
     - echo "DEMO_VERSION=$DEMO_VERSION" > demo.env
     - cat demo.env
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\).*/ '
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "staging"'
       when: manual
   artifacts:
     reports:
@@ -76,7 +80,9 @@ launch-demo-deploy:
 publish-demo-tag:
   stage: merge
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\).*/ '
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "staging"'
   needs:
     - job: tag-and-changelog
     - job: launch-demo-deploy
@@ -91,7 +97,9 @@ publish-demo-tag:
 
 deploy-demo:
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" && $CI_COMMIT_MESSAGE != /^chore\(release\).*-.*/ '
+    - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\).*/ '
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "staging"'
   variables:
     GIT_STRATEGY: none
     GIT_DISCOVERY_ACROSS_FILESYSTEM: 1
