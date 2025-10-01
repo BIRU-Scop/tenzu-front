@@ -19,10 +19,10 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MatIcon } from "@angular/material/icon";
@@ -35,6 +35,8 @@ import { MatDivider } from "@angular/material/divider";
 import { AuthFormStateStore } from "../auth-form-state.store";
 import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatCheckbox } from "@angular/material/checkbox";
+import { LanguageStore } from "@tenzu/repository/transloco";
+import { MatOption, MatSelect } from "@angular/material/select";
 
 @Component({
   selector: "app-signup",
@@ -53,8 +55,11 @@ import { MatCheckbox } from "@angular/material/checkbox";
     MatError,
     MatDivider,
     MatCheckbox,
+    MatOption,
+    MatSelect,
   ],
   template: ` <div *transloco="let t" class="flex flex-col gap-y-4">
+    @let _form = form();
     @if (!emailSent()) {
       <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
       @if (!displayForm()) {
@@ -73,11 +78,11 @@ import { MatCheckbox } from "@angular/material/checkbox";
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();
-        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
+        <form [formGroup]="_form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
             <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
-            @if (form.controls.fullName.hasError("required")) {
+            @if (_form.controls.fullName.hasError("required")) {
               <mat-error
                 data-testid="fullName-required-error"
                 [innerHTML]="t('signup.validation.full_name_required')"
@@ -91,6 +96,14 @@ import { MatCheckbox } from "@angular/material/checkbox";
               strength: { enabled: true, showBar: true },
             }"
           ></app-password-field>
+          <mat-form-field>
+            <mat-label>{{ t("general.identity.lang") }}</mat-label>
+            <mat-select formControlName="lang" data-testid="lang-select">
+              @for (language of languageStore.entities(); track language.code) {
+                <mat-option [value]="language.code">{{ language.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
           @if (configLegal) {
             <div class="min-w-full w-min">
               <mat-checkbox formControlName="acceptTerms" required>
@@ -109,7 +122,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
             </div>
           }
           <button
-            [disabled]="!form.dirty || form.invalid"
+            [disabled]="!_form.dirty || _form.invalid"
             data-testid="submitCreateAccount-button"
             mat-flat-button
             class="primary-button"
@@ -129,7 +142,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
       <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
       <p class="mat-body-medium">
         {{ t("signup.verify.verification_link_sent") }}
-        <strong data-testid="sentEmail-block">{{ form.value.email }}</strong>
+        <strong data-testid="sentEmail-block">{{ _form.value.email }}</strong>
       </p>
       <p class="mat-body-medium">
         {{ t("signup.verify.mail_not_received") }}
@@ -165,38 +178,45 @@ import { MatCheckbox } from "@angular/material/checkbox";
 })
 export default class SignupComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
+  languageStore = inject(LanguageStore);
   userService = inject(UserService);
   configAppService = inject(ConfigAppService);
   displayForm = signal(false);
   emailSent = signal(false);
   fb = inject(NonNullableFormBuilder);
-  form = this.fb.group({
-    email: ["", [Validators.required, Validators.email]],
-    fullName: ["", [Validators.required, Validators.maxLength(256)]],
-    password: [""],
-    acceptTerms: [false],
-  });
+  form = computed(() =>
+    this.fb.group({
+      email: ["", [Validators.required, Validators.email]],
+      fullName: ["", [Validators.required, Validators.maxLength(256)]],
+      password: [""],
+      lang: [this.languageStore.entities().find((language) => language.isDefault)?.code],
+      acceptTerms: [false],
+    }),
+  );
   route = inject(ActivatedRoute);
   readonly authFormStateStore = inject(AuthFormStateStore);
+  translocoService = inject(TranslocoService);
 
   ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
+    const form = this.form();
+    this.authFormStateStore.updateHasError(form.events);
     const configLegal = this.configAppService.configLegal();
     if (configLegal) {
-      this.form.controls.acceptTerms.addValidators([Validators.requiredTrue]);
+      form.controls.acceptTerms.addValidators([Validators.requiredTrue]);
     }
   }
   ngOnDestroy(): void {
     this.authFormStateStore.resetError();
   }
   submit(): void {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
+    const form = this.form();
+    form.reset(form.value);
+    if (form.valid) {
       const params = this.route.snapshot.queryParams;
-      const acceptTerms = this.form.value.acceptTerms || false;
+      const acceptTerms = form.value.acceptTerms || false;
       this.userService
         .create({
-          ...(this.form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
+          ...(form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
           ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
           ...params,
         })
