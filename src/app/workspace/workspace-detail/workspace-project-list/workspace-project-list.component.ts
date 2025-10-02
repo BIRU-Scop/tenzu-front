@@ -49,7 +49,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
       @if (workspace && workspace.userCanCreateProjects) {
-        <button
+        <a
           class="primary-button"
           routerLink="/new-project"
           [queryParams]="{ workspaceId: workspace.id }"
@@ -57,7 +57,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
         >
           <mat-icon>add</mat-icon>
           {{ t("commons.project") }}
-        </button>
+        </a>
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
