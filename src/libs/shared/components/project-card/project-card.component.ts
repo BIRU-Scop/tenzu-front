@@ -58,7 +58,7 @@ import { NgStyle } from "@angular/common";
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>
+        <p class="pt-2 pl-2">
           @if (!name() && !description() && !color()) {
             <a routerLink="/new-project" [queryParams]="{ workspaceId: workspaceId() }">{{
               t("create_first_project")
