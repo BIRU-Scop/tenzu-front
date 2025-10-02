@@ -167,7 +167,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                     <ul
                       [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
                       [id]="status.id"
-                      class="flex flex-col items-center  min-h-28 h-full dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                      class="stories-list flex flex-col items-center dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                       cdkDropList
                       [cdkDropListData]="status"
                       [cdkDropListDisabled]="!hasModifyPermission || isLoading"
@@ -243,6 +243,12 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     }
     .virtual-scroll {
       height: var(--tz-virtual-scroll-height);
+    }
+    .stories-list {
+      min-height: var(--tz-virtual-scroll-height);
+    }
+    ::ng-deep.cdk-virtual-scroll-content-wrapper {
+      min-height: 100%;
     }
   `,
   animations: [
