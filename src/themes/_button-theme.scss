@@ -19,12 +19,64 @@
  *
  */
 
+
 @use '@angular/material' as mat;
+@use 'm3-theme' as theme;
+@use '_mixin' as mixin;
+
+
+.primary-button {
+  @include mixin.button-variant(var(--mat-sys-primary), var(--mat-sys-primary-container), var(--mat-sys-on-primary-container));
+}
+
+.secondary-button {
+  @include mixin.button-variant(var(--mat-sys-secondary), var(--mat-sys-secondary-container), var(--mat-sys-on-secondary-container));
+}
+
+.tertiary-button {
+  @include mixin.button-variant(var(--mat-sys-tertiary), var(--mat-sys-tertiary-container), var(--mat-sys-on-tertiary-container));
+}
+
+.warning-button {
+  @include mixin.button-variant(var(--mat-sys-warning), var(--mat-sys-warning-container), var(--mat-sys-on-warning-container));
+}
+.error-button {
+  @include mixin.button-variant(var(--mat-sys-error), var(--mat-sys-error-container), var(--mat-sys-on-error-container));
+}
 
 .mdc-button {
-  &.primary-button .mdc-button__label, &.secondary-button .mdc-button__label, &.tertiary-button .mdc-button__label {
+  &.primary-button .mdc-button__label, &.secondary-button .mdc-button__label, &.tertiary-button .mdc-button__label, &.warning-button .mdc-button__label, &.error-button .mdc-button__label {
     z-index: 0;
   }
+}
+
+
+.mat-mdc-icon-button {
+
+  @include mixin.icon-button-size(24px, 32px); // need to use a mixin because of a angular bug (see  https://github.com/angular/components/issues/30448)
+  
+  &.mat-mdc-button-base .mat-mdc-button-persistent-ripple::before {
+    opacity: 0.1;
+  }
+
+  &.icon-sm {
+    @include mixin.icon-button-size(16px, 24px);
+  }
+
+  &.icon-md {
+    @include mixin.icon-button-size(24px, 32px);
+  }
+
+  &.icon-lg {
+    @include mixin.icon-button-size(32px, 40px);
+  }
+
+  &.icon-xl {
+    @include mixin.icon-button-size(48px, 56px);
+  }
+}
+
+@mixin tokens-overrides() {
   @include mat.button-overrides((
     filled-container-shape: var(--mat-sys-corner-medium),
     outlined-container-shape: var(--mat-sys-corner-medium),
@@ -34,238 +86,6 @@
     outlined-horizontal-padding: 12px,
     outlined-icon-spacing: 4px,
     filled-icon-spacing: 4px,
-  ));
-}
-
-.mat-mdc-icon-button {
-  line-height: 24px;
-  @include mat.icon-button-overrides((
-    icon-size:  24px,
-    state-layer-size: 32px
-  ));
-  mat-icon {
-    width: 24px;
-    height: 24px;
-    font-size: 24px;
-  }
-  &.mat-mdc-button-base .mat-mdc-button-persistent-ripple::before {
-    opacity: 0.1;
-  }
-  &.icon-sm {
-    line-height: 16px;
-    @include mat.icon-button-overrides((
-      icon-size:  16px,
-      state-layer-size: 24px
-    ));
-    mat-icon {
-      width: 16px;
-      height: 16px;
-      font-size: 16px;
-    }
-  }
-
-  &.icon-md {
-    line-height: 24px;
-    @include mat.icon-button-overrides((
-      icon-size:  24px,
-      state-layer-size: 32px
-    ));
-    mat-icon {
-      width: 24px;
-      height: 24px;
-      font-size: 24px;
-    }
-  }
-
-  &.icon-lg {
-    line-height: 32px;
-    @include mat.icon-button-overrides((
-      icon-size:  32px,
-      state-layer-size: 40px
-    ));
-    mat-icon {
-      width: 32px;
-      height: 32px;
-      font-size: 32px;
-    }
-  }
-
-  &.icon-xl {
-    line-height: 48px;
-    @include mat.icon-button-overrides((
-      icon-size:  48px,
-      state-layer-size: 56px
-    ));
-    mat-icon {
-      width: 48px;
-      height: 48px;
-      font-size: 48px;
-    }
-  }
-}
-
-// ************** PRIMARY ***************** //
-.primary-button {
-  &.mat-mdc-outlined-button {
-    box-shadow: 0 0 4px var(--mat-sys-primary);
-    &.mat-mdc-button-disabled {
-      box-shadow: none;
-    }
-  }
-  &.mdc-button--unelevated {
-    box-shadow: 0 0 6px var(--mat-sys-primary);
-    border: solid 1px  var(--mat-sys-primary);
-    margin: 3px;
-    &.mat-mdc-button-disabled {
-      box-shadow: none;
-      border: solid 1px var(--mat-sys-outline-variant);
-      margin: 0;
-    }
-  }
-  @include mat.button-overrides((
-    outlined-outline-color: var(--mat-sys-primary),
-    outlined-state-layer-color: var(--mat-sys-on-primary),
-    filled-state-layer-color: var(--mat-sys-on-primary),
-    filled-container-color: var(--mat-sys-primary-container),
-    outlined-label-text-color: var(--mat-sys-on-primary-container),
-    filled-label-text-color: var(--mat-sys-on-primary-container),
-    filled-label-text-size: var(--mat-sys-label-large-size),
-    outlined-label-text-size: var(--mat-sys-label-large-size),
-  ));
-  @include mat.icon-button-overrides((
-    state-layer-color: var(--mat-sys-on-primary),
-    ripple-color: var(--mat-sys-on-primary-container)
-  ));
-  .mat-icon {
-    @include mat.icon-overrides((color: var(--mat-sys-on-primary)));
-  }
-  &:focus {
-    outline: solid var(--mat-sys-primary) 3px;
-  }
-}
-
-// ************** SECONDARY ***************** //
-.secondary-button {
-  &.mat-mdc-outlined-button {
-    box-shadow: 0 0 4px var(--mat-sys-secondary);
-    &.mat-mdc-button-disabled {
-      box-shadow: none;
-    }
-  }
-  &.mdc-button--unelevated {
-    box-shadow: 0 0 6px var(--mat-sys-secondary);
-    border: solid 1px  var(--mat-sys-secondary);
-    margin: 3px;
-    &.mat-mdc-button-disabled {
-      box-shadow: none;
-      border: solid 1px var(--mat-sys-outline-variant);
-      margin: 0;
-    }
-  }
-  @include mat.button-overrides((
-    outlined-outline-color: var(--mat-sys-secondary),
-    outlined-state-layer-color: var(--mat-sys-on-secondary),
-    filled-state-layer-color: var(--mat-sys-on-secondary),
-    filled-container-color: var(--mat-sys-secondary-container),
-    outlined-label-text-color: var(--mat-sys-on-secondary-container),
-    filled-label-text-color: var(--mat-sys-on-secondary-container),
-    filled-label-text-size: var(--mat-sys-label-large-size),
-    outlined-label-text-size: var(--mat-sys-label-large-size),
-  ));
-  @include mat.icon-button-overrides((
-    state-layer-color: var(--mat-sys-on-secondary),
-    ripple-color: var(--mat-sys-on-secondary-container)
-  ));
-  .mat-icon {
-    @include mat.icon-overrides((color: var(--mat-sys-on-secondary)));
-  }
-  &:focus {
-    outline: solid var(--mat-sys-secondary) 3px;
-  }
-}
-
-// ************** TERTIARY ***************** //
-.tertiary-button {
-  &.mat-mdc-outlined-button {
-    box-shadow: 0 0 4px var(--mat-sys-tertiary);
-    &.mat-mdc-button-disabled {
-      box-shadow: 0 0 4px var(--mat-sys-outline-variant);
-    }
-  }
-  &.mdc-button--unelevated {
-    box-shadow: 0 0 6px var(--mat-sys-tertiary);
-    border: solid 1px  var(--mat-sys-tertiary);
-    margin: 3px;
-    &.mat-mdc-button-disabled {
-      box-shadow:  0 0 6px var(--mat-sys-outline-variant);
-      border: solid 1px var(--mat-sys-outline-variant);
-      margin: 3px;
-    }
-  }
-  @include mat.button-overrides((
-    outlined-outline-color: var(--mat-sys-tertiary),
-    outlined-state-layer-color: var(--mat-sys-on-tertiary),
-    filled-state-layer-color: var(--mat-sys-on-tertiary),
-    filled-container-color: var(--mat-sys-tertiary-container),
-    outlined-label-text-color: var(--mat-sys-on-tertiary-container),
-    filled-label-text-color: var(--mat-sys-on-tertiary-container),
-    filled-label-text-size: var(--mat-sys-label-large-size),
-    outlined-label-text-size: var(--mat-sys-label-large-size),
-  ));
-  @include mat.icon-button-overrides((
-    state-layer-color: var(--mat-sys-on-tertiary),
-    ripple-color: var(--mat-sys-on-tertiary-container)
-  ));
-  .mat-icon {
-    @include mat.icon-overrides((color: var(--mat-sys-on-tertiary)));
-  }
-  &:focus {
-    outline: solid var(--mat-sys-tertiary) 3px;
-  }
-}
-
-// ************** ERROR ***************** //
-.error-button {
-  &.mat-mdc-outlined-button {
-    box-shadow: 0 0 4px var(--mat-sys-error);
-    &.mat-mdc-button-disabled {
-      box-shadow: none;
-    }
-  }
-  &.mdc-button--unelevated {
-    box-shadow: 0 0 6px var(--mat-sys-error);
-    border: solid 1px  var(--mat-sys-error);
-    margin: 3px;
-    &.mat-mdc-button-disabled {
-      box-shadow: none;
-      border: solid 1px var(--mat-sys-outline-variant);
-      margin: 0;
-    }
-  }
-  @include mat.button-overrides((
-          outlined-outline-color: var(--mat-sys-error),
-          outlined-state-layer-color: var(--mat-sys-on-error),
-          filled-state-layer-color: var(--mat-sys-on-error),
-          filled-container-color: var(--mat-sys-error-container),
-          outlined-label-text-color: var(--mat-sys-on-error-container),
-          filled-label-text-color: var(--mat-sys-on-error-container),
-          filled-label-text-size: var(--mat-sys-label-large-size),
-          outlined-label-text-size: var(--mat-sys-label-large-size),
-  ));
-  @include mat.icon-button-overrides((
-          state-layer-color: var(--mat-sys-on-error),
-          ripple-color: var(--mat-sys-on-error-container)
-  ));
-  .mat-icon {
-    @include mat.icon-overrides((color: var(--mat-sys-on-error)));
-  }
-  &:focus {
-    outline: solid var(--mat-sys-error) 3px;
-  }
-}
-
-@mixin tokens-overrides() {
-  @include mat.button-overrides((
     filled-hover-state-layer-opacity: 0.25,
     outlined-hover-state-layer-opacity: 0.25,
     filled-focus-state-layer-opacity: 0.25,
@@ -282,15 +102,9 @@
   @include mat.icon-button-overrides((
     state-layer-color: var(--mat-sys-on-secondary),
     hover-state-layer-opacity: 0.2,
-    focus-state-layer-opacity: 0.1
+    focus-state-layer-opacity: 0.1,
+    icon-color: var(--mat-sys-on-secondary)
   ));
-  .mat-mdc-icon-button {
-      &:focus {
-        outline: solid var(--mat-sys-outline) 3px;
-      }
-      .mat-icon {
-        @include mat.icon-overrides((color: var(--mat-sys-on-secondary)));
-      }
-  }
 }
+
 

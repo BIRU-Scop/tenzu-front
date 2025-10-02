@@ -1,0 +1,90 @@
+/*
+ * Copyright (C) 2025 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+@use '@angular/material' as mat;
+
+/// Mixin to create a custom button variant with automatic disabled states
+/// @param {String} $color - Main color (e.g. var(--mat-sys-warning))
+/// @param {String} $container-color - Container color (e.g. var(--mat-sys-warning-container))
+/// @param {String} $on-container-color - Text color on container (e.g. var(--mat-sys-on-warning-container))
+/// @param {String} $surface - Surface color for color-mix (default: var(--mat-sys-surface))
+/// @param {Number} $disabled-opacity - Opacity for disabled state (default: 38%)
+@mixin button-variant(
+  $color,
+  $container-color,
+  $on-container-color,
+  $surface: var(--mat-sys-surface),
+  $disabled-opacity: 38%
+) {
+  @include mat.button-overrides((
+    // Outlined
+          outlined-outline-color: $color,
+          outlined-disabled-outline-color: color-mix(in srgb, $color $disabled-opacity, $surface),
+          outlined-state-layer-color: $color,
+          outlined-disabled-state-layer-color: color-mix(in srgb, $container-color $disabled-opacity, $surface),
+          outlined-label-text-color: $on-container-color,
+          outlined-disabled-label-text-color: color-mix(in srgb, $on-container-color $disabled-opacity, transparent),
+          outlined-label-text-size: var(--mat-sys-label-large-size),
+
+    // Filled
+          filled-state-layer-color: $color,
+          filled-disabled-state-layer-color: color-mix(in srgb, $color $disabled-opacity, $surface),
+          filled-container-color: $container-color,
+          filled-disabled-container-color: color-mix(in srgb, $container-color $disabled-opacity, $surface),
+          filled-label-text-color: $on-container-color,
+          filled-disabled-label-text-color: color-mix(in srgb, $on-container-color $disabled-opacity, transparent),
+          filled-label-text-size: var(--mat-sys-label-large-size),
+  ));
+
+  @include mat.icon-button-overrides((
+          icon-color: $on-container-color,
+          state-layer-color: $container-color,
+          ripple-color: $container-color
+  ));
+}
+
+
+/// Mixin to create an icon button size variant
+/// @param {Number} $icon-size - Icon size in px
+/// @param {Number} $state-layer-size - Clickable area size in px (optional, calculated automatically if not provided)
+/// @param {Number} $state-layer-ratio - Ratio to calculate state-layer-size (default: 1.33 = +33%)
+
+@mixin icon-button-size(
+  $icon-size,
+  $state-layer-size: null,
+  $state-layer-ratio: 1.33
+) {
+  // Automatically calculate state-layer-size if not provided
+  $calculated-state-layer: if($state-layer-size, $state-layer-size, round($icon-size * $state-layer-ratio));
+
+  line-height: $icon-size;
+
+  @include mat.icon-button-overrides((
+          icon-size: $icon-size,
+          state-layer-size: $calculated-state-layer,
+  ));
+
+  mat-icon {
+    width: $icon-size;
+    height: $icon-size;
+    font-size: $icon-size;
+  }
+}
