@@ -52,6 +52,7 @@ import { lastValueFrom } from "rxjs";
 import { StoryDetail } from "@tenzu/repository/story";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { ConfigAppService } from "../../../../config-app/config-app.service";
+import { StoryDetailCommentsComponent } from "./comment/comment-list/story-detail-comments.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
 
@@ -80,6 +81,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
     EditorComponent,
     ButtonSaveComponent,
     ButtonUndoComponent,
+    StoryDetailCommentsComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -105,25 +107,29 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
               (closed)="closed.emit()"
             ></app-story-detail-menu>
             <div class="flex flex-row gap-2 h-5/6">
-              <form [formGroup]="form" class="basis-2/3 flex flex-col p-4 min-w-0">
-                <mat-form-field appearance="fill" class="title-field">
-                  <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
-                </mat-form-field>
-                <app-editor-block
-                  class="overflow-auto editor"
-                  [data]="story.description"
-                  [resolveFileUrl]="resolveFileUrl()"
-                  [uploadFile]="uploadFile(story)"
-                  [disabled]="!hasModifyPermission"
-                  #editorContainer
-                />
-                @if (hasModifyPermission) {
-                  <div class="flex flex-row justify-end gap-2 py-4">
-                    <app-button-undo [translocoKey]="'workflow.detail_story.undo'" (click)="undo()" />
-                    <app-button-save [translocoKey]="'workflow.detail_story.save'" (click)="submit()" />
-                  </div>
-                }
-              </form>
+              <div class="basis-2/3 flex flex-col p-4 min-w-0 gap-4">
+                <form [formGroup]="form" class="flex flex-col h-full gap-4">
+                  <mat-form-field appearance="fill" class="title-field">
+                    <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
+                  </mat-form-field>
+                  <app-editor-block
+                    class="overflow-auto editor"
+                    [data]="story.description"
+                    [resolveFileUrl]="resolveFileUrl()"
+                    [uploadFile]="uploadFile(story)"
+                    [disabled]="!hasModifyPermission"
+                    #editorContainer
+                  />
+                  @if (hasModifyPermission) {
+                    <div class="flex flex-row justify-end gap-2 py-4">
+                      <app-button-undo [translocoKey]="'workflow.detail_story.undo'" (click)="undo()" />
+                      <app-button-save [translocoKey]="'workflow.detail_story.save'" (click)="submit()" />
+                    </div>
+                  }
+                </form>
+                <mat-divider></mat-divider>
+                <app-story-detail-comments [projectDetail]="project" [storyDetail]="story"></app-story-detail-comments>
+              </div>
               <div
                 class="basis-1/3 h-full min-w-0 overflow-y-auto flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"
               >
@@ -171,10 +177,9 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
                     <mat-icon>delete</mat-icon>
                   </button>
                   <mat-divider></mat-divider>
-                  @let projectDetail = projectKanbanService.projectService.entityDetail();
-                  @if (projectDetail && story) {
+                  @if (project && story) {
                     <app-story-detail-attachments
-                      [projectDetail]="projectDetail"
+                      [projectDetail]="project"
                       [storyDetail]="story"
                       [hasModifyPermission]="hasModifyPermission"
                     ></app-story-detail-attachments>
@@ -191,9 +196,9 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
     .editor {
       padding: 1em;
       border-style: solid;
+      border-radius: 0.25rem;
       border-color: var(--mat-sys-outline);
       border-width: 1px;
-      border-top: 0;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

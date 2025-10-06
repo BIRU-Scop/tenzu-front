@@ -96,6 +96,9 @@
       "exceed_size": "{{var}} exceed the size of {{maxSize}}",
       "deleted_attachment": "{{var}} has been deleted"
     },
+    "comments": {
+      "count": "{ totalComments, plural, =0 {# Comment} one {# Comment} other {# Comments} }"
+    },
     "change_workflow": "Move story to another kanban",
     "delete_story": "Delete this story",
     "confirm_delete_story": "Are you sure you want to delete this story",

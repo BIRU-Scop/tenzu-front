@@ -51,6 +51,7 @@ export type StoryDetail = Story & {
   titleUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
   descriptionUpdatedAt: string | null;
   descriptionUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
+  totalComments: number;
 };
 
 export type StoryReorder = {

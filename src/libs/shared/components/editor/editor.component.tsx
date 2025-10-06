@@ -24,26 +24,29 @@ import { BlockNoteView } from "@blocknote/mantine";
 export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   elm = viewChild<ElementRef>("editor");
   disabled = input(false);
-  resolveFileUrl = input.required<(url: string) => Promise<string>>();
-  uploadFile =
-    input.required<
-      (
+  resolveFileUrl = input<(url: string) => Promise<string>>();
+  uploadFile = input.required<
+    | undefined
+    | ((
         file: File,
         blockId?: string | undefined,
-      ) => Promise<string | Record<string, any>>
-    >();
-  data = input.required<string>();
+      ) => Promise<string | Record<string, any>>)
+  >();
+  data = input<string>();
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
     effect(() => {
-      const value = JSON.parse(this.data()) as Block[];
+      const data = this.data();
+      const initialContent = data
+        ? { initialContent: JSON.parse(data) as Block[] }
+        : {};
       if (!this.editor) {
         this.editor = BlockNoteEditor.create({
           codeBlock,
-          initialContent: value,
           resolveFileUrl: this.resolveFileUrl(),
           uploadFile: this.uploadFile(),
+          ...initialContent,
         });
       }
       const elm = this.elm();
