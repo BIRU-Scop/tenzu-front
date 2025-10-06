@@ -47,7 +47,7 @@ export abstract class AbstractApiServiceDetail<
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected getBaseUrl(params?: Record<string, EntityId> | unknown): string {
-    return `${this.baseUrl}}`;
+    return `${this.baseUrl}`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
