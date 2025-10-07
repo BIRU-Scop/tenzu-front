@@ -19,32 +19,51 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, untracked, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked, viewChild } from "@angular/core";
 import { StoryDetail } from "@tenzu/repository/story";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { EditorComponent } from "@tenzu/shared/components/editor";
+import { MatInput } from "@angular/material/input";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatFormField } from "@angular/material/form-field";
+import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 
 @Component({
   selector: "app-story-detail-comments",
-  imports: [TranslocoDirective, EditorComponent],
+  imports: [TranslocoDirective, EditorComponent, MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize],
   template: `
     <!--    @let comments = storyCommentRepositoryService.entitiesSummary();-->
     <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
       <p>{{ t("workflow.detail_story.comments.count", { totalComments: storyDetail().totalComments }) }}</p>
-      <app-editor-block class="overflow-auto editor h-12" [uploadFile]="undefined" #commentEditorContainer />
+      <form class="flex flex-col gap-4">
+        @if (createNewComment()) {
+          <app-editor-block
+            (focusout)="stopCreate()"
+            class="overflow-auto"
+            [uploadFile]="undefined"
+            [focus]="true"
+            #commentEditorContainer
+          />
+        } @else {
+          <mat-form-field class="mat-form-field">
+            <textarea
+              [cdkTextareaAutosize]="false"
+              [cdkAutosizeMinRows]="1"
+              [cdkAutosizeMaxRows]="1"
+              [style.resize]="'none'"
+              matInput
+              type="text"
+              [placeholder]="t('workflow.detail_story.comments.create_placeholder')"
+              (focus)="startCreate()"
+            ></textarea>
+          </mat-form-field>
+        }
+      </form>
     </div>
   `,
-  styles: `
-    .editor {
-      padding: 1em;
-      border-style: solid;
-      border-radius: 0.25rem;
-      border-color: var(--mat-sys-outline);
-      border-width: 1px;
-    }
-  `,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailCommentsComponent {
@@ -53,6 +72,9 @@ export class StoryDetailCommentsComponent {
   storyDetail = input.required<StoryDetail>();
   projectDetail = input.required<ProjectDetail>();
   editor = viewChild.required<EditorComponent>("commentEditorContainer");
+
+  createNewComment = signal(false);
+
   constructor() {
     effect(() => {
       this.storyCommentRepositoryService.resetAll();
@@ -65,5 +87,14 @@ export class StoryDetailCommentsComponent {
           .then(),
       ).then();
     });
+  }
+  startCreate() {
+    this.createNewComment.set(true);
+  }
+
+  stopCreate() {
+    if (this.editor().isEmpty()) {
+      this.createNewComment.set(false);
+    }
   }
 }

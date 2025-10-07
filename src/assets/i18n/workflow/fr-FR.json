@@ -97,7 +97,8 @@
       "deleted_attachment": "{{var}} a été supprimé"
     },
     "comments": {
-      "count": "{ totalComments, plural, =0 {# Commentaire} one {# Commentaire} other {# Commentaires} }"
+      "count": "{ totalComments, plural, =0 {# Commentaire} one {# Commentaire} other {# Commentaires} }",
+      "create_placeholder": "Écrire ici un nouveau commentaire"
     },
     "change_workflow": "Déplacer la story vers un autre kanban",
     "delete_story": "Supprimer cette story",

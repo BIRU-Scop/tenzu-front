@@ -113,7 +113,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
                     <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
                   </mat-form-field>
                   <app-editor-block
-                    class="overflow-auto editor"
+                    class="overflow-auto"
                     [data]="story.description"
                     [resolveFileUrl]="resolveFileUrl()"
                     [uploadFile]="uploadFile(story)"
@@ -192,15 +192,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
       </ng-container>
     }
   `,
-  styles: `
-    .editor {
-      padding: 1em;
-      border-style: solid;
-      border-radius: 0.25rem;
-      border-color: var(--mat-sys-outline);
-      border-width: 1px;
-    }
-  `,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class StoryDetailComponent {

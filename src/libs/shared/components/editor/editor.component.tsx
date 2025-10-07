@@ -20,6 +20,24 @@ import { BlockNoteView } from "@blocknote/mantine";
 @Component({
   selector: "app-editor-block",
   template: `<div #editor></div>`,
+  styles: `
+    :host {
+      box-sizing: border-box;
+      padding: 1em;
+      border-style: solid;
+      border-radius: 0.25rem;
+      border-color: var(--mat-sys-outline);
+      border-width: 1px;
+      &:hover {
+        border-color: var(--mat-sys-on-primary);
+      }
+      &:has(.ProseMirror-focused) {
+        border-color: var(--mat-sys-primary);
+        border-width: 2px;
+        padding: calc(1em - 1px);
+      }
+    }
+  `,
 })
 export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   elm = viewChild<ElementRef>("editor");
@@ -33,6 +51,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
       ) => Promise<string | Record<string, any>>)
   >();
   data = input<string>();
+  focus = input(false);
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
@@ -46,6 +65,8 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
           codeBlock,
           resolveFileUrl: this.resolveFileUrl(),
           uploadFile: this.uploadFile(),
+          // TODO use new autofocus option instead of undocumented _tiptapOptions once we have upgraded blocknote to >= v0.40.0
+          _tiptapOptions: { autofocus: this.focus() },
           ...initialContent,
         });
       }
@@ -74,6 +95,9 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
   public undo() {
     this.editor?.undo();
+  }
+  public isEmpty() {
+    return this.editor?.isEmpty;
   }
   private render() {
     if (this.root && this.editor) {
