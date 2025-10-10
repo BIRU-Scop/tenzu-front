@@ -59,14 +59,14 @@ import { MatDialog } from "@angular/material/dialog";
   template: `
     @let _story = story();
     @if (_story) {
-      <div class="flex flex-row p-4 items-baseline justify-between">
-        <div class="flex flex-row gap-1 items-baseline" *transloco="let t; prefix: 'workflow.detail_story'">
+      <div class="flex flex-row p-4 justify-between">
+        <div class="flex flex-row gap-1  place-items-center" *transloco="let t; prefix: 'workflow.detail_story'">
           <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
           <span class="text-on-surface mat-title-medium">{{ _story.workflow.name }}</span>
           @if (hasModifyPermission()) {
             <button
-              class="icon-sm"
               mat-icon-button
+              class="icon-sm"
               type="button"
               [attr.aria-label]="t('change_workflow')"
               (click)="openChooseWorkflowDialog($event)"

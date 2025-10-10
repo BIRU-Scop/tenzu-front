@@ -223,10 +223,7 @@ body {
   @media (prefers-color-scheme: light) {
     color: mat.get-theme-color(themes.$light-theme, neutral, 17);
     background-color: mat.get-theme-color(themes.$light-theme, neutral, 100);
-    --mat-sys-warning: #{mat.get-theme-color(themes.$light-theme, secondary, 80)};
-    --mat-sys-warning-container: #{mat.get-theme-color(themes.$light-theme, secondary, 95)};
-    --mat-sys-on-warning: #{mat.get-theme-color(themes.$light-theme, secondary, 60)};
-    --mat-sys-on-warning-container: #{mat.get-theme-color(themes.$light-theme, secondary, 30)};
+
     @include mat.theme-overrides((
       background: mat.get-theme-color(themes.$light-theme, neutral, 100),
       surface:  mat.get-theme-color(themes.$light-theme, neutral, 100),
@@ -265,10 +262,6 @@ body {
     color: mat.get-theme-color(themes.$dark-theme, neutral, 17);
     background-color: mat.get-theme-color(themes.$dark-theme, neutral, 92);
     --sys-on-surface-lower-emphasis: mat.get-theme-color(themes.$dark-theme, neutral, 40);
-    --mat-sys-warning: #{mat.get-theme-color(themes.$dark-theme, secondary, 70)};
-    --mat-sys-warning-container: #{mat.get-theme-color(themes.$dark-theme, secondary, 90)};
-    --mat-sys-on-warning: #{mat.get-theme-color(themes.$dark-theme, secondary, 50)};
-    --mat-sys-on-warning-container: #{mat.get-theme-color(themes.$dark-theme, secondary, 10)};
     @include mat.theme-overrides((
       background: mat.get-theme-color(themes.$dark-theme, neutral, 92),
       surface:  mat.get-theme-color(themes.$dark-theme, neutral, 92),

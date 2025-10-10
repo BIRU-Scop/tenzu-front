@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { Story } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
   EnterNameDialogComponent,
@@ -57,11 +57,11 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-project-kanban",
   imports: [
-    MatButton,
     TranslocoDirective,
     StatusCardComponent,
     StoryCardComponent,
@@ -80,6 +80,7 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
     MatMenuItem,
     HasPermissionDirective,
     PermissionOrRedirectDirective,
+    ButtonAddComponent,
   ],
   template: `
     @let workflow = workflowRepositoryService.entityDetail();
@@ -199,13 +200,13 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                       requiredPermission: ProjectPermissions.CREATE_STORY,
                     }"
                   >
-                    <button
-                      mat-stroked-button
-                      class="primary-button whitespace-nowrap shrink-0 mt-4"
+                    <app-button-add
+                      class="whitespace-nowrap shrink-0 mt-4"
+                      [level]="'primary'"
+                      [appearance]="'outlined'"
+                      [translocoKey]="'workflow.add_story'"
                       (click)="openCreateStory($event, status.id)"
-                    >
-                      {{ t("add_story") }}
-                    </button>
+                    ></app-button-add>
                   </ng-container>
                 </li>
               }
@@ -215,13 +216,12 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                   requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
                 }"
               >
-                <button
-                  mat-stroked-button
-                  class="tertiary-button whitespace-nowrap w-64"
+                <app-button-add
                   (click)="openCreateStatus($event)"
-                >
-                  {{ t("add_status") }}
-                </button>
+                  [appearance]="'outlined'"
+                  class="whitespace-nowrap w-64"
+                  [translocoKey]="'workflow.add_status'"
+                />
               </li>
             </ul>
           } @else {

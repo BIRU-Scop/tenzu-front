@@ -56,7 +56,7 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
           </mat-card-title>
         }
         @if (_workspace.userCanCreateProjects) {
-          <button
+          <a
             class="primary-button"
             routerLink="/new-project"
             [queryParams]="{ workspaceId: _workspace.id }"
@@ -66,7 +66,7 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
           >
             <mat-icon>add</mat-icon>
             {{ t("commons.project") }}
-          </button>
+          </a>
         } @else if (_workspace.userIsInvited) {
           <button
             class="secondary-button"

@@ -34,8 +34,6 @@ import { ProjectNested, ProjectRepositoryService } from "@tenzu/repository/proje
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
-import { MatIcon } from "@angular/material/icon";
-import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
@@ -44,32 +42,29 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-workspace-list",
   imports: [
     WorkspaceCardComponent,
-    MatIcon,
-    MatButton,
     TranslocoDirective,
     ProjectCardComponent,
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
     ActionCardComponent,
+    ButtonAddComponent,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
       <div class="flex flex-row">
         <h1 class="mat-headline-medium grow">{{ t("commons.projects") }}</h1>
-        <button
+        <app-button-add
           (click)="openCreateDialog($event)"
-          data-testid="create-workspace-open"
-          class="tertiary-button"
-          mat-stroked-button
-        >
-          <mat-icon>add</mat-icon>
-          {{ t("commons.workspace") }}
-        </button>
+          [translocoKey]="'commons.workspace'"
+          [appearance]="'outlined'"
+          [level]="'tertiary'"
+        ></app-button-add>
       </div>
       @let workpaces = workspaceService.entitiesSummary();
       @if (workpaces.length > 0) {

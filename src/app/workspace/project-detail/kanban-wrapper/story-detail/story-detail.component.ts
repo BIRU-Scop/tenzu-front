@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, input, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -52,12 +52,13 @@ import { lastValueFrom } from "rxjs";
 import { StoryDetail } from "@tenzu/repository/story";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { ConfigAppService } from "../../../../config-app/config-app.service";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
 
 @Component({
   selector: "app-story-detail",
   imports: [
     UserCardComponent,
-    MatButton,
     MatFormField,
     MatInput,
     ReactiveFormsModule,
@@ -77,6 +78,8 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
     StoryAssigneeComponent,
     HasPermissionDirective,
     EditorComponent,
+    ButtonSaveComponent,
+    ButtonUndoComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -116,12 +119,8 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                 />
                 @if (hasModifyPermission) {
                   <div class="flex flex-row justify-end gap-2 py-4">
-                    <button class="secondary-button" mat-flat-button type="button" (click)="undo()">
-                      {{ t("undo") }}
-                    </button>
-                    <button class="tertiary-button" mat-flat-button type="submit" (click)="submit()">
-                      {{ t("save") }}
-                    </button>
+                    <app-button-undo [translocoKey]="'workflow.detail_story.undo'" (click)="undo()" />
+                    <app-button-save [translocoKey]="'workflow.detail_story.save'" (click)="submit()" />
                   </div>
                 }
               </form>
@@ -136,22 +135,19 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                       [avatarName]="story.createdBy?.fullName || ''"
                       [subtext]="story.createdAt | date: 'short'"
                       [color]="story.createdBy?.color || 0"
-                    ></app-user-card>
+                    />
                   </div>
-                  <app-story-status
-                    [storyDetail]="story"
-                    [hasModifyPermission]="hasModifyPermission"
-                  ></app-story-status>
+                  <app-story-status [storyDetail]="story" [hasModifyPermission]="hasModifyPermission" />
                   <div class="flex flex-row gap-4">
                     <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
                     <app-story-assignee
                       [story]="story"
                       [hasModifyPermission]="hasModifyPermission"
                       [config]="{ relativeXPosition: 'left' }"
-                    ></app-story-assignee>
+                    />
                   </div>
                 </div>
-                <mat-divider></mat-divider>
+                <mat-divider />
                 <ng-container
                   *appHasPermission="{
                     actualEntity: project,

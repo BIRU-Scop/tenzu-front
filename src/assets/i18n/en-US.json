@@ -169,6 +169,8 @@
     "cancel": "Cancel",
     "close": "Close",
     "save": "Save",
+    "add": "Add",
+    "undo": "Undo",
     "select_option": "Select an option"
   },
   "general": {
