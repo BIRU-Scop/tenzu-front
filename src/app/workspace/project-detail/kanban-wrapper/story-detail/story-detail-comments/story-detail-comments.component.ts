@@ -50,7 +50,7 @@ import { StoryCommentComponent } from "./story-comment.component";
   template: `
     <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
       <p>{{ t("workflow.detail_story.comments.count", { totalComments: storyDetail().totalComments }) }}</p>
-      <form class="flex flex-col gap-4" (submit)="save($event)">
+      <form class="flex flex-col gap-4" (submit)="$event.preventDefault()">
         @if (createNewComment()) {
           <app-editor-block
             (focusout)="stopCreate(false)"
@@ -61,7 +61,7 @@ import { StoryCommentComponent } from "./story-comment.component";
           />
           <div class="flex flex-row justify-end gap-2 py-4">
             <app-button-cancel (click)="stopCreate(true)" />
-            <app-button-save />
+            <app-button-save (click)="save()" />
           </div>
         } @else {
           <mat-form-field class="mat-form-field">
@@ -119,13 +119,16 @@ export class StoryDetailCommentsComponent {
     }
   }
 
-  async save(event: SubmitEvent) {
-    event.preventDefault();
+  async save() {
     const data = { text: await this.editor().getHtmlContent() };
-    await this.storyCommentRepositoryService.createRequest(data, {
-      projectId: this.projectDetail().id,
-      ref: this.storyDetail().ref,
-    });
+    await this.storyCommentRepositoryService.createRequest(
+      data,
+      {
+        projectId: this.projectDetail().id,
+        ref: this.storyDetail().ref,
+      },
+      { prepend: true },
+    );
     this.notificationService.success({ title: "notification.action.changes_saved" });
     this.stopCreate(true);
   }

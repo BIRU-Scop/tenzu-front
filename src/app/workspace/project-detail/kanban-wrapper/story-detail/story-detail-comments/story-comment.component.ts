@@ -22,15 +22,30 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
+import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
+import { DatePipe } from "@angular/common";
+import { UserCardComponent } from "@tenzu/shared/components/user-card";
 
 @Component({
   selector: "app-story-comment",
-  imports: [TranslocoDirective],
+  imports: [TranslocoDirective, SafeHtmlPipe, DatePipe, UserCardComponent],
   template: `
     @let _comment = comment();
-    <div class="flex flex-row gap-4">
-      <div>{{ _comment.createdBy?.fullName }}</div>
-      <div>{{ _comment.text }}</div>
+    <div *transloco="let t" class="flex flex-col gap-4">
+      <div class="flex flex-row justify-between">
+        <app-user-card
+          [fullName]="_comment.createdBy?.fullName || t('former_user')"
+          [avatarName]="_comment.createdBy?.fullName || ''"
+          [color]="_comment.createdBy?.color || 0"
+        />
+        <span class="mat-label-medium text-on-surface-variant">
+          {{ _comment.createdAt | date: "short" }}
+          @if (_comment.modifiedAt) {
+            , {{ _comment.modifiedAt | date: "short" }}
+          }
+        </span>
+      </div>
+      <div class="ms-10" [innerHTML]="_comment.text | safeHtml"></div>
     </div>
   `,
   styles: ``,
