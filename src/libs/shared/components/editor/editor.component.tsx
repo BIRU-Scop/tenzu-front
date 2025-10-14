@@ -90,8 +90,11 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
-  public save() {
-    return this.editor?.document;
+  public get jsonContent() {
+    return JSON.stringify(this.editor?.document);
+  }
+  public async getHtmlContent() {
+    return this.editor?.blocksToFullHTML(this.editor?.document);
   }
   public undo() {
     this.editor?.undo();

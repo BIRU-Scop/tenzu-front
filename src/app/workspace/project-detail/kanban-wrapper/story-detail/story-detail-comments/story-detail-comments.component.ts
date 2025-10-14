@@ -29,23 +29,40 @@ import { MatInput } from "@angular/material/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatFormField } from "@angular/material/form-field";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { StoryCommentComponent } from "./story-comment.component";
 
 @Component({
   selector: "app-story-detail-comments",
-  imports: [TranslocoDirective, EditorComponent, MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize],
+  imports: [
+    TranslocoDirective,
+    EditorComponent,
+    MatFormField,
+    MatInput,
+    ReactiveFormsModule,
+    CdkTextareaAutosize,
+    ButtonSaveComponent,
+    ButtonCancelComponent,
+    StoryCommentComponent,
+  ],
   template: `
-    <!--    @let comments = storyCommentRepositoryService.entitiesSummary();-->
     <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
       <p>{{ t("workflow.detail_story.comments.count", { totalComments: storyDetail().totalComments }) }}</p>
-      <form class="flex flex-col gap-4">
+      <form class="flex flex-col gap-4" (submit)="save($event)">
         @if (createNewComment()) {
           <app-editor-block
-            (focusout)="stopCreate()"
+            (focusout)="stopCreate(false)"
             class="overflow-auto"
             [uploadFile]="undefined"
             [focus]="true"
             #commentEditorContainer
           />
+          <div class="flex flex-row justify-end gap-2 py-4">
+            <app-button-cancel (click)="stopCreate(true)" />
+            <app-button-save />
+          </div>
         } @else {
           <mat-form-field class="mat-form-field">
             <textarea
@@ -61,6 +78,9 @@ import { CdkTextareaAutosize } from "@angular/cdk/text-field";
           </mat-form-field>
         }
       </form>
+      @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id) {
+        <app-story-comment [comment]="comment" />
+      }
     </div>
   `,
   styles: ``,
@@ -68,6 +88,7 @@ import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 })
 export class StoryDetailCommentsComponent {
   storyCommentRepositoryService = inject(StoryCommentRepositoryService);
+  notificationService = inject(NotificationService);
 
   storyDetail = input.required<StoryDetail>();
   projectDetail = input.required<ProjectDetail>();
@@ -92,9 +113,20 @@ export class StoryDetailCommentsComponent {
     this.createNewComment.set(true);
   }
 
-  stopCreate() {
-    if (this.editor().isEmpty()) {
+  stopCreate(force = false) {
+    if (force || this.editor().isEmpty()) {
       this.createNewComment.set(false);
     }
+  }
+
+  async save(event: SubmitEvent) {
+    event.preventDefault();
+    const data = { text: await this.editor().getHtmlContent() };
+    await this.storyCommentRepositoryService.createRequest(data, {
+      projectId: this.projectDetail().id,
+      ref: this.storyDetail().ref,
+    });
+    this.notificationService.success({ title: "notification.action.changes_saved" });
+    this.stopCreate(true);
   }
 }

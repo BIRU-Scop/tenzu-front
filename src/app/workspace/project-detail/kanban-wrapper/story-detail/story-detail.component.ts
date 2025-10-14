@@ -49,7 +49,7 @@ import { lastValueFrom } from "rxjs";
 import { StoryDetail } from "@tenzu/repository/story";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { ConfigAppService } from "../../../../config-app/config-app.service";
-import { StoryDetailCommentsComponent } from "./comment/comment-list/story-detail-comments.component";
+import { StoryDetailCommentsComponent } from "./story-detail-comments/story-detail-comments.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
@@ -117,8 +117,8 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
                   />
                   @if (hasModifyPermission) {
                     <div class="flex flex-row justify-end gap-2 py-4">
-                      <app-button-undo [translocoKey]="'workflow.detail_story.undo'" (click)="undo()" />
-                      <app-button-save [translocoKey]="'workflow.detail_story.save'" (click)="submit()" />
+                      <app-button-undo (click)="undo()" />
+                      <app-button-save (click)="save()" />
                     </div>
                   }
                 </form>
@@ -229,9 +229,8 @@ export default class StoryDetailComponent {
         }
       });
   }
-  async submit() {
-    const description = await this.editor().save();
-    const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
+  async save() {
+    const data = { ...this.form.getRawValue(), description: this.editor().jsonContent };
     await this.storyDetailFacade.patchSelectedStory(data);
     this.notificationService.success({ title: "notification.action.changes_saved" });
   }
