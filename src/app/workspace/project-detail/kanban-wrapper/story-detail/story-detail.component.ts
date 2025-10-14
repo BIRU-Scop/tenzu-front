@@ -21,14 +21,12 @@
 
 import { ChangeDetectionStrategy, Component, inject, input, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { DatePipe } from "@angular/common";
-import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
@@ -36,7 +34,6 @@ import { StoryDetailFacade } from "./story-detail.facade";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { MatTooltip } from "@angular/material/tooltip";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 import { StoryDetailAttachmentsComponent } from "./story-detail-attachments/story-detail-attachments.component";
@@ -55,6 +52,7 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
 import { StoryDetailCommentsComponent } from "./comment/comment-list/story-detail-comments.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-story-detail",
@@ -65,14 +63,10 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
     ReactiveFormsModule,
     TranslocoDirective,
     DatePipe,
-    MatIcon,
     MatExpansionModule,
-    MatIcon,
     ConfirmDirective,
     MatTableModule,
-    MatIconButton,
     MatDivider,
-    MatTooltip,
     StoryDetailMenuComponent,
     StoryDetailAttachmentsComponent,
     StoryStatusComponent,
@@ -82,6 +76,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
     ButtonSaveComponent,
     ButtonUndoComponent,
     StoryDetailCommentsComponent,
+    ButtonDeleteComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -160,10 +155,9 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
                     requiredPermission: ProjectPermissions.DELETE_STORY,
                   }"
                 >
-                  <button
-                    type="button"
-                    class="col-span-2"
-                    mat-icon-button
+                  <app-button-delete
+                    [translocoKey]="'workflow.detail_story.delete_story'"
+                    [iconOnly]="true"
                     appConfirm
                     [data]="{
                       deleteAction: true,
@@ -171,11 +165,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
                       message: t('confirm_delete_story_message'),
                     }"
                     (popupConfirm)="onDelete()"
-                    [attr.aria-label]="t('delete_story')"
-                    [matTooltip]="t('delete_story')"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                  ></app-button-delete>
                   <mat-divider></mat-divider>
                   @if (project && story) {
                     <app-story-detail-attachments

@@ -26,10 +26,11 @@ import { MatIcon } from "@angular/material/icon";
 import { TitleCasePipe } from "@angular/common";
 import { LevelType, IconName, ButtonType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: "app-button",
-  imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, TitleCasePipe],
+  imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, TitleCasePipe, MatTooltip],
   template: `
     @let _translocoKey = translocoKey();
     @let _iconName = iconName();
@@ -42,6 +43,7 @@ import { ButtonInterface } from "./button.interface";
           matIconButton
           [attr.aria-label]="t(_translocoKey)"
           [disabled]="disabled()"
+          [matTooltip]="t(_translocoKey)"
         >
           <mat-icon>{{ _iconName }}</mat-icon>
         </button>
