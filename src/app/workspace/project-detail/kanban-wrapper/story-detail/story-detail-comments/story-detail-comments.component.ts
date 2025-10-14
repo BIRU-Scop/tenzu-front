@@ -33,6 +33,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { StoryCommentComponent } from "./story-comment.component";
+import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-story-detail-comments",
@@ -46,6 +47,7 @@ import { StoryCommentComponent } from "./story-comment.component";
     ButtonSaveComponent,
     ButtonCancelComponent,
     StoryCommentComponent,
+    MatDivider,
   ],
   template: `
     <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
@@ -78,8 +80,11 @@ import { StoryCommentComponent } from "./story-comment.component";
           </mat-form-field>
         }
       </form>
-      @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id) {
+      @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
         <app-story-comment [comment]="comment" />
+        @if (!last) {
+          <mat-divider></mat-divider>
+        }
       }
     </div>
   `,

@@ -96,7 +96,9 @@
     },
     "comments": {
       "count": "{ totalComments, plural, =0 {# Comentario} one {# Comentario} other {# Comentarios} }",
-      "create_placeholder": "Escribir aquí un nuevo comentario"
+      "create_placeholder": "Escribir aquí un nuevo comentario",
+      "modified_at": ", modificado el {{date}}",
+      "deleted_comment": "[Comentario eliminado]"
     },
     "change_workflow": "Mover la historia a otro kanban",
     "delete_story": "Eliminar esta historia",
