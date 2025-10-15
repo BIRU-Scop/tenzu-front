@@ -36,6 +36,8 @@ import { StoryCommentComponent } from "./story-comment.component";
 import { MatDivider } from "@angular/material/divider";
 import { StoryCommentFacade } from "./story-comment.facade";
 import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.directive";
+import { StoryCommentSkeletonComponent } from "./story-comment-skeleton.component";
+import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: "app-story-detail-comments",
@@ -51,6 +53,7 @@ import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.dire
     StoryCommentComponent,
     MatDivider,
     EventOnVisibleDirective,
+    StoryCommentSkeletonComponent,
   ],
   template: `
     <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
@@ -86,6 +89,7 @@ import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.dire
       @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
         @if (last) {
           <app-story-comment
+            [@newCommentFlyIn]="storyCommentRepositoryService.entitiesSummary().length || 0"
             [comment]="comment"
             [storyDetail]="storyDetail()"
             appEventOnVisible
@@ -98,9 +102,27 @@ import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.dire
           <mat-divider></mat-divider>
         }
       }
+      @if (storyCommentRepositoryService.isLoading()) {
+        <app-story-comment-skeleton class="mb-4 cursor-progress"></app-story-comment-skeleton>
+      }
     </div>
   `,
   styles: ``,
+  animations: [
+    trigger("newCommentFlyIn", [
+      transition(":enter, * => 0, * => -1", []),
+      transition(":increment", [
+        query(
+          ":enter",
+          [
+            style({ opacity: 0, height: 0 }),
+            stagger(0, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
+          ],
+          { optional: true },
+        ),
+      ]),
+    ]),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailCommentsComponent {
@@ -134,6 +156,5 @@ export class StoryDetailCommentsComponent {
       projectId: this.projectDetail().id,
       ref: this.storyDetail().ref,
     });
-    // TODO add loading bar/skeleton element
   }
 }
