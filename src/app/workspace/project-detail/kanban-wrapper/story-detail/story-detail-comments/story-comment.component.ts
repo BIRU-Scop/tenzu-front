@@ -19,10 +19,9 @@
  *
  */
 
-import { AfterViewChecked, ChangeDetectionStrategy, Component, inject, input, signal, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, signal, viewChild } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StoryComment } from "@tenzu/repository/story-comment";
-import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { DatePipe } from "@angular/common";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
@@ -39,7 +38,6 @@ import { ReactiveFormsModule } from "@angular/forms";
   selector: "app-story-comment",
   imports: [
     TranslocoDirective,
-    SafeHtmlPipe,
     DatePipe,
     UserCardComponent,
     ButtonDeleteComponent,
@@ -78,6 +76,8 @@ import { ReactiveFormsModule } from "@angular/forms";
           <form class="flex flex-col gap-4 w-full" (submit)="$event.preventDefault()">
             <app-editor-block
               class="overflow-auto"
+              [class.!border-0]="!_editionMode"
+              [data]="_comment.text"
               [uploadFile]="undefined"
               [disabled]="!_editionMode"
               #commentEditorContainer
@@ -91,8 +91,9 @@ import { ReactiveFormsModule } from "@angular/forms";
           </form>
           @if (!_editionMode) {
             <div class="hidden group-hover:flex flex-row gap-2">
-              <app-button-edit [iconOnly]="true" (click)="onEdit()"></app-button-edit>
+              <app-button-edit class="h-fit" [iconOnly]="true" (click)="onEdit()"></app-button-edit>
               <app-button-delete
+                class="h-fit"
                 [iconOnly]="true"
                 appConfirm
                 [data]="{
@@ -109,7 +110,7 @@ import { ReactiveFormsModule } from "@angular/forms";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryCommentComponent implements AfterViewChecked {
+export class StoryCommentComponent {
   storyCommentFacade = inject(StoryCommentFacade);
 
   comment = input.required<StoryComment>();
@@ -117,12 +118,6 @@ export class StoryCommentComponent implements AfterViewChecked {
   editor = viewChild.required<EditorComponent>("commentEditorContainer");
 
   editionMode = signal(false);
-
-  async ngAfterViewChecked(): Promise<void> {
-    if (!this.comment().deletedAt) {
-      await this.editor().setHtmlContent(this.comment().text);
-    }
-  }
 
   onEdit() {
     this.editionMode.set(true);

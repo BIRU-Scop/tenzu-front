@@ -38,7 +38,7 @@ export class StoryCommentFacade {
   router = inject(Router);
 
   async create(editor: EditorComponent, project: ProjectDetail, story: StoryDetail) {
-    const data = { text: await editor.getHtmlContent() };
+    const data = { text: editor.jsonContent };
     await this.storyCommentRepositoryService.createRequest(
       data,
       {
@@ -57,7 +57,7 @@ export class StoryCommentFacade {
   }
 
   async update(editor: EditorComponent, comment: StoryComment) {
-    const data = { text: await editor.getHtmlContent() };
+    const data = { text: editor.jsonContent };
     await this.storyCommentRepositoryService.patchRequest(comment.id, data, {
       commentId: comment.id,
     });

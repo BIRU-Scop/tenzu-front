@@ -19,7 +19,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 
 @Component({
   selector: "app-editor-block",
-  template: `<div #editor></div>`,
+  template: `<div [class.disabled-editor]="disabled()" #editor></div>`,
   styles: `
     :host {
       box-sizing: border-box;
@@ -28,10 +28,10 @@ import { BlockNoteView } from "@blocknote/mantine";
       border-radius: 0.25rem;
       border-color: var(--mat-sys-outline);
       border-width: 1px;
-      &:hover {
+      &:hover:has(> :not(.disabled-editor)) {
         border-color: var(--mat-sys-on-primary);
       }
-      &:has(.ProseMirror-focused) {
+      &:has(.ProseMirror-focused):has(> :not(.disabled-editor)) {
         border-color: var(--mat-sys-primary);
         border-width: 2px;
         padding: calc(1em - 1px);
@@ -93,15 +93,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   public get jsonContent() {
     return JSON.stringify(this.editor?.document);
   }
-  public async getHtmlContent() {
-    return this.editor?.blocksToFullHTML(this.editor?.document);
-  }
-  public async setHtmlContent(htmlText: string) {
-    const blocks = await this.editor?.tryParseHTMLToBlocks(htmlText);
-    if (blocks) {
-      this.editor?.replaceBlocks(this.editor?.document, blocks);
-    }
-  }
+
   public undo() {
     this.editor?.undo();
   }
