@@ -19,12 +19,27 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { StoryComment } from "./story-comment.model";
 import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base";
+import { Story } from "@tenzu/repository/story";
 
+const initialState = {
+  currentStoryRef: null as Story["ref"] | null,
+  offset: 0 as number,
+  listIsComplete: false as boolean,
+};
 export const StoryCommentEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
-  withEntityListFeature<StoryComment>(),
+  withState(initialState),
+  withEntityListFeature<StoryComment, typeof initialState>({ initialState }),
+  withMethods((store) => ({
+    setCurrentStoryRef(storyRef: Story["ref"]) {
+      patchState(store, { currentStoryRef: storyRef });
+    },
+    updateListState(offset: number, listIsComplete: boolean) {
+      patchState(store, { offset, listIsComplete });
+    },
+  })),
 );
 export const StoryCommentDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<StoryComment>());

@@ -27,11 +27,13 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { UserNested } from "../user";
+import { ProjectSummary } from "@tenzu/repository/project";
+import { Workflow } from "@tenzu/repository/workflow";
 
 const selectId: SelectEntityId<Story> = (story) => story.ref;
 const initialState = {
-  currentProjectId: null as string | null,
-  currentWorkflowId: null as string | null,
+  currentProjectId: null as ProjectSummary["id"] | null,
+  currentWorkflowId: null as Workflow["id"] | null,
   groupedByStatus: {} as Record<Story["statusId"], Story["ref"][]>,
 };
 export const StoryEntitiesSummaryStore = signalStore(
@@ -39,7 +41,7 @@ export const StoryEntitiesSummaryStore = signalStore(
   withState(initialState),
   withEntityListFeature<Story, typeof initialState>({ initialState, selectId }),
   withMethods((store) => ({
-    setCurrentWorkflowId(projectId: string, workflowId: string) {
+    setCurrentWorkflowId(projectId: ProjectSummary["id"], workflowId: Workflow["id"]) {
       patchState(store, { currentProjectId: projectId, currentWorkflowId: workflowId });
     },
     reorder() {

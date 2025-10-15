@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, signal, viewChild } from "@angular/core";
 import { StoryDetail } from "@tenzu/repository/story";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
@@ -35,6 +35,7 @@ import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button
 import { StoryCommentComponent } from "./story-comment.component";
 import { MatDivider } from "@angular/material/divider";
 import { StoryCommentFacade } from "./story-comment.facade";
+import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.directive";
 
 @Component({
   selector: "app-story-detail-comments",
@@ -49,6 +50,7 @@ import { StoryCommentFacade } from "./story-comment.facade";
     ButtonCancelComponent,
     StoryCommentComponent,
     MatDivider,
+    EventOnVisibleDirective,
   ],
   template: `
     <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
@@ -82,8 +84,17 @@ import { StoryCommentFacade } from "./story-comment.facade";
         }
       </form>
       @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
-        <app-story-comment [comment]="comment" [storyDetail]="storyDetail()" />
-        @if (!last) {
+        @if (last) {
+          <app-story-comment
+            [comment]="comment"
+            [storyDetail]="storyDetail()"
+            appEventOnVisible
+            [debounceTime]="200"
+            [threshold]="0.3"
+            (visible)="loadMoreComments()"
+          />
+        } @else {
+          <app-story-comment [comment]="comment" [storyDetail]="storyDetail()" />
           <mat-divider></mat-divider>
         }
       }
@@ -103,19 +114,6 @@ export class StoryDetailCommentsComponent {
 
   createNewComment = signal(false);
 
-  constructor() {
-    effect(() => {
-      this.storyCommentRepositoryService.resetAll();
-      untracked(() =>
-        this.storyCommentRepositoryService
-          .listRequest({
-            projectId: this.storyDetail().projectId,
-            ref: this.storyDetail().ref,
-          })
-          .then(),
-      ).then();
-    });
-  }
   startCreate() {
     this.createNewComment.set(true);
   }
@@ -129,5 +127,13 @@ export class StoryDetailCommentsComponent {
   async create() {
     await this.storyCommentFacade.create(this.editor(), this.projectDetail(), this.storyDetail());
     this.stopCreate(true);
+  }
+
+  loadMoreComments() {
+    this.storyCommentRepositoryService.listRequest({
+      projectId: this.projectDetail().id,
+      ref: this.storyDetail().ref,
+    });
+    // TODO add loading bar/skeleton element
   }
 }

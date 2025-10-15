@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { StoryCommentApiService } from "./story-comment-api.service";
 import { StoryComment } from "./story-comment.model";
 import { StoryCommentDetailStore, StoryCommentEntitiesSummaryStore } from "./story-comment-entities.store";
@@ -29,6 +29,7 @@ import { QueryParams } from "@tenzu/repository/base/utils";
 import { lastValueFrom } from "rxjs";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { EntityId } from "@ngrx/signals/entities";
+import { Story } from "@tenzu/repository/story";
 
 @Injectable({
   providedIn: "root",
@@ -46,6 +47,8 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
   protected apiService = inject(StoryCommentApiService);
   protected entitiesSummaryStore = inject(StoryCommentEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryCommentDetailStore);
+
+  isLoading = signal(false);
 
   override async deleteRequest(
     item: StoryComment,
@@ -68,5 +71,26 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
       return this.updateEntitySummary(itemId, entity);
     }
     throw new NotFoundEntityError(`Entity ${itemId} not found`);
+  }
+
+  override async listRequest(
+    params: { projectId: Story["projectId"]; ref: Story["ref"] },
+    queryParams: { limit: number } = { limit: 10 },
+  ) {
+    if (this.entitiesSummaryStore.currentStoryRef() === params.ref && this.entitiesSummaryStore.listIsComplete()) {
+      return this.entitiesSummary();
+    }
+    this.entitiesSummaryStore.setCurrentStoryRef(params.ref);
+    this.isLoading.set(true);
+    let offset = this.entitiesSummaryStore.offset();
+
+    const comments = await lastValueFrom(this.apiService.list(params, { ...queryParams, offset }));
+    this.entitiesSummaryStore.addEntities(comments);
+
+    const complete = comments.length < queryParams.limit;
+    offset += queryParams.limit;
+    this.entitiesSummaryStore.updateListState(offset, complete);
+    this.isLoading.set(false);
+    return this.entitiesSummary();
   }
 }
