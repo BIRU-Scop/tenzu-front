@@ -192,9 +192,9 @@ export default class StoryDetailComponent {
   configAppService = inject(ConfigAppService);
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   storyDetailFacade = inject(StoryDetailFacade);
-  workflowService = this.storyDetailFacade.workflowService;
+  workflowService = this.storyDetailFacade.workflowRepositoryService;
   projectRepositoryService = inject(ProjectRepositoryService);
-  storyService = this.storyDetailFacade.storyService;
+  storyService = this.storyDetailFacade.storyRepositoryService;
   notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
   fb = inject(FormBuilder);

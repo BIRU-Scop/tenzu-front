@@ -98,6 +98,7 @@
       "count": "{ totalComments, plural, =0 {# Comment} one {# Comment} other {# Comments} }",
       "create_placeholder": "Type a new comment here",
       "modified_at": ", modified on {{date}}",
+      "deleted_at": ", deleted on {{date}}",
       "deleted_comment": "[Deleted comment]"
     },
     "change_workflow": "Move story to another kanban",

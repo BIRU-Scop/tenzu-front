@@ -145,4 +145,8 @@ export class StoryRepositoryService extends BaseRepositoryService<
   deleteStatusGroup(oldStatusId: string, newStatus: StatusSummary) {
     this.entitiesSummaryStore.deleteStatusGroup(oldStatusId, newStatus);
   }
+
+  updateCommentsCount(ref: Story["ref"], increment: number) {
+    this.entityDetailStore.updateCommentsCount(ref, increment);
+  }
 }

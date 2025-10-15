@@ -30,16 +30,16 @@ import { StoryRepositoryService } from "@tenzu/repository/story/story-repository
   providedIn: "root",
 })
 export class StoryDetailFacade {
-  projectService = inject(ProjectRepositoryService);
-  workflowService = inject(WorkflowRepositoryService);
-  storyService = inject(StoryRepositoryService);
+  projectRepositoryService = inject(ProjectRepositoryService);
+  workflowRepositoryService = inject(WorkflowRepositoryService);
+  storyRepositoryService = inject(StoryRepositoryService);
   router = inject(Router);
 
   async patchSelectedStory(data: Partial<StoryUpdate>) {
-    const project = this.projectService.entityDetail();
-    const story = this.storyService.entityDetail();
+    const project = this.projectRepositoryService.entityDetail();
+    const story = this.storyRepositoryService.entityDetail();
     if (project && story) {
-      return this.storyService.patchRequest(
+      return this.storyRepositoryService.patchRequest(
         story.ref,
         {
           ...data,
@@ -52,25 +52,25 @@ export class StoryDetailFacade {
   }
 
   async changeWorkflowSelectedStory(data: Partial<StoryUpdate>) {
-    const project = this.projectService.entityDetail();
-    const story = this.storyService.entityDetail();
+    const project = this.projectRepositoryService.entityDetail();
+    const story = this.storyRepositoryService.entityDetail();
     if (project && story) {
       const req = {
         ...data,
         version: story.version,
       };
       delete req.statusId;
-      return this.storyService.patchRequest(story.ref, { ...req }, { projectId: project.id, ref: story.ref });
+      return this.storyRepositoryService.patchRequest(story.ref, { ...req }, { projectId: project.id, ref: story.ref });
     }
     return undefined;
   }
 
   async deleteSelectedStory() {
-    const project = this.projectService.entityDetail();
-    const story = this.storyService.entityDetail();
-    const workflow = this.workflowService.entityDetail();
+    const project = this.projectRepositoryService.entityDetail();
+    const story = this.storyRepositoryService.entityDetail();
+    const workflow = this.workflowRepositoryService.entityDetail();
     if (project && story && workflow) {
-      await this.storyService.deleteRequest(story, { projectId: project.id, ref: story.ref });
+      await this.storyRepositoryService.deleteRequest(story, { projectId: project.id, ref: story.ref });
       await this.router.navigateByUrl(
         `/workspace/${project?.workspaceId}/project/${project.id}/kanban/${workflow.slug}`,
       );

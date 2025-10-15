@@ -34,6 +34,7 @@ import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-s
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { StoryCommentComponent } from "./story-comment.component";
 import { MatDivider } from "@angular/material/divider";
+import { StoryCommentFacade } from "./story-comment.facade";
 
 @Component({
   selector: "app-story-detail-comments",
@@ -81,7 +82,7 @@ import { MatDivider } from "@angular/material/divider";
         }
       </form>
       @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
-        <app-story-comment [comment]="comment" />
+        <app-story-comment [comment]="comment" [storyDetail]="storyDetail()" />
         @if (!last) {
           <mat-divider></mat-divider>
         }
@@ -92,6 +93,7 @@ import { MatDivider } from "@angular/material/divider";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailCommentsComponent {
+  storyCommentFacade = inject(StoryCommentFacade);
   storyCommentRepositoryService = inject(StoryCommentRepositoryService);
   notificationService = inject(NotificationService);
 
@@ -125,16 +127,7 @@ export class StoryDetailCommentsComponent {
   }
 
   async save() {
-    const data = { text: await this.editor().getHtmlContent() };
-    await this.storyCommentRepositoryService.createRequest(
-      data,
-      {
-        projectId: this.projectDetail().id,
-        ref: this.storyDetail().ref,
-      },
-      { prepend: true },
-    );
-    this.notificationService.success({ title: "notification.action.changes_saved" });
+    await this.storyCommentFacade.save(this.editor(), this.projectDetail(), this.storyDetail());
     this.stopCreate(true);
   }
 }

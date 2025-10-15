@@ -163,6 +163,17 @@ export const StoryDetailStore = signalStore(
         store.update(ref, { assigneeIds: removedAssigneeIds });
       }
     },
+    updateCommentsCount(ref: Story["ref"], increment: number) {
+      const story = store.item();
+      if (story && story.ref === ref) {
+        patchState(store, {
+          item: {
+            ...story,
+            totalComments: story.totalComments + increment,
+          },
+        });
+      }
+    },
   })),
 );
 

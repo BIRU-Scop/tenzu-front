@@ -25,6 +25,8 @@ import { StoryComment } from "./story-comment.model";
 import { StoryCommentDetailStore, StoryCommentEntitiesSummaryStore } from "./story-comment-entities.store";
 import { BaseRepositoryService } from "@tenzu/repository/base";
 import type * as StoryCommentApiServiceType from "./story-comment-api.type";
+import { QueryParams } from "@tenzu/repository/base/utils";
+import { lastValueFrom } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -42,4 +44,14 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
   protected apiService = inject(StoryCommentApiService);
   protected entitiesSummaryStore = inject(StoryCommentEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryCommentDetailStore);
+
+  override async deleteRequest(
+    item: StoryComment,
+    params: StoryCommentApiServiceType.DeleteEntityDetailParams,
+    queryParams?: QueryParams,
+  ): Promise<StoryComment> {
+    const deletedComment = await lastValueFrom(this.apiService.delete(params, queryParams));
+    // update to deleted state instead of fully deleting item
+    return this.updateEntityDetail(deletedComment);
+  }
 }

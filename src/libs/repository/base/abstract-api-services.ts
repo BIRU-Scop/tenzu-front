@@ -141,7 +141,7 @@ export abstract class AbstractApiServiceDetail<
       .pipe(map((dataObject) => dataObject.data));
   }
 
-  delete(params: DeleteParams, queryParams?: QueryParams): Observable<void> {
+  delete(params: DeleteParams, queryParams?: QueryParams): Observable<void | EntityDetailModel> {
     return this.http.delete<void>(this.deleteUrl(params), {
       params: queryParams ? makeOptions(queryParams) : {},
     });
