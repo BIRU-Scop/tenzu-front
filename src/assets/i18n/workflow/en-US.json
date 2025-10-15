@@ -99,7 +99,9 @@
       "create_placeholder": "Type a new comment here",
       "modified_at": ", modified on {{date}}",
       "deleted_at": ", deleted on {{date}}",
-      "deleted_comment": "[Deleted comment]"
+      "deleted_comment": "[Deleted comment]",
+      "confirm_remove_message_self": "Are you sure you want to delete your comment?",
+      "confirm_remove_message_other": "Are you sure you want to moderate this comment?"
     },
     "change_workflow": "Move story to another kanban",
     "delete_story": "Delete this story",

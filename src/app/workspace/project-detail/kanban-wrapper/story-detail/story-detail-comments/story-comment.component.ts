@@ -33,6 +33,7 @@ import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { ReactiveFormsModule } from "@angular/forms";
+import { UserStore } from "@tenzu/repository/user";
 
 @Component({
   selector: "app-story-comment",
@@ -51,6 +52,7 @@ import { ReactiveFormsModule } from "@angular/forms";
   template: `
     @let _comment = comment();
     @let _editionMode = editionMode();
+    @let myUser = userStore.myUser();
     <div *transloco="let t" class="flex flex-col gap-4 group">
       <div class="flex flex-row justify-between">
         <app-user-card
@@ -98,6 +100,10 @@ import { ReactiveFormsModule } from "@angular/forms";
                 appConfirm
                 [data]="{
                   deleteAction: true,
+                  message:
+                    myUser.id === _comment.createdBy?.id
+                      ? t('workflow.detail_story.comments.confirm_remove_message_self')
+                      : t('workflow.detail_story.comments.confirm_remove_message_other'),
                 }"
                 (popupConfirm)="onDelete(_comment)"
               ></app-button-delete>
@@ -112,6 +118,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 })
 export class StoryCommentComponent {
   storyCommentFacade = inject(StoryCommentFacade);
+  userStore = inject(UserStore);
 
   comment = input.required<StoryComment>();
   storyDetail = input.required<StoryDetail>();

@@ -99,7 +99,9 @@
       "create_placeholder": "Escribir aquí un nuevo comentario",
       "modified_at": ", modificado el {{date}}",
       "deleted_at": ", eliminado el {{date}}",
-      "deleted_comment": "[Comentario eliminado]"
+      "deleted_comment": "[Comentario eliminado]",
+      "confirm_remove_message_self": "¿Estás seguro de que quieres eliminar tu comentario?",
+      "confirm_remove_message_other": "¿Estás seguro de que quieres moderar este comentario?"
     },
     "change_workflow": "Mover la historia a otro kanban",
     "delete_story": "Eliminar esta historia",
