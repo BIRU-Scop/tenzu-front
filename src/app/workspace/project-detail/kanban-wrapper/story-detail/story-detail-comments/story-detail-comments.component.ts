@@ -60,11 +60,11 @@ import { StoryCommentFacade } from "./story-comment.facade";
             class="overflow-auto"
             [uploadFile]="undefined"
             [focus]="true"
-            #commentEditorContainer
+            #commentNewEditorContainer
           />
           <div class="flex flex-row justify-end gap-2 py-4">
             <app-button-cancel (click)="stopCreate(true)" />
-            <app-button-save (click)="save()" />
+            <app-button-save (click)="create()" />
           </div>
         } @else {
           <mat-form-field class="mat-form-field">
@@ -99,7 +99,7 @@ export class StoryDetailCommentsComponent {
 
   storyDetail = input.required<StoryDetail>();
   projectDetail = input.required<ProjectDetail>();
-  editor = viewChild.required<EditorComponent>("commentEditorContainer");
+  editor = viewChild.required<EditorComponent>("commentNewEditorContainer");
 
   createNewComment = signal(false);
 
@@ -126,8 +126,8 @@ export class StoryDetailCommentsComponent {
     }
   }
 
-  async save() {
-    await this.storyCommentFacade.save(this.editor(), this.projectDetail(), this.storyDetail());
+  async create() {
+    await this.storyCommentFacade.create(this.editor(), this.projectDetail(), this.storyDetail());
     this.stopCreate(true);
   }
 }

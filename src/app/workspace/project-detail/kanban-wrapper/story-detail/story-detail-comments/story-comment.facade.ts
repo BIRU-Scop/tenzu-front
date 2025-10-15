@@ -37,7 +37,7 @@ export class StoryCommentFacade {
   notificationService = inject(NotificationService);
   router = inject(Router);
 
-  async save(editor: EditorComponent, project: ProjectDetail, story: StoryDetail) {
+  async create(editor: EditorComponent, project: ProjectDetail, story: StoryDetail) {
     const data = { text: await editor.getHtmlContent() };
     await this.storyCommentRepositoryService.createRequest(
       data,
@@ -54,5 +54,13 @@ export class StoryCommentFacade {
   async delete(comment: StoryComment, story: StoryDetail) {
     await this.storyCommentRepositoryService.deleteRequest(comment, { commentId: comment.id });
     this.storyRepositoryService.updateCommentsCount(story.ref, -1);
+  }
+
+  async update(editor: EditorComponent, comment: StoryComment) {
+    const data = { text: await editor.getHtmlContent() };
+    await this.storyCommentRepositoryService.patchRequest(comment.id, data, {
+      commentId: comment.id,
+    });
+    this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 }

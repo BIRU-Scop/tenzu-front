@@ -27,6 +27,8 @@ import { BaseRepositoryService } from "@tenzu/repository/base";
 import type * as StoryCommentApiServiceType from "./story-comment-api.type";
 import { QueryParams } from "@tenzu/repository/base/utils";
 import { lastValueFrom } from "rxjs";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { EntityId } from "@ngrx/signals/entities";
 
 @Injectable({
   providedIn: "root",
@@ -53,5 +55,18 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
     const deletedComment = await lastValueFrom(this.apiService.delete(params, queryParams));
     // update to deleted state instead of fully deleting item
     return this.updateEntityDetail(deletedComment);
+  }
+
+  override async patchRequest(
+    itemId: EntityId,
+    partialData: Partial<StoryComment>,
+    params: StoryCommentApiServiceType.PatchEntityDetailParams,
+    queryParams?: QueryParams,
+  ): Promise<StoryComment> {
+    if (this.entitiesSummaryStore.entityMap()[itemId]) {
+      const entity = await lastValueFrom(this.apiService.patch(partialData, params, queryParams));
+      return this.updateEntitySummary(itemId, entity);
+    }
+    throw new NotFoundEntityError(`Entity ${itemId} not found`);
   }
 }

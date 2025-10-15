@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { AfterViewChecked, ChangeDetectionStrategy, Component, inject, input, signal, viewChild } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StoryComment } from "@tenzu/repository/story-comment";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
@@ -30,6 +30,10 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { ButtonEditComponent } from "@tenzu/shared/components/ui/button/button-edit.component";
 import { StoryDetail } from "@tenzu/repository/story";
 import { StoryCommentFacade } from "./story-comment.facade";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { EditorComponent } from "@tenzu/shared/components/editor";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-story-comment",
@@ -41,9 +45,14 @@ import { StoryCommentFacade } from "./story-comment.facade";
     ButtonDeleteComponent,
     ConfirmDirective,
     ButtonEditComponent,
+    ButtonCancelComponent,
+    ButtonSaveComponent,
+    EditorComponent,
+    ReactiveFormsModule,
   ],
   template: `
     @let _comment = comment();
+    @let _editionMode = editionMode();
     <div *transloco="let t" class="flex flex-col gap-4 group">
       <div class="flex flex-row justify-between">
         <app-user-card
@@ -60,27 +69,39 @@ import { StoryCommentFacade } from "./story-comment.facade";
           }
         </span>
       </div>
-      @if (_comment.deletedBy) {
+      @if (_comment.deletedAt) {
         <span class="italic ms-10 text-on-surface-variant">{{
           t("workflow.detail_story.comments.deleted_comment")
         }}</span>
       } @else {
-        <div class="flex flex-row justify-between w-full">
-          <div
-            class="ms-10 min-w-0 grow-0 text-wrap break-words whitespace-pre-wrap"
-            [innerHTML]="_comment.text | safeHtml"
-          ></div>
-          <div class="hidden group-hover:flex flex-row gap-2">
-            <app-button-edit [iconOnly]="true"></app-button-edit>
-            <app-button-delete
-              [iconOnly]="true"
-              appConfirm
-              [data]="{
-                deleteAction: true,
-              }"
-              (popupConfirm)="onDelete(_comment)"
-            ></app-button-delete>
-          </div>
+        <div class="flex flex-row justify-between w-full gap-2">
+          <form class="flex flex-col gap-4 w-full" (submit)="$event.preventDefault()">
+            <app-editor-block
+              class="overflow-auto"
+              [uploadFile]="undefined"
+              [disabled]="!_editionMode"
+              #commentEditorContainer
+            />
+            @if (_editionMode) {
+              <div class="flex flex-row justify-end gap-2 py-4">
+                <app-button-cancel (click)="cancelEdition()" />
+                <app-button-save (click)="save()" />
+              </div>
+            }
+          </form>
+          @if (!_editionMode) {
+            <div class="hidden group-hover:flex flex-row gap-2">
+              <app-button-edit [iconOnly]="true" (click)="onEdit()"></app-button-edit>
+              <app-button-delete
+                [iconOnly]="true"
+                appConfirm
+                [data]="{
+                  deleteAction: true,
+                }"
+                (popupConfirm)="onDelete(_comment)"
+              ></app-button-delete>
+            </div>
+          }
         </div>
       }
     </div>
@@ -88,13 +109,36 @@ import { StoryCommentFacade } from "./story-comment.facade";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryCommentComponent {
+export class StoryCommentComponent implements AfterViewChecked {
   storyCommentFacade = inject(StoryCommentFacade);
 
   comment = input.required<StoryComment>();
   storyDetail = input.required<StoryDetail>();
+  editor = viewChild.required<EditorComponent>("commentEditorContainer");
 
+  editionMode = signal(false);
+
+  async ngAfterViewChecked(): Promise<void> {
+    if (!this.comment().deletedAt) {
+      await this.editor().setHtmlContent(this.comment().text);
+    }
+  }
+
+  onEdit() {
+    this.editionMode.set(true);
+    this.editor().enableAndFocus();
+  }
   async onDelete(comment: StoryComment) {
     await this.storyCommentFacade.delete(comment, this.storyDetail());
+  }
+
+  cancelEdition() {
+    this.editor().undo();
+    this.editionMode.set(false);
+  }
+
+  async save() {
+    await this.storyCommentFacade.update(this.editor(), this.comment());
+    this.editionMode.set(false);
   }
 }

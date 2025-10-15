@@ -96,8 +96,20 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   public async getHtmlContent() {
     return this.editor?.blocksToFullHTML(this.editor?.document);
   }
+  public async setHtmlContent(htmlText: string) {
+    const blocks = await this.editor?.tryParseHTMLToBlocks(htmlText);
+    if (blocks) {
+      this.editor?.replaceBlocks(this.editor?.document, blocks);
+    }
+  }
   public undo() {
     this.editor?.undo();
+  }
+  public enableAndFocus() {
+    if (this.editor) {
+      this.editor.isEditable = true;
+      this.editor.focus();
+    }
   }
   public isEmpty() {
     return this.editor?.isEmpty;
