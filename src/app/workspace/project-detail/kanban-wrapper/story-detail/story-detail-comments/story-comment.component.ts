@@ -91,23 +91,35 @@ import { UserStore } from "@tenzu/repository/user";
               </div>
             }
           </form>
-          @if (!_editionMode) {
-            <div class="hidden group-hover:flex flex-row gap-2">
-              <app-button-edit class="h-fit" [iconOnly]="true" (click)="onEdit()"></app-button-edit>
-              <app-button-delete
-                class="h-fit"
-                [iconOnly]="true"
-                appConfirm
-                [data]="{
-                  deleteAction: true,
-                  message:
-                    myUser.id === _comment.createdBy?.id
-                      ? t('workflow.detail_story.comments.confirm_remove_message_self')
-                      : t('workflow.detail_story.comments.confirm_remove_message_other'),
-                }"
-                (popupConfirm)="onDelete(_comment)"
-              ></app-button-delete>
-            </div>
+          @if (hasModifyPermission() && !_editionMode) {
+            @if (myUser.id === _comment.createdBy?.id) {
+              <div class="hidden group-hover:flex flex-row gap-2">
+                <app-button-edit class="h-fit" [iconOnly]="true" (click)="onEdit()"></app-button-edit>
+                <app-button-delete
+                  class="h-fit"
+                  [iconOnly]="true"
+                  appConfirm
+                  [data]="{
+                    deleteAction: true,
+                    message: t('workflow.detail_story.comments.confirm_remove_message_self'),
+                  }"
+                  (popupConfirm)="onDelete(_comment)"
+                ></app-button-delete>
+              </div>
+            } @else if (hasModeratePermission()) {
+              <div class="hidden group-hover:flex flex-row gap-2">
+                <app-button-delete
+                  class="h-fit"
+                  [iconOnly]="true"
+                  appConfirm
+                  [data]="{
+                    deleteAction: true,
+                    message: t('workflow.detail_story.comments.confirm_remove_message_other'),
+                  }"
+                  (popupConfirm)="onDelete(_comment)"
+                ></app-button-delete>
+              </div>
+            }
           }
         </div>
       }
@@ -122,6 +134,8 @@ export class StoryCommentComponent {
 
   comment = input.required<StoryComment>();
   storyDetail = input.required<StoryDetail>();
+  hasModifyPermission = input(false);
+  hasModeratePermission = input(false);
   editor = viewChild.required<EditorComponent>("commentEditorContainer");
 
   editionMode = signal(false);

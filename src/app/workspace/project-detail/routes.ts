@@ -35,10 +35,17 @@ async function loadStoryComments(
   storyRef: number,
 ) {
   storyCommentRepositoryService.resetAll();
-  return storyCommentRepositoryService.listRequest({
-    projectId: projectId,
-    ref: storyRef,
-  });
+  return storyCommentRepositoryService
+    .listRequest({
+      projectId: projectId,
+      ref: storyRef,
+    })
+    .catch((error) => {
+      if (error instanceof HttpErrorResponse && error.status === 403) {
+        return;
+      }
+      throw error;
+    });
 }
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
