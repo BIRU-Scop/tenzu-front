@@ -134,6 +134,10 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
         }
         @if (storyCommentRepositoryService.isLoading()) {
           <app-story-comment-skeleton class="mb-4 cursor-progress"></app-story-comment-skeleton>
+        } @else if (storyCommentRepositoryService.listIsComplete()) {
+          <span class="sr-only">{{ t("workflow.detail_story.comments.loading_complete") }}</span>
+        } @else {
+          <span class="sr-only">{{ t("workflow.detail_story.comments.load_more_explanation") }}</span>
         }
       </div>
     </ng-container>

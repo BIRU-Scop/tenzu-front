@@ -101,7 +101,10 @@
       "deleted_at": ", eliminado el {{date}}",
       "deleted_comment": "[Comentario eliminado]",
       "confirm_remove_message_self": "¿Estás seguro de que quieres eliminar tu comentario?",
-      "confirm_remove_message_other": "¿Estás seguro de que quieres moderar este comentario?"
+      "confirm_remove_message_other": "¿Estás seguro de que quieres moderar este comentario?",
+      "loading": "Los comentarios se están cargando",
+      "loading_complete" : "Ha llegado al final de los comentarios",
+      "load_more_explanation": "Desplázate hasta el último comentario para cargar más",
     },
     "change_workflow": "Mover la historia a otro kanban",
     "delete_story": "Eliminar esta historia",

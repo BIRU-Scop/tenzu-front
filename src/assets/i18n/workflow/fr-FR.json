@@ -101,7 +101,10 @@
       "deleted_at": ", supprimé le {{date}}",
       "deleted_comment": "[Commentaire supprimé]",
       "confirm_remove_message_self": "Veux-tu vraiment supprimer ton commentaire ?",
-      "confirm_remove_message_other": "Veux-tu vraiment modérer ce commentaire ?"
+      "confirm_remove_message_other": "Veux-tu vraiment modérer ce commentaire ?",
+      "loading": "Les commentaires sont en train de charger",
+      "loading_complete" : "Tu as atteint la fin des commentaires",
+      "load_more_explanation": "Faite défiler jusqu'au dernier commentaire pour en charger davantage"
     },
     "change_workflow": "Déplacer la story vers un autre kanban",
     "delete_story": "Supprimer cette story",

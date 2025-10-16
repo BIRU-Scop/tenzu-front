@@ -20,12 +20,17 @@
  */
 
 import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
   selector: "app-story-comment-skeleton",
-  imports: [],
+  imports: [TranslocoDirective],
   template: `
-    <div class="flex flex-col gap-4 skeleton-container">
+    <div
+      *transloco="let t"
+      [attr.aria-label]="t('workflow.detail_story.comments.loading')"
+      class="flex flex-col gap-4 skeleton-container"
+    >
       <div class="flex flex-row items-center gap-2">
         <div class="skeleton-avatar skeleton-avatar-heavy"></div>
         <div class="skeleton-line skeleton-line-md max-w-40"></div>

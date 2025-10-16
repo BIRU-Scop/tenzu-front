@@ -48,6 +48,7 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
   protected entitiesSummaryStore = inject(StoryCommentEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryCommentDetailStore);
 
+  listIsComplete = this.entitiesSummaryStore.listIsComplete;
   isLoading = signal(false);
 
   override async deleteRequest(

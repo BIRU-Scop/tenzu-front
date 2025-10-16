@@ -101,7 +101,10 @@
       "deleted_at": ", deleted on {{date}}",
       "deleted_comment": "[Deleted comment]",
       "confirm_remove_message_self": "Are you sure you want to delete your comment?",
-      "confirm_remove_message_other": "Are you sure you want to moderate this comment?"
+      "confirm_remove_message_other": "Are you sure you want to moderate this comment?",
+      "loading": "Comments are loading",
+      "loading_complete" : "You have reached the end of the comments",
+      "load_more_explanation": "Scroll to the last comment to load more of them"
     },
     "change_workflow": "Move story to another kanban",
     "delete_story": "Delete this story",
