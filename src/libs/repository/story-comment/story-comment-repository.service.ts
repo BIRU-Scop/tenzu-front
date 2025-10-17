@@ -58,7 +58,8 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
   ): Promise<StoryComment> {
     const deletedComment = await lastValueFrom(this.apiService.delete(params, queryParams));
     // update to deleted state instead of fully deleting item
-    return this.updateEntityDetail(deletedComment);
+    this.updateEntitySummary(item.id, deletedComment);
+    return deletedComment;
   }
 
   override async patchRequest(

@@ -324,7 +324,7 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
     case StoryAttachmentEventType.CreateStoryAttachment: {
       const content = message.event.content as { attachment: StoryAttachment; ref: number };
       if (currentStoryDetail?.ref === content.ref) {
-        storyAttachmentRepositoryService.setEntitySummary(content.attachment);
+        storyAttachmentRepositoryService.setEntityDetail(content.attachment);
       }
       break;
     }
