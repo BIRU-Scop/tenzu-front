@@ -19,10 +19,10 @@
  *
  */
 
-import { Story } from "../story/story.model";
+import { StorySummary } from "../story/story.model";
 import { StoryComment } from "./story-comment.model";
 
-export type BaseParams = { projectId: Story["projectId"]; ref: Story["ref"] };
+export type BaseParams = { projectId: StorySummary["projectId"]; ref: StorySummary["ref"] };
 export type ListEntitiesSummaryParams = BaseParams;
 export type GetEntityDetailParams = { commentId: StoryComment["id"] };
 export type CreateEntityDetailParams = BaseParams;

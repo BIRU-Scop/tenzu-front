@@ -20,7 +20,7 @@
  */
 
 import { UserNested } from "../user";
-import { Story } from "../story";
+import { StorySummary } from "../story";
 import { ProjectDetail } from "../project";
 
 export type NotificationType =
@@ -49,7 +49,7 @@ export type NotificationCount = {
 export type StoryAssignNotification = NotificationBase & {
   type: "stories.assign";
   content: {
-    story: Story;
+    story: StorySummary;
     project: ProjectDetail;
     assignedBy: UserNested;
     assignedTo: UserNested;
@@ -58,7 +58,7 @@ export type StoryAssignNotification = NotificationBase & {
 export type StoryUnassignNotification = NotificationBase & {
   type: "stories.unassign";
   content: {
-    story: Story;
+    story: StorySummary;
     project: ProjectDetail;
     unassignedBy: UserNested;
     unassignedTo: UserNested;
@@ -67,7 +67,7 @@ export type StoryUnassignNotification = NotificationBase & {
 export type StoryStatusChangeNotification = NotificationBase & {
   type: "stories.status_change";
   content: {
-    story: Story;
+    story: StorySummary;
     project: ProjectDetail;
     status: string;
     changedBy: UserNested;
@@ -76,7 +76,7 @@ export type StoryStatusChangeNotification = NotificationBase & {
 export type StoryDeleteNotification = NotificationBase & {
   type: "stories.delete";
   content: {
-    story: Story;
+    story: StorySummary;
     project: ProjectDetail;
     deletedBy: UserNested;
   };
@@ -84,7 +84,7 @@ export type StoryDeleteNotification = NotificationBase & {
 export type StoryWorkflowChangeNotification = NotificationBase & {
   type: "stories.workflow_change";
   content: {
-    story: Story;
+    story: StorySummary;
     project: ProjectDetail;
     changedBy: UserNested;
     status: string;

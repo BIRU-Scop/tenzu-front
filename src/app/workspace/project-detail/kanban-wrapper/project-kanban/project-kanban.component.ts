@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
@@ -310,7 +310,7 @@ export class ProjectKanbanComponent {
   constructor() {
     this.breadcrumbStore.setPathComponent("projectKanban");
   }
-  trackByFn(index: number, item: Story["ref"]) {
+  trackByFn(index: number, item: StorySummary["ref"]) {
     return item;
   }
 
@@ -384,7 +384,7 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>, workflow: Workflow) {
+  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>, workflow: Workflow) {
     // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
     // so we use workarounds
     const [, index] = event.item.data;

@@ -23,7 +23,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { StoryApiService } from "./story-api.service";
 import { lastValueFrom } from "rxjs";
 import type * as StoryApiServiceType from "./story-api.type";
-import { Story, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
+import { StorySummary, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { StatusSummary } from "../status";
@@ -36,7 +36,7 @@ import { UserNested } from "@tenzu/repository/user";
   providedIn: "root",
 })
 export class StoryRepositoryService extends BaseRepositoryService<
-  Story,
+  StorySummary,
   StoryDetail,
   StoryApiServiceType.ListEntitiesSummaryParams,
   StoryApiServiceType.GetEntityDetailParams,
@@ -48,15 +48,15 @@ export class StoryRepositoryService extends BaseRepositoryService<
   protected apiService = inject(StoryApiService);
   protected entitiesSummaryStore = inject(StoryEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryDetailStore);
-  override getEntityIdFn = (story: Story) => story.ref;
+  override getEntityIdFn = (story: StorySummary) => story.ref;
   groupedByStatus = this.entitiesSummaryStore.groupedByStatus;
   isLoading = signal(false);
 
-  override setEntitySummary(item: Story) {
+  override setEntitySummary(item: StorySummary) {
     super.setEntitySummary(item);
     this.entitiesSummaryStore.reorder();
   }
-  override updateEntitySummary(ref: Story["ref"], partialItem: Partial<Story>): Story {
+  override updateEntitySummary(ref: StorySummary["ref"], partialItem: Partial<StorySummary>): StorySummary {
     const story = super.updateEntitySummary(ref, partialItem);
     this.entitiesSummaryStore.reorder();
     return story;
@@ -67,7 +67,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
   }
 
   override async listRequest(
-    params: { projectId: Story["projectId"]; workflowId: Workflow["id"] },
+    params: { projectId: StorySummary["projectId"]; workflowId: Workflow["id"] },
     queryParams: { limit: number; offset: number },
   ) {
     if (
@@ -108,24 +108,27 @@ export class StoryRepositoryService extends BaseRepositoryService<
       this.entityDetailStore.update(story.ref, { ...story, workflow: { ...workflow } });
     }
   }
-  async createAssign(user: UserNested, params: { projectId: StoryDetail["projectId"]; ref: Story["ref"] }) {
+  async createAssign(user: UserNested, params: { projectId: StoryDetail["projectId"]; ref: StorySummary["ref"] }) {
     const storyAssign: StoryAssign = await lastValueFrom(this.apiService.createAssignee(user.id, params));
     this.wsAddAssign(storyAssign, params.ref);
     return storyAssign;
   }
-  wsAddAssign(storyAssign: StoryAssign, ref: Story["ref"]) {
+  wsAddAssign(storyAssign: StoryAssign, ref: StorySummary["ref"]) {
     this.entitiesSummaryStore.addAssign(storyAssign, ref);
 
     this.entityDetailStore.addAssign(storyAssign);
   }
 
-  async deleteAssign(assignee: UserNested, params: { projectId: StoryDetail["projectId"]; storyRef: Story["ref"] }) {
+  async deleteAssign(
+    assignee: UserNested,
+    params: { projectId: StoryDetail["projectId"]; storyRef: StorySummary["ref"] },
+  ) {
     await lastValueFrom(
       this.apiService.deleteAssignee({ projectId: params.projectId, ref: params.storyRef, userId: assignee.id }),
     );
     this.wsRemoveAssign(params.storyRef, assignee.id);
   }
-  wsRemoveAssign(ref: Story["ref"], userId: UserNested["id"]) {
+  wsRemoveAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
     this.entitiesSummaryStore.removeAssign(ref, userId);
     this.entityDetailStore.removeAssign(ref, userId);
   }
@@ -134,8 +137,8 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
   async dropStoryIntoStatus(
-    event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>,
-    workflowId: Story["workflowId"],
+    event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>,
+    workflowId: StorySummary["workflowId"],
   ) {
     const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event);
     if (!payload) return;
@@ -146,7 +149,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entitiesSummaryStore.deleteStatusGroup(oldStatusId, newStatus);
   }
 
-  updateCommentsCount(ref: Story["ref"], increment: number) {
+  updateCommentsCount(ref: StorySummary["ref"], increment: number) {
     this.entityDetailStore.updateCommentsCount(ref, increment);
   }
 }

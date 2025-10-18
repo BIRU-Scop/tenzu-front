@@ -24,7 +24,7 @@ import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 import { ProjectDetail } from "@tenzu/repository/project";
 
-export type Story = {
+export type StorySummary = {
   ref: number;
   title: string;
   version: number;
@@ -35,15 +35,15 @@ export type Story = {
   assigneeIds: Array<User["id"]>;
 };
 
-export type StoryDetail = Story & {
+export type StoryDetail = StorySummary & {
   workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
   prev: null | {
-    ref: Story["ref"];
-    title: Story["title"];
+    ref: StorySummary["ref"];
+    title: StorySummary["title"];
   };
   next: null | {
-    ref: Story["ref"];
-    title: Story["title"];
+    ref: StorySummary["ref"];
+    title: StorySummary["title"];
   };
   createdBy?: Pick<User, "username" | "fullName" | "color">;
   createdAt: string;
@@ -56,22 +56,22 @@ export type StoryDetail = Story & {
 
 export type StoryReorder = {
   place: "after" | "before";
-  ref: Story["ref"];
+  ref: StorySummary["ref"];
 };
 export type StoryReorderPayload = {
   reorder?: StoryReorder;
-  statusId: Story["statusId"];
-  stories: Story["ref"][];
+  statusId: StorySummary["statusId"];
+  stories: StorySummary["ref"][];
 };
 export type StoryReorderPayloadEvent = StoryReorderPayload & {
   status: StatusSummary;
 };
 
-export type StoryCreate = Pick<Story, "title" | "statusId"> & Partial<Pick<Story, "description">>;
+export type StoryCreate = Pick<StorySummary, "title" | "statusId"> & Partial<Pick<StorySummary, "description">>;
 
 export type StoryUpdate = Partial<StoryDetail>;
 
 export type StoryAssign = {
   user: UserNested;
-  story: Pick<Story, "ref" | "title">;
+  story: Pick<StorySummary, "ref" | "title">;
 };

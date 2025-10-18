@@ -29,7 +29,7 @@ import { QueryParams } from "@tenzu/repository/base/utils";
 import { lastValueFrom } from "rxjs";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { EntityId } from "@ngrx/signals/entities";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 
 @Injectable({
   providedIn: "root",
@@ -76,7 +76,7 @@ export class StoryCommentRepositoryService extends BaseRepositoryService<
   }
 
   override async listRequest(
-    params: { projectId: Story["projectId"]; ref: Story["ref"] },
+    params: { projectId: StorySummary["projectId"]; ref: StorySummary["ref"] },
     queryParams: { limit: number } = { limit: 10 },
   ) {
     if (this.entitiesSummaryStore.currentStoryRef() === params.ref && this.entitiesSummaryStore.listIsComplete()) {

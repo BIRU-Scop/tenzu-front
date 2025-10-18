@@ -22,10 +22,10 @@
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { StoryComment } from "./story-comment.model";
 import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 
 const initialState = {
-  currentStoryRef: null as Story["ref"] | null,
+  currentStoryRef: null as StorySummary["ref"] | null,
   offset: 0 as number,
   listIsComplete: false as boolean,
 };
@@ -34,7 +34,7 @@ export const StoryCommentEntitiesSummaryStore = signalStore(
   withState(initialState),
   withEntityListFeature<StoryComment, typeof initialState>({ initialState }),
   withMethods((store) => ({
-    setCurrentStoryRef(storyRef: Story["ref"]) {
+    setCurrentStoryRef(storyRef: StorySummary["ref"]) {
       patchState(store, { currentStoryRef: storyRef });
     },
     updateListState(offset: number, listIsComplete: boolean) {
