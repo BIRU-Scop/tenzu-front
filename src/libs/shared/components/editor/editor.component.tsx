@@ -93,6 +93,10 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   public get jsonContent() {
     return JSON.stringify(this.editor?.document);
   }
+  public set jsonContent(content: string) {
+    const data = JSON.parse(content) as Block[];
+    this.editor?.replaceBlocks(this.editor?.document, data);
+  }
 
   public undo() {
     this.editor?.undo();

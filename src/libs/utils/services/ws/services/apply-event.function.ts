@@ -358,7 +358,14 @@ export function applyStoryCommentEvent(message: WSResponseEvent<unknown>) {
       }
       // eslint-disable-next-line no-fallthrough
       case StoryCommentEventType.UpdateStoryComment: {
-        storyCommentRepositoryService.updateEntitySummary(content.comment.id, content.comment);
+        try {
+          storyCommentRepositoryService.updateEntitySummary(content.comment.id, content.comment);
+        } catch (e) {
+          // This comment might not have been loaded if the user has not scrolled to it
+          if (!(e instanceof NotFoundEntityError) || storyCommentRepositoryService.listIsComplete()) {
+            throw e;
+          }
+        }
         break;
       }
     }

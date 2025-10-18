@@ -19,7 +19,17 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, signal, viewChild } from "@angular/core";
+import {
+  AfterViewChecked,
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Injector,
+  input,
+  runInInjectionContext,
+  signal,
+  viewChild,
+} from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StoryComment } from "@tenzu/repository/story-comment";
 import { DatePipe } from "@angular/common";
@@ -34,6 +44,9 @@ import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-s
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { ReactiveFormsModule } from "@angular/forms";
 import { UserStore } from "@tenzu/repository/user";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { skip } from "rxjs";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-story-comment",
@@ -128,7 +141,8 @@ import { UserStore } from "@tenzu/repository/user";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryCommentComponent {
+export class StoryCommentComponent implements AfterViewChecked {
+  injector = inject(Injector);
   storyCommentFacade = inject(StoryCommentFacade);
   userStore = inject(UserStore);
 
@@ -139,6 +153,19 @@ export class StoryCommentComponent {
   editor = viewChild.required<EditorComponent>("commentEditorContainer");
 
   editionMode = signal(false);
+
+  ngAfterViewChecked(): void {
+    runInInjectionContext(this.injector, () => {
+      toObservable(this.comment)
+        .pipe(
+          skip(1),
+          filter((comment) => !comment.deletedAt),
+        )
+        .subscribe((comment) => {
+          this.editor().jsonContent = comment.text;
+        });
+    });
+  }
 
   onEdit() {
     this.editionMode.set(true);
