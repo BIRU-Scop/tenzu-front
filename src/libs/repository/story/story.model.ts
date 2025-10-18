@@ -28,7 +28,7 @@ export type Story = {
   ref: number;
   title: string;
   version: number;
-  description: string;
+  description: string | null;
   workflowId: Workflow["id"];
   projectId: ProjectDetail["id"];
   statusId: StatusSummary["id"];

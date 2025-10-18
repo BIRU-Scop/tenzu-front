@@ -50,7 +50,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
         blockId?: string | undefined,
       ) => Promise<string | Record<string, any>>)
   >();
-  data = input<string>();
+  data = input<string | null>();
   focus = input(false);
   private root?: Root;
   private editor?: BlockNoteEditor;
