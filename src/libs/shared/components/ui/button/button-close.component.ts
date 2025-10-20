@@ -30,7 +30,7 @@ import { MatButtonAppearance } from "@angular/material/button";
   imports: [ButtonComponent],
   templateUrl: "./button-base.component.html",
   host: {
-    style: "display: inline-block",
+    class: "inline-block",
   },
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

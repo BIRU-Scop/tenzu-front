@@ -26,7 +26,7 @@ import { ButtonInterface } from "./button.interface";
 import { MatButtonAppearance } from "@angular/material/button";
 
 @Component({
-  selector: "app-button-save",
+  selector: "app-button-delete",
   imports: [ButtonComponent],
   templateUrl: "./button-base.component.html",
   host: {
@@ -35,12 +35,12 @@ import { MatButtonAppearance } from "@angular/material/button";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonSaveComponent implements ButtonInterface {
+export class ButtonDeleteComponent implements ButtonInterface {
   appearance = input<MatButtonAppearance>("filled");
-  level = input<LevelType>("tertiary");
-  translocoKey = input<string>("commons.save");
-  type = input<ButtonType>("submit");
-  iconName = input<IconName | undefined>("save");
+  level = input<LevelType>("error");
+  translocoKey = input<string>("commons.delete");
+  type = input<ButtonType>("button");
+  iconName = input<IconName | undefined>("delete");
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);
 }

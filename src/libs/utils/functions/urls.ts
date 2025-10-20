@@ -21,7 +21,7 @@
 
 import { ProjectLinkNested } from "@tenzu/repository/project";
 import { Workflow } from "@tenzu/repository/workflow";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { Role } from "@tenzu/repository/membership";
 
@@ -55,7 +55,7 @@ export function getWorkflowUrl(project: ProjectLink, slug: Workflow["slug"]) {
   return `${getWorkflowRootUrl(project)}/${slug}`;
 }
 
-export function getStoryDetailUrl(project: ProjectLink, ref: Story["ref"]) {
+export function getStoryDetailUrl(project: ProjectLink, ref: StorySummary["ref"]) {
   const urlParts = [`workspace`, project.workspaceId, "project", project.id, "story", ref];
   return `/${urlParts.join("/")}`;
 }

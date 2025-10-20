@@ -21,3 +21,4 @@
 
 export * from "./noop-value-accessor.directive";
 export * from "./permission.directive";
+export * from "./event-on-visible.directive";

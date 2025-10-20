@@ -169,6 +169,8 @@
     "cancel": "Annuler",
     "close": "Fermer",
     "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Éditer",
     "add": "Ajouter",
     "undo": "Annuler",
     "select_option": "Sélectionne une option"

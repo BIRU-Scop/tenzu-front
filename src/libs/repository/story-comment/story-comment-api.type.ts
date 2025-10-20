@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,6 +19,13 @@
  *
  */
 
-export type IconName = "save" | "add" | "undo" | "close" | "cancel" | "delete" | "edit";
-export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
-export type ButtonType = "submit" | "button" | "reset";
+import { StorySummary } from "../story/story.model";
+import { StoryComment } from "./story-comment.model";
+
+export type BaseParams = { projectId: StorySummary["projectId"]; ref: StorySummary["ref"] };
+export type ListEntitiesSummaryParams = BaseParams;
+export type GetEntityDetailParams = { commentId: StoryComment["id"] };
+export type CreateEntityDetailParams = BaseParams;
+export type PutEntityDetailParams = GetEntityDetailParams;
+export type PatchEntityDetailParams = GetEntityDetailParams;
+export type DeleteEntityDetailParams = GetEntityDetailParams;

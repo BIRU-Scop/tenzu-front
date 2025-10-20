@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 import { StatusSummary } from "@tenzu/repository/status";
 import { Router } from "@angular/router";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
@@ -61,7 +61,7 @@ export class ProjectKanbanService {
     await this.workflowService.editStatus(status);
   }
 
-  public async createStory(story: Pick<Story, "title" | "statusId">) {
+  public async createStory(story: Pick<StorySummary, "title" | "statusId">) {
     const selectedProject = this.projectService.entityDetail();
     const selectedWorkflow = this.workflowService.entityDetail();
     if (selectedProject && selectedWorkflow) {

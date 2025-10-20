@@ -30,6 +30,7 @@ import {
   ProjectRoleEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
+  StoryCommentEventType,
   StoryEventType,
   UserEventType,
   WorkflowEventType,
@@ -73,6 +74,7 @@ import { Role } from "@tenzu/repository/membership";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -324,7 +326,7 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
     case StoryAttachmentEventType.CreateStoryAttachment: {
       const content = message.event.content as { attachment: StoryAttachment; ref: number };
       if (currentStoryDetail?.ref === content.ref) {
-        storyAttachmentRepositoryService.setEntitySummary(content.attachment);
+        storyAttachmentRepositoryService.setEntityDetail(content.attachment);
       }
       break;
     }
@@ -334,6 +336,38 @@ export function applyStoryAttachmentEvent(message: WSResponseEvent<unknown>) {
         storyAttachmentRepositoryService.deleteEntitySummary(content.attachment.id);
       }
       break;
+    }
+  }
+}
+
+export function applyStoryCommentEvent(message: WSResponseEvent<unknown>) {
+  const storyCommentRepositoryService = inject(StoryCommentRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
+  const currentStoryDetail = storyRepositoryService.entityDetail();
+  const content = message.event.content as { comment: StoryComment; ref: number };
+  if (currentStoryDetail?.ref === content.ref) {
+    switch (message.event.type) {
+      case StoryCommentEventType.CreateStoryComment: {
+        storyCommentRepositoryService.setEntityDetail(content.comment, { prepend: true });
+        storyRepositoryService.updateCommentsCount(content.ref, 1);
+        break;
+      }
+      // @ts-expect-error FALLS THROUGH
+      case StoryCommentEventType.DeleteStoryComment: {
+        storyRepositoryService.updateCommentsCount(content.ref, -1);
+      }
+      // eslint-disable-next-line no-fallthrough
+      case StoryCommentEventType.UpdateStoryComment: {
+        try {
+          storyCommentRepositoryService.updateEntitySummary(content.comment.id, content.comment);
+        } catch (e) {
+          // This comment might not have been loaded if the user has not scrolled to it
+          if (!(e instanceof NotFoundEntityError) || storyCommentRepositoryService.listIsComplete()) {
+            throw e;
+          }
+        }
+        break;
+      }
     }
   }
 }

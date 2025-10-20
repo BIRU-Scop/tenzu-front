@@ -32,10 +32,10 @@ import {
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 
 export type ChooseWorkflowDialogData = {
-  currentWorkflowId: Story["workflowId"];
+  currentWorkflowId: StorySummary["workflowId"];
 };
 
 @Component({

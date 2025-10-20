@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
 
 @Component({
@@ -62,6 +62,6 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryCardComponent {
-  story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
+  story = input.required<Pick<StorySummary, "ref" | "title" | "projectId" | "assigneeIds">>();
   hasModifyPermission = input(false);
 }

@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
@@ -167,7 +167,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                     <ul
                       [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
                       [id]="status.id"
-                      class="flex flex-col items-center  min-h-28 h-full dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                      class="stories-list flex flex-col items-center dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                       cdkDropList
                       [cdkDropListData]="status"
                       [cdkDropListDisabled]="!hasModifyPermission || isLoading"
@@ -244,6 +244,12 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     .virtual-scroll {
       height: var(--tz-virtual-scroll-height);
     }
+    .stories-list {
+      min-height: var(--tz-virtual-scroll-height);
+    }
+    ::ng-deep.cdk-virtual-scroll-content-wrapper {
+      min-height: 100%;
+    }
   `,
   animations: [
     trigger("newStoryFlyIn", [
@@ -304,7 +310,7 @@ export class ProjectKanbanComponent {
   constructor() {
     this.breadcrumbStore.setPathComponent("projectKanban");
   }
-  trackByFn(index: number, item: Story["ref"]) {
+  trackByFn(index: number, item: StorySummary["ref"]) {
     return item;
   }
 
@@ -378,7 +384,7 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>, workflow: Workflow) {
+  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>, workflow: Workflow) {
     // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
     // so we use workarounds
     const [, index] = event.item.data;

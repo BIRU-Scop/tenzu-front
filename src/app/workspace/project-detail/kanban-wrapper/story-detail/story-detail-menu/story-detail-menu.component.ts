@@ -147,7 +147,7 @@ export class StoryDetailMenuComponent {
 
   relativeDialog = inject(RelativeDialogService);
   notificationService = inject(NotificationService);
-  storyDetailService = inject(StoryDetailFacade);
+  storyDetailFacade = inject(StoryDetailFacade);
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
   kanbanWrapperService = inject(KanbanWrapperService);
@@ -183,7 +183,7 @@ export class StoryDetailMenuComponent {
     });
     dialogRef.afterClosed().subscribe(async (newWorkflowId: string) => {
       if (newWorkflowId && newWorkflowId !== story?.workflow.id) {
-        const patchedStory = await this.storyDetailService.changeWorkflowSelectedStory({
+        const patchedStory = await this.storyDetailFacade.changeWorkflowSelectedStory({
           workflowId: newWorkflowId,
         });
         if (patchedStory) {

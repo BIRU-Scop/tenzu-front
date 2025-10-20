@@ -20,7 +20,7 @@
  */
 import type * as StoryApiServiceType from "./story-api.type";
 import { Injectable } from "@angular/core";
-import { Story, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayload, StoryUpdate } from "./story.model";
+import { StorySummary, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayload, StoryUpdate } from "./story.model";
 import { AbstractApiService } from "../base";
 import { UserNested } from "@tenzu/repository/user";
 import { Observable } from "rxjs";
@@ -31,7 +31,7 @@ import { map } from "rxjs/operators";
   providedIn: "root",
 })
 export class StoryApiService extends AbstractApiService<
-  Story,
+  StorySummary,
   StoryDetail,
   StoryApiServiceType.ListEntitiesSummaryParams,
   StoryApiServiceType.GetEntityDetailParams,
