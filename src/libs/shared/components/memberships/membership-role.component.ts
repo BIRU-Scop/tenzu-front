@@ -91,7 +91,9 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
   ngOnInit() {
     return this.roleControl.valueChanges.pipe(filterNotNull()).subscribe(async (value: Role["id"]) => {
       const membership = this.membership();
-      this.projectRoleRepositoryService.updateMembersCount(membership.roleId, value);
+      if (this.itemType() === "project") {
+        this.projectRoleRepositoryService.updateMembersCount(membership.roleId, value);
+      }
       await this.membershipRepositoryService().patchRequest(membership.id, {
         roleId: value,
       });
