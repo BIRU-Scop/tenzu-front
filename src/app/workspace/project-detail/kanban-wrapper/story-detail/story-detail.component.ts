@@ -113,6 +113,7 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
                     [resolveFileUrl]="resolveFileUrl()"
                     [uploadFile]="uploadFile(story)"
                     [disabled]="!hasModifyPermission"
+                    (validate)="save()"
                     #editorContainer
                   />
                   @if (hasModifyPermission) {

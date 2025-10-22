@@ -79,6 +79,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
               class="overflow-auto"
               [uploadFile]="undefined"
               [focus]="true"
+              (validate)="create()"
               #commentNewEditorContainer
             />
             <div class="flex flex-row justify-end gap-2 py-4">
