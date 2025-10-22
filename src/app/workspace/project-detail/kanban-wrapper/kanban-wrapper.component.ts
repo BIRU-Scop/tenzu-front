@@ -38,7 +38,7 @@ import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
   standalone: true,
   imports: [StoryDetailComponent],
   template: `
-    <app-story-detail class="overflow-hidden" [canBeClosed]="true" (closed)="dialogRef.close()"></app-story-detail>
+    <app-story-detail class="overflow-auto" [canBeClosed]="true" (closed)="dialogRef.close()"></app-story-detail>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

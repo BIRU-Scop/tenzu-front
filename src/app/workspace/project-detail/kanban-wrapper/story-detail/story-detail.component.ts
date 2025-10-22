@@ -113,6 +113,7 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
                     [resolveFileUrl]="resolveFileUrl()"
                     [uploadFile]="uploadFile(story)"
                     [disabled]="!hasModifyPermission"
+                    (validate)="save()"
                     #editorContainer
                   />
                   @if (hasModifyPermission) {
@@ -123,7 +124,15 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
                   }
                 </form>
                 <mat-divider></mat-divider>
-                <app-story-detail-comments [projectDetail]="project" [storyDetail]="story"></app-story-detail-comments>
+                <app-story-detail-comments
+                  *appHasPermission="{
+                    actualEntity: project,
+                    requiredPermission: ProjectPermissions.VIEW_COMMENT,
+                  }"
+                  class="pb-4"
+                  [projectDetail]="project"
+                  [storyDetail]="story"
+                ></app-story-detail-comments>
               </div>
               <div
                 class="basis-1/3 h-full min-w-0 overflow-y-auto flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"

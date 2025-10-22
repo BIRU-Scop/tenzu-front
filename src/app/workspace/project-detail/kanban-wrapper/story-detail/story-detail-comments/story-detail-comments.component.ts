@@ -38,7 +38,6 @@ import { StoryCommentFacade } from "./story-comment.facade";
 import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.directive";
 import { StoryCommentSkeletonComponent } from "./story-comment-skeleton.component";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
-import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 
@@ -57,90 +56,83 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
     MatDivider,
     EventOnVisibleDirective,
     StoryCommentSkeletonComponent,
-    HasPermissionDirective,
   ],
   template: `
     @let project = projectDetail();
-    <ng-container
-      *appHasPermission="{
-        actualEntity: project,
-        requiredPermission: ProjectPermissions.VIEW_COMMENT,
-      }"
-    >
-      <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
-        <p>{{ t("workflow.detail_story.comments.count", { totalComments: storyDetail().totalComments }) }}</p>
-        @let hasModifyPermission =
-          hasEntityRequiredPermission({
-            requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_COMMENT,
-            actualEntity: project,
-          });
-        @let hasModeratePermission =
-          hasEntityRequiredPermission({
-            requiredPermission: ProjectPermissions.MODERATE_COMMENT,
-            actualEntity: project,
-          });
-        @if (hasModifyPermission) {
-          <form class="flex flex-col gap-4" (submit)="$event.preventDefault()">
-            @if (createNewComment()) {
-              <app-editor-block
-                (focusout)="stopCreate(false)"
-                class="overflow-auto"
-                [uploadFile]="undefined"
-                [focus]="true"
-                #commentNewEditorContainer
-              />
-              <div class="flex flex-row justify-end gap-2 py-4">
-                <app-button-cancel (click)="stopCreate(true)" />
-                <app-button-save (click)="create()" />
-              </div>
-            } @else {
-              <mat-form-field class="mat-form-field">
-                <textarea
-                  [cdkTextareaAutosize]="false"
-                  [cdkAutosizeMinRows]="1"
-                  [cdkAutosizeMaxRows]="1"
-                  [style.resize]="'none'"
-                  matInput
-                  type="text"
-                  [placeholder]="t('workflow.detail_story.comments.create_placeholder')"
-                  (focus)="startCreate()"
-                ></textarea>
-              </mat-form-field>
-            }
-          </form>
-        }
-        @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
-          @if (last) {
-            <app-story-comment
-              [@newCommentFlyIn]="storyCommentRepositoryService.entitiesSummary().length || 0"
-              [comment]="comment"
-              [storyDetail]="storyDetail()"
-              [hasModifyPermission]="hasModifyPermission"
-              [hasModeratePermission]="hasModeratePermission"
-              appEventOnVisible
-              [debounceTime]="200"
-              [threshold]="0.3"
-              (visible)="loadMoreComments()"
+    <div *transloco="let t" class="font-medium text-on-background flex flex-col gap-4">
+      <p>{{ t("workflow.detail_story.comments.count", { totalComments: storyDetail().totalComments }) }}</p>
+      @let hasModifyPermission =
+        hasEntityRequiredPermission({
+          requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_COMMENT,
+          actualEntity: project,
+        });
+      @let hasModeratePermission =
+        hasEntityRequiredPermission({
+          requiredPermission: ProjectPermissions.MODERATE_COMMENT,
+          actualEntity: project,
+        });
+      @if (hasModifyPermission) {
+        <form class="flex flex-col gap-4" (submit)="$event.preventDefault()">
+          @if (createNewComment()) {
+            <app-editor-block
+              (focusout)="stopCreate(false)"
+              class="overflow-auto"
+              [uploadFile]="undefined"
+              [focus]="true"
+              (validate)="create()"
+              #commentNewEditorContainer
             />
+            <div class="flex flex-row justify-end gap-2 py-4">
+              <app-button-cancel (click)="stopCreate(true)" />
+              <app-button-save (click)="create()" />
+            </div>
           } @else {
-            <app-story-comment
-              [comment]="comment"
-              [storyDetail]="storyDetail()"
-              [hasModifyPermission]="hasModifyPermission"
-              [hasModeratePermission]="hasModeratePermission"
-            />
-            <mat-divider></mat-divider>
+            <mat-form-field class="mat-form-field">
+              <textarea
+                [cdkTextareaAutosize]="false"
+                [cdkAutosizeMinRows]="1"
+                [cdkAutosizeMaxRows]="1"
+                [style.resize]="'none'"
+                matInput
+                type="text"
+                [placeholder]="t('workflow.detail_story.comments.create_placeholder')"
+                (focus)="startCreate()"
+              ></textarea>
+            </mat-form-field>
           }
-        }
-        @if (storyCommentRepositoryService.isLoading()) {
-          <app-story-comment-skeleton class="mb-4 cursor-progress"></app-story-comment-skeleton>
-        } @else if (storyCommentRepositoryService.listIsComplete()) {
-          <span class="sr-only">{{ t("workflow.detail_story.comments.loading_complete") }}</span>
+        </form>
+      }
+      @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
+        @if (last) {
+          <app-story-comment
+            [@newCommentFlyIn]="storyCommentRepositoryService.entitiesSummary().length || 0"
+            [comment]="comment"
+            [storyDetail]="storyDetail()"
+            [hasModifyPermission]="hasModifyPermission"
+            [hasModeratePermission]="hasModeratePermission"
+            appEventOnVisible
+            [debounceTime]="200"
+            [threshold]="0.3"
+            (visible)="loadMoreComments()"
+          />
         } @else {
-          <span class="sr-only">{{ t("workflow.detail_story.comments.load_more_explanation") }}</span>
+          <app-story-comment
+            [comment]="comment"
+            [storyDetail]="storyDetail()"
+            [hasModifyPermission]="hasModifyPermission"
+            [hasModeratePermission]="hasModeratePermission"
+          />
+          <mat-divider></mat-divider>
         }
-      </div>
-    </ng-container>
+      }
+      @if (storyCommentRepositoryService.isLoading()) {
+        <app-story-comment-skeleton class="mb-4 cursor-progress"></app-story-comment-skeleton>
+      } @else if (storyCommentRepositoryService.listIsComplete()) {
+        <span class="sr-only">{{ t("workflow.detail_story.comments.loading_complete") }}</span>
+      } @else {
+        <span class="sr-only">{{ t("workflow.detail_story.comments.load_more_explanation") }}</span>
+      }
+    </div>
   `,
   styles: ``,
   animations: [

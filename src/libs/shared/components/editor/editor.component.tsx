@@ -6,6 +6,7 @@ import {
   input,
   OnChanges,
   OnDestroy,
+  output,
   SimpleChanges,
   viewChild,
 } from "@angular/core";
@@ -19,7 +20,12 @@ import { BlockNoteView } from "@blocknote/mantine";
 
 @Component({
   selector: "app-editor-block",
-  template: `<div [class.disabled-editor]="disabled()" #editor></div>`,
+  template: ` <div
+    (keydown.control.enter)="validate.emit()"
+    (keydown.meta.enter)="validate.emit()"
+    [class.disabled-editor]="disabled()"
+    #editor
+  ></div>`,
   styles: `
     :host {
       box-sizing: border-box;
@@ -52,6 +58,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   >();
   data = input<string | null>();
   focus = input(false);
+  validate = output();
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
