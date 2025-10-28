@@ -16,7 +16,6 @@
     "title": "Project settings",
     "permissions": {
       "title": "Permissions",
-      "hint_permission": "For each category, selecting a permission necessarily induces the permissions above it",
       "empty_permission": "You must select at least one permission to create a role",
       "no_permission": "No permission",
       "name_required": "The name is required",
@@ -63,7 +62,6 @@
       "comment":{
         "label": "Comment",
         "no_story_permissions": "to give a comment permission you must set a story permission",
-        "coming_soon": "Feature coming soon",
         "view_comment": "View",
         "create_modify_delete_comment": "View / Create / Modify / Delete",
         "moderate_comment": "View / Create / Modify / Delete / Moderate"
