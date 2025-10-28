@@ -25,7 +25,7 @@ import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
-import { makeOptions, QueryParams, retryWhenErrors } from "./utils";
+import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, JsonObject } from "./misc.model";
 
 type OptionRequest = {
@@ -80,10 +80,7 @@ export abstract class AbstractApiServiceDetail<
       .get<BaseDataModel<EntityDetailModel>>(this.getUrl(params), {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(
-        retryWhenErrors(),
-        map((dataObject) => dataObject.data),
-      );
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   patch(
@@ -102,10 +99,7 @@ export abstract class AbstractApiServiceDetail<
       .patch<BaseDataModel<EntityDetailModel>>(this.patchUrl(params), data, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(
-        retryWhenErrors(),
-        map((dataObject) => dataObject.data),
-      );
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   put(
@@ -124,10 +118,7 @@ export abstract class AbstractApiServiceDetail<
       .put<BaseDataModel<EntityDetailModel>>(this.putUrl(params), data, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(
-        retryWhenErrors(),
-        map((dataObject) => dataObject.data),
-      );
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   create(
@@ -147,18 +138,13 @@ export abstract class AbstractApiServiceDetail<
       .post<BaseDataModel<EntityDetailModel>>(url, data, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(
-        retryWhenErrors(),
-        map((dataObject) => dataObject.data),
-      );
+      .pipe(map((dataObject) => dataObject.data));
   }
 
   delete(params: DeleteParams, queryParams?: QueryParams): Observable<void | EntityDetailModel> {
-    return this.http
-      .delete<void>(this.deleteUrl(params), {
-        params: queryParams ? makeOptions(queryParams) : {},
-      })
-      .pipe(retryWhenErrors());
+    return this.http.delete<void>(this.deleteUrl(params), {
+      params: queryParams ? makeOptions(queryParams) : {},
+    });
   }
 }
 
@@ -182,10 +168,7 @@ export abstract class AbstractApiService<
       .get<BaseDataModel<EntityListModel[]>>(url, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(
-        retryWhenErrors(),
-        map((dataObject) => dataObject.data),
-      );
+      .pipe(map((dataObject) => dataObject.data));
   }
 }
 
