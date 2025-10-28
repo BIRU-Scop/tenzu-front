@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,9 +22,7 @@
 @use '@angular/material' as mat;
 
 .mat-mdc-tooltip-surface {
-  box-shadow: var(--mat-sys-level3);
-  border: 1px solid var(--mat-sys-outline);
-  border-bottom-width: 2px;
+  border-radius: 4px !important;
 }
 
 @mixin tokens-overrides() {

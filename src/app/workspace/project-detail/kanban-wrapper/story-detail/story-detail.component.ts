@@ -256,7 +256,11 @@ export default class StoryDetailComponent {
 
   resolveFileUrl() {
     const httpClient = this.httpClient;
+    const baseUrl = this.configAppService.apiUrl();
     return async (url: string) => {
+      if (!url.startsWith(baseUrl)) {
+        return url;
+      }
       const file = await lastValueFrom(httpClient.get(url, { responseType: "blob" }));
       return URL.createObjectURL(file);
     };

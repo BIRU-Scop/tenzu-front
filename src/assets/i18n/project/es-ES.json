@@ -16,7 +16,6 @@
     "title": "Configuración del proyecto",
     "permissions": {
       "title": "Permisos",
-      "hint_permission": "Para cada categoría, seleccionar un permiso implica necesariamente los permisos superiores a él",
       "empty_permission": "Debe seleccionar al menos un permiso para crear un rol",
       "no_permission": "Sin permisos",
       "name_required": "Por favor, introduce un nombre",
@@ -63,7 +62,6 @@
       "comment":{
         "label": "Comentario",
         "no_story_permissions": "Para conceder permiso para comentar, debes establecer un permiso de historia",
-        "coming_soon": "Función disponible próximamente",
         "view_comment": "Ver",
         "create_modify_delete_comment": "Ver / Crear / Modificar / Eliminar",
         "moderate_comment": "Ver / Crear / Modificar / Eliminar / Moderar"

@@ -25,8 +25,8 @@ import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
-import { QueryParams, makeOptions } from "./utils";
-import { BaseDataModel, JsonObject } from "@tenzu/repository/base/misc.model";
+import { makeOptions, QueryParams } from "./utils";
+import { BaseDataModel, JsonObject } from "./misc.model";
 
 type OptionRequest = {
   dataIsFormData?: boolean;
