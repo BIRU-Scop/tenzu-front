@@ -21,14 +21,12 @@
 
 import { ChangeDetectionStrategy, Component, inject, input, output, viewChild } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { DatePipe } from "@angular/common";
-import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
@@ -36,7 +34,6 @@ import { StoryDetailFacade } from "./story-detail.facade";
 import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
 import { MatDivider } from "@angular/material/divider";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { MatTooltip } from "@angular/material/tooltip";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 import { StoryDetailAttachmentsComponent } from "./story-detail-attachments/story-detail-attachments.component";
@@ -52,31 +49,34 @@ import { lastValueFrom } from "rxjs";
 import { StoryDetail } from "@tenzu/repository/story";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { ConfigAppService } from "../../../../config-app/config-app.service";
+import { StoryDetailCommentsComponent } from "./story-detail-comments/story-detail-comments.component";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-story-detail",
   imports: [
     UserCardComponent,
-    MatButton,
     MatFormField,
     MatInput,
     ReactiveFormsModule,
     TranslocoDirective,
     DatePipe,
-    MatIcon,
     MatExpansionModule,
-    MatIcon,
     ConfirmDirective,
     MatTableModule,
-    MatIconButton,
     MatDivider,
-    MatTooltip,
     StoryDetailMenuComponent,
     StoryDetailAttachmentsComponent,
     StoryStatusComponent,
     StoryAssigneeComponent,
     HasPermissionDirective,
     EditorComponent,
+    ButtonSaveComponent,
+    ButtonUndoComponent,
+    StoryDetailCommentsComponent,
+    ButtonDeleteComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -102,29 +102,38 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
               (closed)="closed.emit()"
             ></app-story-detail-menu>
             <div class="flex flex-row gap-2 h-5/6">
-              <form [formGroup]="form" class="basis-2/3 flex flex-col p-4 min-w-0">
-                <mat-form-field appearance="fill" class="title-field">
-                  <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
-                </mat-form-field>
-                <app-editor-block
-                  class="overflow-auto editor"
-                  [data]="story.description"
-                  [resolveFileUrl]="resolveFileUrl()"
-                  [uploadFile]="uploadFile(story)"
-                  [disabled]="!hasModifyPermission"
-                  #editorContainer
-                />
-                @if (hasModifyPermission) {
-                  <div class="flex flex-row justify-end gap-2 py-4">
-                    <button class="secondary-button" mat-flat-button type="button" (click)="undo()">
-                      {{ t("undo") }}
-                    </button>
-                    <button class="tertiary-button" mat-flat-button type="submit" (click)="submit()">
-                      {{ t("save") }}
-                    </button>
-                  </div>
-                }
-              </form>
+              <div class="basis-2/3 flex flex-col p-4 min-w-0 gap-4">
+                <form [formGroup]="form" class="flex flex-col h-full gap-4">
+                  <mat-form-field appearance="fill" class="title-field">
+                    <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
+                  </mat-form-field>
+                  <app-editor-block
+                    class="overflow-auto"
+                    [data]="story.description"
+                    [resolveFileUrl]="resolveFileUrl()"
+                    [uploadFile]="uploadFile(story)"
+                    [disabled]="!hasModifyPermission"
+                    (validate)="save()"
+                    #editorContainer
+                  />
+                  @if (hasModifyPermission) {
+                    <div class="flex flex-row justify-end gap-2 py-4">
+                      <app-button-undo (click)="undo()" />
+                      <app-button-save (click)="save()" />
+                    </div>
+                  }
+                </form>
+                <mat-divider></mat-divider>
+                <app-story-detail-comments
+                  *appHasPermission="{
+                    actualEntity: project,
+                    requiredPermission: ProjectPermissions.VIEW_COMMENT,
+                  }"
+                  class="pb-4"
+                  [projectDetail]="project"
+                  [storyDetail]="story"
+                ></app-story-detail-comments>
+              </div>
               <div
                 class="basis-1/3 h-full min-w-0 overflow-y-auto flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"
               >
@@ -136,32 +145,28 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                       [avatarName]="story.createdBy?.fullName || ''"
                       [subtext]="story.createdAt | date: 'short'"
                       [color]="story.createdBy?.color || 0"
-                    ></app-user-card>
+                    />
                   </div>
-                  <app-story-status
-                    [storyDetail]="story"
-                    [hasModifyPermission]="hasModifyPermission"
-                  ></app-story-status>
+                  <app-story-status [storyDetail]="story" [hasModifyPermission]="hasModifyPermission" />
                   <div class="flex flex-row gap-4">
                     <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
                     <app-story-assignee
                       [story]="story"
                       [hasModifyPermission]="hasModifyPermission"
                       [config]="{ relativeXPosition: 'left' }"
-                    ></app-story-assignee>
+                    />
                   </div>
                 </div>
-                <mat-divider></mat-divider>
+                <mat-divider />
                 <ng-container
                   *appHasPermission="{
                     actualEntity: project,
                     requiredPermission: ProjectPermissions.DELETE_STORY,
                   }"
                 >
-                  <button
-                    type="button"
-                    class="col-span-2"
-                    mat-icon-button
+                  <app-button-delete
+                    [translocoKey]="'workflow.detail_story.delete_story'"
+                    [iconOnly]="true"
                     appConfirm
                     [data]="{
                       deleteAction: true,
@@ -169,16 +174,11 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
                       message: t('confirm_delete_story_message'),
                     }"
                     (popupConfirm)="onDelete()"
-                    [attr.aria-label]="t('delete_story')"
-                    [matTooltip]="t('delete_story')"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                  ></app-button-delete>
                   <mat-divider></mat-divider>
-                  @let projectDetail = projectKanbanService.projectService.entityDetail();
-                  @if (projectDetail && story) {
+                  @if (project && story) {
                     <app-story-detail-attachments
-                      [projectDetail]="projectDetail"
+                      [projectDetail]="project"
                       [storyDetail]="story"
                       [hasModifyPermission]="hasModifyPermission"
                     ></app-story-detail-attachments>
@@ -191,15 +191,7 @@ import { ConfigAppService } from "../../../../config-app/config-app.service";
       </ng-container>
     }
   `,
-  styles: `
-    .editor {
-      padding: 1em;
-      border-style: solid;
-      border-color: var(--mat-sys-outline);
-      border-width: 1px;
-      border-top: 0;
-    }
-  `,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class StoryDetailComponent {
@@ -209,9 +201,9 @@ export default class StoryDetailComponent {
   configAppService = inject(ConfigAppService);
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   storyDetailFacade = inject(StoryDetailFacade);
-  workflowService = this.storyDetailFacade.workflowService;
+  workflowService = this.storyDetailFacade.workflowRepositoryService;
   projectRepositoryService = inject(ProjectRepositoryService);
-  storyService = this.storyDetailFacade.storyService;
+  storyService = this.storyDetailFacade.storyRepositoryService;
   notificationService = inject(NotificationService);
   projectKanbanService = inject(ProjectKanbanService);
   fb = inject(FormBuilder);
@@ -246,9 +238,8 @@ export default class StoryDetailComponent {
         }
       });
   }
-  async submit() {
-    const description = await this.editor().save();
-    const data = { ...this.form.getRawValue(), description: JSON.stringify(description) };
+  async save() {
+    const data = { ...this.form.getRawValue(), description: this.editor().jsonContent };
     await this.storyDetailFacade.patchSelectedStory(data);
     this.notificationService.success({ title: "notification.action.changes_saved" });
   }
@@ -265,7 +256,11 @@ export default class StoryDetailComponent {
 
   resolveFileUrl() {
     const httpClient = this.httpClient;
+    const baseUrl = this.configAppService.apiUrl();
     return async (url: string) => {
+      if (!url.startsWith(baseUrl)) {
+        return url;
+      }
       const file = await lastValueFrom(httpClient.get(url, { responseType: "blob" }));
       return URL.createObjectURL(file);
     };

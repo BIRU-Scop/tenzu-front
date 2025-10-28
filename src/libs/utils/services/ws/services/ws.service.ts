@@ -43,6 +43,7 @@ import {
   applyProjectRoleEventType,
   applyStoryAssignmentEvent,
   applyStoryAttachmentEvent,
+  applyStoryCommentEvent,
   applyStoryEvent,
   applyUserEvent,
   applyWorkflowEvent,
@@ -236,6 +237,10 @@ export class WsService {
         }
         case FamilyEventType.StoryAttachment: {
           applyStoryAttachmentEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryComment: {
+          applyStoryCommentEvent(message);
           break;
         }
         case FamilyEventType.Project: {

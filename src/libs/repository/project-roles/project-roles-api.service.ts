@@ -50,7 +50,7 @@ export class ProjectRolesApiService extends AbstractApiService<
   override delete(
     params: ProjectRolesApiServiceType.DeleteEntityDetailParams,
     queryParams?: { moveTo: ProjectRoleDetail["id"] },
-  ): Observable<void> {
+  ): Observable<void | ProjectRoleDetail> {
     return super.delete(params, queryParams);
   }
 }

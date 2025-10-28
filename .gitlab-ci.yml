@@ -32,14 +32,18 @@ include:
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       fetch-args: "origin --no-tags"
+      rules:
+        - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\).*/'
+          when: never
+        - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"'
   - component: $CI_SERVER_FQDN/biru/component/push@v1.16.0
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
-      job-name: mirror-demo-tags
-      push-args: "origin HEAD:refs/tags/$CI_COMMIT_REF_SLUG"
+      job-name: mirror-tags
+      push-args: "origin HEAD:refs/tags/$CI_COMMIT_REF_NAME"
       fetch-args: "origin --no-tags"
       rules:
-        - if: $CI_COMMIT_TAG =~ /^.*-demo.*/
+        - if: $CI_COMMIT_TAG
   # test
   - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.16.0
     inputs:

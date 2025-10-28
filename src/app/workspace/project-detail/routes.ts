@@ -27,10 +27,31 @@ import { debug } from "@tenzu/utils/functions/logging";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { KanbanWrapperService } from "./kanban-wrapper/kanban-wrapper.service";
+import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
+
+async function loadStoryComments(
+  storyCommentRepositoryService: StoryCommentRepositoryService,
+  projectId: string,
+  storyRef: number,
+) {
+  storyCommentRepositoryService.resetAll();
+  return storyCommentRepositoryService
+    .listRequest({
+      projectId: projectId,
+      ref: storyRef,
+    })
+    .catch((error) => {
+      if (error instanceof HttpErrorResponse && error.status === 403) {
+        return;
+      }
+      throw error;
+    });
+}
 
 export function storyResolver(route: ActivatedRouteSnapshot) {
   const workflowRepositoryService = inject(WorkflowRepositoryService);
   const storyRepositoryService = inject(StoryRepositoryService);
+  const storyCommentRepositoryService = inject(StoryCommentRepositoryService);
   const router = inject(Router);
   const projectId = route.paramMap.get("projectId");
   const storyRef = parseInt(route.paramMap.get("ref") || "", 10);
@@ -42,6 +63,7 @@ export function storyResolver(route: ActivatedRouteSnapshot) {
     storyRepositoryService
       .getRequest({ projectId, ref: storyRef })
       .then((story) => {
+        loadStoryComments(storyCommentRepositoryService, projectId, storyRef).then();
         const oldWorkflowDetail = workflowRepositoryService.entityDetail();
         if (oldWorkflowDetail?.id != story.workflowId) {
           workflowRepositoryService.resetEntityDetail();

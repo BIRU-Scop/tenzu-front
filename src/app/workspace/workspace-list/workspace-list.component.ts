@@ -34,8 +34,6 @@ import { ProjectNested, ProjectRepositoryService } from "@tenzu/repository/proje
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
-import { MatIcon } from "@angular/material/icon";
-import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
@@ -44,103 +42,87 @@ import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-workspace-list",
   imports: [
     WorkspaceCardComponent,
-    MatIcon,
-    MatButton,
     TranslocoDirective,
     ProjectCardComponent,
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
     ActionCardComponent,
+    ButtonAddComponent,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
       <div class="flex flex-row">
-        <h1 class="mat-headline-medium grow">{{ t("commons.projects") }}</h1>
-        <button
+        <h1 class="mat-headline-medium">{{ t("commons.projects") }}</h1>
+        <app-button-add
           (click)="openCreateDialog($event)"
-          data-testid="create-workspace-open"
-          class="tertiary-button"
-          mat-stroked-button
-        >
-          <mat-icon>add</mat-icon>
-          {{ t("commons.workspace") }}
-        </button>
+          [translocoKey]="'commons.workspace'"
+          [appearance]="'outlined'"
+          [level]="'tertiary'"
+          class="ml-auto"
+        />
       </div>
       @let workpaces = workspaceService.entitiesSummary();
       @if (workpaces.length > 0) {
-        <ul [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-8">
+        <div [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-4">
           @for (workspace of workpaces; track workspace.id) {
-            <li>
-              <app-workspace-card
-                [workspace]="workspace"
-                (submitted)="acceptWorkspaceInvitation(workspace)"
-                (canceled)="denyWorkspaceInvitation(workspace)"
-              ></app-workspace-card>
-              <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                @for (project of workspace.userInvitedProjects; track project.id) {
-                  <li>
-                    <app-action-card
-                      [name]="project.name"
-                      [color]="project.color"
-                      [cancelLabel]="t('component.invitation.deny')"
-                      [submitLabel]="t('component.invitation.accept')"
-                      (submitted)="acceptProjectInvitation(workspace, project)"
-                      (canceled)="denyProjectInvitation(workspace, project)"
-                    ></app-action-card>
-                  </li>
-                }
-                @for (project of workspace.userMemberProjects; track project.id) {
-                  <li>
-                    <app-project-card
-                      [workspaceId]="workspace.id"
-                      [name]="project.name"
-                      [color]="project.color"
-                      [description]="project.description ? project.description : null"
-                      [landingPage]="getProjectLandingPageUrl(project)"
-                    ></app-project-card>
-                  </li>
-                }
-                @if (
-                  (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
-                  (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
-                ) {
-                  @if (workspace.userCanCreateProjects) {
-                    <li>
-                      <app-project-card [workspaceId]="workspace.id"></app-project-card>
-                    </li>
-                  } @else {
-                    <li>
-                      <app-project-card
-                        [name]="'Lorem Ipsum'"
-                        [color]="3"
-                        [description]="'Lorem Ipsum dolor sit amet'"
-                        [disabled]="true"
-                      ></app-project-card>
-                    </li>
-                  }
-                }
-              </ul>
-            </li>
-          }
-        </ul>
-      } @else {
-        <ul class="flex flex-col gap-8">
-          <li>
-            <app-workspace-skeleton></app-workspace-skeleton>
-            <ul class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-              @for (skeleton of skeletons; track $index) {
-                <li>
-                  <app-card-skeleton></app-card-skeleton>
-                </li>
+            <app-workspace-card
+              [workspace]="workspace"
+              (submitted)="acceptWorkspaceInvitation(workspace)"
+              (canceled)="denyWorkspaceInvitation(workspace)"
+            ></app-workspace-card>
+            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              @for (project of workspace.userInvitedProjects; track project.id) {
+                <app-action-card
+                  [name]="project.name"
+                  [color]="project.color"
+                  [cancelLabel]="t('component.invitation.deny')"
+                  [submitLabel]="t('component.invitation.accept')"
+                  (submitted)="acceptProjectInvitation(workspace, project)"
+                  (canceled)="denyProjectInvitation(workspace, project)"
+                ></app-action-card>
               }
-            </ul>
-          </li>
-        </ul>
+              @for (project of workspace.userMemberProjects; track project.id) {
+                <app-project-card
+                  [workspaceId]="workspace.id"
+                  [name]="project.name"
+                  [color]="project.color"
+                  [description]="project.description ? project.description : null"
+                  [landingPage]="getProjectLandingPageUrl(project)"
+                ></app-project-card>
+              }
+              @if (
+                (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
+                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
+              ) {
+                @if (workspace.userCanCreateProjects) {
+                  <app-project-card [workspaceId]="workspace.id"></app-project-card>
+                } @else {
+                  <app-project-card
+                    [name]="'Lorem Ipsum'"
+                    [color]="3"
+                    [description]="'Lorem Ipsum dolor sit amet'"
+                    [disabled]="true"
+                  ></app-project-card>
+                }
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="flex flex-col gap-8">
+          <app-workspace-skeleton />
+          <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
+            @for (skeleton of skeletons; track $index) {
+              <app-card-skeleton />
+            }
+          </div>
+        </div>
       }
     </div>
   `,

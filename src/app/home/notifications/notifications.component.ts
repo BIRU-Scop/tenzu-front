@@ -187,7 +187,7 @@ export class NotificationUnitComponent {
             <mat-divider></mat-divider>
           }
         } @empty {
-          <div class="mat-body-medium text-on-surface-variant">{{ t("notifications.empty") }}</div>
+          <div class="mat-body-medium text-on-surface-variant px-1 py-1.5 my-1.5">{{ t("notifications.empty") }}</div>
         }
       </div>
     </mat-dialog-content>

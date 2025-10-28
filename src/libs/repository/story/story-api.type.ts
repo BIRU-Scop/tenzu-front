@@ -19,10 +19,10 @@
  *
  */
 
-import { Story } from "./story.model";
+import { StorySummary } from "./story.model";
 
-export type BaseParams = { projectId: Story["projectId"]; ref: Story["ref"] };
-export type ListEntitiesSummaryParams = { workflowId: Story["workflowId"] };
+export type BaseParams = { projectId: StorySummary["projectId"]; ref: StorySummary["ref"] };
+export type ListEntitiesSummaryParams = { workflowId: StorySummary["workflowId"] };
 export type GetEntityDetailParams = BaseParams;
 export type CreateEntityDetailParams = ListEntitiesSummaryParams;
 export type PutEntityDetailParams = BaseParams;

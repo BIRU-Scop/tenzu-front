@@ -21,9 +21,9 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { Story } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
   EnterNameDialogComponent,
@@ -57,11 +57,11 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-project-kanban",
   imports: [
-    MatButton,
     TranslocoDirective,
     StatusCardComponent,
     StoryCardComponent,
@@ -80,6 +80,7 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
     MatMenuItem,
     HasPermissionDirective,
     PermissionOrRedirectDirective,
+    ButtonAddComponent,
   ],
   template: `
     @let workflow = workflowRepositoryService.entityDetail();
@@ -166,7 +167,7 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                     <ul
                       [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
                       [id]="status.id"
-                      class="flex flex-col items-center  min-h-28 h-full dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                      class="stories-list flex flex-col items-center dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
                       cdkDropList
                       [cdkDropListData]="status"
                       [cdkDropListDisabled]="!hasModifyPermission || isLoading"
@@ -199,13 +200,13 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                       requiredPermission: ProjectPermissions.CREATE_STORY,
                     }"
                   >
-                    <button
-                      mat-stroked-button
-                      class="primary-button whitespace-nowrap shrink-0 mt-4"
+                    <app-button-add
+                      class="whitespace-nowrap shrink-0 mt-4"
+                      [level]="'primary'"
+                      [appearance]="'outlined'"
+                      [translocoKey]="'workflow.add_story'"
                       (click)="openCreateStory($event, status.id)"
-                    >
-                      {{ t("add_story") }}
-                    </button>
+                    ></app-button-add>
                   </ng-container>
                 </li>
               }
@@ -215,13 +216,12 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
                   requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
                 }"
               >
-                <button
-                  mat-stroked-button
-                  class="tertiary-button whitespace-nowrap w-64"
+                <app-button-add
                   (click)="openCreateStatus($event)"
-                >
-                  {{ t("add_status") }}
-                </button>
+                  [appearance]="'outlined'"
+                  class="whitespace-nowrap w-64"
+                  [translocoKey]="'workflow.add_status'"
+                />
               </li>
             </ul>
           } @else {
@@ -243,6 +243,12 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
     }
     .virtual-scroll {
       height: var(--tz-virtual-scroll-height);
+    }
+    .stories-list {
+      min-height: var(--tz-virtual-scroll-height);
+    }
+    ::ng-deep.cdk-virtual-scroll-content-wrapper {
+      min-height: 100%;
     }
   `,
   animations: [
@@ -304,7 +310,7 @@ export class ProjectKanbanComponent {
   constructor() {
     this.breadcrumbStore.setPathComponent("projectKanban");
   }
-  trackByFn(index: number, item: Story["ref"]) {
+  trackByFn(index: number, item: StorySummary["ref"]) {
     return item;
   }
 
@@ -378,7 +384,7 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>, workflow: Workflow) {
+  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>, workflow: Workflow) {
     // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
     // so we use workarounds
     const [, index] = event.item.data;

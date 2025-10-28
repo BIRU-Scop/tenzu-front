@@ -42,11 +42,16 @@ export enum StoryAssignmentEventType {
   CreateStoryAssignment = "storiesassignments.create",
   DeleteStoryAssignment = "storiesassignments.delete",
 }
-
 export enum StoryAttachmentEventType {
   CreateStoryAttachment = "storiesattachments.create",
   DeleteStoryAttachment = "storiesattachments.delete",
 }
+export enum StoryCommentEventType {
+  CreateStoryComment = "storiescomments.create",
+  UpdateStoryComment = "storiescomments.update",
+  DeleteStoryComment = "storiescomments.delete",
+}
+
 export enum ProjectInvitationEventType {
   CreateProjectInvitation = "projectinvitations.create",
   UpdateProjectInvitation = "projectinvitations.update",
@@ -102,6 +107,7 @@ export enum FamilyEventType {
   WorkflowStatuses = "workflowstatuses",
   StoryAssignment = "storiesassignments",
   StoryAttachment = "storiesattachments",
+  StoryComment = "storiescomments",
   ProjectInvitation = "projectinvitations",
   ProjectMembership = "projectmemberships",
   ProjectRole = "projectroles",

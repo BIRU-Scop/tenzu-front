@@ -16,7 +16,6 @@
     "title": "Paramètres du projet",
     "permissions": {
       "title": "Permissions",
-      "hint_permission": "Pour chaque catégorie, la sélection d'une permission induit nécessairement les permissions situées au-dessus.",
       "empty_permission": "Tu dois sélectionner au moins une permission pour créer un rôle.",
       "no_permission": "Pas de permission",
       "name_required": "Le nom est requis",
@@ -63,7 +62,6 @@
       "comment":{
         "label": "Commentaires",
         "no_story_permissions": "pour attribuer une permission sur les commentaires, tu dois attribuer une permission sur les stories au préalable",
-        "coming_soon": "Fonctionnalité bientôt disponible",
         "view_comment": "Voir",
         "create_modify_delete_comment": "Voir / Créer / Modifier / Supprimer",
         "moderate_comment": "Voir / Créer / Modifier / Supprimer / Modérer"
