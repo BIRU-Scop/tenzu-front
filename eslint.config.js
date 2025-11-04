@@ -11,6 +11,7 @@ module.exports = tseslint.config(
   {
     ignores: [
       ".cache/",
+      ".angular",
       ".git/",
       ".github/",
       "node_modules/",

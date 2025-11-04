@@ -169,6 +169,10 @@
     "cancel": "Cancelar",
     "close": "Cerrar",
     "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Añadir",
+    "undo": "Deshacer",
     "select_option": "Seleccione una opción"
   },
   "general": {

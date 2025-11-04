@@ -25,8 +25,8 @@ import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
-import { QueryParams, makeOptions } from "./utils";
-import { BaseDataModel, JsonObject } from "@tenzu/repository/base/misc.model";
+import { makeOptions, QueryParams } from "./utils";
+import { BaseDataModel, JsonObject } from "./misc.model";
 
 type OptionRequest = {
   dataIsFormData?: boolean;
@@ -47,7 +47,7 @@ export abstract class AbstractApiServiceDetail<
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected getBaseUrl(params?: Record<string, EntityId> | unknown): string {
-    return `${this.baseUrl}}`;
+    return `${this.baseUrl}`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -141,7 +141,7 @@ export abstract class AbstractApiServiceDetail<
       .pipe(map((dataObject) => dataObject.data));
   }
 
-  delete(params: DeleteParams, queryParams?: QueryParams): Observable<void> {
+  delete(params: DeleteParams, queryParams?: QueryParams): Observable<void | EntityDetailModel> {
     return this.http.delete<void>(this.deleteUrl(params), {
       params: queryParams ? makeOptions(queryParams) : {},
     });

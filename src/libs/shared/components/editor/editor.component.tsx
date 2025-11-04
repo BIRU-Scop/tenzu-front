@@ -6,6 +6,7 @@ import {
   input,
   OnChanges,
   OnDestroy,
+  output,
   SimpleChanges,
   viewChild,
 } from "@angular/core";
@@ -19,31 +20,61 @@ import { BlockNoteView } from "@blocknote/mantine";
 
 @Component({
   selector: "app-editor-block",
-  template: `<div #editor></div>`,
+  template: ` <div
+    (keydown.control.enter)="validate.emit()"
+    (keydown.meta.enter)="validate.emit()"
+    [class.disabled-editor]="disabled()"
+    #editor
+  ></div>`,
+  styles: `
+    :host {
+      box-sizing: border-box;
+      padding: 1em;
+      border-style: solid;
+      border-radius: 0.25rem;
+      border-color: var(--mat-sys-outline);
+      border-width: 1px;
+      &:hover:has(> :not(.disabled-editor)) {
+        border-color: var(--mat-sys-on-primary);
+      }
+      &:has(.ProseMirror-focused):has(> :not(.disabled-editor)) {
+        border-color: var(--mat-sys-primary);
+        border-width: 2px;
+        padding: calc(1em - 1px);
+      }
+    }
+  `,
 })
 export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   elm = viewChild<ElementRef>("editor");
   disabled = input(false);
-  resolveFileUrl = input.required<(url: string) => Promise<string>>();
-  uploadFile =
-    input.required<
-      (
+  resolveFileUrl = input<(url: string) => Promise<string>>();
+  uploadFile = input.required<
+    | undefined
+    | ((
         file: File,
         blockId?: string | undefined,
-      ) => Promise<string | Record<string, any>>
-    >();
-  data = input.required<string>();
+      ) => Promise<string | Record<string, any>>)
+  >();
+  data = input<string | null>();
+  focus = input(false);
+  validate = output();
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
     effect(() => {
-      const value = JSON.parse(this.data()) as Block[];
+      const data = this.data();
+      const initialContent = data
+        ? { initialContent: JSON.parse(data) as Block[] }
+        : {};
       if (!this.editor) {
         this.editor = BlockNoteEditor.create({
           codeBlock,
-          initialContent: value,
           resolveFileUrl: this.resolveFileUrl(),
           uploadFile: this.uploadFile(),
+          // TODO use new autofocus option instead of undocumented _tiptapOptions once we have upgraded blocknote to >= v0.40.0
+          _tiptapOptions: { autofocus: this.focus() },
+          ...initialContent,
         });
       }
       const elm = this.elm();
@@ -66,11 +97,25 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
-  public save() {
-    return this.editor?.document;
+  public get jsonContent() {
+    return JSON.stringify(this.editor?.document);
   }
+  public set jsonContent(content: string) {
+    const data = JSON.parse(content) as Block[];
+    this.editor?.replaceBlocks(this.editor?.document, data);
+  }
+
   public undo() {
     this.editor?.undo();
+  }
+  public enableAndFocus() {
+    if (this.editor) {
+      this.editor.isEditable = true;
+      this.editor.focus();
+    }
+  }
+  public isEmpty() {
+    return this.editor?.isEmpty;
   }
   private render() {
     if (this.root && this.editor) {

@@ -19,11 +19,11 @@
  *
  */
 
-import { Story } from "./story.model";
+import { StorySummary } from "./story.model";
 import { computed, inject, Signal } from "@angular/core";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 
-export function getAssignees(story: Signal<Pick<Story, "assigneeIds">>) {
+export function getAssignees(story: Signal<Pick<StorySummary, "assigneeIds">>) {
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   return computed(() => {
     const teamMemberMap = projectMembershipRepositoryService.memberMap();

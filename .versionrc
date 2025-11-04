@@ -1,0 +1,10 @@
+{
+  "packageFiles": [
+    {
+      "filename": "",
+      "__comment":"only use git tags as source of truth for version number by providing a non-existing file",
+      "type": "plain-text"
+    }
+  ],
+  "bumpFiles": [ "package.json", "package-lock.json", "npm-shrinkwrap.json" ]
+}

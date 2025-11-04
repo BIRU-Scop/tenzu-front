@@ -20,16 +20,18 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Location } from "@angular/common";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatButton } from "@angular/material/button";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { UserStore } from "@tenzu/repository/user";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 
 @Component({
   selector: "app-profile",
@@ -40,9 +42,10 @@ import { NotificationService } from "@tenzu/utils/services/notification";
     TranslocoDirective,
     MatFormField,
     MatLabel,
-    MatButton,
     MatSelect,
     MatOption,
+    ButtonSaveComponent,
+    ButtonCloseComponent,
   ],
   template: `
     <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
@@ -74,15 +77,14 @@ import { NotificationService } from "@tenzu/utils/services/notification";
             }
           </mat-select>
         </mat-form-field>
-        <button
-          data-testid="saveProfileSettings-button"
-          mat-flat-button
-          class="primary-button"
-          type="submit"
-          [disabled]="!form.dirty || form.invalid"
-        >
-          {{ t("settings.profile.save") }}
-        </button>
+        <div class="flex gap-2 flex-row-reverse">
+          <app-button-save
+            data-testid="saveProfileSettings-button"
+            [disabled]="!form.dirty || form.invalid"
+            [appearance]="'filled'"
+          />
+          <app-button-close data-testid="saveProfileSettings-button" (click)="location.back()" />
+        </div>
       </form>
     </div>
   `,
@@ -97,6 +99,7 @@ export class ProfileComponent {
   languageStore = inject(LanguageStore);
   notificationService = inject(NotificationService);
   fb = inject(NonNullableFormBuilder);
+  location = inject(Location);
   form = this.fb.group({
     fullName: ["", Validators.required],
     username: ["", Validators.required],

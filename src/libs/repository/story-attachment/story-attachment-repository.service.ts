@@ -27,6 +27,7 @@ import { BaseRepositoryService } from "@tenzu/repository/base";
 import type * as StoryAttachmentApiServiceType from "./story-attachment-api.type";
 import * as StoryAttachmentApiType from "@tenzu/repository/story-attachment/story-attachment-api.type";
 import { lastValueFrom } from "rxjs";
+import { QueryParams } from "@tenzu/repository/base/utils";
 
 @Injectable({
   providedIn: "root",
@@ -49,6 +50,15 @@ export class StoryAttachmentRepositoryService extends BaseRepositoryService<
     const entity = await lastValueFrom(this.apiService.createAttachment(attachment, params));
     this.setEntityDetail(entity);
     return entity;
+  }
+  override async deleteRequest(
+    item: StoryAttachment,
+    params: StoryAttachmentApiServiceType.DeleteEntityDetailParams,
+    queryParams?: QueryParams,
+  ): Promise<StoryAttachment> {
+    await lastValueFrom(this.apiService.delete(params, queryParams));
+    this.deleteEntitySummary(item.id);
+    return item;
   }
   downloadAttachment(attachment: StoryAttachment) {
     this.apiService.downloadAttachment(attachment);

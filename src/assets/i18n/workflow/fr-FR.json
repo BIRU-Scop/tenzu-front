@@ -85,8 +85,6 @@
     "former_user": "Utilisateur supprimé",
     "assigned_to": "Assignée à",
     "status": "Statut",
-    "save": "Enregistrer",
-    "undo": "Annuler",
     "attachments": {
       "attach_file": "Joindre un fichier",
       "name": "Nom",
@@ -95,6 +93,18 @@
       "action": "Action",
       "exceed_size": "{{var}} dépasse la taille de {{maxSize}}",
       "deleted_attachment": "{{var}} a été supprimé"
+    },
+    "comments": {
+      "count": "{ totalComments, plural, =0 {# Commentaire} one {# Commentaire} other {# Commentaires} }",
+      "create_placeholder": "Écrire ici un nouveau commentaire",
+      "modified_at": ", modifié le {{date}}",
+      "deleted_at": ", supprimé le {{date}}",
+      "deleted_comment": "[Commentaire supprimé]",
+      "confirm_remove_message_self": "Veux-tu vraiment supprimer ton commentaire ?",
+      "confirm_remove_message_other": "Veux-tu vraiment modérer ce commentaire ?",
+      "loading": "Les commentaires sont en train de charger",
+      "loading_complete" : "Tu as atteint la fin des commentaires",
+      "load_more_explanation": "Faite défiler jusqu'au dernier commentaire pour en charger davantage"
     },
     "change_workflow": "Déplacer la story vers un autre kanban",
     "delete_story": "Supprimer cette story",

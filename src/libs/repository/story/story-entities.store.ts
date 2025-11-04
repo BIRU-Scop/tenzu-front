@@ -21,25 +21,27 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
-import { Story, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
+import { StorySummary, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
 import { StatusSummary } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { UserNested } from "../user";
+import { ProjectSummary } from "@tenzu/repository/project";
+import { Workflow } from "@tenzu/repository/workflow";
 
-const selectId: SelectEntityId<Story> = (story) => story.ref;
+const selectId: SelectEntityId<StorySummary> = (story) => story.ref;
 const initialState = {
-  currentProjectId: null as string | null,
-  currentWorkflowId: null as string | null,
-  groupedByStatus: {} as Record<Story["statusId"], Story["ref"][]>,
+  currentProjectId: null as ProjectSummary["id"] | null,
+  currentWorkflowId: null as Workflow["id"] | null,
+  groupedByStatus: {} as Record<StorySummary["statusId"], StorySummary["ref"][]>,
 };
 export const StoryEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
   withState(initialState),
-  withEntityListFeature<Story, typeof initialState>({ initialState, selectId }),
+  withEntityListFeature<StorySummary, typeof initialState>({ initialState, selectId }),
   withMethods((store) => ({
-    setCurrentWorkflowId(projectId: string, workflowId: string) {
+    setCurrentWorkflowId(projectId: ProjectSummary["id"], workflowId: Workflow["id"]) {
       patchState(store, { currentProjectId: projectId, currentWorkflowId: workflowId });
     },
     reorder() {
@@ -51,13 +53,13 @@ export const StoryEntitiesSummaryStore = signalStore(
           }
           return { ...acc, [statusId]: [story.ref] };
         },
-        {} as Record<Story["statusId"], Story["ref"][]>,
+        {} as Record<StorySummary["statusId"], StorySummary["ref"][]>,
       );
       patchState(store, { groupedByStatus });
     },
   })),
   withMethods((store) => ({
-    addAssign(storyAssign: StoryAssign, ref: Story["ref"]) {
+    addAssign(storyAssign: StoryAssign, ref: StorySummary["ref"]) {
       const currentAssigneeIds = store.entityMap()[ref].assigneeIds;
 
       // avoid the double event from user event channel and project event channel
@@ -66,7 +68,7 @@ export const StoryEntitiesSummaryStore = signalStore(
         store.updateEntity(ref, { assigneeIds: newAssigneeIds });
       }
     },
-    removeAssign(ref: Story["ref"], userId: UserNested["id"]) {
+    removeAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
       const removedAssigneeIds = [...store.entityMap()[ref].assigneeIds].filter((assigneeId) => assigneeId != userId);
       store.updateEntity(ref, { assigneeIds: removedAssigneeIds });
     },
@@ -82,7 +84,7 @@ export const StoryEntitiesSummaryStore = signalStore(
     reorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
       const storyRef = reorder.stories[0];
       if (storyRef) {
-        const stories = JSON.parse(JSON.stringify(store.entities())) as Story[];
+        const stories = JSON.parse(JSON.stringify(store.entities())) as StorySummary[];
         const currentIndex = stories.findIndex((story) => story.ref === storyRef);
         stories[currentIndex].statusId = reorder.status.id;
         const siblingStoryRef = reorder.reorder?.ref;
@@ -100,7 +102,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, [Story, number]>) {
+    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>) {
       const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;
@@ -108,8 +110,8 @@ export const StoryEntitiesSummaryStore = signalStore(
       if (sameStatus && event.previousIndex === event.currentIndex) return;
 
       const copyGroupedByStatus = JSON.parse(JSON.stringify(store.groupedByStatus())) as Record<
-        Story["statusId"],
-        Story["ref"][]
+        StorySummary["statusId"],
+        StorySummary["ref"][]
       >;
       const lastArray = copyGroupedByStatus[lastStatus.id] || [];
       debug("dropStoryBetweenStatus", "story_from_lastArray", lastArray[event.previousIndex]);
@@ -156,20 +158,31 @@ export const StoryDetailStore = signalStore(
         store.update(storyRef, { statusId: reorder.status.id });
       }
     },
-    removeAssign(ref: Story["ref"], userId: UserNested["id"]) {
+    removeAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
       const story = store.item();
       if (story && story.ref === ref) {
         const removedAssigneeIds = [...story.assigneeIds].filter((assigneeId) => assigneeId != userId);
         store.update(ref, { assigneeIds: removedAssigneeIds });
       }
     },
+    updateCommentsCount(ref: StorySummary["ref"], increment: number) {
+      const story = store.item();
+      if (story && story.ref === ref) {
+        patchState(store, {
+          item: {
+            ...story,
+            totalComments: story.totalComments + increment,
+          },
+        });
+      }
+    },
   })),
 );
 
 function calculatePayloadReorder(
-  storyRef: Story["ref"],
-  statusId: Story["statusId"],
-  storiesRef: Story["ref"][],
+  storyRef: StorySummary["ref"],
+  statusId: StorySummary["statusId"],
+  storiesRef: StorySummary["ref"][],
   index: number,
 ) {
   let result: StoryReorderPayload;

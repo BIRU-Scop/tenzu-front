@@ -249,7 +249,8 @@ export class RoleFacade {
     const clearedValues = this.clearValues(values);
     const role = clearedValues.name ? { ...currentRole, name: clearedValues.name } : { ...currentRole };
     if (currentRole) {
-      await this.projectRoleRepositoryService.putRequest(
+      await this.projectRoleRepositoryService.patchRequest(
+        currentRole.id,
         { ...role, permissions: clearedValues.permissions },
         { roleId: currentRole.id },
       );

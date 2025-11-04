@@ -20,44 +20,30 @@
  */
 
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
-import { MatCard, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: "app-workspace-card",
-  imports: [
-    AvatarComponent,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatIcon,
-    RouterLink,
-    RouterLinkActive,
-    MatButton,
-    TranslocoDirective,
-  ],
+  imports: [AvatarComponent, MatIcon, RouterLink, RouterLinkActive, MatButton, TranslocoDirective, MatDivider],
   template: `
     @let _workspace = workspace();
-    <mat-card appearance="outlined" class="heading-card" *transloco="let t">
-      <mat-card-header>
-        <app-avatar mat-card-avatar [name]="_workspace.name" [color]="_workspace.color" />
+    <ng-container *transloco="let t">
+      <div class="flex flex-row items-center gap-2 mb-2">
+        <app-avatar [name]="_workspace.name" [color]="_workspace.color" />
         @if (_workspace.userIsMember) {
-          <mat-card-title>
-            <a [routerLink]="['workspace', _workspace.id]">{{ _workspace.name }} </a>
-          </mat-card-title>
+          <a class="mat-title-medium" [routerLink]="['workspace', _workspace.id]">{{ _workspace.name }} </a>
         } @else {
-          <mat-card-title>
-            {{ _workspace.name }}
-          </mat-card-title>
+          {{ _workspace.name }}
         }
         @if (_workspace.userCanCreateProjects) {
-          <button
-            class="primary-button"
+          <a
+            class="primary-button ml-auto"
             routerLink="/new-project"
             [queryParams]="{ workspaceId: _workspace.id }"
             routerLinkActive="active"
@@ -66,7 +52,7 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
           >
             <mat-icon>add</mat-icon>
             {{ t("commons.project") }}
-          </button>
+          </a>
         } @else if (_workspace.userIsInvited) {
           <button
             class="secondary-button"
@@ -87,8 +73,9 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
             {{ t("component.invitation.deny") }}
           </button>
         }
-      </mat-card-header>
-    </mat-card>
+      </div>
+      <mat-divider />
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

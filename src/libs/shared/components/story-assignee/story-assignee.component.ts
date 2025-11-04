@@ -26,7 +26,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { MatIcon } from "@angular/material/icon";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { getAssignees, Story, StoryRepositoryService } from "@tenzu/repository/story";
+import { getAssignees, StorySummary, StoryRepositoryService } from "@tenzu/repository/story";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -67,7 +67,7 @@ export class StoryAssigneeComponent {
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   relativeDialog = inject(RelativeDialogService);
 
-  story = input.required<Pick<Story, "ref" | "title" | "projectId" | "assigneeIds">>();
+  story = input.required<Pick<StorySummary, "ref" | "title" | "projectId" | "assigneeIds">>();
   assignees = getAssignees(this.story);
   hasModifyPermission = input(false);
   config = input<{
