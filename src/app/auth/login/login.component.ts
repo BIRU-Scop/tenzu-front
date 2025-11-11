@@ -22,7 +22,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError, MatFormField, MatInput } from "@angular/material/input";
-import { MatButton } from "@angular/material/button";
 import { LoginService } from "./login.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatLabel } from "@angular/material/form-field";
@@ -32,6 +31,7 @@ import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-f
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
 import { AuthFormStateStore } from "../auth-form-state.store";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
   selector: "app-login",
@@ -39,42 +39,50 @@ import { AuthFormStateStore } from "../auth-form-state.store";
     MatInput,
     MatFormField,
     ReactiveFormsModule,
-    MatButton,
     TranslocoDirective,
     MatLabel,
     PasswordFieldComponent,
     RouterLink,
     MatError,
     MatDivider,
+    ButtonComponent,
+    PasswordFieldComponent,
   ],
   template: `
-    <div *transloco="let t; prefix: 'login'" class="flex flex-col gap-y-4 ">
-      <h1 class="mat-headline-medium">{{ t("title") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
-        <mat-form-field subscriptSizing="fixed">
+    <div *transloco="let t" class="flex flex-col gap-4 w-96">
+      <h1 class="mat-headline-medium text-center">{{ t("login.title") }}</h1>
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
+        <mat-form-field>
           <mat-label>
-            {{ t("email_or_username") }}
+            {{ t("login.email_or_username") }}
           </mat-label>
           <input matInput autocomplete data-testid="username-input" formControlName="username" />
           @if (form.controls.username.hasError("required")) {
-            <mat-error data-testid="username-required-error" [innerHTML]="t('errors.username_required')"></mat-error>
+            <mat-error
+              data-testid="username-required-error"
+              [innerHTML]="t('login.errors.username_required')"
+            ></mat-error>
           }
         </mat-form-field>
-        <app-password-field formControlName="password"></app-password-field>
+        <app-password-field formControlName="password" />
         @if (form.hasError("loginError")) {
           <div class="mat-mdc-form-field-error" data-testid="login-401">
-            {{ t("errors.401") }}
+            {{ t("login.errors.401") }}
           </div>
         }
-        <a [routerLink]="['/reset-password']" class="mat-body-medium">{{ t("forgot_password") }}</a>
-        <button class="primary-button" mat-flat-button type="submit" [disabled]="!form.dirty || form.invalid">
-          {{ t("action") }}
-        </button>
+        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("login.forgot_password") }}</a>
+        <app-button
+          level="tertiary"
+          translocoKey="login.action"
+          type="submit"
+          iconName="login"
+          [disabled]="!form.dirty || form.invalid"
+        />
       </form>
       <mat-divider></mat-divider>
       <footer class="text-center">
         <p class="mat-body-medium">
-          {{ t("not_registered_yet") }} <a [routerLink]="['/signup']">{{ t("create_account") }}</a>
+          {{ t("login.not_registered_yet") }} <a [routerLink]="['/signup']">{{ t("login.create_account") }}</a>
         </p>
       </footer>
     </div>

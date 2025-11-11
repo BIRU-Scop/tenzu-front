@@ -55,9 +55,9 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
   ],
   template: `
     <div class="grid grid-cols-1 place-items-center place-content-center" *transloco="let t">
-      <div class="w-min flex flex-col gap-y-8 py-4">
+      <div class=" flex flex-col gap-y-8 py-4">
         <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-5">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-5 min-w-96">
           <mat-form-field>
             <mat-label>{{ t("commons.workspace") }}</mat-label>
             <mat-select required formControlName="workspaceId">

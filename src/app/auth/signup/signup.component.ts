@@ -25,7 +25,6 @@ import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { MatIcon } from "@angular/material/icon";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
@@ -37,6 +36,7 @@ import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
   selector: "app-signup",
@@ -50,35 +50,31 @@ import { MatOption, MatSelect } from "@angular/material/select";
     TranslocoDirective,
     MatFormField,
     MatInput,
-    MatIcon,
     RouterLink,
     MatError,
     MatDivider,
     MatCheckbox,
     MatOption,
     MatSelect,
+    ButtonComponent,
   ],
-  template: ` <div *transloco="let t" class="flex flex-col gap-y-4">
+  template: ` <div *transloco="let t" class="flex flex-col gap-4">
     @let _form = form();
     @if (!emailSent()) {
-      <h1 class="mat-headline-medium">{{ t("signup.title") }}</h1>
+      <h1 class="mat-headline-medium text-center">{{ t("signup.title") }}</h1>
       @if (!displayForm()) {
         <div class="flex flex-col gap-y-4">
-          <button
-            data-testid="showEmailSignupForm-button"
-            class="primary-button"
-            mat-stroked-button
+          <app-button
+            level="primary"
+            iconName="add"
+            translocoKey="signup.create_account_email"
             (click)="displayForm.set(true)"
-          >
-            {{ t("signup.create_account_email") }}
-          </button>
-          <button class="primary-button" disabled mat-stroked-button>
-            {{ t("signup.social_connect") }}
-          </button>
+          />
+          <app-button level="primary" translocoKey="signup.social_connect" [disabled]="true" />
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();
-        <form [formGroup]="_form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
+        <form [formGroup]="_form" (ngSubmit)="submit()" class="flex flex-col gap-1 w-[32rem]">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
             <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
@@ -89,13 +85,14 @@ import { MatOption, MatSelect } from "@angular/material/select";
               ></mat-error>
             }
           </mat-form-field>
-          <app-email-field formControlName="email"></app-email-field>
+          <app-email-field formControlName="email" />
           <app-password-field
+            class="mb-4"
             formControlName="password"
             [settings]="{
               strength: { enabled: true, showBar: true },
             }"
-          ></app-password-field>
+          />
           <mat-form-field>
             <mat-label>{{ t("general.identity.lang") }}</mat-label>
             <mat-select formControlName="lang" data-testid="lang-select">
@@ -121,20 +118,21 @@ import { MatOption, MatSelect } from "@angular/material/select";
               </mat-checkbox>
             </div>
           }
-          <button
-            [disabled]="!_form.dirty || _form.invalid"
-            data-testid="submitCreateAccount-button"
-            mat-flat-button
-            class="primary-button"
-            type="submit"
-          >
-            {{ t("signup.create_account") }}
-          </button>
-          <div class="flex justify-center">
-            <button mat-flat-button class="secondary-button" (click)="displayForm.set(false)">
-              <mat-icon class="align-middle">arrow_back_ios</mat-icon>
-              {{ t("signup.all_options") }}
-            </button>
+          <div class="flex flex-row justify-end gap-4">
+            <app-button
+              level="secondary"
+              translocoKey="signup.all_options"
+              iconName="arrow_back_ios"
+              (click)="displayForm.set(false)"
+            />
+            <app-button
+              [disabled]="!_form.dirty || _form.invalid"
+              iconName="add"
+              level="tertiary"
+              translocoKey="signup.create_account"
+              data-testid="submitCreateAccount-button"
+              type="submit"
+            />
           </div>
         </form>
       }

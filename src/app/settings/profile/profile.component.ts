@@ -20,7 +20,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { Location } from "@angular/common";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -31,7 +30,7 @@ import { LanguageStore } from "@tenzu/repository/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
-import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 
 @Component({
   selector: "app-profile",
@@ -45,7 +44,7 @@ import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-
     MatSelect,
     MatOption,
     ButtonSaveComponent,
-    ButtonCloseComponent,
+    FormFooterComponent,
   ],
   template: `
     <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
@@ -77,14 +76,9 @@ import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-
             }
           </mat-select>
         </mat-form-field>
-        <div class="flex gap-2 flex-row-reverse">
-          <app-button-save
-            data-testid="saveProfileSettings-button"
-            [disabled]="!form.dirty || form.invalid"
-            [appearance]="'filled'"
-          />
-          <app-button-close data-testid="saveProfileSettings-button" (click)="location.back()" />
-        </div>
+        <app-form-footer [secondaryAction]="false">
+          <app-button-save data-testid="saveProfileSettings-button" [disabled]="!form.dirty || form.invalid" />
+        </app-form-footer>
       </form>
     </div>
   `,
@@ -99,7 +93,6 @@ export class ProfileComponent {
   languageStore = inject(LanguageStore);
   notificationService = inject(NotificationService);
   fb = inject(NonNullableFormBuilder);
-  location = inject(Location);
   form = this.fb.group({
     fullName: ["", Validators.required],
     username: ["", Validators.required],

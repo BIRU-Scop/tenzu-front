@@ -22,7 +22,6 @@
 import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { MatButton } from "@angular/material/button";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
@@ -30,6 +29,8 @@ import { UserService, UserStore } from "@tenzu/repository/user";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError } from "@angular/material/form-field";
 import { Router } from "@angular/router";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 
 @Component({
   selector: "app-delete",
@@ -52,13 +53,13 @@ import { Router } from "@angular/router";
             }
           </div>
         </mat-checkbox>
-        <button type="submit" mat-flat-button class="error-button">
-          {{ t("delete_account") }}
-        </button>
+        <app-form-footer [secondaryAction]="false">
+          <app-button-delete translocoKey="settings.delete.delete_account" type="submit" />
+        </app-form-footer>
       </form>
     </div>
   `,
-  imports: [TranslocoDirective, MatCheckbox, MatButton, ReactiveFormsModule, MatError],
+  imports: [TranslocoDirective, MatCheckbox, ReactiveFormsModule, MatError, ButtonDeleteComponent, FormFooterComponent],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
