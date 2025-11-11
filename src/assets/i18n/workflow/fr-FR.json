@@ -3,7 +3,7 @@
     "dialog": {
       "aria_label": "Créer un kanban",
       "maximum_reached": "Le nombre maximal de kanbans a été atteint",
-      "create_workflow": "Créer un nouveau kanban",
+      "create_workflow": "Créer un kanban",
       "max-num-workflow-created-error": "Impossible de créer un nouveau kaban, tu as atteint le nombre maximum.",
       "name_required": "Le nom du Kanban ne peut pas être vide",
       "name_placeholder": "Donner un nom au kanban"
@@ -40,8 +40,8 @@
     "move_left": "Déplacer à gauche",
     "move_right": "Déplacer à droite"
   },
-  "add_status": "Ajouter un statut",
-  "add_story": "Ajouter une story",
+  "add_status": "Statut",
+  "add_story": "Story",
   "create_story": {
     "create_story": "Créer une story",
     "story_name": "Nom de la story",
@@ -103,7 +103,7 @@
       "confirm_remove_message_self": "Veux-tu vraiment supprimer ton commentaire ?",
       "confirm_remove_message_other": "Veux-tu vraiment modérer ce commentaire ?",
       "loading": "Les commentaires sont en train de charger",
-      "loading_complete" : "Tu as atteint la fin des commentaires",
+      "loading_complete": "Tu as atteint la fin des commentaires",
       "load_more_explanation": "Faite défiler jusqu'au dernier commentaire pour en charger davantage"
     },
     "change_workflow": "Déplacer la story vers un autre kanban",

@@ -39,19 +39,19 @@
         "modify_project": "Modifier",
         "delete_project": "Modifier / Supprimer"
       },
-      "member":{
+      "member": {
         "label": "Membre",
         "create_modify_member": "Créer / Modifier",
         "delete_member": "Créer / Modifier / Supprimer"
       },
-      "story":{
+      "story": {
         "label": "Story",
         "view_story": "Voir",
         "modify_story": "Voir / Modifier",
         "create_story": "Voir / Créer / Modifier",
         "delete_story": "Voir / Créer / Modifier / Supprimer"
       },
-      "workflow":{
+      "workflow": {
         "label": "Kanban",
         "no_story_permissions": "pour attribuer une permission sur les kanban, tu dois attribuer une permission sur les stories au préalable",
         "view_workflow": "Voir",
@@ -59,7 +59,7 @@
         "create_workflow": "Voir / Créer / Modifier",
         "delete_workflow": "Voir / Créer / Modifier / Supprimer"
       },
-      "comment":{
+      "comment": {
         "label": "Commentaires",
         "no_story_permissions": "pour attribuer une permission sur les commentaires, tu dois attribuer une permission sur les stories au préalable",
         "view_comment": "Voir",
@@ -73,14 +73,14 @@
       "description": "Description du projet",
       "delete_project_title": "Supprimer le projet",
       "delete_project_warning": "Cette action supprimera le projet, ainsi que toutes les stories et pièces jointes qu'il contient.",
-      "buttons":
-      {
+      "buttons": {
         "cancel": "Annuler",
         "save": "Enregistrer",
         "delete": "Supprimer"
       },
       "errors": {
-        "name_required": "Le nom du projet ne peut pas être vide."
+        "name_required": "Le nom du projet ne peut pas être vide.",
+        "name_max_length": "Le nom ne peut pas excéder 80 caractères"
       },
       "messages": {
         "saved": "Les informations du projet ont été enregistrées."

@@ -27,10 +27,10 @@
       "title": "Informations",
       "name": "Nom",
       "name_required": "Le nom de l'espace de travail ne peut pas être vide",
+      "name_max_length": "Le nom ne peut pas excéder 40 caractères",
       "name_placeholder": "Donner un nom à l'espace de travail",
       "delete_workspace": "Supprimer l'espace de travail",
       "delete": {
-        "delete": "Supprimer",
         "error": "Tu ne peux pas supprimer un espace de travail qui contient des projets. </br> Cet espace de travail a { totalProjects, plural, one {<strong class='number-projects'>#</strong> projet} other {<strong class='number-projects'>#</strong> projets} }. Supprime d'abord { totalProjects, plural, one {le projet} other {les projets} }.",
         "deleted_workspace": "L'espace de travail {{ var }} a été supprimé."
       }
