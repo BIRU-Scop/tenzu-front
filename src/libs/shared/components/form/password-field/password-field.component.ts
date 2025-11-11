@@ -80,7 +80,7 @@ const DEFAULT_REQUIREMENTS: PasswordRequirements = {
   ],
   hostDirectives: [NoopValueAccessorDirective],
   template: `
-    <mat-form-field *transloco="let t; prefix: 'component.password'">
+    <mat-form-field class="w-full password-field" *transloco="let t; prefix: 'component.password'">
       <mat-label>
         @if (settings().label) {
           {{ settings().label }}
@@ -187,14 +187,13 @@ const DEFAULT_REQUIREMENTS: PasswordRequirements = {
       <app-password-strength [severity]="strength().severity"></app-password-strength>
     }
   `,
-  styles: ``,
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordFieldComponent implements OnInit {
   _diversityTypes: DiversityType[] = Object.keys(DiversityEnum) as DiversityType[];
   ngControl = injectNgControl();
   hide = signal(true);
-
   settings = input(DEFAULT_SETTINGS, {
     transform: (settings: PasswordSettings) => this.validateSettings(settings),
   });
@@ -208,10 +207,10 @@ export class PasswordFieldComponent implements OnInit {
     }
     return resultSettings;
   }
-
   requirements = input(DEFAULT_REQUIREMENTS, {
     transform: (requirements: Partial<PasswordRequirements>) => this.validateRequirements(requirements),
   });
+
   validateRequirements(requirements: Partial<PasswordRequirements>) {
     const resultRequirements = { ...DEFAULT_REQUIREMENTS, ...requirements };
     const _backendMinDiversity = 3;

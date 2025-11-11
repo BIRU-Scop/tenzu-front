@@ -40,7 +40,7 @@ export type DescriptionOptions = {
   imports: [MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatLabel, TranslocoDirective],
   hostDirectives: [NoopValueAccessorDirective],
   template: `
-    <mat-form-field class="mat-form-field" *transloco="let t; prefix: 'component.description'">
+    <mat-form-field class="mat-form-field w-full" *transloco="let t; prefix: 'component.description'">
       <mat-label>{{ t("label") }}</mat-label>
       <textarea
         [style.resize]="options().resizeType"

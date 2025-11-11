@@ -86,7 +86,6 @@ export class ButtonComponent implements ButtonInterface {
       }
     },
   });
-  // appearance = input<MatButtonAppearance>("filled");
   translocoKey = input.required<string>();
   type = input<ButtonType>("button");
   appearance = computed<MatButtonAppearance>(() => {

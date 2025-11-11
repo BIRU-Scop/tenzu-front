@@ -28,7 +28,7 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from "@angular/material/dialog";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
@@ -38,6 +38,13 @@ import { UserNested } from "@tenzu/repository/user";
 import { InvitationEmailFieldComponent } from "./invitation-email-field.component";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
+import {
+  FormFooterComponent,
+  FormFooterSecondaryActionComponent,
+} from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 export interface InvitePeopleDialogData {
   title: string;
@@ -56,7 +63,6 @@ export interface InvitePeopleDialogData {
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
-    MatButton,
     MatDivider,
     MatIcon,
     MatFormField,
@@ -67,6 +73,11 @@ export interface InvitePeopleDialogData {
     MatLabel,
     InvitationEmailFieldComponent,
     RoleSelectorFieldComponent,
+    FormFooterComponent,
+    FormFooterSecondaryActionComponent,
+    ButtonCloseComponent,
+    ButtonComponent,
+    ButtonAddComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -75,12 +86,10 @@ export interface InvitePeopleDialogData {
         <div class="flex flex-col gap-4">
           <div [innerHTML]="data.description"></div>
           <form [formGroup]="form" (ngSubmit)="addToPeopleList()" class="flex flex-col gap-4">
-            <div class="flex flex-row gap-x-4 items-center">
-              <mat-icon class="text-on-primary-container">group_add</mat-icon>
-              <mat-form-field>
-                <mat-label>
-                  {{ t("component.invite_dialog.mailing_list") }}
-                </mat-label>
+            <div class="flex flex-row gap-4 place-items-center">
+              <mat-icon class=""> group_add</mat-icon>
+              <mat-form-field class="flex" subscriptSizing="dynamic">
+                <mat-label> {{ t("component.invite_dialog.mailing_list") }} </mat-label>
                 <input
                   matInput
                   placeholder="name1@amazing.com,sheepAreGreat@tenzu.sh,tenzu@missing.com"
@@ -88,9 +97,7 @@ export interface InvitePeopleDialogData {
                   formControlName="emailsToAdd"
                 />
               </mat-form-field>
-              <button mat-flat-button class="primary-button" type="submit">
-                {{ t("component.invite_dialog.add") }}
-              </button>
+              <app-button-add translocoKey="component.invite_dialog.add" type="submit" />
             </div>
             <mat-divider></mat-divider>
             @if (this.form.controls.peopleEmails.length) {
@@ -102,18 +109,16 @@ export interface InvitePeopleDialogData {
                         formControlName="email"
                         [memberEmails]="memberEmails()"
                         [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
-                        class="w-4/5 grow"
                       />
                       <app-role-selector-field
                         formControlName="roleId"
                         [itemType]="data.itemType"
                         [userRole]="data.userRole"
-                        class="w-1/5"
                       />
+                      <button mat-icon-button class=" primary-button" (click)="removeFromPeopleList($index)">
+                        <mat-icon>close</mat-icon>
+                      </button>
                     </div>
-                    <button mat-icon-button class="icon-md primary-button" (click)="removeFromPeopleList($index)">
-                      <mat-icon>close</mat-icon>
-                    </button>
                   </div>
                 }
               </div>
@@ -123,17 +128,18 @@ export interface InvitePeopleDialogData {
         </div>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button mat-flat-button [mat-dialog-close]="undefined" class="secondary-button">
-          {{ t("commons.cancel") }}
-        </button>
-        <button
-          mat-flat-button
-          class="tertiary-button"
-          [mat-dialog-close]="this.form.controls.peopleEmails.value"
-          [disabled]="!this.form.controls.peopleEmails.length || !this.form.valid"
-        >
-          {{ t("component.invite_dialog.invite_people") }}
-        </button>
+        <app-form-footer>
+          <app-form-footer-secondary-action>
+            <app-button-close [mat-dialog-close]="undefined" />
+          </app-form-footer-secondary-action>
+          <app-button
+            translocoKey="component.invite_dialog.invite_people"
+            level="tertiary"
+            iconName="mail"
+            [mat-dialog-close]="this.form.controls.peopleEmails.value"
+            [disabled]="!this.form.controls.peopleEmails.length || !this.form.valid"
+          />
+        </app-form-footer>
       </mat-dialog-actions>
     </ng-container>
   `,

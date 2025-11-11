@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -31,18 +31,22 @@ import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { LowerCasePipe } from "@angular/common";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
   selector: "app-invitation-actions",
-  imports: [ConfirmDirective, MatButton, MatIcon, MatIconButton, MatTooltip, TranslocoDirective, LowerCasePipe],
+  imports: [ConfirmDirective, MatIcon, MatIconButton, MatTooltip, TranslocoDirective, LowerCasePipe, ButtonComponent],
   template: `
     @let _invitation = invitation();
     @if (_invitation.status === InvitationStatus.PENDING) {
       <ng-container *transloco="let t">
         @if (resentInvitation()) {
-          <button type="button" disabled class="secondary-button" mat-flat-button>
-            {{ t("component.invitation.resent_confirmation") }}
-          </button>
+          <app-button
+            type="button"
+            [disabled]="true"
+            level="secondary"
+            translocoKey="component.invitation.resent_confirmation"
+          />
         } @else {
           @let _invitationResendDisableMessage = invitationResendDisableMessage();
           <div
@@ -51,15 +55,13 @@ import { LowerCasePipe } from "@angular/common";
             "
             [matTooltipDisabled]="!_invitationResendDisableMessage"
           >
-            <button
+            <app-button
               type="button"
               [disabled]="!!_invitationResendDisableMessage"
+              level="secondary"
+              translocoKey="component.invitation.resend"
               (click)="resend.emit(_invitation.id)"
-              class="secondary-button"
-              mat-stroked-button
-            >
-              {{ t("component.invitation.resend") }}
-            </button>
+            />
           </div>
         }
 
