@@ -69,12 +69,15 @@ export class AuthService {
   }
   userLogout() {
     const tokens = this.getToken();
-    this.http
-      .post<Record<string, never>>(`${this.url}/blacklist`, {
-        refresh: tokens.refresh,
-      })
-      .pipe(catchError(() => of(false))) // if blacklist fail, ignore silently for now
-      .subscribe();
+    if (tokens.refresh) {
+      // tokens could be empty in case of concurrent autologout or manual clear of localstorage
+      this.http
+        .post<Record<string, never>>(`${this.url}/blacklist`, {
+          refresh: tokens.refresh,
+        })
+        .pipe(catchError(() => of(false))) // if blacklist fail, ignore silently for now
+        .subscribe();
+    }
     this.logout();
   }
   logout() {
