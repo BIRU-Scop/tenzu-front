@@ -35,6 +35,7 @@
   $disabled-opacity: 38%
 ) {
   @include mat.button-overrides((
+
     // Outlined
           outlined-outline-color: $color,
           outlined-disabled-outline-color: color-mix(in srgb, $color $disabled-opacity, $surface),
