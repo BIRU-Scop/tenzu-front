@@ -19,6 +19,17 @@
  *
  */
 
-export type IconName = "save" | "add" | "undo" | "close" | "cancel" | "delete" | "edit";
+export type IconName =
+  | "save"
+  | "add"
+  | "undo"
+  | "close"
+  | "cancel"
+  | "delete"
+  | "edit"
+  | "login"
+  | "send"
+  | "mail"
+  | "arrow_back_ios";
 export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
 export type ButtonType = "submit" | "button" | "reset";
