@@ -61,9 +61,8 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
         <h1 class="mat-headline-medium">{{ t("commons.projects") }}</h1>
         <app-button-add
           (click)="openCreateDialog($event)"
-          [translocoKey]="'commons.workspace'"
-          [appearance]="'outlined'"
-          [level]="'tertiary'"
+          translocoKey="commons.workspace"
+          level="tertiary"
           class="ml-auto"
         />
       </div>

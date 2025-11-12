@@ -59,7 +59,7 @@ import { MemberPermission } from "@tenzu/repository/membership";
               actualEntity: project,
               requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
             }"
-            mat-stroked-button
+            [matButton]="'filled'"
             [routerLink]="['create-role']"
             class="tertiary-button flex"
           >

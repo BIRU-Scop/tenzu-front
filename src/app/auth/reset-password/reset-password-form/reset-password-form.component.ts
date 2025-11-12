@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, inject, model, OnDestroy, OnInit } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { MatError } from "@angular/material/form-field";
@@ -32,45 +31,45 @@ import { AuthService, Tokens } from "@tenzu/repository/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
 import { AuthFormStateStore } from "../../auth-form-state.store";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
   selector: "app-reset-password-form",
-  imports: [FormsModule, MatButton, ReactiveFormsModule, TranslocoDirective, PasswordFieldComponent, MatError],
+  imports: [FormsModule, ReactiveFormsModule, TranslocoDirective, PasswordFieldComponent, MatError, ButtonComponent],
   template: `
-    <div *transloco="let t; prefix: 'resetPassword'" class="flex flex-col gap-y-4">
+    <div *transloco="let t" class="flex flex-col gap-y-4">
       <h1 class="mat-headline-medium">
         {{ t("choose_new_password") }}
       </h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-4">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-8">
         @if (form.hasError("passwordNotMatch")) {
           <mat-error class="mat-body-medium">
-            {{ t("password_not_match") }}
+            {{ t("resetPassword.password_not_match") }}
           </mat-error>
         }
         <app-password-field
+          class="flex"
           formControlName="newPassword"
           [settings]="{
             strength: { enabled: true, showBar: true },
-            label: t('new_password'),
+            label: t('resetPassword.new_password'),
           }"
         ></app-password-field>
         <app-password-field
+          class="flex"
           formControlName="repeatPassword"
           [settings]="{
             strength: { enabled: false },
-            label: t('repeat_password'),
+            label: t('resetPassword.repeat_password'),
           }"
         >
         </app-password-field>
-        <button
-          data-testid="submitChangePassword-button"
-          mat-flat-button
-          class="primary-button"
+        <app-button
+          level="primary"
           type="submit"
+          translocoKey="resetPassword.change_password"
           [disabled]="form.invalid"
-        >
-          {{ t("change_password") }}
-        </button>
+        />
       </form>
     </div>
   `,

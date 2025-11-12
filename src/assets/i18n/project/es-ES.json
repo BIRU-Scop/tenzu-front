@@ -39,19 +39,19 @@
         "modify_project": "Modificar",
         "delete_project": "Modificar / Eliminar"
       },
-      "member":{
+      "member": {
         "label": "Miembro",
         "create_modify_member": "Crear / Modificar",
         "delete_member": "Crear / Modificar / Eliminar"
       },
-      "story":{
+      "story": {
         "label": "Historia",
         "view_story": "Ver",
         "modify_story": "Ver / Modificar",
         "create_story": "Ver / Crear / Modificar",
         "delete_story": "Ver / Crear / Modificar / Eliminar"
       },
-      "workflow":{
+      "workflow": {
         "label": "Kanban",
         "no_story_permissions": "Para conceder un permiso de kanban, debe establecer un permiso de historia",
         "view_workflow": "Ver",
@@ -59,7 +59,7 @@
         "create_workflow": "Ver / Crear / Modificar",
         "delete_workflow": "Ver / Crear / Modificar / Eliminar"
       },
-      "comment":{
+      "comment": {
         "label": "Comentario",
         "no_story_permissions": "Para conceder permiso para comentar, debes establecer un permiso de historia",
         "view_comment": "Ver",
@@ -79,7 +79,8 @@
         "delete": "Eliminar"
       },
       "errors": {
-        "name_required": "El nombre del proyecto no puede estar vacío"
+        "name_required": "El nombre del proyecto no puede estar vacío",
+        "name_max_length": "El nombre no puede superar los 80 caracteres"
       },
       "messages": {
         "saved": "La información de tu proyecto ha sido guardada"

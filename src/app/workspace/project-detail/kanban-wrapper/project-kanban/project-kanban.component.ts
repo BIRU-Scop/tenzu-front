@@ -203,7 +203,6 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                     <app-button-add
                       class="whitespace-nowrap shrink-0 mt-4"
                       [level]="'primary'"
-                      [appearance]="'outlined'"
                       [translocoKey]="'workflow.add_story'"
                       (click)="openCreateStory($event, status.id)"
                     ></app-button-add>
@@ -218,7 +217,6 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
               >
                 <app-button-add
                   (click)="openCreateStatus($event)"
-                  [appearance]="'outlined'"
                   class="whitespace-nowrap w-64"
                   [translocoKey]="'workflow.add_status'"
                 />

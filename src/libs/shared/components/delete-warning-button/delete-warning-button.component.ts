@@ -21,31 +21,35 @@
 
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-delete-warning-button",
-  imports: [ConfirmDirective, MatButton, MatIcon, TranslocoDirective],
+  imports: [ConfirmDirective, MatIcon, TranslocoDirective, ButtonDeleteComponent],
   template: `
     <div class="flex flex-col gap-y-2" *transloco="let t">
       <h2 class="mat-headline-small">{{ t(translocoKeyTitle()) }}</h2>
-      <div class="flex flex-row">
-        <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-        <p class="mat-body-medium text-on-error-container align-middle">
-          {{ t(translocoKeyWarningMessage()) }}
-        </p>
-      </div>
-      <button
-        mat-flat-button
-        class="error-button w-fit"
+      @let _translocoKeyWarningMessage = translocoKeyWarningMessage();
+      @if (_translocoKeyWarningMessage) {
+        <div class="flex flex-row">
+          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
+          <p
+            class="mat-body-medium text-on-error-container align-middle"
+            [innerHTML]="t(_translocoKeyWarningMessage, translocoKeyWarningMessageParams())"
+          ></p>
+        </div>
+      }
+      <app-button-delete
+        class="place-self-end w-fit"
         appConfirm
+        [disabled]="disabled()"
         [data]="{ deleteAction: true }"
         (popupConfirm)="popupConfirm.emit()"
       >
         {{ t("project.buttons.delete") }}
-      </button>
+      </app-button-delete>
     </div>
   `,
   styles: ``,
@@ -53,6 +57,8 @@ import { TranslocoDirective } from "@jsverse/transloco";
 })
 export class DeleteWarningButtonComponent {
   translocoKeyTitle = input.required<string>();
-  translocoKeyWarningMessage = input.required<string>();
+  translocoKeyWarningMessage = input<string | undefined>(undefined);
+  translocoKeyWarningMessageParams = input<Record<string, string | number>>({});
   popupConfirm = output<void>();
+  disabled = input<boolean>(false);
 }

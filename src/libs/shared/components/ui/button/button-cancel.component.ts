@@ -21,9 +21,8 @@
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
-import { IconName, LevelType, ButtonType } from "../ui.types";
+import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
-import { MatButtonAppearance } from "@angular/material/button";
 
 @Component({
   selector: "app-button-cancel",
@@ -37,7 +36,6 @@ import { MatButtonAppearance } from "@angular/material/button";
 })
 export class ButtonCancelComponent implements ButtonInterface {
   level = input<LevelType>("secondary");
-  appearance = input<MatButtonAppearance>("filled");
   translocoKey = input<string>("commons.cancel");
   iconName = input<IconName | undefined>("cancel");
   iconOnly = input<boolean>(false);

@@ -65,9 +65,9 @@ import { PLUGINS_TOKEN } from "../app.config";
   template: `
     <mat-toolbar role="banner" class="flex" *transloco="let t; prefix: 'home.navigation'">
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
-        <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'"></mat-icon>
+        <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'" />
       </a>
-      <app-env-banner class="grow px-4"></app-env-banner>
+      <app-env-banner class="grow px-4" />
       @for (item of toolBarStore.items(); track item.eventName) {
         <button
           *transloco="let t"
@@ -80,7 +80,7 @@ import { PLUGINS_TOKEN } from "../app.config";
         </button>
       }
 
-      <button mat-icon-button (click)="openNotificationDialog($event)">
+      <button mat-icon-button class="primary-button" (click)="openNotificationDialog($event)">
         <mat-icon
           [matBadge]="notificationsComponentService.count.unread()"
           [matBadgeHidden]="!notificationsComponentService.count.unread()"
@@ -88,7 +88,7 @@ import { PLUGINS_TOKEN } from "../app.config";
           >notifications</mat-icon
         >
       </button>
-      <mat-divider class="h-1/2 !mx-2" [vertical]="true"></mat-divider>
+      <mat-divider class="h-1/2 !mx-2" [vertical]="true" />
       @let myUser = userStore.myUser();
 
       <button>
@@ -96,7 +96,7 @@ import { PLUGINS_TOKEN } from "../app.config";
       </button>
       <mat-menu #userMenu="matMenu">
         <div class="px-3 py-1.5">
-          <app-user-card [subtext]="myUser.email" [fullName]="myUser.fullName" [color]="myUser.color"></app-user-card>
+          <app-user-card [subtext]="myUser.email" [fullName]="myUser.fullName" [color]="myUser.color" />
         </div>
         <button mat-menu-item [routerLink]="'settings'" [attr.aria-label]="t('settings')">
           <mat-icon>settings</mat-icon>

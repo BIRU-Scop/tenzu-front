@@ -19,19 +19,15 @@
  *
  */
 
-import { InputSignal, InputSignalWithTransform } from "@angular/core";
-import { IconName, LevelType, ButtonType } from "@tenzu/shared/components/ui/ui.types";
+import { Directive, HostListener, inject } from "@angular/core";
+import { Location } from "@angular/common";
 
-export interface ButtonInterface {
-  translocoKey: InputSignal<string>;
-  iconName: InputSignal<IconName | undefined>;
-  type: InputSignal<ButtonType>;
-  iconOnly: InputSignal<boolean>;
-  disabled: InputSignal<boolean>;
-  level:
-    | InputSignalWithTransform<
-        "primary-button" | "secondary-button" | "tertiary-button" | "warning-button" | "error-button",
-        LevelType
-      >
-    | InputSignal<LevelType>;
+@Directive({
+  selector: "[appBack]",
+})
+export class BackDirective {
+  location = inject(Location);
+  @HostListener("click") back() {
+    this.location.back();
+  }
 }

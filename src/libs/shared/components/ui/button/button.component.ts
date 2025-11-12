@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
 import { MatButton, MatButtonAppearance, MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
@@ -86,9 +86,22 @@ export class ButtonComponent implements ButtonInterface {
       }
     },
   });
-  appearance = input<MatButtonAppearance>("filled");
   translocoKey = input.required<string>();
   type = input<ButtonType>("button");
+  appearance = computed<MatButtonAppearance>(() => {
+    switch (this.level()) {
+      case "primary-button":
+        return "outlined";
+      case "secondary-button":
+        return "filled";
+      case "tertiary-button":
+        return "filled";
+      case "warning-button":
+        return "filled";
+      case "error-button":
+        return "filled";
+    }
+  });
   iconName = input<IconName | undefined>(undefined);
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);

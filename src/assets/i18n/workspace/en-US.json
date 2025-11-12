@@ -27,10 +27,10 @@
       "title": "Information",
       "name": "Name",
       "name_required": "Workspace name can’t be empty",
+      "name_max_length": "Workspace name cannot exceed 40 characters",
       "name_placeholder": "Add workspace name",
       "delete_workspace": "Delete workspace",
       "delete": {
-        "delete": "Delete",
         "error": "You cannot delete a workspace that has projects in it. </br> This workspace has { totalProjects, plural, one {<strong class='number-projects'>#</strong> project} other {<strong class='number-projects'>#</strong> projects} }. Delete the { totalProjects, plural, one {project} other {projects} } first.",
         "deleted_workspace": "The workspace {{ var }} has been deleted."
       }
