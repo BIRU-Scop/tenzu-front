@@ -37,6 +37,7 @@ import { MatBadge } from "@angular/material/badge";
 @Component({
   selector: "app-notification-unit",
   standalone: true,
+
   imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe, MatBadge],
   template: `
     @let notif = notification();
@@ -172,9 +173,12 @@ export class NotificationUnitComponent {
           {{ t("notifications.title") }}
         </p>
         <div class="flex flex-row gap-1 items-baseline">
-          <mat-slide-toggle (toggleChange)="toggleShowRead()" [checked]="showOnlyUnread()" class="mat-label-small">{{
-            t("notifications.only_unread")
-          }}</mat-slide-toggle>
+          <mat-slide-toggle
+            class="slide-toggle-notification"
+            (toggleChange)="toggleShowRead()"
+            [checked]="showOnlyUnread()"
+            >{{ t("notifications.only_unread") }}</mat-slide-toggle
+          >
         </div>
       </div>
 
