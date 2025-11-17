@@ -30,6 +30,7 @@ export type IconName =
   | "login"
   | "send"
   | "mail"
-  | "arrow_back_ios";
+  | "arrow_back_ios"
+  | "mark_email_read";
 export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
 export type ButtonType = "submit" | "button" | "reset";

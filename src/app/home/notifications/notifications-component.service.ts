@@ -48,6 +48,12 @@ export class NotificationsComponentService {
     const count = await lastValueFrom(this.notificationsService.count());
     this.notificationsStore.updateCount(count);
   }
+  async readAll() {
+    const notifications = await lastValueFrom(this.notificationsService.readAll());
+    this.notificationsStore.upsertNotifications(notifications);
+    const count = this.notificationsStore.count();
+    this.notificationsStore.updateCount({ total: count.total, read: count.total, unread: 0 });
+  }
   async read(notification: Notification) {
     const readNotification = await lastValueFrom(this.notificationsService.read(notification.id));
     this.notificationsStore.updateNotification(readNotification);

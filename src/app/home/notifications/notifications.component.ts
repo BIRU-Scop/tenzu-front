@@ -191,7 +191,17 @@ export class NotificationUnitComponent {
         <p class="mat-title-medium">
           {{ t("notifications.title") }}
         </p>
-        <div class="flex flex-row gap-1 items-baseline">
+
+        <div class="flex flex-row gap-1 items-center">
+          @if (hasUnread()) {
+            <app-button
+              level="secondary"
+              [iconOnly]="true"
+              iconName="mark_email_read"
+              translocoKey="notifications.read_all"
+              (click)="readAll()"
+            />
+          }
           <mat-slide-toggle
             class="slide-toggle-notification"
             (toggleChange)="toggleShowRead()"
@@ -221,6 +231,9 @@ export class NotificationUnitComponent {
 export class NotificationsComponent implements OnInit {
   notificationsComponentService = inject(NotificationsComponentService);
   showOnlyUnread = signal(true);
+  hasUnread = computed(() => {
+    return this.notifications().some((notification) => !notification.readAt);
+  });
   notifications = computed(() => {
     const notifications = this.notificationsComponentService.notifications();
     return this.showOnlyUnread() ? notifications.filter((notification) => !notification.readAt) : notifications;
@@ -233,6 +246,9 @@ export class NotificationsComponent implements OnInit {
     if (!notification.readAt) {
       await this.notificationsComponentService.read(notification);
     }
+  }
+  async readAll() {
+    await this.notificationsComponentService.readAll();
   }
   toggleShowRead() {
     this.showOnlyUnread.update((value) => !value);
