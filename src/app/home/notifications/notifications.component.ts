@@ -33,12 +33,24 @@ import { UserNested } from "@tenzu/repository/user";
 import { MatDialogContent } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { StoryNamePipe } from "@tenzu/pipes/story-name.pipe";
+import { StoryUrlPipe } from "@tenzu/pipes/story-url.pipe";
 
 @Component({
   selector: "app-notification-unit",
   standalone: true,
 
-  imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe, MatBadge],
+  imports: [
+    AvatarComponent,
+    MatTooltip,
+    TranslocoDirective,
+    RouterLink,
+    SafeHtmlPipe,
+    MatBadge,
+    StoryNamePipe,
+    StoryUrlPipe,
+  ],
   template: `
     @let notif = notification();
     <div
@@ -65,11 +77,11 @@ import { MatBadge } from "@angular/material/badge";
           [innerHTML]="t(context.translateKey, context.params) | safeHtml"
         ></p>
         @if (context.link) {
-          <a [routerLink]="notificationsComponentService.getStoryUrl(notif)" class="line-clamp-1">
-            {{ notificationsComponentService.getStoryName(notif) }}
+          <a [routerLink]="notif.content | storyUrl" class="line-clamp-1">
+            {{ notif.content.story | storyName }}
           </a>
         } @else {
-          <span class="line-clamp-1">{{ notificationsComponentService.getStoryName(notif) }}</span>
+          <span class="line-clamp-1">{{ notif.content.story | storyName }} </span>
         }
       </div>
     </div>
@@ -165,10 +177,17 @@ export class NotificationUnitComponent {
 @Component({
   selector: "app-notifications",
   standalone: true,
-  imports: [NotificationUnitComponent, MatDialogContent, MatDivider, TranslocoDirective, MatSlideToggle],
+  imports: [
+    NotificationUnitComponent,
+    MatDialogContent,
+    MatDivider,
+    TranslocoDirective,
+    MatSlideToggle,
+    ButtonComponent,
+  ],
   template: `
     <mat-dialog-content *transloco="let t">
-      <div class="flex flex-row justify-between items-end !min-w-[450px] pb-2.5">
+      <div class="flex flex-row justify-between !min-w-[450px] pb-2.5 items-center">
         <p class="mat-title-medium">
           {{ t("notifications.title") }}
         </p>
@@ -188,7 +207,7 @@ export class NotificationUnitComponent {
         @for (notification of notifications(); track notification.id) {
           <app-notification-unit [notification]="notification" (read)="read(notification)"></app-notification-unit>
           @if (!$last) {
-            <mat-divider></mat-divider>
+            <mat-divider />
           }
         } @empty {
           <div class="mat-body-medium text-on-surface-variant px-1 py-1.5 my-1.5">{{ t("notifications.empty") }}</div>

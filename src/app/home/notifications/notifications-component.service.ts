@@ -53,9 +53,6 @@ export class NotificationsComponentService {
     this.notificationsStore.updateNotification(readNotification);
     this.notificationsStore.decreaseUnreadCount();
   }
-  public getStoryUrl(notification: Notification): string {
-    return `/workspace/${notification.content.project.workspaceId}/project/${notification.content.project.id}/story/${notification.content.story.ref}`;
-  }
 
   public isCurrentUser(notification: StoryAssignNotification | StoryUnassignNotification) {
     switch (notification.type) {
@@ -66,8 +63,5 @@ export class NotificationsComponentService {
         return notification.content.unassignedTo.username === this.userStore.myUser()?.username;
       }
     }
-  }
-  public getStoryName(notification: Notification): string {
-    return `#${notification.content.story.ref} ${notification.content.story.title}`;
   }
 }
