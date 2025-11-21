@@ -20,7 +20,7 @@
  */
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { setAllEntities, updateEntity, withEntities } from "@ngrx/signals/entities";
+import { setAllEntities, updateEntity, upsertEntities, withEntities } from "@ngrx/signals/entities";
 import { Notification, NotificationCount } from "./notifications.model";
 
 export const NotificationsStore = signalStore(
@@ -30,6 +30,9 @@ export const NotificationsStore = signalStore(
   withMethods((store) => ({
     setNotifications(notifications: Notification[]) {
       patchState(store, setAllEntities(notifications));
+    },
+    upsertNotifications(notifications: Notification[]) {
+      patchState(store, upsertEntities(notifications));
     },
     updateNotification(notification: Notification) {
       patchState(store, updateEntity({ id: notification.id, changes: { ...notification } }));

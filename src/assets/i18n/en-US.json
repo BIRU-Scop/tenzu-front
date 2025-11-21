@@ -47,6 +47,7 @@
     "title": "Notifications",
     "empty": "You don’t have any notification.",
     "only_unread": "Show only unread",
+    "read_all": "Mark all as read",
     "all_read": "You have read all your notifications.",
     "types": {
       "stories.assign.self": "<span class='text-on-background'>{{fullName}}</span> assigned you the story",
