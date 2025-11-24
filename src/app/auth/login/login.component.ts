@@ -30,7 +30,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../auth-form-state.store";
+import { AuthConfigStore } from "../auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
@@ -98,14 +98,14 @@ export default class LoginComponent implements OnInit, OnDestroy {
     password: [""],
   });
   route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
+  readonly authConfigStore = inject(AuthConfigStore);
 
   ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
+    this.authConfigStore.updateFormHasError(this.form.events);
   }
 
   ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+    this.authConfigStore.resetFormHasError();
   }
 
   submit() {

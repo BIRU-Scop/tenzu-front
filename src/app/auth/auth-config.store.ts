@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,25 +21,38 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { debounceTime, pipe, tap } from "rxjs";
+import { debounceTime, lastValueFrom, pipe, tap } from "rxjs";
 import { ControlEvent, FormGroup } from "@angular/forms";
+import { setAllEntities, withEntities } from "@ngrx/signals/entities";
+import { AuthService, SocialProvider } from "@tenzu/repository/auth";
+import { debug } from "@tenzu/utils/functions/logging";
+import { inject } from "@angular/core";
 
-export const AuthFormStateStore = signalStore(
+export const AuthConfigStore = signalStore(
   { providedIn: "root" },
-  withState<{ hasError: boolean }>({
-    hasError: false,
+  withState<{ formHasError: boolean }>({
+    formHasError: false,
   }),
-  withMethods((store) => ({
-    resetError(): void {
-      patchState(store, { hasError: false });
+  withEntities<SocialProvider>(),
+  withMethods((store, authService = inject(AuthService)) => ({
+    resetFormHasError(): void {
+      patchState(store, { formHasError: false });
     },
-    updateHasError: rxMethod<ControlEvent<FormGroup>>(
+    updateFormHasError: rxMethod<ControlEvent<FormGroup>>(
       pipe(
         debounceTime(200),
         tap((event) => {
-          patchState(store, { hasError: event.source.errors != null && event.source.touched });
+          patchState(store, { formHasError: event.source.errors != null && event.source.touched });
         }),
       ),
     ),
+    async initConfig() {
+      return await lastValueFrom(
+        authService.getConfig().pipe(
+          tap((config) => debug("getConfig", "received", config)),
+          tap((config) => patchState(store, setAllEntities(config.data.socialaccount.providers))),
+        ),
+      );
+    },
   })),
 );

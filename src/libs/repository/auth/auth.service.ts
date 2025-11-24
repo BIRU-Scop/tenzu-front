@@ -19,9 +19,9 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { DOCUMENT, inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Credential, Tokens } from "./auth.model";
+import { AuthConfig, Credential, ProviderRedirect, Tokens } from "./auth.model";
 import { catchError, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
@@ -29,6 +29,8 @@ import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ResetService } from "@tenzu/repository/base/reset.service";
+import { debug } from "@tenzu/utils/functions/logging";
+import { getCSRFToken } from "@tenzu/utils/functions/cookies";
 
 @Injectable({
   providedIn: "root",
@@ -40,8 +42,10 @@ export class AuthService {
   notificationService = inject(NotificationService);
   http = inject(HttpClient);
   router = inject(Router);
+  document = inject(DOCUMENT);
   readonly resetService = inject(ResetService);
   url = `${this.configAppService.apiUrl()}/auth`;
+  urlSSO = `${this.configAppService.apiUrl()}/_allauth/browser/v1`;
   autoLogoutSubscription: Subscription | null = null;
 
   login(credentials: Credential): Observable<Tokens> {
@@ -152,5 +156,26 @@ export class AuthService {
     } else {
       return of(false);
     }
+  }
+
+  getConfig() {
+    return this.http.get<AuthConfig>(`${this.urlSSO}/config`);
+  }
+
+  redirectToProviderParams(providerId: string): ProviderRedirect {
+    const csrf = getCSRFToken();
+    debug("csrf", csrf);
+    const callbackUrl = `${this.document.location.origin}/socialauth_callback`;
+    return {
+      url: `${this.urlSSO}/auth/provider/redirect`,
+      body: {
+        provider: providerId,
+        process: "login",
+        callback_url: callbackUrl,
+        csrfmiddlewaretoken: csrf,
+        acceptTermsOfService: true,
+        acceptPrivacyPolicy: true,
+      },
+    };
   }
 }

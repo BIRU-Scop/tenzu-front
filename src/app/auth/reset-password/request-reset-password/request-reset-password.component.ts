@@ -26,7 +26,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/repository/user";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../../auth-form-state.store";
+import { AuthConfigStore } from "../../auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
@@ -96,13 +96,13 @@ export default class RequestResetPasswordComponent implements OnInit, OnDestroy 
     email: ["", [Validators.required, Validators.email]],
   });
   userStore = inject(UserStore);
-  readonly authFormStateStore = inject(AuthFormStateStore);
+  readonly authConfigStore = inject(AuthConfigStore);
 
   ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
+    this.authConfigStore.updateFormHasError(this.form.events);
   }
   ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+    this.authConfigStore.resetFormHasError();
   }
 
   async submit() {

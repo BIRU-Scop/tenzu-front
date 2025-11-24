@@ -1,7 +1,7 @@
 {
   "title": "Create a Tenzu account",
   "create_account_email": "Create an account with your email",
-  "social_connect": "Social connect options coming soon",
+  "no_social_connect": "No social connect option",
   "create_account": "Create an account",
   "all_options": "All options",
   "terms_and_privacy": "I have read and agreed to the <a  href='{{ termsOfService }}' target='_blank'>Terms of Service</a> and the <a href='{{ privacyPolicy }}' target='_blank'> Privacy Policy</a>.",
@@ -20,6 +20,6 @@
   },
   "footer": {
     "already_account": "Already have an account?",
-    "login" : "Login here"
+    "login": "Login here"
   }
 }

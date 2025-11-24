@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,6 +21,16 @@
 
 import { Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
+import { debug } from "@tenzu/utils/functions/logging";
+import { inject } from "@angular/core";
+import { AuthConfigStore } from "./auth-config.store";
+
+export function authConfigResolver() {
+  debug("authConfigResolver", "start");
+  const authConfigStore = inject(AuthConfigStore);
+  authConfigStore.initConfig().then();
+  debug("authConfigResolver", "end");
+}
 
 export const routes: Routes = [
   {
@@ -36,5 +46,9 @@ export const routes: Routes = [
     path: "signup",
     loadComponent: () => import("./signup/signup.component"),
     providers: [provideTranslocoScope("signup")],
+  },
+  {
+    path: "socialauth_callback",
+    loadComponent: () => import("./social-auth-callback/social-auth-callback.component"),
   },
 ];

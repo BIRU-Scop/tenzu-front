@@ -30,7 +30,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { AuthService, Tokens } from "@tenzu/repository/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
-import { AuthFormStateStore } from "../../auth-form-state.store";
+import { AuthConfigStore } from "../../auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
@@ -93,7 +93,7 @@ export default class ResetPasswordFormComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
   router = inject(Router);
   route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
+  readonly authConfigStore = inject(AuthConfigStore);
 
   constructor() {
     this.route.paramMap.subscribe((value) => {
@@ -117,10 +117,10 @@ export default class ResetPasswordFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
+    this.authConfigStore.updateFormHasError(this.form.events);
   }
   ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+    this.authConfigStore.resetFormHasError();
   }
 
   async submit() {

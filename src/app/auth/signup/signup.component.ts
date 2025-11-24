@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { ActivatedRoute, RouterLink } from "@angular/router";
@@ -31,12 +31,14 @@ import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-f
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../auth-form-state.store";
+import { AuthConfigStore } from "../auth-config.store";
 import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { KeyValuePipe } from "@angular/common";
+import { AuthService } from "@tenzu/repository/auth";
 
 @Component({
   selector: "app-signup",
@@ -57,6 +59,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     MatOption,
     MatSelect,
     ButtonComponent,
+    KeyValuePipe,
   ],
   template: ` <div *transloco="let t" class="flex flex-col gap-4">
     @let _form = form();
@@ -70,7 +73,21 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
             translocoKey="signup.create_account_email"
             (click)="displayForm.set(true)"
           />
-          <app-button level="primary" translocoKey="signup.social_connect" [disabled]="true" />
+          @for (provider of authConfigStore.entities(); track provider.id) {
+            @let providerRedirect = authService.redirectToProviderParams(provider.id);
+            <!-- ngNoForm is an undocumented property to force classic form behaviour instead of Angular's-->
+            <form ngNoForm class="flex flex-col" [action]="providerRedirect.url" method="post">
+              @for (fieldData of providerRedirect.body | keyvalue; track fieldData.key) {
+                <input type="hidden" [name]="fieldData.key" [value]="fieldData.value" />
+              }
+              @for (fieldData of this.route.snapshot.queryParams | keyvalue; track fieldData.key) {
+                <input type="hidden" [name]="fieldData.key" [value]="fieldData.value" />
+              }
+              <app-button level="secondary" type="submit" [translocoKey]="provider.name" />
+            </form>
+          } @empty {
+            <app-button level="primary" [disabled]="true" translocoKey="signup.no_social_connect" />
+          }
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();
@@ -192,19 +209,19 @@ export default class SignupComponent implements OnInit, OnDestroy {
     }),
   );
   route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
-  translocoService = inject(TranslocoService);
+  readonly authConfigStore = inject(AuthConfigStore);
+  readonly authService = inject(AuthService);
 
   ngOnInit(): void {
     const form = this.form();
-    this.authFormStateStore.updateHasError(form.events);
+    this.authConfigStore.updateFormHasError(form.events);
     const configLegal = this.configAppService.configLegal();
     if (configLegal) {
       form.controls.acceptTerms.addValidators([Validators.requiredTrue]);
     }
   }
   ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+    this.authConfigStore.resetFormHasError();
   }
   submit(): void {
     const form = this.form();

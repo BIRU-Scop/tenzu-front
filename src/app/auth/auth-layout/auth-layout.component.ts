@@ -24,7 +24,7 @@ import { RouterOutlet } from "@angular/router";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { AuthFormStateStore } from "../auth-form-state.store";
+import { AuthConfigStore } from "../auth-config.store";
 import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 
 @Component({
@@ -36,7 +36,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
       <div class="h-[200px]">
         <mat-icon
           class="icon-full"
-          [class.error]="authFormStateStore.hasError()"
+          [class.error]="authConfigStore.formHasError()"
           svgIcon="logo-full-animated"
           aria-hidden="true"
         ></mat-icon>
@@ -52,7 +52,7 @@ export default class AuthLayoutComponent {
   notificationService = inject(NotificationService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
-  readonly authFormStateStore = inject(AuthFormStateStore);
+  readonly authConfigStore = inject(AuthConfigStore);
 
   constructor() {
     this.iconRegistry.addSvgIcon(
