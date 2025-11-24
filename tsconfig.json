@@ -19,7 +19,6 @@
     "module": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"],
     "baseUrl": "./",
     "paths": {
       "@tenzu/shared/components/*": ["src/libs/shared/components/*"],
