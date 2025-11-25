@@ -19,18 +19,19 @@
  *
  */
 
-import { DOCUMENT, inject, Injectable } from "@angular/core";
+import { inject, Injectable, Signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AuthConfig, Credential, ProviderRedirect, Tokens } from "./auth.model";
-import { catchError, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
+import { AuthConfig, Credential, ProviderRedirect, SocialProvider, Tokens } from "./auth.model";
+import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
 import { Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ResetService } from "@tenzu/repository/base/reset.service";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
-import { getCSRFToken } from "@tenzu/utils/functions/cookies";
 
 @Injectable({
   providedIn: "root",
@@ -42,11 +43,14 @@ export class AuthService {
   notificationService = inject(NotificationService);
   http = inject(HttpClient);
   router = inject(Router);
-  document = inject(DOCUMENT);
   readonly resetService = inject(ResetService);
   url = `${this.configAppService.apiUrl()}/auth`;
-  urlSSO = `${this.configAppService.apiUrl()}/_allauth/browser/v1`;
   autoLogoutSubscription: Subscription | null = null;
+  protected configStore = inject(AuthConfigStore);
+
+  get providers(): Signal<SocialProvider[]> {
+    return this.configStore.entities;
+  }
 
   login(credentials: Credential): Observable<Tokens> {
     return this.http
@@ -158,23 +162,25 @@ export class AuthService {
     }
   }
 
-  getConfig() {
-    return this.http.get<AuthConfig>(`${this.urlSSO}/config`);
+  private getConfig() {
+    return this.http.get<BaseDataModel<AuthConfig>>(`${this.url}/config`);
   }
 
-  redirectToProviderParams(providerId: string): ProviderRedirect {
-    const csrf = getCSRFToken();
-    debug("csrf", csrf);
-    const callbackUrl = `${this.document.location.origin}/socialauth_callback`;
+  async initConfig() {
+    return await lastValueFrom(
+      this.getConfig().pipe(
+        tap((config) => debug("getConfig", "received", config)),
+        tap((config) => this.configStore.setProviders(config.data.socialaccount.providers)),
+      ),
+    );
+  }
+
+  redirectToProviderBaseParams(providerId: string): ProviderRedirect {
+    const callbackUrl = "/socialauth_callback";
     return {
-      url: `${this.urlSSO}/auth/provider/redirect`,
+      url: `${this.url}/provider/${providerId}/redirect`,
       body: {
-        provider: providerId,
-        process: "login",
-        callback_url: callbackUrl,
-        csrfmiddlewaretoken: csrf,
-        acceptTermsOfService: true,
-        acceptPrivacyPolicy: true,
+        callbackUrl: callbackUrl,
       },
     };
   }

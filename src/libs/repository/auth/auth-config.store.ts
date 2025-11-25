@@ -21,12 +21,10 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { debounceTime, lastValueFrom, pipe, tap } from "rxjs";
+import { debounceTime, pipe, tap } from "rxjs";
 import { ControlEvent, FormGroup } from "@angular/forms";
 import { setAllEntities, withEntities } from "@ngrx/signals/entities";
-import { AuthService, SocialProvider } from "@tenzu/repository/auth";
-import { debug } from "@tenzu/utils/functions/logging";
-import { inject } from "@angular/core";
+import { SocialProvider } from "@tenzu/repository/auth";
 
 export const AuthConfigStore = signalStore(
   { providedIn: "root" },
@@ -34,7 +32,7 @@ export const AuthConfigStore = signalStore(
     formHasError: false,
   }),
   withEntities<SocialProvider>(),
-  withMethods((store, authService = inject(AuthService)) => ({
+  withMethods((store) => ({
     resetFormHasError(): void {
       patchState(store, { formHasError: false });
     },
@@ -46,13 +44,8 @@ export const AuthConfigStore = signalStore(
         }),
       ),
     ),
-    async initConfig() {
-      return await lastValueFrom(
-        authService.getConfig().pipe(
-          tap((config) => debug("getConfig", "received", config)),
-          tap((config) => patchState(store, setAllEntities(config.data.socialaccount.providers))),
-        ),
-      );
+    setProviders(providers: SocialProvider[]): void {
+      patchState(store, setAllEntities(providers));
     },
   })),
 );

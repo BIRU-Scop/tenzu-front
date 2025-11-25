@@ -26,7 +26,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/repository/user";
 import { MatDivider } from "@angular/material/divider";
-import { AuthConfigStore } from "../../auth-config.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({

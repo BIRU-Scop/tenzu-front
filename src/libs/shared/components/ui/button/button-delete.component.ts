@@ -23,6 +23,7 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
 import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button-delete",
@@ -37,6 +38,7 @@ import { ButtonInterface } from "./button.interface";
 export class ButtonDeleteComponent implements ButtonInterface {
   level = input<LevelType>("error");
   translocoKey = input<string>("commons.delete");
+  translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("delete");
   iconOnly = input<boolean>(false);

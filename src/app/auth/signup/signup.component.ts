@@ -31,14 +31,14 @@ import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-f
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
-import { AuthConfigStore } from "../auth-config.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { KeyValuePipe } from "@angular/common";
 import { AuthService } from "@tenzu/repository/auth";
+import SocialAuthCallbackComponent from "../social-auth/social-auth-login.component";
 
 @Component({
   selector: "app-signup",
@@ -59,7 +59,7 @@ import { AuthService } from "@tenzu/repository/auth";
     MatOption,
     MatSelect,
     ButtonComponent,
-    KeyValuePipe,
+    SocialAuthCallbackComponent,
   ],
   template: ` <div *transloco="let t" class="flex flex-col gap-4">
     @let _form = form();
@@ -69,25 +69,11 @@ import { AuthService } from "@tenzu/repository/auth";
         <div class="flex flex-col gap-y-4">
           <app-button
             level="primary"
-            iconName="add"
+            iconName="mail"
             translocoKey="signup.create_account_email"
             (click)="displayForm.set(true)"
           />
-          @for (provider of authConfigStore.entities(); track provider.id) {
-            @let providerRedirect = authService.redirectToProviderParams(provider.id);
-            <!-- ngNoForm is an undocumented property to force classic form behaviour instead of Angular's-->
-            <form ngNoForm class="flex flex-col" [action]="providerRedirect.url" method="post">
-              @for (fieldData of providerRedirect.body | keyvalue; track fieldData.key) {
-                <input type="hidden" [name]="fieldData.key" [value]="fieldData.value" />
-              }
-              @for (fieldData of this.route.snapshot.queryParams | keyvalue; track fieldData.key) {
-                <input type="hidden" [name]="fieldData.key" [value]="fieldData.value" />
-              }
-              <app-button level="secondary" type="submit" [translocoKey]="provider.name" />
-            </form>
-          } @empty {
-            <app-button level="primary" [disabled]="true" translocoKey="signup.no_social_connect" />
-          }
+          <app-social-auth-login [signup]="true"></app-social-auth-login>
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();

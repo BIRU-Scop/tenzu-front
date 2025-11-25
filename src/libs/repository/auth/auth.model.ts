@@ -33,39 +33,20 @@ export interface Tokens {
 export interface SocialProvider {
   id: string;
   name: string;
-  flows: [string];
   client_id: string;
 }
 export interface AuthConfig {
-  status: number;
-  data: {
-    account: {
-      authentication_method: string;
-      email_verification_by_code_enabled: boolean;
-      is_open_for_signup: boolean;
-      login_by_code_enabled: boolean;
-    };
-    socialaccount: {
-      providers: [SocialProvider];
-    };
-    mfa?: {
-      supported_types: [string];
-    };
-    usersessions?: {
-      track_activity: boolean;
-    };
+  socialaccount: {
+    providers: [SocialProvider];
   };
 }
 
 export interface ProviderRedirect {
   url: string;
   body: {
-    provider: string;
-    process: string;
-    callback_url: string;
-    csrfmiddlewaretoken: string;
-    acceptTermsOfService: boolean;
-    acceptPrivacyPolicy: boolean;
+    callbackUrl: string;
+    acceptTermsOfService?: boolean;
+    acceptPrivacyPolicy?: boolean;
   };
 }
 

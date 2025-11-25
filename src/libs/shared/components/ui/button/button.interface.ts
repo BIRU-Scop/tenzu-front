@@ -21,9 +21,11 @@
 
 import { InputSignal, InputSignalWithTransform } from "@angular/core";
 import { IconName, LevelType, ButtonType } from "@tenzu/shared/components/ui/ui.types";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 export interface ButtonInterface {
   translocoKey: InputSignal<string>;
+  translocoValue: InputSignal<JsonObject>;
   iconName: InputSignal<IconName | undefined>;
   type: InputSignal<ButtonType>;
   iconOnly: InputSignal<boolean>;

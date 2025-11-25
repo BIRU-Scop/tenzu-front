@@ -30,8 +30,9 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
-import { AuthConfigStore } from "../auth-config.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import SocialAuthCallbackComponent from "../social-auth/social-auth-login.component";
 
 @Component({
   selector: "app-login",
@@ -47,6 +48,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     MatDivider,
     ButtonComponent,
     PasswordFieldComponent,
+    SocialAuthCallbackComponent,
   ],
   template: `
     <div *transloco="let t" class="flex flex-col gap-4 w-96">
@@ -79,6 +81,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
           [disabled]="!form.dirty || form.invalid"
         />
       </form>
+      <app-social-auth-login [signup]="false"></app-social-auth-login>
       <mat-divider></mat-divider>
       <footer class="text-center">
         <p class="mat-body-medium">

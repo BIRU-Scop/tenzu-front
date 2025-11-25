@@ -2,6 +2,8 @@
   "title": "Crea una cuenta Tenzu",
   "create_account_email": "Crea una cuenta con tu correo electrónico",
   "no_social_connect": "No hay opciones de conexión social disponibles",
+  "alternatives": "o",
+  "continue_with": "Continuar con {{provider}}",
   "create_account": "Crear una cuenta",
   "all_options": "Todas las opciones",
   "terms_and_privacy": "He leído y acepto los <a href='{{ termsOfService }}' target='_blank'>Términos de Servicio</a> y <a href='{{ privacyPolicy }}' target='_blank'>Política de Privacidad</a>.",

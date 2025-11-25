@@ -23,12 +23,12 @@ import { Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { debug } from "@tenzu/utils/functions/logging";
 import { inject } from "@angular/core";
-import { AuthConfigStore } from "./auth-config.store";
+import { AuthService } from "@tenzu/repository/auth";
 
 export function authConfigResolver() {
   debug("authConfigResolver", "start");
-  const authConfigStore = inject(AuthConfigStore);
-  authConfigStore.initConfig().then();
+  const authService = inject(AuthService);
+  authService.initConfig().then();
   debug("authConfigResolver", "end");
 }
 
@@ -49,6 +49,6 @@ export const routes: Routes = [
   },
   {
     path: "socialauth_callback",
-    loadComponent: () => import("./social-auth-callback/social-auth-callback.component"),
+    loadComponent: () => import("./social-auth/social-auth-callback.component"),
   },
 ];

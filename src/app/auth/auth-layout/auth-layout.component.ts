@@ -24,7 +24,7 @@ import { RouterOutlet } from "@angular/router";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { AuthConfigStore } from "../auth-config.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 
 @Component({

@@ -30,7 +30,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { AuthService, Tokens } from "@tenzu/repository/auth";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
-import { AuthConfigStore } from "../../auth-config.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
