@@ -19,16 +19,7 @@
  *
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Directive,
-  HostListener,
-  inject,
-  input,
-  InputSignal,
-  output,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Directive, inject, input, InputSignal, output } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -109,6 +100,9 @@ export class ConfirmPopupComponent {
 @Directive({
   selector: "[appConfirm]",
   standalone: true,
+  host: {
+    "(click)": "onClick()",
+  },
 })
 export class ConfirmDirective {
   dialog = inject(MatDialog);
@@ -117,7 +111,6 @@ export class ConfirmDirective {
   });
   popupConfirm = output<void>();
 
-  @HostListener("click")
   onClick() {
     const ref = this.dialog.open<ConfirmPopupComponent, InputSignal<ConfirmPopupData>>(ConfirmPopupComponent, {
       data: this.data,
