@@ -19,44 +19,160 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { debug } from "@tenzu/utils/functions/logging";
 import { AuthService, ProviderCallback, Tokens } from "@tenzu/repository/auth";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { TranslocoDirective } from "@jsverse/transloco";
+import { MatButton } from "@angular/material/button";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { MatCheckbox } from "@angular/material/checkbox";
+import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ConfigAppService } from "../../config-app/config-app.service";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-social-auth-callback",
   standalone: true,
-  imports: [],
+  imports: [
+    TranslocoDirective,
+    RouterLink,
+    MatButton,
+    ButtonComponent,
+    MatCheckbox,
+    ReactiveFormsModule,
+    FormsModule,
+    MatIcon,
+  ],
   template: `
-    <!--    
-        TODO put somme message to explain social auth failure, a button to go elsewhere
-        and maybe a resend verification email button for user awaiting validation
-        (this might means resubmitting the social signup)
-        Also handle user cancellation
-     -->
-    <!--    if error is "denied", that means the user still needs to be validated before they can login -->
-    @if (callback.error) {
-      {{ callback.error }}: {{ callback.error_process }}
+    <ng-container *transloco="let t">
+      @let _callback = callback();
+      @if (_callback) {
+        @if (_callback.error === "unverified") {
+          <!--          // TODO resend verification email button -->
+          {{ _callback.error }}
+        } @else if (_callback.error === "missing_terms_acceptance" && _callback.socialSessionKey) {
+          @let configLegal = configAppService.configLegal();
+          @let _form = form();
+          <form [formGroup]="_form" (ngSubmit)="submitCompleteSignup()" class="flex flex-col gap-2 w-[32rem]">
+            @if (configLegal) {
+              <div class="min-w-full w-min">
+                <mat-checkbox formControlName="acceptTerms" required>
+                  <p
+                    [innerHTML]="
+                      t('auth.signup.terms_and_privacy', {
+                        termsOfService: configLegal.tos,
+                        privacyPolicy: configLegal.privacy,
+                      })
+                    "
+                  ></p>
+                </mat-checkbox>
+              </div>
+              @if (_form.dirty && _form.controls.acceptTerms.hasError("required")) {
+                <div class="flex flex-row">
+                  <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
+                  <p class="mat-body-medium text-on-error-container align-middle">
+                    {{ t("auth.signup.validation.terms_and_privacy_required") }}
+                  </p>
+                </div>
+              }
+            }
+            <app-button
+              level="primary"
+              [disabled]="!_form.dirty || _form.invalid"
+              type="submit"
+              translocoKey="auth.signup.continue"
+            />
+          </form>
+        } @else {
+          <div class="flex flex-col gap-4 items-center">
+            <p class="text-center">
+              <span>{{ t("auth.social.unknown_error", { errorType: _callback.error }) }}</span
+              ><br />
+              <span>{{ t("auth.social.unknown_error_exit") }}</span>
+            </p>
+            <a
+              class="primary-button"
+              mat-flat-button
+              [routerLink]="'/'"
+              [attr.aria-label]="t('home.navigation.go_home')"
+            >
+              {{ t("home.navigation.go_home") }}
+            </a>
+          </div>
+        }
+      }
+    </ng-container>
+  `,
+  styles: `
+    mat-checkbox.ng-invalid.ng-dirty {
+      --checkbox-background-color: var(--mat-sys-error);
+
+      ::ng-deep.mdc-label {
+        color: var(--mat-sys-on-error-container);
+      }
     }
   `,
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SocialAuthCallbackComponent {
-  callback: ProviderCallback = {};
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
+  readonly configAppService = inject(ConfigAppService);
+  readonly fb = inject(NonNullableFormBuilder);
+
+  callback = signal<ProviderCallback | undefined>(undefined);
+  form = computed(() =>
+    this.fb.group({
+      acceptTerms: [false, this.configAppService.configLegal() ? [Validators.required] : []],
+    }),
+  );
+
+  tryAuthenticate(callback: ProviderCallback) {
+    if (callback.access && callback.refresh) {
+      this.authService.setToken(callback as Tokens);
+      this.router.navigateByUrl("/");
+      return true;
+    }
+    return false;
+  }
 
   constructor() {
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((value) => {
       debug("social auth callback", "query params", value);
-      this.callback = value as ProviderCallback;
-      if (!this.callback.error) {
-        this.authService.refresh(this.callback as Tokens).subscribe(() => this.router.navigateByUrl("/"));
+      const callback = value as ProviderCallback;
+      this.callback.set(callback);
+      // todo add error log of value if error !== "cancelled"
+      if (callback.error === "cancelled") {
+        this.router.navigateByUrl(callback.fromSignup ? "/signup" : "/login");
+      } else {
+        this.tryAuthenticate(callback);
       }
     });
+  }
+
+  submitCompleteSignup(): void {
+    const form = this.form();
+    const socialSessionKey = this.callback()?.socialSessionKey;
+    if (form.valid && socialSessionKey) {
+      const acceptTerms = form.value.acceptTerms || false;
+      this.authService
+        .continueSignup({
+          ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
+          socialSessionKey,
+        })
+        .subscribe(
+          (callback) => {
+            if (!this.tryAuthenticate(callback)) {
+              this.callback.set({ ...this.callback(), ...callback });
+            }
+          },
+          (err) => {
+            this.notificationService.error({ title: err?.error?.detail, translocoTitle: false });
+          },
+        );
+    }
   }
 }

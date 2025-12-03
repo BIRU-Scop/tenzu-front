@@ -64,13 +64,13 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
   template: ` <div *transloco="let t" class="flex flex-col gap-4">
     @let _form = form();
     @if (!emailSent()) {
-      <h1 class="mat-headline-medium text-center">{{ t("signup.title") }}</h1>
+      <h1 class="mat-headline-medium text-center">{{ t("auth.signup.title") }}</h1>
       @if (!displayForm()) {
         <div class="flex flex-col gap-y-4">
           <app-button
             level="primary"
             iconName="mail"
-            translocoKey="signup.create_account_email"
+            translocoKey="auth.signup.create_account_email"
             (click)="displayForm.set(true)"
           />
           <app-social-auth-login [signup]="true"></app-social-auth-login>
@@ -84,7 +84,7 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
             @if (_form.controls.fullName.hasError("required")) {
               <mat-error
                 data-testid="fullName-required-error"
-                [innerHTML]="t('signup.validation.full_name_required')"
+                [innerHTML]="t('auth.signup.validation.full_name_required')"
               ></mat-error>
             }
           </mat-form-field>
@@ -111,7 +111,7 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
                   <small
                     class="mat-body-small"
                     [innerHTML]="
-                      t('signup.terms_and_privacy', {
+                      t('auth.signup.terms_and_privacy', {
                         termsOfService: configLegal.tos,
                         privacyPolicy: configLegal.privacy,
                       })
@@ -124,7 +124,7 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
           <div class="flex flex-row justify-end gap-4">
             <app-button
               level="secondary"
-              translocoKey="signup.all_options"
+              translocoKey="auth.signup.all_options"
               iconName="arrow_back_ios"
               (click)="displayForm.set(false)"
             />
@@ -132,7 +132,7 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
               [disabled]="!_form.dirty || _form.invalid"
               iconName="add"
               level="tertiary"
-              translocoKey="signup.create_account"
+              translocoKey="auth.signup.create_account"
               data-testid="submitCreateAccount-button"
               type="submit"
             />
@@ -140,13 +140,13 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
         </form>
       }
     } @else {
-      <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
+      <h1 class="mat-headline-medium">{{ t("auth.signup.verify.title") }}</h1>
       <p class="mat-body-medium">
-        {{ t("signup.verify.verification_link_sent") }}
+        {{ t("auth.signup.verify.verification_link_sent") }}
         <strong data-testid="sentEmail-block">{{ _form.value.email }}</strong>
       </p>
       <p class="mat-body-medium">
-        {{ t("signup.verify.mail_not_received") }}
+        {{ t("auth.signup.verify.mail_not_received") }}
       </p>
       <button
         data-testid="resendMail-button"
@@ -156,13 +156,14 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
         (click)="resendEmail()"
         class="primary-button"
       >
-        {{ t("signup.verify.resend_button") }}
+        {{ t("auth.signup.verify.resend_button") }}
       </button>
     }
     <mat-divider></mat-divider>
     <footer class="text-center">
       <p class="mat-body-medium">
-        {{ t("signup.footer.already_account") }} <a [routerLink]="['/login']">{{ t("signup.footer.login") }}</a>
+        {{ t("auth.signup.footer.already_account") }}
+        <a [routerLink]="['/login']">{{ t("auth.signup.footer.login") }}</a>
       </p>
     </footer>
   </div>`,
@@ -228,9 +229,9 @@ export default class SignupComponent implements OnInit, OnDestroy {
     this.submit();
     this.notificationService.open({
       type: "success",
-      title: "signup.verify.resend_email_label",
+      title: "auth.signup.verify.resend_email_label",
       translocoTitle: true,
-      detail: "signup.verify.resend_email_message",
+      detail: "auth.signup.verify.resend_email_message",
       translocoDetail: true,
     });
   }

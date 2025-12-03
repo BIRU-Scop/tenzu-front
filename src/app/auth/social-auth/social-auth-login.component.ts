@@ -50,9 +50,10 @@ import { MatDivider } from "@angular/material/divider";
       @let _signup = signup();
       @for (provider of authService.providers(); track provider.id; let isFirst = $first, isLast = $last) {
         @if (isFirst) {
-          <p class="mat-body-medium text-center">{{ t("signup.alternatives") }}</p>
+          <p class="mat-body-medium text-center">{{ t("auth.signup.alternatives") }}</p>
         }
-        @let providerRedirect = authService.redirectToProviderBaseParams(provider.id);
+        @let providerRedirect =
+          authService.redirectToProviderBaseParams(provider.id, this.route.snapshot.queryParams, _signup);
         <!-- ngNoForm is an undocumented property to force classic form behaviour instead of Angular's-->
         <form ngNoForm class="flex flex-col" [action]="providerRedirect.url" method="post">
           @for (fieldData of providerRedirect.body | keyvalue; track fieldData.key) {
@@ -69,7 +70,7 @@ import { MatDivider } from "@angular/material/divider";
             level="primary"
             [disabled]="(configLegal || false) && _signup && !_acceptTerms"
             type="submit"
-            translocoKey="signup.continue_with"
+            translocoKey="auth.signup.continue_with"
             [translocoValue]="{ provider: provider.name }"
           />
         </form>
@@ -81,7 +82,7 @@ import { MatDivider } from "@angular/material/divider";
                 <small
                   class="mat-body-small"
                   [innerHTML]="
-                    t('signup.terms_and_privacy', {
+                    t('auth.signup.terms_and_privacy', {
                       termsOfService: configLegal.tos,
                       privacyPolicy: configLegal.privacy,
                     })
@@ -92,7 +93,7 @@ import { MatDivider } from "@angular/material/divider";
           </div>
         }
       } @empty {
-        <app-button level="primary" [disabled]="true" translocoKey="signup.no_social_connect" />
+        <app-button level="primary" [disabled]="true" translocoKey="auth.signup.no_social_connect" />
       }
     </div>
   `,

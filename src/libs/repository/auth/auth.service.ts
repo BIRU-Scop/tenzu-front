@@ -21,9 +21,17 @@
 
 import { inject, Injectable, Signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AuthConfig, Credential, ProviderRedirect, SocialProvider, Tokens } from "./auth.model";
+import {
+  AuthConfig,
+  Credential,
+  ProviderCallback,
+  ProviderContinueSignupPayload,
+  ProviderRedirect,
+  SocialProvider,
+  Tokens,
+} from "./auth.model";
 import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
-import { Router } from "@angular/router";
+import { Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
@@ -97,7 +105,7 @@ export class AuthService {
     this.router.navigateByUrl("/login").then();
   }
 
-  refresh(tokens: Tokens): Observable<Tokens> {
+  refresh(tokens: Pick<Tokens, "refresh">): Observable<Tokens> {
     return this.http
       .post<Tokens>(`${this.url}/token/refresh`, {
         refresh: tokens.refresh,
@@ -175,13 +183,20 @@ export class AuthService {
     );
   }
 
-  redirectToProviderBaseParams(providerId: string): ProviderRedirect {
-    const callbackUrl = "/socialauth_callback";
+  redirectToProviderBaseParams(providerId: string, queryParams: Params, isSignup: boolean): ProviderRedirect {
+    const query = new URLSearchParams(queryParams);
+    query.append("fromSignup", isSignup.toString());
+    const callbackUrl = `/socialauth_callback?${query.toString()}`;
+    debug("redirectToProviderBaseParams", callbackUrl);
     return {
       url: `${this.url}/provider/${providerId}/redirect`,
       body: {
         callbackUrl: callbackUrl,
       },
     };
+  }
+
+  continueSignup(payload: ProviderContinueSignupPayload) {
+    return this.http.post<ProviderCallback>(`${this.url}/provider/continue_signup`, payload);
   }
 }

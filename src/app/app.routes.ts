@@ -105,6 +105,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
+    providers: [provideTranslocoScope("home"), provideTranslocoScope("auth")],
     canActivateChild: [unloggedOnlyGuard],
     children: [
       {

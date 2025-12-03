@@ -1,0 +1,47 @@
+{
+  "login": {
+    "action": "Iniciar sesión",
+    "title": "Inicia sesión en tu cuenta Tenzu",
+    "email_or_username": "Correo electrónico o nombre de usuario",
+    "not_registered_yet": "¿Aún no estás registrado?",
+    "create_account": "Crea una cuenta",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "errors": {
+      "401": "Tu correo electrónico, nombre de usuario o contraseña son incorrectos. Revísalos e inténtalo de nuevo",
+      "username_required": "Introduce tu correo electrónico o nombre de usuario"
+    }
+  },
+  "social": {
+    "unknown_error": "Se ha producido un error de tipo «{{ errorType }} : {{ errorLocation}}».",
+    "unknown_error_exit": "Vuelva a intentarlo."
+  },
+  "signup": {
+    "title": "Crea una cuenta Tenzu",
+    "create_account_email": "Crea una cuenta con tu correo electrónico",
+    "no_social_connect": "No hay opciones de conexión social disponibles",
+    "alternatives": "o",
+    "continue_with": "Continuar con {{provider}}",
+    "continue": "Continuar",
+    "create_account": "Crear una cuenta",
+    "all_options": "Todas las opciones",
+    "terms_and_privacy": "He leído y acepto los <a href='{{ termsOfService }}' target='_blank'>Términos de Servicio</a> y <a href='{{ privacyPolicy }}' target='_blank'>Política de Privacidad</a>.",
+    "validation": {
+      "full_name_required": "Introduce un nombre completo",
+      "terms_and_privacy_required": "Debes aceptar las condiciones para poder continuar"
+    },
+    "verify": {
+      "title": "Revisa tu bandeja de entrada para completar tu registro",
+      "verification_link_sent": "Haz clic en el enlace de verificación en el correo que te enviamos para:",
+      "mail_not_received": "¿No recibiste el correo?",
+      "resend_button": "Reenviar correo",
+      "footer_text": "¿Quieres usar un correo diferente?",
+      "footer_button": "Crear una nueva cuenta",
+      "resend_email_label": "Te acabamos de enviar un correo",
+      "resend_email_message": "¡El correo de verificación está en camino!"
+    },
+    "footer": {
+      "already_account": "¿Ya tienes una cuenta?",
+      "login": "Inicia sesión aquí"
+    }
+  }
+}

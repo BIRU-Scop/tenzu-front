@@ -36,16 +36,15 @@ export const routes: Routes = [
   {
     path: "login",
     loadComponent: () => import("./login/login.component"),
-    providers: [provideTranslocoScope("login")],
   },
   {
     path: "reset-password",
     loadChildren: () => import("./reset-password/routes").then((m) => m.routes),
+    providers: [provideTranslocoScope("resetPassword")],
   },
   {
     path: "signup",
     loadComponent: () => import("./signup/signup.component"),
-    providers: [provideTranslocoScope("signup")],
   },
   {
     path: "socialauth_callback",

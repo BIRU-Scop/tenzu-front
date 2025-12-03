@@ -19,7 +19,7 @@
  *
  */
 
-import { Tokens } from "../auth";
+import { InvitationTokens, Tokens } from "../auth";
 import { WorkspaceNested } from "../workspace";
 
 import { ProjectLinkNested, ProjectNested } from "../project";
@@ -55,17 +55,14 @@ export type UserDeleteInfo = {
   onlyMemberProjects: ProjectNested[];
 };
 
-export type CreateUserPayload = Pick<User, "fullName" | "email"> & {
-  password: string;
-  acceptTermsOfService: boolean;
-  acceptPrivacyPolicy: boolean;
-  color?: number;
-  lang?: string;
-  projectInvitationToken?: string;
-  workspaceInvitationToken?: string;
-  acceptProjectInvitation?: boolean;
-  acceptWorkspaceInvitation?: boolean;
-};
+export type CreateUserPayload = Pick<User, "fullName" | "email"> &
+  InvitationTokens & {
+    password: string;
+    acceptTermsOfService: boolean;
+    acceptPrivacyPolicy: boolean;
+    color?: number;
+    lang?: string;
+  };
 
 export type UpdateUserPayload = Partial<
   Pick<User, "fullName" | "lang"> & {
