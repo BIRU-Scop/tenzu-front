@@ -55,8 +55,10 @@ export type UserDeleteInfo = {
   onlyMemberProjects: ProjectNested[];
 };
 
-export type CreateUserPayload = Pick<User, "fullName" | "email"> &
-  InvitationTokens & {
+export type SendVerifyUserValidator = Pick<User, "email"> & InvitationTokens;
+
+export type CreateUserPayload = Pick<User, "fullName"> &
+  SendVerifyUserValidator & {
     password: string;
     acceptTermsOfService: boolean;
     acceptPrivacyPolicy: boolean;

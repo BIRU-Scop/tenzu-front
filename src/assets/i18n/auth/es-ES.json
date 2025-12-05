@@ -12,7 +12,7 @@
     }
   },
   "social": {
-    "unknown_error": "Se ha producido un error de tipo «{{ errorType }} : {{ errorLocation}}».",
+    "unknown_error": "Se ha producido un error de tipo «{{ errorType }}».",
     "unknown_error_exit": "Vuelva a intentarlo."
   },
   "signup": {

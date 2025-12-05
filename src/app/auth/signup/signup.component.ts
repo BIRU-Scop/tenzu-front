@@ -21,14 +21,13 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { CreateUserPayload, UserService } from "@tenzu/repository/user";
+import { CreateUserPayload, SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
@@ -39,13 +38,13 @@ import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { AuthService } from "@tenzu/repository/auth";
 import SocialAuthCallbackComponent from "../social-auth/social-auth-login.component";
+import PendingVerificationComponent from "./pending-verification.component";
 
 @Component({
   selector: "app-signup",
   imports: [
     EmailFieldComponent,
     FormsModule,
-    MatButton,
     MatLabel,
     PasswordFieldComponent,
     ReactiveFormsModule,
@@ -60,6 +59,7 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
     MatSelect,
     ButtonComponent,
     SocialAuthCallbackComponent,
+    PendingVerificationComponent,
   ],
   template: ` <div *transloco="let t" class="flex flex-col gap-4">
     @let _form = form();
@@ -139,33 +139,16 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
           </div>
         </form>
       }
-    } @else {
-      <h1 class="mat-headline-medium">{{ t("auth.signup.verify.title") }}</h1>
-      <p class="mat-body-medium">
-        {{ t("auth.signup.verify.verification_link_sent") }}
-        <strong data-testid="sentEmail-block">{{ _form.value.email }}</strong>
-      </p>
-      <p class="mat-body-medium">
-        {{ t("auth.signup.verify.mail_not_received") }}
-      </p>
-      <button
-        data-testid="resendMail-button"
-        mat-stroked-button
-        tabindex="1"
-        (keydown.enter)="resendEmail()"
-        (click)="resendEmail()"
-        class="primary-button"
-      >
-        {{ t("auth.signup.verify.resend_button") }}
-      </button>
+      <mat-divider></mat-divider>
+      <footer class="text-center">
+        <p class="mat-body-medium">
+          {{ t("auth.signup.footer.already_account") }}
+          <a [routerLink]="['/login']">{{ t("auth.signup.footer.login") }}</a>
+        </p>
+      </footer>
+    } @else if (_form.value.email) {
+      <app-pending-verification [email]="_form.value.email" (resendEmail)="resendEmail()"></app-pending-verification>
     }
-    <mat-divider></mat-divider>
-    <footer class="text-center">
-      <p class="mat-body-medium">
-        {{ t("auth.signup.footer.already_account") }}
-        <a [routerLink]="['/login']">{{ t("auth.signup.footer.login") }}</a>
-      </p>
-    </footer>
   </div>`,
   styles: `
     mat-checkbox.ng-invalid.ng-dirty {
@@ -218,7 +201,7 @@ export default class SignupComponent implements OnInit, OnDestroy {
       const acceptTerms = form.value.acceptTerms || false;
       this.userService
         .create({
-          ...(form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
+          ...(form.value as Pick<CreateUserPayload, "email" | "fullName" | "password" | "color" | "lang">),
           ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
           ...params,
         })
@@ -226,13 +209,15 @@ export default class SignupComponent implements OnInit, OnDestroy {
     }
   }
   resendEmail(): void {
-    this.submit();
-    this.notificationService.open({
-      type: "success",
-      title: "auth.signup.verify.resend_email_label",
-      translocoTitle: true,
-      detail: "auth.signup.verify.resend_email_message",
-      translocoDetail: true,
-    });
+    const form = this.form();
+    if (form.valid) {
+      const params = this.route.snapshot.queryParams;
+      this.userService
+        .resentVerification({
+          ...(form.value as Pick<SendVerifyUserValidator, "email">),
+          ...params,
+        })
+        .subscribe();
+    }
   }
 }

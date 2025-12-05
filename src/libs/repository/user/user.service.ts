@@ -20,13 +20,21 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { User, CreateUserPayload, UserDeleteInfo, UpdateUserPayload, VerificationInfo } from "./user.model";
+import {
+  User,
+  CreateUserPayload,
+  UserDeleteInfo,
+  UpdateUserPayload,
+  VerificationInfo,
+  SendVerifyUserValidator,
+} from "./user.model";
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "../auth";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
-import { Observable } from "rxjs";
+import { Observable, tap } from "rxjs";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Injectable({
   providedIn: "root",
@@ -34,6 +42,7 @@ import { map } from "rxjs/operators";
 export class UserService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
+  notificationService = inject(NotificationService);
   endpoint = `${this.configAppService.apiUrl()}`;
   myUserUrl = `${this.endpoint}/users/me`;
   usersUrl = `${this.endpoint}/users`;
@@ -64,8 +73,22 @@ export class UserService {
     return this.http.get<boolean>(`${this.usersUrl}/reset-password/${token}/verify`);
   }
 
-  verifyUsers(token: string): Observable<VerificationInfo> {
+  verifyUser(token: string): Observable<VerificationInfo> {
     return this.http.post<VerificationInfo>(`${this.usersUrl}/verify`, { token: token });
+  }
+
+  resentVerification(item: SendVerifyUserValidator): Observable<null> {
+    return this.http.post<null>(`${this.usersUrl}/resend-verification`, item).pipe(
+      tap(() => {
+        this.notificationService.open({
+          type: "success",
+          title: "auth.signup.verify.resend_email_label",
+          translocoTitle: true,
+          detail: "auth.signup.verify.resend_email_message",
+          translocoDetail: true,
+        });
+      }),
+    );
   }
 
   getDeleteInfo(): Observable<UserDeleteInfo> {

@@ -21,6 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import * as Sentry from "@sentry/angular";
 import { debug } from "@tenzu/utils/functions/logging";
 import { AuthService, ProviderCallback, Tokens } from "@tenzu/repository/auth";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -31,6 +32,9 @@ import { MatCheckbox } from "@angular/material/checkbox";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatIcon } from "@angular/material/icon";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
+import PendingVerificationComponent from "../signup/pending-verification.component";
 
 @Component({
   selector: "app-social-auth-callback",
@@ -44,14 +48,14 @@ import { MatIcon } from "@angular/material/icon";
     ReactiveFormsModule,
     FormsModule,
     MatIcon,
+    PendingVerificationComponent,
   ],
   template: `
     <ng-container *transloco="let t">
       @let _callback = callback();
       @if (_callback) {
-        @if (_callback.error === "unverified") {
-          <!--          // TODO resend verification email button -->
-          {{ _callback.error }}
+        @if (_callback.error === "unverified" && _callback.email) {
+          <app-pending-verification [email]="_callback.email" (resendEmail)="resendEmail()"></app-pending-verification>
         } @else if (_callback.error === "missing_terms_acceptance" && _callback.socialSessionKey) {
           @let configLegal = configAppService.configLegal();
           @let _form = form();
@@ -86,6 +90,7 @@ import { MatIcon } from "@angular/material/icon";
             />
           </form>
         } @else {
+          {{ logUnexpectedState() }}
           <div class="flex flex-col gap-4 items-center">
             <p class="text-center">
               <span>{{ t("auth.social.unknown_error", { errorType: _callback.error }) }}</span
@@ -121,6 +126,8 @@ export default class SocialAuthCallbackComponent {
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
   readonly configAppService = inject(ConfigAppService);
+  readonly notificationService = inject(NotificationService);
+  readonly userService = inject(UserService);
   readonly fb = inject(NonNullableFormBuilder);
 
   callback = signal<ProviderCallback | undefined>(undefined);
@@ -144,13 +151,19 @@ export default class SocialAuthCallbackComponent {
       debug("social auth callback", "query params", value);
       const callback = value as ProviderCallback;
       this.callback.set(callback);
-      // todo add error log of value if error !== "cancelled"
       if (callback.error === "cancelled") {
         this.router.navigateByUrl(callback.fromSignup ? "/signup" : "/login");
       } else {
         this.tryAuthenticate(callback);
       }
     });
+  }
+
+  resendEmail(): void {
+    const callback = this.callback();
+    if (callback && callback.email) {
+      this.userService.resentVerification(callback as SendVerifyUserValidator).subscribe();
+    }
   }
 
   submitCompleteSignup(): void {
@@ -174,5 +187,12 @@ export default class SocialAuthCallbackComponent {
           },
         );
     }
+  }
+
+  logUnexpectedState(): void {
+    Sentry.captureMessage("Unexpected error received by social callback", {
+      level: "error",
+      extra: { callbackData: this.callback() },
+    });
   }
 }

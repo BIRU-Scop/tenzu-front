@@ -69,6 +69,7 @@ export type ProviderCallback = Partial<Tokens> &
       | "unverified"
       | "missing_terms_acceptance";
     socialSessionKey?: string;
+    email?: string;
     fromSignup: boolean;
   };
 

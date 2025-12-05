@@ -12,7 +12,7 @@
     }
   },
   "social": {
-    "unknown_error": "An error of type \"{{ errorType }}: {{ errorLocation}}\" has occurred.",
+    "unknown_error": "An error of type \"{{ errorType }}\" has occurred.",
     "unknown_error_exit": "Please try again."
   },
   "signup": {
