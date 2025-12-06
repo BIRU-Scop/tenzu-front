@@ -24,8 +24,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { MatError } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { LoginService } from "../../auth/login/login.service";
-import { HttpErrorResponse } from "@angular/common/http";
 import { UserStore } from "@tenzu/repository/user";
 import { passwordsMustMatch } from "@tenzu/utils/validators";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -48,20 +46,6 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
     <div class="max-w-2xl mx-auto flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
       <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
-        <div>
-          <app-password-field
-            formControlName="currentPassword"
-            [settings]="{
-              strength: { enabled: false, showBar: false },
-              label: t('current_password'),
-            }"
-          ></app-password-field>
-          @if (form.hasError("invalidCurrentPassword")) {
-            <mat-error class="mat-body-medium">
-              {{ t("invalid_current_password") }}
-            </mat-error>
-          }
-        </div>
         <div>
           <app-password-field
             formControlName="newPassword"
@@ -105,40 +89,23 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
 export class SecurityComponent {
   fb = inject(NonNullableFormBuilder);
   notificationService = inject(NotificationService);
-  loginService = inject(LoginService);
   userStore = inject(UserStore);
   form = this.fb.group(
     {
-      currentPassword: [""],
       newPassword: [""],
       repeatPassword: [""],
     },
     { validators: passwordsMustMatch },
   );
 
-  submit() {
+  async submit() {
     this.form.reset(this.form.value);
     if (this.form.valid) {
-      this.loginService
-        .checkPassword({
-          username: this.userStore.myUser().username,
-          password: this.form.value.currentPassword!,
-        })
-        .subscribe({
-          next: () => {
-            this.userStore.changePassword(this.form.value.newPassword!);
-            this.notificationService.success({
-              title: "settings.security.changes_saved",
-              translocoTitle: true,
-            });
-          },
-          error: (error) => {
-            if (error instanceof HttpErrorResponse && error.status === 401) {
-              this.form.controls.currentPassword.setErrors({ invalidCurrentPassword: true });
-              this.form.setErrors({ invalidCurrentPassword: true });
-            }
-          },
-        });
+      await this.userStore.changePassword(this.form.value.newPassword!);
+      this.notificationService.success({
+        title: "settings.security.changes_saved",
+        translocoTitle: true,
+      });
     }
   }
 }
