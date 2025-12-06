@@ -35,6 +35,7 @@ import { MatIcon } from "@angular/material/icon";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import PendingVerificationComponent from "../signup/pending-verification.component";
+import { coerceBooleanProperty } from "@angular/cdk/coercion";
 
 @Component({
   selector: "app-social-auth-callback",
@@ -149,7 +150,10 @@ export default class SocialAuthCallbackComponent {
   constructor() {
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((value) => {
       debug("social auth callback", "query params", value);
-      const callback = value as ProviderCallback;
+      const callback = {
+        ...value,
+        fromSignup: coerceBooleanProperty(value["fromSignup"] || false),
+      } as ProviderCallback;
       this.callback.set(callback);
       if (callback.error === "cancelled") {
         this.router.navigateByUrl(callback.fromSignup ? "/signup" : "/login");
