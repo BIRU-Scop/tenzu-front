@@ -31,7 +31,7 @@ import {
   Tokens,
 } from "./auth.model";
 import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
-import { Params, Router } from "@angular/router";
+import { NavigationExtras, Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
@@ -102,7 +102,13 @@ export class AuthService {
   }
   applyLogout() {
     this.clear();
-    this.router.navigateByUrl("/login").then();
+    const navigationExtras: NavigationExtras =
+      this.router.url === "/"
+        ? {}
+        : {
+            queryParams: { next: this.router.url },
+          };
+    this.router.navigate(["/login"], navigationExtras).then();
   }
 
   refresh(tokens: Pick<Tokens, "refresh">): Observable<Tokens> {

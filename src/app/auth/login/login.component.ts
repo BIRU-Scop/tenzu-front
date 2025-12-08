@@ -86,7 +86,9 @@ import SocialAuthCallbackComponent from "../social-auth/social-auth-login.compon
       <footer class="text-center">
         <p class="mat-body-medium">
           {{ t("auth.login.not_registered_yet") }}
-          <a [routerLink]="['/signup']">{{ t("auth.login.create_account") }}</a>
+          <a [routerLink]="['/signup']" [queryParams]="this.route.snapshot.queryParams">{{
+            t("auth.login.create_account")
+          }}</a>
         </p>
       </footer>
     </div>

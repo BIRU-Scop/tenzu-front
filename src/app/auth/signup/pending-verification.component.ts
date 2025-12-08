@@ -19,12 +19,12 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatDivider } from "@angular/material/divider";
-import { RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-pending-verification",
@@ -52,7 +52,9 @@ import { RouterLink } from "@angular/router";
     <footer class="text-center">
       <p class="mat-body-medium">
         {{ t("auth.signup.footer.already_account") }}
-        <a [routerLink]="['/login']">{{ t("auth.signup.footer.login") }}</a>
+        <a [routerLink]="['/login']" [queryParams]="this.route.snapshot.queryParams">{{
+          t("auth.signup.footer.login")
+        }}</a>
       </p>
     </footer>
   </ng-container>`,
@@ -66,4 +68,5 @@ import { RouterLink } from "@angular/router";
 export default class PendingVerificationComponent {
   email = input.required<string>();
   resendEmail = output();
+  route = inject(ActivatedRoute);
 }

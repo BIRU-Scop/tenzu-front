@@ -143,7 +143,9 @@ import PendingVerificationComponent from "./pending-verification.component";
       <footer class="text-center">
         <p class="mat-body-medium">
           {{ t("auth.signup.footer.already_account") }}
-          <a [routerLink]="['/login']">{{ t("auth.signup.footer.login") }}</a>
+          <a [routerLink]="['/login']" [queryParams]="this.route.snapshot.queryParams">{{
+            t("auth.signup.footer.login")
+          }}</a>
         </p>
       </footer>
     } @else if (_form.value.email) {

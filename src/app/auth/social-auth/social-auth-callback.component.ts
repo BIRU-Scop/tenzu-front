@@ -94,14 +94,14 @@ import { coerceBooleanProperty } from "@angular/cdk/coercion";
           {{ logUnexpectedState() }}
           <div class="flex flex-col gap-4 items-center">
             <p class="text-center">
-              <span>{{ t("auth.social.unknown_error", { errorType: _callback.error }) }}</span
+              <span>{{ t("auth.social.unknown_error", { errorType: _callback.error || "unexpected_state" }) }}</span
               ><br />
               <span>{{ t("auth.social.unknown_error_exit") }}</span>
             </p>
             <a
               class="primary-button"
               mat-flat-button
-              [routerLink]="'/'"
+              [routerLink]="_callback.fromSignup ? '/signup' : '/login'"
               [attr.aria-label]="t('home.navigation.go_home')"
             >
               {{ t("home.navigation.go_home") }}
