@@ -70,6 +70,7 @@ export type ProviderCallback = Partial<Tokens> &
       | "missing_terms_acceptance";
     socialSessionKey?: string;
     email?: string;
+    next?: string;
     fromSignup: boolean;
   };
 

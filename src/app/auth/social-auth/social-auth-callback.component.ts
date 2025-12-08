@@ -90,7 +90,7 @@ import { coerceBooleanProperty } from "@angular/cdk/coercion";
               translocoKey="auth.signup.continue"
             />
           </form>
-        } @else {
+        } @else if (_callback) {
           {{ logUnexpectedState() }}
           <div class="flex flex-col gap-4 items-center">
             <p class="text-center">
@@ -141,7 +141,7 @@ export default class SocialAuthCallbackComponent {
   tryAuthenticate(callback: ProviderCallback) {
     if (callback.access && callback.refresh) {
       this.authService.setToken(callback as Tokens);
-      this.router.navigateByUrl("/");
+      this.router.navigateByUrl(callback.next || "/");
       return true;
     }
     return false;
