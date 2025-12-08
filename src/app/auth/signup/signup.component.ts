@@ -39,6 +39,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { AuthService } from "@tenzu/repository/auth";
 import SocialAuthCallbackComponent from "../social-auth/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification.component";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-signup",
@@ -168,21 +169,24 @@ export default class SignupComponent implements OnInit, OnDestroy {
   languageStore = inject(LanguageStore);
   userService = inject(UserService);
   configAppService = inject(ConfigAppService);
+  fb = inject(NonNullableFormBuilder);
+  route = inject(ActivatedRoute);
+  readonly authConfigStore = inject(AuthConfigStore);
+  readonly authService = inject(AuthService);
+
   displayForm = signal(false);
   emailSent = signal(false);
-  fb = inject(NonNullableFormBuilder);
-  form = computed(() =>
-    this.fb.group({
-      email: ["", [Validators.required, Validators.email]],
+  queryParamMap = toSignal(this.route.queryParamMap);
+  form = computed(() => {
+    const initialEmail = this.queryParamMap()?.get("email") || "";
+    return this.fb.group({
+      email: [initialEmail, [Validators.required, Validators.email]],
       fullName: ["", [Validators.required, Validators.maxLength(256)]],
       password: [""],
       lang: [this.languageStore.entities().find((language) => language.isDefault)?.code],
       acceptTerms: [false],
-    }),
-  );
-  route = inject(ActivatedRoute);
-  readonly authConfigStore = inject(AuthConfigStore);
-  readonly authService = inject(AuthService);
+    });
+  });
 
   ngOnInit(): void {
     const form = this.form();
