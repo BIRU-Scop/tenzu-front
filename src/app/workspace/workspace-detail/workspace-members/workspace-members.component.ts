@@ -22,7 +22,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { MatButton } from "@angular/material/button";
 
 import { MatDialog } from "@angular/material/dialog";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
@@ -38,13 +37,13 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
 import { NgTemplateOutlet } from "@angular/common";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-workspace-members",
   imports: [
     TranslocoDirective,
     MatIcon,
-    MatButton,
     FormsModule,
     TranslocoDirective,
     ReactiveFormsModule,
@@ -56,6 +55,7 @@ import { NgTemplateOutlet } from "@angular/common";
     RouterOutlet,
     HasPermissionDirective,
     NgTemplateOutlet,
+    ButtonAddComponent,
   ],
   template: `
     @let workspace = workspaceRepositoryService.entityDetail();
@@ -63,17 +63,15 @@ import { NgTemplateOutlet } from "@angular/common";
       <div class="flex flex-col gap-y-8 h-full" *transloco="let t">
         <div class="flex flex-row">
           <h1 class="mat-headline-medium grow">{{ t("workspace.members.title") }}</h1>
-          <button
+          <app-button-add
             *appHasPermission="{
               actualEntity: workspace,
               requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
             }"
+            level="primary"
+            translocoKey="workspace.members.invite_to_workspace"
             (click)="openInviteDialog()"
-            class="tertiary-button"
-            mat-stroked-button
-          >
-            {{ t("workspace.members.invite_to_workspace") }}
-          </button>
+          />
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,34 +21,15 @@
 
 @use '@angular/material' as mat;
 
-.mdc-switch__track {
-  box-shadow: 0 0 3px var(--mat-sys-primary);;
-}
-.mat-mdc-slide-toggle.mat-mdc-slide-toggle-focused .mdc-switch .mdc-switch__ripple::after {
-  opacity: .50;
-}
-.mat-mdc-slide-toggle .mdc-label {
-  @apply whitespace-nowrap;
-}
 
-  @mixin tokens-overrides() {
+.slide-toggle-notification {
   @include mat.slide-toggle-overrides((
-    track-outline-color: var(--mat-sys-primary),
-    selected-track-outline-color: var(--mat-sys-primary),
-    unselected-handle-color: var(--mat-sys-primary-container),
-    unselected-hover-handle-color: var(--mat-sys-primary),
-    unselected-focus-handle-color: var(--mat-sys-primary),
-    unselected-pressed-handle-color: var(--mat-sys-primary),
-    selected-handle-color: var(--mat-sys-primary-container),
-    selected-hover-handle-color: var(--mat-sys-primary),
-    selected-focus-handle-color: var(--mat-sys-primary),
-    selected-pressed-handle-color: var(--mat-sys-primary),
-    unselected-focus-state-layer-color: var(--mat-sys-primary-container),
-    unselected-hover-state-layer-color: var(--mat-sys-primary-container),
-    unselected-pressed-state-layer-color: var(--mat-sys-primary-container),
-    selected-focus-state-layer-color: var(--mat-sys-primary-container),
-    selected-hover-state-layer-color: var(--mat-sys-primary-container),
-    selected-pressed-state-layer-color: var(--mat-sys-primary-container),
+    unselected-focus-state-layer-opacity: 0,
+    unselected-hover-state-layer-opacity: 0,
+    unselected-pressed-state-layer-opacity: 0,
+    selected-focus-state-layer-opacity: 0,
+    selected-hover-state-layer-opacity: 0,
+    selected-pressed-state-layer-opacity: 0,
     track-width: 40px,
     track-height: 22px,
     with-icon-handle-size: 16px,
@@ -58,4 +39,8 @@
     selected-icon-size: 14px,
     unselected-icon-size: 14px,
   ));
+}
+
+@mixin tokens-overrides() {
+
 }

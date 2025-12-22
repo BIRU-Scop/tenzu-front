@@ -3,7 +3,7 @@
     "dialog": {
       "aria_label": "Create kanban",
       "maximum_reached": "Maximum of kanbans have been reached",
-      "create_workflow": "Create new kanban",
+      "create_workflow": "Create kanban",
       "max-num-workflow-created-error": "Impossible to create the new kaban, you have reached the maximum number",
       "name_required": "Kanban name can’t be empty",
       "name_placeholder": "Add kanban name"
@@ -40,8 +40,8 @@
     "move_left": "Move left",
     "move_right": "Move right"
   },
-  "add_status": "Add status",
-  "add_story": "Add story",
+  "add_status": "Status",
+  "add_story": "Story",
   "create_story": {
     "create_story": "Create story",
     "story_name": "Story name",
@@ -103,7 +103,7 @@
       "confirm_remove_message_self": "Are you sure you want to delete your comment?",
       "confirm_remove_message_other": "Are you sure you want to moderate this comment?",
       "loading": "Comments are loading",
-      "loading_complete" : "You have reached the end of the comments",
+      "loading_complete": "You have reached the end of the comments",
       "load_more_explanation": "Scroll to the last comment to load more of them"
     },
     "change_workflow": "Move story to another kanban",

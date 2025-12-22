@@ -21,7 +21,6 @@
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { MatButton } from "@angular/material/button";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -37,15 +36,14 @@ import { Role } from "@tenzu/repository/membership";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-project-members",
   imports: [
     TranslocoDirective,
     MatIcon,
-    MatButton,
     FormsModule,
-    TranslocoDirective,
     ReactiveFormsModule,
     MatTabLink,
     MatTabNav,
@@ -55,6 +53,7 @@ import { NgTemplateOutlet } from "@angular/common";
     RouterOutlet,
     HasPermissionDirective,
     NgTemplateOutlet,
+    ButtonAddComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -62,15 +61,12 @@ import { NgTemplateOutlet } from "@angular/common";
       <div class="flex flex-col gap-y-8" *transloco="let t">
         <div class="flex flex-row">
           <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
-
-          <button
+          <app-button-add
+            translocoKey="project.members.invite_to_project"
+            level="primary"
             *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
             (click)="openInviteDialog()"
-            class="tertiary-button"
-            mat-stroked-button
-          >
-            {{ t("project.members.invite_to_project") }}
-          </button>
+          />
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {

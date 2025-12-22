@@ -19,18 +19,15 @@
  *
  */
 
-export type IconName =
-  | "save"
-  | "add"
-  | "undo"
-  | "close"
-  | "cancel"
-  | "delete"
-  | "edit"
-  | "login"
-  | "send"
-  | "mail"
-  | "arrow_back_ios"
-  | "mark_email_read";
-export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
-export type ButtonType = "submit" | "button" | "reset";
+import { Directive, HostListener, inject } from "@angular/core";
+import { Location } from "@angular/common";
+
+@Directive({
+  selector: "[appBack]",
+})
+export class BackDirective {
+  location = inject(Location);
+  @HostListener("click") back() {
+    this.location.back();
+  }
+}

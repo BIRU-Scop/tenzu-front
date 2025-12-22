@@ -21,9 +21,8 @@
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
-import { IconName, LevelType, ButtonType } from "../ui.types";
+import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
-import { MatButtonAppearance } from "@angular/material/button";
 
 @Component({
   selector: "app-button-edit",
@@ -36,7 +35,6 @@ import { MatButtonAppearance } from "@angular/material/button";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonEditComponent implements ButtonInterface {
-  appearance = input<MatButtonAppearance>("filled");
   level = input<LevelType>("secondary");
   translocoKey = input<string>("commons.edit");
   type = input<ButtonType>("button");

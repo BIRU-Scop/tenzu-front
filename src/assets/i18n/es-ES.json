@@ -47,6 +47,7 @@
     "title": "Notificaciones",
     "empty": "No tienes ninguna notificación.",
     "only_unread": "Mostrar solo los no leídos",
+    "read_all": "Marcar todo como leído",
     "all_read": "Has leído todas tus notificaciones.",
     "types": {
       "stories.assign.self": "<span class='text-on-background'>{{fullName}}</span> te asignó la historia",

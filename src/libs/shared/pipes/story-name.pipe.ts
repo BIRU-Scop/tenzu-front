@@ -19,18 +19,14 @@
  *
  */
 
-export type IconName =
-  | "save"
-  | "add"
-  | "undo"
-  | "close"
-  | "cancel"
-  | "delete"
-  | "edit"
-  | "login"
-  | "send"
-  | "mail"
-  | "arrow_back_ios"
-  | "mark_email_read";
-export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
-export type ButtonType = "submit" | "button" | "reset";
+import { Pipe, PipeTransform } from "@angular/core";
+import { StorySummary } from "@tenzu/repository/story";
+
+@Pipe({
+  name: "storyName",
+})
+export class StoryNamePipe implements PipeTransform {
+  transform(value: StorySummary) {
+    return `#${value.ref} ${value.title}`;
+  }
+}

@@ -19,18 +19,15 @@
  *
  */
 
-export type IconName =
-  | "save"
-  | "add"
-  | "undo"
-  | "close"
-  | "cancel"
-  | "delete"
-  | "edit"
-  | "login"
-  | "send"
-  | "mail"
-  | "arrow_back_ios"
-  | "mark_email_read";
-export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
-export type ButtonType = "submit" | "button" | "reset";
+import { Pipe, PipeTransform } from "@angular/core";
+import { ProjectSummary } from "@tenzu/repository/project";
+import { StorySummary } from "@tenzu/repository/story";
+
+@Pipe({
+  name: "storyUrl",
+})
+export class StoryUrlPipe implements PipeTransform {
+  transform(value: { project: ProjectSummary; story: StorySummary }) {
+    return `/workspace/${value.project.workspaceId}/project/${value.project.id}/story/${value.story.ref}`;
+  }
+}

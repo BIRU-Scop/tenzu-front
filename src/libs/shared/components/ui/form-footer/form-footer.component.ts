@@ -20,25 +20,32 @@
  */
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
-import { ButtonComponent } from "./button.component";
-import { ButtonType, IconName, LevelType } from "../ui.types";
-import { ButtonInterface } from "./button.interface";
+import { BackDirective } from "@tenzu/directives/back/back.directive";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 
 @Component({
-  selector: "app-button-close",
-  imports: [ButtonComponent],
-  templateUrl: "./button-base.component.html",
-  host: {
-    class: "inline-block",
-  },
+  selector: "app-form-footer-secondary-action",
+  imports: [],
+  template: ` <ng-content></ng-content> `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonCloseComponent implements ButtonInterface {
-  level = input<LevelType>("secondary");
-  translocoKey = input<string>("commons.close");
-  iconName = input<IconName | undefined>("close");
-  iconOnly = input<boolean>(false);
-  disabled = input<boolean>(false);
-  type = input<ButtonType>("button");
+export class FormFooterSecondaryActionComponent {}
+
+@Component({
+  selector: "app-form-footer",
+  imports: [BackDirective, ButtonCancelComponent],
+  template: `
+    <div class="flex gap-4 justify-end">
+      @if (secondaryAction()) {
+        <ng-content select="app-form-footer-secondary-action"><app-button-cancel appBack /></ng-content>
+      }
+      <ng-content></ng-content>
+    </div>
+  `,
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFooterComponent {
+  secondaryAction = input<boolean>(true);
 }

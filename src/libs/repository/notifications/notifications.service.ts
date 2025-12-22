@@ -43,6 +43,11 @@ export class NotificationsService {
       .pipe(map((dataObject) => dataObject.data));
   }
 
+  readAll() {
+    return this.http
+      .post<BaseDataModel<Notification[]>>(`${this.notificationsUrl}/read`, {})
+      .pipe(map((dataObject) => dataObject.data));
+  }
   count(): Observable<NotificationCount> {
     return this.http.get<NotificationCount>(`${this.notificationsUrl}/count`);
   }
