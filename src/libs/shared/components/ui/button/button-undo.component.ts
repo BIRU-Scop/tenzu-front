@@ -23,6 +23,7 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
 import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button-undo",
@@ -37,6 +38,7 @@ import { ButtonInterface } from "./button.interface";
 export class ButtonUndoComponent implements ButtonInterface {
   level = input<LevelType>("secondary");
   translocoKey = input<string>("commons.undo");
+  translocoValue = input<JsonObject>({});
   iconName = input<IconName | undefined>("undo");
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);

@@ -1,0 +1,47 @@
+{
+  "login": {
+    "action": "Se connecter",
+    "title": "Connecte-toi à ton compte Tenzu",
+    "email_or_username": "Adresse e-mail ou nom d'utilisateur",
+    "not_registered_yet": "Tu n'es pas encore inscrit ?",
+    "create_account": "Créer un compte",
+    "forgot_password": "Mot de passe oublié ?",
+    "errors": {
+      "401": "Ton adresse e-mail, ton nom d'utilisateur ou ton mot de passe sont incorrects. Vérifie-les et réessaye.",
+      "username_required": "Entre ton adresse e-mail ou ton nom d'utilisateur"
+    }
+  },
+  "social": {
+    "unknown_error": "Une erreur de type \"{{ errorType }}\" s'est produite.",
+    "unknown_error_exit": "Merci de réessayer."
+  },
+  "signup": {
+    "title": "Créer un compte Tenzu",
+    "create_account_email": "Créer un compte avec ton adresse e-mail.",
+    "no_social_connect": "Pas d'option de connexion tierce disponible",
+    "alternatives": "ou",
+    "continue_with": "Continuer avec {{provider}}",
+    "continue": "Continuer",
+    "create_account": "Créer un compte",
+    "all_options": "Toutes les options",
+    "terms_and_privacy": "J'ai lu et j'accepte les <a  href='{{ termsOfService }}' target='_blank'>Conditions Générales d'Utilisation</a> et la <a href='{{ privacyPolicy }}' target='_blank'> Politique de confidentialité</a>.",
+    "validation": {
+      "full_name_required": "Entre un nom complet",
+      "terms_and_privacy_required": "Tu dois accepter les conditions pour pouvoir continuer"
+    },
+    "verify": {
+      "title": "Vérifie ta boîte de réception pour terminer ton inscription.",
+      "verification_link_sent": "Clique sur le lien de vérification dans l'e-mail que nous t'avons envoyé à :",
+      "mail_not_received": "Tu n'as pas reçu d'e-mail ?",
+      "resend_button": "Renvoyer l'e-mail",
+      "footer_text": "Tu souhaites utiliser une autre adresse e-mail ?",
+      "footer_button": "Créer un nouveau compte",
+      "resend_email_label": "Nous venons de t'envoyer un e-mail.",
+      "resend_email_message": "L'e-mail de vérification est en route !"
+    },
+    "footer": {
+      "already_account": "Compte existant ?",
+      "login": "Connecte-toi ici"
+    }
+  }
+}

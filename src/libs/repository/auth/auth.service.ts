@@ -19,16 +19,27 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, Signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Credential, Tokens } from "./auth.model";
-import { catchError, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
-import { Router } from "@angular/router";
+import {
+  AuthConfig,
+  Credential,
+  ProviderCallback,
+  ProviderContinueSignupPayload,
+  ProviderRedirect,
+  SocialProvider,
+  Tokens,
+} from "./auth.model";
+import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
+import { NavigationExtras, Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../../../app/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ResetService } from "@tenzu/repository/base/reset.service";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Injectable({
   providedIn: "root",
@@ -43,6 +54,11 @@ export class AuthService {
   readonly resetService = inject(ResetService);
   url = `${this.configAppService.apiUrl()}/auth`;
   autoLogoutSubscription: Subscription | null = null;
+  protected configStore = inject(AuthConfigStore);
+
+  get providers(): Signal<SocialProvider[]> {
+    return this.configStore.entities;
+  }
 
   login(credentials: Credential): Observable<Tokens> {
     return this.http
@@ -86,10 +102,16 @@ export class AuthService {
   }
   applyLogout() {
     this.clear();
-    this.router.navigateByUrl("/login").then();
+    const navigationExtras: NavigationExtras =
+      this.router.url === "/"
+        ? {}
+        : {
+            queryParams: { next: this.router.url },
+          };
+    this.router.navigate(["/login"], navigationExtras).then();
   }
 
-  refresh(tokens: Tokens): Observable<Tokens> {
+  refresh(tokens: Pick<Tokens, "refresh">): Observable<Tokens> {
     return this.http
       .post<Tokens>(`${this.url}/token/refresh`, {
         refresh: tokens.refresh,
@@ -152,5 +174,35 @@ export class AuthService {
     } else {
       return of(false);
     }
+  }
+
+  private getConfig() {
+    return this.http.get<BaseDataModel<AuthConfig>>(`${this.url}/config`);
+  }
+
+  async initConfig() {
+    return await lastValueFrom(
+      this.getConfig().pipe(
+        tap((config) => debug("getConfig", "received", config)),
+        tap((config) => this.configStore.setProviders(config.data.socialaccount.providers)),
+      ),
+    );
+  }
+
+  redirectToProviderBaseParams(providerId: string, queryParams: Params, isSignup: boolean): ProviderRedirect {
+    const query = new URLSearchParams(queryParams);
+    query.append("fromSignup", isSignup.toString());
+    const callbackUrl = `/socialauth_callback?${query.toString()}`;
+    debug("redirectToProviderBaseParams", callbackUrl);
+    return {
+      url: `${this.url}/provider/${providerId}/redirect`,
+      body: {
+        callbackUrl: callbackUrl,
+      },
+    };
+  }
+
+  continueSignup(payload: ProviderContinueSignupPayload) {
+    return this.http.post<ProviderCallback>(`${this.url}/provider/continue_signup`, payload);
   }
 }

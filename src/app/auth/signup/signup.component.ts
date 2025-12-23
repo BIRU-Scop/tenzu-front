@@ -21,29 +21,31 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
-import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { CreateUserPayload, UserService } from "@tenzu/repository/user";
+import { CreateUserPayload, SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../auth-form-state.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { AuthService } from "@tenzu/repository/auth";
+import SocialAuthCallbackComponent from "../social-auth/social-auth-login.component";
+import PendingVerificationComponent from "./pending-verification.component";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-signup",
   imports: [
     EmailFieldComponent,
     FormsModule,
-    MatButton,
     MatLabel,
     PasswordFieldComponent,
     ReactiveFormsModule,
@@ -57,20 +59,22 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     MatOption,
     MatSelect,
     ButtonComponent,
+    SocialAuthCallbackComponent,
+    PendingVerificationComponent,
   ],
   template: ` <div *transloco="let t" class="flex flex-col gap-4">
     @let _form = form();
     @if (!emailSent()) {
-      <h1 class="mat-headline-medium text-center">{{ t("signup.title") }}</h1>
+      <h1 class="mat-headline-medium text-center">{{ t("auth.signup.title") }}</h1>
       @if (!displayForm()) {
         <div class="flex flex-col gap-y-4">
           <app-button
             level="primary"
-            iconName="add"
-            translocoKey="signup.create_account_email"
+            iconName="mail"
+            translocoKey="auth.signup.create_account_email"
             (click)="displayForm.set(true)"
           />
-          <app-button level="primary" translocoKey="signup.social_connect" [disabled]="true" />
+          <app-social-auth-login [signup]="true"></app-social-auth-login>
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();
@@ -81,7 +85,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
             @if (_form.controls.fullName.hasError("required")) {
               <mat-error
                 data-testid="fullName-required-error"
-                [innerHTML]="t('signup.validation.full_name_required')"
+                [innerHTML]="t('auth.signup.validation.full_name_required')"
               ></mat-error>
             }
           </mat-form-field>
@@ -108,7 +112,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
                   <small
                     class="mat-body-small"
                     [innerHTML]="
-                      t('signup.terms_and_privacy', {
+                      t('auth.signup.terms_and_privacy', {
                         termsOfService: configLegal.tos,
                         privacyPolicy: configLegal.privacy,
                       })
@@ -121,7 +125,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
           <div class="flex flex-row justify-end gap-4">
             <app-button
               level="secondary"
-              translocoKey="signup.all_options"
+              translocoKey="auth.signup.all_options"
               iconName="arrow_back_ios"
               (click)="displayForm.set(false)"
             />
@@ -129,39 +133,25 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
               [disabled]="!_form.dirty || _form.invalid"
               iconName="add"
               level="tertiary"
-              translocoKey="signup.create_account"
+              translocoKey="auth.signup.create_account"
               data-testid="submitCreateAccount-button"
               type="submit"
             />
           </div>
         </form>
       }
-    } @else {
-      <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
-      <p class="mat-body-medium">
-        {{ t("signup.verify.verification_link_sent") }}
-        <strong data-testid="sentEmail-block">{{ _form.value.email }}</strong>
-      </p>
-      <p class="mat-body-medium">
-        {{ t("signup.verify.mail_not_received") }}
-      </p>
-      <button
-        data-testid="resendMail-button"
-        mat-stroked-button
-        tabindex="1"
-        (keydown.enter)="resendEmail()"
-        (click)="resendEmail()"
-        class="primary-button"
-      >
-        {{ t("signup.verify.resend_button") }}
-      </button>
+      <mat-divider></mat-divider>
+      <footer class="text-center">
+        <p class="mat-body-medium">
+          {{ t("auth.signup.footer.already_account") }}
+          <a [routerLink]="['/login']" [queryParams]="this.route.snapshot.queryParams">{{
+            t("auth.signup.footer.login")
+          }}</a>
+        </p>
+      </footer>
+    } @else if (_form.value.email) {
+      <app-pending-verification [email]="_form.value.email" (resendEmail)="resendEmail()"></app-pending-verification>
     }
-    <mat-divider></mat-divider>
-    <footer class="text-center">
-      <p class="mat-body-medium">
-        {{ t("signup.footer.already_account") }} <a [routerLink]="['/login']">{{ t("signup.footer.login") }}</a>
-      </p>
-    </footer>
   </div>`,
   styles: `
     mat-checkbox.ng-invalid.ng-dirty {
@@ -179,32 +169,35 @@ export default class SignupComponent implements OnInit, OnDestroy {
   languageStore = inject(LanguageStore);
   userService = inject(UserService);
   configAppService = inject(ConfigAppService);
+  fb = inject(NonNullableFormBuilder);
+  route = inject(ActivatedRoute);
+  readonly authConfigStore = inject(AuthConfigStore);
+  readonly authService = inject(AuthService);
+
   displayForm = signal(false);
   emailSent = signal(false);
-  fb = inject(NonNullableFormBuilder);
-  form = computed(() =>
-    this.fb.group({
-      email: ["", [Validators.required, Validators.email]],
+  queryParamMap = toSignal(this.route.queryParamMap);
+  form = computed(() => {
+    const initialEmail = this.queryParamMap()?.get("email") || "";
+    return this.fb.group({
+      email: [initialEmail, [Validators.required, Validators.email]],
       fullName: ["", [Validators.required, Validators.maxLength(256)]],
       password: [""],
       lang: [this.languageStore.entities().find((language) => language.isDefault)?.code],
       acceptTerms: [false],
-    }),
-  );
-  route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
-  translocoService = inject(TranslocoService);
+    });
+  });
 
   ngOnInit(): void {
     const form = this.form();
-    this.authFormStateStore.updateHasError(form.events);
+    this.authConfigStore.updateFormHasError(form.events);
     const configLegal = this.configAppService.configLegal();
     if (configLegal) {
       form.controls.acceptTerms.addValidators([Validators.requiredTrue]);
     }
   }
   ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+    this.authConfigStore.resetFormHasError();
   }
   submit(): void {
     const form = this.form();
@@ -214,7 +207,7 @@ export default class SignupComponent implements OnInit, OnDestroy {
       const acceptTerms = form.value.acceptTerms || false;
       this.userService
         .create({
-          ...(form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
+          ...(form.value as Pick<CreateUserPayload, "email" | "fullName" | "password" | "color" | "lang">),
           ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
           ...params,
         })
@@ -222,13 +215,15 @@ export default class SignupComponent implements OnInit, OnDestroy {
     }
   }
   resendEmail(): void {
-    this.submit();
-    this.notificationService.open({
-      type: "success",
-      title: "signup.verify.resend_email_label",
-      translocoTitle: true,
-      detail: "signup.verify.resend_email_message",
-      translocoDetail: true,
-    });
+    const form = this.form();
+    if (form.valid) {
+      const params = this.route.snapshot.queryParams;
+      this.userService
+        .resentVerification({
+          ...(form.value as Pick<SendVerifyUserValidator, "email">),
+          ...params,
+        })
+        .subscribe();
+    }
   }
 }

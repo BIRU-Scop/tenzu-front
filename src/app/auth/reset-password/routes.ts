@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,17 +20,14 @@
  */
 
 import { Routes } from "@angular/router";
-import { provideTranslocoScope } from "@jsverse/transloco";
 
 export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./request-reset-password/request-reset-password.component"),
-    providers: [provideTranslocoScope("resetPassword")],
   },
   {
     path: ":token",
     loadComponent: () => import("./reset-password-form/reset-password-form.component"),
-    providers: [provideTranslocoScope("resetPassword")],
   },
 ];

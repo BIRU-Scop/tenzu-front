@@ -23,6 +23,7 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
 import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button-add",
@@ -37,6 +38,7 @@ import { ButtonInterface } from "./button.interface";
 export class ButtonAddComponent implements ButtonInterface {
   level = input<LevelType>("tertiary");
   translocoKey = input<string>("commons.add");
+  translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("add");
   iconOnly = input<boolean>(false);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,23 +23,29 @@ import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { debounceTime, pipe, tap } from "rxjs";
 import { ControlEvent, FormGroup } from "@angular/forms";
+import { setAllEntities, withEntities } from "@ngrx/signals/entities";
+import { SocialProvider } from "@tenzu/repository/auth";
 
-export const AuthFormStateStore = signalStore(
+export const AuthConfigStore = signalStore(
   { providedIn: "root" },
-  withState<{ hasError: boolean }>({
-    hasError: false,
+  withState<{ formHasError: boolean }>({
+    formHasError: false,
   }),
+  withEntities<SocialProvider>(),
   withMethods((store) => ({
-    resetError(): void {
-      patchState(store, { hasError: false });
+    resetFormHasError(): void {
+      patchState(store, { formHasError: false });
     },
-    updateHasError: rxMethod<ControlEvent<FormGroup>>(
+    updateFormHasError: rxMethod<ControlEvent<FormGroup>>(
       pipe(
         debounceTime(200),
         tap((event) => {
-          patchState(store, { hasError: event.source.errors != null && event.source.touched });
+          patchState(store, { formHasError: event.source.errors != null && event.source.touched });
         }),
       ),
     ),
+    setProviders(providers: SocialProvider[]): void {
+      patchState(store, setAllEntities(providers));
+    },
   })),
 );

@@ -30,8 +30,9 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../auth-form-state.store";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import SocialAuthCallbackComponent from "../social-auth/social-auth-login.component";
 
 @Component({
   selector: "app-login",
@@ -47,42 +48,47 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     MatDivider,
     ButtonComponent,
     PasswordFieldComponent,
+    SocialAuthCallbackComponent,
   ],
   template: `
     <div *transloco="let t" class="flex flex-col gap-4 w-96">
-      <h1 class="mat-headline-medium text-center">{{ t("login.title") }}</h1>
+      <h1 class="mat-headline-medium text-center">{{ t("auth.login.title") }}</h1>
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
         <mat-form-field>
           <mat-label>
-            {{ t("login.email_or_username") }}
+            {{ t("auth.login.email_or_username") }}
           </mat-label>
           <input matInput autocomplete data-testid="username-input" formControlName="username" />
           @if (form.controls.username.hasError("required")) {
             <mat-error
               data-testid="username-required-error"
-              [innerHTML]="t('login.errors.username_required')"
+              [innerHTML]="t('auth.login.errors.username_required')"
             ></mat-error>
           }
         </mat-form-field>
         <app-password-field formControlName="password" />
         @if (form.hasError("loginError")) {
           <div class="mat-mdc-form-field-error" data-testid="login-401">
-            {{ t("login.errors.401") }}
+            {{ t("auth.login.errors.401") }}
           </div>
         }
-        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("login.forgot_password") }}</a>
+        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("auth.login.forgot_password") }}</a>
         <app-button
           level="tertiary"
-          translocoKey="login.action"
+          translocoKey="auth.login.action"
           type="submit"
           iconName="login"
           [disabled]="!form.dirty || form.invalid"
         />
       </form>
+      <app-social-auth-login [signup]="false"></app-social-auth-login>
       <mat-divider></mat-divider>
       <footer class="text-center">
         <p class="mat-body-medium">
-          {{ t("login.not_registered_yet") }} <a [routerLink]="['/signup']">{{ t("login.create_account") }}</a>
+          {{ t("auth.login.not_registered_yet") }}
+          <a [routerLink]="['/signup']" [queryParams]="this.route.snapshot.queryParams">{{
+            t("auth.login.create_account")
+          }}</a>
         </p>
       </footer>
     </div>
@@ -98,14 +104,14 @@ export default class LoginComponent implements OnInit, OnDestroy {
     password: [""],
   });
   route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
+  readonly authConfigStore = inject(AuthConfigStore);
 
   ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
+    this.authConfigStore.updateFormHasError(this.form.events);
   }
 
   ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+    this.authConfigStore.resetFormHasError();
   }
 
   submit() {
