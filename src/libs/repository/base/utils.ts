@@ -47,7 +47,6 @@ export const makeOptions = (params: QueryParams) => {
 export function retryWhenErrors<T>(): MonoTypeOperatorFunction<T> {
   return retry({
     count: 3,
-    resetOnSuccess: true,
     delay: (error, retryCount) => {
       const status = error?.status;
       if (!(status === 0 || status === 429 || status === 424 || (status >= 500 && status < 600))) {
