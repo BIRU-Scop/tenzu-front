@@ -60,7 +60,7 @@ import { PasswordSeverity } from "../utils";
       }
     }
     .medium {
-      color: var(--mat-sys-on-warning);
+      color: var(--mat-sys-warning);
       .one,
       .two {
         background-color: var(--mat-sys-warning);
