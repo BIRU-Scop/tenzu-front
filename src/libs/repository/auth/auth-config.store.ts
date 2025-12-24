@@ -20,9 +20,6 @@
  */
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { debounceTime, pipe, tap } from "rxjs";
-import { ControlEvent, FormGroup } from "@angular/forms";
 import { setAllEntities, withEntities } from "@ngrx/signals/entities";
 import { SocialProvider } from "@tenzu/repository/auth";
 
@@ -36,14 +33,9 @@ export const AuthConfigStore = signalStore(
     resetFormHasError(): void {
       patchState(store, { formHasError: false });
     },
-    updateFormHasError: rxMethod<ControlEvent<FormGroup>>(
-      pipe(
-        debounceTime(200),
-        tap((event) => {
-          patchState(store, { formHasError: event.source.errors != null && event.source.touched });
-        }),
-      ),
-    ),
+    setFormHasError(formHasError: boolean): void {
+      patchState(store, { formHasError });
+    },
     setProviders(providers: SocialProvider[]): void {
       patchState(store, setAllEntities(providers));
     },

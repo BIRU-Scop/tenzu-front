@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,3 +21,5 @@
 
 export * from "./password-field.component";
 export * from "./password-strength/password-strength.component";
+export * from "./utils";
+export * from "./schema";

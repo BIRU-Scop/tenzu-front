@@ -63,7 +63,7 @@ export type CreateUserPayload = Pick<User, "fullName"> &
     acceptTermsOfService: boolean;
     acceptPrivacyPolicy: boolean;
     color?: number;
-    lang?: string;
+    lang: string;
   };
 
 export type UpdateUserPayload = Partial<

@@ -44,6 +44,15 @@ export const ConfigSchema = z.object({
       z.null(),
     ])
     .default(null),
+  security: z
+    .object({
+      password: z.object({
+        minLength: z.number().default(8),
+        numberDiversityDifference: z.number().default(3),
+        lengthSecureThreshold: z.number().default(12),
+      }),
+    })
+    .default({ password: { minLength: 8, numberDiversityDifference: 3, lengthSecureThreshold: 12 } }),
   sentry: z
     .object({
       dsn: z.string().optional(),

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,30 +19,24 @@
  *
  */
 
-.bar-part {
-  @apply bg-transparent;
-  block-size: 6px;
-  border-radius: 6px;
-  inline-size: 64px;
-}
-.bar-part{
-  background-color: var(--mat-sys-outline);
-}
-.weak {
-  color: var(--mat-sys-on-error);
-  .one {
-    background-color: var(--mat-sys-error);
-  }
-}
-.medium {
-  color: var(--mat-sys-on-warning);
-  .one,.two {
-    background-color: var(--mat-sys-warning);
-  }
-}
-.strong {
-  color: var(--mat-sys-on-tertiary);
-  .one,.two,.three {
-    background-color: var(--mat-sys-tertiary);
-  }
+import { effect, inject, untracked } from "@angular/core";
+import { FieldTree } from "@angular/forms/signals";
+import { AuthConfigStore } from "./auth-config.store";
+
+export function trackFormValidationEffect(form: FieldTree<unknown>) {
+  const authConfigStore = inject(AuthConfigStore);
+  return effect((onCleanup) => {
+    const isInvalid = form().invalid();
+    const isTouched = form().touched();
+    untracked(() => {
+      if (isTouched && isInvalid) {
+        authConfigStore.setFormHasError(true);
+      } else {
+        authConfigStore.setFormHasError(false);
+      }
+    });
+    onCleanup(() => {
+      authConfigStore.resetFormHasError();
+    });
+  });
 }

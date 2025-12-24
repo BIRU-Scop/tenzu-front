@@ -26,9 +26,9 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { KeyValuePipe } from "@angular/common";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { ConfigAppService } from "../../config-app/config-app.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatDivider } from "@angular/material/divider";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 @Component({
   selector: "app-social-auth-login",

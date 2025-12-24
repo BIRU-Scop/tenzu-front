@@ -67,16 +67,16 @@
       "hide": "Ocultar contraseña",
       "placeholder": "Introduce tu contraseña",
       "hints": {
-        "minLength": "Tu contraseña debe tener al menos {{ minLength }} de longitud.",
+        "minLength": "Tu contraseña debe tener al menos {{ minLength }} caracteres.",
         "diversity": "Tu contraseña debe tener al menos {{ diversityDifference }} de estos tipos:",
         "diversityType": "1 {{ diversityType }}",
-        "symbolCharacters": "Nota: Solo <strong>{{ symbols }}</strong> símbolos cuentan para la fuerza."
+        "symbolCharacters": "Nota: Solo los símbolos <strong>{{ symbols }}</strong> cuentan para la fortaleza."
       },
       "errors": {
-        "required": "Contraseña es <strong>obligatoria</strong>",
+        "required": "La contraseña es <strong>obligatoria</strong>",
         "minLength": "La contraseña debe tener al menos <strong>{{ number }} caracteres</strong>.",
         "maxLength": "La contraseña no puede tener más de <strong>{{ number }} caracteres</strong>.",
-        "diversity": "Tu contraseña debe contener al menos {{ diversityDifference }} de los siguientes elementos:",
+        "diversity": "Requiere al menos <strong>{{ diversityDifference }}</strong> de los siguientes tipos:",
         "diversityType": "1 carácter <strong>{{ diversityType }}</strong>"
       },
       "password-strength": {
@@ -194,7 +194,9 @@
     }
   },
   "form_errors": {
-    "max_length": "El límite de caracteres es {{length}}"
+    "max_length": "El límite de caracteres es {{length}}",
+    "min_length": "El límite mínimo de caracteres es {{length}}",
+    "required": "Este campo es obligatorio"
   },
   "environment": {
     "demo": "Esta es una versión de demostración del producto, solo para fines de prueba. Todos los datos registrados se eliminarán periódicamente. No conservamos sus correos electrónicos para ningún tipo de actividad de marketing.",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,4 +19,9 @@
  *
  */
 
-export * from "./passwordsMustMatch";
+import { email, required, schema } from "@angular/forms/signals";
+
+export const emailSchema = schema<string>((field) => {
+  required(field, { message: "component.email.errors.required" });
+  email(field, { message: "component.email.errors.email" });
+});

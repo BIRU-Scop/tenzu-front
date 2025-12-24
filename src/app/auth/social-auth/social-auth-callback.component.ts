@@ -30,12 +30,12 @@ import { MatButton } from "@angular/material/button";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatIcon } from "@angular/material/icon";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import PendingVerificationComponent from "../signup/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 @Component({
   selector: "app-social-auth-callback",

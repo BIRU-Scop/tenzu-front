@@ -21,18 +21,17 @@
 
 import { inject, Injectable } from "@angular/core";
 import {
-  User,
   CreateUserPayload,
-  UserDeleteInfo,
-  UpdateUserPayload,
-  VerificationInfo,
   SendVerifyUserValidator,
+  UpdateUserPayload,
+  User,
+  UserDeleteInfo,
+  VerificationInfo,
 } from "./user.model";
 import { HttpClient } from "@angular/common/http";
 import { Tokens } from "../auth";
 import { Observable, tap } from "rxjs";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { Observable } from "rxjs";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
 import { NotificationService } from "@tenzu/utils/services/notification";
