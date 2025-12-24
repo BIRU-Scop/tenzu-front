@@ -47,6 +47,7 @@ import { AuthService, trackFormValidationEffect } from "@tenzu/repository/auth";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "app-signup",
@@ -223,14 +224,24 @@ export default class SignupComponent {
     await submit(this.signupForm, async (form) => {
       const params = this.route.snapshot.queryParams;
       const values = form().value();
-      await lastValueFrom(
-        this.userService.create({
-          ...values,
-          ...{ acceptPrivacyPolicy: values.acceptTermsOfService },
-          ...params,
-        }),
-      );
+      try {
+        await lastValueFrom(
+          this.userService.create({
+            ...values,
+            ...{ acceptPrivacyPolicy: values.acceptTermsOfService },
+            ...params,
+          }),
+        );
+      } catch (error) {
+        if (error instanceof HttpErrorResponse && error.status === 422) {
+          this.authConfigStore.setFormHasError(true);
+          return [
+            { fieldTree: this.signupForm.password, kind: "password-rejected", message: "auth.signup.errors.422" },
+          ];
+        }
+      }
       this.emailSent.set(true);
+      return undefined;
     });
   }
   resendEmail(): void {

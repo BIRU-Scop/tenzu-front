@@ -56,8 +56,14 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
         }
       } else if (error instanceof HttpErrorResponse) {
         switch (error.status) {
-          case 500:
+          // @ts-expect-error FALLS THROUGH
           case 422:
+            // 422 on user creation can happen if the user chooses a password that doesn't validate backend vulnerability detection
+            if (request.url.endsWith("users")) {
+              break;
+            }
+          // eslint-disable-next-line no-fallthrough
+          case 500:
             notificationService.error(
               {
                 title: "notification.server_errors.http500.title",

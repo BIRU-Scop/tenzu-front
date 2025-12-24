@@ -42,6 +42,9 @@
     "footer": {
       "already_account": "Compte existant ?",
       "login": "Connecte-toi ici"
+    },
+    "errors": {
+      "422": "Le mot de passe choisi est trop vulnérable"
     }
   }
 }

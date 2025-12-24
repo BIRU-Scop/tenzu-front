@@ -42,6 +42,9 @@
     "footer": {
       "already_account": "¿Ya tienes una cuenta?",
       "login": "Inicia sesión aquí"
+    },
+    "errors": {
+      "422": "La contraseña que ha elegido es demasiado vulnerable"
     }
   }
 }

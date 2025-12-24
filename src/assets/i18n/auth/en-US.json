@@ -42,6 +42,9 @@
     "footer": {
       "already_account": "Already have an account?",
       "login": "Login here"
+    },
+    "errors": {
+      "422": "Your chosen password is too vulnerable"
     }
   }
 }
