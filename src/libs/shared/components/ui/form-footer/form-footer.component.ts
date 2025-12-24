@@ -19,18 +19,14 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Directive, input } from "@angular/core";
 import { BackDirective } from "@tenzu/directives/back/back.directive";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 
-@Component({
-  selector: "app-form-footer-secondary-action",
-  imports: [],
-  template: ` <ng-content></ng-content> `,
-  styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+@Directive({
+  selector: "app-form-footer-secondary-action, [appFormFooterSecondaryAction]",
 })
-export class FormFooterSecondaryActionComponent {}
+export class FormFooterSecondaryActionDirective {}
 
 @Component({
   selector: "app-form-footer",
@@ -38,7 +34,9 @@ export class FormFooterSecondaryActionComponent {}
   template: `
     <div class="flex gap-4 justify-end">
       @if (secondaryAction()) {
-        <ng-content select="app-form-footer-secondary-action"><app-button-cancel appBack /></ng-content>
+        <ng-content select="app-form-footer-secondary-action, [appFormFooterSecondaryAction]">
+          <app-button-cancel appBack />
+        </ng-content>
       }
       <ng-content></ng-content>
     </div>
