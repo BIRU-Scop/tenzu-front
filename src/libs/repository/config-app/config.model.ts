@@ -46,11 +46,16 @@ export const ConfigSchema = z.object({
     .default(null),
   security: z
     .object({
-      password: z.object({
-        minLength: z.number().default(8),
-        numberDiversityDifference: z.number().default(3),
-        lengthSecureThreshold: z.number().default(12),
-      }),
+      password: z
+        .object({
+          minLength: z.number().min(8).default(8),
+          numberDiversityDifference: z.number().min(1).max(4).default(3),
+          lengthSecureThreshold: z.number().default(12),
+        })
+        .refine((data) => data.lengthSecureThreshold >= data.minLength, {
+          message: "lengthSecureThreshold must be greater than or equal to minLength",
+          path: ["lengthSecureThreshold"],
+        }),
     })
     .default({ password: { minLength: 8, numberDiversityDifference: 3, lengthSecureThreshold: 12 } }),
   sentry: z
