@@ -192,7 +192,7 @@ export class AuthService {
   redirectToProviderBaseParams(providerId: string, queryParams: Params, isSignup: boolean): ProviderRedirect {
     const query = new URLSearchParams(queryParams);
     query.append("fromSignup", isSignup.toString());
-    const callbackUrl = `/socialauth_callback?${query.toString()}`;
+    const callbackUrl = `/social-auth-callback?${query.toString()}`;
     debug("redirectToProviderBaseParams", callbackUrl);
     return {
       url: `${this.url}/provider/${providerId}/redirect`,

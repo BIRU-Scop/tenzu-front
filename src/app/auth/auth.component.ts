@@ -44,11 +44,14 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
       <router-outlet></router-outlet>
     </main>
   `,
-  styles: ``,
-  styleUrl: `auth-layout.component.scss`,
+  styles: `
+    :host ::ng-deep .error .logo-eye {
+      color: var(--mat-sys-on-error);
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class AuthLayoutComponent {
+export default class AuthComponent {
   notificationService = inject(NotificationService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);

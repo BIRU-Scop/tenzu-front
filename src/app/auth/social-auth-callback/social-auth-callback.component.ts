@@ -33,7 +33,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { MatIcon } from "@angular/material/icon";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
-import PendingVerificationComponent from "../signup/pending-verification.component";
+import PendingVerificationComponent from "../signup/pending-verification/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
@@ -63,7 +63,11 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
           <form [formGroup]="_form" (ngSubmit)="submitCompleteSignup()" class="flex flex-col gap-2 w-[32rem]">
             @if (configLegal) {
               <div class="min-w-full w-min">
-                <mat-checkbox formControlName="acceptTerms" required>
+                <mat-checkbox
+                  [class.checkbox-invalid]="_form.dirty && _form.controls.acceptTerms.hasError('required')"
+                  formControlName="acceptTerms"
+                  required
+                >
                   <p
                     [innerHTML]="
                       t('auth.signup.terms_and_privacy', {
@@ -111,15 +115,7 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
       }
     </ng-container>
   `,
-  styles: `
-    mat-checkbox.ng-invalid.ng-dirty {
-      --checkbox-background-color: var(--mat-sys-error);
-
-      ::ng-deep.mdc-label {
-        color: var(--mat-sys-on-error-container);
-      }
-    }
-  `,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SocialAuthCallbackComponent {

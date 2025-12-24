@@ -32,7 +32,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { apply, Field, form, required, submit } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
-import SocialAuthLoginComponent from "../social-auth/social-auth-login.component";
+import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 
 @Component({
