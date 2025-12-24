@@ -26,10 +26,14 @@ import { AuthConfigStore } from "./auth-config.store";
 export function trackFormValidationEffect(form: FieldTree<unknown>) {
   const authConfigStore = inject(AuthConfigStore);
   return effect((onCleanup) => {
-    const isInvalid = form().invalid();
-    const isTouched = form().touched();
+    const errorSummary = form().errorSummary();
+    const hasError = errorSummary.reduce(
+      (result, item) => result || (item.fieldTree().invalid() && item.fieldTree().touched()),
+      false,
+    );
+
     untracked(() => {
-      if (isTouched && isInvalid) {
+      if (hasError) {
         authConfigStore.setFormHasError(true);
       } else {
         authConfigStore.setFormHasError(false);
