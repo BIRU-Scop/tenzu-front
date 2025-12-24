@@ -19,18 +19,28 @@
  *
  */
 
-import { Directive, inject } from "@angular/core";
-import { Location } from "@angular/common";
+import { effect, inject, untracked } from "@angular/core";
+import { FieldTree } from "@angular/forms/signals";
+import { AuthConfigStore } from "./auth-config.store";
 
-@Directive({
-  selector: "[appBack]",
-  host: {
-    "(click)": "back()",
-  },
-})
-export class BackDirective {
-  location = inject(Location);
-  back() {
-    this.location.back();
-  }
+export function trackFormValidationEffect(form: FieldTree<unknown>) {
+  const authConfigStore = inject(AuthConfigStore);
+  return effect((onCleanup) => {
+    const errorSummary = form().errorSummary();
+    const hasError = errorSummary.reduce(
+      (result, item) => result || (item.fieldTree().invalid() && item.fieldTree().touched()),
+      false,
+    );
+
+    untracked(() => {
+      if (hasError) {
+        authConfigStore.setFormHasError(true);
+      } else {
+        authConfigStore.setFormHasError(false);
+      }
+    });
+    onCleanup(() => {
+      authConfigStore.resetFormHasError();
+    });
+  });
 }

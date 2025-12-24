@@ -40,7 +40,7 @@ import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/member
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import {
   FormFooterComponent,
-  FormFooterSecondaryActionComponent,
+  FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
@@ -74,7 +74,7 @@ export interface InvitePeopleDialogData {
     InvitationEmailFieldComponent,
     RoleSelectorFieldComponent,
     FormFooterComponent,
-    FormFooterSecondaryActionComponent,
+    FormFooterSecondaryActionDirective,
     ButtonCloseComponent,
     ButtonComponent,
     ButtonAddComponent,
@@ -129,9 +129,7 @@ export interface InvitePeopleDialogData {
       </mat-dialog-content>
       <mat-dialog-actions>
         <app-form-footer>
-          <app-form-footer-secondary-action>
-            <app-button-close [mat-dialog-close]="undefined" />
-          </app-form-footer-secondary-action>
+          <app-button-close appFormFooterSecondaryAction [mat-dialog-close]="undefined" />
           <app-button
             translocoKey="component.invite_dialog.invite_people"
             level="tertiary"

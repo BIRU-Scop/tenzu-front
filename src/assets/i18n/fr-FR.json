@@ -67,17 +67,18 @@
       "hide": "Masquer le mot de passe",
       "placeholder": "Entre ton mot de passe",
       "hints": {
-        "minLength": "Ton mot de passe doit comporter au moins {{ minLength }} caractères.",
-        "diversity": "Ton mot de passe doit avoir au moins {{ diversityDifference }} parmi :",
-        "diversityType": "1 {{ diversityType }}",
-        "symbolCharacters": "Note: Seuls les symboles <strong>{{ symbols }}</strong> compte pour la robustesse."
+        "minLength": "Ton mot de passe doit contenir au moins {{ minLength }} caractères *",
+        "uppercase": "1 alphabet majuscule",
+        "lowercase": "1 alphabet minuscule",
+        "number": "1 chiffre",
+        "symbol": "1 caractère spécial {{ symbols }}",
+        "diversity": "Ton mot de passe doit contenir au moins {{ diversityDifference }} de ces types :"
       },
       "errors": {
-        "required": "Un mot de passe est <strong>requis</strong>",
-        "minLength": "Ton mot de passe doit comporter au moins <strong>{{ minLength }} caractères</strong>.",
-        "maxLength": "Ton mot de passe ne peut pas dépasser <strong>{{ number }} caractères</strong>.",
-        "diversity": "Ton mot de passe doit avoir au moins <strong>{{ diversityDifference }}</strong> parmi :",
-        "diversityType": "1 caractères <strong>{{ diversityType }}</strong>"
+        "required": "Le mot de passe est requis",
+        "minLength": "Le mot de passe doit contenir au moins {{ number }} caractères.",
+        "maxLength": "Le mot de passe ne peut pas dépasser {{ number }} caractères.",
+        "strength": "Nécessite au moins {{ numberDiversity }} de 4 conditions"
       },
       "password-strength": {
         "security_level": {
@@ -90,7 +91,7 @@
     "email": {
       "label": "Email",
       "errors": {
-        "required": "Un email is <strong>requis</strong>",
+        "required": "Un email is requis",
         "email": "Merci de saisir une adresse e-mail valide."
       }
     },
@@ -194,7 +195,9 @@
     }
   },
   "form_errors": {
-    "max_length": "La limite de caractères est {{length}}"
+    "max_length": "La limite de caractères est {{length}}",
+    "min_length": "La limite minimale de caractères est {{length}}",
+    "required": "Ce champ est obligatoire"
   },
   "environment": {
     "demo": "Ceci est une version de démo du produit, destinée uniquement à du test. Toutes les données enregistrées seront régulièrement supprimées. Nous ne conservons aucune adresses e-mail à des fins marketing.",

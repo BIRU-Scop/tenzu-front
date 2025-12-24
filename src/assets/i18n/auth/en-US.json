@@ -7,7 +7,7 @@
     "create_account": "Create an account",
     "forgot_password": "Forgot your password?",
     "errors": {
-      "401": "Your email, username or password are incorrect. Check them and try again",
+      "401": "Your email, username or password are incorrect",
       "username_required": "Enter your email or username"
     }
   },
@@ -42,6 +42,9 @@
     "footer": {
       "already_account": "Already have an account?",
       "login": "Login here"
+    },
+    "errors": {
+      "422": "Your chosen password is too vulnerable"
     }
   }
 }

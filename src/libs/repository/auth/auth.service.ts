@@ -34,7 +34,7 @@ import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap
 import { NavigationExtras, Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
-import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ResetService } from "@tenzu/repository/base/reset.service";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
@@ -192,7 +192,7 @@ export class AuthService {
   redirectToProviderBaseParams(providerId: string, queryParams: Params, isSignup: boolean): ProviderRedirect {
     const query = new URLSearchParams(queryParams);
     query.append("fromSignup", isSignup.toString());
-    const callbackUrl = `/socialauth_callback?${query.toString()}`;
+    const callbackUrl = `/social-auth-callback?${query.toString()}`;
     debug("redirectToProviderBaseParams", callbackUrl);
     return {
       url: `${this.url}/provider/${providerId}/redirect`,

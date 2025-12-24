@@ -22,8 +22,8 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigModel, ConfigSchemaService } from "./config.model";
-import { environment } from "../../environments/environment";
-import { EnvironmentConfig } from "../../environments/environment-type";
+import { environment } from "../../../environments/environment";
+import { EnvironmentConfig } from "../../../environments/environment-type";
 import { v4 } from "uuid";
 
 export const CORRELATION_ID = v4();
@@ -44,7 +44,7 @@ export class ConfigAppService {
   readonly correlationId = CORRELATION_ID;
 
   async loadAppConfig() {
-    return await fetch("/assets/configs/config.json")
+    await fetch("/assets/configs/config.json")
       .then((res) => {
         return res.json();
       })

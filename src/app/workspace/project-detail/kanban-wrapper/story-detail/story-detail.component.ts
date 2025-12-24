@@ -48,7 +48,7 @@ import { HttpClient } from "@angular/common/http";
 import { lastValueFrom } from "rxjs";
 import { StoryDetail } from "@tenzu/repository/story";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
-import { ConfigAppService } from "../../../../config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { StoryDetailCommentsComponent } from "./story-detail-comments/story-detail-comments.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";

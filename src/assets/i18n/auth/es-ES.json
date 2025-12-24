@@ -7,7 +7,7 @@
     "create_account": "Crea una cuenta",
     "forgot_password": "¿Olvidaste tu contraseña?",
     "errors": {
-      "401": "Tu correo electrónico, nombre de usuario o contraseña son incorrectos. Revísalos e inténtalo de nuevo",
+      "401": "Tu correo electrónico, nombre de usuario o contraseña son incorrectos",
       "username_required": "Introduce tu correo electrónico o nombre de usuario"
     }
   },
@@ -42,6 +42,9 @@
     "footer": {
       "already_account": "¿Ya tienes una cuenta?",
       "login": "Inicia sesión aquí"
+    },
+    "errors": {
+      "422": "La contraseña que ha elegido es demasiado vulnerable"
     }
   }
 }

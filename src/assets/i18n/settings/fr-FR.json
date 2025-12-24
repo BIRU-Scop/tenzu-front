@@ -11,7 +11,6 @@
   },
   "security": {
     "save": "Enregistrer",
-    "current_password": "Mot de passe actuel",
     "new_password": "Nouveau mot de passe",
     "repeat_password": "Répéte le mot de passe",
     "password_not_match": "Les mots de passe ne correspondent pas",

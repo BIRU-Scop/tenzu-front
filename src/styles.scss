@@ -48,7 +48,7 @@
 @use "themes/svg-logo";
 @use "themes/slide-toggle-theme" as slide-toggle;
 @use "@blocknote/core/fonts/inter.css";
-@use "@blocknote/mantine/style.css";
+@import "@blocknote/mantine/style.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

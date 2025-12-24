@@ -21,8 +21,6 @@
 
 @use "@angular/material" as mat;
 
-
-
 @mixin tokens-overrides() {
   @include mat.form-field-overrides((
       outlined-outline-color: var(--mat-sys-primary),
@@ -99,16 +97,6 @@
     }
   }
 }
-.password-field {
-  &.mat-mdc-form-field {
-    .mat-mdc-form-field-hint-wrapper,
-    .mat-mdc-form-field-error-wrapper {
-      position: relative;
-    }
-    .mat-mdc-form-field-bottom-align:before {
-      display: none;
-    }
-  }
-}
+
 
 

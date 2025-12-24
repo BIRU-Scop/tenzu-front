@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,13 +20,12 @@
  */
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
-import { PasswordSeverity } from "./_utils";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { PasswordSeverity } from "../utils";
 
 @Component({
   selector: "app-password-strength",
   imports: [TranslocoDirective],
-  styleUrl: "./password-strength.component.scss",
   template: `@if (severity()) {
     <div
       class="flex flex-row items-center gap-x-2"
@@ -44,7 +43,38 @@ import { TranslocoDirective } from "@jsverse/transloco";
       }
     </div>
   }`,
-  styles: ``,
+  styles: `
+    .bar-part {
+      @apply bg-transparent;
+      block-size: 6px;
+      border-radius: 6px;
+      inline-size: 64px;
+    }
+    .bar-part {
+      background-color: var(--mat-sys-outline);
+    }
+    .weak {
+      color: var(--mat-sys-on-error);
+      .one {
+        background-color: var(--mat-sys-error);
+      }
+    }
+    .medium {
+      color: var(--mat-sys-warning);
+      .one,
+      .two {
+        background-color: var(--mat-sys-warning);
+      }
+    }
+    .strong {
+      color: var(--mat-sys-on-tertiary);
+      .one,
+      .two,
+      .three {
+        background-color: var(--mat-sys-tertiary);
+      }
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordStrengthComponent {

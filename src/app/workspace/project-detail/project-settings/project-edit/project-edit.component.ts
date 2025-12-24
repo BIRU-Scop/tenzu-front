@@ -37,7 +37,7 @@ import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import {
   FormFooterComponent,
-  FormFooterSecondaryActionComponent,
+  FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
@@ -58,7 +58,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
     HasPermissionDirective,
     FormFooterComponent,
     ButtonSaveComponent,
-    FormFooterSecondaryActionComponent,
+    FormFooterSecondaryActionDirective,
     ButtonUndoComponent,
   ],
   template: `
@@ -94,9 +94,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
                 formControlName="description"
               />
               <app-form-footer>
-                <app-form-footer-secondary-action>
-                  <app-button-undo (click)="reset()" [disabled]="form.pristine" />
-                </app-form-footer-secondary-action>
+                <app-button-undo appFormFooterSecondaryAction (click)="reset()" [disabled]="form.pristine" />
                 <app-button-save [disabled]="form.pristine" />
               </app-form-footer>
             </form>

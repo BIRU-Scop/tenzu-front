@@ -47,7 +47,7 @@ export const routes: Routes = [
     loadComponent: () => import("./signup/signup.component"),
   },
   {
-    path: "socialauth_callback",
-    loadComponent: () => import("./social-auth/social-auth-callback.component"),
+    path: "social-auth-callback",
+    loadComponent: () => import("./social-auth-callback/social-auth-callback.component"),
   },
 ];

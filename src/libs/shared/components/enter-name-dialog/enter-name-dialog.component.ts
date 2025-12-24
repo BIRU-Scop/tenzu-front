@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import type { Validators } from "@angular/forms";
 import { FormBuilder, ReactiveFormsModule, ValidatorFn } from "@angular/forms";
 import {
@@ -99,6 +99,9 @@ export type NameDialogData = {
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    "(window:keyup.Enter)": "onPressEnter()",
+  },
 })
 export class EnterNameDialogComponent {
   readonly dialogRef = inject(MatDialogRef<EnterNameDialogComponent>);
@@ -114,7 +117,6 @@ export class EnterNameDialogComponent {
     {} as Record<keyof typeof Validators, { message: string; translocoParams: TranslocoParams }>,
   );
 
-  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.name.markAsTouched();
     this.submit();
