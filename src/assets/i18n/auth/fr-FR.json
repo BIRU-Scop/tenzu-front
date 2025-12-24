@@ -7,7 +7,7 @@
     "create_account": "Créer un compte",
     "forgot_password": "Mot de passe oublié ?",
     "errors": {
-      "401": "Ton adresse e-mail, ton nom d'utilisateur ou ton mot de passe sont incorrects. Vérifie-les et réessaye.",
+      "401": "Ton adresse e-mail, ton nom d'utilisateur ou ton mot de passe sont incorrects",
       "username_required": "Entre ton adresse e-mail ou ton nom d'utilisateur"
     }
   },

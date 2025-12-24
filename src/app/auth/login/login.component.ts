@@ -128,7 +128,10 @@ export default class LoginComponent {
         await lastValueFrom(this.service.login(form().value(), next));
       } catch {
         this.authConfigStore.setFormHasError(true);
-        return [{ fieldTree: this.loginForm.password, kind: "invalid-credentials", message: "auth.login.errors.401" }];
+        return [
+          { fieldTree: this.loginForm.username, kind: "invalid-credentials" },
+          { fieldTree: this.loginForm.password, kind: "invalid-credentials", message: "auth.login.errors.401" },
+        ];
       }
       return undefined;
     });
