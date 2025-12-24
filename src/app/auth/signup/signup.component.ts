@@ -170,7 +170,6 @@ export default class SignupComponent {
   languageStore = inject(LanguageStore);
   configAppService = inject(ConfigAppService);
   fb = inject(NonNullableFormBuilder);
-  config = inject(ConfigAppService).config;
   route = inject(ActivatedRoute);
   readonly authConfigStore = inject(AuthConfigStore);
   readonly authService = inject(AuthService);
@@ -192,7 +191,7 @@ export default class SignupComponent {
     apply(schemaPath.password, passwordSchema({ enabledStrength: true }));
     applyWhenValue(
       schemaPath,
-      () => !!this.configAppService.config().legal,
+      () => !!this.configAppService.configLegal(),
       (schemaPath) => {
         required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.accept_terms_required" });
       },

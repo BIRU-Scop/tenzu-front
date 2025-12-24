@@ -73,7 +73,7 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
 
         @if (_field().touched() && _field().invalid()) {
           <mat-error>
-            @for (error of _field().errors(); track error; let first = $first) {
+            @for (error of _field().errors(); track error.kind; let first = $first) {
               @if (error.message && first) {
                 {{ t(error.message) }}
               }
@@ -162,7 +162,7 @@ export class PasswordFieldComponent {
       minLength: security.password.minLength,
       numberDiversityDifference: security.password.numberDiversityDifference,
       valid: {
-        minLength: hasMinLength(value, 8),
+        minLength: hasMinLength(value, security.password.minLength),
         lowercase: hasLowercase(value),
         uppercase: hasUppercase(value),
         number: hasNumber(value),

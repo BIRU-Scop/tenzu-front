@@ -72,7 +72,7 @@
         "lowercase": "1 lowercase alphabet",
         "number": "1 number",
         "symbol": "1 special character {{ symbols }}",
-        "diversity": "Your password should contain at least {{ diversityDifference }} of followings :"
+        "diversity": "Your password should contain at least {{ diversityDifference }} of followings:"
       },
       "errors": {
         "required": "Password is required",

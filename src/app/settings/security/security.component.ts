@@ -29,7 +29,6 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
@@ -82,7 +81,6 @@ import { ActivatedRoute } from "@angular/router";
 export class SecurityComponent {
   notificationService = inject(NotificationService);
   userStore = inject(UserStore);
-  config = inject(ConfigAppService).config;
   route = inject(ActivatedRoute);
   securityModel = signal({
     newPassword: "",
@@ -93,15 +91,15 @@ export class SecurityComponent {
     apply(schemaPath.newPassword, passwordSchema({ enabledStrength: true }));
     required(schemaPath.repeatPassword, { message: "form_errors.required" });
     validate(schemaPath.repeatPassword, (context) => {
-      const repeatPassword = context.value();
       const password = context.valueOf(schemaPath.newPassword);
-      return repeatPassword && password && repeatPassword === password
-        ? undefined
-        : {
+      const repeatPassword = context.value();
+      return password && repeatPassword && password !== repeatPassword
+        ? {
             path: schemaPath.repeatPassword,
             kind: "passwordNotMatch",
-            message: "settings.security.password_not_match",
-          };
+            message: "resetPassword.password_not_match",
+          }
+        : undefined;
     });
   });
 

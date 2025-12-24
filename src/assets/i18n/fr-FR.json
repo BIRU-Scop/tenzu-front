@@ -67,17 +67,18 @@
       "hide": "Masquer le mot de passe",
       "placeholder": "Entre ton mot de passe",
       "hints": {
-        "minLength": "Ton mot de passe doit contenir au moins {{ minLength }} caractères.",
-        "diversity": "Ton mot de passe doit contenir au moins {{ diversityDifference }} de ces types :",
-        "diversityType": "1 {{ diversityType }}",
-        "symbolCharacters": "Note : Seuls les symboles <strong>{{ symbols }}</strong> comptent pour la force du mot de passe."
+        "minLength": "Ton mot de passe doit contenir au moins {{ minLength }} caractères *",
+        "uppercase": "1 alphabet majuscule",
+        "lowercase": "1 alphabet minuscule",
+        "number": "1 chiffre",
+        "symbol": "1 caractère spécial {{ symbols }}",
+        "diversity": "Ton mot de passe doit contenir au moins {{ diversityDifference }} de ces types :"
       },
       "errors": {
-        "required": "Le mot de passe est <strong>requis</strong>",
-        "minLength": "Le mot de passe doit contenir au moins <strong>{{ number }} caractères</strong>.",
-        "maxLength": "Le mot de passe ne peut pas dépasser <strong>{{ number }} caractères</strong>.",
-        "diversity": "Nécessite au moins <strong>{{ diversityDifference }}</strong> des types suivants :",
-        "diversityType": "1 caractère <strong>{{ diversityType }}</strong>"
+        "required": "Le mot de passe est requis",
+        "minLength": "Le mot de passe doit contenir au moins {{ number }} caractères.",
+        "maxLength": "Le mot de passe ne peut pas dépasser {{ number }} caractères.",
+        "strength": "Nécessite au moins {{ numberDiversity }} de 4 conditions"
       },
       "password-strength": {
         "security_level": {
@@ -90,7 +91,7 @@
     "email": {
       "label": "Email",
       "errors": {
-        "required": "Un email is <strong>requis</strong>",
+        "required": "Un email is requis",
         "email": "Merci de saisir une adresse e-mail valide."
       }
     },

@@ -67,17 +67,18 @@
       "hide": "Ocultar contraseña",
       "placeholder": "Introduce tu contraseña",
       "hints": {
-        "minLength": "Tu contraseña debe tener al menos {{ minLength }} caracteres.",
-        "diversity": "Tu contraseña debe tener al menos {{ diversityDifference }} de estos tipos:",
-        "diversityType": "1 {{ diversityType }}",
-        "symbolCharacters": "Nota: Solo los símbolos <strong>{{ symbols }}</strong> cuentan para la fortaleza."
+        "minLength": "Tu contraseña debe tener al menos {{ minLength }} caracteres *",
+        "uppercase": "1 alfabeto en mayúsculas",
+        "lowercase": "1 alfabeto en minúsculas",
+        "number": "1 número",
+        "symbol": "1 carácter especial {{ symbols }}",
+        "diversity": "Tu contraseña debe tener al menos {{ diversityDifference }} de estos tipos:"
       },
       "errors": {
-        "required": "La contraseña es <strong>obligatoria</strong>",
-        "minLength": "La contraseña debe tener al menos <strong>{{ number }} caracteres</strong>.",
-        "maxLength": "La contraseña no puede tener más de <strong>{{ number }} caracteres</strong>.",
-        "diversity": "Requiere al menos <strong>{{ diversityDifference }}</strong> de los siguientes tipos:",
-        "diversityType": "1 carácter <strong>{{ diversityType }}</strong>"
+        "required": "La contraseña es obligatoria",
+        "minLength": "La contraseña debe tener al menos {{ number }} caracteres.",
+        "maxLength": "La contraseña no puede tener más de {{ number }} caracteres.",
+        "strength": "Requiere al menos {{ numberDiversity }} de las 4 condiciones."
       },
       "password-strength": {
         "security_level": {
@@ -90,7 +91,7 @@
     "email": {
       "label": "Correo electrónico",
       "errors": {
-        "required": "El correo electrónico es <strong>obligatorio</strong>",
+        "required": "El correo electrónico es obligatorio",
         "email": "Por favor, introduce una dirección de correo electrónico válida"
       }
     },

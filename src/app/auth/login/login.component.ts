@@ -63,7 +63,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
             {{ t("auth.login.email_or_username") }}
           </mat-label>
           <input matInput autocomplete="username" [field]="loginForm.username" />
-          @for (error of loginForm.username().errors(); track error) {
+          @for (error of loginForm.username().errors(); track error.kind) {
             <mat-error>{{ t(error.message || "") }} </mat-error>
           }
         </mat-form-field>
