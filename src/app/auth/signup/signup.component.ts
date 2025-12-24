@@ -30,8 +30,8 @@ import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-f
 import { CreateUserPayload, SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
-import { ConfigAppService } from "../../config-app/config-app.service";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";

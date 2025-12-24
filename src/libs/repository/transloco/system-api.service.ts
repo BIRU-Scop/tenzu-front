@@ -24,7 +24,7 @@ import { inject, Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { Language } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
-import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 
 @Injectable({

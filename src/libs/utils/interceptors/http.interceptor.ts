@@ -24,7 +24,7 @@ import { inject } from "@angular/core";
 import { AuthService } from "@tenzu/repository/auth";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { retryWhenErrors } from "@tenzu/repository/base/utils";
 
