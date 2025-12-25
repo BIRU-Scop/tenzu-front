@@ -95,7 +95,6 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
             />
           </form>
         } @else if (_callback) {
-          {{ logUnexpectedState() }}
           <div class="flex flex-col gap-4 items-center">
             <p class="text-center">
               <span>{{ t("auth.social.unknown_error", { errorType: _callback.error || "unexpected_state" }) }}</span
@@ -153,8 +152,13 @@ export default class SocialAuthCallbackComponent {
       this.callback.set(callback);
       if (callback.error === "cancelled") {
         this.router.navigateByUrl(callback.fromSignup ? "/signup" : "/login");
-      } else {
-        this.tryAuthenticate(callback);
+      } else if (!this.tryAuthenticate(callback)) {
+        if (
+          !(callback.error === "unverified" && callback.email) &&
+          !(callback.error === "missing_terms_acceptance" && callback.socialSessionKey)
+        ) {
+          this.logUnexpectedState(callback);
+        }
       }
     });
   }
@@ -189,10 +193,11 @@ export default class SocialAuthCallbackComponent {
     }
   }
 
-  logUnexpectedState(): void {
+  logUnexpectedState(callback: ProviderCallback): void {
+    debug("social-auth-callback", "UNEXPECTED", callback.error);
     Sentry.captureMessage("Unexpected error received by social callback", {
       level: "error",
-      extra: { callbackData: this.callback() },
+      extra: { callbackData: callback },
     });
   }
 }
