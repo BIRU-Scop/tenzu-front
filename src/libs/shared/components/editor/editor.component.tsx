@@ -14,7 +14,8 @@ import * as React from "react";
 
 import { createRoot, Root } from "react-dom/client";
 import { Block, BlockNoteEditor } from "@blocknote/core";
-import { codeBlock } from "@blocknote/code-block";
+import { createCodeBlockSpec } from "@blocknote/core";
+import { codeBlockOptions } from "@blocknote/code-block";
 
 import { BlockNoteView } from "@blocknote/mantine";
 
@@ -62,6 +63,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
+    const codeBlock = createCodeBlockSpec(codeBlockOptions);
     effect(() => {
       const data = this.data();
       const initialContent = data
@@ -72,8 +74,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
           codeBlock,
           resolveFileUrl: this.resolveFileUrl(),
           uploadFile: this.uploadFile(),
-          // TODO use new autofocus option instead of undocumented _tiptapOptions once we have upgraded blocknote to >= v0.40.0
-          _tiptapOptions: { autofocus: this.focus() },
+          autofocus: this.focus(),
           ...initialContent,
         });
       }

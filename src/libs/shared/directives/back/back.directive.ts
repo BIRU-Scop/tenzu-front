@@ -19,15 +19,18 @@
  *
  */
 
-import { Directive, HostListener, inject } from "@angular/core";
+import { Directive, inject } from "@angular/core";
 import { Location } from "@angular/common";
 
 @Directive({
   selector: "[appBack]",
+  host: {
+    "(click)": "back()",
+  },
 })
 export class BackDirective {
   location = inject(Location);
-  @HostListener("click") back() {
+  back() {
     this.location.back();
   }
 }

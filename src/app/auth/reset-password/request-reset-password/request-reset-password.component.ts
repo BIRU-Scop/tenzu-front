@@ -19,15 +19,17 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
-import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { apply, Field, form, submit } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/repository/user";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../../auth-form-state.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { emailSchema } from "@tenzu/shared/components/form/email-field/schema";
+import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 
 @Component({
   selector: "app-request-reset-password",
@@ -39,9 +41,13 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     RouterLink,
     MatDivider,
     ButtonComponent,
+    Field,
   ],
+  host: {
+    class: "flex flex-col gap-4 w-96",
+  },
   template: `
-    <div *transloco="let t" class="flex flex-col gap-4">
+    <ng-container *transloco="let t">
       <h1 class="mat-headline-medium text-center">
         {{ t(!showConfirmation() ? "resetPassword.title" : "resetPassword.confirm.title") }}
       </h1>
@@ -49,8 +55,8 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
         <p class="mat-body-medium">
           {{ t("resetPassword.subtitle") }}
         </p>
-        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
-          <app-email-field formControlName="email"></app-email-field>
+        <form (submit)="submit($event)" class="flex flex-col gap-2">
+          <app-email-field [field]="resetForm.email"></app-email-field>
           <app-button translocoKey="resetPassword.submit" level="primary" type="submit" iconName="mail" />
         </form>
       } @else {
@@ -58,7 +64,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
           <p class="mat-body-medium text-center">
             {{ t("resetPassword.confirm.subtitle") }}
           </p>
-          <p class="mat-body-large font-bold">{{ form.value.email }}</p>
+          <p class="mat-body-large font-bold">{{ resetForm.email().value() }}</p>
           <app-button
             iconName="login"
             level="primary"
@@ -84,32 +90,27 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
           </p>
         }
       </footer>
-    </div>
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class RequestResetPasswordComponent implements OnInit, OnDestroy {
+export default class RequestResetPasswordComponent {
   showConfirmation = model(false);
-  fb = inject(NonNullableFormBuilder);
-  form = this.fb.group({
-    email: ["", [Validators.required, Validators.email]],
+
+  resetForm = form(signal({ email: "" }), (schemaPath) => {
+    apply(schemaPath.email, emailSchema);
   });
   userStore = inject(UserStore);
-  readonly authFormStateStore = inject(AuthFormStateStore);
-
-  ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
-  }
-  ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
+  constructor() {
+    trackFormValidationEffect(this.resetForm);
   }
 
-  async submit() {
-    this.form.reset(this.form.value);
-    if (this.form.value.email) {
-      await this.userStore.requestResetPassword(this.form.value.email);
+  async submit(event: Event) {
+    event.preventDefault();
+    await submit(this.resetForm, async (form) => {
+      await this.userStore.requestResetPassword(form().value().email);
       this.showConfirmation.set(true);
-    }
+    });
   }
 }

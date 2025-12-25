@@ -27,6 +27,7 @@ import { VerifyEmailGuard } from "./auth/signup/verify-email.guard";
 import { ProjectInvitationGuard } from "./workspace/project-detail/project-members/project-invitation.guard";
 import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";
 import { providePluginsTransloco } from "./providers-plugins";
+import { authConfigResolver } from "./auth/routes";
 
 function isViewSetterKanbanStory(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
   const storyUrl = "story/:ref";
@@ -103,11 +104,13 @@ export const routes: Routes = [
   },
   {
     path: "",
-    loadComponent: () => import("./auth/auth-layout/auth-layout.component"),
+    loadComponent: () => import("./auth/auth.component"),
+    providers: [provideTranslocoScope("home"), provideTranslocoScope("auth")],
     canActivateChild: [unloggedOnlyGuard],
     children: [
       {
         path: "",
+        resolve: { authConfig: authConfigResolver },
         loadChildren: () => import("./auth/routes").then((m) => m.routes),
       },
     ],

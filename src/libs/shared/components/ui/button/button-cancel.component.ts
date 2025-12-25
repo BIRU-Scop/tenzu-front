@@ -23,6 +23,7 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
 import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button-cancel",
@@ -37,6 +38,7 @@ import { ButtonInterface } from "./button.interface";
 export class ButtonCancelComponent implements ButtonInterface {
   level = input<LevelType>("secondary");
   translocoKey = input<string>("commons.cancel");
+  translocoValue = input<JsonObject>({});
   iconName = input<IconName | undefined>("cancel");
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);

@@ -19,112 +19,121 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { MatError, MatFormField, MatInput } from "@angular/material/input";
 import { LoginService } from "./login.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatLabel } from "@angular/material/form-field";
-import { HttpErrorResponse } from "@angular/common/http";
 import { ActivatedRoute, RouterLink } from "@angular/router";
-import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
+import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../auth-form-state.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { apply, Field, form, required, submit } from "@angular/forms/signals";
+import { lastValueFrom } from "rxjs";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
+import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
+import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 
 @Component({
   selector: "app-login",
   imports: [
     MatInput,
     MatFormField,
-    ReactiveFormsModule,
     TranslocoDirective,
     MatLabel,
     PasswordFieldComponent,
     RouterLink,
     MatError,
     MatDivider,
+    Field,
     ButtonComponent,
     PasswordFieldComponent,
+    SocialAuthLoginComponent,
   ],
+  host: {
+    class: "flex flex-col gap-4 w-96",
+  },
   template: `
-    <div *transloco="let t" class="flex flex-col gap-4 w-96">
-      <h1 class="mat-headline-medium text-center">{{ t("login.title") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
+    <ng-container *transloco="let t">
+      <h1 class="mat-headline-medium text-center">{{ t("auth.login.title") }}</h1>
+      <form (submit)="submit($event)" class="flex flex-col gap-2">
         <mat-form-field>
           <mat-label>
-            {{ t("login.email_or_username") }}
+            {{ t("auth.login.email_or_username") }}
           </mat-label>
-          <input matInput autocomplete data-testid="username-input" formControlName="username" />
-          @if (form.controls.username.hasError("required")) {
-            <mat-error
-              data-testid="username-required-error"
-              [innerHTML]="t('login.errors.username_required')"
-            ></mat-error>
+          <input matInput autocomplete="username" [field]="loginForm.username" />
+          @for (error of loginForm.username().errors(); track error.kind) {
+            <mat-error>{{ t(error.message || "") }} </mat-error>
           }
         </mat-form-field>
-        <app-password-field formControlName="password" />
-        @if (form.hasError("loginError")) {
-          <div class="mat-mdc-form-field-error" data-testid="login-401">
-            {{ t("login.errors.401") }}
-          </div>
-        }
-        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("login.forgot_password") }}</a>
+        <app-password-field
+          [autocomplete]="'current-password'"
+          [field]="loginForm.password"
+          [settings]="{ enabledStrength: false }"
+        />
+        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("auth.login.forgot_password") }}</a>
         <app-button
           level="tertiary"
-          translocoKey="login.action"
+          translocoKey="auth.login.action"
           type="submit"
           iconName="login"
-          [disabled]="!form.dirty || form.invalid"
+          [disabled]="!loginForm().dirty() || loginForm().invalid()"
         />
       </form>
+      <app-social-auth-login [signup]="false"></app-social-auth-login>
       <mat-divider></mat-divider>
       <footer class="text-center">
         <p class="mat-body-medium">
-          {{ t("login.not_registered_yet") }} <a [routerLink]="['/signup']">{{ t("login.create_account") }}</a>
+          {{ t("auth.login.not_registered_yet") }}
+          <a [routerLink]="['/signup']" [queryParams]="this.route.snapshot.queryParams">{{
+            t("auth.login.create_account")
+          }}</a>
         </p>
       </footer>
-    </div>
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class LoginComponent implements OnInit, OnDestroy {
+export default class LoginComponent {
   service = inject(LoginService);
-  fb = inject(FormBuilder);
-  form = this.fb.nonNullable.group({
-    username: ["", Validators.required],
-    password: [""],
-  });
   route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
+  readonly authConfigStore = inject(AuthConfigStore);
 
-  ngOnInit(): void {
-    this.authFormStateStore.updateHasError(this.form.events);
+  loginForm = form(
+    signal<Credential>({
+      username: "",
+      password: "",
+    }),
+    (schemaPath) => {
+      required(schemaPath.username, { message: "auth.login.errors.username_required" });
+      apply(schemaPath.password, passwordSchema({ enabledStrength: false }));
+    },
+  );
+
+  constructor() {
+    // Track form validation state to trigger logo animation when errors occur
+    trackFormValidationEffect(this.loginForm);
   }
 
-  ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
-  }
-
-  submit() {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
+  async submit(event: SubmitEvent) {
+    event.preventDefault();
+    await submit(this.loginForm, async (form) => {
       let next = this.route.snapshot.queryParamMap.get("next");
       if (!next) {
         next = "/";
       }
-      this.service.login(this.form.value as Credential, next).subscribe({
-        error: (error) => {
-          if (error instanceof HttpErrorResponse && error.status === 401) {
-            this.form.setErrors({ loginError: true });
-            this.form.controls.username.setErrors({ loginError: true });
-            this.form.controls.password.setErrors({ loginError: true });
-            this.form.markAsTouched();
-          }
-        },
-      });
-    }
+      try {
+        await lastValueFrom(this.service.login(form().value(), next));
+      } catch {
+        this.authConfigStore.setFormHasError(true);
+        return [
+          { fieldTree: this.loginForm.username, kind: "invalid-credentials" },
+          { fieldTree: this.loginForm.password, kind: "invalid-credentials", message: "auth.login.errors.401" },
+        ];
+      }
+      return undefined;
+    });
   }
 }

@@ -19,33 +19,42 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
-import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
-import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from "@angular/core";
+import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
-import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
+import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
-import { AuthFormStateStore } from "../auth-form-state.store";
-import { ConfigAppService } from "../../config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { apply, applyWhenValue, Field, form, maxLength, required, submit } from "@angular/forms/signals";
+import { emailSchema } from "@tenzu/shared/components/form/email-field/schema";
+import { lastValueFrom } from "rxjs";
+import {
+  FormFooterComponent,
+  FormFooterSecondaryActionDirective,
+} from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { AuthService, trackFormValidationEffect } from "@tenzu/repository/auth";
+import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
+import PendingVerificationComponent from "./pending-verification/pending-verification.component";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "app-signup",
   imports: [
     EmailFieldComponent,
     FormsModule,
-    MatButton,
     MatLabel,
-    PasswordFieldComponent,
     ReactiveFormsModule,
     TranslocoDirective,
     MatFormField,
@@ -57,178 +66,194 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     MatOption,
     MatSelect,
     ButtonComponent,
+    PasswordFieldComponent,
+    Field,
+    FormFooterComponent,
+    FormFooterSecondaryActionDirective,
+    SocialAuthLoginComponent,
+    PendingVerificationComponent,
   ],
-  template: ` <div *transloco="let t" class="flex flex-col gap-4">
-    @let _form = form();
+  host: {
+    class: "flex flex-col gap-4",
+  },
+  template: ` <ng-container *transloco="let t" class="flex flex-col gap-4">
     @if (!emailSent()) {
-      <h1 class="mat-headline-medium text-center">{{ t("signup.title") }}</h1>
+      <h1 class="mat-headline-medium text-center">{{ t("auth.signup.title") }}</h1>
       @if (!displayForm()) {
         <div class="flex flex-col gap-y-4">
           <app-button
             level="primary"
-            iconName="add"
-            translocoKey="signup.create_account_email"
+            iconName="mail"
+            translocoKey="auth.signup.create_account_email"
             (click)="displayForm.set(true)"
           />
-          <app-button level="primary" translocoKey="signup.social_connect" [disabled]="true" />
+          <app-social-auth-login [signup]="true"></app-social-auth-login>
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();
-        <form [formGroup]="_form" (ngSubmit)="submit()" class="flex flex-col gap-1 w-[32rem]">
+        <form (submit)="submit($event)" class="flex flex-col gap-1 w-[32rem]">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
-            <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
-            @if (_form.controls.fullName.hasError("required")) {
-              <mat-error
-                data-testid="fullName-required-error"
-                [innerHTML]="t('signup.validation.full_name_required')"
-              ></mat-error>
+            <input [field]="signupForm.fullName" matInput autocomplete type="text" />
+            @for (error of signupForm.fullName().errors(); track error.kind) {
+              <mat-error>{{ t(error.message || "") }}</mat-error>
             }
           </mat-form-field>
-          <app-email-field formControlName="email" />
-          <app-password-field
-            class="mb-4"
-            formControlName="password"
-            [settings]="{
-              strength: { enabled: true, showBar: true },
-            }"
-          />
+          <app-email-field [field]="signupForm.email" />
+          <app-password-field [field]="signupForm.password" [settings]="{ enabledStrength: true }" />
           <mat-form-field>
             <mat-label>{{ t("general.identity.lang") }}</mat-label>
-            <mat-select formControlName="lang" data-testid="lang-select">
+            <mat-select [field]="signupForm.lang" data-testid="lang-select">
               @for (language of languageStore.entities(); track language.code) {
                 <mat-option [value]="language.code">{{ language.name }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
           @if (configLegal) {
-            <div class="min-w-full w-min">
-              <mat-checkbox formControlName="acceptTerms" required>
-                <div class="flex flex-col">
-                  <small
-                    class="mat-body-small"
-                    [innerHTML]="
-                      t('signup.terms_and_privacy', {
-                        termsOfService: configLegal.tos,
-                        privacyPolicy: configLegal.privacy,
-                      })
-                    "
-                  ></small>
-                </div>
-              </mat-checkbox>
-            </div>
+            <mat-checkbox
+              [class.checkbox-invalid]="
+                signupForm.acceptTermsOfService().touched() && signupForm.acceptTermsOfService().invalid()
+              "
+              [field]="signupForm.acceptTermsOfService"
+            >
+              <small
+                class="mat-body-small"
+                [innerHTML]="
+                  t('auth.signup.terms_and_privacy', {
+                    termsOfService: configLegal.tos,
+                    privacyPolicy: configLegal.privacy,
+                  })
+                "
+              ></small>
+            </mat-checkbox>
           }
-          <div class="flex flex-row justify-end gap-4">
+          <app-form-footer>
             <app-button
+              appFormFooterSecondaryAction
               level="secondary"
-              translocoKey="signup.all_options"
+              translocoKey="auth.signup.all_options"
               iconName="arrow_back_ios"
               (click)="displayForm.set(false)"
             />
             <app-button
-              [disabled]="!_form.dirty || _form.invalid"
+              [disabled]="!signupForm().dirty() || signupForm().invalid()"
               iconName="add"
               level="tertiary"
-              translocoKey="signup.create_account"
+              translocoKey="auth.signup.create_account"
               data-testid="submitCreateAccount-button"
               type="submit"
             />
-          </div>
+          </app-form-footer>
         </form>
       }
-    } @else {
-      <h1 class="mat-headline-medium">{{ t("signup.verify.title") }}</h1>
-      <p class="mat-body-medium">
-        {{ t("signup.verify.verification_link_sent") }}
-        <strong data-testid="sentEmail-block">{{ _form.value.email }}</strong>
-      </p>
-      <p class="mat-body-medium">
-        {{ t("signup.verify.mail_not_received") }}
-      </p>
-      <button
-        data-testid="resendMail-button"
-        mat-stroked-button
-        tabindex="1"
-        (keydown.enter)="resendEmail()"
-        (click)="resendEmail()"
-        class="primary-button"
-      >
-        {{ t("signup.verify.resend_button") }}
-      </button>
+      <mat-divider></mat-divider>
+      <footer class="text-center">
+        <p class="mat-body-medium">
+          {{ t("auth.signup.footer.already_account") }}
+          <a [routerLink]="['/login']" [queryParams]="this.route.snapshot.queryParams">{{
+            t("auth.signup.footer.login")
+          }}</a>
+        </p>
+      </footer>
+    } @else if (signupForm.email().value()) {
+      <app-pending-verification
+        [email]="signupForm.email().value()"
+        (resendEmail)="resendEmail()"
+      ></app-pending-verification>
     }
-    <mat-divider></mat-divider>
-    <footer class="text-center">
-      <p class="mat-body-medium">
-        {{ t("signup.footer.already_account") }} <a [routerLink]="['/login']">{{ t("signup.footer.login") }}</a>
-      </p>
-    </footer>
-  </div>`,
-  styles: `
-    mat-checkbox.ng-invalid.ng-dirty {
-      --checkbox-background-color: var(--mat-sys-error);
-
-      ::ng-deep.mdc-label {
-        color: var(--mat-sys-on-error-container);
-      }
-    }
-  `,
+  </ng-container>`,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class SignupComponent implements OnInit, OnDestroy {
+export default class SignupComponent {
+  userService = inject(UserService);
   notificationService = inject(NotificationService);
   languageStore = inject(LanguageStore);
-  userService = inject(UserService);
   configAppService = inject(ConfigAppService);
+  fb = inject(NonNullableFormBuilder);
+  route = inject(ActivatedRoute);
+  readonly authConfigStore = inject(AuthConfigStore);
+  readonly authService = inject(AuthService);
+
   displayForm = signal(false);
   emailSent = signal(false);
-  fb = inject(NonNullableFormBuilder);
-  form = computed(() =>
-    this.fb.group({
-      email: ["", [Validators.required, Validators.email]],
-      fullName: ["", [Validators.required, Validators.maxLength(256)]],
-      password: [""],
-      lang: [this.languageStore.entities().find((language) => language.isDefault)?.code],
-      acceptTerms: [false],
-    }),
-  );
-  route = inject(ActivatedRoute);
-  readonly authFormStateStore = inject(AuthFormStateStore);
-  translocoService = inject(TranslocoService);
+  signupModel = signal<CreateUserPayload>({
+    fullName: "",
+    email: "",
+    password: "",
+    lang: "",
+    acceptTermsOfService: false,
+    acceptPrivacyPolicy: false,
+  });
+  signupForm = form(this.signupModel, (schemaPath) => {
+    required(schemaPath.fullName, { message: "auth.signup.validation.full_name_required" });
+    maxLength(schemaPath.fullName, 256);
+    apply(schemaPath.email, emailSchema);
+    apply(schemaPath.password, passwordSchema({ enabledStrength: true }));
+    applyWhenValue(
+      schemaPath,
+      () => !!this.configAppService.configLegal(),
+      (schemaPath) => {
+        required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.accept_terms_required" });
+      },
+    );
+  });
 
-  ngOnInit(): void {
-    const form = this.form();
-    this.authFormStateStore.updateHasError(form.events);
-    const configLegal = this.configAppService.configLegal();
-    if (configLegal) {
-      form.controls.acceptTerms.addValidators([Validators.requiredTrue]);
-    }
+  queryParamMap = toSignal(this.route.queryParamMap);
+
+  constructor() {
+    effect(() => {
+      const initialEmail = this.queryParamMap()?.get("email") || "";
+      untracked(() => {
+        this.signupModel.update((value) => ({ ...value, email: initialEmail }));
+      });
+    });
+    effect(() => {
+      const language = this.languageStore.entities().find((language) => language.isDefault)?.code;
+      untracked(() => {
+        if (language) {
+          this.signupModel.update((value) => ({ ...value, lang: language }));
+        }
+      });
+    });
+    trackFormValidationEffect(this.signupForm);
   }
-  ngOnDestroy(): void {
-    this.authFormStateStore.resetError();
-  }
-  submit(): void {
-    const form = this.form();
-    form.reset(form.value);
-    if (form.valid) {
+
+  async submit(event: Event) {
+    event.preventDefault();
+    await submit(this.signupForm, async (form) => {
       const params = this.route.snapshot.queryParams;
-      const acceptTerms = form.value.acceptTerms || false;
-      this.userService
-        .create({
-          ...(form.value as Pick<CreateUserPayload, "email" | "fullName" | "password">),
-          ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
-          ...params,
-        })
-        .subscribe(() => this.emailSent.set(true));
-    }
+      const values = form().value();
+      try {
+        await lastValueFrom(
+          this.userService.create({
+            ...values,
+            ...{ acceptPrivacyPolicy: values.acceptTermsOfService },
+            ...params,
+          }),
+        );
+      } catch (error) {
+        if (error instanceof HttpErrorResponse && error.status === 422) {
+          this.authConfigStore.setFormHasError(true);
+          return [
+            { fieldTree: this.signupForm.password, kind: "password-rejected", message: "auth.signup.errors.422" },
+          ];
+        }
+      }
+      this.emailSent.set(true);
+      return undefined;
+    });
   }
   resendEmail(): void {
-    this.submit();
-    this.notificationService.open({
-      type: "success",
-      title: "signup.verify.resend_email_label",
-      translocoTitle: true,
-      detail: "signup.verify.resend_email_message",
-      translocoDetail: true,
-    });
+    const form = this.signupForm();
+    if (form.valid()) {
+      const params = this.route.snapshot.queryParams;
+      this.userService
+        .resentVerification({
+          ...form.value(),
+          ...params,
+        })
+        .subscribe();
+    }
   }
 }

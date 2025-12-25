@@ -37,6 +37,15 @@ mat-checkbox {
       border-color: var(--checkbox-background-color);
     }
   }
+.checkbox-invalid {
+
+  --checkbox-background-color: var(--mat-sys-error);
+
+  & .mdc-label {
+    color: var(--mat-sys-on-error-container);
+  }
+
+}
 
 
 @mixin tokens-overrides() {

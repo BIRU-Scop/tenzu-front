@@ -23,16 +23,17 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
 import { MatButton, MatButtonAppearance, MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
-import { TitleCasePipe } from "@angular/common";
 import { LevelType, IconName, ButtonType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
 import { MatTooltip } from "@angular/material/tooltip";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button",
-  imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, TitleCasePipe, MatTooltip],
+  imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, MatTooltip],
   template: `
     @let _translocoKey = translocoKey();
+    @let _translocoValue = translocoValue();
     @let _iconName = iconName();
 
     @switch (iconOnly()) {
@@ -41,9 +42,9 @@ import { MatTooltip } from "@angular/material/tooltip";
           *transloco="let t"
           [class]="level()"
           matIconButton
-          [attr.aria-label]="t(_translocoKey)"
+          [attr.aria-label]="t(_translocoKey, _translocoValue)"
           [disabled]="disabled()"
-          [matTooltip]="t(_translocoKey)"
+          [matTooltip]="t(_translocoKey, _translocoValue)"
         >
           <mat-icon>{{ _iconName }}</mat-icon>
         </button>
@@ -60,7 +61,7 @@ import { MatTooltip } from "@angular/material/tooltip";
           @if (_iconName) {
             <mat-icon>{{ _iconName }}</mat-icon>
           }
-          {{ t(_translocoKey) | titlecase }}
+          {{ t(_translocoKey, _translocoValue) }}
         </button>
       }
     }
@@ -87,6 +88,7 @@ export class ButtonComponent implements ButtonInterface {
     },
   });
   translocoKey = input.required<string>();
+  translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
   appearance = computed<MatButtonAppearance>(() => {
     switch (this.level()) {

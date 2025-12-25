@@ -11,7 +11,6 @@
   },
   "security": {
     "save": "Save",
-    "current_password": "Current password",
     "new_password": "New password",
     "repeat_password": "Repeat password",
     "password_not_match": "The passwords do not match",
@@ -24,7 +23,7 @@
     "delete_account": "Delete my account",
     "keep_my_account": "Keep my account",
     "delete": "Delete account",
-    "consequences":{
+    "consequences": {
       "sorry": "Sorry to see you leave",
       "what": "What will happen",
       "item1": "You will lose access to Tenzu.",

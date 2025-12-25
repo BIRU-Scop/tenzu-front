@@ -34,7 +34,7 @@ import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-s
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
 import {
   FormFooterComponent,
-  FormFooterSecondaryActionComponent,
+  FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
 
@@ -53,7 +53,7 @@ import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-wa
     ButtonSaveComponent,
     ButtonUndoComponent,
     FormFooterComponent,
-    FormFooterSecondaryActionComponent,
+    FormFooterSecondaryActionDirective,
     DeleteWarningButtonComponent,
   ],
   template: `
@@ -87,9 +87,11 @@ import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-wa
               </mat-form-field>
             </div>
             <app-form-footer>
-              <app-form-footer-secondary-action>
-                <app-button-undo (click)="reset()" [disabled]="form.pristine"></app-button-undo>
-              </app-form-footer-secondary-action>
+              <app-button-undo
+                appFormFooterSecondaryAction
+                (click)="reset()"
+                [disabled]="form.pristine"
+              ></app-button-undo>
               <app-button-save [disabled]="form.pristine || form.invalid" />
             </app-form-footer>
           </form>

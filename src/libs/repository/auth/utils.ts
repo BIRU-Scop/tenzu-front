@@ -19,21 +19,28 @@
  *
  */
 
-import { InputSignal, InputSignalWithTransform } from "@angular/core";
-import { IconName, LevelType, ButtonType } from "@tenzu/shared/components/ui/ui.types";
-import { JsonObject } from "@tenzu/repository/base/misc.model";
+import { effect, inject, untracked } from "@angular/core";
+import { FieldTree } from "@angular/forms/signals";
+import { AuthConfigStore } from "./auth-config.store";
 
-export interface ButtonInterface {
-  translocoKey: InputSignal<string>;
-  translocoValue: InputSignal<JsonObject>;
-  iconName: InputSignal<IconName | undefined>;
-  type: InputSignal<ButtonType>;
-  iconOnly: InputSignal<boolean>;
-  disabled: InputSignal<boolean>;
-  level:
-    | InputSignalWithTransform<
-        "primary-button" | "secondary-button" | "tertiary-button" | "warning-button" | "error-button",
-        LevelType
-      >
-    | InputSignal<LevelType>;
+export function trackFormValidationEffect(form: FieldTree<unknown>) {
+  const authConfigStore = inject(AuthConfigStore);
+  return effect((onCleanup) => {
+    const errorSummary = form().errorSummary();
+    const hasError = errorSummary.reduce(
+      (result, item) => result || (item.fieldTree().invalid() && item.fieldTree().touched()),
+      false,
+    );
+
+    untracked(() => {
+      if (hasError) {
+        authConfigStore.setFormHasError(true);
+      } else {
+        authConfigStore.setFormHasError(false);
+      }
+    });
+    onCleanup(() => {
+      authConfigStore.resetFormHasError();
+    });
+  });
 }

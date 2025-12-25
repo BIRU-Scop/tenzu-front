@@ -53,7 +53,7 @@ import {
   applyWorkspaceMembershipEventType,
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
-import { ConfigAppService } from "../../../../../app/config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { AuthService } from "@tenzu/repository/auth";
 
 const MAX_RETRY = 10;

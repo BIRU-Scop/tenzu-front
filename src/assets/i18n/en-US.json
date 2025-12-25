@@ -67,17 +67,18 @@
       "hide": "Hide password",
       "placeholder": "Enter your password",
       "hints": {
-        "minLength": "Your password needs to be at least {{ minLength }} long.",
-        "diversity": "Your password needs to have at least {{ diversityDifference }} of these kinds:",
-        "diversityType": "1 {{ diversityType }}",
-        "symbolCharacters": "Note: Only <strong>{{ symbols }}</strong> symbols count toward strength."
+        "minLength": "Your password should contain {{ minLength }} characters minimum *",
+        "uppercase": "1 uppercase alphabet",
+        "lowercase": "1 lowercase alphabet",
+        "number": "1 number",
+        "symbol": "1 special character {{ symbols }}",
+        "diversity": "Your password should contain at least {{ diversityDifference }} of followings:"
       },
       "errors": {
-        "required": "Password is <strong>required</strong>",
-        "minLength": "Password needs to be at least <strong>{{ number }} characters long</strong>.",
-        "maxLength": "Password cannot be longer than <strong>{{ number }} characters</strong>.",
-        "diversity": "Requires at least <strong>{{ diversityDifference }}</strong> the following types:",
-        "diversityType": "1 <strong>{{ diversityType }}</strong> character"
+        "required": "Password is required",
+        "minLength": "Password needs to be at least {{ number }} characters long.",
+        "maxLength": "Password cannot be longer than {{ number }} characters.",
+        "strength": "Must meet at least {{ numberDiversity }} of 4 conditions"
       },
       "password-strength": {
         "security_level": {
@@ -90,7 +91,7 @@
     "email": {
       "label": "Email",
       "errors": {
-        "required": "Email is <strong>required</strong>",
+        "required": "Email is required",
         "email": "Please enter a valid email address"
       }
     },
@@ -194,7 +195,9 @@
     }
   },
   "form_errors": {
-    "max_length": "Characters limit is {{length}}"
+    "max_length": "Characters limit is {{length}}",
+    "min_length": "Minimum characters limit is {{length}}",
+    "required": "This field is required"
   },
   "environment": {
     "demo": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly. We do not keep your emails for any kind of marketing outreach.",

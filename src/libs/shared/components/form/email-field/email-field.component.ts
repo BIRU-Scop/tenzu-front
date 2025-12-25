@@ -19,40 +19,39 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
-import { ReactiveFormsModule, Validators } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
-import { injectNgControl } from "@tenzu/utils/injectors";
+import { Field, FieldTree } from "@angular/forms/signals";
+import { MatInput } from "@angular/material/input";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [NoopValueAccessorDirective],
-  imports: [MatLabel, MatInput, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError, MatLabel],
+  imports: [MatLabel, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError, MatLabel, Field, MatInput],
   providers: [],
   selector: "app-email-field",
+  host: {
+    class: "flex",
+  },
   styles: ``,
   template: `
-    <mat-form-field *transloco="let t" subscriptSizing="fixed">
+    @let _field = field();
+    <mat-form-field *transloco="let t" subscriptSizing="fixed" class="flex grow">
       <mat-label>
         {{ t("component.email.label") }}
       </mat-label>
-      <input matInput data-testid="email-input" type="email" [formControl]="ngControl.control" autocomplete="email" />
-      @if (ngControl.hasError("required")) {
-        <mat-error data-testid="email-required-error" [innerHTML]="t('component.email.errors.required')"></mat-error>
-      }
-      @if (ngControl.hasError("email")) {
-        <mat-error data-testid="email-invalid-error">{{ t("component.email.errors.email") }}</mat-error>
+      <input matInput [field]="_field" autocomplete="email" />
+      @if (_field().touched() && _field().invalid()) {
+        <mat-error>
+          @for (error of _field().errors(); track error.kind) {
+            {{ t(error.message || "") }}
+          }
+        </mat-error>
       }
     </mat-form-field>
   `,
 })
-export class EmailFieldComponent implements OnInit {
-  ngControl = injectNgControl();
-
-  ngOnInit() {
-    this.ngControl.control.addValidators([Validators.email, Validators.required]);
-  }
+export class EmailFieldComponent {
+  field = input.required<FieldTree<string, string>>();
 }

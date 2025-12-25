@@ -42,7 +42,7 @@ import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { httpInterceptor } from "@tenzu/utils/interceptors";
-import { ConfigAppService } from "./config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { WsService } from "@tenzu/utils/services/ws";
 import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 import { providePlugins } from "./providers-plugins";
