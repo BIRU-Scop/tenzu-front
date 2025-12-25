@@ -42,7 +42,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
   template: `
     <ng-container *transloco="let t">
       <h1 class="mat-headline-medium">
-        {{ t("choose_new_password") }}
+        {{ t("resetPassword.choose_new_password") }}
       </h1>
       <form (submit)="submit($event)" class="flex flex-col gap-8">
         <app-password-field
