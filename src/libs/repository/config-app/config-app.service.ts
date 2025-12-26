@@ -24,9 +24,8 @@ import { HttpClient } from "@angular/common/http";
 import { ConfigModel, ConfigSchemaService } from "./config.model";
 import { environment } from "../../../environments/environment";
 import { EnvironmentConfig } from "../../../environments/environment-type";
-import { v4 } from "uuid";
 
-export const CORRELATION_ID = v4();
+export const CORRELATION_ID = crypto.randomUUID();
 
 @Injectable({
   providedIn: "root",
