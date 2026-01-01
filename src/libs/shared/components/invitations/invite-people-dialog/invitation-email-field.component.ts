@@ -72,7 +72,7 @@ export class InvitationErrorStateMatcher implements ErrorStateMatcher {
   `,
   template: `
     <form [formGroup]="form" *transloco="let t">
-      <mat-form-field subscriptSizing="fixed">
+      <mat-form-field subscriptSizing="dynamic">
         <input
           matInput
           [attr.data-testid]="'invite-email-input-' + ngControl.value"

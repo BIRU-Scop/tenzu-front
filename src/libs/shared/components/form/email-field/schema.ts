@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,30 +19,9 @@
  *
  */
 
-.bar-part {
-  @apply bg-transparent;
-  block-size: 6px;
-  border-radius: 6px;
-  inline-size: 64px;
-}
-.bar-part{
-  background-color: var(--mat-sys-outline);
-}
-.weak {
-  color: var(--mat-sys-on-error);
-  .one {
-    background-color: var(--mat-sys-error);
-  }
-}
-.medium {
-  color: var(--mat-sys-on-warning);
-  .one,.two {
-    background-color: var(--mat-sys-warning);
-  }
-}
-.strong {
-  color: var(--mat-sys-on-tertiary);
-  .one,.two,.three {
-    background-color: var(--mat-sys-tertiary);
-  }
-}
+import { email, required, schema } from "@angular/forms/signals";
+
+export const emailSchema = schema<string>((field) => {
+  required(field, { message: "component.email.errors.required" });
+  email(field, { message: "component.email.errors.email" });
+});

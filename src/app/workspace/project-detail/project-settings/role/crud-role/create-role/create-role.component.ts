@@ -25,22 +25,23 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { FormRoleComponent } from "../form-role/form-role.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
-import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-create-role",
   imports: [
     FormRoleComponent,
     FormsModule,
-    MatButton,
     TranslocoDirective,
     ReactiveFormsModule,
     PermissionOrRedirectDirective,
-    RouterLink,
+    FormFooterComponent,
+    ButtonAddComponent,
   ],
   template: ` @let projectDetail = currentProjectDetail();
     @if (projectDetail) {
@@ -55,17 +56,12 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
           <form
             [formGroup]="form"
             (submit)="onSave({ values: form.getRawValue(), projectId: projectDetail.id })"
-            class="flex flex-col"
+            class="flex flex-col w-fit"
           >
             <app-form-role [form]="form" />
-            <div class="flex flex-row gap-x-4 mt-2">
-              <a mat-flat-button routerLink="../list-roles" class="secondary-button">
-                {{ t("commons.cancel") }}
-              </a>
-              <button mat-flat-button [disabled]="!form.dirty || form.invalid" type="submit" class="tertiary-button">
-                {{ t("project.settings.roles.create_role") }}
-              </button>
-            </div>
+            <app-form-footer class="mt-2">
+              <app-button-add translocoKey="project.settings.roles.create_role" />
+            </app-form-footer>
           </form>
         </ng-container>
       </ng-container>

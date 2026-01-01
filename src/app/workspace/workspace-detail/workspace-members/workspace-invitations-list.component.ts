@@ -65,10 +65,10 @@ import { ActivatedRoute } from "@angular/router";
                         [invitation]="invitation"
                         itemType="workspace"
                         [userRole]="workspace.userRole"
-                      ></app-invitation-role>
+                      />
                     </div>
                     <div class="app-table-cell basis-full">
-                      <app-invitation-status [invitation]="invitation"></app-invitation-status>
+                      <app-invitation-status [invitation]="invitation" />
                     </div>
                     <div class="app-table-cell basis-1/2">
                       <app-invitation-actions
@@ -78,7 +78,7 @@ import { ActivatedRoute } from "@angular/router";
                         [resentInvitation]="resentInvitationId() === invitation.id"
                         (resend)="resendInvitation($event)"
                         (revoke)="workspaceInvitationRepositoryService.revokeWorkspaceInvitation($event)"
-                      ></app-invitation-actions>
+                      />
                     </div>
                   </div>
                 }

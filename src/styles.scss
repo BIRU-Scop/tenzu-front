@@ -42,13 +42,13 @@
 @use "themes/badge-theme" as badge;
 @use "themes/cdk-drag-theme" as cdk-drag;
 @use "themes/cdk-virtual-scroll" as cdk-virtual-scroll;
-@use "themes/slide-toggle-theme" as slide-toggle;
 @use "themes/variables/variables" as variables;
 @use "themes/app-table";
 @use "themes/skeleton";
 @use "themes/svg-logo";
+@use "themes/slide-toggle-theme" as slide-toggle;
 @use "@blocknote/core/fonts/inter.css";
-@use "@blocknote/mantine/style.css";
+@import "@blocknote/mantine/style.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

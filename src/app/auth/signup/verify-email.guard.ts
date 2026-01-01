@@ -35,7 +35,7 @@ export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =
 
   const verifyParam = route.params["token"] as string;
 
-  return userService.verifyUsers(verifyParam).pipe(
+  return userService.verifyUser(verifyParam).pipe(
     tap(async (verification: VerificationInfo) => {
       authService.clear();
       authService.setToken(verification.auth);

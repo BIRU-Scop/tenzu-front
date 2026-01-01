@@ -48,13 +48,16 @@ export class NotificationsComponentService {
     const count = await lastValueFrom(this.notificationsService.count());
     this.notificationsStore.updateCount(count);
   }
+  async readAll() {
+    const notifications = await lastValueFrom(this.notificationsService.readAll());
+    this.notificationsStore.upsertNotifications(notifications);
+    const count = this.notificationsStore.count();
+    this.notificationsStore.updateCount({ total: count.total, read: count.total, unread: 0 });
+  }
   async read(notification: Notification) {
     const readNotification = await lastValueFrom(this.notificationsService.read(notification.id));
     this.notificationsStore.updateNotification(readNotification);
     this.notificationsStore.decreaseUnreadCount();
-  }
-  public getStoryUrl(notification: Notification): string {
-    return `/workspace/${notification.content.project.workspaceId}/project/${notification.content.project.id}/story/${notification.content.story.ref}`;
   }
 
   public isCurrentUser(notification: StoryAssignNotification | StoryUnassignNotification) {
@@ -66,8 +69,5 @@ export class NotificationsComponentService {
         return notification.content.unassignedTo.username === this.userStore.myUser()?.username;
       }
     }
-  }
-  public getStoryName(notification: Notification): string {
-    return `#${notification.content.story.ref} ${notification.content.story.title}`;
   }
 }

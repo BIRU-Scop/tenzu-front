@@ -29,6 +29,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { RouterLink } from "@angular/router";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 export type ConfirmDialogData = UserDeleteInfo;
 
@@ -45,6 +46,7 @@ export type ConfirmDialogData = UserDeleteInfo;
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    ButtonDeleteComponent,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'settings.delete'">
@@ -157,14 +159,12 @@ export type ConfirmDialogData = UserDeleteInfo;
         }
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button
-          mat-flat-button
-          class="error-button"
+        <app-button-delete
+          translocoKey="settings.delete.delete_account"
           [mat-dialog-close]="true"
           [disabled]="data.onlyOwnerCollectiveWorkspaces.length !== 0 || data.onlyOwnerCollectiveProjects.length !== 0"
-        >
-          {{ t("delete_account") }}
-        </button>
+        />
+
         <button mat-button [mat-dialog-close]="false">
           {{ t("keep_my_account") }}
         </button>

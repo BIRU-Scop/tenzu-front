@@ -39,19 +39,19 @@
         "modify_project": "Modify",
         "delete_project": "Modify / Delete"
       },
-      "member":{
+      "member": {
         "label": "Member",
         "create_modify_member": "Create / Modify",
         "delete_member": "Create / Modify / Delete"
       },
-      "story":{
+      "story": {
         "label": "Story",
         "view_story": "View",
         "modify_story": "View / Modify",
         "create_story": "View / Create / Modify",
         "delete_story": "View / Create / Modify / Delete"
       },
-      "workflow":{
+      "workflow": {
         "label": "Kanban",
         "no_story_permissions": "to give a kanban permission you must set a story permission",
         "view_workflow": "View",
@@ -59,7 +59,7 @@
         "create_workflow": "View / Create / Modify",
         "delete_workflow": "View / Create / Modify / Delete"
       },
-      "comment":{
+      "comment": {
         "label": "Comment",
         "no_story_permissions": "to give a comment permission you must set a story permission",
         "view_comment": "View",
@@ -73,14 +73,14 @@
       "description": "Project description",
       "delete_project_title": "Delete project",
       "delete_project_warning": "This action will delete the project, along with all the stories and attachments in it.",
-      "buttons":
-      {
+      "buttons": {
         "cancel": "Cancel",
         "save": "Save",
         "delete": "Delete"
       },
       "errors": {
-        "name_required": "Project name cannot be empty"
+        "name_required": "Project name cannot be empty",
+        "name_max_length": "Project name cannot exceed 80 characters"
       },
       "messages": {
         "saved": "Your project information has been saved"

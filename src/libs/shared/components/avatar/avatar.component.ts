@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -53,14 +53,30 @@ export class AvatarComponent {
   ]);
 
   initials = computed(() => {
-    const words = this.name().split(" ");
-    let chunks = "";
+    const words = this.name()
+      .split(" ")
+      .filter((w) => w.length > 0);
 
-    if (words.length > 1) {
-      chunks = words[0].slice(0, 1) + words[1].slice(0, 1);
-    } else if (words.length === 1) {
-      chunks = words[0].slice(0, 2);
+    if (words.length === 0) {
+      return "";
     }
-    return chunks;
+
+    const first = [...words[0]][0];
+
+    // If the first letter is an emoji, return only the emoji
+    if (/\p{Extended_Pictographic}/u.test(first)) {
+      return first;
+    }
+
+    if (words.length === 1) {
+      return [...words[0]].slice(0, 2).join("");
+    }
+
+    const second = [...words[1]][0];
+    // If the second letter is an emoji, ignore it
+    if (/\p{Extended_Pictographic}/u.test(second)) {
+      return first;
+    }
+    return first + second;
   });
 }

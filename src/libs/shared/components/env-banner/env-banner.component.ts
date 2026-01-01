@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ConfigAppService } from "../../../../app/config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 @Component({
   selector: "app-env-banner",

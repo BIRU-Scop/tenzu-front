@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,9 +19,14 @@
  *
  */
 
-@use "../../../themes/m3-theme" as themes;
-@use "@angular/material" as mat;
+import { Pipe, PipeTransform } from "@angular/core";
+import { StorySummary } from "@tenzu/repository/story";
 
-:host ::ng-deep .error .logo-eye {
-  color: mat.get-theme-color(themes.$light-theme, error, 50);
+@Pipe({
+  name: "storyName",
+})
+export class StoryNamePipe implements PipeTransform {
+  transform(value: StorySummary) {
+    return `#${value.ref} ${value.title}`;
+  }
 }

@@ -53,7 +53,6 @@ export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSna
             } else {
               const urlTree = router.parseUrl("/signup");
               urlTree.queryParams = {
-                workspace: invitation.workspace.name,
                 email: invitation.email,
                 acceptWorkspaceInvitation: true,
                 workspaceInvitationToken: token,

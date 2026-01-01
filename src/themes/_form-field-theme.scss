@@ -21,71 +21,6 @@
 
 @use "@angular/material" as mat;
 
-.mat-mdc-form-field {
-  @apply w-full;
-  .mdc-text-field {
-    padding: 0 12px;
-  }
-  .mdc-text-field--outlined:not(:has(.mat-mdc-select)) {
-    //box-shadow: 0 0 3px var(--mat-sys-primary);;
-    border-bottom-left-radius: var(--mat-sys-corner-medium);
-    border-bottom-right-radius: var(--mat-sys-corner-medium);
-  }
-
-  &.mat-form-field-disabled {
-    .mdc-text-field--outlined {
-      box-shadow: none;
-    }
-  }
-
-  .mat-form-field-appearance-outline {
-    margin-top: 6.75px;
-  }
-
-  .mat-mdc-form-field-infix {
-    @apply w-full;
-    textarea {
-      min-width: 480px;
-    }
-  }
-
-  .mat-mdc-form-field-hint-wrapper,
-  .mat-mdc-form-field-error-wrapper {
-    position: relative;
-  }
-
-  .mat-mdc-form-field-bottom-align:before {
-    display: none;
-  }
-
-  &.mat-form-field-invalid {
-    .mdc-text-field--outlined {
-      box-shadow: 0 0 3px var(--mat-sys-error);
-    }
-  }
-
-  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-    .mdc-line-ripple::before, .mdc-line-ripple::after {
-      margin-bottom: 3px;
-    }
-  }
-
-  &:hover, &:focus-within {
-    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-      .mdc-line-ripple::before {
-        box-shadow: 0 0 3px var(--mat-sys-primary);
-      }
-    }
-  }
-}
-form .mat-mdc-form-field-error {
-  color: var(--mat-sys-on-error-container);
-}
-
-.mat-mdc-slide-toggle > .mat-internal-form-field > label {
-  padding-left: 8px;
-}
-
 @mixin tokens-overrides() {
   @include mat.form-field-overrides((
       outlined-outline-color: var(--mat-sys-primary),
@@ -96,6 +31,7 @@ form .mat-mdc-form-field-error {
       outlined-error-focus-outline-color: var(--mat-sys-error),
       container-text-size: var(--mat-sys-label-large-size),
       container-text-line-height: var(--mat-sys-label-large-line-height),
+      error-text-color: var(--mat-sys-on-error-container),
       container-height: 36px,
       container-vertical-padding: 8px,
       filled-container-color: transparent,
@@ -129,21 +65,6 @@ form .mat-mdc-form-field-error {
       filled-error-hover-active-indicator-color: var(--mat-sys-error),
     ));
 
-  .mdc-text-field--outlined:has(.mat-mdc-select) {
-    @include mat.form-field-overrides((
-      outlined-outline-width: 1px,
-      outlined-focus-outline-width: 1px,
-    ));
-  }
-  .no-outlined {
-    .mdc-text-field--outlined:has(.mat-mdc-select) {
-      @include mat.form-field-overrides((
-              outlined-outline-width: 0px,
-              outlined-focus-outline-width: 0px,
-      ));
-
-    }
-  }
 
 
   .mat-mdc-form-field.title-field {
@@ -158,10 +79,6 @@ form .mat-mdc-form-field-error {
       container-vertical-padding: 0px
     )
     );
-
-    .mat-mdc-form-field-flex {
-      padding-bottom: 8px;
-    }
   }
 
 
@@ -174,14 +91,12 @@ form .mat-mdc-form-field-error {
       container-vertical-padding: 0,
       container-height: 24px,
     ));
-    .mdc-text-field--outlined {
-      box-shadow: none;
-
-    }
     .mat-mdc-form-field-infix {
       min-width: 48px;
       line-height: 0;
     }
   }
 }
+
+
 

@@ -9,8 +9,6 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
@@ -19,7 +17,6 @@
     "module": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"],
     "baseUrl": "./",
     "paths": {
       "@tenzu/shared/components/*": ["src/libs/shared/components/*"],
@@ -40,5 +37,14 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "typeCheckHostBindings": true
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
 }

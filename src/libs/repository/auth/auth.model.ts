@@ -19,13 +19,63 @@
  *
  */
 
-export interface Credential {
+export type Credential = {
   username: string;
   password: string;
-}
+};
 
-export interface Tokens {
+export type Tokens = {
   access: string | null;
   refresh: string | null;
   username: string | null;
-}
+};
+
+export type InvitationTokens = {
+  projectInvitationToken?: string;
+  workspaceInvitationToken?: string;
+  acceptProjectInvitation?: boolean;
+  acceptWorkspaceInvitation?: boolean;
+};
+
+export type SocialProvider = {
+  id: string;
+  name: string;
+  client_id: string;
+};
+export type AuthConfig = {
+  socialaccount: {
+    providers: [SocialProvider];
+  };
+};
+
+export type ProviderRedirect = {
+  url: string;
+  body: {
+    callbackUrl: string;
+    acceptTermsOfService?: boolean;
+    acceptPrivacyPolicy?: boolean;
+  };
+};
+
+export type ProviderCallback = Partial<Tokens> &
+  InvitationTokens & {
+    error?:
+      | "unknown"
+      | "cancelled"
+      | "denied"
+      | "reauthentication_required"
+      | "signup_closed"
+      | "permission_denied"
+      | "unverified"
+      | "missing_terms_acceptance";
+    socialSessionKey?: string;
+    email?: string;
+    next?: string;
+    fromSignup: boolean;
+  };
+
+export type ProviderContinueSignupPayload = {
+  socialSessionKey: string;
+  acceptTermsOfService: boolean;
+  acceptPrivacyPolicy: boolean;
+};

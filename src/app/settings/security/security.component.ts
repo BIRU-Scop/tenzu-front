@@ -19,118 +19,98 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { MatError } from "@angular/material/input";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { apply, Field, form, required, submit, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { PasswordFieldComponent } from "@tenzu/shared/components/form/password-field";
-import { LoginService } from "../../auth/login/login.service";
-import { HttpErrorResponse } from "@angular/common/http";
+import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { UserStore } from "@tenzu/repository/user";
-import { passwordsMustMatch } from "@tenzu/utils/validators";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-security",
-  imports: [ReactiveFormsModule, TranslocoDirective, MatError, PasswordFieldComponent, MatIcon, ButtonSaveComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslocoDirective,
+    MatIcon,
+    ButtonSaveComponent,
+    FormFooterComponent,
+    PasswordFieldComponent,
+    Field,
+  ],
   template: `
-    <div class="max-w-2xl mx-auto flex flex-col gap-y-8" *transloco="let t; prefix: 'settings.security'">
-      <h1 class="mat-headline-medium">{{ t("change_password") }}</h1>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
-        <div>
-          <app-password-field
-            formControlName="currentPassword"
-            [settings]="{
-              strength: { enabled: false, showBar: false },
-              label: t('current_password'),
-            }"
-          ></app-password-field>
-          @if (form.hasError("invalidCurrentPassword")) {
-            <mat-error class="mat-body-medium">
-              {{ t("invalid_current_password") }}
-            </mat-error>
-          }
-        </div>
-        <div>
-          <app-password-field
-            formControlName="newPassword"
-            [settings]="{
-              strength: { enabled: true, showBar: true },
-              label: t('new_password'),
-            }"
-          ></app-password-field>
-        </div>
-        <div>
-          <app-password-field
-            formControlName="repeatPassword"
-            [settings]="{
-              strength: { enabled: false, showBar: false },
-              label: t('repeat_password'),
-            }"
-          >
-          </app-password-field>
-          @if (form.hasError("passwordNotMatch")) {
-            <mat-error class="mat-body-medium">
-              {{ t("password_not_match") }}
-            </mat-error>
-          }
-        </div>
+    <ng-container *transloco="let t">
+      <h1 class="mat-headline-medium">{{ t("settings.security.change_password") }}</h1>
+      <form (submit)="submit($event)" class="flex flex-col gap-y-5">
+        <app-password-field
+          [field]="securityForm.newPassword"
+          label="settings.security.new_password"
+          [settings]="{ enabledStrength: true, showStrengthBar: true }"
+        />
+        <app-password-field
+          [field]="securityForm.repeatPassword"
+          label="settings.security.repeat_password"
+          [settings]="{ enabledStrength: false }"
+        />
+
         <div class="flex flex-row">
           <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-on-error-container align-middle" [innerHTML]="t('warning')"></p>
+          <p class="mat-body-medium text-on-error-container align-middle">
+            {{ t("settings.security.warning") }}
+          </p>
         </div>
-        <app-button-save
-          [translocoKey]="'settings.security.save'"
-          [disabled]="!form.dirty || form.invalid"
-        ></app-button-save>
+        <app-form-footer [secondaryAction]="false">
+          <app-button-save
+            [translocoKey]="'settings.security.save'"
+            [disabled]="!securityForm().dirty() || securityForm().invalid()"
+          />
+        </app-form-footer>
       </form>
-    </div>
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: "w-full",
+    class: "w-full max-w-2xl mx-auto flex flex-col gap-y-8",
   },
 })
 export class SecurityComponent {
-  fb = inject(NonNullableFormBuilder);
   notificationService = inject(NotificationService);
-  loginService = inject(LoginService);
   userStore = inject(UserStore);
-  form = this.fb.group(
-    {
-      currentPassword: [""],
-      newPassword: [""],
-      repeatPassword: [""],
-    },
-    { validators: passwordsMustMatch },
-  );
+  route = inject(ActivatedRoute);
+  securityModel = signal({
+    newPassword: "",
+    repeatPassword: "",
+  });
 
-  submit() {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
-      this.loginService
-        .checkPassword({
-          username: this.userStore.myUser().username,
-          password: this.form.value.currentPassword!,
-        })
-        .subscribe({
-          next: () => {
-            this.userStore.changePassword(this.form.value.newPassword!);
-            this.notificationService.success({
-              title: "settings.security.changes_saved",
-              translocoTitle: true,
-            });
-          },
-          error: (error) => {
-            if (error instanceof HttpErrorResponse && error.status === 401) {
-              this.form.controls.currentPassword.setErrors({ invalidCurrentPassword: true });
-              this.form.setErrors({ invalidCurrentPassword: true });
-            }
-          },
-        });
-    }
+  securityForm = form(this.securityModel, (schemaPath) => {
+    apply(schemaPath.newPassword, passwordSchema({ enabledStrength: true }));
+    required(schemaPath.repeatPassword, { message: "form_errors.required" });
+    validate(schemaPath.repeatPassword, (context) => {
+      const password = context.valueOf(schemaPath.newPassword);
+      const repeatPassword = context.value();
+      return password && repeatPassword && password !== repeatPassword
+        ? {
+            path: schemaPath.repeatPassword,
+            kind: "passwordNotMatch",
+            message: "resetPassword.password_not_match",
+          }
+        : undefined;
+    });
+  });
+
+  async submit(event: Event) {
+    event.preventDefault();
+    await submit(this.securityForm, async (form) => {
+      await this.userStore.changePassword(form().value().newPassword);
+      this.notificationService.success({
+        title: "settings.security.changes_saved",
+        translocoTitle: true,
+      });
+    });
   }
 }

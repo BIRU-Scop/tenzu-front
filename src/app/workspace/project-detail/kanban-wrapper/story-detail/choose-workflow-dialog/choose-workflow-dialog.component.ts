@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, HostListener, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import {
@@ -80,6 +80,9 @@ export type ChooseWorkflowDialogData = {
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    "(window:keyup.Enter)": "onPressEnter()",
+  },
 })
 export class ChooseWorkflowDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ChooseWorkflowDialogComponent>);
@@ -88,7 +91,6 @@ export class ChooseWorkflowDialogComponent {
   newWorkflowId = this.fb.nonNullable.control(this.data.currentWorkflowId || "");
   projectService = inject(ProjectRepositoryService);
 
-  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.submit();
   }

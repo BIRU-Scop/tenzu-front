@@ -21,9 +21,9 @@
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
-import { IconName, LevelType, ButtonType } from "../ui.types";
+import { ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
-import { MatButtonAppearance } from "@angular/material/button";
+import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button-delete",
@@ -36,9 +36,9 @@ import { MatButtonAppearance } from "@angular/material/button";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonDeleteComponent implements ButtonInterface {
-  appearance = input<MatButtonAppearance>("filled");
   level = input<LevelType>("error");
   translocoKey = input<string>("commons.delete");
+  translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("delete");
   iconOnly = input<boolean>(false);

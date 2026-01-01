@@ -29,7 +29,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
-import { ConfigAppService } from "../../../../../config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 
 @Component({

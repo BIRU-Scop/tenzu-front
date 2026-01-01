@@ -19,10 +19,9 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import type { Validators } from "@angular/forms";
 import { FormBuilder, ReactiveFormsModule, ValidatorFn } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -33,6 +32,8 @@ import {
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 type TranslocoParams = Record<string, string | number>;
 
@@ -58,17 +59,18 @@ export type NameDialogData = {
     MatFormField,
     MatDialogActions,
     MatDialogClose,
-    MatButton,
     MatError,
     MatInput,
     MatLabel,
     ReactiveFormsModule,
     TranslocoDirective,
+    ButtonCloseComponent,
+    ButtonAddComponent,
   ],
   template: `
     <ng-container *transloco="let t">
       <mat-dialog-content>
-        <mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label id="aria-label">{{ t(data.label) }}</mat-label>
           <input
             matInput
@@ -89,30 +91,17 @@ export type NameDialogData = {
           }
         </mat-form-field>
       </mat-dialog-content>
-      <mat-dialog-actions class="!flex-nowrap">
-        <button
-          data-testid="close-dialog"
-          *transloco="let t; prefix: 'commons'"
-          mat-flat-button
-          class="secondary-button text-nowrap"
-          mat-dialog-close
-        >
-          {{ t("cancel") }}
-        </button>
-        <button
-          data-testid="enter-name-submit"
-          mat-flat-button
-          class="tertiary-button text-nowrap"
-          [disabled]="!name.dirty || name.invalid || (name.dirty && name.invalid)"
-          (click)="submit()"
-        >
-          {{ t(data.action) }}
-        </button>
+      <mat-dialog-actions class="!flex-nowrap gap-4">
+        <app-button-close mat-dialog-close translocoKey="commons.cancel" />
+        <app-button-add [translocoKey]="data.action" (click)="submit()" [disabled]="name.invalid" />
       </mat-dialog-actions>
     </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    "(window:keyup.Enter)": "onPressEnter()",
+  },
 })
 export class EnterNameDialogComponent {
   readonly dialogRef = inject(MatDialogRef<EnterNameDialogComponent>);
@@ -128,7 +117,6 @@ export class EnterNameDialogComponent {
     {} as Record<keyof typeof Validators, { message: string; translocoParams: TranslocoParams }>,
   );
 
-  @HostListener("window:keyup.Enter")
   onPressEnter() {
     this.name.markAsTouched();
     this.submit();

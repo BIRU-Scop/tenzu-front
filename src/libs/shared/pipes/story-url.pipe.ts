@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2025 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,4 +19,15 @@
  *
  */
 
-export * from "./passwordsMustMatch";
+import { Pipe, PipeTransform } from "@angular/core";
+import { ProjectSummary } from "@tenzu/repository/project";
+import { StorySummary } from "@tenzu/repository/story";
+
+@Pipe({
+  name: "storyUrl",
+})
+export class StoryUrlPipe implements PipeTransform {
+  transform(value: { project: ProjectSummary; story: StorySummary }) {
+    return `/workspace/${value.project.workspaceId}/project/${value.project.id}/story/${value.story.ref}`;
+  }
+}

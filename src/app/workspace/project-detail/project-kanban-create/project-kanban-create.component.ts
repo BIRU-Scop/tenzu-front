@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
-import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
@@ -31,11 +30,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { Validators } from "@angular/forms";
 
 @Component({
   selector: "app-project-kanban-create",
   imports: [ProjectKanbanSkeletonComponent, TranslocoDirective],
-  template: ` <app-project-kanban-skeleton *transloco="let t"></app-project-kanban-skeleton> `,
+  template: ` <app-project-kanban-skeleton *transloco="let t" /> `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -56,13 +56,19 @@ export default class ProjectKanbanCreateComponent {
 
   public openCreateDialog(): void {
     const dialogRef = this.dialog.open(EnterNameDialogComponent, {
-      ...matDialogConfig,
       backdropClass: "cdk-overlay-transparent-backdrop",
       data: {
         label: "workflow.create_workflow.dialog.aria_label",
         action: "workflow.create_workflow.dialog.create_workflow",
         requiredError: "workflow.create_workflow.dialog.name_required",
         placeholder: "workflow.create_workflow.dialog.name_placeholder",
+        validators: [
+          {
+            type: "required",
+            message: "workflow.create_workflow.dialog.name_required",
+            validatorFn: Validators.required,
+          },
+        ],
       },
     });
     dialogRef.afterClosed().subscribe(async (name?: string) => {

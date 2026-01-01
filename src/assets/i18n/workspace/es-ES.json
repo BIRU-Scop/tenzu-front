@@ -27,10 +27,10 @@
       "title": "Información",
       "name": "Nombre",
       "name_required": "El nombre del espacio de trabajo no puede estar vacío",
+      "name_max_length": "El nombre no puede superar los 40 caracteres",
       "name_placeholder": "Añadir nombre del espacio de trabajo",
       "delete_workspace": "Eliminar espacio de trabajo",
       "delete": {
-        "delete": "Eliminar",
         "error": "No puedes eliminar un espacio de trabajo que tiene proyectos. </br> Este espacio de trabajo tiene { totalProjects, plural, one {<strong class='number-projects'>#</strong> proyecto} other {<strong class='number-projects'>#</strong> proyectos} }. Elimina primero { totalProjects, plural, one {el proyecto} other {los proyectos} }.",
         "deleted_workspace": "El espacio de trabajo {{ var }} ha sido eliminado"
       }

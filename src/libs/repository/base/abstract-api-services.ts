@@ -24,7 +24,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { ConfigAppService } from "../../../app/config-app/config-app.service";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, JsonObject } from "./misc.model";
 

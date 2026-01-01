@@ -21,13 +21,13 @@
 
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatAnchor } from "@angular/material/button";
+import { MatAnchor, MatButton } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { NgOptimizedImage } from "@angular/common";
 
 @Component({
   selector: "app-page404",
-  imports: [TranslocoDirective, RouterLink, MatAnchor, NgOptimizedImage],
+  imports: [TranslocoDirective, RouterLink, MatAnchor, NgOptimizedImage, MatButton],
   template: `
     <main
       class="h-[100vh] flex flex-col items-center justify-center gap-4"
