@@ -24,7 +24,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angul
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
@@ -174,7 +174,6 @@ export default class SignupComponent {
   route = inject(ActivatedRoute);
   readonly authConfigStore = inject(AuthConfigStore);
   readonly authService = inject(AuthService);
-  router = inject(Router);
   displayForm = signal(false);
   emailSent = signal(false);
   signupModel = signal<CreateUserPayload>({
