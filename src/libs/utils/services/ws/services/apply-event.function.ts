@@ -428,14 +428,21 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
 
       if (!projectIsAlreadyUpdated) {
-        projectRepositoryService.updateEntityDetail(project);
-        notificationService.info({
-          title: "notification.events.update_project",
-          translocoTitleParams: {
-            username: content.updatedBy?.fullName,
-            name: content.project.name,
-          },
-        });
+        try {
+          projectRepositoryService.updateEntityDetail(project);
+
+          notificationService.info({
+            title: "notification.events.update_project",
+            translocoTitleParams: {
+              username: content.updatedBy?.fullName,
+              name: content.project.name,
+            },
+          });
+        } catch (e) {
+          if (!(e instanceof NotFoundEntityError)) {
+            throw e;
+          }
+        }
       }
       break;
     }
