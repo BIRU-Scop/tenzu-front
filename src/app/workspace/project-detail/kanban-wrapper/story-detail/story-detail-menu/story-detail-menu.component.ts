@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
 import { StoryDetail } from "@tenzu/repository/story";
 import { Router, RouterLink } from "@angular/router";
-import { ChooseWorkflowDialogComponent } from "../choose-workflow-dialog/choose-workflow-dialog.component";
+import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryDetailFacade } from "../story-detail.facade";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";

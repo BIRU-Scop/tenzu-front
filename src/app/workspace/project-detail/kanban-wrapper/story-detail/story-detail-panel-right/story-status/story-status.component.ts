@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,19 +21,20 @@
 
 import { ChangeDetectionStrategy, Component, inject, input, linkedSignal } from "@angular/core";
 import { MatFormField, MatOption, MatSelect } from "@angular/material/select";
-import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
-import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
-import { NotificationService } from "@tenzu/utils/services/notification";
-import { StatusSummary } from "@tenzu/repository/status";
+import { WorkflowRepositoryService } from "src/libs/repository/workflow";
+import { StoryDetail, StoryRepositoryService } from "src/libs/repository/story";
+import { NotificationService } from "src/libs/utils/services/notification";
+import { StatusSummary } from "src/libs/repository/status";
 import { TranslocoDirective } from "@jsverse/transloco";
 
 @Component({
   selector: "app-story-status",
   imports: [MatOption, MatSelect, MatFormField, TranslocoDirective],
+  host: { class: "flex flex-row items-center" },
   template: `
-    <div class="flex flex-row gap-4" *transloco="let t; prefix: 'workflow.detail_story'">
-      <span class="text-on-surface-variant mat-label-medium self-center">{{ t("status") }}</span>
-      <mat-form-field class="w-52">
+    <ng-container *transloco="let t">
+      <div class="text-on-surface-variant mat-label-medium basis-24">{{ t("workflow.detail_story.status") }}</div>
+      <mat-form-field class="w-52 self-center" [subscriptSizing]="'dynamic'">
         <mat-select
           [(value)]="this.statusSelected"
           (selectionChange)="changeStatus($event.value, storyDetail())"
@@ -44,7 +45,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
           }
         </mat-select>
       </mat-form-field>
-    </div>
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
