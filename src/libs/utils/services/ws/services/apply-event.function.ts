@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -120,7 +120,13 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
     case StoryEventType.UpdateStory: {
       const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
       const story = content.story;
-      storyService.updateEntityDetail(story);
+      try {
+        storyService.updateEntityDetail(story);
+      } catch (e) {
+        if (!(e instanceof NotFoundEntityError)) {
+          throw e;
+        }
+      }
       if (content.updatesAttrs.includes("workflow")) {
         const workspace = workspaceService.entityDetail();
         if (workspace) {
@@ -422,14 +428,21 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
 
       if (!projectIsAlreadyUpdated) {
-        projectRepositoryService.updateEntityDetail(project);
-        notificationService.info({
-          title: "notification.events.update_project",
-          translocoTitleParams: {
-            username: content.updatedBy?.fullName,
-            name: content.project.name,
-          },
-        });
+        try {
+          projectRepositoryService.updateEntityDetail(project);
+
+          notificationService.info({
+            title: "notification.events.update_project",
+            translocoTitleParams: {
+              username: content.updatedBy?.fullName,
+              name: content.project.name,
+            },
+          });
+        } catch (e) {
+          if (!(e instanceof NotFoundEntityError)) {
+            throw e;
+          }
+        }
       }
       break;
     }

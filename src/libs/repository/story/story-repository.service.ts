@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,6 +31,7 @@ import { Workflow } from "../workflow";
 import { BaseRepositoryService } from "@tenzu/repository/base";
 import { EntityId } from "@ngrx/signals/entities";
 import { UserNested } from "@tenzu/repository/user";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -133,7 +134,13 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entityDetailStore.removeAssign(ref, userId);
   }
   wsReorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
-    this.entitiesSummaryStore.reorderStoryByEvent(reorder);
+    try {
+      this.entitiesSummaryStore.reorderStoryByEvent(reorder);
+    } catch (error) {
+      if (!(error instanceof NotFoundEntityError)) {
+        throw error;
+      }
+    }
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
   async dropStoryIntoStatus(

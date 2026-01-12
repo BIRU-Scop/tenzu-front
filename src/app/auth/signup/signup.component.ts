@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -174,7 +174,6 @@ export default class SignupComponent {
   route = inject(ActivatedRoute);
   readonly authConfigStore = inject(AuthConfigStore);
   readonly authService = inject(AuthService);
-
   displayForm = signal(false);
   emailSent = signal(false);
   signupModel = signal<CreateUserPayload>({

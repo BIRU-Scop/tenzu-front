@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,6 +29,7 @@ import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { UserNested } from "../user";
 import { ProjectSummary } from "@tenzu/repository/project";
 import { Workflow } from "@tenzu/repository/workflow";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 const selectId: SelectEntityId<StorySummary> = (story) => story.ref;
 const initialState = {
@@ -86,7 +87,13 @@ export const StoryEntitiesSummaryStore = signalStore(
       if (storyRef) {
         const stories = JSON.parse(JSON.stringify(store.entities())) as StorySummary[];
         const currentIndex = stories.findIndex((story) => story.ref === storyRef);
-        stories[currentIndex].statusId = reorder.status.id;
+        try {
+          stories[currentIndex].statusId = reorder.status.id;
+        } catch (e) {
+          if (e instanceof TypeError) {
+            throw new NotFoundEntityError("Failed to reorder story due to invalid status ID");
+          }
+        }
         const siblingStoryRef = reorder.reorder?.ref;
         if (siblingStoryRef) {
           const siblingStoryIndex = stories.findIndex((story) => story.ref === siblingStoryRef);
