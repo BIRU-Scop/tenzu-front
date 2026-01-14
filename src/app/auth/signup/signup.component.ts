@@ -24,7 +24,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angul
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, Params, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
@@ -43,7 +43,7 @@ import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { AuthService, trackFormValidationEffect } from "@tenzu/repository/auth";
+import { AuthService, InvitationTokens, trackFormValidationEffect } from "@tenzu/repository/auth";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -218,10 +218,21 @@ export default class SignupComponent {
     trackFormValidationEffect(this.signupForm);
   }
 
+  parseParams(params: Params) {
+    const parsedParams: InvitationTokens = {};
+    if (params["acceptProjectInvitation"]) {
+      parsedParams.acceptProjectInvitation = !!params["acceptProjectInvitation"];
+    }
+    if (params["acceptWorkspaceInvitation"]) {
+      parsedParams.acceptWorkspaceInvitation = !!params["acceptWorkspaceInvitation"];
+    }
+    return { ...params, ...parsedParams };
+  }
+
   async submit(event: Event) {
     event.preventDefault();
     await submit(this.signupForm, async (form) => {
-      const params = this.route.snapshot.queryParams;
+      const params = this.parseParams(this.route.snapshot.queryParams);
       const values = form().value();
       try {
         await lastValueFrom(
@@ -246,7 +257,7 @@ export default class SignupComponent {
   resendEmail(): void {
     const form = this.signupForm();
     if (form.valid()) {
-      const params = this.route.snapshot.queryParams;
+      const params = this.parseParams(this.route.snapshot.queryParams);
       this.userService
         .resentVerification({
           ...form.value(),
