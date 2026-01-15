@@ -48,6 +48,7 @@ import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-lo
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { HttpErrorResponse } from "@angular/common/http";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-signup",
@@ -243,11 +244,14 @@ export default class SignupComponent {
           }),
         );
       } catch (error) {
-        if (error instanceof HttpErrorResponse && error.status === 422) {
+        if (error instanceof HttpErrorResponse && error.status === 422 && this.authService.isPasswordError(error)) {
+          debug("error-422", "password", error);
           this.authConfigStore.setFormHasError(true);
           return [
             { fieldTree: this.signupForm.password, kind: "password-rejected", message: "auth.signup.errors.422" },
           ];
+        } else {
+          throw error;
         }
       }
       this.emailSent.set(true);
