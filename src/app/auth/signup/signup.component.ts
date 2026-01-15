@@ -24,7 +24,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angul
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, Params, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
@@ -43,11 +43,12 @@ import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { AuthService, trackFormValidationEffect } from "@tenzu/repository/auth";
+import { AuthService, InvitationTokens, trackFormValidationEffect } from "@tenzu/repository/auth";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { HttpErrorResponse } from "@angular/common/http";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-signup",
@@ -218,10 +219,21 @@ export default class SignupComponent {
     trackFormValidationEffect(this.signupForm);
   }
 
+  parseParams(params: Params) {
+    const parsedParams: InvitationTokens = {};
+    if (params["acceptProjectInvitation"]) {
+      parsedParams.acceptProjectInvitation = !!params["acceptProjectInvitation"];
+    }
+    if (params["acceptWorkspaceInvitation"]) {
+      parsedParams.acceptWorkspaceInvitation = !!params["acceptWorkspaceInvitation"];
+    }
+    return { ...params, ...parsedParams };
+  }
+
   async submit(event: Event) {
     event.preventDefault();
     await submit(this.signupForm, async (form) => {
-      const params = this.route.snapshot.queryParams;
+      const params = this.parseParams(this.route.snapshot.queryParams);
       const values = form().value();
       try {
         await lastValueFrom(
@@ -232,11 +244,14 @@ export default class SignupComponent {
           }),
         );
       } catch (error) {
-        if (error instanceof HttpErrorResponse && error.status === 422) {
+        if (error instanceof HttpErrorResponse && error.status === 422 && this.authService.isPasswordError(error)) {
+          debug("error-422", "password", error);
           this.authConfigStore.setFormHasError(true);
           return [
             { fieldTree: this.signupForm.password, kind: "password-rejected", message: "auth.signup.errors.422" },
           ];
+        } else {
+          throw error;
         }
       }
       this.emailSent.set(true);
@@ -246,7 +261,7 @@ export default class SignupComponent {
   resendEmail(): void {
     const form = this.signupForm();
     if (form.valid()) {
-      const params = this.route.snapshot.queryParams;
+      const params = this.parseParams(this.route.snapshot.queryParams);
       this.userService
         .resentVerification({
           ...form.value(),

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -59,7 +59,7 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
           // @ts-expect-error FALLS THROUGH
           case 422:
             // 422 on user creation can happen if the user chooses a password that doesn't validate backend vulnerability detection
-            if (request.url.endsWith("users")) {
+            if (request.url.endsWith("users") && authService.isPasswordError(error)) {
               break;
             }
           // eslint-disable-next-line no-fallthrough
