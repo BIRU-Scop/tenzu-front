@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,19 +19,19 @@
  *
  */
 
-import { Component, inject, OnInit } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
-import { MatIconRegistry } from "@angular/material/icon";
+import { inject } from "@angular/core";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { HttpClient } from "@angular/common/http";
+import { lastValueFrom } from "rxjs";
 
-@Component({
-  selector: "app-root",
-  imports: [RouterOutlet],
-  template: ` <router-outlet />`,
-})
-export class AppComponent implements OnInit {
-  title = "tenzu";
-  iconRegistry = inject(MatIconRegistry);
-  ngOnInit(): void {
-    this.iconRegistry.setDefaultFontSetClass("material-symbols-rounded");
-  }
+export function resolveFileUrl() {
+  const httpClient = inject(HttpClient);
+  const baseUrl = inject(ConfigAppService).apiUrl();
+  return async (url: string) => {
+    if (!url.startsWith(baseUrl)) {
+      return url;
+    }
+    const file = await lastValueFrom(httpClient.get(url, { responseType: "blob" }));
+    return URL.createObjectURL(file);
+  };
 }

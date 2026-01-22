@@ -4,6 +4,7 @@ import {
   effect,
   ElementRef,
   input,
+  model,
   OnChanges,
   OnDestroy,
   output,
@@ -16,8 +17,9 @@ import { createRoot, Root } from "react-dom/client";
 import { Block, BlockNoteEditor } from "@blocknote/core";
 import { createCodeBlockSpec } from "@blocknote/core";
 import { codeBlockOptions } from "@blocknote/code-block";
-
 import { BlockNoteView } from "@blocknote/mantine";
+import { FormValueControl } from "@angular/forms/signals";
+import { resolveFileUrl } from "./utils";
 
 @Component({
   selector: "app-editor-block",
@@ -32,10 +34,20 @@ import { BlockNoteView } from "@blocknote/mantine";
   },
   styles: ``,
 })
-export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class EditorComponent
+  implements
+    OnChanges,
+    OnDestroy,
+    AfterViewInit,
+    FormValueControl<string | null>
+{
+  value = model<string | null>(null);
+  touched = model(false);
   elm = viewChild<ElementRef>("editor");
   disabled = input(false);
-  resolveFileUrl = input<(url: string) => Promise<string>>();
+  readonly = input(false);
+  resolveFileUrl = resolveFileUrl();
+
   uploadFile = input.required<
     | undefined
     | ((
@@ -43,25 +55,32 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
         blockId?: string | undefined,
       ) => Promise<string | Record<string, any>>)
   >();
-  data = input<string | null>();
   focus = input(false);
   validate = output();
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
     const codeBlock = createCodeBlockSpec(codeBlockOptions);
+
     effect(() => {
-      const data = this.data();
+      const data = this.value();
       const initialContent = data
         ? { initialContent: JSON.parse(data) as Block[] }
         : {};
       if (!this.editor) {
         this.editor = BlockNoteEditor.create({
           codeBlock,
-          resolveFileUrl: this.resolveFileUrl(),
+          resolveFileUrl: this.resolveFileUrl,
           uploadFile: this.uploadFile(),
           autofocus: this.focus(),
           ...initialContent,
+        });
+
+        this.editor.onChange((data) => {
+          this.value.set(JSON.stringify(data?.document));
+          if (!this.touched()) {
+            this.touched.set(true);
+          }
         });
       }
       const elm = this.elm();
@@ -108,7 +127,7 @@ export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
     if (this.root && this.editor) {
       this.root.render(
         <React.StrictMode>
-          <BlockNoteView editor={this.editor} editable={!this.disabled()} />
+          <BlockNoteView editor={this.editor} editable={!this.readonly()} />
         </React.StrictMode>,
       );
     }
