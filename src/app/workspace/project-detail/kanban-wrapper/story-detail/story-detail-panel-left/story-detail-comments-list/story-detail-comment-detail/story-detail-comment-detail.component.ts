@@ -95,7 +95,7 @@ import { filter } from "rxjs/operators";
               [class.!border-0]="!_editionMode"
               [value]="_comment.text"
               [uploadFile]="undefined"
-              [disabled]="!_editionMode"
+              [readonly]="!_editionMode"
               (validate)="save()"
               #commentEditorContainer
             />

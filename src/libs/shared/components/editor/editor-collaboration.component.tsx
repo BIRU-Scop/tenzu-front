@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   ElementRef,
+  inject,
   input,
   model,
   OnChanges,
@@ -14,15 +15,21 @@ import {
 import * as React from "react";
 
 import { createRoot, Root } from "react-dom/client";
-import { Block, BlockNoteEditor } from "@blocknote/core";
-import { createCodeBlockSpec } from "@blocknote/core";
+import { BlockNoteEditor, createCodeBlockSpec } from "@blocknote/core";
 import { codeBlockOptions } from "@blocknote/code-block";
+
 import { BlockNoteView } from "@blocknote/mantine";
-import { FormValueControl } from "@angular/forms/signals";
-import { resolveFileUrl } from "./utils";
+import { WebsocketProvider } from "y-websocket";
+import * as Y from "yjs";
+import { HttpClient } from "@angular/common/http";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+
+import { User } from "@tenzu/repository/user";
+import { COLORS } from "@tenzu/pipes/color-to-key.pipe";
+import { resolveFileUrl } from "@tenzu/shared/components/editor/utils";
 
 @Component({
-  selector: "app-editor-block",
+  selector: "app-editor-collaboration-block",
   template: ` <div
     (keydown.control.enter)="validate.emit()"
     (keydown.meta.enter)="validate.emit()"
@@ -35,20 +42,20 @@ import { resolveFileUrl } from "./utils";
   },
   styles: ``,
 })
-export class EditorComponent
-  implements
-    OnChanges,
-    OnDestroy,
-    AfterViewInit,
-    FormValueControl<string | null>
+export class EditorCollaborationComponent
+  implements OnChanges, OnDestroy, AfterViewInit
 {
-  value = model<string | null>(null);
-  touched = model(false);
+  httpClient = inject(HttpClient);
+  configAppService = inject(ConfigAppService);
+
   elm = viewChild<ElementRef>("editor");
   disabled = input(false);
   readonly = input(false);
+  touched = model(false);
   resolveFileUrl = resolveFileUrl();
-
+  wsProvider = input.required<WebsocketProvider>();
+  doc = input.required<Y.Doc>();
+  user = input.required<User>();
   uploadFile = input.required<
     | undefined
     | ((
@@ -56,32 +63,40 @@ export class EditorComponent
         blockId?: string | undefined,
       ) => Promise<string | Record<string, any>>)
   >();
-  focus = input(false);
+  focus = input(true);
   validate = output();
   private root?: Root;
   private editor?: BlockNoteEditor;
   constructor() {
     const codeBlock = createCodeBlockSpec(codeBlockOptions);
-
+    const focus = this.focus();
     effect(() => {
-      const data = this.value();
-      const initialContent = data
-        ? { initialContent: JSON.parse(data) as Block[] }
-        : {};
+      const user = this.user();
+      const wsProvider = this.wsProvider();
+      const doc = this.doc();
+      const fragment = doc.getXmlFragment("document-store");
+
+      doc.on("update", (update, origin) => {
+        // If the origin is null or is not the websocket provider,
+        // it means it's a local modification made via the editor.
+        if (origin !== wsProvider && !this.touched()) {
+          this.touched.set(true);
+        }
+      });
       if (!this.editor) {
         this.editor = BlockNoteEditor.create({
           codeBlock,
           resolveFileUrl: this.resolveFileUrl,
           uploadFile: this.uploadFile(),
-          autofocus: this.focus(),
-          ...initialContent,
-        });
-
-        this.editor.onChange((data) => {
-          this.value.set(JSON.stringify(data?.document));
-          if (!this.touched()) {
-            this.touched.set(true);
-          }
+          autofocus: focus,
+          collaboration: {
+            provider: wsProvider,
+            fragment: fragment,
+            user: {
+              name: user.fullName,
+              color: COLORS[user.color],
+            },
+          },
         });
       }
       const elm = this.elm();
@@ -103,18 +118,13 @@ export class EditorComponent
       this.root.unmount();
     }
   }
-
+  undo() {
+    this.editor?.undo();
+  }
   public get jsonContent() {
     return JSON.stringify(this.editor?.document);
   }
-  public set jsonContent(content: string) {
-    const data = JSON.parse(content) as Block[];
-    this.editor?.replaceBlocks(this.editor?.document, data);
-  }
 
-  public undo() {
-    this.editor?.undo();
-  }
   public enableAndFocus() {
     if (this.editor) {
       this.editor.isEditable = true;
@@ -125,9 +135,10 @@ export class EditorComponent
     return this.editor?.isEmpty;
   }
   private render() {
+    const editable = !this.readonly();
     if (this.root && this.editor) {
       this.root.render(
-        <BlockNoteView editor={this.editor} editable={!this.readonly()} />,
+        <BlockNoteView editor={this.editor} editable={editable} />,
       );
     }
   }

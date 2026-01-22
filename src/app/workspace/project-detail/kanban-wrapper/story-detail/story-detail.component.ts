@@ -116,42 +116,9 @@ export default class StoryDetailComponent {
         }
       });
   }
-  // async save() {
-  //   const data = { ...this.form.getRawValue(), description: this.editor().jsonContent };
-  //   await this.storyDetailFacade.patchSelectedStory(data);
-  //   this.notificationService.success({ title: "notification.action.changes_saved" });
-  // }
-  //
-  // undo() {
-  //   this.editor().undo();
-  //   this.form.setValue({ title: this.selectedStory()?.title || "" });
-  // }
-  //
+
   async onDelete() {
     await this.storyDetailFacade.deleteSelectedStory();
     this.closed.emit();
   }
-  //
-  // resolveFileUrl() {
-  //   const httpClient = this.httpClient;
-  //   const baseUrl = this.configAppService.apiUrl();
-  //   return async (url: string) => {
-  //     if (!url.startsWith(baseUrl)) {
-  //       return url;
-  //     }
-  //     const file = await lastValueFrom(httpClient.get(url, { responseType: "blob" }));
-  //     return URL.createObjectURL(file);
-  //   };
-  // }
-  // uploadFile(storyDetail: StoryDetail) {
-  //   const storyAttachmentRepositoryService = this.storyAttachmentRepositoryService;
-  //   const baseUrl = this.configAppService.apiUrl();
-  //   return async (file: File) => {
-  //     const attachment = await storyAttachmentRepositoryService.createAttachment(file, {
-  //       ref: storyDetail.ref,
-  //       projectId: storyDetail.projectId,
-  //     });
-  //     return `${baseUrl}/stories/attachments/${attachment.id}`;
-  //   };
-  // }
 }

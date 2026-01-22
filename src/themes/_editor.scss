@@ -26,10 +26,10 @@
   border-radius: 0.25rem;
   border-color: var(--mat-sys-outline);
   border-width: 1px;
-  &:hover:has(> :not(.disabled-editor)) {
+  &:hover:has(> :not(.disabled-editor):not(.readonly-editor)) {
     border-color: var(--mat-sys-on-primary);
   }
-  &:has(.ProseMirror-focused):has(> :not(.disabled-editor)) {
+  &:has(.ProseMirror-focused):has(> :not(.disabled-editor):not(.readonly-editor)) {
     border-color: var(--mat-sys-primary);
     border-width: 2px;
     padding: calc(1em - 1px);
