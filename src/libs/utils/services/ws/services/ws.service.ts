@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -77,11 +77,11 @@ export class WsService {
   private ws$: Observable<WSResponse> | undefined = undefined;
 
   async init() {
+    const url = `${this.configAppService.wsUrl()}/events/`;
     // We want to keep those log for now
     console.log("init WS");
-    console.log(this.configAppService.wsUrl());
     this.subject = webSocket({
-      url: this.configAppService.wsUrl(),
+      url: url,
       openObserver: {
         next: () => {
           debug("WS", "connected");
@@ -153,6 +153,10 @@ export class WsService {
         break;
       }
       case "error": {
+        // Ignore "not-signed-in" error when attempting to sign out while already signed out
+        if (message.action.command === "signout" && message.content.detail === "not-signed-in") {
+          break;
+        }
         console.error(`[WS] the command ${message.action.command} received a error response`, message);
         break;
       }
