@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -40,14 +40,6 @@
   }
   &:hover .mdc-list-item__primary-text {
     color:  var(--mat-sys-on-primary-container);
-  }
-}
-.mat-mdc-form-field.transparent .mat-mdc-select-trigger{
-  line-height: 0px;
-  .icon {
-    width: 24px;
-    height: 24px;
-    font-size: 24px;
   }
 }
 
