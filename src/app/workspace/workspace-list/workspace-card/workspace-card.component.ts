@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,18 +19,24 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { MatButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { MatDivider } from "@angular/material/divider";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import {
+  ProjectCreateDialog,
+  ProjectCreateDialogData,
+} from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-workspace-card",
-  imports: [AvatarComponent, MatIcon, RouterLink, RouterLinkActive, MatButton, TranslocoDirective, MatDivider],
+  imports: [AvatarComponent, RouterLink, MatButton, TranslocoDirective, MatDivider, ButtonAddComponent],
   template: `
     @let _workspace = workspace();
     <ng-container *transloco="let t">
@@ -42,17 +48,12 @@ import { MatDivider } from "@angular/material/divider";
           {{ _workspace.name }}
         }
         @if (_workspace.userCanCreateProjects) {
-          <a
-            class="primary-button ml-auto"
-            routerLink="/new-project"
-            [queryParams]="{ workspaceId: _workspace.id }"
-            routerLinkActive="active"
-            ariaCurrentWhenActive="page"
-            mat-stroked-button
-          >
-            <mat-icon>add</mat-icon>
-            {{ t("commons.project") }}
-          </a>
+          <app-button-add
+            class="ml-auto"
+            [level]="'primary'"
+            [translocoKey]="'commons.project'"
+            (click)="openCreateProject(_workspace.id)"
+          ></app-button-add>
         } @else if (_workspace.userIsInvited) {
           <button
             class="secondary-button"
@@ -81,8 +82,21 @@ import { MatDivider } from "@angular/material/divider";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceCardComponent {
+  readonly dialog = inject(MatDialog);
+
   workspace = input.required<WorkspaceSummary>();
 
   submitted = output<void>();
   canceled = output<void>();
+
+  openCreateProject(workspaceId: string): void {
+    const data: ProjectCreateDialogData = {
+      workspaceId,
+    };
+    this.dialog.open(ProjectCreateDialog, {
+      ...matDialogConfig,
+      minWidth: 850,
+      data: data,
+    });
+  }
 }
