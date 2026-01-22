@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -47,6 +47,7 @@
 @use "themes/skeleton";
 @use "themes/svg-logo";
 @use "themes/slide-toggle-theme" as slide-toggle;
+@use "themes/editor" as editor;
 @use "@blocknote/core/fonts/inter.css";
 @import "@blocknote/mantine/style.css";
 @tailwind base;

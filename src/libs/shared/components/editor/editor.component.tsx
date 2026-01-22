@@ -27,24 +27,10 @@ import { BlockNoteView } from "@blocknote/mantine";
     [class.disabled-editor]="disabled()"
     #editor
   ></div>`,
-  styles: `
-    :host {
-      box-sizing: border-box;
-      padding: 1em;
-      border-style: solid;
-      border-radius: 0.25rem;
-      border-color: var(--mat-sys-outline);
-      border-width: 1px;
-      &:hover:has(> :not(.disabled-editor)) {
-        border-color: var(--mat-sys-on-primary);
-      }
-      &:has(.ProseMirror-focused):has(> :not(.disabled-editor)) {
-        border-color: var(--mat-sys-primary);
-        border-width: 2px;
-        padding: calc(1em - 1px);
-      }
-    }
-  `,
+  host: {
+    class: "editor",
+  },
+  styles: ``,
 })
 export class EditorComponent implements OnChanges, OnDestroy, AfterViewInit {
   elm = viewChild<ElementRef>("editor");
