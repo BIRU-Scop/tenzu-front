@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { apply, Field, form, submit } from "@angular/forms/signals";
+import { apply, FormField, form, submit } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/repository/user";
@@ -41,7 +41,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     RouterLink,
     MatDivider,
     ButtonComponent,
-    Field,
+    FormField,
   ],
   host: {
     class: "flex flex-col gap-4 w-96",
@@ -56,7 +56,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
           {{ t("resetPassword.subtitle") }}
         </p>
         <form (submit)="submit($event)" class="flex flex-col gap-2">
-          <app-email-field [field]="resetForm.email"></app-email-field>
+          <app-email-field [formField]="resetForm.email"></app-email-field>
           <app-button translocoKey="resetPassword.submit" level="primary" type="submit" iconName="mail" />
         </form>
       } @else {

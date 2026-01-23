@@ -39,7 +39,7 @@ import { MatFormField, MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryDetail } from "@tenzu/repository/story";
-import { Field, form, readonly, submit } from "@angular/forms/signals";
+import { FormField, form, readonly, submit } from "@angular/forms/signals";
 import * as Y from "yjs";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { AuthService } from "@tenzu/repository/auth";
@@ -69,7 +69,7 @@ type OnlineUser = {
     MatFormField,
     MatInput,
     TranslocoDirective,
-    Field,
+    FormField,
   ],
   template: `
     @let _user = user();
@@ -84,7 +84,7 @@ type OnlineUser = {
 
     <form *transloco="let t" class="flex flex-col h-full gap-4">
       <mat-form-field appearance="fill" class="title-field">
-        <input [attr.aria-label]="t('workflow.detail_story.title')" matInput [field]="storyForm.title" />
+        <input [attr.aria-label]="t('workflow.detail_story.title')" matInput [formField]="storyForm.title" />
       </mat-form-field>
 
       @if (_user.fullName) {

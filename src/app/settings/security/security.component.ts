@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { apply, Field, form, required, submit, validate } from "@angular/forms/signals";
+import { apply, FormField, form, required, submit, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { UserStore } from "@tenzu/repository/user";
@@ -40,19 +40,19 @@ import { ActivatedRoute } from "@angular/router";
     ButtonSaveComponent,
     FormFooterComponent,
     PasswordFieldComponent,
-    Field,
+    FormField,
   ],
   template: `
     <ng-container *transloco="let t">
       <h1 class="mat-headline-medium">{{ t("settings.security.change_password") }}</h1>
       <form (submit)="submit($event)" class="flex flex-col gap-y-5">
         <app-password-field
-          [field]="securityForm.newPassword"
+          [formField]="securityForm.newPassword"
           label="settings.security.new_password"
           [settings]="{ enabledStrength: true, showStrengthBar: true }"
         />
         <app-password-field
-          [field]="securityForm.repeatPassword"
+          [formField]="securityForm.repeatPassword"
           label="settings.security.repeat_password"
           [settings]="{ enabledStrength: false }"
         />

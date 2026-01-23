@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,7 +29,7 @@ import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { apply, Field, form, required, submit } from "@angular/forms/signals";
+import { apply, FormField, form, required, submit } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
@@ -46,7 +46,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     RouterLink,
     MatError,
     MatDivider,
-    Field,
+    FormField,
     ButtonComponent,
     PasswordFieldComponent,
     SocialAuthLoginComponent,
@@ -62,14 +62,14 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
           <mat-label>
             {{ t("auth.login.email_or_username") }}
           </mat-label>
-          <input matInput autocomplete="username" [field]="loginForm.username" />
+          <input matInput autocomplete="username" [formField]="loginForm.username" />
           @for (error of loginForm.username().errors(); track error.kind) {
             <mat-error>{{ t(error.message || "") }} </mat-error>
           }
         </mat-form-field>
         <app-password-field
           [autocomplete]="'current-password'"
-          [field]="loginForm.password"
+          [formField]="loginForm.password"
           [settings]="{ enabledStrength: false }"
         />
         <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("auth.login.forgot_password") }}</a>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -47,7 +47,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
       <form (submit)="submit($event)" class="flex flex-col gap-8">
         <app-password-field
           class="flex"
-          [field]="resetPasswordForm.newPassword"
+          [formField]="resetPasswordForm.newPassword"
           label="resetPassword.new_password"
           [settings]="{
             enabledStrength: true,
@@ -55,7 +55,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
         />
         <app-password-field
           class="flex"
-          [field]="resetPasswordForm.repeatPassword"
+          [formField]="resetPasswordForm.repeatPassword"
           label="resetPassword.repeat_password"
         />
         <app-button

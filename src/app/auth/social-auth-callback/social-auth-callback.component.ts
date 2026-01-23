@@ -34,7 +34,7 @@ import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import PendingVerificationComponent from "../signup/pending-verification/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { applyWhenValue, Field, form, required, submit } from "@angular/forms/signals";
+import { applyWhenValue, FormField, form, required, submit } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 @Component({
@@ -48,7 +48,7 @@ import { HttpErrorResponse } from "@angular/common/http";
     MatCheckbox,
     MatIcon,
     PendingVerificationComponent,
-    Field,
+    FormField,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -62,7 +62,7 @@ import { HttpErrorResponse } from "@angular/common/http";
             @if (configLegal) {
               <div class="min-w-full w-min">
                 <mat-checkbox
-                  [field]="callbackForm.acceptTermsOfService"
+                  [formField]="callbackForm.acceptTermsOfService"
                   [class.checkbox-invalid]="
                     callbackForm.acceptTermsOfService().touched() && callbackForm.acceptTermsOfService().invalid()
                   "
