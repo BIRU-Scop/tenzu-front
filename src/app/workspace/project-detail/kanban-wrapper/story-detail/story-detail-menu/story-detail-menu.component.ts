@@ -157,7 +157,7 @@ export class StoryDetailMenuComponent {
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
   kanbanWrapperService = inject(KanbanWrapperService);
-  dialogRef = inject(MatDialog);
+  matDialogService = inject(MatDialog);
 
   storyViewModel = signal<StoryView>("kanban");
 
@@ -170,8 +170,9 @@ export class StoryDetailMenuComponent {
   constructor() {
     toObservable(this.kanbanWrapperService.storyView).subscribe((storyView) => {
       this.storyViewModel.set(storyView);
-      if (storyView !== "kanban") {
-        this.dialogRef.closeAll();
+      const modalId = this.kanbanWrapperService.modalId();
+      if (storyView !== "kanban" && modalId) {
+        this.matDialogService.getDialogById(modalId)?.close();
       }
     });
   }

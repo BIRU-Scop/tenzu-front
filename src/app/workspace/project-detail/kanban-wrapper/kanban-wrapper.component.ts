@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -122,6 +122,7 @@ export default class KanbanWrapperComponent {
             height: "80vh",
             maxWidth: "80vw",
           });
+          this.kanbanWrapperService.setModalId(dialogRef.id);
           dialogRef.afterClosed().subscribe(() => {
             this.kanbanWrapperService.setFirstOpened(true);
             if (this.kanbanWrapperService.storyView() === "kanban") {

@@ -165,7 +165,6 @@ export class StoryEditionComponent {
 
         states.forEach((state, clientId) => {
           if (state["user"]) {
-            console.log(clientId, state["user"]);
             const user = { ...state["user"], clientId } as OnlineUser;
             users.push(user);
           }

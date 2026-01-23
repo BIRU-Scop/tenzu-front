@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,12 @@ export type StoryView = "kanban" | "fullView" | "side-view";
 
 export const KanbanWrapperStore = signalStore(
   { providedIn: "root" },
-  withState({ storyView: "fullView" as StoryView, firstOpened: true, isOpenedSideview: false }),
+  withState({
+    storyView: "fullView" as StoryView,
+    firstOpened: true,
+    isOpenedSideview: false,
+    modalId: undefined as string | undefined,
+  }),
   withMethods((store) => ({
     setStoryView(storyView: StoryView) {
       patchState(store, { storyView });
@@ -36,6 +41,9 @@ export const KanbanWrapperStore = signalStore(
     },
     setSidenavStoryViewOpened(isOpenedSideview: boolean) {
       patchState(store, { isOpenedSideview });
+    },
+    setModalId(modalId: string | undefined) {
+      patchState(store, { modalId });
     },
   })),
   withHooks({
