@@ -29,12 +29,13 @@ import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryDetail } from "@tenzu/repository/story";
 
 import { UserStore } from "@tenzu/repository/user";
-import { StoryListCommentsComponent } from "./story-list-comments/story-list-comments.component";
+
 import { StoryEditionComponent } from "./story-edition/story-edition.component";
+import { StoryDetailCommentsListComponent } from "./story-detail-comments-list/story-detail-comments-list.component";
 
 @Component({
   selector: "app-story-detail-panel-left",
-  imports: [HasPermissionDirective, MatDivider, StoryListCommentsComponent, StoryEditionComponent],
+  imports: [HasPermissionDirective, MatDivider, StoryDetailCommentsListComponent, StoryEditionComponent],
   template: `
     @let _story = story();
     @let _user = user();
@@ -43,7 +44,7 @@ import { StoryEditionComponent } from "./story-edition/story-edition.component";
       <app-story-edition [project]="_project" [story]="_story" [user]="_user" />
     }
     <mat-divider />
-    <app-story-list-comments
+    <app-story-detail-comments-list
       *appHasPermission="{
         actualEntity: _project,
         requiredPermission: ProjectPermissions.VIEW_COMMENT,
