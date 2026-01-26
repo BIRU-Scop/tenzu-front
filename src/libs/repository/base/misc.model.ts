@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,6 +29,8 @@ export interface JsonObject {
 type JsonArray = Array<JsonValue>;
 
 type JsonValue = Primitive | JsonObject | JsonArray;
+
+export type DataObject = Record<string, JsonValue | undefined | File | Blob>;
 
 export type BaseDataModel<T> = {
   data: T;

@@ -33,6 +33,7 @@ export type IconName =
   | "arrow_back_ios"
   | "check"
   | "block"
-  | "mark_email_read";
+  | "mark_email_read"
+  | "upload";
 export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
 export type ButtonType = "submit" | "button" | "reset";

@@ -4,6 +4,7 @@
     "save": "Guardar",
     "delete": "Eliminar"
   },
+  "upload_logo": "Subir avatar del proyecto",
   "new_project": {
     "title": "Nuevo proyecto",
     "create_project": "Crear proyecto",

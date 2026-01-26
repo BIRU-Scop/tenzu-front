@@ -53,7 +53,8 @@ export type ProjectDetail = ProjectSummary &
     workflows: WorkflowNested[];
   };
 
-export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> &
-  Partial<Pick<ProjectNested, "logo">>;
+export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> & {
+  logo: Blob | File | "";
+};
 
 export type UpdateProjectPayload = Pick<ProjectNested, "description" | "name">;

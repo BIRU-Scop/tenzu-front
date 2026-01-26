@@ -51,6 +51,7 @@ import {
   FormField,
   applyWhenValue,
 } from "@angular/forms/signals";
+import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
 
 export type ProjectCreateDialogData = {
   workspaceId: WorkspaceSummary["id"];
@@ -78,6 +79,7 @@ export type ProjectCreateDialogData = {
     ButtonAddComponent,
     FormField,
     MatSelectTrigger,
+    ProjectLogoInputComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -113,11 +115,7 @@ export type ProjectCreateDialogData = {
               [options]="{ maxRows: 8 }"
               [formField]="projectForm.description"
             ></app-description-field>
-            <app-avatar
-              size="lg"
-              [name]="projectForm.name().value()"
-              [color]="projectForm.color().value()"
-            ></app-avatar>
+            <app-project-logo-input [(projectModel)]="projectModel"></app-project-logo-input>
           </div>
         </mat-dialog-content>
 
@@ -148,6 +146,7 @@ export class ProjectCreateDialog {
     description: "",
     color: RandomColorService.randomColorPicker(),
     workspaceId: this.data.workspaceId,
+    logo: "",
   });
   projectForm = form(this.projectModel, (schemaPath) => {
     required(schemaPath.name, { message: "form_errors.required" });
@@ -197,8 +196,7 @@ export class ProjectCreateDialog {
   async submit(event: Event) {
     event.preventDefault();
     await submit(this.projectForm, async (form) => {
-      const { workspaceId, ...values } = form().value();
-      const project = await this.projectRepositoryService.createRequest(values, { workspaceId });
+      const project = await this.projectRepositoryService.createRequestWithLogo(form().value());
       this.router.navigateByUrl(`/workspace/${project.workspaceId}/project/${project.id}/kanban/main`).then();
       this.dialogRef.close();
     });

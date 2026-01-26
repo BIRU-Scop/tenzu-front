@@ -24,7 +24,7 @@ import * as ProjectApiServiceType from "./project-api.type";
 import { ProjectApiService } from "./project-api.service";
 import { ProjectDetailStore, ProjectEntitiesSummaryStore } from "./project-entities.store";
 import { Workflow } from "../workflow";
-import { ProjectDetail, ProjectSummary } from "./project.model";
+import { CreateProjectPayload, ProjectDetail, ProjectSummary } from "./project.model";
 import { BaseRepositoryService } from "../base";
 
 import { QueryParams } from "../base/utils";
@@ -32,6 +32,7 @@ import { WsService } from "@tenzu/utils/services/ws";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { StoryRepositoryService } from "@tenzu/repository/story";
+import { lastValueFrom } from "rxjs";
 // todo temporary way to handle workflows maximum before implementing user settings
 const MAX_WORKFLOWS = 8;
 
@@ -63,16 +64,19 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     return selectedProjectWorkflows.length < MAX_WORKFLOWS;
   });
 
-  override async createRequest(
-    item: Partial<ProjectDetail>,
-    params: ProjectApiServiceType.CreateEntityDetailParams,
-    options: { prepend: boolean } = { prepend: false },
-  ) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override async createRequest(item: Partial<ProjectDetail>): Promise<ProjectDetail> {
+    throw new Error("Method not implemented.");
+  }
+
+  async createRequestWithLogo(item: CreateProjectPayload, options: { prepend: boolean } = { prepend: false }) {
     this.resetEntityDetail();
-    const result = await super.createRequest(item, params, options);
-    this.projectMembershipRepositoryService.listProjectMembershipRequest(result.id).then();
-    this.projectRoleRepositoryService.listRequest({ projectId: result.id }).then();
-    return result;
+
+    const entity = await lastValueFrom(this.apiService.createWithLogo(item, { workspaceId: item.workspaceId }));
+    this.setEntityDetail(entity, options);
+    this.projectMembershipRepositoryService.listProjectMembershipRequest(entity.id).then();
+    this.projectRoleRepositoryService.listRequest({ projectId: entity.id }).then();
+    return entity;
   }
 
   override async deleteRequest(
@@ -81,8 +85,7 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     queryParams?: QueryParams,
   ) {
     this.unsubscribeFromPrevious();
-    const result = await super.deleteRequest(item, params, queryParams);
-    return result;
+    return await super.deleteRequest(item, params, queryParams);
   }
 
   override async getRequest(params: ProjectApiServiceType.GetEntityDetailParams, queryParams?: QueryParams) {
