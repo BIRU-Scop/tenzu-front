@@ -19,9 +19,8 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject } from "@angular/core";
-import { AbstractControl, Validators } from "@angular/forms";
-import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -31,17 +30,27 @@ import {
 } from "@angular/material/dialog";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { MatOption } from "@angular/material/core";
-import { MatSelect } from "@angular/material/select";
+import { MatSelect, MatSelectTrigger } from "@angular/material/select";
 import { Router } from "@angular/router";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { CreateProjectPayload, ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
+import {
+  form,
+  maxLength,
+  readonly,
+  required,
+  validate,
+  submit,
+  FormField,
+  applyWhenValue,
+} from "@angular/forms/signals";
 
 export type ProjectCreateDialogData = {
   workspaceId: WorkspaceSummary["id"];
@@ -67,16 +76,19 @@ export type ProjectCreateDialogData = {
     MatSelect,
     ButtonCloseComponent,
     ButtonAddComponent,
+    FormField,
+    MatSelectTrigger,
   ],
   template: `
     <ng-container *transloco="let t">
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form (submit)="submit($event)">
         <mat-dialog-content class="min-w-96">
           <div class="flex flex-col gap-y-2">
             <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
             <mat-form-field>
               <mat-label>{{ t("commons.workspace") }}</mat-label>
-              <mat-select required formControlName="workspaceId">
+              <mat-select [formField]="projectForm.workspaceId">
+                <mat-select-trigger>{{ selectedWorkspace().name }}</mat-select-trigger>
                 @for (workspace of workspaceRepositoryService.entitiesSummary(); track workspace.id) {
                   <mat-option value="{{ workspace.id }}" [disabled]="!workspace.userCanCreateProjects">
                     <div class="flex gap-x-2 items-center">
@@ -86,33 +98,26 @@ export type ProjectCreateDialogData = {
                   </mat-option>
                 }
               </mat-select>
-              @if (form.controls.workspaceId.hasError("required")) {
-                <mat-error [innerHTML]="t('project.new_project.workspace_required')"></mat-error>
-              }
-              @if (form.controls.workspaceId.hasError("forbiddenWorkspace")) {
-                <mat-error [innerHTML]="t('project.new_project.workspace_forbidden')"></mat-error>
+              @for (error of projectForm.workspaceId().errors(); track error.kind) {
+                <mat-error>{{ t(error.message || "") }}</mat-error>
               }
             </mat-form-field>
             <mat-form-field>
               <mat-label>{{ t("project.new_project.name") }}</mat-label>
-              <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
-              @if (form.controls.name.hasError("required")) {
-                <mat-error
-                  data-testid="project-name-required-error"
-                  [innerHTML]="t('project.new_project.name_required')"
-                ></mat-error>
-              } @else if (form.controls.name.hasError("maxlength")) {
-                <mat-error
-                  data-testid="project-name-maxlength-error"
-                  [innerHTML]="t('form_errors.max_length', { length: 80 })"
-                ></mat-error>
+              <input [formField]="projectForm.name" matInput placeholder="name" data-testid="project-name-input" />
+              @for (error of projectForm.name().errors(); track error.kind) {
+                <mat-error>{{ t(error.message || "") }}</mat-error>
               }
             </mat-form-field>
             <app-description-field
-              [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
-              formControlName="description"
+              [options]="{ maxRows: 8 }"
+              [formField]="projectForm.description"
             ></app-description-field>
-            <app-avatar size="lg" [name]="form.controls.name.value" [color]="form.controls.color.value"></app-avatar>
+            <app-avatar
+              size="lg"
+              [name]="projectForm.name().value()"
+              [color]="projectForm.color().value()"
+            ></app-avatar>
           </div>
         </mat-dialog-content>
 
@@ -120,8 +125,8 @@ export type ProjectCreateDialogData = {
           <app-button-close mat-dialog-close translocoKey="commons.cancel" />
           <app-button-add
             translocoKey="project.new_project.create_project"
-            (click)="onSubmit()"
-            [disabled]="!form.dirty || form.invalid"
+            type="submit"
+            [disabled]="!projectForm().dirty() || projectForm().invalid()"
           />
         </mat-dialog-actions>
       </form>
@@ -133,48 +138,69 @@ export type ProjectCreateDialogData = {
 export class ProjectCreateDialog {
   readonly dialogRef = inject(MatDialogRef<ProjectCreateDialog>);
   data = inject<ProjectCreateDialogData>(MAT_DIALOG_DATA);
+  translocoService = inject(TranslocoService);
   projectRepositoryService = inject(ProjectRepositoryService);
   workspaceRepositoryService = inject(WorkspaceRepositoryService);
   router = inject(Router);
 
-  fb = inject(FormBuilder);
-  form = this.fb.nonNullable.group({
-    name: ["", [Validators.required, Validators.maxLength(80)]],
-    description: [""],
-    color: [RandomColorService.randomColorPicker(), Validators.required],
-    workspaceId: ["", [Validators.required, this.forbiddenWorkspaceValidator()]],
+  projectModel = signal<CreateProjectPayload>({
+    name: "",
+    description: "",
+    color: RandomColorService.randomColorPicker(),
+    workspaceId: this.data.workspaceId,
+  });
+  projectForm = form(this.projectModel, (schemaPath) => {
+    required(schemaPath.name, { message: "form_errors.required" });
+    maxLength(schemaPath.name, 80, {
+      message: () =>
+        this.translocoService.translate("form_errors.max_length", {
+          number: 80,
+        }),
+    });
+
+    maxLength(schemaPath.description, 200, {
+      message: () =>
+        this.translocoService.translate("form_errors.max_length", {
+          number: 200,
+        }),
+    });
+
+    required(schemaPath.color, { message: "form_errors.required" });
+    readonly(schemaPath.color);
+
+    required(schemaPath.workspaceId, { message: "form_errors.required" });
+    applyWhenValue(
+      schemaPath,
+      () => this.workspaceRepositoryService.entitiesSummary()?.length > 0,
+      (schemaPath) => {
+        validate(schemaPath.workspaceId, ({ value }) => {
+          const workspace = this.workspaceRepositoryService.entityMapSummary()[value()];
+          if (!workspace?.userCanCreateProjects) {
+            return { kind: "forbiddenWorkspace", message: "project.new_project.workspace_forbidden" };
+          }
+          return null;
+        });
+      },
+    );
   });
 
-  forbiddenWorkspaceValidator() {
-    return (control: AbstractControl) => {
-      const workspace = this.workspaceRepositoryService.entityMapSummary()[control.value];
-      if (!workspace?.userCanCreateProjects) {
-        return { forbiddenWorkspace: true };
-      }
-      return null;
-    };
-  }
+  selectedWorkspace = computed<WorkspaceSummary>(() => {
+    return this.workspaceRepositoryService.entityMapSummary()[this.projectModel().workspaceId];
+  });
 
   constructor() {
     if (!this.workspaceRepositoryService.entitiesSummary().length) {
       this.workspaceRepositoryService.listRequest().then();
     }
-
-    effect(async () => {
-      if (this.data.workspaceId && this.workspaceRepositoryService.entitiesSummary()?.length > 0) {
-        this.form.controls.workspaceId.setValue(this.data.workspaceId);
-        this.form.controls.workspaceId.markAsTouched();
-      }
-    });
   }
 
-  async onSubmit() {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
-      const { workspaceId, ...values } = this.form.getRawValue();
+  async submit(event: Event) {
+    event.preventDefault();
+    await submit(this.projectForm, async (form) => {
+      const { workspaceId, ...values } = form().value();
       const project = await this.projectRepositoryService.createRequest(values, { workspaceId });
       this.router.navigateByUrl(`/workspace/${project.workspaceId}/project/${project.id}/kanban/main`).then();
       this.dialogRef.close();
-    }
+    });
   }
 }

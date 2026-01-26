@@ -8,8 +8,6 @@
     "title": "Nouveau projet",
     "create_project": "Créer un projet",
     "name": "Nom",
-    "name_required": "Merci d'entrer un nom",
-    "workspace_required": "Merci de choisir un espace de travail",
     "workspace_forbidden": "Tu n'as pas l'autorisation de créer un projet dans cet espace de travail."
   },
   "settings": {
@@ -77,10 +75,6 @@
         "cancel": "Annuler",
         "save": "Enregistrer",
         "delete": "Supprimer"
-      },
-      "errors": {
-        "name_required": "Le nom du projet ne peut pas être vide.",
-        "name_max_length": "Le nom ne peut pas excéder 80 caractères"
       },
       "messages": {
         "saved": "Les informations du projet ont été enregistrées."

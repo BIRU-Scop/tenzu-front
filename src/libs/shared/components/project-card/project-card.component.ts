@@ -33,6 +33,8 @@ import {
 } from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { ProjectSummary } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-project-card",
@@ -102,14 +104,14 @@ import { MatDialog } from "@angular/material/dialog";
 export class ProjectCardComponent {
   readonly dialog = inject(MatDialog);
 
-  name = input("");
-  color = input(0);
-  description = input<string | null>("");
-  workspaceId = input<string | null>("");
-  landingPage = input<string | null>("");
+  workspaceId = input.required<WorkspaceSummary["id"]>();
+  name = input<ProjectSummary["name"]>("");
+  color = input<ProjectSummary["color"]>(0);
+  description = input<ProjectSummary["description"] | null>("");
+  landingPage = input<ProjectSummary["landingPage"] | null>("");
   disabled = input<boolean>(false);
 
-  openCreateProject(workspaceId: string): void {
+  openCreateProject(workspaceId: WorkspaceSummary["id"]): void {
     const data: ProjectCreateDialogData = {
       workspaceId,
     };

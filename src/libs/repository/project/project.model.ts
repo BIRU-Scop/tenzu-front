@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -53,7 +53,7 @@ export type ProjectDetail = ProjectSummary &
     workflows: WorkflowNested[];
   };
 
-export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId"> &
-  Partial<Pick<ProjectNested, "description" | "color" | "logo">>;
+export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> &
+  Partial<Pick<ProjectNested, "logo">>;
 
-export type UpdateProjectPayload = Partial<Pick<ProjectNested, "description" | "name">>;
+export type UpdateProjectPayload = Pick<ProjectNested, "description" | "name">;

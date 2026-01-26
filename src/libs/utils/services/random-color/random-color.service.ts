@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,9 +29,5 @@ export class RandomColorService {
     const max = 8;
     const min = 1;
     return Math.floor(Math.random() * (max - min) + min);
-  }
-
-  public static getColorClass(colorId: number): string {
-    return "color-" + colorId.toString();
   }
 }
