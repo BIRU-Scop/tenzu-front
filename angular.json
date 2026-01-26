@@ -105,7 +105,6 @@
             "buildTarget": "::development",
             "browsers": ["chromium"]
           }
-          }
         }
       }
     }

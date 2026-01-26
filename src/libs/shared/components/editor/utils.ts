@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,5 +19,19 @@
  *
  */
 
-export * from "./editor.component";
-export * from "./editor-collaboration.component";
+import { inject } from "@angular/core";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { HttpClient } from "@angular/common/http";
+import { lastValueFrom } from "rxjs";
+
+export function resolveFileUrl() {
+  const httpClient = inject(HttpClient);
+  const baseUrl = inject(ConfigAppService).apiUrl();
+  return async (url: string) => {
+    if (!url.startsWith(baseUrl)) {
+      return url;
+    }
+    const file = await lastValueFrom(httpClient.get(url, { responseType: "blob" }));
+    return URL.createObjectURL(file);
+  };
+}

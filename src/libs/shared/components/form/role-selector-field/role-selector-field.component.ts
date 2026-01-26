@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -47,7 +47,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   hostDirectives: [NoopValueAccessorDirective],
   imports: [ReactiveFormsModule, TranslocoDirective, MatFormField, MatSelectModule, MatTooltip],
   template: `
-    <mat-form-field *transloco="let t" appearance="outline">
+    <mat-form-field *transloco="let t" appearance="outline" [subscriptSizing]="'dynamic'">
       <mat-select [formControl]="ngControl.control">
         @for (role of roles(); track role) {
           @let tooltipKey = tooltips[itemType()][role.slug];

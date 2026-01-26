@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,5 +19,19 @@
  *
  */
 
-export * from "./editor.component";
-export * from "./editor-collaboration.component";
+.editor {
+  box-sizing: border-box;
+  padding: 1em;
+  border-style: solid;
+  border-radius: 0.25rem;
+  border-color: var(--mat-sys-outline);
+  border-width: 1px;
+  &:hover:has(> :not(.disabled-editor):not(.readonly-editor)) {
+    border-color: var(--mat-sys-on-primary);
+  }
+  &:has(.ProseMirror-focused):has(> :not(.disabled-editor):not(.readonly-editor)) {
+    border-color: var(--mat-sys-primary);
+    border-width: 2px;
+    padding: calc(1em - 1px);
+  }
+}

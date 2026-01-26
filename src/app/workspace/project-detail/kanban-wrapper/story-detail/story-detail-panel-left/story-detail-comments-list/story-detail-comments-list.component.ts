@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -32,17 +32,17 @@ import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
-import { StoryCommentComponent } from "./story-comment.component";
 import { MatDivider } from "@angular/material/divider";
 import { StoryCommentFacade } from "./story-comment.facade";
 import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.directive";
-import { StoryCommentSkeletonComponent } from "./story-comment-skeleton.component";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
+import { StoryDetailCommentDetailComponent } from "./story-detail-comment-detail/story-detail-comment-detail.component";
+import { StoryCommentSkeletonComponent } from "./story-detail-comment-detail/story-comment-skeleton.component";
 
 @Component({
-  selector: "app-story-detail-comments",
+  selector: "app-story-detail-comments-list",
   imports: [
     TranslocoDirective,
     EditorComponent,
@@ -52,7 +52,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
     CdkTextareaAutosize,
     ButtonSaveComponent,
     ButtonCancelComponent,
-    StoryCommentComponent,
+    StoryDetailCommentDetailComponent,
     MatDivider,
     EventOnVisibleDirective,
     StoryCommentSkeletonComponent,
@@ -104,7 +104,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
       }
       @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
         @if (last) {
-          <app-story-comment
+          <app-story-detail-comment-detail
             [@newCommentFlyIn]="storyCommentRepositoryService.entitiesSummary().length || 0"
             [comment]="comment"
             [storyDetail]="storyDetail()"
@@ -116,17 +116,17 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
             (visible)="loadMoreComments()"
           />
         } @else {
-          <app-story-comment
+          <app-story-detail-comment-detail
             [comment]="comment"
             [storyDetail]="storyDetail()"
             [hasModifyPermission]="hasModifyPermission"
             [hasModeratePermission]="hasModeratePermission"
           />
-          <mat-divider></mat-divider>
+          <mat-divider />
         }
       }
       @if (storyCommentRepositoryService.isLoading()) {
-        <app-story-comment-skeleton class="mb-4 cursor-progress"></app-story-comment-skeleton>
+        <app-story-comment-skeleton class="mb-4 cursor-progress" />
       } @else if (storyCommentRepositoryService.listIsComplete()) {
         <span class="sr-only">{{ t("workflow.detail_story.comments.loading_complete") }}</span>
       } @else {
@@ -152,7 +152,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryDetailCommentsComponent {
+export class StoryDetailCommentsListComponent {
   storyCommentFacade = inject(StoryCommentFacade);
   storyCommentRepositoryService = inject(StoryCommentRepositoryService);
   notificationService = inject(NotificationService);

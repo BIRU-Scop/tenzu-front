@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,19 +19,30 @@
  *
  */
 
-import { Component, inject, OnInit } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
-import { MatIconRegistry } from "@angular/material/icon";
+import { Pipe, PipeTransform } from "@angular/core";
 
-@Component({
-  selector: "app-root",
-  imports: [RouterOutlet],
-  template: ` <router-outlet />`,
+export const COLORS: Record<number, string> = {
+  1: "#4A90E2", // Soft Blue
+  2: "#2ECC71", // Emerald
+  3: "#9B59B6", // Amethyst
+  4: "#FF6F61", // Coral
+  5: "#F1C40F", // Sunflower
+  6: "#1ABC9C", // Turquoise
+  7: "#E67E22", // Burnt Orange
+  8: "#D81B60", // Raspberry Pink
+  9: "#34495E", // Slate
+};
+
+@Pipe({
+  name: "colorToKey",
+  standalone: true,
 })
-export class AppComponent implements OnInit {
-  title = "tenzu";
-  iconRegistry = inject(MatIconRegistry);
-  ngOnInit(): void {
-    this.iconRegistry.setDefaultFontSetClass("material-symbols-rounded");
+export class ColorToKeyPipe implements PipeTransform {
+  transform(hexColor: string | null | undefined): number {
+    if (!hexColor) {
+      return 1;
+    }
+    const entry = Object.entries(COLORS).find(([, value]) => value.toLowerCase() === hexColor.toLowerCase());
+    return entry ? Number(entry[0]) : 1;
   }
 }

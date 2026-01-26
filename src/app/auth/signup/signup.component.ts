@@ -36,7 +36,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { apply, applyWhenValue, Field, form, maxLength, required, submit } from "@angular/forms/signals";
+import { apply, applyWhenValue, FormField, form, maxLength, required, submit } from "@angular/forms/signals";
 import { emailSchema } from "@tenzu/shared/components/form/email-field/schema";
 import { lastValueFrom } from "rxjs";
 import {
@@ -68,7 +68,7 @@ import { debug } from "@tenzu/utils/functions/logging";
     MatSelect,
     ButtonComponent,
     PasswordFieldComponent,
-    Field,
+    FormField,
     FormFooterComponent,
     FormFooterSecondaryActionDirective,
     SocialAuthLoginComponent,
@@ -95,16 +95,16 @@ import { debug } from "@tenzu/utils/functions/logging";
         <form (submit)="submit($event)" class="flex flex-col gap-1 w-[32rem]">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
-            <input [field]="signupForm.fullName" matInput autocomplete type="text" />
+            <input [formField]="signupForm.fullName" matInput autocomplete type="text" />
             @for (error of signupForm.fullName().errors(); track error.kind) {
               <mat-error>{{ t(error.message || "") }}</mat-error>
             }
           </mat-form-field>
-          <app-email-field [field]="signupForm.email" />
-          <app-password-field [field]="signupForm.password" [settings]="{ enabledStrength: true }" />
+          <app-email-field [formField]="signupForm.email" />
+          <app-password-field [formField]="signupForm.password" [settings]="{ enabledStrength: true }" />
           <mat-form-field>
             <mat-label>{{ t("general.identity.lang") }}</mat-label>
-            <mat-select [field]="signupForm.lang" data-testid="lang-select">
+            <mat-select [formField]="signupForm.lang" data-testid="lang-select">
               @for (language of languageStore.entities(); track language.code) {
                 <mat-option [value]="language.code">{{ language.name }}</mat-option>
               }
@@ -115,7 +115,7 @@ import { debug } from "@tenzu/utils/functions/logging";
               [class.checkbox-invalid]="
                 signupForm.acceptTermsOfService().touched() && signupForm.acceptTermsOfService().invalid()
               "
-              [field]="signupForm.acceptTermsOfService"
+              [formField]="signupForm.acceptTermsOfService"
             >
               <small
                 class="mat-body-small"

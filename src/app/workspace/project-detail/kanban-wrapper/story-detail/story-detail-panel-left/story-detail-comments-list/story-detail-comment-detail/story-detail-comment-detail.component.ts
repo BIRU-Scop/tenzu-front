@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -38,7 +38,7 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { ButtonEditComponent } from "@tenzu/shared/components/ui/button/button-edit.component";
 import { StoryDetail } from "@tenzu/repository/story";
-import { StoryCommentFacade } from "./story-comment.facade";
+import { StoryCommentFacade } from "../story-comment.facade";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { EditorComponent } from "@tenzu/shared/components/editor";
@@ -49,7 +49,7 @@ import { skip } from "rxjs";
 import { filter } from "rxjs/operators";
 
 @Component({
-  selector: "app-story-comment",
+  selector: "app-story-detail-comment-detail",
   imports: [
     TranslocoDirective,
     DatePipe,
@@ -62,11 +62,12 @@ import { filter } from "rxjs/operators";
     EditorComponent,
     ReactiveFormsModule,
   ],
+  host: { class: "flex flex-col gap-4 group" },
   template: `
     @let _comment = comment();
     @let _editionMode = editionMode();
     @let myUser = userStore.myUser();
-    <div *transloco="let t" class="flex flex-col gap-4 group">
+    <ng-container *transloco="let t">
       <div class="flex flex-row justify-between">
         <app-user-card
           [fullName]="_comment.createdBy?.fullName || t('workflow.detail_story.former_user')"
@@ -92,9 +93,9 @@ import { filter } from "rxjs/operators";
             <app-editor-block
               class="overflow-auto"
               [class.!border-0]="!_editionMode"
-              [data]="_comment.text"
+              [value]="_comment.text"
               [uploadFile]="undefined"
-              [disabled]="!_editionMode"
+              [readonly]="!_editionMode"
               (validate)="save()"
               #commentEditorContainer
             />
@@ -118,7 +119,7 @@ import { filter } from "rxjs/operators";
                     message: t('workflow.detail_story.comments.confirm_remove_message_self'),
                   }"
                   (popupConfirm)="onDelete(_comment)"
-                ></app-button-delete>
+                />
               </div>
             } @else if (hasModeratePermission()) {
               <div class="hidden group-hover:flex flex-row gap-2">
@@ -131,18 +132,18 @@ import { filter } from "rxjs/operators";
                     message: t('workflow.detail_story.comments.confirm_remove_message_other'),
                   }"
                   (popupConfirm)="onDelete(_comment)"
-                ></app-button-delete>
+                />
               </div>
             }
           }
         </div>
       }
-    </div>
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StoryCommentComponent implements AfterViewChecked {
+export class StoryDetailCommentDetailComponent implements AfterViewChecked {
   injector = inject(Injector);
   storyCommentFacade = inject(StoryCommentFacade);
   userStore = inject(UserStore);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,12 +23,12 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { Field, FieldTree } from "@angular/forms/signals";
+import { FormField, FieldTree } from "@angular/forms/signals";
 import { MatInput } from "@angular/material/input";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatLabel, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError, MatLabel, Field, MatInput],
+  imports: [MatLabel, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError, MatLabel, FormField, MatInput],
   providers: [],
   selector: "app-email-field",
   host: {
@@ -36,12 +36,12 @@ import { MatInput } from "@angular/material/input";
   },
   styles: ``,
   template: `
-    @let _field = field();
+    @let _field = formField();
     <mat-form-field *transloco="let t" subscriptSizing="fixed" class="flex grow">
       <mat-label>
         {{ t("component.email.label") }}
       </mat-label>
-      <input matInput [field]="_field" autocomplete="email" />
+      <input matInput [formField]="_field" autocomplete="email" />
       @if (_field().touched() && _field().invalid()) {
         <mat-error>
           @for (error of _field().errors(); track error.kind) {
@@ -53,5 +53,5 @@ import { MatInput } from "@angular/material/input";
   `,
 })
 export class EmailFieldComponent {
-  field = input.required<FieldTree<string, string>>();
+  formField = input.required<FieldTree<string, string>>();
 }

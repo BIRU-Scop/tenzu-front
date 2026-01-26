@@ -1,4 +1,10 @@
 {
+  "change_mode_view": {
+    "aria_label": "Cambiar modo de vista",
+    "kanban": "Kanban",
+    "full_view": "Vista completa",
+    "side_view": "Vista lateral"
+  },
   "create_workflow": {
     "dialog": {
       "aria_label": "Crear kanban",

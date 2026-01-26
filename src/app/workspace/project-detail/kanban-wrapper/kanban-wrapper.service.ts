@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -32,11 +32,15 @@ export class KanbanWrapperService {
   storyView = this.kanbanWrapperStore.storyView;
   firstOpened = this.kanbanWrapperStore.firstOpened;
   isOpenedSideview = this.kanbanWrapperStore.isOpenedSideview;
+  modalId = this.kanbanWrapperStore.modalId;
   setStoryView(storyView: StoryView) {
     this.kanbanWrapperStore.setStoryView(storyView);
   }
   setFirstOpened(firstOpened: boolean) {
     this.kanbanWrapperStore.setFirstOpened(firstOpened);
+  }
+  setModalId(modalId?: string) {
+    this.kanbanWrapperStore.setModalId(modalId);
   }
 
   setOpenedSideview(storyDetail?: StoryDetail) {

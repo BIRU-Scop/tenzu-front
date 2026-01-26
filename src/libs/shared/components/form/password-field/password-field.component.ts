@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 
-import { Field, FieldTree } from "@angular/forms/signals";
+import { FieldTree, FormField } from "@angular/forms/signals";
 import {
   DEFAULT_SETTINGS,
   getSeverity,
@@ -50,7 +50,7 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
     class: "flex flex-col",
   },
   template: `
-    @let _field = field();
+    @let _field = formField();
     <ng-container *transloco="let t">
       <mat-form-field class="w-full">
         <mat-label>
@@ -59,7 +59,7 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
         <input
           [type]="hide() ? 'password' : 'text'"
           matInput
-          [field]="_field"
+          [formField]="_field"
           autocomplete
           [placeholder]="t('component.password.placeholder')"
         />
@@ -138,7 +138,7 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
     TranslocoDirective,
     MatInput,
     MatSuffix,
-    Field,
+    FormField,
     MatIcon,
     MatError,
     PasswordStrengthComponent,
@@ -146,16 +146,16 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
 })
 export class PasswordFieldComponent {
   config = inject(ConfigAppService).config;
-  field = input.required<FieldTree<string, string>>();
+  formField = input.required<FieldTree<string, string>>();
   label = input("component.password.label");
   autocomplete = input("current-password");
   settings = input(DEFAULT_SETTINGS, {
     transform: (settings: Partial<PasswordSettings>) => ({ ...DEFAULT_SETTINGS, ...settings }),
   });
   hide = signal(true);
-  severity = computed(() => getSeverity(this.field()().value(), this.config()));
+  severity = computed(() => getSeverity(this.formField()().value(), this.config()));
   hints = computed(() => {
-    const value = this.field()().value();
+    const value = this.formField()().value();
     const security = this.config().security;
 
     return {

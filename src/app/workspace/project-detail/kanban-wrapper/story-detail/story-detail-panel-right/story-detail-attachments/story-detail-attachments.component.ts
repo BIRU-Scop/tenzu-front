@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,14 +23,14 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } 
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
-import { StoryDetail } from "@tenzu/repository/story";
-import { ProjectDetail } from "@tenzu/repository/project";
-import { NotificationService } from "@tenzu/utils/services/notification";
+import { StoryAttachment, StoryAttachmentRepositoryService } from "src/libs/repository/story-attachment";
+import { StoryDetail } from "src/libs/repository/story";
+import { ProjectDetail } from "src/libs/repository/project";
+import { NotificationService } from "src/libs/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
+import { ConfigAppService } from "src/libs/repository/config-app/config-app.service";
+import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
 
 @Component({
   selector: "app-story-detail-attachments",

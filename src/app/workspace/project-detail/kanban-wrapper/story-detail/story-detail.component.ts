@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,175 +19,67 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output, viewChild } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatFormField } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { UserCardComponent } from "@tenzu/shared/components/user-card";
-import { DatePipe } from "@angular/common";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
-import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { StoryDetailFacade } from "./story-detail.facade";
-import { ProjectKanbanService } from "../project-kanban/project-kanban.service";
-import { MatDivider } from "@angular/material/divider";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
-import { StoryDetailAttachmentsComponent } from "./story-detail-attachments/story-detail-attachments.component";
-import { StoryStatusComponent } from "./story-status/story-status.component";
-import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
-import { EditorComponent } from "@tenzu/shared/components/editor";
-import { HttpClient } from "@angular/common/http";
-import { lastValueFrom } from "rxjs";
-import { StoryDetail } from "@tenzu/repository/story";
-import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { StoryDetailCommentsComponent } from "./story-detail-comments/story-detail-comments.component";
-import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
-import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
-import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
+import { StoryDetailPanelRightComponent } from "./story-detail-panel-right/story-detail-panel-right.component";
+import { StoryDetailPanelLeftComponent } from "./story-detail-panel-left/story-detail-panel-left.component";
+import { MatDivider } from "@angular/material/list";
 
 @Component({
   selector: "app-story-detail",
   imports: [
-    UserCardComponent,
-    MatFormField,
-    MatInput,
     ReactiveFormsModule,
-    TranslocoDirective,
-    DatePipe,
     MatExpansionModule,
-    ConfirmDirective,
     MatTableModule,
-    MatDivider,
     StoryDetailMenuComponent,
-    StoryDetailAttachmentsComponent,
-    StoryStatusComponent,
-    StoryAssigneeComponent,
     HasPermissionDirective,
-    EditorComponent,
-    ButtonSaveComponent,
-    ButtonUndoComponent,
-    StoryDetailCommentsComponent,
-    ButtonDeleteComponent,
+    StoryDetailPanelRightComponent,
+    StoryDetailPanelLeftComponent,
+    MatDivider,
   ],
+
   template: `
     @let project = projectRepositoryService.entityDetail();
-    @if (project) {
+    @let story = selectedStory();
+    @if (project && story) {
       <ng-container
         *appHasPermission="{
           actualEntity: project,
           requiredPermission: ProjectPermissions.VIEW_STORY,
         }"
       >
-        @let hasModifyPermission =
-          hasEntityRequiredPermission({
-            requiredPermission: ProjectPermissions.MODIFY_STORY,
-            actualEntity: project,
-          });
-        <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
-          @let story = this.selectedStory();
-          @if (story) {
-            <app-story-detail-menu
-              [story]="story"
-              [canBeClosed]="canBeClosed()"
-              [hasModifyPermission]="hasModifyPermission"
-              (closed)="closed.emit()"
-            ></app-story-detail-menu>
-            <div class="flex flex-row gap-2 h-5/6">
-              <div class="basis-2/3 flex flex-col p-4 min-w-0 gap-4">
-                <form [formGroup]="form" class="flex flex-col h-full gap-4">
-                  <mat-form-field appearance="fill" class="title-field">
-                    <input [attr.aria-label]="t('title')" matInput data-testid="title-input" formControlName="title" />
-                  </mat-form-field>
-                  <app-editor-block
-                    class="overflow-auto"
-                    [data]="story.description"
-                    [resolveFileUrl]="resolveFileUrl()"
-                    [uploadFile]="uploadFile(story)"
-                    [disabled]="!hasModifyPermission"
-                    (validate)="save()"
-                    #editorContainer
-                  />
-                  @if (hasModifyPermission) {
-                    <div class="flex flex-row justify-end gap-2 py-4">
-                      <app-button-undo (click)="undo()" />
-                      <app-button-save (click)="save()" />
-                    </div>
-                  }
-                </form>
-                <mat-divider></mat-divider>
-                <app-story-detail-comments
-                  *appHasPermission="{
-                    actualEntity: project,
-                    requiredPermission: ProjectPermissions.VIEW_COMMENT,
-                  }"
-                  class="pb-4"
-                  [projectDetail]="project"
-                  [storyDetail]="story"
-                ></app-story-detail-comments>
-              </div>
-              <div
-                class="basis-1/3 h-full min-w-0 overflow-y-auto flex flex-col gap-4 border-l border-y-0 border-r-0 border-solid border-outline px-4 pt-4"
-              >
-                <div class="grid grid-cols-1 gap-y-4 content-start mb-2">
-                  <div class="flex flex-row gap-4">
-                    <span class="text-on-surface-variant mat-label-medium self-center">{{ t("created_by") }}</span>
-                    <app-user-card
-                      [fullName]="story.createdBy?.fullName || t('former_user')"
-                      [avatarName]="story.createdBy?.fullName || ''"
-                      [subtext]="story.createdAt | date: 'short'"
-                      [color]="story.createdBy?.color || 0"
-                    />
-                  </div>
-                  <app-story-status [storyDetail]="story" [hasModifyPermission]="hasModifyPermission" />
-                  <div class="flex flex-row gap-4">
-                    <span class="text-on-surface-variant mat-label-medium self-center">{{ t("assigned_to") }}</span>
-                    <app-story-assignee
-                      [story]="story"
-                      [hasModifyPermission]="hasModifyPermission"
-                      [config]="{ relativeXPosition: 'left' }"
-                    />
-                  </div>
-                </div>
-                <mat-divider />
-                <ng-container
-                  *appHasPermission="{
-                    actualEntity: project,
-                    requiredPermission: ProjectPermissions.DELETE_STORY,
-                  }"
-                >
-                  <app-button-delete
-                    [translocoKey]="'workflow.detail_story.delete_story'"
-                    [iconOnly]="true"
-                    appConfirm
-                    [data]="{
-                      deleteAction: true,
-                      title: t('confirm_delete_story'),
-                      message: t('confirm_delete_story_message'),
-                    }"
-                    (popupConfirm)="onDelete()"
-                  ></app-button-delete>
-                  <mat-divider></mat-divider>
-                  @if (project && story) {
-                    <app-story-detail-attachments
-                      [projectDetail]="project"
-                      [storyDetail]="story"
-                      [hasModifyPermission]="hasModifyPermission"
-                    ></app-story-detail-attachments>
-                  }
-                </ng-container>
-              </div>
-            </div>
-          }
-        </ng-container>
+        <app-story-detail-menu
+          [story]="story"
+          [canBeClosed]="canBeClosed()"
+          [hasModifyPermission]="hasModifyPermission()"
+          (closed)="closed.emit()"
+        />
+        <div class="flex flex-row gap-4 h-5/6">
+          <app-story-detail-panel-left
+            class="basis-2/3 flex flex-col p-4 min-w-0 gap-4"
+            [story]="story"
+            [project]="project"
+          />
+          <mat-divider [vertical]="true"></mat-divider>
+          <app-story-detail-panel-right
+            class="basis-1/3 h-full min-w-0 overflow-y-auto   pt-4"
+            [project]="project"
+            [story]="story"
+            [hasModifyPermission]="hasModifyPermission()"
+            (deleteStory)="onDelete()"
+          />
+        </div>
       </ng-container>
     }
   `,
@@ -196,84 +88,37 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
 })
 export default class StoryDetailComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
-  protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;
-  httpClient = inject(HttpClient);
-  configAppService = inject(ConfigAppService);
-  storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   storyDetailFacade = inject(StoryDetailFacade);
   workflowService = this.storyDetailFacade.workflowRepositoryService;
   projectRepositoryService = inject(ProjectRepositoryService);
   storyService = this.storyDetailFacade.storyRepositoryService;
   notificationService = inject(NotificationService);
-  projectKanbanService = inject(ProjectKanbanService);
-  fb = inject(FormBuilder);
+
+  hasModifyPermission = computed(() => {
+    const project = this.projectRepositoryService.entityDetail();
+    return project
+      ? hasEntityRequiredPermission({
+          requiredPermission: ProjectPermissions.MODIFY_STORY,
+          actualEntity: project,
+        })
+      : false;
+  });
   canBeClosed = input(false);
   closed = output<void>();
   selectedStory = this.storyService.entityDetail;
-  editor = viewChild.required<EditorComponent>("editorContainer");
-  form = this.fb.nonNullable.group({
-    title: [{ value: "", disabled: true }, Validators.required],
-  });
 
   constructor() {
     toObservable(this.selectedStory)
       .pipe(filterNotNull())
       .subscribe(async (value) => {
-        this.form.setValue({ title: value?.title || "" });
-
-        const project = this.projectRepositoryService.entityDetail();
-        if (project) {
-          const hasModifyPermission = hasEntityRequiredPermission({
-            requiredPermission: ProjectPermissions.MODIFY_STORY,
-            actualEntity: project,
-          });
-          if (hasModifyPermission) {
-            this.form.enable();
-          } else {
-            this.form.disable();
-          }
-        }
         if (this.workflowService.entityDetail()?.id !== value.workflowId) {
           await this.workflowService.getBySlugRequest(value.workflow);
         }
       });
   }
-  async save() {
-    const data = { ...this.form.getRawValue(), description: this.editor().jsonContent };
-    await this.storyDetailFacade.patchSelectedStory(data);
-    this.notificationService.success({ title: "notification.action.changes_saved" });
-  }
-
-  undo() {
-    this.editor().undo();
-    this.form.setValue({ title: this.selectedStory()?.title || "" });
-  }
 
   async onDelete() {
     await this.storyDetailFacade.deleteSelectedStory();
     this.closed.emit();
-  }
-
-  resolveFileUrl() {
-    const httpClient = this.httpClient;
-    const baseUrl = this.configAppService.apiUrl();
-    return async (url: string) => {
-      if (!url.startsWith(baseUrl)) {
-        return url;
-      }
-      const file = await lastValueFrom(httpClient.get(url, { responseType: "blob" }));
-      return URL.createObjectURL(file);
-    };
-  }
-  uploadFile(storyDetail: StoryDetail) {
-    const storyAttachmentRepositoryService = this.storyAttachmentRepositoryService;
-    const baseUrl = this.configAppService.apiUrl();
-    return async (file: File) => {
-      const attachment = await storyAttachmentRepositoryService.createAttachment(file, {
-        ref: storyDetail.ref,
-        projectId: storyDetail.projectId,
-      });
-      return `${baseUrl}/stories/attachments/${attachment.id}`;
-    };
   }
 }
