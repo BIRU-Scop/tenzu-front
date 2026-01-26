@@ -143,7 +143,7 @@ export class StoryEditionComponent {
   doc = computed(() => new Y.Doc());
   wsProvider = computed(() => {
     return initWsDocProvider({
-      serverUrl: `${this.configAppService.wsUrl()}/docs/${this.story().projectId}/`,
+      serverUrl: `${this.configAppService.wsUrl()}/collaboration/${this.story().projectId}/`,
       roomName: `${this.story().ref}?token=${this.authService.getToken().access}`,
       doc: this.doc(),
     });
