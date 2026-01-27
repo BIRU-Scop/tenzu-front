@@ -96,8 +96,13 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
               </mat-form-field>
               <app-description-field [options]="{ maxRows: 8 }" [formField]="projectForm.description" />
               <app-form-footer>
-                <app-button-undo appFormFooterSecondaryAction (click)="reset()" [disabled]="!projectForm().dirty()" />
-                <app-button-save [disabled]="!projectForm().dirty() || projectForm().invalid()" />
+                <app-button-undo
+                  appFormFooterSecondaryAction
+                  (click)="reset()"
+                  [disabled]="!projectForm().dirty()"
+                  type="reset"
+                />
+                <app-button-save [disabled]="!projectForm().dirty() || projectForm().invalid()" type="submit" />
               </app-form-footer>
             </form>
             <app-delete-warning-button

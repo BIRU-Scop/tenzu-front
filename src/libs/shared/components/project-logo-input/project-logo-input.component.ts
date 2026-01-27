@@ -24,23 +24,33 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { CreateProjectPayload, ProjectSummary, UpdateProjectPayload } from "@tenzu/repository/project";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
+import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 @Component({
   selector: "app-project-logo-input",
-  imports: [AvatarComponent, ButtonComponent],
+  imports: [AvatarComponent, ButtonComponent, ButtonDeleteComponent, ConfirmDirective],
   template: `
     @let _projectModel = projectModel();
-    <app-avatar
-      size="xl"
-      [name]="_projectModel.name"
-      [color]="_projectModel.color"
-      [imageData]="projectAvatarResource.value()"
-    ></app-avatar>
+    @let avatar = projectAvatarResource.value();
+    <div class="relative">
+      <app-avatar size="xl" [name]="_projectModel.name" [color]="_projectModel.color" [imageData]="avatar">
+      </app-avatar>
+      @if (avatar) {
+        <app-button-delete
+          type="button"
+          class="absolute top-0 end-0 z-20"
+          [translocoKey]="'project.logo.delete'"
+          [iconOnly]="true"
+          (click)="clearInput(fileUpload)"
+        />
+      }
+    </div>
     <input type="file" [hidden]="true" (change)="onFileSelected({ event: $event })" #fileUpload />
     <div class="flex flex-col justify-stretch gap-2">
       <app-button
         level="primary"
-        translocoKey="project.upload_logo"
+        translocoKey="project.logo.upload"
         type="button"
         iconName="upload"
         (click)="resetInput(fileUpload); fileUpload.click()"
@@ -68,7 +78,7 @@ export class ProjectLogoInputComponent {
       if (params.logoFile) {
         return await this.fileDownloaderService.convertFileToBase64(params.logoFile);
       }
-      if (params.logoUrl) {
+      if (params.logoUrl && params.logoFile !== "") {
         return await this.fileDownloaderService.convertUrlToBase64(params.logoUrl, { format: "original" });
       }
       return null;
@@ -78,6 +88,11 @@ export class ProjectLogoInputComponent {
   // Necessary to avoid Chrome refusing to upload the file which has just been deleted
   resetInput(fileUpload: HTMLInputElement) {
     fileUpload.value = "";
+  }
+  clearInput(fileUpload: HTMLInputElement) {
+    fileUpload.value = "";
+    this.projectModel.update((value) => ({ ...value, logo: "" as const }));
+    this.changed.emit();
   }
 
   onFileSelected(data: { event: Event }): void {

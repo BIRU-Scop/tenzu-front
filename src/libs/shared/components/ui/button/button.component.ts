@@ -44,6 +44,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
       @case (true) {
         <button
           *transloco="let t"
+          [type]="type()"
           [class]="level()"
           matIconButton
           [attr.aria-label]="t(_translocoKey, _translocoValue)"
