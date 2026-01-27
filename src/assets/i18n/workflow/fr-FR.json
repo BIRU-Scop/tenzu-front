@@ -1,7 +1,7 @@
 {
   "change_mode_view": {
     "aria_label": "Changer le mode d'affichage",
-    "kanban": "Kanban",
+    "modal_view": "Vue modale",
     "full_view": "Plein écran",
     "side_view": "Vue latérale"
   },
@@ -98,7 +98,10 @@
       "date": "Date",
       "action": "Action",
       "exceed_size": "{{var}} dépasse la taille de {{maxSize}}",
-      "deleted_attachment": "{{var}} a été supprimé"
+      "deleted_attachment": "{{var}} a été supprimé",
+      "preview": "Aperçu",
+      "download": "Télécharger",
+      "delete": "Supprimer"
     },
     "comments": {
       "count": "{ totalComments, plural, =0 {# Commentaire} one {# Commentaire} other {# Commentaires} }",

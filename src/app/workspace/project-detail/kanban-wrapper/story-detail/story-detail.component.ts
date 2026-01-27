@@ -67,13 +67,13 @@ import { MatDivider } from "@angular/material/list";
         />
         <div class="flex flex-row gap-4 h-5/6">
           <app-story-detail-panel-left
-            class="basis-2/3 flex flex-col p-4 min-w-0 gap-4"
+            class="basis-1/2 lg:basis-2/3 flex flex-col p-4 min-w-0 gap-4"
             [story]="story"
             [project]="project"
           />
           <mat-divider [vertical]="true"></mat-divider>
           <app-story-detail-panel-right
-            class="basis-1/3 h-full min-w-0 overflow-y-auto   pt-4"
+            class="basis-1/2 lg:basis-1/3 h-full min-w-0 overflow-y-auto   pt-4"
             [project]="project"
             [story]="story"
             [hasModifyPermission]="hasModifyPermission()"
