@@ -98,7 +98,10 @@
       "date": "Fecha",
       "action": "Acción",
       "exceed_size": "{{var}} supera el tamaño de {{maxSize}}",
-      "deleted_attachment": "{{var}} ha sido eliminado"
+      "deleted_attachment": "{{var}} ha sido eliminado",
+      "preview": "Vista previa",
+      "download": "Descargar",
+      "delete": "Eliminar"
     },
     "comments": {
       "count": "{ totalComments, plural, =0 {# Comentario} one {# Comentario} other {# Comentarios} }",

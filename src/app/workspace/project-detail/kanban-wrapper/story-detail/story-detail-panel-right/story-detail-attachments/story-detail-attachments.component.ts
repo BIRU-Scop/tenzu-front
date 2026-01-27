@@ -31,6 +31,7 @@ import { MatIcon } from "@angular/material/icon";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
 import { ConfigAppService } from "src/libs/repository/config-app/config-app.service";
 import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 
 @Component({
   selector: "app-story-detail-attachments",
@@ -44,6 +45,9 @@ import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
     MatIconButton,
     MatIcon,
     TranslocoDatePipe,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
   ],
   template: `
     @let story = storyDetail();
@@ -76,12 +80,12 @@ import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="overflow-x-auto">
-            <table class="app-table table-auto w-full">
+            <table class="app-table table-auto lg:w-full">
               <thead class="app-table-header-group">
                 <tr class="app-table-header-row">
                   <th class="app-table-header-cell">{{ t("attachments.name") }}</th>
-                  <th class="app-table-header-cell">{{ t("attachments.size") }}</th>
-                  <th class="app-table-header-cell">{{ t("attachments.date") }}</th>
+                  <th class="hidden 2xl:app-table-header-cell">{{ t("attachments.size") }}</th>
+                  <th class="hidden xl:app-table-header-cell">{{ t("attachments.date") }}</th>
                   <th class="app-table-header-cell sticky end-0 bg-surface-container !pe-0">
                     <span class="sr-only">{{ t("attachments.action") }}</span>
                   </th>
@@ -93,22 +97,30 @@ import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
                     <td class="app-table-cell">
                       {{ storyAttachment.name }}
                     </td>
-                    <td class="app-table-cell">{{ storyAttachment.size }}</td>
-                    <td class="app-table-cell">
+                    <td class="2xl:app-table-cell hidden">{{ storyAttachment.size }}</td>
+                    <td class="xl:app-table-cell hidden">
                       {{ storyAttachment.createdAt | translocoDate: { dateStyle: "short", timeStyle: "short" } }}
                     </td>
-                    <td class="app-table-cell sticky end-0 bg-surface-container !pe-0">
-                      <button mat-icon-button (click)="previewFile(storyAttachment)" type="button">
-                        <mat-icon>visibility</mat-icon>
-                      </button>
-                      <button mat-icon-button (click)="downloadFile(storyAttachment)" type="button">
-                        <mat-icon>download</mat-icon>
-                      </button>
-                      @if (_hasModifyPermission) {
-                        <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachment)">
-                          <mat-icon>delete</mat-icon>
+                    <td class="app-table-cell  end-0 bg-surface-container !pe-0">
+                      <mat-menu #appMenu="matMenu">
+                        <button mat-menu-item (click)="previewFile(storyAttachment)" type="button">
+                          <mat-icon>visibility</mat-icon>
+                          <span>{{ t("attachments.preview") }}</span>
                         </button>
-                      }
+                        <button mat-menu-item (click)="downloadFile(storyAttachment)" type="button">
+                          <mat-icon>download</mat-icon>
+                          <span>{{ t("attachments.download") }}</span>
+                        </button>
+                        @if (_hasModifyPermission) {
+                          <button mat-menu-item type="button" (click)="deleteAttachment(storyAttachment)">
+                            <mat-icon>delete</mat-icon>
+                            <span>{{ t("attachments.delete") }}</span>
+                          </button>
+                        }
+                      </mat-menu>
+                      <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
                     </td>
                   </tr>
                 }
