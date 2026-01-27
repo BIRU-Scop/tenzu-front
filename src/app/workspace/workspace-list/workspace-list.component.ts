@@ -92,6 +92,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
                   [workspaceId]="workspace.id"
                   [name]="project.name"
                   [color]="project.color"
+                  [logo]="project.logo"
                   [description]="project.description ? project.description : null"
                   [landingPage]="project | projectLandingPageUrl"
                 />

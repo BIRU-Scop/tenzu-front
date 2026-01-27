@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -62,12 +62,9 @@ export class StoryAttachmentApiService extends AbstractApiService<
       .pipe(map((dataObject) => dataObject.data));
   }
   downloadAttachment(attachment: StoryAttachment) {
-    this.fileDownloaderService.downloadFileFromUrl(
-      this.getEntityBaseUrl({ attachmentId: attachment.id }),
-      attachment.name,
-    );
+    this.fileDownloaderService.downloadFileFromUrl(attachment.file, attachment.name);
   }
   previewAttachment(attachment: StoryAttachment) {
-    this.fileDownloaderService.previewFileFromUrl(this.getEntityBaseUrl({ attachmentId: attachment.id }));
+    this.fileDownloaderService.previewFileFromUrl(attachment.file);
   }
 }

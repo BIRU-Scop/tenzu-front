@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,21 +19,19 @@
  *
  */
 
-type Primitive = string | number | boolean | null | undefined;
+import { inject, Pipe, PipeTransform } from "@angular/core";
+import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
+import { from, Observable, of } from "rxjs";
+import { ImageSizeFormat } from "@tenzu/repository/base/misc.model";
 
-// Use an interface instead of a type to enable for recursion
-export interface JsonObject {
-  [key: string]: JsonValue | undefined;
+@Pipe({ name: "getBase64FromImageUrl" })
+export class GetBase64FromImageUrlPipe implements PipeTransform {
+  fileDownloaderService = inject(FileDownloaderService);
+
+  transform(imageUrl: string | null | undefined, format: ImageSizeFormat = "small"): Observable<string | null> {
+    if (imageUrl) {
+      return from(this.fileDownloaderService.convertUrlToBase64(imageUrl, { format }));
+    }
+    return of(null);
+  }
 }
-
-type JsonArray = Array<JsonValue>;
-
-type JsonValue = Primitive | JsonObject | JsonArray;
-
-export type DataObject = Record<string, JsonValue | undefined | File | Blob>;
-
-export type BaseDataModel<T> = {
-  data: T;
-};
-
-export type ImageSizeFormat = "small" | "large" | "original";

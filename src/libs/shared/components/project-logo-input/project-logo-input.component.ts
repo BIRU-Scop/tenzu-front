@@ -19,17 +19,23 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, resource } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { CreateProjectPayload } from "@tenzu/repository/project";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 
 @Component({
   selector: "app-project-logo-input",
   imports: [AvatarComponent, ButtonComponent],
   template: `
     @let _projectModel = projectModel();
-    <app-avatar size="xl" [name]="_projectModel.name" [color]="_projectModel.color"></app-avatar>
+    <app-avatar
+      size="xl"
+      [name]="_projectModel.name"
+      [color]="_projectModel.color"
+      [imageData]="projectAvatarResource.value()"
+    ></app-avatar>
     <input type="file" [hidden]="true" (change)="onFileSelected({ event: $event })" #fileUpload />
     <div class="flex flex-col justify-stretch gap-2">
       <app-button
@@ -53,6 +59,16 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 })
 export class ProjectLogoInputComponent {
   projectModel = model.required<CreateProjectPayload>();
+  fileDownloaderService = inject(FileDownloaderService);
+  projectAvatarResource = resource({
+    params: () => ({ logo: this.projectModel().logo }),
+    loader: async ({ params }) => {
+      if (params.logo) {
+        return await this.fileDownloaderService.convertFileToBase64(params.logo);
+      }
+      return null;
+    },
+  });
 
   // Necessary to avoid Chrome refusing to upload the file which has just been deleted
   resetInput(fileUpload: HTMLInputElement) {

@@ -39,6 +39,8 @@ import {
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
 import { form, FormField, maxLength, required, submit } from "@angular/forms/signals";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-project-edit",
@@ -59,6 +61,8 @@ import { form, FormField, maxLength, required, submit } from "@angular/forms/sig
     FormFooterSecondaryActionDirective,
     ButtonUndoComponent,
     FormField,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
     @let project = projectService.entityDetail();
@@ -105,7 +109,12 @@ import { form, FormField, maxLength, required, submit } from "@angular/forms/sig
       </ng-container>
       <ng-template #noModifyPermission>
         <div class="flex flex-row gap-4 items-center" *transloco="let t">
-          <app-avatar size="xl" [name]="projectForm.name().value()" [color]="project.color || 0"></app-avatar>
+          <app-avatar
+            size="xl"
+            [name]="projectForm.name().value()"
+            [color]="project.color || 0"
+            [imageData]="project.logo | getBase64FromImageUrl: 'large' | async"
+          ></app-avatar>
           {{ project.name }}
         </div>
       </ng-template>

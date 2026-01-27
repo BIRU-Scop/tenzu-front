@@ -25,7 +25,7 @@ import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/m
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
-import { NgStyle } from "@angular/common";
+import { AsyncPipe, NgStyle } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import {
   ProjectCreateDialog,
@@ -35,6 +35,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectSummary } from "@tenzu/repository/project";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-project-card",
@@ -49,6 +50,8 @@ import { ProjectSummary } from "@tenzu/repository/project";
     MatIcon,
     NgStyle,
     ButtonAddComponent,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
     @let _landingPage = landingPage();
@@ -63,7 +66,12 @@ import { ProjectSummary } from "@tenzu/repository/project";
       *transloco="let t; prefix: 'component.project_card'"
     >
       <mat-card-header>
-        <app-avatar mat-card-avatar [name]="_name" [color]="_color" />
+        <app-avatar
+          mat-card-avatar
+          [name]="_name"
+          [color]="_color"
+          [imageData]="logo() | getBase64FromImageUrl: 'small' | async"
+        />
         <mat-card-title class="!contents min-h-[40px]">
           @if (_landingPage) {
             <a [routerLink]="_landingPage">{{ _name }}</a>
@@ -107,6 +115,7 @@ export class ProjectCardComponent {
   workspaceId = input.required<WorkspaceSummary["id"]>();
   name = input<ProjectSummary["name"]>("");
   color = input<ProjectSummary["color"]>(0);
+  logo = input<ProjectSummary["logo"]>(undefined);
   description = input<ProjectSummary["description"] | null>("");
   landingPage = input<ProjectSummary["landingPage"] | null>("");
   disabled = input<boolean>(false);

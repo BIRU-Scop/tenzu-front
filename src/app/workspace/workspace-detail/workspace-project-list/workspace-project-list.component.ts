@@ -74,6 +74,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
           <app-project-card
             [name]="project.name"
             [color]="project.color"
+            [logo]="project.logo"
             [workspaceId]="project.workspaceId"
             [description]="project.description ? project.description : null"
             [landingPage]="project | projectLandingPageUrl"

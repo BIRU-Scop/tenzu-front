@@ -24,8 +24,6 @@ import { WorkflowNested } from "../workflow";
 
 export type ProjectLogoBase = {
   logo?: string;
-  logoSmall?: string;
-  logoLarge?: string;
 };
 
 type _ProjectBaseNested = {
