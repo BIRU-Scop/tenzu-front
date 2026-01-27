@@ -15,7 +15,8 @@
     "workspace_forbidden": "No tiene permiso para crear un proyecto en este espacio de trabajo.",
     "import": {
       "taiga": "Importar proyecto desde Taiga",
-      "taiga_doc": "¿Cómo importar desde Taiga?"
+      "taiga_doc": "¿Cómo importar desde Taiga?",
+      "422": "Archivo no válido, error es {{error}}"
     }
   },
   "settings": {

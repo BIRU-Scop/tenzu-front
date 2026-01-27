@@ -27,6 +27,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { retryWhenErrors } from "@tenzu/repository/base/utils";
+import { getLocError } from "@tenzu/utils/functions/errors";
 
 export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   const authService = inject(AuthService);
@@ -59,7 +60,11 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
           // @ts-expect-error FALLS THROUGH
           case 422:
             // 422 on user creation can happen if the user chooses a password that doesn't validate backend vulnerability detection
-            if (request.url.endsWith("users") && authService.isPasswordError(error)) {
+            if (request.url.endsWith("users") && getLocError(error, "password")) {
+              break;
+            }
+            // 422 on file upload can happen if the file is invalid
+            if (request.url.endsWith("importation") && getLocError(error, "source")) {
               break;
             }
           // eslint-disable-next-line no-fallthrough

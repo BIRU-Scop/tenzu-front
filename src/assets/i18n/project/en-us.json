@@ -15,7 +15,8 @@
     "workspace_forbidden": "You don't have the permission to create a project in this workspace",
     "import": {
       "taiga": "Import project from Taiga",
-      "taiga_doc": "How to import from Taiga?"
+      "taiga_doc": "How to import from Taiga?",
+      "422": "Invalid file, error is {{error}}"
     }
   },
   "settings": {

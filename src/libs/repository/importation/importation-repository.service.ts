@@ -1,0 +1,42 @@
+/*
+ * Copyright (C) 2024-2026 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+import { inject, Injectable } from "@angular/core";
+import { lastValueFrom } from "rxjs";
+import { ImportationsApiService } from "./importation-api.service";
+import { ImportationProjectPayload } from "./importation.model";
+import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+
+@Injectable({
+  providedIn: "root",
+})
+export class ImportationRepositoryService {
+  private importationsApiService = inject(ImportationsApiService);
+  private workspaceService = inject(WorkspaceRepositoryService);
+
+  async createProjectImportation(item: ImportationProjectPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
+    const importation = await lastValueFrom(this.importationsApiService.createProjectImportation(item, params));
+
+    // TODO append importation data to workspace store once relevant
+    // this.workspaceService.addUserMemberProjects(params);
+    return importation;
+  }
+}

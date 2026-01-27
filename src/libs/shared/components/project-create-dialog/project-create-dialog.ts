@@ -84,18 +84,21 @@ export type ProjectCreateDialogData = {
     ProjectImportComponent,
   ],
   template: `
+    @let _selectedWorkspace = selectedWorkspace();
     <ng-container *transloco="let t">
       <form (submit)="submit($event)">
         <mat-dialog-content class="min-w-96">
           <div class="flex flex-col gap-y-2">
             <div class="flex flex-row gap-16 justify-between pb-4">
               <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
-              <app-project-import />
+              @if (_selectedWorkspace) {
+                <app-project-import [workspaceId]="_selectedWorkspace.id" />
+              }
             </div>
             <mat-form-field>
               <mat-label>{{ t("commons.workspace") }}</mat-label>
               <mat-select [formField]="projectForm.workspaceId">
-                <mat-select-trigger>{{ selectedWorkspace().name }}</mat-select-trigger>
+                <mat-select-trigger>{{ _selectedWorkspace?.name }}</mat-select-trigger>
                 @for (workspace of workspaceRepositoryService.entitiesSummary(); track workspace.id) {
                   <mat-option value="{{ workspace.id }}" [disabled]="!workspace.userCanCreateProjects">
                     <div class="flex gap-x-2 items-center">

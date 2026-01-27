@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable, Signal } from "@angular/core";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {
   AuthConfig,
   Credential,
@@ -211,19 +211,5 @@ export class AuthService {
 
   continueSignup(payload: ProviderContinueSignupPayload) {
     return this.http.post<ProviderCallback>(`${this.url}/provider/continue_signup`, payload);
-  }
-
-  isPasswordError(errorResponse: HttpErrorResponse): boolean {
-    try {
-      return errorResponse.error?.detail?.some(
-        (detail: { ctx: object; msg: string; type: string; loc: Array<string> }) =>
-          detail?.loc?.some((loc) => loc === "password"),
-      );
-    } catch (e) {
-      if (e instanceof TypeError) {
-        return false;
-      }
-      throw e;
-    }
   }
 }

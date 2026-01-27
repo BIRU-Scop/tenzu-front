@@ -19,16 +19,27 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
+import { FileValue } from "@tenzu/repository/base/misc.model";
+import { ImportationRepositoryService, ImportationType } from "@tenzu/repository/importation";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { HttpErrorResponse } from "@angular/common/http";
+import { debug } from "@tenzu/utils/functions/logging";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { getLocError } from "@tenzu/utils/functions/errors";
 
 @Component({
   selector: "app-project-import",
   imports: [TranslocoDirective, FileInputComponent],
   template: `
     <ng-container *transloco="let t">
-      <app-file-input allowedFormats=".json" translocoUploadKey="project.new_project.import.taiga" />
+      <app-file-input
+        allowedFormats=".json"
+        translocoUploadKey="project.new_project.import.taiga"
+        (selectFile)="onFileSelected($event)"
+      />
       <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small text-on-primary-container">{{
         t("project.new_project.import.taiga_doc")
       }}</a>
@@ -40,4 +51,33 @@ import { FileInputComponent } from "@tenzu/shared/components/file-input/file-inp
     class: "flex flex-col gap-1 items-end",
   },
 })
-export class ProjectImportComponent {}
+export class ProjectImportComponent {
+  readonly importationRepositoryService = inject(ImportationRepositoryService);
+  readonly notificationService = inject(NotificationService);
+  workspaceId = input.required<WorkspaceSummary["id"]>();
+
+  async onFileSelected(file: FileValue) {
+    if (file) {
+      try {
+        await this.importationRepositoryService.createProjectImportation(
+          { originType: ImportationType.TAIGA, source: file },
+          { workspaceId: this.workspaceId() },
+        );
+      } catch (errorResponse) {
+        if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 422) {
+          debug("error-422", "importation", errorResponse);
+          const errorDetail = getLocError(errorResponse, "source");
+          if (errorDetail) {
+            this.notificationService.error({
+              title: "project.new_project.import.422",
+              translocoTitle: true,
+              translocoTitleParams: { error: errorDetail },
+            });
+            return;
+          }
+        }
+        throw errorResponse;
+      }
+    }
+  }
+}
