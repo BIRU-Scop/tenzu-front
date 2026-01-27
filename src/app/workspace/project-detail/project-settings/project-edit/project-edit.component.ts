@@ -41,6 +41,8 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
 import { form, FormField, maxLength, required, submit } from "@angular/forms/signals";
 import { AsyncPipe } from "@angular/common";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
+import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-project-edit",
@@ -63,6 +65,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     FormField,
     AsyncPipe,
     GetBase64FromImageUrlPipe,
+    ProjectLogoInputComponent,
   ],
   template: `
     @let project = projectService.entityDetail();
@@ -79,16 +82,18 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
         >
           <div class="flex flex-col gap-y-8 w-min">
             <form class="flex flex-col gap-y-4" (submit)="submit(project, $event)">
-              <div class="flex flex-row gap-4 items-center">
-                <app-avatar size="xl" [name]="projectForm.name().value()" [color]="project.color || 0"></app-avatar>
-                <mat-form-field class="w-96">
-                  <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
-                  <input [formField]="projectForm.name" matInput placeholder="name" data-testid="project-name-input" />
-                  @for (error of projectForm.name().errors(); track error.kind) {
-                    <mat-error>{{ t(error.message || "") }}</mat-error>
-                  }
-                </mat-form-field>
-              </div>
+              <app-project-logo-input
+                [(projectModel)]="projectModel"
+                [projectLogo]="project.logo"
+                (changed)="onLogoChange()"
+              ></app-project-logo-input>
+              <mat-form-field class="w-96">
+                <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
+                <input [formField]="projectForm.name" matInput placeholder="name" data-testid="project-name-input" />
+                @for (error of projectForm.name().errors(); track error.kind) {
+                  <mat-error>{{ t(error.message || "") }}</mat-error>
+                }
+              </mat-form-field>
               <app-description-field [options]="{ maxRows: 8 }" [formField]="projectForm.description" />
               <app-form-footer>
                 <app-button-undo appFormFooterSecondaryAction (click)="reset()" [disabled]="!projectForm().dirty()" />
@@ -131,44 +136,47 @@ export default class ProjectEditComponent {
   projectService = inject(ProjectRepositoryService);
   router = inject(Router);
 
-  projectForm = form(
-    linkedSignal<UpdateProjectPayload>(() => {
-      const project = this.projectService.entityDetail();
-      return project
-        ? {
-            name: project.name,
-            description: project.description,
-          }
-        : {
-            name: "",
-            description: "",
-          };
-    }),
-    (schemaPath) => {
-      required(schemaPath.name, { message: "form_errors.required" });
-      maxLength(schemaPath.name, 80, {
-        message: () =>
-          this.translocoService.translate("form_errors.max_length", {
-            number: 80,
-          }),
-      });
+  projectModel = linkedSignal<UpdateProjectPayload>(() => {
+    const project = this.projectService.entityDetail();
+    return project
+      ? {
+          name: project.name,
+          description: project.description,
+          logo: undefined,
+          color: project.color,
+        }
+      : {
+          name: "",
+          description: "",
+          logo: "",
+          color: RandomColorService.randomColorPicker(),
+        };
+  });
+  projectForm = form(this.projectModel, (schemaPath) => {
+    required(schemaPath.name, { message: "form_errors.required" });
+    maxLength(schemaPath.name, 80, {
+      message: () =>
+        this.translocoService.translate("form_errors.max_length", {
+          number: 80,
+        }),
+    });
 
-      maxLength(schemaPath.description, 200, {
-        message: () =>
-          this.translocoService.translate("form_errors.max_length", {
-            number: 200,
-          }),
-      });
-    },
-  );
+    maxLength(schemaPath.description, 200, {
+      message: () =>
+        this.translocoService.translate("form_errors.max_length", {
+          number: 200,
+        }),
+    });
+  });
 
   async submit(project: ProjectDetail, event: Event) {
     event.preventDefault();
     await submit(this.projectForm, async (form) => {
-      await this.projectService.patchRequest(project.id, form().value(), { projectId: project.id });
+      await this.projectService.patchRequestWithLogo(project.id, form().value(), { projectId: project.id });
       this.notificationService.success({
         title: "notification.action.changes_saved",
       });
+      this.reset();
     });
   }
 
@@ -184,7 +192,11 @@ export default class ProjectEditComponent {
   reset() {
     const selectedEntity = this.projectService.entityDetail();
     if (selectedEntity) {
-      this.projectForm().reset({ ...selectedEntity });
+      this.projectForm().reset({ ...selectedEntity, logo: undefined });
     }
+  }
+
+  protected onLogoChange() {
+    this.projectForm().markAsDirty();
   }
 }

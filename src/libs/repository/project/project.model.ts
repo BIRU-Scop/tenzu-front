@@ -55,4 +55,6 @@ export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | 
   logo: Blob | File | "";
 };
 
-export type UpdateProjectPayload = Pick<ProjectNested, "description" | "name">;
+export type UpdateProjectPayload = Pick<ProjectNested, "description" | "name" | "color"> & {
+  logo?: Blob | File | "";
+};

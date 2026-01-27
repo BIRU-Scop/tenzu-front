@@ -24,7 +24,7 @@ import * as ProjectApiServiceType from "./project-api.type";
 import { ProjectApiService } from "./project-api.service";
 import { ProjectDetailStore, ProjectEntitiesSummaryStore } from "./project-entities.store";
 import { Workflow } from "../workflow";
-import { CreateProjectPayload, ProjectDetail, ProjectSummary } from "./project.model";
+import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
 import { BaseRepositoryService } from "../base";
 
 import { QueryParams } from "../base/utils";
@@ -33,6 +33,7 @@ import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-me
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { StoryRepositoryService } from "@tenzu/repository/story";
 import { lastValueFrom } from "rxjs";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 // todo temporary way to handle workflows maximum before implementing user settings
 const MAX_WORKFLOWS = 8;
 
@@ -77,6 +78,29 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     this.projectMembershipRepositoryService.listProjectMembershipRequest(entity.id).then();
     this.projectRoleRepositoryService.listRequest({ projectId: entity.id }).then();
     return entity;
+  }
+
+  override async patchRequest(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    itemId: ProjectSummary["id"],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    partialData: Partial<ProjectDetail>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    params: { projectId: ProjectSummary["id"] },
+  ): Promise<ProjectDetail> {
+    throw new Error("Method not implemented.");
+  }
+
+  async patchRequestWithLogo(
+    itemId: ProjectSummary["id"],
+    partialData: UpdateProjectPayload,
+    params: { projectId: ProjectSummary["id"] },
+  ): Promise<ProjectDetail> {
+    if (itemId === this.getEntityIdFn(this.entityDetail())) {
+      const entity = await lastValueFrom(this.apiService.patchWithLogo(partialData, params));
+      return this.updateEntityDetail(entity);
+    }
+    throw new NotFoundEntityError(`Entity ${itemId} not found`);
   }
 
   override async deleteRequest(

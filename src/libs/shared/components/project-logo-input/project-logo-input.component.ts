@@ -19,9 +19,9 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model, resource } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, model, output, resource } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { CreateProjectPayload } from "@tenzu/repository/project";
+import { CreateProjectPayload, ProjectSummary, UpdateProjectPayload } from "@tenzu/repository/project";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 
@@ -58,13 +58,18 @@ import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectLogoInputComponent {
-  projectModel = model.required<CreateProjectPayload>();
+  projectModel = model.required<CreateProjectPayload | UpdateProjectPayload>();
+  projectLogo = input<ProjectSummary["logo"]>();
+  changed = output();
   fileDownloaderService = inject(FileDownloaderService);
   projectAvatarResource = resource({
-    params: () => ({ logo: this.projectModel().logo }),
+    params: () => ({ logoFile: this.projectModel().logo, logoUrl: this.projectLogo() }),
     loader: async ({ params }) => {
-      if (params.logo) {
-        return await this.fileDownloaderService.convertFileToBase64(params.logo);
+      if (params.logoFile) {
+        return await this.fileDownloaderService.convertFileToBase64(params.logoFile);
+      }
+      if (params.logoUrl) {
+        return await this.fileDownloaderService.convertUrlToBase64(params.logoUrl, { format: "original" });
       }
       return null;
     },
@@ -81,5 +86,6 @@ export class ProjectLogoInputComponent {
     // TODO validate file size
     // TODO add file input attribute accept=".png,.jpg" etc for image type from config
     this.projectModel.update((value) => ({ ...value, logo: file }));
+    this.changed.emit();
   }
 }

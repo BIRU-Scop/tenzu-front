@@ -59,14 +59,26 @@ export class ProjectApiService extends AbstractApiService<
     params: ProjectApiServiceType.CreateEntityDetailParams,
   ): Observable<ProjectDetail> {
     const url = this.createUrl(params);
-    const data: FormData | Partial<CreateProjectPayload> = makeFormData<CreateProjectPayload>(newProject);
+    const data = makeFormData<CreateProjectPayload>(newProject);
     return this.http.post<BaseDataModel<ProjectDetail>>(url, data).pipe(map((dataObject) => dataObject.data));
   }
 
   override patch(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    item: Partial<ProjectDetail>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    params: ProjectApiServiceType.PatchEntityDetailParams,
+  ): Observable<ProjectDetail> {
+    throw new Error("Method not implemented.");
+  }
+
+  patchWithLogo(
     item: UpdateProjectPayload,
     params: ProjectApiServiceType.PatchEntityDetailParams,
   ): Observable<ProjectDetail> {
-    return super.patch(item, params, undefined, { dataIsFormData: true });
+    const data = makeFormData<Partial<UpdateProjectPayload>>(item);
+    return this.http
+      .patch<BaseDataModel<ProjectDetail>>(this.patchUrl(params), data)
+      .pipe(map((dataObject) => dataObject.data));
   }
 }
