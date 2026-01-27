@@ -18,38 +18,75 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
+import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
+import { computed, inject } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { patchState, signalStore, withHooks, withMethods, withState } from "@ngrx/signals";
+/**
+ * Controls how the story detail should be displayed in the UI.
+ * - modalView: story opened in a dialog/modal
+ * - fullView: dedicated page/route view
+ * - sideView: story displayed in a side panel
+ */
+export type StoryDisplayMode = "modalView" | "fullView" | "sideView";
 
-export type StoryView = "kanban" | "fullView" | "side-view";
+type KanbanWrapperState = {
+  storyDisplayMode: StoryDisplayMode;
+};
+
+const DEFAULT_STORY_DISPLAY_MODE: StoryDisplayMode = "modalView";
+
+const STORY_DISPLAY_MODE_STORAGE_KEY = "storyModeView";
+
+const KANBAN_ROUTE_RE = /^\/workspace\/[^/]+\/project\/[^/]+\/kanban\/[^/]+$/;
+const STORY_ROUTE_RE = /^\/workspace\/[^/]+\/project\/[^/]+\/story\/[^/]+$/;
+
+function getLastSuccessfulUrl(router: Router): string | null {
+  const nav = router.lastSuccessfulNavigation();
+  if (!nav) return null;
+  return nav.finalUrl?.toString() ?? nav.extractedUrl.toString();
+}
+
+function matchesRoute(router: Router, routeRe: RegExp): boolean {
+  const url = getLastSuccessfulUrl(router);
+  return url ? routeRe.test(url) : false;
+}
 
 export const KanbanWrapperStore = signalStore(
   { providedIn: "root" },
-  withState({
-    storyView: "fullView" as StoryView,
-    firstOpened: true,
-    isOpenedSideview: false,
-    modalId: undefined as string | undefined,
+  withState<KanbanWrapperState>({
+    storyDisplayMode: DEFAULT_STORY_DISPLAY_MODE,
+  }),
+  withComputed((store) => {
+    const router = inject(Router);
+
+    // High-level route context (kanban vs story detail route)
+    const isKanbanView = computed(() => matchesRoute(router, KANBAN_ROUTE_RE));
+    const isStoryView = computed(() => matchesRoute(router, STORY_ROUTE_RE));
+    /**
+     * Factory that creates a computed "is open" flag for a given display mode.
+     * This avoids repeating: isStoryView() && storyDisplayMode() === "..."
+     */
+    const isStoryModeOpen = (mode: StoryDisplayMode) =>
+      computed(() => isStoryView() && store.storyDisplayMode() === mode);
+
+    // Derived UI flags used by components to decide what to render
+    const isFullViewOpen = isStoryModeOpen("fullView");
+    const isModalViewOpen = isStoryModeOpen("modalView");
+    const isSideViewOpen = isStoryModeOpen("sideView");
+
+    return { isKanbanView, isStoryView, isFullViewOpen, isModalViewOpen, isSideViewOpen };
   }),
   withMethods((store) => ({
-    setStoryView(storyView: StoryView) {
-      patchState(store, { storyView });
-      localStorage.setItem("storyView", storyView);
-    },
-    setFirstOpened(firstOpened: boolean) {
-      patchState(store, { firstOpened });
-    },
-    setSidenavStoryViewOpened(isOpenedSideview: boolean) {
-      patchState(store, { isOpenedSideview });
-    },
-    setModalId(modalId: string | undefined) {
-      patchState(store, { modalId });
+    setStoryDisplayMode(mode: StoryDisplayMode) {
+      patchState(store, { storyDisplayMode: mode });
+      localStorage.setItem(STORY_DISPLAY_MODE_STORAGE_KEY, mode);
     },
   })),
   withHooks({
     onInit(store) {
-      const storyView = localStorage.getItem("storyView") || "kanban";
-      store.setStoryView(storyView as StoryView);
+      const storedMode = localStorage.getItem(STORY_DISPLAY_MODE_STORAGE_KEY) as StoryDisplayMode | null;
+      store.setStoryDisplayMode(storedMode ?? DEFAULT_STORY_DISPLAY_MODE);
     },
   }),
 );

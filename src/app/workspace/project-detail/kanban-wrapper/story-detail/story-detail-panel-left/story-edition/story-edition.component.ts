@@ -28,7 +28,6 @@ import {
   input,
   linkedSignal,
   model,
-  signal,
   viewChild,
 } from "@angular/core";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
@@ -39,8 +38,7 @@ import { MatFormField, MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryDetail } from "@tenzu/repository/story";
-import { FormField, form, readonly, submit } from "@angular/forms/signals";
-import * as Y from "yjs";
+import { form, FormField, readonly, submit } from "@angular/forms/signals";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { AuthService } from "@tenzu/repository/auth";
 import { StoryDetailFacade } from "../../story-detail.facade";
@@ -49,15 +47,10 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { HttpClient } from "@angular/common/http";
-import { initWsDocProvider } from "./utils";
 import { User } from "@tenzu/repository/user";
-import { COLORS } from "@tenzu/pipes/color-to-key.pipe";
-
-type OnlineUser = {
-  clientId: string;
-  name: string;
-  color: string;
-};
+import { ColorToKeyPipe } from "@tenzu/pipes/color-to-key.pipe";
+import { AvatarComponent } from "@tenzu/shared/components/avatar";
+import { WsDocProvider } from "@tenzu/utils/doc-provider";
 
 @Component({
   selector: "app-story-edition",
@@ -70,29 +63,30 @@ type OnlineUser = {
     MatInput,
     TranslocoDirective,
     FormField,
+    AvatarComponent,
+    ColorToKeyPipe,
   ],
   template: `
     @let _user = user();
     @let _story = story();
-    <!--    @if (onlineUsers().length > 1) {-->
-    <!--      <div class="flex flex-row gap-2 items-center">-->
-    <!--        @for (user of onlineUsers(); track user.clientId) {-->
-    <!--          <app-avatar [name]="user.name" [color]="user.color | colorToKey" [rounded]="true" />-->
-    <!--        }-->
-    <!--      </div>-->
-    <!--    }-->
+
+    <div class="flex flex-row gap-2 mb-2 min-h-8 justify-end">
+      @if (onlineUsers().length > 1) {
+        @for (user of onlineUsers(); track user.id) {
+          <app-avatar [name]="user.name" [color]="user.color | colorToKey" [rounded]="true" />
+        }
+      }
+    </div>
 
     <form *transloco="let t" class="flex flex-col h-full gap-4">
       <mat-form-field appearance="fill" class="title-field">
         <input [attr.aria-label]="t('workflow.detail_story.title')" matInput [formField]="storyForm.title" />
       </mat-form-field>
-
-      @if (_user.fullName) {
+      @if (_user.fullName && wsDocProvider().connected()) {
         <app-editor-collaboration-block
           class="overflow-auto"
-          [wsProvider]="wsProvider()"
+          [wsDocProvider]="wsDocProvider()"
           [uploadFile]="uploadFile(_story)"
-          [doc]="doc()"
           [user]="_user"
           [(touched)]="touched"
           (validate)="save()"
@@ -124,7 +118,7 @@ export class StoryEditionComponent {
   touched = model(false);
   user = input.required<User>();
   storyModel = linkedSignal(() => ({ title: this.story().title }));
-  onlineUsers = signal<OnlineUser[]>([]);
+
   notificationService = inject(NotificationService);
   configAppService = inject(ConfigAppService);
   authService = inject(AuthService);
@@ -140,51 +134,24 @@ export class StoryEditionComponent {
     readonly(schemaPath.title, () => !this.hasModifyPermission());
   });
 
-  doc = computed(() => new Y.Doc());
-  wsProvider = computed(() => {
-    return initWsDocProvider({
+  wsDocProvider = computed(() => {
+    return new WsDocProvider({
       serverUrl: `${this.configAppService.wsUrl()}/collaboration/${this.story().projectId}/`,
       roomName: `${this.story().ref}?token=${this.authService.getToken().access}`,
-      doc: this.doc(),
     });
   });
+  onlineUsers = computed(() => this.wsDocProvider().onlineUsers());
 
   constructor() {
-    effect(() => {
-      const user = this.user();
-      const wsProvider = this.wsProvider();
-
-      wsProvider.awareness.setLocalStateField("user", {
-        clientId: wsProvider.awareness.clientID,
-        name: user.fullName,
-        color: COLORS[user.color],
+    effect((onCleanup) => {
+      onCleanup(() => {
+        this.wsDocProvider().cleanUp();
       });
-      const handleAwarenessUpdate = () => {
-        const states = wsProvider.awareness.getStates();
-        const users = [] as OnlineUser[];
-
-        states.forEach((state, clientId) => {
-          if (state["user"]) {
-            const user = { ...state["user"], clientId } as OnlineUser;
-            users.push(user);
-          }
-        });
-
-        this.onlineUsers.set(users);
-      };
-      wsProvider.awareness.on("change", handleAwarenessUpdate);
     });
   }
   async save(event?: Event) {
     event?.preventDefault();
-    const wsProvider = this.wsProvider();
-    if (wsProvider.wsconnected) {
-      wsProvider.ws?.send(
-        JSON.stringify({
-          command: "save_now",
-        }),
-      );
-    }
+    this.wsDocProvider().save();
     await submit(this.storyForm, async (form) => {
       const data = {
         ...form().value(),

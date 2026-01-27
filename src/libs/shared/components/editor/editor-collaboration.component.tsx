@@ -19,14 +19,13 @@ import { BlockNoteEditor, createCodeBlockSpec } from "@blocknote/core";
 import { codeBlockOptions } from "@blocknote/code-block";
 
 import { BlockNoteView } from "@blocknote/mantine";
-import { WebsocketProvider } from "y-websocket";
-import * as Y from "yjs";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 import { User } from "@tenzu/repository/user";
 import { COLORS } from "@tenzu/pipes/color-to-key.pipe";
 import { resolveFileUrl } from "@tenzu/shared/components/editor/utils";
+import { WsDocProvider } from "@tenzu/utils/doc-provider";
 
 @Component({
   selector: "app-editor-collaboration-block",
@@ -53,8 +52,7 @@ export class EditorCollaborationComponent
   readonly = input(false);
   touched = model(false);
   resolveFileUrl = resolveFileUrl();
-  wsProvider = input.required<WebsocketProvider>();
-  doc = input.required<Y.Doc>();
+  wsDocProvider = input.required<WsDocProvider>();
   user = input.required<User>();
   uploadFile = input.required<
     | undefined
@@ -67,13 +65,18 @@ export class EditorCollaborationComponent
   validate = output();
   private root?: Root;
   private editor?: BlockNoteEditor;
+  already_done = false;
   constructor() {
     const codeBlock = createCodeBlockSpec(codeBlockOptions);
     const focus = this.focus();
-    effect(() => {
+    effect((onCleanup) => {
+      if (this.already_done) return;
+      this.already_done = true;
       const user = this.user();
-      const wsProvider = this.wsProvider();
-      const doc = this.doc();
+      const wsDocProvider = this.wsDocProvider();
+      const wsProvider = wsDocProvider.provider;
+      if (!wsDocProvider.connected()) return;
+      const doc = wsProvider.doc;
       const fragment = doc.getXmlFragment("document-store");
 
       doc.on("update", (update, origin) => {
@@ -83,7 +86,7 @@ export class EditorCollaborationComponent
           this.touched.set(true);
         }
       });
-      if (!this.editor) {
+      if (!this.editor && wsDocProvider.connected()) {
         this.editor = BlockNoteEditor.create({
           codeBlock,
           resolveFileUrl: this.resolveFileUrl,
@@ -95,6 +98,7 @@ export class EditorCollaborationComponent
             user: {
               name: user.fullName,
               color: COLORS[user.color],
+              id: user.id,
             },
           },
         });

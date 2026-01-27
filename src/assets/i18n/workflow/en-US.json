@@ -1,7 +1,7 @@
 {
   "change_mode_view": {
     "aria_label": "Change view mode",
-    "kanban": "Kanban",
+    "modal_view": "Modal view",
     "full_view": "Full view",
     "side_view": "Side view"
   },
@@ -98,7 +98,10 @@
       "date": "Date",
       "action": "Action",
       "exceed_size": "{{var}} exceed the size of {{maxSize}}",
-      "deleted_attachment": "{{var}} has been deleted"
+      "deleted_attachment": "{{var}} has been deleted",
+      "preview": "Preview",
+      "download": "Download",
+      "delete": "Delete"
     },
     "comments": {
       "count": "{ totalComments, plural, =0 {# Comment} one {# Comment} other {# Comments} }",
