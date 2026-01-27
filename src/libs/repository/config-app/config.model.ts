@@ -21,6 +21,11 @@
 import { z } from "zod/v4";
 import { Injectable } from "@angular/core";
 
+const defaultAvatarConfig = {
+  maxUploadFileSize: 500 * 1024, //500 KB
+  allowedFormats: [".jpg", ".png", ".gif", ".webp"],
+};
+
 export const ConfigSchema = z.object({
   env: z.enum(["dev", "staging", "demo", "production"]),
   debug: z.boolean().optional().default(false),
@@ -32,6 +37,21 @@ export const ConfigSchema = z.object({
     suffixDomain: z.string(),
   }),
   maxUploadFileSize: z.union([z.uint32(), z.null()]).default(100 * 1024 * 1024), //100 MB
+  avatars: z
+    .object({
+      maxUploadFileSize: z.union([z.uint32(), z.null()]).default(defaultAvatarConfig.maxUploadFileSize),
+      allowedFormats: z
+        .array(
+          z
+            .string()
+            .toLowerCase()
+            .refine((val) => val.startsWith("."), {
+              message: 'Must be a valid image format starting with "."',
+            }),
+        )
+        .default(defaultAvatarConfig.allowedFormats),
+    })
+    .default(defaultAvatarConfig),
   legal: z
     .union([
       z.object({

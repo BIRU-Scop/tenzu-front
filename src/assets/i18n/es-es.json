@@ -164,6 +164,11 @@
       }
     }
   },
+  "avatar": {
+    "max_size": "El tamaño de la imagen no debe superar {{formats}}",
+    "allowed_format": "Formatos permitidos: {{formats}}",
+    "exceed_size": "{{var}} supera el tamaño de {{maxSize}}"
+  },
   "commons": {
     "project": "Proyecto",
     "projects": "Proyectos",
