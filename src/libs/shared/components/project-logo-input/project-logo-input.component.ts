@@ -29,28 +29,24 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { ButtonEditComponent } from "@tenzu/shared/components/ui/button/button-edit.component";
 
 @Component({
   selector: "app-project-logo-input",
-  imports: [AvatarComponent, ButtonComponent, ButtonDeleteComponent, TranslocoDirective, FileSizePipe],
+  imports: [
+    AvatarComponent,
+    ButtonComponent,
+    ButtonDeleteComponent,
+    TranslocoDirective,
+    FileSizePipe,
+    ButtonEditComponent,
+  ],
   template: `
     <ng-container *transloco="let t">
       @let _projectModel = projectModel();
       @let avatar = projectAvatarResource.value();
       @let maxUploadFileSize = configAppService.config().avatars.maxUploadFileSize;
-      <div class="relative">
-        <app-avatar size="xl" [name]="_projectModel.name" [color]="_projectModel.color" [imageData]="avatar">
-        </app-avatar>
-        @if (avatar) {
-          <app-button-delete
-            type="button"
-            class="absolute top-0 end-0 z-20"
-            [translocoKey]="'project.logo.delete'"
-            [iconOnly]="true"
-            (click)="clearInput(fileUpload)"
-          />
-        }
-      </div>
+      <app-avatar size="xl" [name]="_projectModel.name" [color]="_projectModel.color" [imageData]="avatar" />
       <input
         type="file"
         [accept]="allowedFormats()"
@@ -59,13 +55,32 @@ import { TranslocoDirective } from "@jsverse/transloco";
         #fileUpload
       />
       <div class="flex flex-col justify-stretch gap-2">
-        <app-button
-          level="primary"
-          translocoKey="project.logo.upload"
-          type="button"
-          iconName="upload"
-          (click)="resetInput(fileUpload); fileUpload.click()"
-        />
+        @if (avatar) {
+          <div class="flex flex-row gap-2">
+            <app-button-edit
+              type="button"
+              class=""
+              [translocoKey]="'project.logo.upload'"
+              [iconOnly]="true"
+              (click)="resetInput(fileUpload); fileUpload.click()"
+            />
+            <app-button-delete
+              type="button"
+              class=""
+              [translocoKey]="'project.logo.delete'"
+              [iconOnly]="true"
+              (click)="clearInput(fileUpload)"
+            />
+          </div>
+        } @else {
+          <app-button
+            level="primary"
+            translocoKey="project.logo.upload"
+            type="button"
+            iconName="upload"
+            (click)="resetInput(fileUpload); fileUpload.click()"
+          />
+        }
         <p class="mat-body-small text-on-surface-variant">
           <span>{{ t("avatar.allowed_format", { formats: allowedFormats() }) }}</span>
           @if (maxUploadFileSize) {
@@ -99,7 +114,7 @@ export class ProjectLogoInputComponent {
         return await this.fileDownloaderService.convertFileToBase64(params.logoFile);
       }
       if (params.logoUrl && params.logoFile !== "") {
-        return await this.fileDownloaderService.convertUrlToBase64(params.logoUrl, { format: "original" });
+        return await this.fileDownloaderService.convertUrlToBase64(params.logoUrl, { format: "large" });
       }
       return null;
     },
