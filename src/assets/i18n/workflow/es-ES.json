@@ -1,7 +1,7 @@
 {
   "change_mode_view": {
     "aria_label": "Cambiar modo de vista",
-    "kanban": "Kanban",
+    "modal_view": "Vista modal",
     "full_view": "Vista completa",
     "side_view": "Vista lateral"
   },

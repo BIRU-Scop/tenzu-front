@@ -135,11 +135,12 @@ export class StoryDetailAttachmentsComponent {
   constructor() {
     effect(() => {
       this.storyAttachmentRepositoryService.resetAll();
+      const storyDetail = this.storyDetail();
       untracked(() =>
         this.storyAttachmentRepositoryService
           .listRequest({
-            projectId: this.storyDetail().projectId,
-            ref: this.storyDetail().ref,
+            projectId: storyDetail.projectId,
+            ref: storyDetail.ref,
           })
           .then(),
       ).then();

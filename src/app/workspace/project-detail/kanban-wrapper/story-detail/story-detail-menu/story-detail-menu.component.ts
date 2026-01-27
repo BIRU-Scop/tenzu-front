@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
@@ -32,10 +32,8 @@ import { StoryDetailFacade } from "../story-detail.facade";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { StoryView } from "../../kanban-wrapper.store";
+import { StoryDisplayMode } from "../../kanban-wrapper.store";
 import { KanbanWrapperService } from "../../kanban-wrapper.service";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { MatDialog } from "@angular/material/dialog";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 
 @Component({
@@ -117,13 +115,13 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
             [attr.aria-label]="t('workflow.change_mode_view.aria_label')"
             [matTooltip]="t('workflow.change_mode_view.aria_label')"
           >
-            <mat-icon>{{ typeStoryView[storyViewModel()] }}</mat-icon>
+            <mat-icon>{{ storyViewIconMap[kanbanWrapperService.storyDisplayMode()] }}</mat-icon>
           </button>
 
           <mat-menu #storyViewMenu="matMenu">
-            <button mat-menu-item type="button" (click)="setStoryView('kanban')">
+            <button mat-menu-item type="button" (click)="setStoryView('modalView')">
               <mat-icon>capture</mat-icon>
-              <span>{{ t("workflow.change_mode_view.kanban") }}</span>
+              <span>{{ t("workflow.change_mode_view.modal_view") }}</span>
             </button>
 
             <button mat-menu-item type="button" (click)="setStoryView('fullView')">
@@ -131,7 +129,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
               <span>{{ t("workflow.change_mode_view.full_view") }}</span>
             </button>
 
-            <button mat-menu-item type="button" (click)="setStoryView('side-view')">
+            <button mat-menu-item type="button" (click)="setStoryView('sideView')">
               <mat-icon>view_sidebar</mat-icon>
               <span>{{ t("workflow.change_mode_view.side_view") }}</span>
             </button>
@@ -149,7 +147,11 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailMenuComponent {
-  typeStoryView = { kanban: "capture", fullView: "fullscreen", "side-view": "view_sidebar" };
+  storyViewIconMap: Record<StoryDisplayMode, string> = {
+    modalView: "capture",
+    fullView: "fullscreen",
+    sideView: "view_sidebar",
+  };
 
   relativeDialog = inject(RelativeDialogService);
   notificationService = inject(NotificationService);
@@ -157,9 +159,6 @@ export class StoryDetailMenuComponent {
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
   kanbanWrapperService = inject(KanbanWrapperService);
-  matDialogService = inject(MatDialog);
-
-  storyViewModel = signal<StoryView>("kanban");
 
   canBeClosed = input(false);
   hasModifyPermission = input(false);
@@ -167,18 +166,8 @@ export class StoryDetailMenuComponent {
 
   closed = output<void>();
 
-  constructor() {
-    toObservable(this.kanbanWrapperService.storyView).subscribe((storyView) => {
-      this.storyViewModel.set(storyView);
-      const modalId = this.kanbanWrapperService.modalId();
-      if (storyView !== "kanban" && modalId) {
-        this.matDialogService.getDialogById(modalId)?.close();
-      }
-    });
-  }
-  protected setStoryView(storyView: StoryView) {
-    this.storyViewModel.set(storyView);
-    this.kanbanWrapperService.setStoryView(storyView);
+  protected setStoryView(storyView: StoryDisplayMode) {
+    this.kanbanWrapperService.setStoryDisplayMode(storyView);
   }
   openChooseWorkflowDialog(event: MouseEvent): void {
     const story = this.story();

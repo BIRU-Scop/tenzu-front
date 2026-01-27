@@ -1,7 +1,7 @@
 {
   "change_mode_view": {
     "aria_label": "Changer le mode d'affichage",
-    "kanban": "Kanban",
+    "modal_view": "Vue modale",
     "full_view": "Plein écran",
     "side_view": "Vue latérale"
   },

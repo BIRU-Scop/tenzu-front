@@ -20,39 +20,100 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { KanbanWrapperStore, StoryView } from "./kanban-wrapper.store";
-import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
+import { KanbanWrapperStore, StoryDisplayMode } from "./kanban-wrapper.store";
+import { StoryRepositoryService } from "@tenzu/repository/story";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { HttpErrorResponse } from "@angular/common/http";
+import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
 
 @Injectable({
   providedIn: "root",
 })
 export class KanbanWrapperService {
   private kanbanWrapperStore = inject(KanbanWrapperStore);
+  storyDisplayMode = this.kanbanWrapperStore.storyDisplayMode;
+  workflowRepositoryService = inject(WorkflowRepositoryService);
   storyRepositoryService = inject(StoryRepositoryService);
-  storyView = this.kanbanWrapperStore.storyView;
-  firstOpened = this.kanbanWrapperStore.firstOpened;
-  isOpenedSideview = this.kanbanWrapperStore.isOpenedSideview;
-  modalId = this.kanbanWrapperStore.modalId;
-  setStoryView(storyView: StoryView) {
-    this.kanbanWrapperStore.setStoryView(storyView);
-  }
-  setFirstOpened(firstOpened: boolean) {
-    this.kanbanWrapperStore.setFirstOpened(firstOpened);
-  }
-  setModalId(modalId?: string) {
-    this.kanbanWrapperStore.setModalId(modalId);
+  storyCommentRepositoryService = inject(StoryCommentRepositoryService);
+
+  isKanbanView = this.kanbanWrapperStore.isKanbanView;
+  isFullViewOpen = this.kanbanWrapperStore.isFullViewOpen;
+  isModalViewOpen = this.kanbanWrapperStore.isModalViewOpen;
+  isSideViewOpen = this.kanbanWrapperStore.isSideViewOpen;
+
+  setStoryDisplayMode(storyView: StoryDisplayMode) {
+    this.kanbanWrapperStore.setStoryDisplayMode(storyView);
   }
 
-  setOpenedSideview(storyDetail?: StoryDetail) {
-    const isOpenedSideview = this.kanbanWrapperStore.isOpenedSideview();
-    if (storyDetail && !isOpenedSideview) {
-      this.openOpenedSideview();
+  async loadStoryDetail({
+    projectId,
+    storyRef,
+    isFullViewOpen,
+  }: {
+    projectId: string;
+    storyRef: number;
+    isFullViewOpen: boolean;
+  }) {
+    this.storyRepositoryService.isLoading.set(true);
+    try {
+      const storyDetail = await this.storyRepositoryService.getRequest({ projectId, ref: storyRef });
+      const workflow = await this.workflowRepositoryService.getRequest({ workflowId: storyDetail.workflowId });
+      if (!isFullViewOpen) {
+        await this.storyRepositoryService.listRequest(
+          {
+            projectId: projectId,
+            workflowId: workflow.id,
+          },
+          { offset: 0, limit: 100 },
+        );
+      }
+    } finally {
+      this.storyRepositoryService.isLoading.set(false);
     }
   }
-  closeOpenedSideview() {
-    this.kanbanWrapperStore.setSidenavStoryViewOpened(false);
+  async loadStoryComments({ projectId, storyRef }: { projectId: string; storyRef: number }) {
+    this.storyCommentRepositoryService.resetAll();
+    this.storyCommentRepositoryService
+      .listRequest({
+        projectId: projectId,
+        ref: storyRef,
+      })
+      .catch((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 403) {
+          return;
+        }
+        throw error;
+      });
   }
-  openOpenedSideview() {
-    this.kanbanWrapperStore.setSidenavStoryViewOpened(true);
+  async loadWorkflowAndStories({ projectId, workflowSLug }: { projectId: string; workflowSLug: string }) {
+    const oldWorkflowDetail = this.workflowRepositoryService.entityDetail();
+    if (
+      projectId &&
+      workflowSLug &&
+      (oldWorkflowDetail?.projectId != projectId || oldWorkflowDetail?.slug != workflowSLug)
+    ) {
+      this.storyRepositoryService.isLoading.set(true);
+      this.workflowRepositoryService.resetEntityDetail();
+      this.storyRepositoryService.resetAll();
+      try {
+        const workflow = await this.workflowRepositoryService.getBySlugRequest({
+          projectId: projectId,
+          slug: workflowSLug,
+        });
+
+        if (workflow) {
+          await this.storyRepositoryService.listRequest(
+            {
+              projectId: workflow.projectId,
+              workflowId: workflow.id,
+            },
+            { offset: 0, limit: 100 },
+          );
+          this.storyRepositoryService.isLoading.set(false);
+        }
+      } finally {
+        this.storyRepositoryService.isLoading.set(false);
+      }
+    }
   }
 }
