@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,7 +29,6 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatIcon } from "@angular/material/icon";
-import { MatButton } from "@angular/material/button";
 import { MemberPermission } from "@tenzu/repository/membership";
 
 @Component({
@@ -45,7 +44,6 @@ import { MemberPermission } from "@tenzu/repository/membership";
     MatTabNavPanel,
     HasPermissionDirective,
     MatIcon,
-    MatButton,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -53,19 +51,6 @@ import { MemberPermission } from "@tenzu/repository/membership";
       <div class="flex flex-col gap-y-8" *transloco="let t">
         <div class="flex flex-row items-center">
           <h1 class="mat-headline-medium !mb-0">{{ t("project.settings.title") }}</h1>
-          <div class="mx-auto"></div>
-          <a
-            *appHasPermission="{
-              actualEntity: project,
-              requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
-            }"
-            [matButton]="'filled'"
-            [routerLink]="['create-role']"
-            class="tertiary-button flex"
-          >
-            <mat-icon>add</mat-icon>
-            {{ t("project.settings.roles.create_role") }}</a
-          >
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {
