@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -35,6 +35,9 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
 import { ProjectDetail } from "@tenzu/repository/project";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-edit-role",
@@ -46,6 +49,9 @@ import { ProjectDetail } from "@tenzu/repository/project";
     PermissionOrRedirectDirective,
     RouterLink,
     DeleteWarningButtonComponent,
+    ButtonSaveComponent,
+    FormFooterComponent,
+    MatIcon,
   ],
   template: `
     @let _currentRole = currentRole();
@@ -60,30 +66,23 @@ import { ProjectDetail } from "@tenzu/repository/project";
           }"
         >
           <form
-            class="flex flex-col gap-y-4"
+            class="flex flex-col gap-y-2"
             [formGroup]="form"
             (submit)="onSave({ values: form.getRawValue(), currentRole: _currentRole })"
           >
             <app-form-role [form]="form" />
-            <div class="flex gap-x-4 mt-2">
-              @if (_currentRole.editable) {
-                <a mat-flat-button routerLink="../../list-roles" class="secondary-button">
-                  {{ t("commons.cancel") }}
+            @if (_currentRole.editable) {
+              <app-form-footer class="!justify-start">
+                <a appFormFooterSecondaryAction mat-flat-button routerLink="../../list-roles" class="secondary-button">
+                  <mat-icon>cancel</mat-icon> {{ t("commons.cancel") }}
                 </a>
-                <button
-                  mat-flat-button
-                  [disabled]="form.pristine || form.invalid"
-                  type="submit"
-                  class="tertiary-button"
-                >
-                  {{ t("project.buttons.save") }}
-                </button>
-              } @else {
-                <a mat-flat-button routerLink="../../list-roles" class="secondary-button">
-                  {{ t("commons.close") }}
-                </a>
-              }
-            </div>
+                <app-button-save translocoKey="project.buttons.save" [disabled]="form.pristine || form.invalid" />
+              </app-form-footer>
+            } @else {
+              <a mat-flat-button routerLink="../../list-roles" class="secondary-button w-min">
+                <mat-icon>close</mat-icon> {{ t("commons.close") }}
+              </a>
+            }
           </form>
           @if (_currentRole.editable) {
             <app-delete-warning-button

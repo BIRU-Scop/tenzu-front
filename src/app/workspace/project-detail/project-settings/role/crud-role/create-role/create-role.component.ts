@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,7 +30,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 
 @Component({
   selector: "app-create-role",
@@ -41,7 +41,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     ReactiveFormsModule,
     PermissionOrRedirectDirective,
     FormFooterComponent,
-    ButtonAddComponent,
+    ButtonSaveComponent,
   ],
   template: ` @let projectDetail = currentProjectDetail();
     @if (projectDetail) {
@@ -56,11 +56,14 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
           <form
             [formGroup]="form"
             (submit)="onSave({ values: form.getRawValue(), projectId: projectDetail.id })"
-            class="flex flex-col w-fit"
+            class="flex flex-col gap-y-2"
           >
             <app-form-role [form]="form" />
-            <app-form-footer class="mt-2">
-              <app-button-add translocoKey="project.settings.roles.create_role" />
+            <app-form-footer class="!justify-start">
+              <app-button-save
+                translocoKey="project.settings.roles.create_role"
+                [disabled]="form.pristine || form.invalid"
+              />
             </app-form-footer>
           </form>
         </ng-container>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -32,17 +32,16 @@ export class FormFooterSecondaryActionDirective {}
   selector: "app-form-footer",
   imports: [BackDirective, ButtonCancelComponent],
   template: `
-    <div class="flex gap-4 justify-end">
-      @if (secondaryAction()) {
-        <ng-content select="app-form-footer-secondary-action, [appFormFooterSecondaryAction]">
-          <app-button-cancel appBack />
-        </ng-content>
-      }
-      <ng-content></ng-content>
-    </div>
+    @if (secondaryAction()) {
+      <ng-content select="app-form-footer-secondary-action, [appFormFooterSecondaryAction]">
+        <app-button-cancel appBack />
+      </ng-content>
+    }
+    <ng-content></ng-content>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "flex gap-4 justify-end" },
 })
 export class FormFooterComponent {
   secondaryAction = input<boolean>(true);

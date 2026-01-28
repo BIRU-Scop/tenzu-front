@@ -15,7 +15,7 @@ include:
       build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
 
   # deploy demo
-  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.16.0
+  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.16.1
     inputs:
       stage: deploy-demo
       prefix: demo-
@@ -28,7 +28,7 @@ include:
           when: never
         - if: '$CI_COMMIT_BRANCH == "staging"'
   # mirror
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.16.0
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.16.1
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       fetch-args: "origin --no-tags"
@@ -36,7 +36,7 @@ include:
         - if: '$CI_COMMIT_MESSAGE =~ /^chore\(release\).*/'
           when: never
         - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"'
-  - component: $CI_SERVER_FQDN/biru/component/push@v1.16.0
+  - component: $CI_SERVER_FQDN/biru/component/push@v1.16.1
     inputs:
       repo: github.com/BIRU-Scop/tenzu-front.git
       job-name: mirror-tags
@@ -45,7 +45,7 @@ include:
       rules:
         - if: $CI_COMMIT_TAG
   # test
-  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.16.0
+  - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.16.1
     inputs:
       stage: test
       rules:
