@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "src/libs/repository/story-attachment";
 import { StoryDetail } from "src/libs/repository/story";
 import { ProjectDetail } from "src/libs/repository/project";
@@ -32,6 +32,7 @@ import { TranslocoDatePipe } from "@jsverse/transloco-locale";
 import { ConfigAppService } from "src/libs/repository/config-app/config-app.service";
 import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 @Component({
   selector: "app-story-detail-attachments",
@@ -48,6 +49,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
     MatMenu,
     MatMenuTrigger,
     MatMenuItem,
+    ConfirmDirective,
   ],
   template: `
     @let story = storyDetail();
@@ -112,7 +114,21 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
                           <span>{{ t("attachments.download") }}</span>
                         </button>
                         @if (_hasModifyPermission) {
-                          <button mat-menu-item type="button" (click)="deleteAttachment(storyAttachment)">
+                          <button
+                            mat-menu-item
+                            appConfirm
+                            type="button"
+                            (popupConfirm)="deleteAttachment(storyAttachment)"
+                            [data]="{
+                              message: translocoService.translate(
+                                'workflow.detail_story.attachments.confirm_delete_attachment',
+                                {
+                                  fileName: storyAttachment.name,
+                                }
+                              ),
+                              deleteAction: true,
+                            }"
+                          >
                             <mat-icon>delete</mat-icon>
                             <span>{{ t("attachments.delete") }}</span>
                           </button>
@@ -138,7 +154,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 export class StoryDetailAttachmentsComponent {
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   notificationService = inject(NotificationService);
-
+  translocoService = inject(TranslocoService);
   readonly configAppService = inject(ConfigAppService);
   readonly fileSizePipe = inject(FileSizePipe);
   storyDetail = input.required<StoryDetail>();
