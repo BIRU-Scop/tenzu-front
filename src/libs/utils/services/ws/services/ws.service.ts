@@ -19,18 +19,24 @@
  *
  */
 
-/**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) 2023-present Kaleidos INC
- */
-
 import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext, signal } from "@angular/core";
 
-import { BehaviorSubject, Observable, of, repeat, retry, share, switchMap, throwError } from "rxjs";
-import { catchError, filter } from "rxjs/operators";
+import {
+  BehaviorSubject,
+  defer,
+  EMPTY,
+  Observable,
+  of,
+  repeat,
+  retry,
+  share,
+  Subject,
+  switchMap,
+  take,
+  tap,
+  throwError,
+} from "rxjs";
+import { catchError, filter, map } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
@@ -76,38 +82,49 @@ export class WsService {
   private subject: WebSocketSubject<any> | undefined = undefined;
   private ws$: Observable<WSResponse> | undefined = undefined;
 
+  private opened$ = new Subject<void>();
+
+  private signinRecoveryOngoing = false;
+
   async init() {
     const url = `${this.configAppService.wsUrl()}/events/`;
     // We want to keep those log for now
     console.log("init WS");
-    this.subject = webSocket({
-      url: url,
-      openObserver: {
-        next: () => {
-          debug("WS", "connected");
-          const subcriptions = this.channelSubscribed();
-          subcriptions.channelProjects.map((channel) => {
-            const projectId = channel.split(".")[1];
-            this.command({ command: "subscribe_to_project_events", project: projectId });
-          });
-          subcriptions.channelWorkspaces.map((channel) => {
-            const workspaceId = channel.split(".")[1];
-            this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
-          });
+    this.opened$
+      .pipe(
+        switchMap(() => this.signinFlow()),
+        catchError((e) => {
+          // We log, but we don't break the reconnection
+          debug("WS", "signin failed", e);
+          return of(void 0);
+        }),
+      )
+      .subscribe();
+
+    const createSocket$ = defer(() => {
+      this.subject = webSocket({
+        url,
+        openObserver: {
+          next: () => {
+            debug("WS", "connected");
+            this.opened$.next();
+          },
         },
-      },
-      closeObserver: {
-        next: () => {
-          debug("WS", "disconnected");
+        closeObserver: {
+          next: () => {
+            debug("WS", "disconnected");
+            this.loggedSubject.next(false);
+          },
         },
-      },
+      });
+
+      return this.subject as Observable<WSResponse>;
     });
 
-    this.ws$ = this.subject.pipe(
+    this.ws$ = createSocket$.pipe(
       catchError((e) => {
-        debug("WS", "the server are reload we loose the connexion and we need to login again", e);
+        debug("WS", "socket error", e);
         this.loggedSubject.next(false);
-        this.command({ command: "signin", token: localStorage.getItem("token") || "" });
         return throwError(() => e);
       }),
       retry({ delay: RETRY_TIME, resetOnSuccess: true }),
@@ -118,6 +135,51 @@ export class WsService {
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
   }
 
+  private signinFlow(): Observable<void> {
+    // reset when new connection
+    this.loggedSubject.next(false);
+
+    return runInInjectionContext(this.environmentInjector, () => {
+      const authService = inject(AuthService);
+
+      return authService.isLoginOk().pipe(
+        switchMap((ok) => {
+          if (!ok) {
+            // No valid tokens -> do not attempt WS signin
+            return EMPTY;
+          }
+          const token = authService.getToken().access || "";
+          if (!token) {
+            return EMPTY;
+          }
+
+          this.command({ command: "signin", token });
+
+          // Wait for success acknowledgment (loggedSubject becomes true in manageSubscription)
+          return this.logged$.pipe(
+            filter(Boolean),
+            take(1),
+            tap(() => this.restoreSubscriptions()),
+            map(() => void 0),
+          );
+        }),
+      );
+    });
+  }
+
+  private restoreSubscriptions() {
+    const subcriptions = this.channelSubscribed();
+
+    subcriptions.channelProjects.forEach((channel) => {
+      const projectId = channel.split(".")[1];
+      this.command({ command: "subscribe_to_project_events", project: projectId });
+    });
+
+    subcriptions.channelWorkspaces.forEach((channel) => {
+      const workspaceId = channel.split(".")[1];
+      this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
+    });
+  }
   async dispatch(message: WSResponse) {
     switch (message.type) {
       case "action": {
@@ -157,6 +219,12 @@ export class WsService {
         if (message.action.command === "signout" && message.content.detail === "not-signed-in") {
           break;
         }
+        if (message.action.command === "signin") {
+          this.loggedSubject.next(false);
+          this.recoverSignin();
+          break;
+        }
+
         console.error(`[WS] the command ${message.action.command} received a error response`, message);
         break;
       }
@@ -164,6 +232,45 @@ export class WsService {
         debug("WS", "this command is unknown", message);
       }
     }
+  }
+
+  private recoverSignin() {
+    if (this.signinRecoveryOngoing) {
+      return;
+    }
+
+    this.signinRecoveryOngoing = true;
+
+    runInInjectionContext(this.environmentInjector, () => {
+      const authService = inject(AuthService);
+
+      const refreshToken = authService.getToken().refresh;
+      if (!refreshToken) {
+        this.signinRecoveryOngoing = false;
+        return;
+      }
+
+      authService
+        .refresh({ refresh: refreshToken })
+        .pipe(
+          take(1),
+          tap(() => {
+            const newAccess = authService.getToken().access || "";
+            if (newAccess) {
+              this.command({ command: "signin", token: newAccess });
+            }
+          }),
+          catchError((e) => {
+            // If refresh fails, let AuthService handle the global state (autoLogout) / navigation.
+            debug("WS", "refresh failed during signin recovery", e);
+            return of(null);
+          }),
+          tap(() => {
+            this.signinRecoveryOngoing = false;
+          }),
+        )
+        .subscribe();
+    });
   }
 
   async manageSubscription(message: WSResponseActionSuccess) {

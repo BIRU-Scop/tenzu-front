@@ -48,7 +48,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
     UserCardComponent,
     TranslocoDirective,
   ],
-  host: { class: "flex flex-col gap-4" },
+  host: { class: "flex flex-col gap-4 flex-1" },
   template: `
     @let _project = project();
     @let _story = story();

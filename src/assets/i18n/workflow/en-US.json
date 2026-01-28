@@ -101,7 +101,8 @@
       "deleted_attachment": "{{var}} has been deleted",
       "preview": "Preview",
       "download": "Download",
-      "delete": "Delete"
+      "delete": "Delete",
+      "confirm_delete_attachment": "You are deleting {{fileName}}. Do you want to continue?"
     },
     "comments": {
       "count": "{ totalComments, plural, =0 {# Comment} one {# Comment} other {# Comments} }",
