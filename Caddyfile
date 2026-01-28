@@ -1,9 +1,13 @@
 :80 {
-  header {
-    Cache-Control max-age=31536000
-  }
-  try_files {path} /
   root * /usr/share/caddy
   encode zstd gzip
+  @index path / /index.html
+  header @index Cache-Control "no-cache, no-store, must-revalidate"
+
+  @other not path / /index.html
+
+  header @other Cache-Control "public, max-age=31536000, immutable"
+
+  try_files {path} /
   file_server
 }
