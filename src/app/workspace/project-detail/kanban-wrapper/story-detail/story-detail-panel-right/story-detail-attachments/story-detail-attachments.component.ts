@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
@@ -158,20 +158,25 @@ export class StoryDetailAttachmentsComponent {
   readonly configAppService = inject(ConfigAppService);
   readonly fileSizePipe = inject(FileSizePipe);
   storyDetail = input.required<StoryDetail>();
+  storyDetailRef = computed(() => this.storyDetail().ref);
   projectDetail = input.required<ProjectDetail>();
+
   hasModifyPermission = input(false);
   constructor() {
     effect(() => {
-      this.storyAttachmentRepositoryService.resetAll();
-      const storyDetail = this.storyDetail();
-      untracked(() =>
-        this.storyAttachmentRepositoryService
-          .listRequest({
-            projectId: storyDetail.projectId,
-            ref: storyDetail.ref,
-          })
-          .then(),
-      ).then();
+      const storyDetailRef = this.storyDetailRef();
+      untracked(() => {
+        if (storyDetailRef) {
+          const storyDetail = this.storyDetail();
+          this.storyAttachmentRepositoryService.resetAll();
+          this.storyAttachmentRepositoryService
+            .listRequest({
+              projectId: storyDetail.projectId,
+              ref: storyDetail.ref,
+            })
+            .then();
+        }
+      });
     });
   }
 
