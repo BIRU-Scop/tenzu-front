@@ -144,8 +144,9 @@ export class StoryEditionComponent {
 
   constructor() {
     effect((onCleanup) => {
+      const wsDocProvider = this.wsDocProvider();
       onCleanup(() => {
-        this.wsDocProvider().cleanUp();
+        wsDocProvider.cleanUp();
       });
     });
   }
