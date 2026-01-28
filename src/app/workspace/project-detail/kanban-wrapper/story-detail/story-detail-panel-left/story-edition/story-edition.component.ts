@@ -28,6 +28,8 @@ import {
   input,
   linkedSignal,
   model,
+  Signal,
+  signal,
   viewChild,
 } from "@angular/core";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
@@ -35,7 +37,7 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
 import { EditorCollaborationComponent } from "@tenzu/shared/components/editor";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { MatFormField, MatInput } from "@angular/material/input";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryDetail } from "@tenzu/repository/story";
 import { form, FormField, readonly, submit } from "@angular/forms/signals";
@@ -51,6 +53,8 @@ import { User } from "@tenzu/repository/user";
 import { ColorToKeyPipe } from "@tenzu/pipes/color-to-key.pipe";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
+import { ConfirmPopupComponent, ConfirmPopupData } from "@tenzu/directives/confirm";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-story-edition",
@@ -91,6 +95,7 @@ import { WsDocProvider } from "@tenzu/utils/doc-provider";
           [(touched)]="touched"
           (validate)="save()"
           [readonly]="!hasModifyPermission()"
+          (filedDeleted)="deleteStoryAttachement($event)"
           #editorContainer
         />
       }
@@ -124,6 +129,9 @@ export class StoryEditionComponent {
   authService = inject(AuthService);
   storyDetailFacade = inject(StoryDetailFacade);
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
+  dialog = inject(MatDialog);
+  translocoService = inject(TranslocoService);
+
   hasModifyPermission = computed(() =>
     hasEntityRequiredPermission({
       requiredPermission: ProjectPermissions.MODIFY_STORY,
@@ -181,5 +189,29 @@ export class StoryEditionComponent {
     this.editor().undo();
     this.storyForm().reset();
     this.storyModel.set({ title: this.story().title });
+  }
+  deleteStoryAttachement(url: string) {
+    const re = /\/stories\/attachments\/([A-Za-z0-9-]+)/;
+    const result = url.match(re);
+    if (!result) return;
+
+    const attachmentId = result[1];
+    const storyAttachment = this.storyAttachmentRepositoryService.entityMapSummary()[attachmentId];
+    if (!storyAttachment) return;
+    const ref = this.dialog.open<ConfirmPopupComponent, Signal<ConfirmPopupData>>(ConfirmPopupComponent, {
+      data: signal({
+        message: this.translocoService.translate("workflow.detail_story.attachments.confirm_delete_attachment", {
+          fileName: storyAttachment.name,
+        }),
+        deleteAction: true,
+      }),
+    });
+    ref.afterClosed().subscribe((confirm) => {
+      if (confirm) {
+        this.storyAttachmentRepositoryService
+          .deleteRequest(storyAttachment, { attachmentId: storyAttachment.id })
+          .then();
+      }
+    });
   }
 }

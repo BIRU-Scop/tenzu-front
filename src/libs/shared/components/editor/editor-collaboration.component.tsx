@@ -66,6 +66,7 @@ export class EditorCollaborationComponent
   private root?: Root;
   private editor?: BlockNoteEditor;
   already_done = false;
+  filedDeleted = output<string>();
   constructor() {
     const codeBlock = createCodeBlockSpec(codeBlockOptions);
     const focus = this.focus();
@@ -101,6 +102,14 @@ export class EditorCollaborationComponent
               id: user.id,
             },
           },
+        });
+        this.editor.onChange((editor, { getChanges }) => {
+          const changes = getChanges();
+          for (const change of changes) {
+            if (change.type === "delete" && change.block.type === "file") {
+              this.filedDeleted.emit(change.block.props.url);
+            }
+          }
         });
       }
       const elm = this.elm();
