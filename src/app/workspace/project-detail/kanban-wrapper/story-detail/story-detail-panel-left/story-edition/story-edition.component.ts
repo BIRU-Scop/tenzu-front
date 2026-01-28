@@ -141,11 +141,15 @@ export class StoryEditionComponent {
   storyForm = form(this.storyModel, (schemaPath) => {
     readonly(schemaPath.title, () => !this.hasModifyPermission());
   });
-
+  // Store projectId and storyRef to avoid reloading the socket when the story is modified
+  projectId = computed(() => this.story().projectId);
+  storyRef = computed(() => this.story().ref);
   wsDocProvider = computed(() => {
+    const storyRef = this.storyRef();
+    const projectId = this.projectId();
     return new WsDocProvider({
-      serverUrl: `${this.configAppService.wsUrl()}/collaboration/${this.story().projectId}/`,
-      roomName: `${this.story().ref}?token=${this.authService.getToken().access}`,
+      serverUrl: `${this.configAppService.wsUrl()}/collaboration/${projectId}/`,
+      roomName: `${storyRef}?token=${this.authService.getToken().access}`,
     });
   });
   onlineUsers = computed(() => this.wsDocProvider().onlineUsers());
