@@ -24,6 +24,7 @@ export type CommandActionType =
   | "signout"
   | "subscribe_to_project_events"
   | "unsubscribe_from_project_events"
+  | "unsubscribe_all_except_user_channel"
   | "subscribe_to_workspace_events"
   | "unsubscribe_from_workspace_events"
   | "ping";
@@ -47,6 +48,9 @@ export type UnsubscribeFromProjectEventsAction = CommandBase & {
   command: "unsubscribe_from_project_events";
   project: string;
 };
+export type UnsubscribeAllExceptUserChannelAction = CommandBase & {
+  command: "unsubscribe_all_except_user_channel";
+};
 export type SubscribeToWorkspaceEventsAction = CommandBase & {
   command: "subscribe_to_workspace_events";
   workspace: string;
@@ -65,6 +69,7 @@ export type Command =
   | PingActions
   | SubscribeToProjectEventsAction
   | UnsubscribeFromProjectEventsAction
+  | UnsubscribeAllExceptUserChannelAction
   | SubscribeToWorkspaceEventsAction
   | UnSubscribeFromWorkspaceEventsAction;
 
