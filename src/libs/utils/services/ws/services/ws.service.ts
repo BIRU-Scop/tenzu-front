@@ -40,7 +40,7 @@ import { catchError, filter, map } from "rxjs/operators";
 import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import {
   applyNotificationEvent,
   applyProjectEvent,
@@ -85,6 +85,7 @@ export class WsService {
   private opened$ = new Subject<void>();
 
   private signinRecoveryOngoing = false;
+  private previouslyInWorkspace: boolean | null = null;
 
   async init() {
     const url = `${this.configAppService.wsUrl()}/events/`;
@@ -133,6 +134,23 @@ export class WsService {
     );
 
     this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map((event) => (event as NavigationEnd).urlAfterRedirects || (event as NavigationEnd).url),
+      )
+      .subscribe((url) => {
+        const inWorkspace = url.startsWith("/workspace/");
+        if (this.previouslyInWorkspace === null) {
+          this.previouslyInWorkspace = inWorkspace;
+          return;
+        }
+        if (this.previouslyInWorkspace && !inWorkspace) {
+          this.command({ command: "unsubscribe_all_except_user_channel" });
+        }
+        this.previouslyInWorkspace = inWorkspace;
+      });
   }
 
   private signinFlow(): Observable<void> {
@@ -416,6 +434,19 @@ export class WsService {
           filter((loggedIn) => loggedIn),
           take(1),
           switchMap(() => {
+            if (command.command === "unsubscribe_all_except_user_channel") {
+              const subscriptions = this.channelSubscribed();
+              if (subscriptions.channelProjects.length === 0 && subscriptions.channelWorkspaces.length === 0) {
+                return of(null);
+              }
+              this.channelSubscribed.update((value) => {
+                value.channelProjects = [];
+                value.channelWorkspaces = [];
+                return value;
+              });
+              subject.next(command);
+              return of(null);
+            }
             if (command.command === "unsubscribe_from_workspace_events") {
               if (!this.channelSubscribed().channelWorkspaces.includes(`workspaces.${command.workspace}`)) {
                 return of(null);
