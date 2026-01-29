@@ -169,12 +169,11 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       const project = projectService.entityDetail();
       const workflow = workflowService.entityDetail();
       const workspace = workspaceService.entityDetail();
-      const story =
-        storyService.entityMapSummary()[content.ref] || storyService.entityDetail()?.ref === content.ref
-          ? storyService.entityDetail()
-          : undefined;
-      if (story) {
-        storyService.deleteEntityDetail(story);
+      const currentStory = storyService.entityDetail();
+      if (currentStory?.ref === content.ref) {
+        storyService.deleteEntityDetail(currentStory);
+      } else if (storyService.entityMapSummary()[content.ref]) {
+        storyService.deleteEntitySummary(content.ref);
       }
       if (
         workspace &&
@@ -253,15 +252,17 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
 
     case WorkflowEventType.DeleteWorkflow: {
       const content = message.event.content as {
-        workflow: Workflow;
-        targetWorkflow: Workflow;
+        workflow: WorkflowNested;
+        targetWorkflow: WorkflowNested;
       };
       const selectedProject = projectService.entityDetail();
       const workspace = workspaceService.entityDetail();
       const selectedWorkflow = workflowService.entityDetail();
       if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
-        projectService.removeWorkflow(content.workflow);
-        workflowService.deleteEntityDetail(content.workflow);
+        // used for type checking, additional dummy data will not be used
+        const structuredWorkflow: Workflow = { ...content.workflow, order: 1, statuses: [] };
+        projectService.removeWorkflow(structuredWorkflow);
+        workflowService.deleteEntityDetail(structuredWorkflow);
         if (selectedWorkflow.id === content.workflow.id) {
           let redirectionUrl = "/404";
           if (content.targetWorkflow) {

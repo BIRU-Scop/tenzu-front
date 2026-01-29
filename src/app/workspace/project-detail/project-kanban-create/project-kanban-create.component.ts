@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,6 +31,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { Validators } from "@angular/forms";
+import { getWorkflowUrl } from "@tenzu/utils/functions/urls";
 
 @Component({
   selector: "app-project-kanban-create",
@@ -57,6 +58,7 @@ export default class ProjectKanbanCreateComponent {
   public openCreateDialog(): void {
     const dialogRef = this.dialog.open(EnterNameDialogComponent, {
       backdropClass: "cdk-overlay-transparent-backdrop",
+      disableClose: true,
       data: {
         label: "workflow.create_workflow.dialog.aria_label",
         action: "workflow.create_workflow.dialog.create_workflow",
@@ -92,7 +94,11 @@ export default class ProjectKanbanCreateComponent {
           }
         }
       } else {
-        await this.router.navigate([".."], { relativeTo: this.activatedRoute });
+        if (project) {
+          await this.router.navigateByUrl(getWorkflowUrl(project, project.workflows[0].slug));
+        } else {
+          await this.router.navigate([".."], { relativeTo: this.activatedRoute });
+        }
       }
     });
   }
