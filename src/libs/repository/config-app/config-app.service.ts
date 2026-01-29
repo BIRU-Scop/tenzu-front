@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -52,6 +52,9 @@ export class ConfigAppService {
       })
       .then((config) => {
         const schema = this.configSchemaService.schema().parse(config);
+        if (typeof window !== "undefined") {
+          (window as { __TENZU_DEBUG__?: boolean }).__TENZU_DEBUG__ = schema.debug ?? false;
+        }
         this.config.set({
           ...environment,
           ...schema,

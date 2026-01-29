@@ -83,6 +83,16 @@ For security issues, see [Security](SECURITY.md).
 
 To be able to run the project locally, see [Installation instructions](INSTALL.md)
 
+## Debug logs in production
+
+By default, `debug()` logs only show in dev mode. You can enable debug logs at runtime in production:
+
+- Temporary (until refresh): `window.__TENZU_DEBUG__ = true`
+- Persistent (after refresh): `localStorage.setItem("tenzu.debug", "1"); location.reload()`
+- Disable: `localStorage.removeItem("tenzu.debug"); location.reload()`
+
+You can also enable it via `assets/configs/config.json` by setting `"debug": true`.
+
 > [!WARNING]
 > The main branch is the development version of Tenzu and it may be unstable.
 > To use the latest stable version, switch to the production branch

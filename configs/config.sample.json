@@ -1,5 +1,6 @@
 {
   "env": "dev",
+  "debug": true,
   "api": {
     "prefix": "v1",
     "baseDomain": "local-tenzu.biru.ovh",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,6 +23,7 @@ import { Injectable } from "@angular/core";
 
 export const ConfigSchema = z.object({
   env: z.enum(["dev", "staging", "demo", "production"]),
+  debug: z.boolean().optional().default(false),
   wsUrl: z.string(),
   api: z.object({
     prefix: z.string(),
