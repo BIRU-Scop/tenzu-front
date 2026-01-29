@@ -285,14 +285,18 @@ export class WsService {
       }
       case "subscribe_to_workspace_events": {
         this.channelSubscribed.update((value) => {
-          value.channelWorkspaces = [...value.channelWorkspaces, message.content.channel];
+          if (!value.channelWorkspaces.includes(message.content.channel)) {
+            value.channelWorkspaces = [...value.channelWorkspaces, message.content.channel];
+          }
           return value;
         });
         break;
       }
       case "subscribe_to_project_events": {
         this.channelSubscribed.update((value) => {
-          value.channelProjects = [...value.channelProjects, message.content.channel];
+          if (!value.channelProjects.includes(message.content.channel)) {
+            value.channelProjects = [...value.channelProjects, message.content.channel];
+          }
           return value;
         });
         break;
@@ -410,14 +414,15 @@ export class WsService {
       this.logged$
         .pipe(
           filter((loggedIn) => loggedIn),
+          take(1),
           switchMap(() => {
             if (command.command === "unsubscribe_from_workspace_events") {
-              if (!(`workspaces.${command.workspace}` in this.channelSubscribed().channelWorkspaces)) {
+              if (!this.channelSubscribed().channelWorkspaces.includes(`workspaces.${command.workspace}`)) {
                 return of(null);
               }
             }
             if (command.command === "unsubscribe_from_project_events") {
-              if (!(`projects.${command.project}` in this.channelSubscribed().channelProjects)) {
+              if (!this.channelSubscribed().channelProjects.includes(`projects.${command.project}`)) {
                 return of(null);
               }
             }
