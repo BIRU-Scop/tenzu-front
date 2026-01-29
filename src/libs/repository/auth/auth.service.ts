@@ -65,7 +65,14 @@ export class AuthService {
       .post<Tokens>(`${this.url}/token`, {
         ...credentials,
       })
-      .pipe(tap((value) => this.setToken(value)));
+      .pipe(
+        tap((tokens) => {
+          this.setToken(tokens);
+          if (tokens.access) {
+            this.wsService.command({ command: "signin", token: tokens.access });
+          }
+        }),
+      );
   }
 
   clear() {

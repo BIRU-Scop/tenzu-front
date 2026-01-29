@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,10 +25,9 @@ import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { lastValueFrom, of, pipe, switchMap } from "rxjs";
 import { tapResponse } from "@ngrx/operators";
 import { UserService } from "./user.service";
-import { User, UpdateUserPayload } from "./user.model";
+import { UpdateUserPayload, User } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { AuthService } from "../auth";
-import { WsService } from "@tenzu/utils/services/ws";
 import { debug } from "@tenzu/utils/functions/logging";
 
 export const UserStore = signalStore(
@@ -42,7 +41,6 @@ export const UserStore = signalStore(
       userService = inject(UserService),
       translocoService = inject(TranslocoService),
       authService = inject(AuthService),
-      wsService = inject(WsService),
     ) => ({
       getMe: rxMethod<void>(
         pipe(
@@ -56,7 +54,6 @@ export const UserStore = signalStore(
                       translocoService.setActiveLang(myUser.lang);
                     }
                     localStorage.setItem("user", JSON.stringify(myUser));
-                    wsService.command({ command: "signin", token: localStorage.getItem("token") || "" });
                     debug("user", "get user end");
                   },
                   error: console.error,

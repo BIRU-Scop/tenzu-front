@@ -467,6 +467,9 @@ export class WsService {
 
   signoutFromLocal() {
     this.loggedSubject.next(false);
+    // Clear cached subscriptions so a new session starts clean
+    this.channelSubscribed.set({ channelWorkspaces: [], channelProjects: [] });
+    this.previouslyInWorkspace = null;
   }
   async signoutFromServer() {
     this.signoutFromLocal();
