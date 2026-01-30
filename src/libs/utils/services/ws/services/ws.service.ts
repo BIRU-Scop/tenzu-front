@@ -19,24 +19,36 @@
  *
  */
 
-import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext, signal } from "@angular/core";
+import {
+  DestroyRef,
+  EnvironmentInjector,
+  inject,
+  Injectable,
+  isDevMode,
+  runInInjectionContext,
+  signal,
+} from "@angular/core";
 
 import {
   BehaviorSubject,
   defer,
   EMPTY,
+  exhaustMap,
+  interval,
   Observable,
   of,
   repeat,
   retry,
   share,
   Subject,
+  Subscription,
   switchMap,
   take,
   tap,
   throwError,
 } from "rxjs";
 import { catchError, filter, map } from "rxjs/operators";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
@@ -76,6 +88,7 @@ export class WsService {
     channelProjects: [],
   });
   router = inject(Router);
+  private destroyRef = inject(DestroyRef);
   private environmentInjector = inject(EnvironmentInjector);
   private configAppService = inject(ConfigAppService);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,19 +99,28 @@ export class WsService {
 
   private signinRecoveryOngoing = false;
   private previouslyInWorkspace: boolean | null = null;
+  private heartbeatSubscription: Subscription | null = null;
+  private readonly heartbeatIntervalMs = 10000;
+  private initialized = false;
 
   async init() {
+    if (this.initialized) {
+      debug("WS", "init skipped: already initialized");
+      return;
+    }
+    this.initialized = true;
     const url = `${this.configAppService.wsUrl()}/events/`;
     // We want to keep those log for now
     console.log("init WS");
     this.opened$
       .pipe(
-        switchMap(() => this.signinFlow()),
+        exhaustMap(() => this.signinFlow()),
         catchError((e) => {
           // We log, but we don't break the reconnection
           debug("WS", "signin failed", e);
           return of(void 0);
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
 
@@ -109,12 +131,14 @@ export class WsService {
           next: () => {
             debug("WS", "connected");
             this.opened$.next();
+            this.startHeartbeat();
           },
         },
         closeObserver: {
           next: () => {
             debug("WS", "disconnected");
             this.loggedSubject.next(false);
+            this.stopHeartbeat();
           },
         },
       });
@@ -133,12 +157,13 @@ export class WsService {
       share(),
     );
 
-    this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
+    this.ws$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.dispatch(data as WSResponse));
 
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         map((event) => (event as NavigationEnd).urlAfterRedirects || (event as NavigationEnd).url),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((url) => {
         const inWorkspace = url.startsWith("/workspace/");
@@ -337,6 +362,10 @@ export class WsService {
         });
         break;
       }
+      case "ping": {
+        debug("WS", "received pong");
+        break;
+      }
       default: {
         break;
       }
@@ -470,6 +499,7 @@ export class WsService {
     // Clear cached subscriptions so a new session starts clean
     this.channelSubscribed.set({ channelWorkspaces: [], channelProjects: [] });
     this.previouslyInWorkspace = null;
+    this.stopHeartbeat();
   }
   async signoutFromServer() {
     this.signoutFromLocal();
@@ -477,5 +507,23 @@ export class WsService {
       const authService = inject(AuthService);
       authService.applyLogout();
     });
+  }
+
+  startHeartbeat() {
+    if (this.heartbeatSubscription) {
+      return;
+    }
+    this.heartbeatSubscription = interval(this.heartbeatIntervalMs).subscribe(() => {
+      debug("WS", "sending ping");
+      this.command({ command: "ping" });
+    });
+  }
+
+  stopHeartbeat() {
+    if (!this.heartbeatSubscription) {
+      return;
+    }
+    this.heartbeatSubscription.unsubscribe();
+    this.heartbeatSubscription = null;
   }
 }
