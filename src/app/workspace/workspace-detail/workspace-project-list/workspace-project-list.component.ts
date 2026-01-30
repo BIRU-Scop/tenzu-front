@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -66,11 +66,11 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
           <app-action-card
             [name]="project.name"
             [color]="project.color"
-            [cancelLabel]="t('component.invitation.deny')"
-            [submitLabel]="t('component.invitation.accept')"
+            [cancelLabel]="'component.invitation.deny'"
+            [submitLabel]="'component.invitation.accept'"
             (submitted)="acceptProjectInvitation(project)"
             (canceled)="denyProjectInvitation(project)"
-          ></app-action-card>
+          />
         } @else {
           <app-project-card
             [name]="project.name"
@@ -78,24 +78,24 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
             [workspaceId]="project.workspaceId"
             [description]="project.description ? project.description : null"
             [landingPage]="getProjectLandingPageUrl(project)"
-          ></app-project-card>
+          />
         }
       } @empty {
         @if (workspace) {
           @if (workspace.userCanCreateProjects) {
-            <app-project-card [workspaceId]="workspace.id"></app-project-card>
+            <app-project-card [workspaceId]="workspace.id" />
           } @else {
             <app-project-card
               [name]="'Lorem Ipsum'"
               [color]="3"
               [description]="'Lorem Ipsum dolor sit amet'"
               [disabled]="true"
-            ></app-project-card>
+            />
           }
         } @else {
           @for (skeleton of Array(6); track $index) {
             <li>
-              <app-card-skeleton></app-card-skeleton>
+              <app-card-skeleton />
             </li>
           }
         }
