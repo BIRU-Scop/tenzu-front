@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -74,17 +74,17 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
               [workspace]="workspace"
               (submitted)="acceptWorkspaceInvitation(workspace)"
               (canceled)="denyWorkspaceInvitation(workspace)"
-            ></app-workspace-card>
+            />
             <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               @for (project of workspace.userInvitedProjects; track project.id) {
                 <app-action-card
                   [name]="project.name"
                   [color]="project.color"
-                  [cancelLabel]="t('component.invitation.deny')"
-                  [submitLabel]="t('component.invitation.accept')"
+                  [cancelLabel]="'component.invitation.deny'"
+                  [submitLabel]="'component.invitation.accept'"
                   (submitted)="acceptProjectInvitation(workspace, project)"
                   (canceled)="denyProjectInvitation(workspace, project)"
-                ></app-action-card>
+                />
               }
               @for (project of workspace.userMemberProjects; track project.id) {
                 <app-project-card
@@ -93,21 +93,21 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                   [color]="project.color"
                   [description]="project.description ? project.description : null"
                   [landingPage]="getProjectLandingPageUrl(project)"
-                ></app-project-card>
+                />
               }
               @if (
                 (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
                 (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
               ) {
                 @if (workspace.userCanCreateProjects) {
-                  <app-project-card [workspaceId]="workspace.id"></app-project-card>
+                  <app-project-card [workspaceId]="workspace.id" />
                 } @else {
                   <app-project-card
                     [name]="'Lorem Ipsum'"
                     [color]="3"
                     [description]="'Lorem Ipsum dolor sit amet'"
                     [disabled]="true"
-                  ></app-project-card>
+                  />
                 }
               }
             </div>

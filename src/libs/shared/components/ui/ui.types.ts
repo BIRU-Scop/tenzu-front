@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,6 +31,8 @@ export type IconName =
   | "send"
   | "mail"
   | "arrow_back_ios"
+  | "check"
+  | "block"
   | "mark_email_read";
 export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
 export type ButtonType = "submit" | "button" | "reset";

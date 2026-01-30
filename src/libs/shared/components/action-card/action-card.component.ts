@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,52 +21,31 @@
 
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
-import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
-import { MatButton, MatIconButton } from "@angular/material/button";
-import { MatTooltip } from "@angular/material/tooltip";
-import { MatIcon } from "@angular/material/icon";
+import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
   selector: "app-action-card",
-  imports: [
-    AvatarComponent,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    MatButton,
-    MatIconButton,
-    MatTooltip,
-    MatIcon,
-  ],
+  imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, ButtonComponent],
   template: `
-    <mat-card appearance="outlined" class="min-h-[100px] w-[200px]">
+    <mat-card appearance="outlined" class="min-h-[100px] w-[200px] h-[100px] flex flex-col">
       <mat-card-header>
         <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
         <mat-card-title>
           {{ name() }}
         </mat-card-title>
-        <button
-          mat-icon-button
-          class="error-button"
-          [attr.aria-label]="cancelLabel()"
-          [matTooltip]="cancelLabel()"
+        <app-button
+          [translocoKey]="cancelLabel()"
+          [iconOnly]="true"
+          level="error"
           (click)="canceled.emit()"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
+          iconName="block"
+        />
       </mat-card-header>
-      <mat-card-content>
-        <button
-          class="secondary-button"
-          mat-flat-button
-          type="button"
-          [attr.aria-label]="submitLabel()"
-          (click)="submitted.emit()"
-        >
-          {{ submitLabel() }}
-        </button>
-      </mat-card-content>
+      <mat-card-content class="flex-1"> </mat-card-content>
+      <mat-card-actions class="mx-auto">
+        <app-button [translocoKey]="submitLabel()" level="primary" (click)="submitted.emit()" iconName="check" />
+      </mat-card-actions>
     </mat-card>
   `,
   styles: ``,
