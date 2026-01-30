@@ -110,7 +110,7 @@ export class EditorCollaborationComponent
               this.filedDeleted.emit(change.block.props.url);
             }
           }
-        });
+        }, false);
       }
       const elm = this.elm();
       if (!this.root && elm) {
