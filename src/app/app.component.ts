@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -32,6 +32,6 @@ export class AppComponent implements OnInit {
   title = "tenzu";
   iconRegistry = inject(MatIconRegistry);
   ngOnInit(): void {
-    this.iconRegistry.setDefaultFontSetClass("material-symbols-outlined");
+    this.iconRegistry.setDefaultFontSetClass("material-symbols-rounded");
   }
 }

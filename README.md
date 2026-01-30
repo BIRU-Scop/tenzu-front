@@ -19,12 +19,14 @@
 Our mission is to help all actors in a project team, from Techs through Product and Designers up to Leaders, 
 share knowledge and learnings to make informed decisions.
 
-![tenzu screenshot](https://tenzu.net/media/images/tenzu_demo.original.webp)
+![tenzu screenshot](https://tenzu.net/media/images/tenzu_demo2025.original.webp)
 
 ## Features
-- *Project spaces*: Multiple project space organised by workspaces
-- *KANBAN*: Multiple kanban boards with custom statuses
-- More coming
+- **Project spaces**: Multiple project spaces organised by workspace
+- **KANBAN**: Unlimited kanban boards with custom statuses
+- **Dark theme and Multi-language**: More languages and accessibility features will be added
+- **Live collaborative editing** of tickets: See what others are typing and other changes in real time
+- Scrum and issue tracking coming in 2026
 
 ### Roadmap
 
@@ -80,6 +82,16 @@ For security issues, see [Security](SECURITY.md).
 # Getting started
 
 To be able to run the project locally, see [Installation instructions](INSTALL.md)
+
+## Debug logs in production
+
+By default, `debug()` logs only show in dev mode. You can enable debug logs at runtime in production:
+
+- Temporary (until refresh): `window.__TENZU_DEBUG__ = true`
+- Persistent (after refresh): `localStorage.setItem("tenzu.debug", "1"); location.reload()`
+- Disable: `localStorage.removeItem("tenzu.debug"); location.reload()`
+
+You can also enable it via `assets/configs/config.json` by setting `"debug": true`.
 
 > [!WARNING]
 > The main branch is the development version of Tenzu and it may be unstable.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,8 +19,7 @@
  *
  */
 
-import { Directive, inject, Injector, Input, TemplateRef } from "@angular/core";
-import { NgIf } from "@angular/common";
+import { Directive, effect, inject, Injector, input, Input, TemplateRef, ViewContainerRef } from "@angular/core";
 import {
   hasEntityRequiredPermission,
   HasEntityRequiredPermissionConfig,
@@ -31,20 +30,29 @@ import {
 @Directive({
   selector: "[appHasPermission]",
   standalone: true,
-  hostDirectives: [NgIf],
 })
 export class HasPermissionDirective {
-  private readonly ngIfRef = inject(NgIf);
+  private readonly viewContainer = inject(ViewContainerRef);
+  private readonly templateRef = inject(TemplateRef<unknown>);
 
-  @Input({ required: true })
-  set appHasPermission(config: HasEntityRequiredPermissionConfig) {
-    this.ngIfRef.ngIf = hasEntityRequiredPermission(config);
-  }
+  readonly appHasPermission = input.required<HasEntityRequiredPermissionConfig>();
+  readonly appHasPermissionElse = input<TemplateRef<unknown> | null>(null);
 
-  @Input()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  set appHasPermissionElse(template: TemplateRef<any>) {
-    this.ngIfRef.ngIfElse = template;
+  constructor() {
+    // The effect automatically reacts whenever 'appHasPermission' or 'appHasPermissionElse' changes
+    effect(() => {
+      const config = this.appHasPermission();
+      const elseTemplate = this.appHasPermissionElse();
+      const condition = hasEntityRequiredPermission(config);
+
+      this.viewContainer.clear();
+
+      if (condition) {
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else if (elseTemplate) {
+        this.viewContainer.createEmbeddedView(elseTemplate);
+      }
+    });
   }
 }
 

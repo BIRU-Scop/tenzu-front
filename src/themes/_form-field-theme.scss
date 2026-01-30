@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -79,22 +79,6 @@
       container-vertical-padding: 0px
     )
     );
-  }
-
-
-  .mat-mdc-form-field.transparent {
-    @apply w-fit;
-    @include mat.form-field-overrides((
-      outlined-outline-color: transparent,
-      outlined-hover-outline-color: transparent,
-      outlined-focus-outline-color: transparent,
-      container-vertical-padding: 0,
-      container-height: 24px,
-    ));
-    .mat-mdc-form-field-infix {
-      min-width: 48px;
-      line-height: 0;
-    }
   }
 }
 

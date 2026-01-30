@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,35 +25,49 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ActivatedRoute, RouterLink } from "@angular/router";
+import { MatButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { ProjectRepositoryService } from "@tenzu/repository/project";
 
 @Component({
   selector: "app-list-roles",
-  imports: [TranslocoDirective, PermissionOrRedirectDirective, RouterLink],
+  imports: [TranslocoDirective, PermissionOrRedirectDirective, RouterLink, MatButton, MatIcon],
   template: `
-    <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
-      <div
-        class="app-table-row-group"
-        [appPermissionOrRedirect]="{
-          expectedId: projectId(),
-          requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
-          type: 'project',
-          redirectUrl: ['..'],
-          redirectUrlExtras: { relativeTo: activatedRoute },
-        }"
-      >
-        @for (role of entitiesSummary(); track role.id) {
-          <div class="app-table-row">
-            <div class="app-table-cell">
-              <a [routerLink]="['..', 'edit-role', role.id]">{{ role.name }}</a>
-            </div>
-            <div class="app-table-cell">{{ role.totalMembers }} {{ t("total_members") }}</div>
-            <div class="app-table-cell">
-              {{ role.editable ? t("editable") : t("not_editable") }}
-            </div>
+    @let project = projectRepositoryService.entityDetail();
+    <ng-container
+      [appPermissionOrRedirect]="{
+        expectedId: projectId(),
+        requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+        type: 'project',
+        redirectUrl: ['..'],
+        redirectUrlExtras: { relativeTo: activatedRoute },
+      }"
+      *transloco="let t"
+    >
+      @if (project) {
+        <div class="flex justify-end">
+          <a [matButton]="'filled'" [routerLink]="['..', 'create-role']" class="tertiary-button mb-4">
+            <mat-icon>add</mat-icon>
+            {{ t("project.settings.roles.create_role") }}</a
+          >
+        </div>
+        <div class="app-table" *transloco="let t; prefix: 'project.settings.roles'">
+          <div class="app-table-row-group">
+            @for (role of entitiesSummary(); track role.id) {
+              <div class="app-table-row">
+                <div class="app-table-cell">
+                  <a [routerLink]="['..', 'edit-role', role.id]">{{ role.name }}</a>
+                </div>
+                <div class="app-table-cell">{{ role.totalMembers }} {{ t("total_members") }}</div>
+                <div class="app-table-cell">
+                  {{ role.editable ? t("editable") : t("not_editable") }}
+                </div>
+              </div>
+            }
           </div>
-        }
-      </div>
-    </div>
+        </div>
+      }
+    </ng-container>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,6 +75,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 export default class ListRolesComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
 
+  projectRepositoryService = inject(ProjectRepositoryService);
   projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   readonly activatedRoute = inject(ActivatedRoute);
 

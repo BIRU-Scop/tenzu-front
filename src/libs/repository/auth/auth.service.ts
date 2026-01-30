@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable, Signal } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import {
   AuthConfig,
   Credential,
@@ -65,7 +65,14 @@ export class AuthService {
       .post<Tokens>(`${this.url}/token`, {
         ...credentials,
       })
-      .pipe(tap((value) => this.setToken(value)));
+      .pipe(
+        tap((tokens) => {
+          this.setToken(tokens);
+          if (tokens.access) {
+            this.wsService.command({ command: "signin", token: tokens.access });
+          }
+        }),
+      );
   }
 
   clear() {
@@ -204,5 +211,19 @@ export class AuthService {
 
   continueSignup(payload: ProviderContinueSignupPayload) {
     return this.http.post<ProviderCallback>(`${this.url}/provider/continue_signup`, payload);
+  }
+
+  isPasswordError(errorResponse: HttpErrorResponse): boolean {
+    try {
+      return errorResponse.error?.detail?.some(
+        (detail: { ctx: object; msg: string; type: string; loc: Array<string> }) =>
+          detail?.loc?.some((loc) => loc === "password"),
+      );
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return false;
+      }
+      throw e;
+    }
   }
 }

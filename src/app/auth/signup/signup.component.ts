@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,7 +24,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angul
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, Params, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { CreateUserPayload, UserService } from "@tenzu/repository/user";
@@ -36,18 +36,19 @@ import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { apply, applyWhenValue, Field, form, maxLength, required, submit } from "@angular/forms/signals";
+import { apply, applyWhenValue, FormField, form, maxLength, required, submit } from "@angular/forms/signals";
 import { emailSchema } from "@tenzu/shared/components/form/email-field/schema";
 import { lastValueFrom } from "rxjs";
 import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { AuthService, trackFormValidationEffect } from "@tenzu/repository/auth";
+import { AuthService, InvitationTokens, trackFormValidationEffect } from "@tenzu/repository/auth";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { HttpErrorResponse } from "@angular/common/http";
+import { debug } from "@tenzu/utils/functions/logging";
 
 @Component({
   selector: "app-signup",
@@ -67,7 +68,7 @@ import { HttpErrorResponse } from "@angular/common/http";
     MatSelect,
     ButtonComponent,
     PasswordFieldComponent,
-    Field,
+    FormField,
     FormFooterComponent,
     FormFooterSecondaryActionDirective,
     SocialAuthLoginComponent,
@@ -94,16 +95,16 @@ import { HttpErrorResponse } from "@angular/common/http";
         <form (submit)="submit($event)" class="flex flex-col gap-1 w-[32rem]">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
-            <input [field]="signupForm.fullName" matInput autocomplete type="text" />
+            <input [formField]="signupForm.fullName" matInput autocomplete type="text" />
             @for (error of signupForm.fullName().errors(); track error.kind) {
               <mat-error>{{ t(error.message || "") }}</mat-error>
             }
           </mat-form-field>
-          <app-email-field [field]="signupForm.email" />
-          <app-password-field [field]="signupForm.password" [settings]="{ enabledStrength: true }" />
+          <app-email-field [formField]="signupForm.email" />
+          <app-password-field [formField]="signupForm.password" [settings]="{ enabledStrength: true }" />
           <mat-form-field>
             <mat-label>{{ t("general.identity.lang") }}</mat-label>
-            <mat-select [field]="signupForm.lang" data-testid="lang-select">
+            <mat-select [formField]="signupForm.lang" data-testid="lang-select">
               @for (language of languageStore.entities(); track language.code) {
                 <mat-option [value]="language.code">{{ language.name }}</mat-option>
               }
@@ -114,7 +115,7 @@ import { HttpErrorResponse } from "@angular/common/http";
               [class.checkbox-invalid]="
                 signupForm.acceptTermsOfService().touched() && signupForm.acceptTermsOfService().invalid()
               "
-              [field]="signupForm.acceptTermsOfService"
+              [formField]="signupForm.acceptTermsOfService"
             >
               <small
                 class="mat-body-small"
@@ -174,7 +175,6 @@ export default class SignupComponent {
   route = inject(ActivatedRoute);
   readonly authConfigStore = inject(AuthConfigStore);
   readonly authService = inject(AuthService);
-
   displayForm = signal(false);
   emailSent = signal(false);
   signupModel = signal<CreateUserPayload>({
@@ -219,10 +219,21 @@ export default class SignupComponent {
     trackFormValidationEffect(this.signupForm);
   }
 
+  parseParams(params: Params) {
+    const parsedParams: InvitationTokens = {};
+    if (params["acceptProjectInvitation"]) {
+      parsedParams.acceptProjectInvitation = !!params["acceptProjectInvitation"];
+    }
+    if (params["acceptWorkspaceInvitation"]) {
+      parsedParams.acceptWorkspaceInvitation = !!params["acceptWorkspaceInvitation"];
+    }
+    return { ...params, ...parsedParams };
+  }
+
   async submit(event: Event) {
     event.preventDefault();
     await submit(this.signupForm, async (form) => {
-      const params = this.route.snapshot.queryParams;
+      const params = this.parseParams(this.route.snapshot.queryParams);
       const values = form().value();
       try {
         await lastValueFrom(
@@ -233,11 +244,14 @@ export default class SignupComponent {
           }),
         );
       } catch (error) {
-        if (error instanceof HttpErrorResponse && error.status === 422) {
+        if (error instanceof HttpErrorResponse && error.status === 422 && this.authService.isPasswordError(error)) {
+          debug("error-422", "password", error);
           this.authConfigStore.setFormHasError(true);
           return [
             { fieldTree: this.signupForm.password, kind: "password-rejected", message: "auth.signup.errors.422" },
           ];
+        } else {
+          throw error;
         }
       }
       this.emailSent.set(true);
@@ -247,7 +261,7 @@ export default class SignupComponent {
   resendEmail(): void {
     const form = this.signupForm();
     if (form.valid()) {
-      const params = this.route.snapshot.queryParams;
+      const params = this.parseParams(this.route.snapshot.queryParams);
       this.userService
         .resentVerification({
           ...form.value(),

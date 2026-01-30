@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -120,7 +120,13 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
     case StoryEventType.UpdateStory: {
       const content = message.event.content as { story: StoryDetail; updatesAttrs: (keyof StoryDetail)[] };
       const story = content.story;
-      storyService.updateEntityDetail(story);
+      try {
+        storyService.updateEntityDetail(story);
+      } catch (e) {
+        if (!(e instanceof NotFoundEntityError)) {
+          throw e;
+        }
+      }
       if (content.updatesAttrs.includes("workflow")) {
         const workspace = workspaceService.entityDetail();
         if (workspace) {
@@ -163,12 +169,11 @@ export async function applyStoryEvent(message: WSResponseEvent<unknown>) {
       const project = projectService.entityDetail();
       const workflow = workflowService.entityDetail();
       const workspace = workspaceService.entityDetail();
-      const story =
-        storyService.entityMapSummary()[content.ref] || storyService.entityDetail()?.ref === content.ref
-          ? storyService.entityDetail()
-          : undefined;
-      if (story) {
-        storyService.deleteEntityDetail(story);
+      const currentStory = storyService.entityDetail();
+      if (currentStory?.ref === content.ref) {
+        storyService.deleteEntityDetail(currentStory);
+      } else if (storyService.entityMapSummary()[content.ref]) {
+        storyService.deleteEntitySummary(content.ref);
       }
       if (
         workspace &&
@@ -247,15 +252,17 @@ export async function applyWorkflowEvent(message: WSResponseEvent<unknown>) {
 
     case WorkflowEventType.DeleteWorkflow: {
       const content = message.event.content as {
-        workflow: Workflow;
-        targetWorkflow: Workflow;
+        workflow: WorkflowNested;
+        targetWorkflow: WorkflowNested;
       };
       const selectedProject = projectService.entityDetail();
       const workspace = workspaceService.entityDetail();
       const selectedWorkflow = workflowService.entityDetail();
       if (selectedProject && selectedProject.id === content.workflow.projectId && workspace && selectedWorkflow) {
-        projectService.removeWorkflow(content.workflow);
-        workflowService.deleteEntityDetail(content.workflow);
+        // used for type checking, additional dummy data will not be used
+        const structuredWorkflow: Workflow = { ...content.workflow, order: 1, statuses: [] };
+        projectService.removeWorkflow(structuredWorkflow);
+        workflowService.deleteEntityDetail(structuredWorkflow);
         if (selectedWorkflow.id === content.workflow.id) {
           let redirectionUrl = "/404";
           if (content.targetWorkflow) {
@@ -422,14 +429,21 @@ export async function applyProjectEvent(message: WSResponseEvent<unknown>) {
       const projectIsAlreadyUpdated = JSON.stringify(currentProject) == JSON.stringify(project);
 
       if (!projectIsAlreadyUpdated) {
-        projectRepositoryService.updateEntityDetail(project);
-        notificationService.info({
-          title: "notification.events.update_project",
-          translocoTitleParams: {
-            username: content.updatedBy?.fullName,
-            name: content.project.name,
-          },
-        });
+        try {
+          projectRepositoryService.updateEntityDetail(project);
+
+          notificationService.info({
+            title: "notification.events.update_project",
+            translocoTitleParams: {
+              username: content.updatedBy?.fullName,
+              name: content.project.name,
+            },
+          });
+        } catch (e) {
+          if (!(e instanceof NotFoundEntityError)) {
+            throw e;
+          }
+        }
       }
       break;
     }

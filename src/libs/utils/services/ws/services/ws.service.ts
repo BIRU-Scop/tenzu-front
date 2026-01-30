@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,22 +19,40 @@
  *
  */
 
-/**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) 2023-present Kaleidos INC
- */
+import {
+  DestroyRef,
+  EnvironmentInjector,
+  inject,
+  Injectable,
+  isDevMode,
+  runInInjectionContext,
+  signal,
+} from "@angular/core";
 
-import { EnvironmentInjector, inject, Injectable, isDevMode, runInInjectionContext, signal } from "@angular/core";
-
-import { BehaviorSubject, Observable, of, repeat, retry, share, switchMap, throwError } from "rxjs";
-import { catchError, filter } from "rxjs/operators";
+import {
+  BehaviorSubject,
+  defer,
+  EMPTY,
+  exhaustMap,
+  interval,
+  Observable,
+  of,
+  repeat,
+  retry,
+  share,
+  Subject,
+  Subscription,
+  switchMap,
+  take,
+  tap,
+  throwError,
+} from "rxjs";
+import { catchError, filter, map } from "rxjs/operators";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Command, WSResponse, WSResponseAction, WSResponseActionSuccess, WSResponseEvent } from "../ws.model";
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import { FamilyEventType } from "./event-type.enum";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import {
   applyNotificationEvent,
   applyProjectEvent,
@@ -70,44 +88,68 @@ export class WsService {
     channelProjects: [],
   });
   router = inject(Router);
+  private destroyRef = inject(DestroyRef);
   private environmentInjector = inject(EnvironmentInjector);
   private configAppService = inject(ConfigAppService);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private subject: WebSocketSubject<any> | undefined = undefined;
   private ws$: Observable<WSResponse> | undefined = undefined;
 
+  private opened$ = new Subject<void>();
+
+  private signinRecoveryOngoing = false;
+  private previouslyInWorkspace: boolean | null = null;
+  private heartbeatSubscription: Subscription | null = null;
+  private readonly heartbeatIntervalMs = 10000;
+  private initialized = false;
+
   async init() {
+    if (this.initialized) {
+      debug("WS", "init skipped: already initialized");
+      return;
+    }
+    this.initialized = true;
+    const url = `${this.configAppService.wsUrl()}/events/`;
     // We want to keep those log for now
     console.log("init WS");
-    console.log(this.configAppService.wsUrl());
-    this.subject = webSocket({
-      url: this.configAppService.wsUrl(),
-      openObserver: {
-        next: () => {
-          debug("WS", "connected");
-          const subcriptions = this.channelSubscribed();
-          subcriptions.channelProjects.map((channel) => {
-            const projectId = channel.split(".")[1];
-            this.command({ command: "subscribe_to_project_events", project: projectId });
-          });
-          subcriptions.channelWorkspaces.map((channel) => {
-            const workspaceId = channel.split(".")[1];
-            this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
-          });
+    this.opened$
+      .pipe(
+        exhaustMap(() => this.signinFlow()),
+        catchError((e) => {
+          // We log, but we don't break the reconnection
+          debug("WS", "signin failed", e);
+          return of(void 0);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+
+    const createSocket$ = defer(() => {
+      this.subject = webSocket({
+        url,
+        openObserver: {
+          next: () => {
+            debug("WS", "connected");
+            this.opened$.next();
+            this.startHeartbeat();
+          },
         },
-      },
-      closeObserver: {
-        next: () => {
-          debug("WS", "disconnected");
+        closeObserver: {
+          next: () => {
+            debug("WS", "disconnected");
+            this.loggedSubject.next(false);
+            this.stopHeartbeat();
+          },
         },
-      },
+      });
+
+      return this.subject as Observable<WSResponse>;
     });
 
-    this.ws$ = this.subject.pipe(
+    this.ws$ = createSocket$.pipe(
       catchError((e) => {
-        debug("WS", "the server are reload we loose the connexion and we need to login again", e);
+        debug("WS", "socket error", e);
         this.loggedSubject.next(false);
-        this.command({ command: "signin", token: localStorage.getItem("token") || "" });
         return throwError(() => e);
       }),
       retry({ delay: RETRY_TIME, resetOnSuccess: true }),
@@ -115,9 +157,72 @@ export class WsService {
       share(),
     );
 
-    this.ws$.subscribe((data) => this.dispatch(data as WSResponse));
+    this.ws$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.dispatch(data as WSResponse));
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map((event) => (event as NavigationEnd).urlAfterRedirects || (event as NavigationEnd).url),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((url) => {
+        const inWorkspace = url.startsWith("/workspace/");
+        if (this.previouslyInWorkspace === null) {
+          this.previouslyInWorkspace = inWorkspace;
+          return;
+        }
+        if (this.previouslyInWorkspace && !inWorkspace) {
+          this.command({ command: "unsubscribe_all_except_user_channel" });
+        }
+        this.previouslyInWorkspace = inWorkspace;
+      });
   }
 
+  private signinFlow(): Observable<void> {
+    // reset when new connection
+    this.loggedSubject.next(false);
+
+    return runInInjectionContext(this.environmentInjector, () => {
+      const authService = inject(AuthService);
+
+      return authService.isLoginOk().pipe(
+        switchMap((ok) => {
+          if (!ok) {
+            // No valid tokens -> do not attempt WS signin
+            return EMPTY;
+          }
+          const token = authService.getToken().access || "";
+          if (!token) {
+            return EMPTY;
+          }
+
+          this.command({ command: "signin", token });
+
+          // Wait for success acknowledgment (loggedSubject becomes true in manageSubscription)
+          return this.logged$.pipe(
+            filter(Boolean),
+            take(1),
+            tap(() => this.restoreSubscriptions()),
+            map(() => void 0),
+          );
+        }),
+      );
+    });
+  }
+
+  private restoreSubscriptions() {
+    const subcriptions = this.channelSubscribed();
+
+    subcriptions.channelProjects.forEach((channel) => {
+      const projectId = channel.split(".")[1];
+      this.command({ command: "subscribe_to_project_events", project: projectId });
+    });
+
+    subcriptions.channelWorkspaces.forEach((channel) => {
+      const workspaceId = channel.split(".")[1];
+      this.command({ command: "subscribe_to_workspace_events", workspace: workspaceId });
+    });
+  }
   async dispatch(message: WSResponse) {
     switch (message.type) {
       case "action": {
@@ -153,6 +258,16 @@ export class WsService {
         break;
       }
       case "error": {
+        // Ignore "not-signed-in" error when attempting to sign out while already signed out
+        if (message.action.command === "signout" && message.content.detail === "not-signed-in") {
+          break;
+        }
+        if (message.action.command === "signin") {
+          this.loggedSubject.next(false);
+          this.recoverSignin();
+          break;
+        }
+
         console.error(`[WS] the command ${message.action.command} received a error response`, message);
         break;
       }
@@ -160,6 +275,45 @@ export class WsService {
         debug("WS", "this command is unknown", message);
       }
     }
+  }
+
+  private recoverSignin() {
+    if (this.signinRecoveryOngoing) {
+      return;
+    }
+
+    this.signinRecoveryOngoing = true;
+
+    runInInjectionContext(this.environmentInjector, () => {
+      const authService = inject(AuthService);
+
+      const refreshToken = authService.getToken().refresh;
+      if (!refreshToken) {
+        this.signinRecoveryOngoing = false;
+        return;
+      }
+
+      authService
+        .refresh({ refresh: refreshToken })
+        .pipe(
+          take(1),
+          tap(() => {
+            const newAccess = authService.getToken().access || "";
+            if (newAccess) {
+              this.command({ command: "signin", token: newAccess });
+            }
+          }),
+          catchError((e) => {
+            // If refresh fails, let AuthService handle the global state (autoLogout) / navigation.
+            debug("WS", "refresh failed during signin recovery", e);
+            return of(null);
+          }),
+          tap(() => {
+            this.signinRecoveryOngoing = false;
+          }),
+        )
+        .subscribe();
+    });
   }
 
   async manageSubscription(message: WSResponseActionSuccess) {
@@ -174,14 +328,18 @@ export class WsService {
       }
       case "subscribe_to_workspace_events": {
         this.channelSubscribed.update((value) => {
-          value.channelWorkspaces = [...value.channelWorkspaces, message.content.channel];
+          if (!value.channelWorkspaces.includes(message.content.channel)) {
+            value.channelWorkspaces = [...value.channelWorkspaces, message.content.channel];
+          }
           return value;
         });
         break;
       }
       case "subscribe_to_project_events": {
         this.channelSubscribed.update((value) => {
-          value.channelProjects = [...value.channelProjects, message.content.channel];
+          if (!value.channelProjects.includes(message.content.channel)) {
+            value.channelProjects = [...value.channelProjects, message.content.channel];
+          }
           return value;
         });
         break;
@@ -202,6 +360,10 @@ export class WsService {
           );
           return value;
         });
+        break;
+      }
+      case "ping": {
+        debug("WS", "received pong");
         break;
       }
       default: {
@@ -299,14 +461,28 @@ export class WsService {
       this.logged$
         .pipe(
           filter((loggedIn) => loggedIn),
+          take(1),
           switchMap(() => {
+            if (command.command === "unsubscribe_all_except_user_channel") {
+              const subscriptions = this.channelSubscribed();
+              if (subscriptions.channelProjects.length === 0 && subscriptions.channelWorkspaces.length === 0) {
+                return of(null);
+              }
+              this.channelSubscribed.update((value) => {
+                value.channelProjects = [];
+                value.channelWorkspaces = [];
+                return value;
+              });
+              subject.next(command);
+              return of(null);
+            }
             if (command.command === "unsubscribe_from_workspace_events") {
-              if (!(`workspaces.${command.workspace}` in this.channelSubscribed().channelWorkspaces)) {
+              if (!this.channelSubscribed().channelWorkspaces.includes(`workspaces.${command.workspace}`)) {
                 return of(null);
               }
             }
             if (command.command === "unsubscribe_from_project_events") {
-              if (!(`projects.${command.project}` in this.channelSubscribed().channelProjects)) {
+              if (!this.channelSubscribed().channelProjects.includes(`projects.${command.project}`)) {
                 return of(null);
               }
             }
@@ -320,6 +496,10 @@ export class WsService {
 
   signoutFromLocal() {
     this.loggedSubject.next(false);
+    // Clear cached subscriptions so a new session starts clean
+    this.channelSubscribed.set({ channelWorkspaces: [], channelProjects: [] });
+    this.previouslyInWorkspace = null;
+    this.stopHeartbeat();
   }
   async signoutFromServer() {
     this.signoutFromLocal();
@@ -327,5 +507,23 @@ export class WsService {
       const authService = inject(AuthService);
       authService.applyLogout();
     });
+  }
+
+  startHeartbeat() {
+    if (this.heartbeatSubscription) {
+      return;
+    }
+    this.heartbeatSubscription = interval(this.heartbeatIntervalMs).subscribe(() => {
+      debug("WS", "sending ping");
+      this.command({ command: "ping" });
+    });
+  }
+
+  stopHeartbeat() {
+    if (!this.heartbeatSubscription) {
+      return;
+    }
+    this.heartbeatSubscription.unsubscribe();
+    this.heartbeatSubscription = null;
   }
 }

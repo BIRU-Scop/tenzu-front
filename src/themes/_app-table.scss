@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,29 +19,77 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
+@tailwind base;
+@layer base {
+  .app-table {
+    @apply table;
+    min-width: 100%;
+    border: 0;
+    border-spacing: 0;
+    table-layout: auto;
+    white-space: normal;
+    background-color: var(--mat-table-background-color, var(--mat-sys-surface));
 
-.app-table {
-  @apply table;
-  min-width: 100%;
-  border: 0;
-  border-spacing: 0;
-  table-layout: auto;
-  white-space: normal;
-  background-color: var(--mat-table-background-color, var(--mat-sys-surface));
+    .app-table-header-group {
+      @apply table-header-group;
+      min-height: 48px;
+      align-items: center;
 
-  .app-table-header-group {
-    @apply table-header-group;
-    min-height: 48px;
-    align-items: center;
+      .app-table-header-row {
+        @apply table-row;
+        min-height: var(--mat-table-row-item-container-height, 52px);
+        color: var(--mat-table-row-item-label-text-color, var(--mat-sys-on-surface, rgba(0, 0, 0, 0.87)));
+        display: flex;
+        height: unset;
+        border-width: 0;
+        border-bottom-width: var(--mat-table-row-item-outline-width, 1px);
+        border-style: solid;
+        border-bottom-color: var(--mat-sys-outline-variant);
+        align-items: center;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        line-height: var(--mat-table-row-item-label-text-line-height, var(--mat-sys-body-medium-line-height));
+        font-size: var(--mat-table-row-item-label-text-size, var(--mat-sys-body-medium-size, 14px));
+      }
 
-    .app-table-header-row {
+      .app-table-header-cell {
+        @apply table-cell last:pe-6 first:ps-6;
+        letter-spacing: var(--mat-table-row-item-label-text-tracking, var(--mat-sys-body-medium-tracking));
+        padding: 0 16px;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        word-wrap: break-word;
+        min-height: inherit;
+        color: var(--mat-table-header-headline-color, var(--mat-sys-on-surface, rgba(0, 0, 0, 0.87)));
+        font-family: var(--mat-table-header-headline-font, var(--mat-sys-title-small-font, Roboto, sans-serif));
+        line-height: var(--mat-table-header-headline-line-height, var(--mat-sys-title-small-line-height));
+        font-size: var(--mat-table-header-headline-size, var(--mat-sys-title-small-size, 14px));
+        font-weight: var(--mat-table-header-headline-weight, var(--mat-sys-title-small-weight, 500));
+      }
+    }
+
+    .app-table-row-group {
+      @apply table-row-group;
+    }
+
+    .app-table-row:last-child {
+      border-bottom-width: 0;
+    }
+
+
+    .app-table-row {
       @apply table-row;
       min-height: var(--mat-table-row-item-container-height, 52px);
       color: var(--mat-table-row-item-label-text-color, var(--mat-sys-on-surface, rgba(0, 0, 0, 0.87)));
       display: flex;
       height: unset;
       border-width: 0;
-      border-bottom-width:  var(--mat-table-row-item-outline-width, 1px);
+      border-bottom-width: var(--mat-table-row-item-outline-width, 1px);
       border-style: solid;
       border-bottom-color: var(--mat-sys-outline-variant);
       align-items: center;
@@ -49,69 +97,25 @@
       -webkit-font-smoothing: antialiased;
       line-height: var(--mat-table-row-item-label-text-line-height, var(--mat-sys-body-medium-line-height));
       font-size: var(--mat-table-row-item-label-text-size, var(--mat-sys-body-medium-size, 14px));
-    }
-    .app-table-header-cell {
-      @apply table-cell last:pe-6 first:ps-6;
-      letter-spacing: var(--mat-table-row-item-label-text-tracking, var(--mat-sys-body-medium-tracking));
-      padding: 0 16px;
-      box-sizing: border-box;
-      overflow: hidden;
-      text-align: left;
-      text-overflow: ellipsis;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      word-wrap: break-word;
-      min-height: inherit;
-      color: var(--mat-table-header-headline-color, var(--mat-sys-on-surface, rgba(0, 0, 0, 0.87)));
-      font-family: var(--mat-table-header-headline-font, var(--mat-sys-title-small-font, Roboto, sans-serif));
-      line-height: var(--mat-table-header-headline-line-height, var(--mat-sys-title-small-line-height));
-      font-size: var(--mat-table-header-headline-size, var(--mat-sys-title-small-size, 14px));
-      font-weight: var(--mat-table-header-headline-weight, var(--mat-sys-title-small-weight, 500));
-    }
-  }
-
-  .app-table-row-group {
-    @apply table-row-group;
-  }
-  .app-table-row:last-child  {
-    border-bottom-width: 0;
-  }
+      font-weight: var(--mat-table-row-item-label-text-weight, var(--mat-sys-body-medium-weight));
 
 
-  .app-table-row {
-    @apply table-row;
-    min-height: var(--mat-table-row-item-container-height, 52px);
-    color: var(--mat-table-row-item-label-text-color, var(--mat-sys-on-surface, rgba(0, 0, 0, 0.87)));
-    display: flex;
-    height: unset;
-    border-width: 0;
-    border-bottom-width:  var(--mat-table-row-item-outline-width, 1px);
-    border-style: solid;
-    border-bottom-color: var(--mat-sys-outline-variant);
-    align-items: center;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    line-height: var(--mat-table-row-item-label-text-line-height, var(--mat-sys-body-medium-line-height));
-    font-size: var(--mat-table-row-item-label-text-size, var(--mat-sys-body-medium-size, 14px));
-    font-weight: var(--mat-table-row-item-label-text-weight, var(--mat-sys-body-medium-weight));
+      .app-table-cell {
+        @apply table-cell last:pe-6 first:ps-6;
 
-
-    .app-table-cell {
-      @apply table-cell last:pe-6 first:ps-6;
-
-      letter-spacing: var(--mat-table-row-item-label-text-tracking, var(--mat-sys-body-medium-tracking));
-      line-height: inherit;
-      padding: 0 16px;
-      box-sizing: border-box;
-      overflow: hidden;
-      text-align: left;
-      text-overflow: ellipsis;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      word-wrap: break-word;
-      min-height: inherit;
+        letter-spacing: var(--mat-table-row-item-label-text-tracking, var(--mat-sys-body-medium-tracking));
+        line-height: inherit;
+        padding: 0 16px;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        word-wrap: break-word;
+        min-height: inherit;
+      }
     }
   }
 }

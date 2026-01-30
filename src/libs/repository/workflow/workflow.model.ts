@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -34,6 +34,7 @@ export type WorkflowNested = {
 };
 
 export type Workflow = WorkflowNested & {
+  order: number;
   statuses: StatusSummary[];
 };
 

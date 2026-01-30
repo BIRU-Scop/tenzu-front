@@ -1,12 +1,13 @@
 {
   "env": "dev",
+  "debug": true,
   "api": {
     "prefix": "v1",
     "baseDomain": "local-tenzu.biru.ovh",
     "suffixDomain": "api",
     "scheme": "https"
   },
-  "wsUrl": "wss://local-tenzu.biru.ovh/events/",
+  "wsUrl": "wss://local-tenzu.biru.ovh",
   "legal": null,
   "sentry": {}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,19 +19,12 @@
  *
  */
 
-/**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) 2023-present Kaleidos INC
- */
-
 export type CommandActionType =
   | "signin"
   | "signout"
   | "subscribe_to_project_events"
   | "unsubscribe_from_project_events"
+  | "unsubscribe_all_except_user_channel"
   | "subscribe_to_workspace_events"
   | "unsubscribe_from_workspace_events"
   | "ping";
@@ -55,6 +48,9 @@ export type UnsubscribeFromProjectEventsAction = CommandBase & {
   command: "unsubscribe_from_project_events";
   project: string;
 };
+export type UnsubscribeAllExceptUserChannelAction = CommandBase & {
+  command: "unsubscribe_all_except_user_channel";
+};
 export type SubscribeToWorkspaceEventsAction = CommandBase & {
   command: "subscribe_to_workspace_events";
   workspace: string;
@@ -73,6 +69,7 @@ export type Command =
   | PingActions
   | SubscribeToProjectEventsAction
   | UnsubscribeFromProjectEventsAction
+  | UnsubscribeAllExceptUserChannelAction
   | SubscribeToWorkspaceEventsAction
   | UnSubscribeFromWorkspaceEventsAction;
 

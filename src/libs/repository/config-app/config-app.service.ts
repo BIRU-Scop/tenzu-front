@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,9 +24,8 @@ import { HttpClient } from "@angular/common/http";
 import { ConfigModel, ConfigSchemaService } from "./config.model";
 import { environment } from "../../../environments/environment";
 import { EnvironmentConfig } from "../../../environments/environment-type";
-import { v4 } from "uuid";
 
-export const CORRELATION_ID = v4();
+export const CORRELATION_ID = crypto.randomUUID();
 
 @Injectable({
   providedIn: "root",
@@ -53,6 +52,9 @@ export class ConfigAppService {
       })
       .then((config) => {
         const schema = this.configSchemaService.schema().parse(config);
+        if (typeof window !== "undefined") {
+          (window as { __TENZU_DEBUG__?: boolean }).__TENZU_DEBUG__ = schema.debug ?? false;
+        }
         this.config.set({
           ...environment,
           ...schema,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,18 +19,20 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
-import { TranslocoDirective } from "@jsverse/transloco";
-import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
-import { StoryDetail } from "@tenzu/repository/story";
-import { ProjectDetail } from "@tenzu/repository/project";
-import { NotificationService } from "@tenzu/utils/services/notification";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { StoryAttachment, StoryAttachmentRepositoryService } from "src/libs/repository/story-attachment";
+import { StoryDetail } from "src/libs/repository/story";
+import { ProjectDetail } from "src/libs/repository/project";
+import { NotificationService } from "src/libs/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
+import { ConfigAppService } from "src/libs/repository/config-app/config-app.service";
+import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 @Component({
   selector: "app-story-detail-attachments",
@@ -44,6 +46,10 @@ import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
     MatIconButton,
     MatIcon,
     TranslocoDatePipe,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
+    ConfirmDirective,
   ],
   template: `
     @let story = storyDetail();
@@ -76,12 +82,12 @@ import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="overflow-x-auto">
-            <table class="app-table table-auto w-full">
+            <table class="app-table table-auto lg:w-full">
               <thead class="app-table-header-group">
                 <tr class="app-table-header-row">
                   <th class="app-table-header-cell">{{ t("attachments.name") }}</th>
-                  <th class="app-table-header-cell">{{ t("attachments.size") }}</th>
-                  <th class="app-table-header-cell">{{ t("attachments.date") }}</th>
+                  <th class="hidden 2xl:app-table-header-cell">{{ t("attachments.size") }}</th>
+                  <th class="hidden xl:app-table-header-cell">{{ t("attachments.date") }}</th>
                   <th class="app-table-header-cell sticky end-0 bg-surface-container !pe-0">
                     <span class="sr-only">{{ t("attachments.action") }}</span>
                   </th>
@@ -93,22 +99,44 @@ import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
                     <td class="app-table-cell">
                       {{ storyAttachment.name }}
                     </td>
-                    <td class="app-table-cell">{{ storyAttachment.size }}</td>
-                    <td class="app-table-cell">
+                    <td class="2xl:app-table-cell hidden">{{ storyAttachment.size }}</td>
+                    <td class="xl:app-table-cell hidden">
                       {{ storyAttachment.createdAt | translocoDate: { dateStyle: "short", timeStyle: "short" } }}
                     </td>
-                    <td class="app-table-cell sticky end-0 bg-surface-container !pe-0">
-                      <button mat-icon-button (click)="previewFile(storyAttachment)" type="button">
-                        <mat-icon>visibility</mat-icon>
-                      </button>
-                      <button mat-icon-button (click)="downloadFile(storyAttachment)" type="button">
-                        <mat-icon>download</mat-icon>
-                      </button>
-                      @if (_hasModifyPermission) {
-                        <button mat-icon-button type="button" (click)="deleteAttachment(storyAttachment)">
-                          <mat-icon>delete</mat-icon>
+                    <td class="app-table-cell  end-0 bg-surface-container !pe-0">
+                      <mat-menu #appMenu="matMenu">
+                        <button mat-menu-item (click)="previewFile(storyAttachment)" type="button">
+                          <mat-icon>visibility</mat-icon>
+                          <span>{{ t("attachments.preview") }}</span>
                         </button>
-                      }
+                        <button mat-menu-item (click)="downloadFile(storyAttachment)" type="button">
+                          <mat-icon>download</mat-icon>
+                          <span>{{ t("attachments.download") }}</span>
+                        </button>
+                        @if (_hasModifyPermission) {
+                          <button
+                            mat-menu-item
+                            appConfirm
+                            type="button"
+                            (popupConfirm)="deleteAttachment(storyAttachment)"
+                            [data]="{
+                              message: translocoService.translate(
+                                'workflow.detail_story.attachments.confirm_delete_attachment',
+                                {
+                                  fileName: storyAttachment.name,
+                                }
+                              ),
+                              deleteAction: true,
+                            }"
+                          >
+                            <mat-icon>delete</mat-icon>
+                            <span>{{ t("attachments.delete") }}</span>
+                          </button>
+                        }
+                      </mat-menu>
+                      <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
                     </td>
                   </tr>
                 }
@@ -126,23 +154,29 @@ import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 export class StoryDetailAttachmentsComponent {
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   notificationService = inject(NotificationService);
-
+  translocoService = inject(TranslocoService);
   readonly configAppService = inject(ConfigAppService);
   readonly fileSizePipe = inject(FileSizePipe);
   storyDetail = input.required<StoryDetail>();
+  storyDetailRef = computed(() => this.storyDetail().ref);
   projectDetail = input.required<ProjectDetail>();
+
   hasModifyPermission = input(false);
   constructor() {
     effect(() => {
-      this.storyAttachmentRepositoryService.resetAll();
-      untracked(() =>
-        this.storyAttachmentRepositoryService
-          .listRequest({
-            projectId: this.storyDetail().projectId,
-            ref: this.storyDetail().ref,
-          })
-          .then(),
-      ).then();
+      const storyDetailRef = this.storyDetailRef();
+      untracked(() => {
+        if (storyDetailRef) {
+          const storyDetail = this.storyDetail();
+          this.storyAttachmentRepositoryService.resetAll();
+          this.storyAttachmentRepositoryService
+            .listRequest({
+              projectId: storyDetail.projectId,
+              ref: storyDetail.ref,
+            })
+            .then();
+        }
+      });
     });
   }
 

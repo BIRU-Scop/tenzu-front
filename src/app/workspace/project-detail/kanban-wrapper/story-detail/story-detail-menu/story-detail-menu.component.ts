@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,19 +26,15 @@ import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
 import { StoryDetail } from "@tenzu/repository/story";
 import { Router, RouterLink } from "@angular/router";
-import { ChooseWorkflowDialogComponent } from "../choose-workflow-dialog/choose-workflow-dialog.component";
+import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryDetailFacade } from "../story-detail.facade";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { MatFormField } from "@angular/material/form-field";
-import { MatOption, MatSelect, MatSelectTrigger } from "@angular/material/select";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
-import { StoryView } from "../../kanban-wrapper.store";
+import { StoryDisplayMode } from "../../kanban-wrapper.store";
 import { KanbanWrapperService } from "../../kanban-wrapper.service";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { MatDialog } from "@angular/material/dialog";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 
 @Component({
   selector: "app-story-detail-menu",
@@ -50,40 +46,38 @@ import { MatDialog } from "@angular/material/dialog";
     MatIconButton,
     MatTooltip,
     RouterLink,
-    MatFormField,
-    MatSelect,
-    MatSelectTrigger,
-    ReactiveFormsModule,
-    MatOption,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
   ],
   template: `
     @let _story = story();
     @if (_story) {
       <div class="flex flex-row p-4 justify-between">
-        <div class="flex flex-row gap-1  place-items-center" *transloco="let t; prefix: 'workflow.detail_story'">
-          <span class="text-on-surface-variant mat-title-small">{{ t("workflow") }}</span>
+        <div class="flex flex-row gap-1  place-items-center" *transloco="let t">
+          <span class="text-on-surface-variant mat-title-small">{{ t("workflow.detail_story.workflow") }}</span>
           <span class="text-on-surface mat-title-medium">{{ _story.workflow.name }}</span>
           @if (hasModifyPermission()) {
             <button
               mat-icon-button
               class="icon-sm"
               type="button"
-              [attr.aria-label]="t('change_workflow')"
+              [attr.aria-label]="t('workflow.detail_story.change_workflow')"
               (click)="openChooseWorkflowDialog($event)"
-              [matTooltip]="t('change_workflow')"
+              [matTooltip]="t('workflow.detail_story.change_workflow')"
             >
               <mat-icon>edit</mat-icon>
             </button>
           }
           <span class="text-on-surface-variant mat-title-small">/</span>
-          <span class="text-on-surface-variant mat-title-small">{{ t("story") }}</span>
+          <span class="text-on-surface-variant mat-title-small">{{ t("workflow.detail_story.story") }}</span>
           <span class="text-on-surface mat-title-medium">#{{ _story.ref }}</span>
           <a
             mat-icon-button
             class="icon-sm"
             type="button"
-            [attr.aria-label]="t('story_previous')"
-            [matTooltip]="t('story_previous')"
+            [attr.aria-label]="t('workflow.detail_story.story_previous')"
+            [matTooltip]="t('workflow.detail_story.story_previous')"
             [disabled]="!_story.prev"
             [routerLink]="[
               '/workspace',
@@ -100,8 +94,8 @@ import { MatDialog } from "@angular/material/dialog";
             mat-icon-button
             class="icon-sm"
             type="button"
-            [attr.aria-label]="t('story_next')"
-            [matTooltip]="t('story_next')"
+            [attr.aria-label]="t('workflow.detail_story.story_next')"
+            [matTooltip]="t('workflow.detail_story.story_next')"
             [disabled]="!_story.next"
             [routerLink]="[
               '/workspace',
@@ -114,22 +108,32 @@ import { MatDialog } from "@angular/material/dialog";
           >
             <mat-icon>arrow_forward</mat-icon>
           </a>
-          <mat-form-field class="transparent self-end">
-            <mat-select [formControl]="storyView">
-              <mat-select-trigger>
-                <mat-icon>{{ typeStoryView[storyView.getRawValue()] }}</mat-icon>
-              </mat-select-trigger>
-              <mat-option [value]="'kanban'">
-                <mat-icon>capture</mat-icon>
-              </mat-option>
-              <mat-option [value]="'fullView'">
-                <mat-icon>fullscreen</mat-icon>
-              </mat-option>
-              <mat-option [value]="'side-view'">
-                <mat-icon>view_sidebar</mat-icon>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <button
+            mat-icon-button
+            type="button"
+            [matMenuTriggerFor]="storyViewMenu"
+            [attr.aria-label]="t('workflow.change_mode_view.aria_label')"
+            [matTooltip]="t('workflow.change_mode_view.aria_label')"
+          >
+            <mat-icon>{{ storyViewIconMap[kanbanWrapperService.storyDisplayMode()] }}</mat-icon>
+          </button>
+
+          <mat-menu #storyViewMenu="matMenu">
+            <button mat-menu-item type="button" (click)="setStoryView('modalView')">
+              <mat-icon>capture</mat-icon>
+              <span>{{ t("workflow.change_mode_view.modal_view") }}</span>
+            </button>
+
+            <button mat-menu-item type="button" (click)="setStoryView('fullView')">
+              <mat-icon>fullscreen</mat-icon>
+              <span>{{ t("workflow.change_mode_view.full_view") }}</span>
+            </button>
+
+            <button mat-menu-item type="button" (click)="setStoryView('sideView')">
+              <mat-icon>view_sidebar</mat-icon>
+              <span>{{ t("workflow.change_mode_view.side_view") }}</span>
+            </button>
+          </mat-menu>
         </div>
         @if (canBeClosed()) {
           <button mat-icon-button (click)="closed.emit()">
@@ -143,7 +147,11 @@ import { MatDialog } from "@angular/material/dialog";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailMenuComponent {
-  typeStoryView = { kanban: "capture", fullView: "fullscreen", "side-view": "view_sidebar" };
+  storyViewIconMap: Record<StoryDisplayMode, string> = {
+    modalView: "capture",
+    fullView: "fullscreen",
+    sideView: "view_sidebar",
+  };
 
   relativeDialog = inject(RelativeDialogService);
   notificationService = inject(NotificationService);
@@ -151,9 +159,6 @@ export class StoryDetailMenuComponent {
   workspaceService = inject(WorkspaceRepositoryService);
   router = inject(Router);
   kanbanWrapperService = inject(KanbanWrapperService);
-  dialogRef = inject(MatDialog);
-
-  storyView = new FormControl<StoryView>("kanban", { nonNullable: true });
 
   canBeClosed = input(false);
   hasModifyPermission = input(false);
@@ -161,16 +166,8 @@ export class StoryDetailMenuComponent {
 
   closed = output<void>();
 
-  constructor() {
-    toObservable(this.kanbanWrapperService.storyView).subscribe((storyView) => {
-      this.storyView.setValue(storyView);
-      if (storyView !== "kanban") {
-        this.dialogRef.closeAll();
-      }
-    });
-    this.storyView.valueChanges.subscribe((storyView) => {
-      this.kanbanWrapperService.setStoryView(storyView);
-    });
+  protected setStoryView(storyView: StoryDisplayMode) {
+    this.kanbanWrapperService.setStoryDisplayMode(storyView);
   }
   openChooseWorkflowDialog(event: MouseEvent): void {
     const story = this.story();

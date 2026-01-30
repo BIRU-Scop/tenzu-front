@@ -1,4 +1,10 @@
 {
+  "change_mode_view": {
+    "aria_label": "Changer le mode d'affichage",
+    "modal_view": "Vue modale",
+    "full_view": "Plein écran",
+    "side_view": "Vue latérale"
+  },
   "create_workflow": {
     "dialog": {
       "aria_label": "Créer un kanban",
@@ -92,7 +98,11 @@
       "date": "Date",
       "action": "Action",
       "exceed_size": "{{var}} dépasse la taille de {{maxSize}}",
-      "deleted_attachment": "{{var}} a été supprimé"
+      "deleted_attachment": "{{var}} a été supprimé",
+      "preview": "Aperçu",
+      "download": "Télécharger",
+      "delete": "Supprimer",
+      "confirm_delete_attachment": "Tu es en train de supprimer {{fileName}}. Veux-tu continuer ?"
     },
     "comments": {
       "count": "{ totalComments, plural, =0 {# Commentaire} one {# Commentaire} other {# Commentaires} }",

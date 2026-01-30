@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,24 +19,24 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import * as Sentry from "@sentry/angular";
 import { debug } from "@tenzu/utils/functions/logging";
 import { AuthService, ProviderCallback, Tokens } from "@tenzu/repository/auth";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatIcon } from "@angular/material/icon";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import PendingVerificationComponent from "../signup/pending-verification/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-
+import { applyWhenValue, FormField, form, required, submit } from "@angular/forms/signals";
+import { lastValueFrom } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
 @Component({
   selector: "app-social-auth-callback",
   standalone: true,
@@ -46,10 +46,9 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
     MatButton,
     ButtonComponent,
     MatCheckbox,
-    ReactiveFormsModule,
-    FormsModule,
     MatIcon,
     PendingVerificationComponent,
+    FormField,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -59,14 +58,14 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
           <app-pending-verification [email]="_callback.email" (resendEmail)="resendEmail()"></app-pending-verification>
         } @else if (_callback.error === "missing_terms_acceptance" && _callback.socialSessionKey) {
           @let configLegal = configAppService.configLegal();
-          @let _form = form();
-          <form [formGroup]="_form" (ngSubmit)="submitCompleteSignup()" class="flex flex-col gap-2 w-[32rem]">
+          <form (submit)="submitCompleteSignup($event)" class="flex flex-col gap-2 w-[32rem]">
             @if (configLegal) {
               <div class="min-w-full w-min">
                 <mat-checkbox
-                  [class.checkbox-invalid]="_form.dirty && _form.controls.acceptTerms.hasError('required')"
-                  formControlName="acceptTerms"
-                  required
+                  [formField]="callbackForm.acceptTermsOfService"
+                  [class.checkbox-invalid]="
+                    callbackForm.acceptTermsOfService().touched() && callbackForm.acceptTermsOfService().invalid()
+                  "
                 >
                   <p
                     [innerHTML]="
@@ -78,18 +77,18 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
                   ></p>
                 </mat-checkbox>
               </div>
-              @if (_form.dirty && _form.controls.acceptTerms.hasError("required")) {
+              @for (error of callbackForm.acceptTermsOfService().errors(); track error.kind) {
                 <div class="flex flex-row">
                   <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
                   <p class="mat-body-medium text-on-error-container align-middle">
-                    {{ t("auth.signup.validation.terms_and_privacy_required") }}
+                    {{ t(error?.message || "") }}
                   </p>
                 </div>
               }
             }
             <app-button
               level="primary"
-              [disabled]="!_form.dirty || _form.invalid"
+              [disabled]="!callbackForm().dirty() || callbackForm().invalid()"
               type="submit"
               translocoKey="auth.signup.continue"
             />
@@ -124,41 +123,48 @@ export default class SocialAuthCallbackComponent {
   readonly configAppService = inject(ConfigAppService);
   readonly notificationService = inject(NotificationService);
   readonly userService = inject(UserService);
-  readonly fb = inject(NonNullableFormBuilder);
 
   callback = signal<ProviderCallback | undefined>(undefined);
-  form = computed(() =>
-    this.fb.group({
-      acceptTerms: [false, this.configAppService.configLegal() ? [Validators.required] : []],
-    }),
-  );
+  callbackForm = form(signal({ acceptTermsOfService: false }), (schemaPath) => {
+    applyWhenValue(
+      schemaPath,
+      () => !!this.configAppService.configLegal(),
+      (schemaPath) => {
+        required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.terms_and_privacy_required" });
+      },
+    );
+  });
 
   tryAuthenticate(callback: ProviderCallback) {
     if (callback.access && callback.refresh) {
       this.authService.setToken(callback as Tokens);
-      this.router.navigateByUrl(callback.next || "/");
+      this.router.navigateByUrl(callback.next || "/").then();
       return true;
     }
     return false;
   }
 
   constructor() {
-    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((value) => {
-      debug("social auth callback", "query params", value);
-      const callback = {
-        ...value,
-        fromSignup: coerceBooleanProperty(value["fromSignup"] || false),
-      } as ProviderCallback;
-      this.callback.set(callback);
-      if (callback.error === "cancelled") {
-        this.router.navigateByUrl(callback.fromSignup ? "/signup" : "/login");
-      } else if (!this.tryAuthenticate(callback)) {
-        if (
-          !(callback.error === "unverified" && callback.email) &&
-          !(callback.error === "missing_terms_acceptance" && callback.socialSessionKey)
-        ) {
-          this.logUnexpectedState(callback);
-        }
+    effect(() => {
+      const values = this.router.lastSuccessfulNavigation()?.extractedUrl?.queryParams;
+      if (values) {
+        const callback = {
+          ...values,
+          fromSignup: coerceBooleanProperty(values["fromSignup"] || false),
+        } as ProviderCallback;
+        untracked(() => {
+          this.callback.set(callback);
+          if (callback.error === "cancelled") {
+            this.router.navigateByUrl(callback.fromSignup ? "/signup" : "/login").then();
+          } else if (!this.tryAuthenticate(callback)) {
+            if (
+              !(callback.error === "unverified" && callback.email) &&
+              !(callback.error === "missing_terms_acceptance" && callback.socialSessionKey)
+            ) {
+              this.logUnexpectedState(callback);
+            }
+          }
+        });
       }
     });
   }
@@ -170,30 +176,34 @@ export default class SocialAuthCallbackComponent {
     }
   }
 
-  submitCompleteSignup(): void {
-    const form = this.form();
-    const socialSessionKey = this.callback()?.socialSessionKey;
-    if (form.valid && socialSessionKey) {
-      const acceptTerms = form.value.acceptTerms || false;
-      this.authService
-        .continueSignup({
-          ...{ acceptTermsOfService: acceptTerms, acceptPrivacyPolicy: acceptTerms },
-          socialSessionKey,
-        })
-        .subscribe(
-          (callback) => {
-            if (!this.tryAuthenticate(callback)) {
-              this.callback.set({ ...this.callback(), ...callback });
-            }
-          },
-          (err) => {
-            this.notificationService.error({ title: err?.error?.detail, translocoTitle: false });
-          },
-        );
-    }
+  async submitCompleteSignup(event: Event) {
+    event.preventDefault();
+    await submit(this.callbackForm, async (form) => {
+      const socialSessionKey = this.callback()?.socialSessionKey;
+      const values = form().value();
+      if (socialSessionKey) {
+        try {
+          const callback = await lastValueFrom(
+            this.authService.continueSignup({
+              ...values,
+              acceptPrivacyPolicy: values.acceptTermsOfService,
+              socialSessionKey: socialSessionKey,
+            }),
+          );
+
+          if (!this.tryAuthenticate(callback)) {
+            this.callback.set({ ...this.callback(), ...callback });
+          }
+        } catch (err) {
+          if (err instanceof HttpErrorResponse) {
+            this.notificationService.error({ title: err.error.detail, translocoTitle: false });
+          }
+        }
+      }
+    });
   }
 
-  logUnexpectedState(callback: ProviderCallback): void {
+  logUnexpectedState(callback: ProviderCallback) {
     debug("social-auth-callback", "UNEXPECTED", callback.error);
     Sentry.captureMessage("Unexpected error received by social callback", {
       level: "error",
