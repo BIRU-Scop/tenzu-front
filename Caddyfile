@@ -1,10 +1,10 @@
 :80 {
   root * /usr/share/caddy
   encode zstd gzip
-  @index path / /index.html
-  header @index Cache-Control "no-cache, no-store, must-revalidate"
+  @nocache path / /index.html /assets/configs/config.json
+  header @nocache Cache-Control "no-cache, no-store, must-revalidate"
 
-  @other not path / /index.html
+  @other not path / /index.html /assets/configs/config.json
 
   header @other Cache-Control "public, max-age=31536000, immutable"
 
