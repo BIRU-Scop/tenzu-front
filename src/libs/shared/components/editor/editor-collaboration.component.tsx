@@ -106,7 +106,11 @@ export class EditorCollaborationComponent
         this.editor.onChange((editor, { getChanges }) => {
           const changes = getChanges();
           for (const change of changes) {
-            if (change.type === "delete" && change.block.type === "file") {
+            if (
+              change.type === "delete" &&
+              (change.block.type === "file" || change.block.type === "image")
+            ) {
+              console.log("deleted");
               this.filedDeleted.emit(change.block.props.url);
             }
           }
