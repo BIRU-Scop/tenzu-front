@@ -55,7 +55,6 @@ export class WsDocProvider {
   constructor({ serverUrl, roomName }: { serverUrl: string; roomName: string }) {
     // Initialize Yjs WebSocket provider with a new document
     this.provider = new WebsocketProvider(serverUrl, roomName, new Y.Doc());
-
     // Listen for connection status changes
     this.provider.on("status", (event) => {
       if (event.status === "connected" && this.provider.ws) {
