@@ -33,7 +33,7 @@ import { WsDocProvider } from "@tenzu/utils/doc-provider";
     #editor
   ></div>`,
   host: {
-    class: "editor",
+    class: "editor h-full",
   },
   styles: ``,
 })
@@ -145,15 +145,6 @@ export class EditorCollaborationComponent
     return JSON.stringify(this.editor?.document);
   }
 
-  public enableAndFocus() {
-    if (this.editor) {
-      this.editor.isEditable = true;
-      this.editor.focus();
-    }
-  }
-  public isEmpty() {
-    return this.editor?.isEmpty;
-  }
   private render() {
     const editable = !this.readonly();
     if (this.root && this.editor) {

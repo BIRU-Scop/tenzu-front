@@ -3,7 +3,7 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
-  content: ["./src/**/*.{html,ts}"],
+  content: ["./src/**/*.{html,ts,tsx}"],
   theme: {
     extend: {
       colors: {

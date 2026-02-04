@@ -48,7 +48,7 @@ import { MatDivider } from "@angular/material/list";
     StoryDetailPanelLeftComponent,
     MatDivider,
   ],
-
+  host: { class: "flex-1" },
   template: `
     @let project = projectRepositoryService.entityDetail();
     @let story = selectedStory();
@@ -67,13 +67,13 @@ import { MatDivider } from "@angular/material/list";
         />
         <div class="flex flex-row gap-4 h-5/6">
           <app-story-detail-panel-left
-            class="basis-1/2 lg:basis-2/3 flex flex-col p-4 min-w-0 gap-4"
+            class="basis-1/2 lg:basis-2/3  p-4 min-w-0 gap-4"
             [story]="story"
             [project]="project"
           />
           <mat-divider [vertical]="true" />
           <app-story-detail-panel-right
-            class="basis-1/2 lg:basis-1/3 flex-1 min-w-0  h-full pt-4"
+            class="basis-1/2 lg:basis-1/3 min-w-0  h-full pt-4"
             [project]="project"
             [story]="story"
             [hasModifyPermission]="hasModifyPermission()"
