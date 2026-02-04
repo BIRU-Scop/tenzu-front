@@ -72,7 +72,6 @@ import { MatDialog } from "@angular/material/dialog";
   ],
   template: `
     @let _user = user();
-    @let _story = story();
 
     <div class="flex flex-row gap-2 mb-2 min-h-8 justify-end">
       @if (onlineUsers().length > 1) {
@@ -86,19 +85,17 @@ import { MatDialog } from "@angular/material/dialog";
       <mat-form-field appearance="fill" class="title-field">
         <input [attr.aria-label]="t('workflow.detail_story.title')" matInput [formField]="storyForm.title" />
       </mat-form-field>
-      @if (_user.fullName && wsDocProvider().connected()) {
-        <app-editor-collaboration-block
-          class="overflow-auto"
-          [wsDocProvider]="wsDocProvider()"
-          [uploadFile]="uploadFile(_story)"
-          [user]="_user"
-          [(touched)]="touched"
-          (validate)="save()"
-          [readonly]="!hasModifyPermission()"
-          (filedDeleted)="deleteStoryAttachement($event)"
-          #editorContainer
-        />
-      }
+      <app-editor-collaboration-block
+        class="overflow-auto"
+        [wsDocProvider]="wsDocProvider()"
+        [uploadFile]="uploadFile()"
+        [user]="_user"
+        [(touched)]="touched"
+        (validate)="save()"
+        [readonly]="!hasModifyPermission()"
+        (filedDeleted)="deleteStoryAttachement($event)"
+        #editorContainer
+      />
 
       @if (hasModifyPermission()) {
         <app-form-footer>
@@ -153,7 +150,17 @@ export class StoryEditionComponent {
     });
   });
   onlineUsers = computed(() => this.wsDocProvider().onlineUsers());
-
+  uploadFile = computed(() => {
+    const storyAttachmentRepositoryService = this.storyAttachmentRepositoryService;
+    const baseUrl = this.configAppService.apiUrl();
+    return async (file: File) => {
+      const attachment = await storyAttachmentRepositoryService.createAttachment(file, {
+        ref: this.storyRef(),
+        projectId: this.projectId(),
+      });
+      return `${baseUrl}/stories/attachments/${attachment.id}`;
+    };
+  });
   constructor() {
     effect((onCleanup) => {
       const wsDocProvider = this.wsDocProvider();
@@ -175,18 +182,6 @@ export class StoryEditionComponent {
       this.storyForm().reset();
       this.notificationService.success({ title: "notification.action.changes_saved" });
     });
-  }
-
-  uploadFile(storyDetail: StoryDetail) {
-    const storyAttachmentRepositoryService = this.storyAttachmentRepositoryService;
-    const baseUrl = this.configAppService.apiUrl();
-    return async (file: File) => {
-      const attachment = await storyAttachmentRepositoryService.createAttachment(file, {
-        ref: storyDetail.ref,
-        projectId: storyDetail.projectId,
-      });
-      return `${baseUrl}/stories/attachments/${attachment.id}`;
-    };
   }
 
   undo() {
