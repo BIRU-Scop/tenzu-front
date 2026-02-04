@@ -21,12 +21,10 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { toObservable } from "@angular/core/rxjs-interop";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTableModule } from "@angular/material/table";
 import { StoryDetailFacade } from "./story-detail.facade";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
@@ -89,7 +87,6 @@ import { MatDivider } from "@angular/material/list";
 export default class StoryDetailComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
   storyDetailFacade = inject(StoryDetailFacade);
-  workflowService = this.storyDetailFacade.workflowRepositoryService;
   projectRepositoryService = inject(ProjectRepositoryService);
   storyService = this.storyDetailFacade.storyRepositoryService;
   notificationService = inject(NotificationService);
@@ -106,16 +103,6 @@ export default class StoryDetailComponent {
   canBeClosed = input(false);
   closed = output<void>();
   selectedStory = this.storyService.entityDetail;
-
-  constructor() {
-    toObservable(this.selectedStory)
-      .pipe(filterNotNull())
-      .subscribe(async (value) => {
-        if (this.workflowService.entityDetail()?.id !== value.workflowId) {
-          await this.workflowService.getBySlugRequest(value.workflow);
-        }
-      });
-  }
 
   async onDelete() {
     await this.storyDetailFacade.deleteSelectedStory();
