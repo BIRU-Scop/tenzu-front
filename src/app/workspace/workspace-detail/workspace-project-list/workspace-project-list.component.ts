@@ -29,9 +29,9 @@ import { MatIcon } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
-import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -43,6 +43,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
     RouterLink,
     CardSkeletonComponent,
     ActionCardComponent,
+    ProjectLandingPageUrl,
   ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     @let workspace = workspaceService.entityDetail();
@@ -77,7 +78,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
             [color]="project.color"
             [workspaceId]="project.workspaceId"
             [description]="project.description ? project.description : null"
-            [landingPage]="getProjectLandingPageUrl(project)"
+            [landingPage]="project | projectLandingPageUrl"
           />
         }
       } @empty {
@@ -131,5 +132,4 @@ export default class WorkspaceProjectListComponent implements AfterViewInit {
   }
 
   protected readonly Array = Array;
-  protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
 }
