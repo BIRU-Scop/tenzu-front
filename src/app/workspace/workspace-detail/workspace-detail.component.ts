@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,8 +19,8 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
+import { ChangeDetectionStrategy, Component, effect, inject, input } from "@angular/core";
+import { Router, RouterOutlet } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
@@ -32,7 +32,7 @@ import { MemberPermission } from "@tenzu/repository/membership";
 @Component({
   selector: "app-workspace-detail",
   imports: [RouterOutlet, PermissionOrRedirectDirective],
-  template: ` @let workspace = workspaceService.entityDetail();
+  template: ` @let workspace = workspaceRepositoryService.entityDetail();
     @if (workspace) {
       <ng-container
         [appPermissionOrRedirect]="{
@@ -47,19 +47,22 @@ import { MemberPermission } from "@tenzu/repository/membership";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceDetailComponent implements OnDestroy {
+export class WorkspaceDetailComponent {
+  workspaceId = input.required<string>();
   protected readonly MemberPermission = MemberPermission;
-
-  workspaceService = inject(WorkspaceRepositoryService);
-  projectService = inject(ProjectRepositoryService);
+  router = inject(Router);
+  workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  projectRepositoryService = inject(ProjectRepositoryService);
   sideNavStore = inject(SideNavStore);
 
-  ngOnDestroy(): void {
-    this.projectService.resetEntitySummaryList();
-  }
-
   constructor() {
-    toObservable(this.workspaceService.entityDetail)
+    effect((onCleanup) => {
+      const workspaceId = this.workspaceId();
+      this.projectRepositoryService.listRequest({ workspaceId }).then();
+      onCleanup(() => this.projectRepositoryService.resetEntitySummaryList());
+    });
+
+    toObservable(this.workspaceRepositoryService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((workspace) => {
         this.sideNavStore.setAvatar(
