@@ -51,10 +51,11 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
     MatMenuItem,
     ConfirmDirective,
   ],
+  host: { class: "flex flex-col gap-y-4" },
   template: `
     @let story = storyDetail();
     @let _hasModifyPermission = hasModifyPermission();
-    <div class="flex flex-col gap-y-4" *transloco="let t; prefix: 'workflow.detail_story'">
+    <ng-container *transloco="let t">
       @if (_hasModifyPermission) {
         <button
           class="primary-button w-fit"
@@ -63,7 +64,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
           (click)="resetInput(fileUpload); fileUpload.click()"
         >
           <mat-icon class="icon-full">attach_file</mat-icon>
-          {{ t("attachments.attach_file") }}
+          {{ t("workflow.detail_story.attachments.attach_file") }}
         </button>
         <input
           type="file"
@@ -78,7 +79,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
           <mat-expansion-panel-header>
             <mat-panel-title>
               <mat-icon>attachment</mat-icon>
-              Attachments ({{ selectedStoryAttachments.length }})
+              {{ t("workflow.detail_story.attachments.title", { length: selectedStoryAttachments.length }) }}
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="overflow-x-auto">
@@ -86,10 +87,10 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
               <thead class="app-table-header-group">
                 <tr class="app-table-header-row">
                   <th class="app-table-header-cell">{{ t("attachments.name") }}</th>
-                  <th class="hidden 2xl:app-table-header-cell">{{ t("attachments.size") }}</th>
-                  <th class="hidden xl:app-table-header-cell">{{ t("attachments.date") }}</th>
+                  <th class="hidden 2xl:app-table-header-cell">{{ t("workflow.detail_story.attachments.size") }}</th>
+                  <th class="hidden xl:app-table-header-cell">{{ t("workflow.detail_story.attachments.date") }}</th>
                   <th class="app-table-header-cell sticky end-0 bg-surface-container !pe-0">
-                    <span class="sr-only">{{ t("attachments.action") }}</span>
+                    <span class="sr-only">{{ t("workflow.detail_story.attachments.action") }}</span>
                   </th>
                 </tr>
               </thead>
@@ -107,11 +108,11 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
                       <mat-menu #appMenu="matMenu">
                         <button mat-menu-item (click)="previewFile(storyAttachment)" type="button">
                           <mat-icon>visibility</mat-icon>
-                          <span>{{ t("attachments.preview") }}</span>
+                          <span>{{ t("workflow.detail_story.attachments.preview") }}</span>
                         </button>
                         <button mat-menu-item (click)="downloadFile(storyAttachment)" type="button">
                           <mat-icon>download</mat-icon>
-                          <span>{{ t("attachments.download") }}</span>
+                          <span>{{ t("workflow.detail_story.attachments.download") }}</span>
                         </button>
                         @if (_hasModifyPermission) {
                           <button
@@ -130,7 +131,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
                             }"
                           >
                             <mat-icon>delete</mat-icon>
-                            <span>{{ t("attachments.delete") }}</span>
+                            <span>{{ t("workflow.detail_story.attachments.delete") }}</span>
                           </button>
                         }
                       </mat-menu>
@@ -145,7 +146,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
           </div>
         </mat-expansion-panel>
       }
-    </div>
+    </ng-container>
   `,
   styles: ``,
   providers: [FileSizePipe],
