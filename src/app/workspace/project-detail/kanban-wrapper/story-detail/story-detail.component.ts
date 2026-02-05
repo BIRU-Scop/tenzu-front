@@ -71,7 +71,7 @@ import { MatDivider } from "@angular/material/list";
           />
           <mat-divider [vertical]="true" />
           <app-story-detail-panel-right
-            class="basis-1/2 lg:basis-1/3 min-w-0  h-full pt-4"
+            class="basis-1/2 lg:basis-1/3 min-w-0 h-full pt-4 pr-4"
             [project]="project"
             [story]="story"
             [hasModifyPermission]="hasModifyPermission()"
