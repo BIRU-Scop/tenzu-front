@@ -23,6 +23,7 @@ import { debug } from "@tenzu/utils/functions/logging";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { signal } from "@angular/core";
+import * as awarenessProtocol from "y-protocols/awareness";
 
 /**
  * Represents an online user in the collaborative editing session
@@ -34,6 +35,26 @@ export type OnlineUser = {
   color: string;
   /** Unique identifier of the user */
   id: string;
+};
+
+type WsOpts = {
+  connect?: boolean | undefined;
+  awareness?: awarenessProtocol.Awareness | undefined;
+  params?: Record<string, string> | undefined;
+  protocols?: string[] | undefined;
+  WebSocketPolyfill?:
+    | {
+        new (url: string | URL, protocols?: string | string[] | undefined): WebSocket;
+        prototype: WebSocket;
+        readonly CLOSED: number;
+        readonly CLOSING: number;
+        readonly CONNECTING: number;
+        readonly OPEN: number;
+      }
+    | undefined;
+  resyncInterval?: number | undefined;
+  maxBackoffTime?: number | undefined;
+  disableBc?: boolean | undefined;
 };
 
 /**
@@ -51,12 +72,16 @@ export class WsDocProvider {
    * Initialize the WebSocket provider for collaborative document editing
    * @param serverUrl - The WebSocket server URL
    * @param roomName - The unique room identifier for this document session
+   * @param wsOpts - Optional configuration object
    */
-  constructor({ serverUrl, roomName }: { serverUrl: string; roomName: string }) {
+  constructor({ serverUrl, roomName, wsOpts }: { serverUrl: string; roomName: string; wsOpts?: WsOpts }) {
     // Initialize Yjs WebSocket provider with a new document
-    this.provider = new WebsocketProvider(serverUrl, roomName, new Y.Doc());
+    this.provider = new WebsocketProvider(serverUrl, roomName, new Y.Doc(), wsOpts);
     // Listen for connection status changes
     this.provider.on("status", (event) => {
+      if (event.status === "disconnected") {
+        this.connected.set(false);
+      }
       if (event.status === "connected" && this.provider.ws) {
         this.connected.set(true);
         const originalOnMessage = this.provider.ws.onmessage;
