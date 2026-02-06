@@ -145,8 +145,9 @@ export class StoryEditionComponent {
     const storyRef = this.storyRef();
     const projectId = this.projectId();
     return new WsDocProvider({
-      serverUrl: `${this.configAppService.wsUrl()}/collaboration/${projectId}/`,
-      roomName: `${storyRef}?token=${this.authService.getToken().access}`,
+      serverUrl: `${this.configAppService.wsUrl()}/collaboration`,
+      roomName: `${projectId}/${storyRef}`,
+      wsOpts: { params: { token: this.authService.getToken().access || "" } },
     });
   });
   onlineUsers = computed(() => this.wsDocProvider().onlineUsers());
