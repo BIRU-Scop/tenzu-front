@@ -92,13 +92,12 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
           (popupConfirm)="deleteStory.emit()"
         />
         <mat-divider />
-
-        <app-story-detail-attachments
-          [projectDetail]="_project"
-          [storyDetail]="_story"
-          [hasModifyPermission]="hasModifyPermission()"
-        />
       </ng-container>
+      <app-story-detail-attachments
+        [projectDetail]="_project"
+        [storyDetail]="_story"
+        [hasModifyPermission]="hasModifyPermission()"
+      />
     </ng-container>
   `,
   styles: ``,

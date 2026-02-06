@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,72 +19,8 @@
  *
  */
 
-import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
+import { Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
-import { inject } from "@angular/core";
-import { debug } from "@tenzu/utils/functions/logging";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
-
-export function workspaceResolver(route: ActivatedRouteSnapshot) {
-  const workspaceId = route.paramMap.get("workspaceId");
-  debug("workspaceResolver", "start", workspaceId);
-  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
-  const router = inject(Router);
-  if (workspaceId) {
-    const promise = workspaceRepositoryService.setup({ workspaceId });
-    if (promise) {
-      promise.catch((error) => {
-        if (error instanceof HttpErrorResponse) {
-          if (error.status === 404 || error.status === 422) {
-            return router.navigate(["/404"]);
-          } else if (error.status === 403) {
-            return router.navigate(["/"]);
-          }
-        }
-        throw error;
-      });
-    }
-  }
-  debug("workspaceResolver", "end");
-  return true;
-}
-
-export function workspaceListProjectsResolver(route: ActivatedRouteSnapshot) {
-  const workspaceId = route.paramMap.get("workspaceId");
-  debug("workspaceListProjectsResolver", "start", workspaceId);
-  const projectRepositoryService = inject(ProjectRepositoryService);
-
-  if (workspaceId) {
-    projectRepositoryService.listRequest({ workspaceId }).then();
-  }
-  debug("workspaceListProjectsResolver", "end");
-}
-
-export function projectResolver(route: ActivatedRouteSnapshot) {
-  const projectId = route.paramMap.get("projectId");
-  debug("projectResolver", "start", projectId);
-  const projectRepositoryService = inject(ProjectRepositoryService);
-  const router = inject(Router);
-  if (projectId) {
-    const promise = projectRepositoryService.setup({ projectId });
-    if (promise) {
-      promise.catch((error) => {
-        if (error instanceof HttpErrorResponse) {
-          if (error.status === 404 || error.status === 422) {
-            return router.navigate(["/404"]);
-          } else if (error.status === 403) {
-            return router.navigate(["/"]);
-          }
-        }
-        throw error;
-      });
-    }
-  }
-  debug("projectResolver", "end");
-  return true;
-}
 
 export const routes: Routes = [
   {
@@ -96,20 +32,17 @@ export const routes: Routes = [
     path: "workspace/:workspaceId",
     loadComponent: () => import("./detail-base/detail-base.component").then((m) => m.DetailBaseComponent),
     providers: [provideTranslocoScope("workspace", "workflow")],
-    resolve: { workspace: workspaceResolver },
     children: [
       {
         path: "project/:projectId",
         loadComponent: () => import("./project-detail/project-detail.component").then((m) => m.ProjectDetailComponent),
         loadChildren: () => import("./project-detail/routes").then((m) => m.routes),
         providers: [provideTranslocoScope("workflow")],
-        resolve: { project: projectResolver },
       },
       {
         path: "",
         loadComponent: () =>
           import("./workspace-detail/workspace-detail.component").then((m) => m.WorkspaceDetailComponent),
-        resolve: { projects: workspaceListProjectsResolver },
 
         loadChildren: () => import("./workspace-detail/routes").then((m) => m.routes),
       },

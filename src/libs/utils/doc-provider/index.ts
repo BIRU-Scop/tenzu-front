@@ -57,6 +57,9 @@ export class WsDocProvider {
     this.provider = new WebsocketProvider(serverUrl, roomName, new Y.Doc());
     // Listen for connection status changes
     this.provider.on("status", (event) => {
+      if (event.status === "disconnected") {
+        this.connected.set(false);
+      }
       if (event.status === "connected" && this.provider.ws) {
         this.connected.set(true);
         const originalOnMessage = this.provider.ws.onmessage;

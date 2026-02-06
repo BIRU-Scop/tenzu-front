@@ -183,6 +183,7 @@ export class StoryDetailMenuComponent {
         const patchedStory = await this.storyDetailFacade.changeWorkflowSelectedStory({
           workflowId: newWorkflowId,
         });
+        this.storyDetailFacade.storyRepositoryService.deleteEntitySummary(story.ref);
         if (patchedStory) {
           this.notificationService.success({ title: "notification.action.changes_saved" });
         }
