@@ -40,7 +40,7 @@ import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { Router } from "@angular/router";
 
 @Component({
-  selector: "app-project-members",
+  selector: "app-project-members-list",
   imports: [
     TranslocoDirective,
     UserCardComponent,
@@ -71,7 +71,7 @@ import { Router } from "@angular/router";
                       [subtext]="membership.user.username"
                       [color]="membership.user.color"
                       [isSelf]="myUser.id === membership.user.id"
-                    ></app-user-card>
+                    />
                   </div>
                   <div class="app-table-cell">
                     <app-membership-role
@@ -80,7 +80,7 @@ import { Router } from "@angular/router";
                       [entityRole]="project"
                       [isSelf]="myUser.id === membership.user.id"
                       (changedSelf)="changeUserRole($event)"
-                    ></app-membership-role>
+                    />
                   </div>
                   <div class="app-table-cell">
                     <app-membership-actions
@@ -93,7 +93,7 @@ import { Router } from "@angular/router";
                       [isSelf]="myUser.id === membership.user.id"
                       (leave)="openDeleteSelfDialog({ membership: $event })"
                       (confirmedRemove)="deleteMembership({ membership: $event })"
-                    ></app-membership-actions>
+                    />
                   </div>
                 </div>
               }

@@ -58,7 +58,7 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
             <app-button
               type="button"
               [disabled]="!!_invitationResendDisableMessage"
-              level="secondary"
+              level="primary"
               iconName="mail"
               translocoKey="component.invitation.resend"
               (click)="resend.emit(_invitation.id)"

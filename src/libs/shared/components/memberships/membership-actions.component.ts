@@ -20,17 +20,14 @@
  */
 
 import { ChangeDetectionStrategy, Component, input, output, Signal } from "@angular/core";
-import { MatButton, MatIconButton } from "@angular/material/button";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
-import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { MatTooltip } from "@angular/material/tooltip";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-membership-actions",
-  imports: [MatIcon, MatIconButton, TranslocoDirective, MatButton, ConfirmDirective, MatTooltip, ButtonDeleteComponent],
+  imports: [TranslocoDirective, ConfirmDirective, ButtonDeleteComponent],
   template: `
     @let _membership = membership();
     <ng-container *transloco="let t">
@@ -39,14 +36,12 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
           translocoKey="component.membership.leave"
           [translocoValue]="{ item: itemLabel() }"
           (click)="leave.emit(membership)"
-        >
-        </app-button-delete>
+        />
       } @else if (hasDeletePermission() && (_membership.roleId !== ownerRole()?.id || userRole()?.isOwner)) {
         @if (simpleConfirmForRemove()) {
-          <button
-            mat-icon-button
-            [attr.aria-label]="t('component.membership.remove')"
-            [matTooltip]="t('component.membership.remove')"
+          <app-button-delete
+            translocoKey="component.membership.remove"
+            [iconOnly]="true"
             appConfirm
             [data]="{
               deleteAction: true,
@@ -58,18 +53,13 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
               }),
             }"
             (popupConfirm)="confirmedRemove.emit(_membership)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+          />
         } @else {
-          <button
-            mat-icon-button
-            [attr.aria-label]="t('component.membership.remove')"
-            [matTooltip]="t('component.membership.remove')"
+          <app-button-delete
+            [iconOnly]="true"
+            translocoKey="component.membership.remove"
             (click)="remove.emit(membership)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+          />
         }
       }
     </ng-container>

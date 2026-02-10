@@ -32,7 +32,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: "app-project-members",
+  selector: "app-project-invitations-list",
   imports: [
     TranslocoDirective,
     InvitationStatusComponent,
@@ -61,11 +61,7 @@ import { ActivatedRoute } from "@angular/router";
                   <div class="app-table-row">
                     <div class="app-table-cell basis-1/3">{{ invitation.email }}</div>
                     <div class="app-table-cell basis-1/3">
-                      <app-invitation-role
-                        [invitation]="invitation"
-                        itemType="project"
-                        [userRole]="project.userRole"
-                      ></app-invitation-role>
+                      <app-invitation-role [invitation]="invitation" itemType="project" [userRole]="project.userRole" />
                     </div>
                     <div class="app-table-cell basis-full">
                       <app-invitation-status [invitation]="invitation" />
@@ -78,7 +74,7 @@ import { ActivatedRoute } from "@angular/router";
                         [resentInvitation]="resentInvitationId() === invitation.id"
                         (resend)="resendInvitation($event)"
                         (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
-                      ></app-invitation-actions>
+                      />
                     </div>
                   </div>
                 }
