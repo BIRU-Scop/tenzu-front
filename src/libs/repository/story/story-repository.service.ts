@@ -53,6 +53,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
   groupedByStatus = this.entitiesSummaryStore.groupedByStatus;
   isLoading = signal(false);
 
+  reorder = this.entitiesSummaryStore.reorder;
   override setEntitySummary(item: StorySummary) {
     super.setEntitySummary(item);
     this.entitiesSummaryStore.reorder();

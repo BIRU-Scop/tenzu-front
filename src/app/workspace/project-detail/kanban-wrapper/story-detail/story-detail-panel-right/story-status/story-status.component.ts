@@ -68,6 +68,7 @@ export class StoryStatusComponent {
       },
       { projectId: storyDetail.projectId, ref: storyDetail.ref },
     );
+    this.storyRepositoryService.reorder();
     this.notificationService.success({ title: "notification.action.changes_saved" });
   }
 }
