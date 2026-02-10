@@ -28,7 +28,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { MemberPermission } from "@tenzu/repository/membership";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
-import { HttpErrorResponse } from "@angular/common/http";
+import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 
 @Component({
   selector: "app-project-detail",
@@ -64,18 +64,9 @@ export class ProjectDetailComponent {
     effect(() => {
       const projectId = this.projectId();
       const promise = this.projectRepositoryService.setup({ projectId });
-      if (promise) {
-        promise.catch((error) => {
-          if (error instanceof HttpErrorResponse) {
-            if (error.status === 404 || error.status === 422) {
-              this.router.navigate(["/404"]).then();
-            } else if (error.status === 403) {
-              this.router.navigate(["/"]).then();
-            }
-          }
-          throw error;
-        });
-      }
+      promise?.catch((error) => {
+        handleHttpError(error, this.router, { context: "Project", message: "Could not load project." });
+      });
     });
     toObservable(this.projectRepositoryService.entityDetail)
       .pipe(filterNotNull())

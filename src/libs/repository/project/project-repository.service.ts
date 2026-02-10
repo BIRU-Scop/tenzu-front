@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -120,10 +120,11 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     const oldProjectDetail = this.entityDetail();
     if (oldProjectDetail?.id != projectId) {
       this.resetEntityDetail();
-      const promise = this.getRequest({ projectId }).then();
-      this.projectMembershipRepositoryService.listProjectMembershipRequest(projectId).then();
-      this.projectRoleRepositoryService.listRequest({ projectId }).then();
-      return promise;
+      return Promise.all([
+        this.getRequest({ projectId }),
+        this.projectMembershipRepositoryService.listProjectMembershipRequest(projectId),
+        this.projectRoleRepositoryService.listRequest({ projectId }),
+      ]);
     }
     return undefined;
   }
