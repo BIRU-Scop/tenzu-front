@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2026 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,22 +19,20 @@
  *
  */
 
-import { Routes } from "@angular/router";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import * as Sentry from "@sentry/angular";
+import { debug as d } from "./logging";
 
-const routes: Routes = [
-  {
-    path: "",
-    redirectTo: "list-project-members",
-    pathMatch: "prefix",
-  },
-  {
-    path: "list-project-members",
-    loadComponent: () => import("./project-members-list/project-members-list.component"),
-  },
-  {
-    path: "list-project-invitations",
-    loadComponent: () => import("./project-invitations-list/project-invitations-list.component"),
-  },
-];
+export function handleHttpError(error: unknown, router: Router, debug?: { context: string; message: string }): void {
+  if (error instanceof HttpErrorResponse) {
+    if (error.status === 404 || error.status === 422) {
+      router.navigate(["/404"]).then();
+    } else if (error.status === 403) {
+      router.navigate(["/"]).then();
+    }
+  }
+  Sentry.captureException(error);
 
-export default routes;
+  d(debug?.context || "error", debug?.message || "request failed", error);
+}

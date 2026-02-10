@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,9 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { MatIconButton } from "@angular/material/button";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
-import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project";
@@ -32,10 +30,11 @@ import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-role
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { LowerCasePipe } from "@angular/common";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-invitation-actions",
-  imports: [ConfirmDirective, MatIcon, MatIconButton, MatTooltip, TranslocoDirective, LowerCasePipe, ButtonComponent],
+  imports: [ConfirmDirective, MatTooltip, TranslocoDirective, LowerCasePipe, ButtonComponent, ButtonDeleteComponent],
   template: `
     @let _invitation = invitation();
     @if (_invitation.status === InvitationStatus.PENDING) {
@@ -45,6 +44,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
             type="button"
             [disabled]="true"
             level="secondary"
+            iconName="mail"
             translocoKey="component.invitation.resent_confirmation"
           />
         } @else {
@@ -58,7 +58,8 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
             <app-button
               type="button"
               [disabled]="!!_invitationResendDisableMessage"
-              level="secondary"
+              level="primary"
+              iconName="mail"
               translocoKey="component.invitation.resend"
               (click)="resend.emit(_invitation.id)"
             />
@@ -66,11 +67,9 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
         }
 
         @if (notOwnerInvitationOrHasOwnerPermission()) {
-          <button
-            type="button"
-            mat-icon-button
-            [attr.aria-label]="t('component.invitation.revoke')"
-            [matTooltip]="t('component.invitation.revoke')"
+          <app-button-delete
+            translocoKey="component.invitation.revoke"
+            [iconOnly]="true"
             appConfirm
             [data]="{
               deleteAction: true,
@@ -82,9 +81,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
               }),
             }"
             (popupConfirm)="revoke.emit(_invitation.id)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+          />
         }
       </ng-container>
     }

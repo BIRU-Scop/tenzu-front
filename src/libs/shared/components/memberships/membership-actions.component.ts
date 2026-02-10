@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,29 +20,28 @@
  */
 
 import { ChangeDetectionStrategy, Component, input, output, Signal } from "@angular/core";
-import { MatButton, MatIconButton } from "@angular/material/button";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
-import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { MatTooltip } from "@angular/material/tooltip";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-membership-actions",
-  imports: [MatIcon, MatIconButton, TranslocoDirective, MatButton, ConfirmDirective, MatTooltip],
+  imports: [TranslocoDirective, ConfirmDirective, ButtonDeleteComponent],
   template: `
     @let _membership = membership();
     <ng-container *transloco="let t">
       @if (isSelf()) {
-        <button type="submit" mat-flat-button class="error-button" (click)="leave.emit(membership)">
-          {{ t("component.membership.leave", { item: itemLabel() }) }}
-        </button>
+        <app-button-delete
+          translocoKey="component.membership.leave"
+          [translocoValue]="{ item: itemLabel() }"
+          (click)="leave.emit(membership)"
+        />
       } @else if (hasDeletePermission() && (_membership.roleId !== ownerRole()?.id || userRole()?.isOwner)) {
         @if (simpleConfirmForRemove()) {
-          <button
-            mat-icon-button
-            [attr.aria-label]="t('component.membership.remove')"
-            [matTooltip]="t('component.membership.remove')"
+          <app-button-delete
+            translocoKey="component.membership.remove"
+            [iconOnly]="true"
             appConfirm
             [data]="{
               deleteAction: true,
@@ -54,18 +53,13 @@ import { MatTooltip } from "@angular/material/tooltip";
               }),
             }"
             (popupConfirm)="confirmedRemove.emit(_membership)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+          />
         } @else {
-          <button
-            mat-icon-button
-            [attr.aria-label]="t('component.membership.remove')"
-            [matTooltip]="t('component.membership.remove')"
+          <app-button-delete
+            [iconOnly]="true"
+            translocoKey="component.membership.remove"
             (click)="remove.emit(membership)"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+          />
         }
       }
     </ng-container>
