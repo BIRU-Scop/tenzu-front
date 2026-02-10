@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,17 +26,21 @@ import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatTooltip } from "@angular/material/tooltip";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 
 @Component({
   selector: "app-membership-actions",
-  imports: [MatIcon, MatIconButton, TranslocoDirective, MatButton, ConfirmDirective, MatTooltip],
+  imports: [MatIcon, MatIconButton, TranslocoDirective, MatButton, ConfirmDirective, MatTooltip, ButtonDeleteComponent],
   template: `
     @let _membership = membership();
     <ng-container *transloco="let t">
       @if (isSelf()) {
-        <button type="submit" mat-flat-button class="error-button" (click)="leave.emit(membership)">
-          {{ t("component.membership.leave", { item: itemLabel() }) }}
-        </button>
+        <app-button-delete
+          translocoKey="component.membership.leave"
+          [translocoValue]="{ item: itemLabel() }"
+          (click)="leave.emit(membership)"
+        >
+        </app-button-delete>
       } @else if (hasDeletePermission() && (_membership.roleId !== ownerRole()?.id || userRole()?.isOwner)) {
         @if (simpleConfirmForRemove()) {
           <button
