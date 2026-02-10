@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,21 +19,7 @@
  *
  */
 
-import { ActivatedRouteSnapshot, Routes } from "@angular/router";
-import { debug } from "@tenzu/utils/functions/logging";
-import { inject } from "@angular/core";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-
-export function projectListInvitationsResolver(route: ActivatedRouteSnapshot) {
-  debug("projectListInvitationsResolver", "start");
-  const projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
-
-  const projectId = route.paramMap.get("projectId");
-  if (projectId) {
-    projectInvitationRepositoryService.listProjectInvitations(projectId).then();
-  }
-  debug("projectListInvitationsResolver", "end");
-}
+import { Routes } from "@angular/router";
 
 const routes: Routes = [
   {
@@ -43,12 +29,11 @@ const routes: Routes = [
   },
   {
     path: "list-project-members",
-    loadComponent: () => import("./project-members-list.component"),
+    loadComponent: () => import("./project-members-list/project-members-list.component"),
   },
   {
     path: "list-project-invitations",
-    loadComponent: () => import("./project-invitations-list.component"),
-    resolve: { invitations: projectListInvitationsResolver },
+    loadComponent: () => import("./project-invitations-list/project-invitations-list.component"),
   },
 ];
 
