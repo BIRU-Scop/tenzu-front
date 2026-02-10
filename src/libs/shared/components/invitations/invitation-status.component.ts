@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,8 +29,8 @@ import { TranslocoDatePipe } from "@jsverse/transloco-locale";
   selector: "app-invitation-status",
   imports: [ChipComponent, TranslocoDirective, TranslocoDatePipe],
   template: `
-    <div class="flex flex-row gap-2 items-center" *transloco="let t">
-      <app-chip [label]="t(translatedStatusKey())" [color]="statusColor()"></app-chip>
+    <ng-container *transloco="let t">
+      <app-chip [label]="t(translatedStatusKey())" [color]="statusColor()" />
       @if (invitation().status === InvitationStatus.PENDING) {
         <p class="mat-label-large text-on-surface-variant">
           {{
@@ -40,9 +40,10 @@ import { TranslocoDatePipe } from "@jsverse/transloco-locale";
           }}
         </p>
       }
-    </div>
+    </ng-container>
   `,
   styles: ``,
+  host: { class: "flex flex-row gap-2 items-center" },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationStatusComponent {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,9 +19,9 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
 import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
@@ -32,7 +32,7 @@ import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/in
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: "app-project-members",
+  selector: "app-project-invitations-list",
   imports: [
     TranslocoDirective,
     InvitationStatusComponent,
@@ -61,11 +61,7 @@ import { ActivatedRoute } from "@angular/router";
                   <div class="app-table-row">
                     <div class="app-table-cell basis-1/3">{{ invitation.email }}</div>
                     <div class="app-table-cell basis-1/3">
-                      <app-invitation-role
-                        [invitation]="invitation"
-                        itemType="project"
-                        [userRole]="project.userRole"
-                      ></app-invitation-role>
+                      <app-invitation-role [invitation]="invitation" itemType="project" [userRole]="project.userRole" />
                     </div>
                     <div class="app-table-cell basis-full">
                       <app-invitation-status [invitation]="invitation" />
@@ -78,7 +74,7 @@ import { ActivatedRoute } from "@angular/router";
                         [resentInvitation]="resentInvitationId() === invitation.id"
                         (resend)="resendInvitation($event)"
                         (revoke)="projectInvitationRepositoryService.revokeProjectInvitation($event)"
-                      ></app-invitation-actions>
+                      />
                     </div>
                   </div>
                 }
@@ -110,6 +106,8 @@ import { ActivatedRoute } from "@angular/router";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent {
+  projectId = input.required<ProjectDetail["id"]>();
+
   protected readonly ProjectPermissions = ProjectPermissions;
 
   readonly projectRepositoryService = inject(ProjectRepositoryService);
@@ -117,6 +115,12 @@ export default class ProjectMembersComponent {
   readonly activatedRoute = inject(ActivatedRoute);
 
   resentInvitationId = signal<ProjectInvitation["id"] | null>(null);
+
+  constructor() {
+    effect(() => {
+      this.projectInvitationRepositoryService.listProjectInvitations(this.projectId()).then();
+    });
+  }
 
   resendInvitation(invitationId: ProjectInvitation["id"]) {
     this.projectInvitationRepositoryService.resendProjectInvitation(invitationId);

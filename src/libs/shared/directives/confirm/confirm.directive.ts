@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,16 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, Directive, inject, input, InputSignal, output } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Directive,
+  ElementRef,
+  inject,
+  input,
+  InputSignal,
+  output,
+} from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -101,17 +110,32 @@ export class ConfirmPopupComponent {
   selector: "[appConfirm]",
   standalone: true,
   host: {
-    "(click)": "onClick()",
+    "(click)": "onClick($event)",
   },
 })
 export class ConfirmDirective {
   dialog = inject(MatDialog);
+  elementRef = inject(ElementRef);
   data = input<ConfirmPopupData>({
     deleteAction: false,
   });
   popupConfirm = output<void>();
 
-  onClick() {
+  onClick(event: Event) {
+    const element = this.elementRef.nativeElement as HTMLElement;
+
+    // Check if host element or any button inside is disabled
+    const isDisabled =
+      element.hasAttribute("disabled") ||
+      element.getAttribute("aria-disabled") === "true" ||
+      element.querySelector("button[disabled]") !== null;
+
+    if (isDisabled) {
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
+
     const ref = this.dialog.open<ConfirmPopupComponent, InputSignal<ConfirmPopupData>>(ConfirmPopupComponent, {
       data: this.data,
     });

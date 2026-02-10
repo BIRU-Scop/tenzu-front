@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,6 +25,7 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryRepositoryService } from "@tenzu/repository/story";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
 type BreadCrumbNodeConfig = {
   label: string;
@@ -151,7 +152,7 @@ export const BreadcrumbStore = signalStore(
         },
         projectKanban: {
           label: "workspace.general_title.kanban",
-          link: `/workspace/${workspaceDetail?.id}/project/${projectDetail?.id}`,
+          link: `${projectDetail ? getProjectLandingPageUrl(projectDetail) : ""}`,
           doTranslation: true,
         },
         projectWorkflow: {

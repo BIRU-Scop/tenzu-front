@@ -23,9 +23,8 @@ import { ChangeDetectionStrategy, Component, effect, inject, input } from "@angu
 import { BreadcrumbComponent } from "@tenzu/shared/components/breadcrumb";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav";
 import { Router, RouterOutlet } from "@angular/router";
-import { HttpErrorResponse } from "@angular/common/http";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-
+import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 @Component({
   selector: "app-detail-base",
   imports: [BreadcrumbComponent, PrimarySideNavComponent, RouterOutlet],
@@ -51,18 +50,9 @@ export class DetailBaseComponent {
     effect(() => {
       const workspaceId = this.workspaceId();
       const promise = this.workspaceRepositoryService.setup({ workspaceId });
-      if (promise) {
-        promise.catch((error) => {
-          if (error instanceof HttpErrorResponse) {
-            if (error.status === 404 || error.status === 422) {
-              this.router.navigate(["/404"]).then();
-            } else if (error.status === 403) {
-              this.router.navigate(["/"]).then();
-            }
-          }
-          throw error;
-        });
-      }
+      promise?.catch((error) => {
+        handleHttpError(error, this.router, { context: "Workspace", message: "Could not load workspace." });
+      });
     });
   }
 }
