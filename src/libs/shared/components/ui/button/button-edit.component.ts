@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,6 +31,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
   templateUrl: "./button-base.component.html",
   host: {
     class: "inline-block",
+    "[style.pointer-events]": "disabled() ? 'none' : 'auto'",
   },
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
