@@ -120,9 +120,9 @@ export const appConfig: ApplicationConfig = {
       config: {
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
-        availableLangs: ["en-US"],
-        defaultLang: "en-US",
-        fallbackLang: "en-US",
+        availableLangs: ["en-us"],
+        defaultLang: "en-us",
+        fallbackLang: "en-us",
         flatten: {
           aot: !isDevMode(),
         },
