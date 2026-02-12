@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,7 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatIconAnchor } from "@angular/material/button";
+import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
@@ -45,6 +45,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
     MatIconAnchor,
     MatTooltip,
     HasPermissionDirective,
+    MatIconButton,
   ],
   template: `
     <ng-container *transloco="let t">

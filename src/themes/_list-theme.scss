@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -50,22 +50,26 @@ body {
         .mat-icon {
           color: var(--mat-sys-on-primary);
         }
-        &:hover {
-          background-color: var(--mat-sys-surface);
+        &.mdc-list-item--activated {
+          .mat-icon  {
+            color: var(--mat-sys-on-surface)
+          }
         }
-        &:focus {
-          background-color: var(--mat-sys-surface);
-        }
+
       }
       @media (prefers-color-scheme: light) {
         .mat-icon {
-          color: var(--mat-sys-on-primary);
+          color: var(--mat-sys-outline-variant);
         }
         &:hover {
-          background-color: var(--mat-sys-inverse-primary);
+          .mat-icon  {
+            color: var(--mat-sys-outline-variant);
+          }
         }
-        &:focus {
-          background-color: var(--mat-sys-inverse-primary);
+        &.mdc-list-item--activated {
+          .mat-icon  {
+            color: var(--mat-sys-outline-variant)
+          }
         }
       }
     }
@@ -74,8 +78,6 @@ body {
 @mixin tokens-overrides() {
   @include mat.list-overrides((
     list-item-one-line-container-height: 32px,
-  ));
-  @include mat.list-overrides((
     list-item-container-shape: var(--mat-sys-corner-medium),
     active-indicator-shape: var(--mat-sys-corner-medium),
     list-item-label-text-size: var(--mat-sys-label-large-size),
@@ -88,23 +90,32 @@ body {
       list-item-container-color: var(--mat-sys-dim),
       list-item-container-shape: 0px,
       active-indicator-shape: 0px,
-      list-item-hover-state-layer-opacity: 0,
-      list-item-focus-state-layer-opacity: 0,
+
     ));
     @media (prefers-color-scheme: dark) {
       @include mat.list-overrides((
-        active-indicator-color: var(--mat-sys-surface),
+        active-indicator-color:  color-mix(in srgb, var(--mat-sys-on-surface) 20%, transparent),
         list-item-label-text-color: var(--mat-sys-on-surface),
         list-item-hover-label-text-color: var(--mat-sys-on-surface),
         list-item-focus-label-text-color: var(--mat-sys-on-surface),
+        list-item-hover-state-layer-color: var(--mat-sys-on-surface),
+        list-item-focus-state-layer-color: var(--mat-sys-on-surface),
+        list-item-focus-state-layer-opacity: 0.2,
+        list-item-hover-state-layer-opacity: 0.2,
       ));
     }
     @media (prefers-color-scheme: light) {
       @include mat.list-overrides((
-        active-indicator-color: var(--mat-sys-inverse-primary),
-        list-item-label-text-color: var(--mat-sys-surface),
-        list-item-hover-label-text-color: var(--mat-sys-surface),
-        list-item-focus-label-text-color: var(--mat-sys-surface),
+        list-item-hover-state-layer-opacity: 0.3,
+        list-item-focus-state-layer-opacity: 0.3,
+        active-indicator-color: var(--mat-sys-primary),
+        list-item-label-text-color: var(--mat-sys-outline-variant),
+        list-item-hover-state-layer-color: var(--mat-list-active-indicator-color, var(--mat-sys-secondary-container)),
+        list-item-hover-label-text-color: var(--mat-sys-outline-variant),
+
+        list-item-focus-label-text-color: var(--mat-sys-outline-variant),
+        list-item-focus-state-layer-color: var(--mat-sys-primary),
+
       ));
     }
   }
