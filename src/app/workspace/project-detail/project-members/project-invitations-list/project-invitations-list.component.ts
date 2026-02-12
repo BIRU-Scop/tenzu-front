@@ -81,7 +81,7 @@ import { ActivatedRoute } from "@angular/router";
               </div>
             </div>
           } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("project.members.invitation_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant mt-4">{{ t("project.members.invitation_empty") }}</p>
           }
         </ng-container>
       </ng-container>

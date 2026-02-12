@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,6 +30,10 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button",
+  host: {
+    class: "inline-block",
+    "[style.pointer-events]": "disabled() ? 'none' : 'auto'",
+  },
   imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, MatTooltip],
   template: `
     @let _translocoKey = translocoKey();

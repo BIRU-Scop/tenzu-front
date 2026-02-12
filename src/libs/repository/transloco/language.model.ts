@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,5 +25,5 @@ export interface Language {
   englishName: string;
   textDirection: "rtl" | "ltr";
   isDefault: boolean;
-  scriptType: "latin" | "hebrew" | "cyrillic" | "arabic" | "chinese_and_devs";
+  scriptType: "latin" | "cyrillic" | "greek" | "hebrew" | "arabic" | "chinese_and_devs" | "other";
 }
