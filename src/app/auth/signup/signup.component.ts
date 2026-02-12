@@ -49,6 +49,7 @@ import PendingVerificationComponent from "./pending-verification/pending-verific
 import { toSignal } from "@angular/core/rxjs-interop";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
+import { TitleCasePipe } from "@angular/common";
 
 @Component({
   selector: "app-signup",
@@ -73,6 +74,7 @@ import { debug } from "@tenzu/utils/functions/logging";
     FormFooterSecondaryActionDirective,
     SocialAuthLoginComponent,
     PendingVerificationComponent,
+    TitleCasePipe,
   ],
   host: {
     class: "flex flex-col gap-4",
@@ -106,7 +108,7 @@ import { debug } from "@tenzu/utils/functions/logging";
             <mat-label>{{ t("general.identity.lang") }}</mat-label>
             <mat-select [formField]="signupForm.lang" data-testid="lang-select">
               @for (language of languageStore.entities(); track language.code) {
-                <mat-option [value]="language.code">{{ language.name }}</mat-option>
+                <mat-option [value]="language.code">{{ language.name | titlecase }}</mat-option>
               }
             </mat-select>
           </mat-form-field>

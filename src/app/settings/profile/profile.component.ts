@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,6 +31,7 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { TitleCasePipe } from "@angular/common";
 
 @Component({
   selector: "app-profile",
@@ -45,6 +46,7 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
     MatOption,
     ButtonSaveComponent,
     FormFooterComponent,
+    TitleCasePipe,
   ],
   template: `
     <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
@@ -72,7 +74,7 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
           <mat-label>{{ t("general.identity.lang") }}</mat-label>
           <mat-select formControlName="lang" data-testid="lang-select">
             @for (language of languageStore.entities(); track language.code) {
-              <mat-option [value]="language.code">{{ language.name }}</mat-option>
+              <mat-option [value]="language.code">{{ language.name | titlecase }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
