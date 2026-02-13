@@ -66,8 +66,9 @@ jobs:
         run: |
           curl -Lo $RUNNER_TEMP/sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64
           chmod +x $RUNNER_TEMP/sbom-tool
+          mkdir ./build_output
           $RUNNER_TEMP/sbom-tool generate -b ./build_output -bc . -pn $(basename ${{ github.repository }}) -pv ${{ github.ref_name }} -ps BIRU -nsb https://biru.sh/sbom -mi SPDX:3.0 -V Verbose
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          path: build_output
+          path: ./build_output
