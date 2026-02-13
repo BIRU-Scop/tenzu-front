@@ -2,6 +2,102 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.1.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v2.0.1-staging.6...v2.1.0) (2026-02-13)
+
+## [2.0.1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v2.0.1-staging.0...v2.0.1) (2026-01-31)
+
+## [2.0.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v2.0.0-staging.0...v2.0.0) (2026-01-30)
+
+## [1.0.3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-staging.21...v1.0.3) (2026-01-30)
+
+## [1.0.2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-staging.5...v1.0.2) (2026-01-01)
+
+## [1.0.0-staging.5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-demo.5...v1.0.0-staging.5) (2025-12-25)
+
+
+### Bug Fixes
+
+* incomplete translation string ([102a349](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/102a349c2143903d47d9fb776ebbf112fc58d20e))
+
+## [1.0.0-staging.4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-staging.3...v1.0.0-staging.4) (2025-12-25)
+
+
+### Bug Fixes
+
+* stop raising unexpected auth state exception on valid auth ([cd5d663](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/cd5d6636794b04b14e64dbe30d518842f9e3e78c))
+
+## [1.0.0-staging.3](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-staging.2...v1.0.0-staging.3) (2025-12-25)
+
+
+### Bug Fixes
+
+* correct password strength color for medium level ([4eba5c5](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4eba5c54074993a36b7b44a695071a50a4e564c2))
+* handle password not validated received from server on account creation ([a41465a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a41465ac6a122c21a91f4b2abea9b821efb7ac29))
+* improve login error handling and simplify translations ([51835a7](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/51835a70115a3d1c3501231b14ff48ec03787d92))
+* prevent infinite retry of server requests ([2a83a05](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/2a83a05d07401fe4f42c2017552a21125eec31d8))
+* solve minor inconsistencies ([9113dc0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9113dc01fede1a5d9585d734ae907d8ddf07ce33))
+* update error handling in form validation effect ([8bc7a0e](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8bc7a0e3e71544da07eb35c879ecf457a235ad3b))
+
+## [1.0.0-staging.2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.1...v1.0.0-staging.2) (2025-12-22)
+
+
+### Features
+
+* add read all for notifiction ([9857a06](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9857a06ea8f263a7a9a6bf280fcf388e9b5494b1))
+* add translation and fix some ([a1e7e83](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a1e7e83437b79171d70cebc9e97906fe27c994e9))
+* auto-complete email signup field on accept invitation workflow ([9665774](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/9665774222d440165842a3917b838181d144e632))
+* change some css rules for slided-toggle ([a1e8c9a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a1e8c9adf887251635f658d2dd0347266d9453cd))
+* clean css ([8aba890](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/8aba89071be5a52bead6ab204c471d324f4525cd))
+* little change for app-button interface ([4a289db](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4a289dbad08104d9fb0002489d6e927a949a5701))
+* little change for some shared component (style, app-button, etc) ([c351fd4](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c351fd4160f4130ffc1b6aebcc6b96c4ba13c987))
+* lot of ui change (bouton, gap, etc) ([1a880ff](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/1a880ff401846ff8812a735f695fb675324818c8))
+* remove front-only security on changing password that block social authenticated user from adding one ([b51aef0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b51aef02844b88c32f6d27dfe8b98d81cd14be46))
+
+
+### Bug Fixes
+
+* don't lose query params between login/signup mutual links and add next url of previous location on logout when redirecting to login ([29647ed](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/29647edf49ad8c127a4e423d0556cdeb60ab255d))
+* prevent blacklist if refresh token has already been cleared ([4dcdc8c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/4dcdc8cef31d84d45af67f17cb0c944a59d2bcc0))
+* redirect to signup or login depending on origin if user cancel social login ([b1e2f6a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/b1e2f6a993cc48c5b303851691afa255991e739f))
+* use next url to redirect if provided on social signup ([0866898](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/0866898bd8b1062a8bbacadea04324f74c259914))
+
+## [1.0.1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-staging.1...v1.0.1) (2025-11-04)
+
+## [1.0.0-staging.1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-demo.1...v1.0.0-staging.1) (2025-10-28)
+
+
+### Features
+
+* add language choice to subscription form ([bc73145](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/bc731455bdb497217919b9728f0b7a6889c531f4))
+* add retry strategy to interceptor in order to apply to all requests ([a9164fc](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a9164fcc4379d9b63546396b2d1688f59df473f6))
+* ctrl+enter or Cmd+enter now allow saving story and comment from inside editor field ([182bc14](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/182bc14dcb467093fdc6fea5d6f782dfff101701))
+* retry strategy for request api ([39c796b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/39c796b4aa9050877791dd25a6262af34d0debf3))
+
+
+### Bug Fixes
+
+* align content into the project card ([7f71ce0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/7f71ce04dfdbdac1ed32f91c42f8891b6366baba))
+* **comments:** allow real time update of comment content end prevent not found entity on modifying out of scroll comment ([d4fb843](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d4fb843260fe4f773326491c383e81a82cac5db3))
+* **comments:** enable scroll on story modal view to display comments ([c58c29c](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/c58c29ceebf19842a8cf6b316ad59ad07ddbedd1))
+* embed files when the url is external ([3f6e31d](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/3f6e31d39d0931a942e8d632ba8ed365585fc3e7))
+* fix typing of story's description that can be null ([a8e1c0a](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/a8e1c0a8ef7e3a7b0bc32a73cc555e222932195e))
+* reduce complexity of html elements ([5b1e164](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/5b1e1641abab2a4c5147f09172d713c7e2504469))
+* remove deprecated instruction from permission settings ([d8de94b](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/commit/d8de94b377d17cd361d8b083bcd713ae5c46cde9))
+
+## [1.0.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-staging.0...v1.0.0) (2025-09-30)
+
+## [1.0.0-staging.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v1.0.0-demo.0...v1.0.0-staging.0) (2025-09-30)
+
+## [0.1.2](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.34...v0.1.2) (2025-09-23)
+
+## [0.1.0-staging.34](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.1...v0.1.0-staging.34) (2025-09-23)
+
+## [0.1.1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0...v0.1.1) (2025-09-23)
+
+## [0.1.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v0.1.0-staging.33...v0.1.0) (2025-09-17)
+
+## 0.1.0-staging.33 (2025-08-28)
+
 ## [2.0.1](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v2.0.1-staging.0...v2.0.1) (2026-01-31)
 
 ## [2.0.0](https://gitlab.biru.sh/biru/dev/tenzu/tenzu-front/compare/v2.0.0-staging.0...v2.0.0) (2026-01-30)
