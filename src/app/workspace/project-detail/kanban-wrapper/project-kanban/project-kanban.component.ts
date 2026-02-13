@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -201,7 +201,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                     }"
                   >
                     <app-button-add
-                      class="whitespace-nowrap shrink-0 mt-4"
+                      class="whitespace-nowrap shrink-0 mt-4 mx-auto"
                       [level]="'primary'"
                       [translocoKey]="'workflow.add_story'"
                       (click)="openCreateStory($event, status.id)"
