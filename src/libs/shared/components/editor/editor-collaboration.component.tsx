@@ -3,7 +3,6 @@ import {
   Component,
   effect,
   ElementRef,
-  inject,
   input,
   model,
   OnChanges,
@@ -19,9 +18,6 @@ import { BlockNoteEditor, createCodeBlockSpec } from "@blocknote/core";
 import { codeBlockOptions } from "@blocknote/code-block";
 
 import { BlockNoteView } from "@blocknote/mantine";
-import { HttpClient } from "@angular/common/http";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-
 import { User } from "@tenzu/repository/user";
 import { COLORS } from "@tenzu/pipes/color-to-key.pipe";
 import { resolveFileUrl } from "@tenzu/shared/components/editor/utils";
@@ -37,16 +33,13 @@ import { WsDocProvider } from "@tenzu/utils/doc-provider";
     #editor
   ></div>`,
   host: {
-    class: "editor",
+    class: "editor h-full",
   },
   styles: ``,
 })
 export class EditorCollaborationComponent
   implements OnChanges, OnDestroy, AfterViewInit
 {
-  httpClient = inject(HttpClient);
-  configAppService = inject(ConfigAppService);
-
   elm = viewChild<ElementRef>("editor");
   disabled = input(false);
   readonly = input(false);
@@ -65,29 +58,34 @@ export class EditorCollaborationComponent
   validate = output();
   private root?: Root;
   private editor?: BlockNoteEditor;
-  already_done = false;
+  private currentWsDocProvider?: WsDocProvider;
   filedDeleted = output<string>();
   constructor() {
     const codeBlock = createCodeBlockSpec(codeBlockOptions);
     const focus = this.focus();
     effect((onCleanup) => {
-      if (this.already_done) return;
-      this.already_done = true;
       const user = this.user();
       const wsDocProvider = this.wsDocProvider();
+      if (!user.fullName) {
+        return;
+      }
       const wsProvider = wsDocProvider.provider;
-      if (!wsDocProvider.connected()) return;
+      if (this.currentWsDocProvider !== wsDocProvider) {
+        this.destroyEditor();
+        this.currentWsDocProvider = wsDocProvider;
+      }
       const doc = wsProvider.doc;
       const fragment = doc.getXmlFragment("document-store");
 
-      doc.on("update", (update, origin) => {
+      const onDocUpdate = (_update: unknown, origin: unknown) => {
         // If the origin is null or is not the websocket provider,
         // it means it's a local modification made via the editor.
         if (origin !== wsProvider && !this.touched()) {
           this.touched.set(true);
         }
-      });
-      if (!this.editor && wsDocProvider.connected()) {
+      };
+      doc.on("update", onDocUpdate);
+      if (!this.editor) {
         this.editor = BlockNoteEditor.create({
           codeBlock,
           resolveFileUrl: this.resolveFileUrl,
@@ -120,6 +118,10 @@ export class EditorCollaborationComponent
       if (!this.root && elm) {
         this.root = createRoot(elm.nativeElement);
       }
+      this.render();
+      onCleanup(() => {
+        doc.off("update", onDocUpdate);
+      });
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -134,6 +136,7 @@ export class EditorCollaborationComponent
     if (this.root) {
       this.root.unmount();
     }
+    this.destroyEditor();
   }
   undo() {
     this.editor?.undo();
@@ -142,21 +145,22 @@ export class EditorCollaborationComponent
     return JSON.stringify(this.editor?.document);
   }
 
-  public enableAndFocus() {
-    if (this.editor) {
-      this.editor.isEditable = true;
-      this.editor.focus();
-    }
-  }
-  public isEmpty() {
-    return this.editor?.isEmpty;
-  }
   private render() {
     const editable = !this.readonly();
     if (this.root && this.editor) {
       this.root.render(
         <BlockNoteView editor={this.editor} editable={editable} />,
       );
+    }
+  }
+
+  private destroyEditor() {
+    if (this.editor) {
+      this.editor._tiptapEditor.destroy();
+      this.editor = undefined;
+    }
+    if (this.touched()) {
+      this.touched.set(false);
     }
   }
 }

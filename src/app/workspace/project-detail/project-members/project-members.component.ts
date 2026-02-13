@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -58,8 +58,8 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
   template: `
     @let project = projectRepositoryService.entityDetail();
     @if (project) {
-      <div class="flex flex-col gap-y-8" *transloco="let t">
-        <div class="flex flex-row">
+      <ng-container *transloco="let t">
+        <div class="flex flex-row mb-4">
           <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
           <app-button-add
             translocoKey="project.members.invite_to_project"
@@ -68,7 +68,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
             (click)="openInviteDialog()"
           />
         </div>
-        <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row gap-x-4" [tabPanel]="tabPanel">
+        <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row" [tabPanel]="tabPanel">
           @for (link of links; track link.path) {
             <ng-template #RouterContent>
               <a
@@ -85,20 +85,21 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
             </ng-template>
             @if (link.permission) {
               <ng-container *appHasPermission="{ requiredPermission: link.permission, actualEntity: project }">
-                <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+                <ng-template [ngTemplateOutlet]="RouterContent" />
               </ng-container>
             } @else {
-              <ng-template [ngTemplateOutlet]="RouterContent"></ng-template>
+              <ng-template [ngTemplateOutlet]="RouterContent" />
             }
           }
         </nav>
         <div>
           <mat-tab-nav-panel #tabPanel><router-outlet /></mat-tab-nav-panel>
         </div>
-      </div>
+      </ng-container>
     }
   `,
   styles: ``,
+  host: { class: "flex flex-col" },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent implements AfterViewInit {

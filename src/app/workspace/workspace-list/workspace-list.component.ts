@@ -38,11 +38,11 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
-import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
 
 @Component({
   selector: "app-workspace-list",
@@ -54,6 +54,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     CardSkeletonComponent,
     ActionCardComponent,
     ButtonAddComponent,
+    ProjectLandingPageUrl,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
@@ -92,7 +93,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                   [name]="project.name"
                   [color]="project.color"
                   [description]="project.description ? project.description : null"
-                  [landingPage]="getProjectLandingPageUrl(project)"
+                  [landingPage]="project | projectLandingPageUrl"
                 />
               }
               @if (
@@ -151,14 +152,6 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
 
-  private init = async () => {
-    this.workspaceService.listRequest().then((workspaces) => {
-      if (workspaces.length === 0) {
-        this.openPlaceholderDialog();
-      }
-    });
-  };
-
   ngOnDestroy(): void {
     this.workspaceService.resetEntitySummaryList();
   }
@@ -175,7 +168,11 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   };
 
   ngAfterViewInit(): void {
-    this.init().then();
+    this.workspaceService.listRequest().then((workspaces) => {
+      if (workspaces.length === 0) {
+        this.openPlaceholderDialog();
+      }
+    });
   }
 
   public openCreateDialog(event?: MouseEvent): void {
@@ -237,6 +234,4 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   async denyProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
     await this.projectInvitationService.denyProjectInvitation({ workspaceId: workspace.id, projectId: project.id });
   }
-
-  protected readonly getProjectLandingPageUrl = getProjectLandingPageUrl;
 }

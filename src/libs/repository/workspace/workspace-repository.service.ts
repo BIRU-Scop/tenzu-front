@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -125,11 +125,11 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
     const oldWorkspaceDetail = this.entityDetail();
     if (oldWorkspaceDetail?.id != workspaceId) {
       this.resetEntityDetail();
-
-      const promise = this.getRequest({ workspaceId }).then();
-      this.workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(workspaceId).then();
-      this.workspaceRoleRepositoryService.listRequest({ workspaceId }).then();
-      return promise;
+      return Promise.all([
+        this.getRequest({ workspaceId }),
+        this.workspaceMembershipRepositoryService.listWorkspaceMembershipRequest(workspaceId),
+        this.workspaceRoleRepositoryService.listRequest({ workspaceId }),
+      ]);
     }
     return undefined;
   }

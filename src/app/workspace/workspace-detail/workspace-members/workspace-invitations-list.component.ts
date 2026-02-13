@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -85,7 +85,7 @@ import { ActivatedRoute } from "@angular/router";
               </div>
             </div>
           } @else {
-            <p class="mat-body-medium text-on-surface-variant">{{ t("workspace.members.invitation_empty") }}</p>
+            <p class="mat-body-medium text-on-surface-variant mt-4">{{ t("workspace.members.invitation_empty") }}</p>
           }
         </ng-container>
       </ng-container>

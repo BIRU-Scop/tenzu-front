@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,8 +19,8 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from "@angular/core";
+import { Router, RouterOutlet } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { SideNavStore } from "@tenzu/repository/sidenav";
@@ -28,11 +28,12 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { MemberPermission } from "@tenzu/repository/membership";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
+import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 
 @Component({
   selector: "app-project-detail",
   imports: [RouterOutlet, PermissionOrRedirectDirective],
-  template: ` @let project = projectService.entityDetail();
+  template: ` @let project = projectRepositoryService.entityDetail();
     @if (project) {
       <ng-container
         [appPermissionOrRedirect]="{
@@ -48,17 +49,26 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailComponent {
+  projectId = input.required<string>();
   protected readonly MemberPermission = MemberPermission;
-
+  router = inject(Router);
   sideNavStore = inject(SideNavStore);
   workspaceService = inject(WorkspaceRepositoryService);
-  projectService = inject(ProjectRepositoryService);
+  projectRepositoryService = inject(ProjectRepositoryService);
   baseUrl = computed(
-    () => `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectService.entityDetail()?.id}`,
+    () =>
+      `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectRepositoryService.entityDetail()?.id}`,
   );
 
   constructor() {
-    toObservable(this.projectService.entityDetail)
+    effect(() => {
+      const projectId = this.projectId();
+      const promise = this.projectRepositoryService.setup({ projectId });
+      promise?.catch((error) => {
+        handleHttpError(error, this.router, { context: "Project", message: "Could not load project." });
+      });
+    });
+    toObservable(this.projectRepositoryService.entityDetail)
       .pipe(filterNotNull())
       .subscribe((project) => {
         this.sideNavStore.setAvatar(

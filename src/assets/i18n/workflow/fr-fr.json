@@ -92,6 +92,7 @@
     "assigned_to": "Assignée à",
     "status": "Statut",
     "attachments": {
+      "title": "Pièces jointes ({{length}})",
       "attach_file": "Joindre un fichier",
       "name": "Nom",
       "size": "Taille (octets)",

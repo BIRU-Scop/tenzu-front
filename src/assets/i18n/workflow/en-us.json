@@ -92,6 +92,7 @@
     "assigned_to": "Assigned to",
     "status": "Status",
     "attachments": {
+      "title": "Attachments ({{length}})",
       "attach_file": "Attach file",
       "name": "Name",
       "size": "Size (bytes)",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -70,9 +70,9 @@ const meta: Meta<FormEmailComponent> = {
           config: {
             reRenderOnLangChange: true,
             prodMode: !isDevMode(),
-            availableLangs: ["en-US"],
-            defaultLang: "en-US",
-            fallbackLang: "en-US",
+            availableLangs: ["en-us"],
+            defaultLang: "en-us",
+            fallbackLang: "en-us",
             flatten: {
               aot: !isDevMode(),
             },

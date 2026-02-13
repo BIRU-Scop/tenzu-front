@@ -43,7 +43,7 @@ import { StoryDetailCommentsListComponent } from "./story-detail-comments-list/s
     @if (_user) {
       <app-story-edition [project]="_project" [story]="_story" [user]="_user" />
     }
-    <mat-divider />
+    <mat-divider class="!my-4" />
     <app-story-detail-comments-list
       *appHasPermission="{
         actualEntity: _project,

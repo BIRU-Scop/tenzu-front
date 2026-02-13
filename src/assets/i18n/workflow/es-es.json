@@ -92,6 +92,7 @@
     "assigned_to": "Asignado a",
     "status": "Estado",
     "attachments": {
+      "title": "Adjuntos ({{length}})",
       "attach_file": "Adjuntar archivo",
       "name": "Nombre",
       "size": "Tamaño (bytes)",

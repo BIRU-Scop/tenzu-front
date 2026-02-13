@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,11 +19,12 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, input } from "@angular/core";
 import { BreadcrumbComponent } from "@tenzu/shared/components/breadcrumb";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav";
-import { RouterOutlet } from "@angular/router";
-
+import { Router, RouterOutlet } from "@angular/router";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 @Component({
   selector: "app-detail-base",
   imports: [BreadcrumbComponent, PrimarySideNavComponent, RouterOutlet],
@@ -40,4 +41,18 @@ import { RouterOutlet } from "@angular/router";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DetailBaseComponent {}
+export class DetailBaseComponent {
+  workspaceId = input.required<string>();
+  workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  router = inject(Router);
+
+  constructor() {
+    effect(() => {
+      const workspaceId = this.workspaceId();
+      const promise = this.workspaceRepositoryService.setup({ workspaceId });
+      promise?.catch((error) => {
+        handleHttpError(error, this.router, { context: "Workspace", message: "Could not load workspace." });
+      });
+    });
+  }
+}

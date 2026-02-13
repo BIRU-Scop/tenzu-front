@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -49,6 +49,7 @@ import { providePlugins } from "./providers-plugins";
 
 import { InjectionToken } from "@angular/core";
 import { environment } from "../environments/environment";
+import { lastValueFrom } from "rxjs";
 
 export type Plugin = object;
 
@@ -78,7 +79,7 @@ export const appConfig: ApplicationConfig = {
         });
       }
       wsService.init().then();
-      languageStore.initLanguages().subscribe();
+      lastValueFrom(languageStore.initLanguages()).then();
       return;
     }),
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
@@ -119,9 +120,9 @@ export const appConfig: ApplicationConfig = {
       config: {
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
-        availableLangs: ["en-US"],
-        defaultLang: "en-US",
-        fallbackLang: "en-US",
+        availableLangs: ["en-us"],
+        defaultLang: "en-us",
+        fallbackLang: "en-us",
         flatten: {
           aot: !isDevMode(),
         },

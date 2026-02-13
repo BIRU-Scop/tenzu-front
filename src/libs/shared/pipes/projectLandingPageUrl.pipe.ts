@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,22 +19,13 @@
  *
  */
 
-import { Routes } from "@angular/router";
+import { Pipe, PipeTransform } from "@angular/core";
+import { ProjectNested } from "@tenzu/repository/project";
+import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
-const routes: Routes = [
-  {
-    path: "",
-    redirectTo: "list-project-members",
-    pathMatch: "prefix",
-  },
-  {
-    path: "list-project-members",
-    loadComponent: () => import("./project-members-list/project-members-list.component"),
-  },
-  {
-    path: "list-project-invitations",
-    loadComponent: () => import("./project-invitations-list/project-invitations-list.component"),
-  },
-];
-
-export default routes;
+@Pipe({ name: "projectLandingPageUrl" })
+export class ProjectLandingPageUrl implements PipeTransform {
+  transform(project: ProjectNested) {
+    return getProjectLandingPageUrl(project);
+  }
+}
