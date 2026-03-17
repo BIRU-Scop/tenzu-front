@@ -36,7 +36,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
 import { LanguageStore } from "@tenzu/repository/transloco";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { apply, applyWhenValue, FormField, form, maxLength, required, submit } from "@angular/forms/signals";
+import { apply, applyWhenValue, form, FormField, FormRoot, maxLength, required } from "@angular/forms/signals";
 import { emailSchema } from "@tenzu/shared/components/form/email-field/schema";
 import { lastValueFrom } from "rxjs";
 import {
@@ -75,6 +75,7 @@ import { TitleCasePipe } from "@angular/common";
     SocialAuthLoginComponent,
     PendingVerificationComponent,
     TitleCasePipe,
+    FormRoot,
   ],
   host: {
     class: "flex flex-col gap-4",
@@ -94,7 +95,7 @@ import { TitleCasePipe } from "@angular/common";
         </div>
       } @else if (displayForm()) {
         @let configLegal = configAppService.configLegal();
-        <form (submit)="submit($event)" class="flex flex-col gap-1 w-[32rem]">
+        <form [formRoot]="signupForm" class="flex flex-col gap-1 w-[32rem]">
           <mat-form-field>
             <mat-label>{{ t("general.identity.fullname") }}</mat-label>
             <input [formField]="signupForm.fullName" matInput autocomplete type="text" />
@@ -187,19 +188,49 @@ export default class SignupComponent {
     acceptTermsOfService: false,
     acceptPrivacyPolicy: false,
   });
-  signupForm = form(this.signupModel, (schemaPath) => {
-    required(schemaPath.fullName, { message: "auth.signup.validation.full_name_required" });
-    maxLength(schemaPath.fullName, 256);
-    apply(schemaPath.email, emailSchema);
-    apply(schemaPath.password, passwordSchema({ enabledStrength: true }));
-    applyWhenValue(
-      schemaPath,
-      () => !!this.configAppService.configLegal(),
-      (schemaPath) => {
-        required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.accept_terms_required" });
+  signupForm = form(
+    this.signupModel,
+    (schemaPath) => {
+      required(schemaPath.fullName, { message: "auth.signup.validation.full_name_required" });
+      maxLength(schemaPath.fullName, 256);
+      apply(schemaPath.email, emailSchema);
+      apply(schemaPath.password, passwordSchema({ enabledStrength: true }));
+      applyWhenValue(
+        schemaPath,
+        () => !!this.configAppService.configLegal(),
+        (schemaPath) => {
+          required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.accept_terms_required" });
+        },
+      );
+    },
+    {
+      submission: {
+        action: async (form) => {
+          const params = this.parseParams(this.route.snapshot.queryParams);
+          const values = form().value();
+          try {
+            await lastValueFrom(
+              this.userService.create({
+                ...values,
+                ...{ acceptPrivacyPolicy: values.acceptTermsOfService },
+                ...params,
+              }),
+            );
+          } catch (error) {
+            if (error instanceof HttpErrorResponse && error.status === 422 && this.authService.isPasswordError(error)) {
+              debug("error-422", "password", error);
+              this.authConfigStore.setFormHasError(true);
+              return [{ fieldTree: form.password, kind: "password-rejected", message: "auth.signup.errors.422" }];
+            } else {
+              throw error;
+            }
+          }
+          this.emailSent.set(true);
+          return undefined;
+        },
       },
-    );
-  });
+    },
+  );
 
   queryParamMap = toSignal(this.route.queryParamMap);
 
@@ -232,34 +263,6 @@ export default class SignupComponent {
     return { ...params, ...parsedParams };
   }
 
-  async submit(event: Event) {
-    event.preventDefault();
-    await submit(this.signupForm, async (form) => {
-      const params = this.parseParams(this.route.snapshot.queryParams);
-      const values = form().value();
-      try {
-        await lastValueFrom(
-          this.userService.create({
-            ...values,
-            ...{ acceptPrivacyPolicy: values.acceptTermsOfService },
-            ...params,
-          }),
-        );
-      } catch (error) {
-        if (error instanceof HttpErrorResponse && error.status === 422 && this.authService.isPasswordError(error)) {
-          debug("error-422", "password", error);
-          this.authConfigStore.setFormHasError(true);
-          return [
-            { fieldTree: this.signupForm.password, kind: "password-rejected", message: "auth.signup.errors.422" },
-          ];
-        } else {
-          throw error;
-        }
-      }
-      this.emailSent.set(true);
-      return undefined;
-    });
-  }
   resendEmail(): void {
     const form = this.signupForm();
     if (form.valid()) {

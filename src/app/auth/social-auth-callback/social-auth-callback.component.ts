@@ -34,7 +34,7 @@ import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
 import PendingVerificationComponent from "../signup/pending-verification/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { applyWhenValue, FormField, form, required, submit } from "@angular/forms/signals";
+import { applyWhenValue, FormField, form, required, FormRoot } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 @Component({
@@ -49,6 +49,7 @@ import { HttpErrorResponse } from "@angular/common/http";
     MatIcon,
     PendingVerificationComponent,
     FormField,
+    FormRoot,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -58,7 +59,7 @@ import { HttpErrorResponse } from "@angular/common/http";
           <app-pending-verification [email]="_callback.email" (resendEmail)="resendEmail()"></app-pending-verification>
         } @else if (_callback.error === "missing_terms_acceptance" && _callback.socialSessionKey) {
           @let configLegal = configAppService.configLegal();
-          <form (submit)="submitCompleteSignup($event)" class="flex flex-col gap-2 w-[32rem]">
+          <form [formRoot]="callbackForm" class="flex flex-col gap-2 w-[32rem]">
             @if (configLegal) {
               <div class="min-w-full w-min">
                 <mat-checkbox
@@ -125,15 +126,45 @@ export default class SocialAuthCallbackComponent {
   readonly userService = inject(UserService);
 
   callback = signal<ProviderCallback | undefined>(undefined);
-  callbackForm = form(signal({ acceptTermsOfService: false }), (schemaPath) => {
-    applyWhenValue(
-      schemaPath,
-      () => !!this.configAppService.configLegal(),
-      (schemaPath) => {
-        required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.terms_and_privacy_required" });
+  callbackForm = form(
+    signal({ acceptTermsOfService: false }),
+    (schemaPath) => {
+      applyWhenValue(
+        schemaPath,
+        () => !!this.configAppService.configLegal(),
+        (schemaPath) => {
+          required(schemaPath.acceptTermsOfService, { message: "auth.signup.validation.terms_and_privacy_required" });
+        },
+      );
+    },
+    {
+      submission: {
+        action: async (form) => {
+          const socialSessionKey = this.callback()?.socialSessionKey;
+          const values = form().value();
+          if (socialSessionKey) {
+            try {
+              const callback = await lastValueFrom(
+                this.authService.continueSignup({
+                  ...values,
+                  acceptPrivacyPolicy: values.acceptTermsOfService,
+                  socialSessionKey: socialSessionKey,
+                }),
+              );
+
+              if (!this.tryAuthenticate(callback)) {
+                this.callback.set({ ...this.callback(), ...callback });
+              }
+            } catch (err) {
+              if (err instanceof HttpErrorResponse) {
+                this.notificationService.error({ title: err.error.detail, translocoTitle: false });
+              }
+            }
+          }
+        },
       },
-    );
-  });
+    },
+  );
 
   tryAuthenticate(callback: ProviderCallback) {
     if (callback.access && callback.refresh) {
@@ -174,33 +205,6 @@ export default class SocialAuthCallbackComponent {
     if (callback && callback.email) {
       this.userService.resentVerification(callback as SendVerifyUserValidator).subscribe();
     }
-  }
-
-  async submitCompleteSignup(event: Event) {
-    event.preventDefault();
-    await submit(this.callbackForm, async (form) => {
-      const socialSessionKey = this.callback()?.socialSessionKey;
-      const values = form().value();
-      if (socialSessionKey) {
-        try {
-          const callback = await lastValueFrom(
-            this.authService.continueSignup({
-              ...values,
-              acceptPrivacyPolicy: values.acceptTermsOfService,
-              socialSessionKey: socialSessionKey,
-            }),
-          );
-
-          if (!this.tryAuthenticate(callback)) {
-            this.callback.set({ ...this.callback(), ...callback });
-          }
-        } catch (err) {
-          if (err instanceof HttpErrorResponse) {
-            this.notificationService.error({ title: err.error.detail, translocoTitle: false });
-          }
-        }
-      }
-    });
   }
 
   logUnexpectedState(callback: ProviderCallback) {
