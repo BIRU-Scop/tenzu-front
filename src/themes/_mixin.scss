@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -74,7 +74,7 @@
   $state-layer-ratio: 1.33
 ) {
   // Automatically calculate state-layer-size if not provided
-  $calculated-state-layer: if($state-layer-size, $state-layer-size, round($icon-size * $state-layer-ratio));
+  $calculated-state-layer:  if(sass($state-layer-size): $state-layer-size; else: round($icon-size * $state-layer-ratio));
 
   line-height: $icon-size;
 

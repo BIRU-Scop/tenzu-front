@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -98,8 +98,7 @@ export abstract class BaseRepositoryDetailService<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
-> implements ServiceEntityDetail<EntityDetail, GetParams, CreateParams, PutParams, PatchParams, DeleteParams>
-{
+> implements ServiceEntityDetail<EntityDetail, GetParams, CreateParams, PutParams, PatchParams, DeleteParams> {
   protected abstract apiService: AbstractApiServiceDetail<
     EntityDetail,
     GetParams,
@@ -173,15 +172,15 @@ export abstract class BaseRepositoryDetailService<
 }
 
 export abstract class BaseRepositoryService<
-    EntitySummary extends JsonObject,
-    EntityDetail extends EntitySummary = EntitySummary,
-    ListParams extends Record<string, EntityId> | undefined = undefined,
-    GetParams extends Record<string, EntityId> | unknown = { id: EntityId },
-    CreateParams extends Record<string, EntityId> | undefined = undefined,
-    PutParams extends Record<string, EntityId> | unknown = GetParams,
-    PatchParams extends Record<string, EntityId> | unknown = GetParams,
-    DeleteParams extends Record<string, EntityId> | unknown = GetParams,
-  >
+  EntitySummary extends JsonObject,
+  EntityDetail extends EntitySummary = EntitySummary,
+  ListParams extends Record<string, EntityId> | undefined = undefined,
+  GetParams extends Record<string, EntityId> | unknown = { id: EntityId },
+  CreateParams extends Record<string, EntityId> | undefined = undefined,
+  PutParams extends Record<string, EntityId> | unknown = GetParams,
+  PatchParams extends Record<string, EntityId> | unknown = GetParams,
+  DeleteParams extends Record<string, EntityId> | unknown = GetParams,
+>
   extends BaseRepositoryDetailService<EntityDetail, GetParams, CreateParams, PutParams, PatchParams, DeleteParams>
   implements ServiceEntitySummaryList<EntitySummary, ListParams>
 {
