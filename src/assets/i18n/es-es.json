@@ -166,8 +166,7 @@
   },
   "avatar": {
     "max_size": "El tamaño de la imagen no debe superar {{formats}}",
-    "allowed_format": "Formatos permitidos: {{formats}}",
-    "exceed_size": "{{var}} supera el tamaño de {{maxSize}}"
+    "allowed_format": "Formatos permitidos: {{formats}}"
   },
   "commons": {
     "project": "Proyecto",
@@ -202,7 +201,8 @@
   "form_errors": {
     "max_length": "El límite de caracteres es {{length}}",
     "min_length": "El límite mínimo de caracteres es {{length}}",
-    "required": "Este campo es obligatorio"
+    "required": "Este campo es obligatorio",
+    "exceed_file_size": "{{var}} supera el tamaño de {{maxSize}}"
   },
   "environment": {
     "demo": "Esta es una versión de demostración del producto, solo para fines de prueba. Todos los datos registrados se eliminarán periódicamente. No conservamos sus correos electrónicos para ningún tipo de actividad de marketing.",

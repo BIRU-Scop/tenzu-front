@@ -140,6 +140,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit {
     };
     this.dialog.open(ProjectCreateDialog, {
       ...matDialogConfig,
+      minWidth: 850,
       data: data,
     });
   }

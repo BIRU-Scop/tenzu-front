@@ -84,9 +84,10 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
             <form class="flex flex-col gap-y-4" (submit)="submit(project, $event)">
               <app-project-logo-input
                 [(projectModel)]="projectModel"
-                [projectLogo]="project.logo"
+                [projectLogo]="projectModel().logo"
+                [projectLogoUrl]="project.logo"
                 (changed)="onLogoChange()"
-              ></app-project-logo-input>
+              />
               <mat-form-field class="w-96">
                 <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
                 <input [formField]="projectForm.name" matInput placeholder="name" data-testid="project-name-input" />

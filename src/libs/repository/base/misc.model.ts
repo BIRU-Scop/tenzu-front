@@ -30,7 +30,9 @@ type JsonArray = Array<JsonValue>;
 
 type JsonValue = Primitive | JsonObject | JsonArray;
 
-export type DataObject = Record<string, JsonValue | undefined | File | Blob>;
+export type FileValue = File | Blob | "";
+
+export type DataObject = Record<string, JsonValue | undefined | FileValue>;
 
 export type BaseDataModel<T> = {
   data: T;

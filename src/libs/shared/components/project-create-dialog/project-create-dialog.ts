@@ -90,7 +90,7 @@ export type ProjectCreateDialogData = {
             <mat-form-field>
               <mat-label>{{ t("commons.workspace") }}</mat-label>
               <mat-select [formField]="projectForm.workspaceId">
-                <mat-select-trigger>{{ selectedWorkspace().name }}</mat-select-trigger>
+                <mat-select-trigger>{{ selectedWorkspace()?.name }}</mat-select-trigger>
                 @for (workspace of workspaceRepositoryService.entitiesSummary(); track workspace.id) {
                   <mat-option value="{{ workspace.id }}" [disabled]="!workspace.userCanCreateProjects">
                     <div class="flex gap-x-2 items-center">
@@ -115,7 +115,7 @@ export type ProjectCreateDialogData = {
               [options]="{ maxRows: 8 }"
               [formField]="projectForm.description"
             ></app-description-field>
-            <app-project-logo-input [(projectModel)]="projectModel"></app-project-logo-input>
+            <app-project-logo-input [(projectModel)]="projectModel" [projectLogo]="projectModel().logo" />
           </div>
         </mat-dialog-content>
 

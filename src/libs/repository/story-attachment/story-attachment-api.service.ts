@@ -25,7 +25,7 @@ import { StoryAttachment } from "./story-attachment.model";
 import * as StoryAttachmentApiType from "./story-attachment-api.type";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel, FileValue } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -52,7 +52,7 @@ export class StoryAttachmentApiService extends AbstractApiService<
   }
 
   createAttachment(
-    attachment: Blob | File,
+    attachment: FileValue,
     params: StoryAttachmentApiType.CreateEntityDetailParams,
   ): Observable<StoryAttachment> {
     const formData = new FormData();

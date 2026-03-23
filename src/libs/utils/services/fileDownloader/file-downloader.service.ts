@@ -24,6 +24,7 @@ import { HttpClient } from "@angular/common/http";
 import { saveAs } from "file-saver-es";
 import { lastValueFrom } from "rxjs";
 import { makeOptions, QueryParams } from "@tenzu/repository/base/utils";
+import { FileValue } from "@tenzu/repository/base/misc.model";
 
 @Injectable({
   providedIn: "root",
@@ -53,13 +54,17 @@ export class FileDownloaderService {
       });
   }
 
-  convertFileToBase64(file: File | Blob): Promise<string | ArrayBuffer | null> {
+  convertFileToBase64(file: FileValue): Promise<string | ArrayBuffer | null> {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+      if (!file) {
+        resolve(null);
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
 
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      }
     });
   }
 

@@ -98,7 +98,6 @@
       "size": "Tamaño (bytes)",
       "date": "Fecha",
       "action": "Acción",
-      "exceed_size": "{{var}} supera el tamaño de {{maxSize}}",
       "deleted_attachment": "{{var}} ha sido eliminado",
       "preview": "Vista previa",
       "download": "Descargar",
