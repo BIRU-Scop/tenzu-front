@@ -12,14 +12,14 @@ include:
       application-name: front
       extra-file: $SENTRYCLIRC
       destination-extra-file: '.sentryclirc'
-      build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
+      build-arg: 'RELEASE_VERSION=$NEXT_VERSION CONFIGURATION=$CI_COMMIT_REF_SLUG PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT} PLUGIN_VERSION=${PLUGIN_VERSION}'
 
   # deploy demo
   - component: $CI_SERVER_FQDN/biru/component/build-and-push@v1.16.1
     inputs:
       stage: deploy-demo
       prefix: demo-
-      build-arg: 'RELEASE_VERSION=$DEMO_VERSION CONFIGURATION=production PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT}'
+      build-arg: 'RELEASE_VERSION=$DEMO_VERSION CONFIGURATION=production PLUGIN_PATH=${PLUGIN_PATH} PLUGIN_GIT=${PLUGIN_GIT} PLUGIN_VERSION=${PLUGIN_VERSION}'
       destination: ${CI_REGISTRY_IMAGE}:${DEMO_VERSION}
       needs:
         - job: launch-demo-deploy
