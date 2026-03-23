@@ -12,7 +12,11 @@
     "title": "New Project",
     "create_project": "Create project",
     "name": "Name",
-    "workspace_forbidden": "You don't have the permission to create a project in this workspace"
+    "workspace_forbidden": "You don't have the permission to create a project in this workspace",
+    "import": {
+      "taiga": "Import project from Taiga",
+      "taiga_doc": "How to import from Taiga?"
+    }
   },
   "settings": {
     "title": "Project settings",

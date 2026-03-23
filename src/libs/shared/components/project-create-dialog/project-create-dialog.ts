@@ -52,6 +52,7 @@ import {
   applyWhenValue,
 } from "@angular/forms/signals";
 import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
+import { ProjectImportComponent } from "@tenzu/shared/components/project-create-dialog/project-import/project-import.component";
 
 export type ProjectCreateDialogData = {
   workspaceId: WorkspaceSummary["id"];
@@ -80,13 +81,17 @@ export type ProjectCreateDialogData = {
     FormField,
     MatSelectTrigger,
     ProjectLogoInputComponent,
+    ProjectImportComponent,
   ],
   template: `
     <ng-container *transloco="let t">
       <form (submit)="submit($event)">
         <mat-dialog-content class="min-w-96">
           <div class="flex flex-col gap-y-2">
-            <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
+            <div class="flex flex-row gap-16 justify-between pb-4">
+              <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
+              <app-project-import />
+            </div>
             <mat-form-field>
               <mat-label>{{ t("commons.workspace") }}</mat-label>
               <mat-select [formField]="projectForm.workspaceId">
