@@ -24,13 +24,17 @@ import { ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/proj
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatButton } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
-import { RouterLink } from "@angular/router";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import {
+  ProjectCreateDialog,
+  ProjectCreateDialogData,
+} from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
 
 @Component({
@@ -38,11 +42,9 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
   imports: [
     ProjectCardComponent,
     TranslocoDirective,
-    MatButton,
-    MatIcon,
-    RouterLink,
     CardSkeletonComponent,
     ActionCardComponent,
+    ButtonAddComponent,
     ProjectLandingPageUrl,
   ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
@@ -50,15 +52,11 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
       @if (workspace && workspace.userCanCreateProjects) {
-        <a
-          class="primary-button"
-          routerLink="/new-project"
-          [queryParams]="{ workspaceId: workspace.id }"
-          mat-stroked-button
-        >
-          <mat-icon>add</mat-icon>
-          {{ t("commons.project") }}
-        </a>
+        <app-button-add
+          [level]="'primary'"
+          [translocoKey]="'commons.project'"
+          (click)="openCreateProject(workspace.id)"
+        ></app-button-add>
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">
@@ -76,6 +74,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
           <app-project-card
             [name]="project.name"
             [color]="project.color"
+            [logo]="project.logo"
             [workspaceId]="project.workspaceId"
             [description]="project.description ? project.description : null"
             [landingPage]="project | projectLandingPageUrl"
@@ -87,6 +86,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
             <app-project-card [workspaceId]="workspace.id" />
           } @else {
             <app-project-card
+              [workspaceId]="workspace.id"
               [name]="'Lorem Ipsum'"
               [color]="3"
               [description]="'Lorem Ipsum dolor sit amet'"
@@ -111,6 +111,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit {
   readonly projectService = inject(ProjectRepositoryService);
   readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
   readonly breadcrumbStore = inject(BreadcrumbStore);
+  readonly dialog = inject(MatDialog);
 
   ngAfterViewInit(): void {
     this.breadcrumbStore.setPathComponent("workspaceProjectList");
@@ -132,4 +133,15 @@ export default class WorkspaceProjectListComponent implements AfterViewInit {
   }
 
   protected readonly Array = Array;
+
+  openCreateProject(workspaceId: string): void {
+    const data: ProjectCreateDialogData = {
+      workspaceId,
+    };
+    this.dialog.open(ProjectCreateDialog, {
+      ...matDialogConfig,
+      minWidth: 850,
+      data: data,
+    });
+  }
 }

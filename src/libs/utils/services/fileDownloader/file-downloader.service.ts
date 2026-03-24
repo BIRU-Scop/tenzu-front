@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,6 +22,9 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { saveAs } from "file-saver-es";
+import { lastValueFrom } from "rxjs";
+import { makeOptions, QueryParams } from "@tenzu/repository/base/utils";
+import { FileValue } from "@tenzu/repository/base/misc.model";
 
 @Injectable({
   providedIn: "root",
@@ -49,5 +52,40 @@ export class FileDownloaderService {
         const url = URL.createObjectURL(blob);
         window.open(url, "_blank");
       });
+  }
+
+  convertFileToBase64(file: FileValue): Promise<string | ArrayBuffer | null> {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        resolve(null);
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      }
+    });
+  }
+
+  async convertUrlToBase64(url: string, params?: QueryParams): Promise<string> {
+    const blob = await lastValueFrom(
+      this.http.get(url, {
+        responseType: "blob",
+        params: params ? makeOptions(params) : {},
+      }),
+    );
+
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        resolve(base64data);
+      };
+
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 }

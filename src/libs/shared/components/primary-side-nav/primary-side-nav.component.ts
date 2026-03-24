@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,10 +27,11 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatDivider } from "@angular/material/divider";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
+import { AsyncPipe, NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-detail/sidenav-list-workflow/sidenav-list-workflow.component";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-primary-side-nav",
@@ -51,6 +52,8 @@ import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-
     TitleCasePipe,
     TranslocoDirective,
     NgComponentOutlet,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
     <mat-sidenav-container *transloco="let t">
@@ -62,6 +65,7 @@ import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-
                 [color]="avatar.color"
                 [name]="avatar.name"
                 [size]="sideNavStore.resized() ? 'md' : 'lg'"
+                [imageData]="avatar.imageUrl | getBase64FromImageUrl: 'large' | async"
               ></app-avatar>
               @if (!sideNavStore.resized()) {
                 <div class="flex flex-col ">

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,9 +26,16 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation 
   standalone: true,
   styleUrl: "avatar.component.scss",
   encapsulation: ViewEncapsulation.None,
-  template: `<div [class]="class()">
-    <span>{{ initials() }}</span>
-  </div> `,
+  template: `
+    @let _imageData = imageData();
+    @if (_imageData) {
+      <img loading="lazy" [class]="class()" [src]="_imageData" [alt]="initials()" />
+    } @else {
+      <div [class]="class()">
+        <span>{{ initials() }}</span>
+      </div>
+    }
+  `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -41,6 +48,7 @@ export class AvatarComponent {
   });
   rounded = input(false);
   size = input<"sm" | "md" | "lg" | "xl">("md");
+  imageData = input<string | ArrayBuffer | null | undefined>(null);
   class = computed(() => [
     "avatar",
     "flex",

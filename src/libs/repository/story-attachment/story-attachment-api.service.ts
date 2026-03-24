@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,7 @@ import { StoryAttachment } from "./story-attachment.model";
 import * as StoryAttachmentApiType from "./story-attachment-api.type";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel, FileValue } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -52,7 +52,7 @@ export class StoryAttachmentApiService extends AbstractApiService<
   }
 
   createAttachment(
-    attachment: Blob | File,
+    attachment: FileValue,
     params: StoryAttachmentApiType.CreateEntityDetailParams,
   ): Observable<StoryAttachment> {
     const formData = new FormData();
@@ -62,12 +62,9 @@ export class StoryAttachmentApiService extends AbstractApiService<
       .pipe(map((dataObject) => dataObject.data));
   }
   downloadAttachment(attachment: StoryAttachment) {
-    this.fileDownloaderService.downloadFileFromUrl(
-      this.getEntityBaseUrl({ attachmentId: attachment.id }),
-      attachment.name,
-    );
+    this.fileDownloaderService.downloadFileFromUrl(attachment.file, attachment.name);
   }
   previewAttachment(attachment: StoryAttachment) {
-    this.fileDownloaderService.previewFileFromUrl(this.getEntityBaseUrl({ attachmentId: attachment.id }));
+    this.fileDownloaderService.previewFileFromUrl(attachment.file);
   }
 }

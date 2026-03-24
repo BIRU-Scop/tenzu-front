@@ -92,6 +92,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
                   [workspaceId]="workspace.id"
                   [name]="project.name"
                   [color]="project.color"
+                  [logo]="project.logo"
                   [description]="project.description ? project.description : null"
                   [landingPage]="project | projectLandingPageUrl"
                 />
@@ -104,6 +105,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
                   <app-project-card [workspaceId]="workspace.id" />
                 } @else {
                   <app-project-card
+                    [workspaceId]="workspace.id"
                     [name]="'Lorem Ipsum'"
                     [color]="3"
                     [description]="'Lorem Ipsum dolor sit amet'"

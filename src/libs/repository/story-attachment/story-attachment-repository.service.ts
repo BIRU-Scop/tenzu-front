@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -28,6 +28,7 @@ import type * as StoryAttachmentApiServiceType from "./story-attachment-api.type
 import * as StoryAttachmentApiType from "@tenzu/repository/story-attachment/story-attachment-api.type";
 import { lastValueFrom } from "rxjs";
 import { QueryParams } from "@tenzu/repository/base/utils";
+import { FileValue } from "@tenzu/repository/base/misc.model";
 
 @Injectable({
   providedIn: "root",
@@ -46,7 +47,7 @@ export class StoryAttachmentRepositoryService extends BaseRepositoryService<
   protected entitiesSummaryStore = inject(StoryAttachmentEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryAttachmentDetailStore);
 
-  async createAttachment(attachment: Blob | File, params: StoryAttachmentApiType.CreateEntityDetailParams) {
+  async createAttachment(attachment: FileValue, params: StoryAttachmentApiType.CreateEntityDetailParams) {
     const entity = await lastValueFrom(this.apiService.createAttachment(attachment, params));
     this.setEntityDetail(entity);
     return entity;
