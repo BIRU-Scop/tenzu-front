@@ -1,9 +1,6 @@
 import { applicationConfig, moduleMetadata, Preview } from "@storybook/angular";
-import { setCompodocJson } from "@storybook/addon-docs/angular";
-import docJson from "../documentation.json";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { MatIconRegistryConfig } from "./mat-icon-registry-config";
-setCompodocJson(docJson);
 
 const preview: Preview = {
   parameters: {

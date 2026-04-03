@@ -1,22 +1,15 @@
 // @ts-check
+import * as eslint from "@eslint/js";
+import * as tseslint from "typescript-eslint";
+import * as angular from "angular-eslint";
+import * as ngrx from "@ngrx/eslint-plugin/v9";
+import eslintConfigPrettier from "eslint-config-prettier";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import { defineConfig } from "eslint/config";
 
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
-const ngrx = require("@ngrx/eslint-plugin/v9");
-const eslintConfigPrettier = require("eslint-config-prettier");
-
-const eslintPluginPrettierRecommended = require("eslint-plugin-prettier/recommended");
-module.exports = tseslint.config(
+export default defineConfig(
   {
-    ignores: [
-      ".cache/",
-      ".angular",
-      ".git/",
-      ".github/",
-      "node_modules/",
-      "src/schematics/**/index.d.ts",
-    ],
+    ignores: [".cache/", ".angular", ".git/", ".github/", "node_modules/", "src/schematics/**/index.d.ts"],
     files: ["**/*.ts"],
     extends: [
       eslint.configs.recommended,
@@ -49,10 +42,7 @@ module.exports = tseslint.config(
   },
   {
     files: ["**/*.html"],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-    ],
+    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {},
   },
   eslintPluginPrettierRecommended,
