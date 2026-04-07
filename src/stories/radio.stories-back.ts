@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,42 +20,39 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { PrimarySideNavComponent } from "../../libs/shared/components/primary-side-nav/primary-side-nav.component";
-import { MatToolbar } from "@angular/material/toolbar";
-import { MatIconAnchor } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
-import { provideRouter } from "@angular/router";
 
-const meta: Meta<PrimarySideNavComponent> = {
-  title: "Components/PrimarySideNavComponent",
-  component: PrimarySideNavComponent,
+import { CommonModule } from "@angular/common";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
+
+type Story = StoryObj<MatRadioGroup>;
+
+const meta: Meta<MatRadioGroup> = {
+  component: MatRadioGroup,
+  title: "Components/FormFields/Radio",
   decorators: [
-    applicationConfig({
-      providers: [provideAnimations(), provideRouter([])],
-    }),
     moduleMetadata({
-      imports: [MatToolbar, MatIconAnchor, MatIcon],
+      imports: [CommonModule, MatRadioGroup, MatRadioButton],
+    }),
+    applicationConfig({
+      providers: [provideAnimations()],
     }),
   ],
-  parameters: {
-    layout: "fullscreen",
-  },
 };
 
-export default meta;
-type Story = StoryObj<PrimarySideNavComponent>;
-
 export const Default: Story = {
-  args: {},
   render: (args) => ({
     props: args,
     template: `
-    <mat-toolbar class="w-full flex items-center">
-      <a mat-icon-button class="icon-xl primary-button">
-        <mat-icon>rocket</mat-icon>
-      </a>
-    </mat-toolbar>
-    <app-primary-side-nav>Main</app-primary-side-nav>`,
+    <label id="example-radio-group-label" class="mat-label-large">Pick your favorite season:</label>
+    <mat-radio-group
+      aria-labelledby="example-radio-group-label">
+      <mat-radio-button [value]="spring">Spring</mat-radio-button>
+      <mat-radio-button [value]="summer">Summer</mat-radio-button>
+      <mat-radio-button [value]="autumn">Autumn</mat-radio-button>
+      <mat-radio-button [value]="winter">Winter</mat-radio-button>
+    </mat-radio-group>`,
   }),
 };
+
+export default meta;

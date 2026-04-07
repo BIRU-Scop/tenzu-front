@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,9 +21,10 @@
 
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatButton } from "@angular/material/button";
 import { CommonModule } from "@angular/common";
-import { MatIcon } from "@angular/material/icon";
+import { withTransloco } from "./storybook-providers";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 type Story = StoryObj<MatButton>;
 
@@ -31,8 +32,9 @@ const meta: Meta<MatButton> = {
   component: MatButton,
   title: "Components/Button",
   decorators: [
+    withTransloco,
     moduleMetadata({
-      imports: [CommonModule, MatButton, MatIcon, MatIconButton],
+      imports: [CommonModule, ButtonComponent],
     }),
   ],
 };
@@ -41,85 +43,75 @@ export const PrimaryButton: Story = {
   render: (args) => ({
     props: args,
     template: `
-    <div class="flex flex-wrap gap-4">
-        <button mat-button class="primary-button">Primary button</button>
-        <button mat-button class="primary-button"><mat-icon>add</mat-icon>Primary button</button>
-        <button mat-flat-button class="primary-button">Primary flat button</button>
-        <button mat-flat-button class="primary-button"><mat-icon>add</mat-icon>Primary flat button</button>
-        <button mat-stroked-button class="primary-button">Primary stroked button</button>
-        <button mat-stroked-button class="primary-button"><mat-icon>add</mat-icon>Primary stroked button</button>
-    </div>`,
-  }),
-};
-export const SecondaryButton: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <div class="flex flex-wrap gap-4">
-        <button mat-button class="secondary-button">Secondary button</button>
-        <button mat-button class="secondary-button"><mat-icon>add</mat-icon>Secondary button</button>
-        <button mat-flat-button class="secondary-button">Secondary flat button</button>
-        <button mat-flat-button class="secondary-button"><mat-icon>add</mat-icon>Secondary flat button</button>
-        <button mat-stroked-button class="secondary-button">Secondary stroked button</button>
-        <button mat-stroked-button class="secondary-button"><mat-icon>add</mat-icon>Secondary stroked button</button>
-    </div>`,
-  }),
-};
-export const TertiaryButton: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <div class="flex flex-wrap gap-4">
-        <button mat-button class="tertiary-button">Tertiary button</button>
-        <button mat-button class="tertiary-button"><mat-icon>add</mat-icon>Tertiary button</button>
-        <button mat-flat-button class="tertiary-button">Tertiary flat button</button>
-        <button mat-flat-button class="tertiary-button"><mat-icon>add</mat-icon>Tertiary flat button</button>
-        <button mat-stroked-button class="tertiary-button">Tertiary stroked button</button>
-        <button mat-stroked-button class="tertiary-button"><mat-icon>add</mat-icon>Tertiary stroked button</button>
-    </div>`,
-  }),
-};
-export const ErrorButton: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <div class="flex flex-wrap gap-4">
-        <button mat-button class="error-button">Error button</button>
-        <button mat-button class="error-button"><mat-icon>add</mat-icon>Error button</button>
-        <button mat-flat-button class="error-button">Error flat button</button>
-        <button mat-flat-button class="error-button"><mat-icon>add</mat-icon>Error flat button</button>
-        <button mat-stroked-button class="error-button">Error stroked button</button>
-        <button mat-stroked-button class="error-button"><mat-icon>add</mat-icon>Error stroked button</button>
-    </div>`,
-  }),
-};
-
-export const DisabledButton: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <div class="flex flex-wrap gap-4">
-        <button mat-button disabled>Disabled button</button>
-        <button mat-button disabled><mat-icon>add</mat-icon>Disabled button</button>
-        <button mat-flat-button disabled>Disabled flat button</button>
-        <button mat-flat-button disabled><mat-icon>add</mat-icon>Disabled flat button</button>
-        <button mat-stroked-button disabled>Disabled stroked button</button>
-        <button mat-stroked-button disabled><mat-icon>add</mat-icon>Disabled stroked button</button>
-    </div>`,
-  }),
-};
-
-export const IconButton: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <div class="flex flex-col gap-4">
-      <button mat-icon-button class="icon-xl primary-button"><mat-icon>delete</mat-icon></button>
-      <button mat-icon-button class="icon-lg tertiary-button"><mat-icon>rocket</mat-icon></button>
-      <button mat-icon-button class="icon-md secondary-button"><mat-icon>favorite</mat-icon></button>
-      <button mat-icon-button class="icon-md" disabled><mat-icon>favorite</mat-icon></button>
-      <button mat-icon-button class="icon-sm"><mat-icon>open_in_new</mat-icon></button>
-    </div>`,
+  <div class="flex flex-col gap-4">
+  <h1>primary</h1>
+    <div class="flex flex-wrap gap-4 items-center">
+       <app-button [iconName]="'add'" [level]="'primary'" [translocoKey]="'button.primary'"/>
+       <app-button [iconName]="'add'" [level]="'primary'" [disabled]="true" [translocoKey]="'button.primary.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [translocoKey]="'button.primary.icon'"/>
+       <app-button [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.primary.icon.disabled'"/>
+       <app-button  [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.primary.icon.sm'"/>
+       <app-button  [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.primary.icon.md'"/>
+       <app-button  [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.primary.icon.lg'"/>
+       <app-button  [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.primary.icon.xl'"/>
+    </div>
+    <h1>secondary</h1>
+    <div class="flex flex-wrap gap-4 items-center">
+       <app-button [iconName]="'add'" [level]="'secondary'" [translocoKey]="'button.secondary'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [disabled]="true" [translocoKey]="'button.secondary.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [translocoKey]="'button.secondary.icon'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.secondary.icon.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.secondary.icon.sm'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.secondary.icon.md'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.secondary.icon.lg'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.secondary.icon.xl'"/>
+    </div>
+    <h1>tertiary</h1>
+    <div class="flex flex-wrap gap-4 items-center">
+     <app-button [iconName]="'add'" [level]="'tertiary'" [translocoKey]="'button.tertiary'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [disabled]="true" [translocoKey]="'button.tertiary.disabled'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [translocoKey]="'button.tertiary.icon'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.tertiary.icon.disabled'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.tertiary.icon.sm'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.tertiary.icon.md'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.tertiary.icon.lg'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.tertiary.icon.xl'"/>
+    </div>
+     <h1>warning</h1>
+    <div class="flex flex-wrap gap-4 items-center">
+     <app-button [iconName]="'add'" [level]="'warning'" [translocoKey]="'button.warning'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [disabled]="true" [translocoKey]="'button.warning.disabled'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [translocoKey]="'button.warning.icon'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.warning.icon.disabled'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.warning.icon.sm'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.warning.icon.md'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.warning.icon.lg'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.warning.icon.xl'"/>
+    </div>
+     <h1>error</h1>
+    <div class="flex flex-wrap gap-4 items-center">
+       <app-button [iconName]="'add'" [level]="'error'" [translocoKey]="'button.error'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [disabled]="true" [translocoKey]="'button.error.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [translocoKey]="'button.error.icon'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.error.icon.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.error.icon.sm'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.error.icon.md'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.error.icon.lg'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.error.icon.xl'"/>
+    </div>
+    <h1>success</h1>
+    <div class="flex flex-wrap gap-4 items-center">
+       <app-button [iconName]="'add'" [level]="'success'" [translocoKey]="'button.success'"/>
+       <app-button [iconName]="'add'" [level]="'success'"   [disabled]="true" [translocoKey]="'button.success.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true"   [translocoKey]="'button.success.icon'"/>
+       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true"  [disabled]="true" [translocoKey]="'button.success.icon.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.success.icon.sm'"/>
+       <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.success.icon.md'"/>
+       <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.success.icon.lg'"/>
+       <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.success.icon.xl'"/>
+    </div>
+    </div>
+`,
   }),
 };
 

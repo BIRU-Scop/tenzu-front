@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,16 +23,16 @@ import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/an
 
 import { CommonModule } from "@angular/common";
 import { provideAnimations } from "@angular/platform-browser/animations";
-import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
+import { MatCheckbox } from "@angular/material/checkbox";
 
-type Story = StoryObj<MatRadioGroup>;
+type Story = StoryObj<MatCheckbox>;
 
-const meta: Meta<MatRadioGroup> = {
-  component: MatRadioGroup,
-  title: "Components/FormFields/Radio",
+const meta: Meta<MatCheckbox> = {
+  component: MatCheckbox,
+  title: "Components/FormFields/Checkbox",
   decorators: [
     moduleMetadata({
-      imports: [CommonModule, MatRadioGroup, MatRadioButton],
+      imports: [CommonModule, MatCheckbox],
     }),
     applicationConfig({
       providers: [provideAnimations()],
@@ -44,14 +44,9 @@ export const Default: Story = {
   render: (args) => ({
     props: args,
     template: `
-    <label id="example-radio-group-label" class="mat-label-large">Pick your favorite season:</label>
-    <mat-radio-group
-      aria-labelledby="example-radio-group-label">
-      <mat-radio-button [value]="spring">Spring</mat-radio-button>
-      <mat-radio-button [value]="summer">Summer</mat-radio-button>
-      <mat-radio-button [value]="autumn">Autumn</mat-radio-button>
-      <mat-radio-button [value]="winter">Winter</mat-radio-button>
-    </mat-radio-group>`,
+    <p><mat-checkbox formControlName="pepperoni">Pepperoni</mat-checkbox></p>
+  <p><mat-checkbox formControlName="extracheese">Extra Cheese</mat-checkbox></p>
+  <p><mat-checkbox formControlName="mushroom">Mushroom</mat-checkbox></p>`,
   }),
 };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,34 +20,42 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-
-import { CommonModule } from "@angular/common";
 import { provideAnimations } from "@angular/platform-browser/animations";
-import { MatCheckbox } from "@angular/material/checkbox";
+import { PrimarySideNavComponent } from "../../libs/shared/components/primary-side-nav/primary-side-nav.component";
+import { MatToolbar } from "@angular/material/toolbar";
+import { MatIconAnchor } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { provideRouter } from "@angular/router";
 
-type Story = StoryObj<MatCheckbox>;
-
-const meta: Meta<MatCheckbox> = {
-  component: MatCheckbox,
-  title: "Components/FormFields/Checkbox",
+const meta: Meta<PrimarySideNavComponent> = {
+  title: "Components/PrimarySideNavComponent",
+  component: PrimarySideNavComponent,
   decorators: [
-    moduleMetadata({
-      imports: [CommonModule, MatCheckbox],
-    }),
     applicationConfig({
-      providers: [provideAnimations()],
+      providers: [provideAnimations(), provideRouter([])],
+    }),
+    moduleMetadata({
+      imports: [MatToolbar, MatIconAnchor, MatIcon],
     }),
   ],
-};
-
-export const Default: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-    <p><mat-checkbox formControlName="pepperoni">Pepperoni</mat-checkbox></p>
-  <p><mat-checkbox formControlName="extracheese">Extra Cheese</mat-checkbox></p>
-  <p><mat-checkbox formControlName="mushroom">Mushroom</mat-checkbox></p>`,
-  }),
+  parameters: {
+    layout: "fullscreen",
+  },
 };
 
 export default meta;
+type Story = StoryObj<PrimarySideNavComponent>;
+
+export const Default: Story = {
+  args: {},
+  render: (args) => ({
+    props: args,
+    template: `
+    <mat-toolbar class="w-full flex items-center">
+      <a mat-icon-button class="icon-xl primary-button">
+        <mat-icon>rocket</mat-icon>
+      </a>
+    </mat-toolbar>
+    <app-primary-side-nav>Main</app-primary-side-nav>`,
+  }),
+};
