@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
-import { ButtonType, IconName, LevelType } from "../ui.types";
+import { ButtonIconSize, ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
 import { JsonObject } from "@tenzu/repository/base/misc.model";
 
@@ -44,4 +44,5 @@ export class ButtonSaveComponent implements ButtonInterface {
   iconName = input<IconName | undefined>("save");
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);
+  iconSize = input<ButtonIconSize>("md");
 }
