@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -31,28 +31,31 @@
       @apply cursor-pointer;
       height: var(--mdc-list-list-item-one-line-container-height);
       min-width: var(--mdc-list-list-item-one-line-container-height);
+      color: var(--mat-sys-tertiary);
       border: solid 1px transparent;
       &:focus {
         border-top: var(--mat-sys-on-secondary) solid 1px;
         border-bottom: var(--mat-sys-on-secondary) solid 1px;
-        @media (prefers-color-scheme: light) {
-          background-color: var(--mat-sys-primary-inverse);
-        }
-        @media (prefers-color-scheme: dark) {
-          background-color: var(--mat-sys-surface);
-        }
+        background-color: var(--mat-sys-surface-container);
+        //@media (prefers-color-scheme: light) {
+        //  background-color: var(--mat-sys-surface-container);
+        //}
+        //@media (prefers-color-scheme: dark) {
+        //  background-color: var(--mat-sys-surface-container);
+        //}
       }
       &:hover {
-        background-color: var(--mat-sys-surface);
-        @media (prefers-color-scheme: light) {
-          background-color: var(--mat-sys-inverse-primary);
-        }
-        @media (prefers-color-scheme: dark) {
-          background-color: var(--mat-sys-surface);
-        }
+        background-color: var(--mat-sys-surface-container);
+        color: var(--mat-sys-tertiary);
+        //@media (prefers-color-scheme: light) {
+        //  background-color: var(--mat-sys-surface-container);
+        //}
+        //@media (prefers-color-scheme: dark) {
+        //  background-color: var(--mat-sys-surface-container);
+        //}
       }
       .mat-icon {
-        color: var(--mat-sys-on-secondary);
+        color: var(--mat-sys-tertiary);
       }
     }
     .mat-mdc-icon-button{
@@ -61,9 +64,7 @@
         padding-right: var(--tw-4);
       }
     }
-    .mat-divider {
-      box-shadow: 0 0 4px var(--mat-sys-primary);
-    }
+
   }
   .mat-sidenav-content {
     height: calc(100vh - var(--mat-toolbar-standard-height) - 2rem);
@@ -85,19 +86,20 @@
     @include mat.sidenav-overrides((
       container-shape: 0px,
       container-width: var(--tz-sidenav-width),
-      container-background-color: var(--mat-sys-surface-dim),
+      container-background-color: var(--mat-sys-surface-container),
       container-divider-color: var(--mat-sys-background),
+      container-text-color: var(--mat-sys-tertiary)
     ));
-    @media (prefers-color-scheme: light) {
-      @include mat.sidenav-overrides((
-        container-text-color: var(--mat-sys-surface),
-      ));
-    }
-    @media (prefers-color-scheme: dark) {
-      @include mat.sidenav-overrides((
-        container-text-color: var(--mat-sys-on-surface),
-      ));
-    }
+    //@media (prefers-color-scheme: light) {
+    //  @include mat.sidenav-overrides((
+    //    container-text-color: var(--mat-sys-tertiary),
+    //  ));
+    //}
+    //@media (prefers-color-scheme: dark) {
+    //  @include mat.sidenav-overrides((
+    //    container-text-color: var(--mat-sys-tertiary),
+    //  ));
+    //}
     @include mat.divider-overrides((
       color: var(--mat-sys-primary)
     ));

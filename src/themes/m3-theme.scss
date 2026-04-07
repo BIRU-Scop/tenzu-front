@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,6 +25,123 @@
 @use 'sass:map';
 @use 'sass:color';
 @use '@angular/material' as mat;
+
+$light-on: #fbfbfd;
+
+$light_palettes_v2: (
+  primary: (
+    primary : #00795b,
+    primary-container : #C9FFF1,
+    inverse-primary: #63ffd7,
+    on-primary: $light-on,
+    on-primary-container: #00795b,
+  ),
+  secondary: (
+    secondary: #30313f,
+    secondary-container: #e6e7f4,
+    on-secondary: $light-on,
+    on-secondary-container: #30313f,
+  ),
+  tertiary: (
+    tertiary: #212d69,
+    tertiary-container: #dbe1ff,
+    on-tertiary: $light-on,
+    on-tertiary-container: #212d69,
+  ),
+  error: (
+    error: #ba1a1a,
+    error-container: #fce9e9,
+    on-error: $light-on,
+    on-error-container: #ba1a1a,
+  ),
+  warning : (
+    warning: #a06a06,
+    warning-container: #ffe6b9,
+    on-warning: $light-on,
+    on-warning-container: #30313f,
+  ),
+  success : (
+    success: #008813,
+    success-container: #aff1b3,
+    on-success: $light-on,
+    on-success-container: #30313f,
+  ),
+  neutral: (
+    background: #fefefe,
+    on-background: #252a28,
+    surface:  #fbfbfb,
+    surface-container: #f1f3fb,
+    surface-dim: #f9f9fa,
+    on-surface: #19191c,
+    on-surface-variant: #5b5d72,
+    outline:  #30313f,
+    outline-variant:  #e6e7f4,
+  ),
+  level: (
+    level1:  1px 1px 1px rgba(0, 0, 0, 0.3),
+    level2:  2px 2px 2px rgba(0, 0, 0, 0.2),
+    level3:  4px 4px 4px rgba(0, 0, 0, 0.1)
+  )
+
+);
+
+$dark_palettes_v2: (
+
+  primary: (
+    primary : #00795b,
+    primary-container : #C9FFF1,
+    inverse-primary: #63ffd7,
+    on-primary: $light-on,
+    on-primary-container: #00795b,
+  ),
+  secondary: (
+    secondary: #30313f,
+    secondary-container: #e6e7f4,
+    on-secondary: $light-on,
+    on-secondary-container: #30313f,
+  ),
+  tertiary: (
+    tertiary: #212d69,
+    tertiary-container: #212d69,
+    on-tertiary: $light-on,
+    on-tertiary-container: #212d69,
+  ),
+  error: (
+    error: #ba1a1a,
+    error-container: #fce9e9,
+    on-error: $light-on,
+    on-error-container: #ba1a1a,
+  ),
+  warning : (
+    warning: #a06a06,
+    warning-container: #ffe6b9,
+    on-warning: $light-on,
+    on-warning-container: #30313f,
+  ),
+  success : (
+    success: #008813,
+    success-container: #aff1b3,
+    on-success: $light-on,
+    on-success-container: #30313f,
+  ),
+  neutral: (
+    background: #fefefe,
+    on-background: #252a28,
+    surface:  #fbfbfb,
+    surface-container: #f1f3fb,
+    surface-dim: #f9f9fa,
+    on-surface: #19191c,
+    on-surface-variant: #5b5d72,
+    outline:  #30313f,
+    outline-variant:  #e6e7f4,
+  ),
+  level: (
+    level1:  1px 1px 1px rgba(0, 0, 0, 0.6),
+    level2:  2px 2px 2px rgba(0, 0, 0, 0.5),
+    level3:  4px 4px 4px rgba(0, 0, 0, 0.4)
+  )
+
+);
 
 // Note: Color palettes are generated from primary: #2a3c96, secondary: #fbc259, tertiary: #0eb188, neutral: #88959d
 $_light_palettes: (

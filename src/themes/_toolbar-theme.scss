@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -28,7 +28,7 @@
   ));
 }
 .mat-toolbar {
-  border-color: var(--mat-sys-primary);
-  box-shadow: 0 0 3px var(--mat-sys-primary);
+  border-color: var(--mat-sys-tertiary);
+  box-shadow: 0 0 3px var(--mat-sys-tertiary);
   @apply border-b border-x-0 border-t-0 border-solid;
 }

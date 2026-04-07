@@ -26,9 +26,7 @@
   padding: 7.5px 16px 7.5px 16px;
 }
 
-.mat-mdc-chip {
-  @include mat.chips-overrides((  ));
-}
+
 
 .primary-chip {
   @apply app-chip;

@@ -22,48 +22,70 @@
 @use "@angular/material" as mat;
 
 @mixin tokens-overrides() {
+  .mat-mdc-text-field-wrapper:hover {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+  }
   @include mat.form-field-overrides((
-      outlined-outline-color: var(--mat-sys-primary),
-      outlined-hover-outline-color: var(--mat-sys-on-primary),
-      outlined-focus-outline-color: var(--mat-sys-primary),
-      outlined-error-outline-color: var(--mat-sys-error),
-      outlined-error-hover-outline-color: var(--mat-sys-on-error),
-      outlined-error-focus-outline-color: var(--mat-sys-error),
-      container-text-size: var(--mat-sys-label-large-size),
-      container-text-line-height: var(--mat-sys-label-large-line-height),
-      error-text-color: var(--mat-sys-on-error-container),
-      container-height: 36px,
-      container-vertical-padding: 8px,
-      filled-container-color: transparent,
-      outlined-container-shape: var(--mat-sys-corner-medium),
-      filled-container-shape: var(--mat-sys-corner-medium),
-      filled-input-text-color: var(--mat-sys-on-surface),
-      outlined-input-text-color: var(--mat-sys-on-surface),
-      outlined-label-text-size: var(--mat-sys-label-large-size),
-      filled-label-text-size: var(--mat-sys-label-large-line-height),
-      outlined-label-text-color: var(--mat-sys-on-background),
-      filled-label-text-color: var(--mat-sys-on-container),
-      outlined-focus-label-text-color: var(--mat-sys-on-primary-container),
-      filled-focus-label-text-color: var(--mat-sys-on-primary-container),
-      outlined-hover-label-text-color: var(--mat-sys-on-primary-container),
-      filled-hover-label-text-color: var(--mat-sys-on-primary-container),
-      outlined-error-hover-label-text-color: var(--mat-sys-on-error-container),
-      filled-error-hover-label-text-color: var(--mat-sys-on-error-container),
-      outlined-error-focus-label-text-color: var(--mat-sys-on-error-container),
-      filled-error-focus-label-text-color: var(--mat-sys-on-error-container),
-      outlined-error-label-text-color: var(--mat-sys-on-error-container),
-      filled-error-label-text-color: var(--mat-sys-on-error-container),
-      filled-with-label-container-padding-top: 16px,
-      filled-with-label-container-padding-bottom: 4px,
-      hover-state-layer-opacity: 0,
-      focus-state-layer-opacity: 0,
-      filled-active-indicator-color: var(--mat-sys-outline),
-      filled-hover-active-indicator-color: var(--mat-sys-primary),
-      filled-focus-active-indicator-color: var(--mat-sys-primary),
-      filled-error-active-indicator-color: var(--mat-sys-error-container),
-      filled-error-focus-active-indicator-color: var(--mat-sys-error),
-      filled-error-hover-active-indicator-color: var(--mat-sys-error),
-    ));
+    // General
+    container-text-size: var(--mat-sys-label-large-size),
+    container-text-line-height: var(--mat-sys-label-large-line-height),
+    container-height: 36px,
+    container-vertical-padding: 8px,
+    error-text-color: var(--mat-sys-on-error-container),
+    hover-state-layer-opacity: 0,
+    focus-state-layer-opacity: 0,
+    state-layer-color: var(--mat-sys-error),
+
+      // outlined
+    outlined-label-text-size: var(--mat-sys-label-large-size),
+    outlined-container-shape: var(--mat-sys-corner-medium),
+
+    outlined-outline-color: var(--mat-sys-tertiary),
+    outlined-label-text-color: var(--mat-sys-on-surface),
+    outlined-input-text-color: var(--mat-sys-on-surface),
+
+    outlined-hover-outline-color: var(--mat-sys-tertiary),
+    outlined-hover-label-text-color: var(--mat-sys-on-surface),
+    outlined-focus-outline-color: var(--mat-sys-tertiary),
+    outlined-focus-label-text-color: var(--mat-sys-tertiary),
+
+
+    outlined-error-outline-color: var(--mat-sys-error),
+    outlined-error-hover-outline-color: var(--mat-sys-error),
+    outlined-error-hover-label-text-color: var(--mat-sys-on-error-container),
+    outlined-error-focus-outline-color: var(--mat-sys-error),
+    outlined-error-label-text-color: var(--mat-sys-on-error-container),
+    outlined-error-focus-label-text-color: var(--mat-sys-on-error-container),
+
+    // filled
+
+    //filled-container-color: transparent,
+    //filled-container-shape: var(--mat-sys-corner-medium),
+    filled-input-text-color: var(--mat-sys-surface),
+
+
+    filled-label-text-size: var(--mat-sys-label-large-line-height),
+    //filled-label-text-color: var(--mat-sys-on-container),
+
+    //filled-focus-label-text-color: var(--mat-sys-on-tertiary-container),
+
+    //filled-hover-label-text-color: var(--mat-sys-on-tertiary-container),
+
+    //filled-error-hover-label-text-color: var(--mat-sys-on-error-container),
+
+    //filled-error-focus-label-text-color: var(--mat-sys-on-error-container),
+
+    //filled-error-label-text-color: var(--mat-sys-on-error-container),
+    filled-with-label-container-padding-top: 16px,
+    filled-with-label-container-padding-bottom: 4px,
+
+    //filled-active-indicator-color: var(--mat-sys-outline),
+    //filled-hover-active-indicator-color: var(--mat-sys-tertiary),
+    //filled-focus-active-indicator-color: var(--mat-sys-tertiary),
+    //filled-error-active-indicator-color: var(--mat-sys-error-container),
+    //filled-error-focus-active-indicator-color: var(--mat-sys-error),
+    //filled-error-hover-active-indicator-color: var(--mat-sys-error),
+  ));
 
 
 
@@ -74,8 +96,8 @@
       container-text-line-height: var(--mat-sys-headline-small-line-height),
       container-text-weight: var(--mat-sys-headline-small-weight),
       container-text-tracking: 0px,
-      outlined-input-text-color: var(--mat-sys-on-background),
-      filled-input-text-color: var(--mat-sys-on-background),
+      outlined-input-text-color: var(--mat-sys-on-surface),
+      filled-input-text-color: var(--mat-sys-on-surface),
       container-vertical-padding: 0px
     )
     );
