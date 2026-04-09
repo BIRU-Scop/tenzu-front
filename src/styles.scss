@@ -225,13 +225,13 @@ body {
   @include mat.typography-hierarchy(themes.$light-theme);
 
   @media (prefers-color-scheme: light) {
-    @include mixin.theme-overrides(themes.$light_palettes_v2);
+    @include mixin.theme-overrides(themes.$light_palettes);
     @include tokens-overrides();
   }
 
   @media (prefers-color-scheme: dark) {
-    @include mixin.theme-overrides(themes.$dark_palettes_v2);
-    @include tokens-overrides;
+    @include mixin.theme-overrides(themes.$dark_palettes);
+    @include tokens-overrides();
   }
 }
 
