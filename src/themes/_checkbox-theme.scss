@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,48 +22,39 @@
 @use "@angular/material" as mat;
 
 
-mat-checkbox {
-  --checkbox-background-color: var(--mat-sys-primary);
-}
-
-  .mdc-checkbox, .mat-mdc-checkbox {
-    .mat-mdc-checkbox-touch-target {
-      width: 36px;
-      height: 36px;
-    }
-    .mdc-checkbox__background {
-      box-shadow: 0 0 3px var(--checkbox-background-color);
-      border-width: 1px;
-      border-color: var(--checkbox-background-color);
-    }
-  }
-.checkbox-invalid {
-
-  --checkbox-background-color: var(--mat-sys-error);
-
-  & .mdc-label {
-    color: var(--mat-sys-on-error-container);
-  }
-
-}
-
 
 @mixin tokens-overrides() {
+  .checkbox-invalid {
+    --mat-checkbox-unselected-pressed-icon-color: var(--mat-sys-error);
+    @include mat.checkbox-overrides((
+      unselected-icon-color: var(--mat-sys-error),
+      unselected-hover-icon-color: var(--mat-sys-error),
+      unselected-focus-icon-color: var(--mat-sys-error),
+      selected-icon-color: var(--mat-sys-error),
+      selected-hover-icon-color: var(--mat-sys-error),
+      selected-focus-icon-color: var(--mat-sys-error),
+      selected-pressed-icon-color: var(--mat-sys-error),
+      label-text-color: var(--mat-sys-on-error-container),
+    ));
+  }
+
     @include mat.checkbox-overrides((
       state-layer-size: 32px,
-      selected-icon-color: var(--mat-sys-primary),
-      selected-focus-icon-color: var(--mat-sys-primary),
-      selected-hover-icon-color: var(--mat-sys-primary),
-      selected-pressed-state-layer-color: var(--mat-sys-primary),
-      unselected-icon-color: var(--mat-sys-primary),
-      unselected-hover-icon-color: var(--mat-sys-primary),
-      unselected-focus-icon-color: var(--mat-sys-primary),
-      unselected-hover-state-layer-color: var(--mat-sys-primary),
-      unselected-focus-state-layer-color: var(--mat-sys-primary),
-      unselected-pressed-state-layer-color: var(--mat-sys-primary),
+      selected-focus-icon-color: var(--mat-sys-tertiary),
+      selected-focus-state-layer-color: var(--mat-sys-tertiary),
+      selected-hover-icon-color: var(--mat-sys-tertiary),
+      selected-hover-state-layer-color: var(--mat-sys-tertiary),
+      selected-icon-color: var(--mat-sys-tertiary),
+      selected-pressed-icon-color: var(--mat-sys-tertiary),
+      selected-pressed-state-layer-color: var(--mat-sys-tertiary),
+      unselected-icon-color: var(--mat-sys-tertiary),
+      unselected-hover-icon-color: var(--mat-sys-tertiary),
+      unselected-focus-icon-color: var(--mat-sys-tertiary),
+      unselected-hover-state-layer-color: var(--mat-sys-tertiary),
+      unselected-focus-state-layer-color: var(--mat-sys-tertiary),
+      unselected-pressed-state-layer-color: var(--mat-sys-tertiary),
       label-text-size: var(--mat-sys-label-large-size),
-      label-text-color: var(--mat-sys-on-surface),
       label-text-line-height: var(--mat-sys-label-large-line-height),
-      selected-checkmark-color: var(--mat-sys-on-primary-container),
+      selected-checkmark-color: var(--mat-sys-on-tertiary),
     ));
   }
