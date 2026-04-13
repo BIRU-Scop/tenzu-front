@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,6 +22,11 @@
 @use '@angular/material' as mat;
 
 .mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    overflow: visible;
+
   &.icon-sm {
     line-height: 16px;
     width: 16px;

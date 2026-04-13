@@ -26,11 +26,25 @@ import { MatInput } from "@angular/material/input";
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot, validate } from "@angular/forms/signals";
 import { MatIcon } from "@angular/material/icon";
+import { MatOption, MatSelect } from "@angular/material/select";
 
 @Component({
   selector: "app-form-field-storybook",
   standalone: true,
-  imports: [FormRoot, FormField, MatFormField, MatLabel, MatInput, MatError, MatIcon, MatPrefix, MatSuffix, MatHint],
+  imports: [
+    FormRoot,
+    FormField,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatIcon,
+    MatPrefix,
+    MatSuffix,
+    MatHint,
+    MatSelect,
+    MatOption,
+  ],
   template: `
     <form [formRoot]="form" class="flex flex-row gap-4">
       <div class="flex flex-col gap-4">
@@ -50,7 +64,53 @@ import { MatIcon } from "@angular/material/icon";
           <mat-label>Disabled</mat-label>
           <input matInput [formField]="form.disabled" />
         </mat-form-field>
+        <mat-form-field>
+          <mat-label>Your car</mat-label>
+          <mat-select [formField]="form.select">
+            <mat-option value="volvo"><mat-icon>home</mat-icon>Volvo</mat-option>
+            <mat-option value="toyota">Toyota</mat-option>
+            <mat-option value="mercedes">Mercedes</mat-option>
+            <mat-option value="audi">Audi</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Your car</mat-label>
+          <mat-select [formField]="form.select" multiple>
+            <mat-option value="volvo"><mat-icon>home</mat-icon>Volvo</mat-option>
+            <mat-option value="toyota">Toyota</mat-option>
+            <mat-option value="mercedes">Mercedes</mat-option>
+            <mat-option value="audi">Audi</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Your car</mat-label>
+          <mat-select [formField]="form.selected">
+            <mat-option value="volvo"><mat-icon>home</mat-icon>Volvo</mat-option>
+            <mat-option value="toyota"><mat-icon>home</mat-icon>Toyota </mat-option>
+            <mat-option value="mercedes">Mercedes</mat-option>
+            <mat-option value="audi">Audi</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Your car</mat-label>
+          <mat-select [formField]="form.selectError">
+            <mat-option value="volvo">Volvo</mat-option>
+            <mat-option value="toyota">Toyota</mat-option>
+            <mat-option value="mercedes">Mercedes</mat-option>
+            <mat-option value="audi">Audi</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Your car</mat-label>
+          <mat-select [formField]="form.selectDisabled">
+            <mat-option value="volvo">Volvo</mat-option>
+            <mat-option value="toyota">Toyota</mat-option>
+            <mat-option value="mercedes">Mercedes</mat-option>
+            <mat-option value="audi">Audi</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
+
       <div class="flex flex-col gap-4">
         <h1>With icon + help text</h1>
         <mat-form-field>
@@ -105,15 +165,28 @@ import { MatIcon } from "@angular/material/icon";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryFormFieldStorybookComponent {
-  values = signal({ default: "", error: "", disabled: "", input4: false, input5: false, input6: false });
+  values = signal({
+    default: "",
+    error: "",
+    disabled: "",
+    select: "",
+    selected: "volvo",
+    selectError: "",
+    selectDisabled: "",
+  });
   form = form(this.values, (path) => {
     disabled(path.disabled);
+    disabled(path.selectDisabled);
     validate(path.error, (value) => {
+      return value.value() == "" ? { kind: "error", message: "no empty" } : null;
+    });
+    validate(path.selectError, (value) => {
       return value.value() == "" ? { kind: "error", message: "no empty" } : null;
     });
   });
   constructor() {
     this.form.error().markAsTouched();
+    this.form.selectError().markAsTouched();
   }
 }
 

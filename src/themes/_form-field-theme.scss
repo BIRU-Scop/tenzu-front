@@ -43,7 +43,7 @@
     leading-icon-color:                                   var(--mat-sys-on-surface-variant),                            // Leading icon color
     trailing-icon-color:                                  var(--mat-sys-on-surface-variant),                            // Trailing icon color
     enabled-select-arrow-color:                           var(--mat-sys-on-surface-variant),                            // Select arrow color (enabled)
-    focus-select-arrow-color:                             var(--mat-sys-primary),                                       // Select arrow color (focused)
+    focus-select-arrow-color:                             var(--mat-sys-on-surface),                                       // Select arrow color (focused)
     state-layer-color:                                    var(--mat-sys-on-surface),                                    // Hover/focus state layer color
     hover-state-layer-opacity:                            var(--mat-sys-hover-state-layer-opacity),                     // Opacity of hover state layer
     focus-state-layer-opacity:                            0,                                                            // Opacity of focus state layer
@@ -59,28 +59,6 @@
     error-hover-trailing-icon-color:                      var(--mat-sys-on-error-container),                            // Trailing icon color (error + hover)
     error-focus-trailing-icon-color:                      var(--mat-sys-error),                                         // Trailing icon color (error + focus)
 
-    // --- Color — Filled variant ---
-    filled-container-color:                               var(--mat-sys-surface-variant),                               // Container background color
-    filled-active-indicator-color:                        var(--mat-sys-on-surface-variant),                            // Bottom border color (default)
-    filled-hover-active-indicator-color:                  var(--mat-sys-on-surface),                                    // Bottom border color (hover)
-    filled-focus-active-indicator-color:                  var(--mat-sys-primary),                                       // Bottom border color (focused)
-    filled-caret-color:                                   var(--mat-sys-primary),                                       // Caret (cursor) color
-    filled-input-text-color:                              var(--mat-sys-on-surface),                                    // Input text color
-    filled-input-text-placeholder-color:                  var(--mat-sys-on-surface-variant),                            // Placeholder color
-    filled-label-text-color:                              var(--mat-sys-on-surface-variant),                            // Label color (default)
-    filled-hover-label-text-color:                        var(--mat-sys-on-surface-variant),                            // Label color (hover)
-    filled-focus-label-text-color:                        var(--mat-sys-primary),                                       // Label color (focused)
-    filled-disabled-container-color:                      color-mix(in srgb, var(--mat-sys-on-surface) 4%, transparent), // Container color (disabled)
-    filled-disabled-active-indicator-color:               color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Bottom border color (disabled)
-    filled-disabled-input-text-color:                     color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Input text color (disabled)
-    filled-disabled-label-text-color:                     color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Label color (disabled)
-    filled-error-caret-color:                             var(--mat-sys-error),                                         // Caret color (error)
-    filled-error-active-indicator-color:                  var(--mat-sys-error),                                         // Bottom border color (error)
-    filled-error-focus-active-indicator-color:            var(--mat-sys-error),                                         // Bottom border color (error + focus)
-    filled-error-hover-active-indicator-color:            var(--mat-sys-on-error-container),                            // Bottom border color (error + hover)
-    filled-error-label-text-color:                        var(--mat-sys-error),                                         // Label color (error)
-    filled-error-focus-label-text-color:                  var(--mat-sys-error),                                         // Label color (error + focus)
-    filled-error-hover-label-text-color:                  var(--mat-sys-on-error-container),                            // Label color (error + hover)
 
     // --- Color — Outlined variant ---
     outlined-outline-color:                               var(--mat-sys-on-surface-variant),                                       // Border color (default)
@@ -145,16 +123,6 @@
     background-color: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
   }
 
-  .mat-mdc-form-field-icon-prefix,
-  .mat-mdc-form-field-icon-suffix {
-    mat-icon, .mat-icon {
-      line-height: 16px;
-      width: 16px;
-      height: 16px;
-      font-size: 16px;
-      overflow: visible;
-    }
-  }
 }
 
 
