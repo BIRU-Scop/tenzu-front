@@ -21,86 +21,139 @@
 
 @use "@angular/material" as mat;
 
+
+
 @mixin tokens-overrides() {
-  .mat-mdc-text-field-wrapper:hover {
-    background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
-  }
+
+
   @include mat.form-field-overrides((
-    // General
-    container-text-size: var(--mat-sys-label-large-size),
-    container-text-line-height: var(--mat-sys-label-large-line-height),
+
     container-height: 36px,
     container-vertical-padding: 8px,
-    error-text-color: var(--mat-sys-on-error-container),
-    hover-state-layer-opacity: 0,
-    focus-state-layer-opacity: 0,
-    state-layer-color: var(--mat-sys-error),
+    // --- Base ---
+    //filled-active-indicator-height:                       1px,                                                          // Bottom border height (filled, default)
+    //filled-focus-active-indicator-height:                 2px,                                                          // Bottom border height (filled, focused)
+    //filled-container-shape:                               var(--mat-sys-corner-extra-small),                            // Border radius of filled container
+    //outlined-outline-width:                               1px,                                                          // Outline width (outlined, default)
+    //outlined-focus-outline-width:                         2px,                                                          // Outline width (outlined, focused)
+    outlined-container-shape:                             var(--mat-sys-corner-medium),                            // Border radius of outlined container
 
-      // outlined
-    outlined-label-text-size: var(--mat-sys-label-large-size),
-    outlined-container-shape: var(--mat-sys-corner-medium),
+    // --- Color — General ---
+    error-text-color:                                     var(--mat-sys-error),                                         // Color of the error/hint text
+    leading-icon-color:                                   var(--mat-sys-on-surface-variant),                            // Leading icon color
+    trailing-icon-color:                                  var(--mat-sys-on-surface-variant),                            // Trailing icon color
+    enabled-select-arrow-color:                           var(--mat-sys-on-surface-variant),                            // Select arrow color (enabled)
+    focus-select-arrow-color:                             var(--mat-sys-primary),                                       // Select arrow color (focused)
+    state-layer-color:                                    var(--mat-sys-on-surface),                                    // Hover/focus state layer color
+    hover-state-layer-opacity:                            var(--mat-sys-hover-state-layer-opacity),                     // Opacity of hover state layer
+    focus-state-layer-opacity:                            0,                                                            // Opacity of focus state layer
+    select-option-text-color:                             var(--mat-sys-neutral10),                                     // Select option text color
+    disabled-input-text-placeholder-color:                color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Placeholder color (disabled)
+    disabled-leading-icon-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Leading icon color (disabled)
+    disabled-trailing-icon-color:                         color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Trailing icon color (disabled)
+    disabled-select-arrow-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Select arrow color (disabled)
+    select-disabled-option-text-color:                    color-mix(in srgb, var(--mat-sys-neutral10) 38%, transparent), // Select option text color (disabled)
 
-    outlined-outline-color: var(--mat-sys-tertiary),
-    outlined-label-text-color: var(--mat-sys-on-surface),
-    outlined-input-text-color: var(--mat-sys-on-surface),
+    // --- Color — Error trailing icons ---
+    error-trailing-icon-color:                            var(--mat-sys-error),                                         // Trailing icon color (error)
+    error-hover-trailing-icon-color:                      var(--mat-sys-on-error-container),                            // Trailing icon color (error + hover)
+    error-focus-trailing-icon-color:                      var(--mat-sys-error),                                         // Trailing icon color (error + focus)
 
-    outlined-hover-outline-color: var(--mat-sys-tertiary),
-    outlined-hover-label-text-color: var(--mat-sys-on-surface),
-    outlined-focus-outline-color: var(--mat-sys-tertiary),
-    outlined-focus-label-text-color: var(--mat-sys-tertiary),
+    // --- Color — Filled variant ---
+    filled-container-color:                               var(--mat-sys-surface-variant),                               // Container background color
+    filled-active-indicator-color:                        var(--mat-sys-on-surface-variant),                            // Bottom border color (default)
+    filled-hover-active-indicator-color:                  var(--mat-sys-on-surface),                                    // Bottom border color (hover)
+    filled-focus-active-indicator-color:                  var(--mat-sys-primary),                                       // Bottom border color (focused)
+    filled-caret-color:                                   var(--mat-sys-primary),                                       // Caret (cursor) color
+    filled-input-text-color:                              var(--mat-sys-on-surface),                                    // Input text color
+    filled-input-text-placeholder-color:                  var(--mat-sys-on-surface-variant),                            // Placeholder color
+    filled-label-text-color:                              var(--mat-sys-on-surface-variant),                            // Label color (default)
+    filled-hover-label-text-color:                        var(--mat-sys-on-surface-variant),                            // Label color (hover)
+    filled-focus-label-text-color:                        var(--mat-sys-primary),                                       // Label color (focused)
+    filled-disabled-container-color:                      color-mix(in srgb, var(--mat-sys-on-surface) 4%, transparent), // Container color (disabled)
+    filled-disabled-active-indicator-color:               color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Bottom border color (disabled)
+    filled-disabled-input-text-color:                     color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Input text color (disabled)
+    filled-disabled-label-text-color:                     color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Label color (disabled)
+    filled-error-caret-color:                             var(--mat-sys-error),                                         // Caret color (error)
+    filled-error-active-indicator-color:                  var(--mat-sys-error),                                         // Bottom border color (error)
+    filled-error-focus-active-indicator-color:            var(--mat-sys-error),                                         // Bottom border color (error + focus)
+    filled-error-hover-active-indicator-color:            var(--mat-sys-on-error-container),                            // Bottom border color (error + hover)
+    filled-error-label-text-color:                        var(--mat-sys-error),                                         // Label color (error)
+    filled-error-focus-label-text-color:                  var(--mat-sys-error),                                         // Label color (error + focus)
+    filled-error-hover-label-text-color:                  var(--mat-sys-on-error-container),                            // Label color (error + hover)
 
+    // --- Color — Outlined variant ---
+    outlined-outline-color:                               var(--mat-sys-on-surface-variant),                                       // Border color (default)
+    outlined-hover-outline-color:                         var(--mat-sys-on-surface),                                    // Border color (hover)
+    outlined-focus-outline-color:                         var(--mat-sys-on-surface-variant),                                       // Border color (focused)
+    outlined-disabled-outline-color:                      color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent), // Border color (disabled)
+    outlined-caret-color:                                 var(--mat-sys-on-surface-variant),                                       // Caret color
+    outlined-input-text-color:                            var(--mat-sys-on-surface),                                    // Input text color
+    outlined-input-text-placeholder-color:                var(--mat-sys-on-surface-variant),                            // Placeholder color
+    outlined-label-text-color:                            var(--mat-sys-on-surface-variant),                            // Label color (default)
+    outlined-hover-label-text-color:                      var(--mat-sys-on-surface),                                    // Label color (hover)
+    outlined-focus-label-text-color:                      var(--mat-sys-on-surface-variant),                                       // Label color (focused)
+    outlined-disabled-input-text-color:                   color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Input text color (disabled)
+    outlined-disabled-label-text-color:                   color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Label color (disabled)
+    outlined-error-caret-color:                           var(--mat-sys-error),                                         // Caret color (error)
+    outlined-error-outline-color:                         var(--mat-sys-error),                                         // Border color (error)
+    outlined-error-focus-outline-color:                   var(--mat-sys-error),                                         // Border color (error + focus)
+    outlined-error-hover-outline-color:                   var(--mat-sys-on-error-container),                            // Border color (error + hover)
+    outlined-error-label-text-color:                      var(--mat-sys-error),                                         // Label color (error)
+    outlined-error-focus-label-text-color:                var(--mat-sys-error),                                         // Label color (error + focus)
+    outlined-error-hover-label-text-color:                var(--mat-sys-on-error-container),                            // Label color (error + hover)
 
-    outlined-error-outline-color: var(--mat-sys-error),
-    outlined-error-hover-outline-color: var(--mat-sys-error),
-    outlined-error-hover-label-text-color: var(--mat-sys-on-error-container),
-    outlined-error-focus-outline-color: var(--mat-sys-error),
-    outlined-error-label-text-color: var(--mat-sys-on-error-container),
-    outlined-error-focus-label-text-color: var(--mat-sys-on-error-container),
+    //// --- Typography — Container text ---
+    container-text-font:                                  var(--mat-sys-body-large-font),                               // Input font family
+    container-text-line-height:                           var(--mat-sys-body-large-line-height),                        // Input line height
+    container-text-size:                                  var(--mat-sys-body-medium-size),                               // Input font size
+    container-text-tracking:                              var(--mat-sys-body-large-tracking),                           // Input letter spacing
+    container-text-weight:                                var(--mat-sys-body-large-weight),                             // Input font weight
 
-    // filled
+    //// --- Typography — Subscript (hint / error text) ---
+    subscript-text-font:                                  var(--mat-sys-body-small-font),                               // Hint/error font family
+    subscript-text-line-height:                           var(--mat-sys-body-small-line-height),                        // Hint/error line height
+    subscript-text-size:                                  var(--mat-sys-body-small-size),                               // Hint/error font size
+    subscript-text-tracking:                              var(--mat-sys-body-small-tracking),                           // Hint/error letter spacing
+    subscript-text-weight:                                var(--mat-sys-body-small-weight),                             // Hint/error font weight
 
-    //filled-container-color: transparent,
-    //filled-container-shape: var(--mat-sys-corner-medium),
-    filled-input-text-color: var(--mat-sys-surface),
-
-
-    filled-label-text-size: var(--mat-sys-label-large-line-height),
-    //filled-label-text-color: var(--mat-sys-on-container),
-
-    //filled-focus-label-text-color: var(--mat-sys-on-tertiary-container),
-
-    //filled-hover-label-text-color: var(--mat-sys-on-tertiary-container),
-
-    //filled-error-hover-label-text-color: var(--mat-sys-on-error-container),
-
-    //filled-error-focus-label-text-color: var(--mat-sys-on-error-container),
-
-    //filled-error-label-text-color: var(--mat-sys-on-error-container),
-    filled-with-label-container-padding-top: 16px,
-    filled-with-label-container-padding-bottom: 4px,
-
-    //filled-active-indicator-color: var(--mat-sys-outline),
-    //filled-hover-active-indicator-color: var(--mat-sys-tertiary),
-    //filled-focus-active-indicator-color: var(--mat-sys-tertiary),
-    //filled-error-active-indicator-color: var(--mat-sys-error-container),
-    //filled-error-focus-active-indicator-color: var(--mat-sys-error),
-    //filled-error-hover-active-indicator-color: var(--mat-sys-error),
+    // --- Typography — Labels ---
+    outlined-label-text-font:                             var(--mat-sys-body-large-font),                               // Outlined label font family
+    outlined-label-text-size:                             var(--mat-sys-body-medium-size),                               // Outlined label font size
+    outlined-label-text-tracking:                         var(--mat-sys-body-large-tracking),                           // Outlined label letter spacing
+    outlined-label-text-weight:                           var(--mat-sys-body-large-weight),                             // Outlined label font weight
+    outlined-label-text-populated-size:                   null,                                                         // Label size when field has a value (null = inherits)
+    filled-label-text-font:                               var(--mat-sys-body-large-font),                               // Filled label font family
+    filled-label-text-size:                               var(--mat-sys-body-large-size),                               // Filled label font size
+    filled-label-text-tracking:                           var(--mat-sys-body-large-tracking),                           // Filled label letter spacing
+    filled-label-text-weight:                             var(--mat-sys-body-large-weight),                             // Filled label font weight
   ));
 
 
+  // No token exists for error leading icon — CSS override required
+  .mdc-text-field--invalid:not(.mdc-text-field--disabled) .mat-mdc-form-field-icon-prefix {
+    color: var(--mat-sys-error);
+  }
+  .mdc-text-field--invalid:not(.mdc-text-field--disabled):hover .mat-mdc-form-field-icon-prefix {
+    color: var(--mat-sys-on-error-container);
+  }
 
-  .mat-mdc-form-field.title-field {
-    @include mat.form-field-overrides(
-    (
-      container-text-size: var(--mat-sys-headline-small-size),
-      container-text-line-height: var(--mat-sys-headline-small-line-height),
-      container-text-weight: var(--mat-sys-headline-small-weight),
-      container-text-tracking: 0px,
-      outlined-input-text-color: var(--mat-sys-on-surface),
-      filled-input-text-color: var(--mat-sys-on-surface),
-      container-vertical-padding: 0px
-    )
-    );
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover {
+    background-color: color-mix(in srgb, var(--mat-sys-on-surface-variant) 12%, transparent);
+  }
+  .mdc-text-field--outlined.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover {
+    background-color: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
+  }
+
+  .mat-mdc-form-field-icon-prefix,
+  .mat-mdc-form-field-icon-suffix {
+    mat-icon, .mat-icon {
+      line-height: 16px;
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      overflow: visible;
+    }
   }
 }
 
