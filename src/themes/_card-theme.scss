@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,54 +20,54 @@
  */
 
 @use '@angular/material' as mat;
-
-.mat-mdc-card.mat-mdc-card-outlined {
-  @apply border-b-2;
-  .mat-mdc-card-header {
-    @apply px-3 pt-2;
-    .mat-mdc-card-header-text {
-      @apply line-clamp-1 grow;
-    }
-    @apply items-center gap-2;
-  }
-  .mat-mdc-card-content {
-    @apply px-1;
-    font-size: var(--mat-sys-body-small-size);
-    line-height: var(--mat-sys-body-small-line-height);
-    font-weight: var(--mat-sys-body-small-weight);
-    p {
-      @apply line-clamp-2;
-    }
-  }
-
-    &.heading-card {
-    @apply border-t-0 border-r-0 border-l-0 border-b;
-    .mat-mdc-card-header {
-      @apply px-0 pt-0 pb-2;
-      .mat-mdc-card-title {
-        color: var(--mat-sys-on-background);
-      }
-    }
-  }
-}
-
+//
+//.mat-mdc-card.mat-mdc-card-outlined {
+//  @apply border-b-2;
+//  .mat-mdc-card-header {
+//    @apply px-3 pt-2;
+//    .mat-mdc-card-header-text {
+//      @apply line-clamp-1 grow;
+//    }
+//    @apply items-center gap-2;
+//  }
+//  .mat-mdc-card-content {
+//    @apply px-1;
+//    font-size: var(--mat-sys-body-small-size);
+//    line-height: var(--mat-sys-body-small-line-height);
+//    font-weight: var(--mat-sys-body-small-weight);
+//    p {
+//      @apply line-clamp-2;
+//    }
+//  }
+//
+//    &.heading-card {
+//    @apply border-t-0 border-r-0 border-l-0 border-b;
+//    .mat-mdc-card-header {
+//      @apply px-0 pt-0 pb-2;
+//      .mat-mdc-card-title {
+//        color: var(--mat-sys-on-background);
+//      }
+//    }
+//  }
+//}
+//
 @mixin tokens-overrides {
-  @include mat.card-overrides((
-    title-text-size: var(--mat-sys-body-medium-size),
-    title-text-line-height: var(--mat-sys-body-medium-line-height),
-    title-text-weight: var(--mat-sys-body-medium-weight),
-    outlined-container-elevation: var(--mat-sys-level1),
-    outlined-container-shape: var(--mat-sys-corner-medium),
-  ));
-  .mat-mdc-card {
-    &.heading-card {
-      @include mat.card-overrides((
-        outlined-container-shape: 0,
-        title-text-size: var(--mat-sys-body-large-size),
-        title-text-weight: var(--mat-sys-body-large-weight),
-        outlined-outline-color: var(--mat-sys-outline),
-        outlined-container-elevation: none
-      ));
-    }
-  }
+  //@include mat.card-overrides((
+  //  title-text-size: var(--mat-sys-body-medium-size),
+  //  title-text-line-height: var(--mat-sys-body-medium-line-height),
+  //  title-text-weight: var(--mat-sys-body-medium-weight),
+  //  outlined-container-elevation: var(--mat-sys-level1),
+  //  outlined-container-shape: var(--mat-sys-corner-medium),
+  //));
+  //.mat-mdc-card {
+  //  &.heading-card {
+  //    @include mat.card-overrides((
+  //      outlined-container-shape: 0,
+  //      title-text-size: var(--mat-sys-body-large-size),
+  //      title-text-weight: var(--mat-sys-body-large-weight),
+  //      outlined-outline-color: var(--mat-sys-outline),
+  //      outlined-container-elevation: none
+  //    ));
+  //  }
+  //}
 }

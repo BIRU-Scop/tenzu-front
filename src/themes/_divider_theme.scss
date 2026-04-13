@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,6 +24,6 @@
 
 @mixin tokens-overrides() {
   @include mat.divider-overrides((
-    color: var(--mat-sys-outline-variant)
+    //color: var(--mat-sys-outline-variant)
   ))
 }

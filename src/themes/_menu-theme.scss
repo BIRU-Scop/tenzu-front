@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,19 +22,19 @@
 @use '@angular/material' as mat;
 
 .mat-mdc-menu-panel {
-  border-style: solid;
-  border-color: var(--mat-sys-outline);
-  border-width: 1px;
-  border-bottom-width: 2px;
-  a {
-    text-decoration: none;
-  }
-  .mat-mdc-menu-item {
-    min-height: 32px;
-    .mat-icon {
-      font-size: var(--mat-sys-body-large-size);
-    }
-  }
+  //border-style: solid;
+  //border-color: var(--mat-sys-outline);
+  //border-width: 1px;
+  //border-bottom-width: 2px;
+  //a {
+  //  text-decoration: none;
+  //}
+  //.mat-mdc-menu-item {
+  //  min-height: 32px;
+  //  .mat-icon {
+  //    font-size: var(--mat-sys-body-large-size);
+  //  }
+  //}
 }
 
 @mixin tokens-overrides() {

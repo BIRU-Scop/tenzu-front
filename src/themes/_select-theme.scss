@@ -21,51 +21,117 @@
 
 @use '@angular/material' as mat;
 
-.mat-mdc-select-panel {
-  border-style: solid;
-  border-color: var(--mat-sys-outline);
-  border-width: 1px;
-  .mat-mdc-option {
-    min-height: 32px;
-    padding: 0 12px;
-    .mat-pseudo-checkbox-minimal {
-    margin-left: 0;
-    }
-    .mat-icon {
-      margin-right: 0;
-    }
-  }
-  .mdc-list-item__primary-text {
-    color:  var(--mat-sys-on-primary-container);
-  }
-  &:hover .mdc-list-item__primary-text {
-    color:  var(--mat-sys-on-primary-container);
-  }
-}
+// =============================================================================
+// mat.select-overrides — Available tokens
+// =============================================================================
+//
+// ## Color
+// | Token                            | M3 default              | Description                              |
+// |----------------------------------|-------------------------|------------------------------------------|
+// | panel-background-color           | surface-container       | Panel background color                   |
+// | enabled-trigger-text-color       | on-surface              | Trigger text color (enabled)             |
+// | disabled-trigger-text-color      | on-surface @ 38%        | Trigger text color (disabled)            |
+// | placeholder-text-color           | on-surface-variant      | Placeholder text color                   |
+// | enabled-arrow-color              | on-surface-variant      | Arrow color (enabled)                    |
+// | disabled-arrow-color             | on-surface @ 38%        | Arrow color (disabled)                   |
+// | focused-arrow-color              | primary                 | Arrow color when focused                 |
+// | invalid-arrow-color              | error                   | Arrow color when invalid                 |
+//
+// ## Typography
+// | Token                            | M3 default              | Description                              |
+// |----------------------------------|-------------------------|------------------------------------------|
+// | trigger-text-font                | body-large-font         | Font family of the trigger               |
+// | trigger-text-line-height         | body-large-line-height  | Line height of the trigger               |
+// | trigger-text-size                | body-large-size         | Font size of the trigger                 |
+// | trigger-text-tracking            | body-large-tracking     | Letter spacing of the trigger            |
+// | trigger-text-weight              | body-large-weight       | Font weight of the trigger               |
+//
+// ## Base
+// | Token                            | M3 default              | Description                              |
+// |----------------------------------|-------------------------|------------------------------------------|
+// | container-elevation-shadow       | elevation level 2       | Box shadow of the panel                  |
+//
+// ## Density
+// | Token                            | Description                                                   |
+// |----------------------------------|---------------------------------------------------------------|
+// | arrow-transform                  | CSS transform applied to the arrow (scale -2 to 0)           |
+//
+// =============================================================================
+// mat.option-overrides — Available tokens
+// =============================================================================
+//
+// ## Color
+// | Token                            | M3 default              | Description                              |
+// |----------------------------------|-------------------------|------------------------------------------|
+// | focus-state-layer-color          | on-surface + opacity    | Overlay color when focused               |
+// | hover-state-layer-color          | on-surface + opacity    | Overlay color when hovered               |
+// | label-text-color                 | on-surface              | Option label text color                  |
+// | selected-state-label-text-color  | on-secondary-container  | Label text color when selected           |
+// | selected-state-layer-color       | secondary-container     | Background color when selected           |
+//
+// ## Typography
+// | Token                            | M3 default              | Description                              |
+// |----------------------------------|-------------------------|------------------------------------------|
+// | label-text-size                  | body-large-size         | Font size of the label                   |
+// | label-text-weight                | body-large-weight       | Font weight of the label                 |
+// | label-text-font                  | label-large-font        | Font family of the label                 |
+// | label-text-line-height           | label-large-line-height | Line height of the label                 |
+// | label-text-tracking              | label-large-tracking    | Letter spacing of the label              |
+//
+// =============================================================================
+
+//.mat-mdc-select-panel {
+//  border-style: solid;
+//  border-color: var(--mat-sys-outline);
+//  border-width: 1px;
+//  .mat-mdc-option {
+//    min-height: 32px;
+//    padding: 0 12px;
+//    .mat-pseudo-checkbox-minimal {
+//    margin-left: 0;
+//    }
+//    .mat-icon {
+//      margin-right: 0;
+//    }
+//  }
+//  .mdc-list-item__primary-text {
+//    color:  var(--mat-sys-on-primary-container);
+//  }
+//  &:hover .mdc-list-item__primary-text {
+//    color:  var(--mat-sys-on-primary-container);
+//  }
+//}
 
 @mixin tokens-overrides() {
   @include mat.select-overrides((
     trigger-text-size: var(--mat-sys-body-medium-size),
     trigger-text-line-height: var(--mat-sys-body-medium-line-heigh),
-    enabled-trigger-text-color: var(--mat-sys-on-primary-container),
-    container-elevation-shadow: var(--mat-sys-level3)
+    //enabled-trigger-text-color: var(--mat-sys-on-tertiary-container),
+    container-elevation-shadow: var(--mat-sys-level3),
+    //panel-background-color: var(--mat-sys-surface),
+    //placeholder-text-color: var(--mat-sys-on-surface),
+    //enabled-arrow-color: var(--mat-sys-on-surface-variant),
+    //disabled-arrow-color
+    //focused-arrow-color: var(--mat-sys-on-surface-variant),
+    //enabled-trigger-text-color:  var(--mat-sys-on-surface-variant),
+    //disabled-trigger-text-color
   ));
   .mat-mdc-select-panel {
     @include mat.list-overrides((
-      list-item-hover-state-layer-opacity: 0,
-      list-item-focus-state-layer-opacity: 0,
+      //list-item-hover-state-layer-opacity: 0,
+      //list-item-focus-state-layer-opacity: 0,
     ));
   }
   @include mat.option-overrides((
     label-text-size : var(--mat-sys-body-medium-size),
     label-text-line-height : var(--mat-sys-body-line-heigh),
-    label-text-color:  var(--mat-sys-on-primary-container),
-    selected-state-layer-color: var(--mat-sys-primary-container),
-    selected-state-label-text-color: var(--mat-sys-on-primary-container),
-    hover-state-layer-color: var(--mat-sys-primary-container),
-    focus-state-layer-color: var(--mat-sys-primary),
+    //label-text-color:  var(--mat-sys-on-primary-container),
+    //selected-state-layer-color: var(--mat-sys-primary-container),
+    //selected-state-label-text-color: var(--mat-sys-on-tertiary),
+    //hover-state-layer-color: var(--mat-sys-on-surface-variant),
+    //focus-state-layer-color: var(--mat-sys-tertiary-container),
   ));
   @include mat.pseudo-checkbox-overrides((
-    full-selected-checkmark-color: var(--mat-sys-on-tertiary),
+    //full-selected-checkmark-color: var(--mat-sys-on-tertiary),
   ));
 }
