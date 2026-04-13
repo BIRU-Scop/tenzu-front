@@ -24,6 +24,6 @@
 
 @mixin tokens-overrides() {
   @include mat.divider-overrides((
-    //color: var(--mat-sys-outline-variant)
+    color: color-mix(in srgb, var(--mat-sys-outline) 40%, transparent)
   ))
 }
