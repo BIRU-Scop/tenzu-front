@@ -42,6 +42,7 @@ export class ButtonAddComponent implements ButtonInterface {
   translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("add");
+  iconNoBackground = input(false);
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);
   iconSize = input<ButtonIconSize>("md");

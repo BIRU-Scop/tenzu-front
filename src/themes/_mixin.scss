@@ -72,7 +72,7 @@
 
 @mixin button-general-override($container-color) {
   $opacity: 0.2;
-  &.mat-mdc-icon-button:not(:hover):not(:focus) .mat-mdc-button-persistent-ripple::before {
+  &.mat-mdc-icon-button:not(:hover):not(:focus):not(.no-background) .mat-mdc-button-persistent-ripple::before {
     opacity: $opacity;
   }
 

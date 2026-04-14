@@ -43,6 +43,7 @@ export class ButtonSaveComponent implements ButtonInterface {
   type = input<ButtonType>("submit");
   iconName = input<IconName | undefined>("save");
   iconOnly = input<boolean>(false);
+  iconNoBackground = input(false);
   disabled = input<boolean>(false);
   iconSize = input<ButtonIconSize>("md");
 }

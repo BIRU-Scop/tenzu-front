@@ -43,6 +43,7 @@ export class ButtonEditComponent implements ButtonInterface {
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("edit");
   iconOnly = input<boolean>(false);
+  iconNoBackground = input(false);
   disabled = input<boolean>(false);
   iconSize = input<ButtonIconSize>("md");
 }

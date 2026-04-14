@@ -43,6 +43,7 @@ export class ButtonDeleteComponent implements ButtonInterface {
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("delete");
   iconOnly = input<boolean>(false);
+  iconNoBackground = input(false);
   disabled = input<boolean>(false);
   iconSize = input<ButtonIconSize>("md");
 }

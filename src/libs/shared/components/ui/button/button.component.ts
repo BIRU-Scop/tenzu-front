@@ -46,6 +46,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
           *transloco="let t"
           [type]="type()"
           [class]="level() + ' ' + iconSize()"
+          [class.no-background]="iconNoBackground()"
           matIconButton
           [attr.aria-label]="t(_translocoKey, _translocoValue)"
           [disabled]="disabled()"
@@ -94,6 +95,7 @@ export class ButtonComponent implements ButtonInterface {
       }
     },
   });
+  iconNoBackground = input(false);
   translocoKey = input.required<string>();
   translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");

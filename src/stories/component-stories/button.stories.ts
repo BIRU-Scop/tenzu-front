@@ -21,20 +21,19 @@
 
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { MatButton } from "@angular/material/button";
 import { CommonModule } from "@angular/common";
-import { withTransloco } from "./storybook-providers";
+import { withTransloco } from "../storybook-providers";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
-type Story = StoryObj<MatButton>;
+type Story = StoryObj<ButtonComponent>;
 
-const meta: Meta<MatButton> = {
-  component: MatButton,
-  title: "Components/Button",
+const meta: Meta<ButtonComponent> = {
+  component: ButtonComponent,
+  title: "Components/Components/Button",
   decorators: [
     withTransloco,
     moduleMetadata({
-      imports: [CommonModule, ButtonComponent],
+      imports: [CommonModule],
     }),
   ],
 };
@@ -49,6 +48,7 @@ export const PrimaryButton: Story = {
        <app-button [iconName]="'add'" [level]="'primary'" [translocoKey]="'button.primary'"/>
        <app-button [iconName]="'add'" [level]="'primary'" [disabled]="true" [translocoKey]="'button.primary.disabled'"/>
        <app-button [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [translocoKey]="'button.primary.icon'"/>
+       <app-button [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconNoBackground]="true" [translocoKey]="'button.primary.icon-no-bg'"/>
        <app-button [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.primary.icon.disabled'"/>
        <app-button  [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.primary.icon.sm'"/>
        <app-button  [iconName]="'add'" [level]="'primary'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.primary.icon.md'"/>
@@ -60,6 +60,7 @@ export const PrimaryButton: Story = {
        <app-button [iconName]="'add'" [level]="'secondary'" [translocoKey]="'button.secondary'"/>
        <app-button [iconName]="'add'" [level]="'secondary'" [disabled]="true" [translocoKey]="'button.secondary.disabled'"/>
        <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [translocoKey]="'button.secondary.icon'"/>
+       <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconNoBackground]="true" [translocoKey]="'button.secondary.icon-no-bg'"/>
        <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.secondary.icon.disabled'"/>
        <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.secondary.icon.sm'"/>
        <app-button [iconName]="'add'" [level]="'secondary'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.secondary.icon.md'"/>
@@ -71,6 +72,7 @@ export const PrimaryButton: Story = {
      <app-button [iconName]="'add'" [level]="'tertiary'" [translocoKey]="'button.tertiary'"/>
      <app-button [iconName]="'add'" [level]="'tertiary'" [disabled]="true" [translocoKey]="'button.tertiary.disabled'"/>
      <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [translocoKey]="'button.tertiary.icon'"/>
+     <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconNoBackground]="true" [translocoKey]="'button.tertiary.icon-no-bg'"/>
      <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.tertiary.icon.disabled'"/>
      <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.tertiary.icon.sm'"/>
      <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.tertiary.icon.md'"/>
@@ -82,6 +84,7 @@ export const PrimaryButton: Story = {
      <app-button [iconName]="'add'" [level]="'warning'" [translocoKey]="'button.warning'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [disabled]="true" [translocoKey]="'button.warning.disabled'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [translocoKey]="'button.warning.icon'"/>
+     <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconNoBackground]="true" [translocoKey]="'button.warning.icon-no-bg'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.warning.icon.disabled'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.warning.icon.sm'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.warning.icon.md'"/>
@@ -93,6 +96,7 @@ export const PrimaryButton: Story = {
        <app-button [iconName]="'add'" [level]="'error'" [translocoKey]="'button.error'"/>
        <app-button [iconName]="'add'" [level]="'error'" [disabled]="true" [translocoKey]="'button.error.disabled'"/>
        <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [translocoKey]="'button.error.icon'"/>
+       <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconNoBackground]="true" [translocoKey]="'button.error.icon-no-bg'"/>
        <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [disabled]="true" [translocoKey]="'button.error.icon.disabled'"/>
        <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.error.icon.sm'"/>
        <app-button [iconName]="'add'" [level]="'error'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.error.icon.md'"/>
@@ -103,8 +107,9 @@ export const PrimaryButton: Story = {
     <div class="flex flex-wrap gap-4 items-center">
        <app-button [iconName]="'add'" [level]="'success'" [translocoKey]="'button.success'"/>
        <app-button [iconName]="'add'" [level]="'success'"   [disabled]="true" [translocoKey]="'button.success.disabled'"/>
-       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true"   [translocoKey]="'button.success.icon'"/>
-       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true"  [disabled]="true" [translocoKey]="'button.success.icon.disabled'"/>
+       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true" [translocoKey]="'button.success.icon'"/>
+       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true" [iconNoBackground]="true" [translocoKey]="'button.success.icon-no-bg'"/>
+       <app-button [iconName]="'add'" [level]="'success'"  [iconOnly]="true" [disabled]="true" [translocoKey]="'button.success.icon.disabled'"/>
        <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'sm'" [translocoKey]="'button.success.icon.sm'"/>
        <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'md'" [translocoKey]="'button.success.icon.md'"/>
        <app-button [iconName]="'add'" [level]="'success'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.success.icon.lg'"/>

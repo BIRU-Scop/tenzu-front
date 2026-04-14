@@ -42,6 +42,7 @@ export class ButtonUndoComponent implements ButtonInterface {
   translocoValue = input<JsonObject>({});
   iconName = input<IconName | undefined>("undo");
   iconOnly = input<boolean>(false);
+  iconNoBackground = input(false);
   disabled = input<boolean>(false);
   type = input<ButtonType>("button");
   iconSize = input<ButtonIconSize>("md");

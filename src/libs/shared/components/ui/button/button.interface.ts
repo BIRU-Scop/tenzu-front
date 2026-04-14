@@ -26,6 +26,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
 export interface ButtonInterface {
   translocoKey: InputSignal<string>;
   translocoValue: InputSignal<JsonObject>;
+  iconNoBackground: InputSignal<boolean>;
   iconName: InputSignal<IconName | undefined>;
   type: InputSignal<ButtonType>;
   iconOnly: InputSignal<boolean>;
