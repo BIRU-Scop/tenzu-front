@@ -48,6 +48,7 @@
 @use "themes/svg-logo";
 @use "themes/slide-toggle-theme" as slide-toggle;
 @use "themes/progress-indicator-theme" as progress-indicator;
+@use "themes/slider-theme" as slider;
 @use "themes/editor" as editor;
 @use 'sass:map';
 @use "themes/mixin" as mixin;
@@ -158,6 +159,7 @@ strong {
   @include badge.tokens-overrides;
   @include slide-toggle.tokens-overrides();
   @include progress-indicator.tokens-overrides();
+  @include slider.tokens-overrides();
 }
 
 body {

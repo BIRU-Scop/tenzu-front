@@ -38,25 +38,25 @@
   @include mat.slide-toggle-overrides((
     disabled-selected-icon-color: var(--mat-sys-on-surface-variant),
 
-    selected-track-outline-color: var(--mat-sys-tertiary-container),
+    selected-track-outline-color: var(--mat-sys-tertiary),
     selected-handle-color: var(--mat-sys-on-tertiary),
-    selected-track-color: var(--mat-sys-tertiary-container),
-    selected-icon-color: var(--mat-sys-tertiary-container),
+    selected-track-color: var(--mat-sys-tertiary),
+    selected-icon-color: var(--mat-sys-tertiary),
 
     selected-focus-state-layer-opacity: $opacity,
     selected-focus-handle-color : var(--mat-sys-on-tertiary),
-    selected-focus-state-layer-color :  var(--mat-sys-tertiary-container),
-    selected-focus-track-color: var(--mat-sys-tertiary-container),
+    selected-focus-state-layer-color:  var(--mat-sys-tertiary),
+    selected-focus-track-color: var(--mat-sys-tertiary),
 
     selected-hover-state-layer-opacity: $opacity,
     selected-hover-handle-color : var(--mat-sys-on-tertiary),
-    selected-hover-track-color: var(--mat-sys-tertiary-container),
-    selected-hover-state-layer-color: var(--mat-sys-tertiary-container),
+    selected-hover-track-color: var(--mat-sys-tertiary),
+    selected-hover-state-layer-color: var(--mat-sys-tertiary),
 
     selected-pressed-state-layer-opacity: $opacity,
     selected-pressed-handle-color : var(--mat-sys-on-tertiary),
-    selected-pressed-state-layer-color : var(--mat-sys-tertiary-container),
-    selected-pressed-track-color:  var(--mat-sys-tertiary-container),
+    selected-pressed-state-layer-color : var(--mat-sys-tertiary),
+    selected-pressed-track-color:  var(--mat-sys-tertiary),
 
     unselected-icon-color: var(--mat-sys-on-secondary),
     unselected-focus-state-layer-opacity: $opacity,
