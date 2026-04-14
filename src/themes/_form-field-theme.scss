@@ -30,13 +30,6 @@
 
     container-height: 36px,
     container-vertical-padding: 8px,
-    // --- Base ---
-    //filled-active-indicator-height:                       1px,                                                          // Bottom border height (filled, default)
-    //filled-focus-active-indicator-height:                 2px,                                                          // Bottom border height (filled, focused)
-    //filled-container-shape:                               var(--mat-sys-corner-extra-small),                            // Border radius of filled container
-    //outlined-outline-width:                               1px,                                                          // Outline width (outlined, default)
-    //outlined-focus-outline-width:                         2px,                                                          // Outline width (outlined, focused)
-    outlined-container-shape:                             var(--mat-sys-corner-medium),                            // Border radius of outlined container
 
     // --- Color — General ---
     error-text-color:                                     var(--mat-sys-error),                                         // Color of the error/hint text
@@ -101,10 +94,6 @@
     outlined-label-text-tracking:                         var(--mat-sys-body-large-tracking),                           // Outlined label letter spacing
     outlined-label-text-weight:                           var(--mat-sys-body-large-weight),                             // Outlined label font weight
     outlined-label-text-populated-size:                   null,                                                         // Label size when field has a value (null = inherits)
-    filled-label-text-font:                               var(--mat-sys-body-large-font),                               // Filled label font family
-    filled-label-text-size:                               var(--mat-sys-body-large-size),                               // Filled label font size
-    filled-label-text-tracking:                           var(--mat-sys-body-large-tracking),                           // Filled label letter spacing
-    filled-label-text-weight:                             var(--mat-sys-body-large-weight),                             // Filled label font weight
   ));
 
 

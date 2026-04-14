@@ -143,8 +143,8 @@
 
 @mixin tokens-overrides() {
   @include mat.button-overrides((
-    filled-container-shape: var(--mat-sys-corner-medium),
-    outlined-container-shape: var(--mat-sys-corner-medium),
+    filled-container-shape: var(--mat-sys-corner-extra-small),
+    outlined-container-shape: var(--mat-sys-corner-extra-small),
     filled-container-height: 32px,
     outlined-container-height: 32px,
     filled-horizontal-padding: 12px,
