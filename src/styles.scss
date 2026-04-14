@@ -181,51 +181,15 @@ body {
       outline: none;
     }
   }
-
-  @include mat.theme-overrides((
-    label-large-size: 0.875rem,
-    label-large-line-height: 1.25rem,
-    label-large-weight: 500,
-    label-medium-size: 0.75rem,
-    label-medium-line-height: 1rem,
-    label-medium-weight: 500,
-    label-small-size: 0.625rem,
-    label-small-line-height: 0.875rem,
-    label-small-weight: 400,
-    body-large-size: 1rem,
-    body-large-line-height: 1.25rem,
-    body-large-weight: 400,
-    body-medium-size: 0.875rem,
-    body-medium-line-height: 1.25rem,
-    body-medium-weight: 400,
-    body-small-size: 0.75rem,
-    body-small-line-height: 1rem,
-    body-small-weight: 300,
-    title-large-size: 1.25rem,
-    title-large-line-height: 1.75rem,
-    title-large-weight: 500,
-    title-medium-size: 1.125rem,
-    title-medium-line-height: 1.75rem,
-    title-medium-weight: 500,
-    title-small-size: 1rem,
-    title-small-line-height: 1.5rem,
-    title-small-weight: 500,
-    headline-large-size: 2.25rem,
-    headline-large-line-height: 2.5rem,
-    headline-large-weight: 500,
-    headline-medium-size: 1.875rem,
-    headline-medium-line-height: 2.25rem,
-    headline-medium-weight: 500,
-    headline-small-size: 1.5rem,
-    headline-small-line-height: 2rem,
-    headline-small-weight: 500,
+  @include mat.theme((
+    color: (
+      theme-type: light,
+    ),
+    typography: 'Lexend',
+    density: 0
   ));
   @include mat.elevation-classes();
   @include mat.app-background();
-  @include mat.all-component-bases(themes.$light-theme);
-  @include mat.all-component-densities(themes.$light-theme);
-  @include mat.all-component-typographies(themes.$light-theme);
-  @include mat.typography-hierarchy(themes.$light-theme);
 
   @media (prefers-color-scheme: light) {
     @include mixin.theme-overrides(themes.$light_palettes);
@@ -236,5 +200,6 @@ body {
     @include mixin.theme-overrides(themes.$dark_palettes);
     @include tokens-overrides();
   }
+
 }
 

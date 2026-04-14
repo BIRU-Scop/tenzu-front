@@ -143,21 +143,4 @@ $dark_palettes: (
   )
 
 );
-$light-theme: mat.define-theme((
-  color: (
-    theme-type: light,
 
-  ),
-  typography: (
-    plain-family: 'Lexend',
-  ),
-));
-
-$dark-theme: mat.define-theme((
-  color: (
-    theme-type: dark,
-  ),
-  typography: (
-    plain-family: 'Lexend',
-  ),
-));
