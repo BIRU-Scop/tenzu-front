@@ -21,24 +21,23 @@
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { MatButton } from "@angular/material/button";
 import { CommonModule } from "@angular/common";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Component, inject, input } from "@angular/core";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { withTransloco } from "./storybook-providers";
 
 @Component({
   selector: "app-open-snackbar",
   standalone: true,
-  imports: [MatButton],
-  template: `
-    <button mat-stroked-button class="primary-button" (click)="openSnackBar(message(), action())">Launch</button>
-  `,
+  imports: [ButtonComponent],
+  template: ` <app-button [level]="'tertiary'" translocoKey="Launch" (click)="openSnackBar(message(), action())" /> `,
 })
 class OpenSnackBarComponent {
   message = input("");
   action = input("");
-  type = input<"success" | "error">("success");
+  type = input<undefined | "success" | "error" | "warning" | "info">("success");
   private _snackBar = inject(MatSnackBar);
 
   openSnackBar(message: string, action: string) {
@@ -51,34 +50,33 @@ type Story = StoryObj<OpenSnackBarComponent>;
 const meta: Meta<OpenSnackBarComponent> = {
   component: OpenSnackBarComponent,
   title: "Components/Snackbar",
+  argTypes: {
+    type: {
+      options: ["", "success", "error", "warning", "info"],
+      control: { type: "select" },
+    },
+  },
   parameters: {
     actions: {
       handles: ["click"],
     },
   },
   decorators: [
+    withTransloco,
     moduleMetadata({
       imports: [CommonModule],
     }),
     applicationConfig({
-      providers: [provideAnimations()],
+      providers: [provideAnimationsAsync()],
     }),
   ],
 };
 
-export const SuccessSnackbar: Story = {
+export const Snackbar: Story = {
   args: {
     message: "Changes are saved",
     action: "Close",
-    type: "success",
-  },
-};
-
-export const ErrrorSnackbar: Story = {
-  args: {
-    message: "Unexcepted error",
-    action: "Close",
-    type: "error",
+    type: undefined,
   },
 };
 

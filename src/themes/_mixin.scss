@@ -36,6 +36,7 @@
   --mat-sys-on-warning: #{get-color($palette, warning, on-warning)};
   --mat-sys-warning-container: #{get-color($palette, warning, warning-container)};
   --mat-sys-on-warning-container: #{get-color($palette, warning, on-warning-container)};
+  --mat-sys-inverse-tertiary: #{get-color($palette, tertiary, inverse-tertiary)};
 
   @include mat.theme-overrides((
     background: get-color($palette, neutral, background),

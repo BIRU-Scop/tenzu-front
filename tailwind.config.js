@@ -27,6 +27,7 @@ module.exports = {
         "on-secondary-container": "var(--mat-sys-on-secondary-container)",
         tertiary: "var(--mat-sys-tertiary)",
         "tertiary-container": "var(--mat-sys-tertiary-container)",
+        "inverse-tertiary": "var(--mat-sys-inverse-tertiary)",
         "on-tertiary": "var(--mat-sys-on-tertiary)",
         "on-tertiary-container": "var(--mat-sys-on-tertiary-container)",
         error: "var(--mat-sys-error)",
