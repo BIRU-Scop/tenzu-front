@@ -168,6 +168,9 @@
     "max_size": "La taille de l'image ne doit pas dépasser {{formats}}",
     "allowed_format": "Formats autorisés : {{formats}}"
   },
+  "chip": {
+    "remove_action": "Supprimer {{label}}"
+  },
   "commons": {
     "project": "Projet",
     "projects": "Projets",

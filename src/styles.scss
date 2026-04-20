@@ -160,6 +160,7 @@ strong {
   @include slide-toggle.tokens-overrides();
   @include progress-indicator.tokens-overrides();
   @include slider.tokens-overrides();
+  @include chips.tokens-overrides();
 }
 
 body {
