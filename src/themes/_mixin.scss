@@ -97,7 +97,7 @@
   ));
 }
 
-@mixin button-variant-filed($text-color, $container-color, $disabled-transparency, $disabled-color ) {
+@mixin button-variant-filled($text-color, $container-color, $disabled-transparency, $disabled-color ) {
   $opacity: 0.2;
   @include mat.button-overrides((
     filled-hover-state-layer-opacity: $opacity,

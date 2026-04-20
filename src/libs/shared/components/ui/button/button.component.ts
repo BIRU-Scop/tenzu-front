@@ -52,7 +52,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
           [disabled]="disabled()"
           [matTooltip]="t(_translocoKey, _translocoValue)"
         >
-          <mat-icon>{{ _iconName }}</mat-icon>
+          <mat-icon aria-hidden="true">{{ _iconName }}</mat-icon>
         </button>
       }
       @default {
@@ -65,7 +65,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
           [disabled]="disabled()"
         >
           @if (_iconName) {
-            <mat-icon>{{ _iconName }}</mat-icon>
+            <mat-icon aria-hidden="true">{{ _iconName }}</mat-icon>
           }
           {{ t(_translocoKey, _translocoValue) }}
         </button>

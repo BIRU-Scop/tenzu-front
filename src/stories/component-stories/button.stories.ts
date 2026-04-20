@@ -79,7 +79,7 @@ export const PrimaryButton: Story = {
      <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.tertiary.icon.lg'"/>
      <app-button [iconName]="'add'" [level]="'tertiary'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.tertiary.icon.xl'"/>
     </div>
-     <h1>warning</h1>
+    <h1>warning</h1>
     <div class="flex flex-wrap gap-4 items-center">
      <app-button [iconName]="'add'" [level]="'warning'" [translocoKey]="'button.warning'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [disabled]="true" [translocoKey]="'button.warning.disabled'"/>
@@ -91,7 +91,7 @@ export const PrimaryButton: Story = {
      <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'lg'" [translocoKey]="'button.warning.icon.lg'"/>
      <app-button [iconName]="'add'" [level]="'warning'" [iconOnly]="true" [iconSize]="'xl'" [translocoKey]="'button.warning.icon.xl'"/>
     </div>
-     <h1>error</h1>
+    <h1>error</h1>
     <div class="flex flex-wrap gap-4 items-center">
        <app-button [iconName]="'add'" [level]="'error'" [translocoKey]="'button.error'"/>
        <app-button [iconName]="'add'" [level]="'error'" [disabled]="true" [translocoKey]="'button.error.disabled'"/>
