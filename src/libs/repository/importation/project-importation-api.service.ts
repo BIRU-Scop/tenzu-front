@@ -21,7 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { makeFormData } from "../base";
-import { ImportationProjectPayload, ProjectImportationSummary } from "./importation.model";
+import { ProjectImportationPayload, ProjectImportationSummary } from "./importation.model";
 import { Observable } from "rxjs";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
@@ -32,18 +32,18 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
 @Injectable({
   providedIn: "root",
 })
-export class ImportationsApiService {
+export class ProjectImportationApiService {
   protected http = inject(HttpClient);
   protected configAppService = inject(ConfigAppService);
 
   protected baseUrl = `${this.configAppService.apiUrl()}`;
 
   createProjectImportation(
-    item: ImportationProjectPayload,
+    item: ProjectImportationPayload,
     params: { workspaceId: WorkspaceSummary["id"] },
   ): Observable<ProjectImportationSummary> {
-    const url = `${this.baseUrl}/workspaces/${params.workspaceId}/projects/importation`;
-    const data = makeFormData<ImportationProjectPayload>(item);
+    const url = `${this.baseUrl}/workspaces/${params.workspaceId}/projects/importations`;
+    const data = makeFormData<ProjectImportationPayload>(item);
     return this.http
       .post<BaseDataModel<ProjectImportationSummary>>(url, data)
       .pipe(map((dataObject) => dataObject.data));

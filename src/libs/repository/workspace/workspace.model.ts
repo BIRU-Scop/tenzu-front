@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,6 +21,7 @@
 
 import { ProjectNested } from "../project";
 import { UserRole } from "../membership";
+import { ProjectImportationNested } from "@tenzu/repository/importation";
 
 type _WorkspaceBaseNested = {
   id: string;
@@ -37,6 +38,7 @@ export type WorkspaceNested = _WorkspaceBaseNested & {
 type _WorkspaceListProjectsSummary = {
   userMemberProjects: ProjectNested[];
   userInvitedProjects: ProjectNested[];
+  userImportedProjects: ProjectImportationNested[];
 };
 
 export type WorkspaceSummary = WorkspaceNested &

@@ -42,6 +42,7 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
+import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
 
 @Component({
   selector: "app-workspace-list",
@@ -54,6 +55,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
     ActionCardComponent,
     ButtonAddComponent,
     ProjectLandingPageUrl,
+    ProjectImportationCardComponent,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
@@ -97,9 +99,13 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
                   [landingPage]="project | projectLandingPageUrl"
                 />
               }
+              @for (projectImportation of workspace.userImportedProjects; track projectImportation.id) {
+                <app-project-importation-card [workspaceId]="workspace.id" />
+              }
               @if (
                 (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
-                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
+                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0) &&
+                (!workspace.userImportedProjects || workspace.userImportedProjects.length === 0)
               ) {
                 @if (workspace.userCanCreateProjects) {
                   <app-project-card [workspaceId]="workspace.id" />

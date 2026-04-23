@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,6 +23,7 @@ import { signalStore, withMethods } from "@ngrx/signals";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base";
 import { ProjectNested } from "@tenzu/repository/project";
+import { ProjectImportationNested } from "@tenzu/repository/importation";
 
 export const WorkspaceEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
@@ -37,6 +38,18 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
     addUserMemberProjects(workspaceId: WorkspaceDetail["id"], project: ProjectNested) {
       const addedUserMemberProjects = [...store.entityMap()[workspaceId].userMemberProjects, project];
       store.updateEntity(workspaceId, { userMemberProjects: addedUserMemberProjects });
+    },
+    addUserImportedProjects(workspaceId: WorkspaceDetail["id"], projectImportation: ProjectImportationNested) {
+      const addedUserImportedProjects = [...store.entityMap()[workspaceId].userImportedProjects, projectImportation];
+      store.updateEntity(workspaceId, { userImportedProjects: addedUserImportedProjects });
+    },
+    removeUserImportedProjects(workspaceId: WorkspaceDetail["id"], projectImportationId: ProjectNested["id"]) {
+      const removedUserImportedProjects = store
+        .entityMap()
+        [
+          workspaceId
+        ].userImportedProjects.filter((projectImportation) => projectImportation.id != projectImportationId);
+      store.updateEntity(workspaceId, { userImportedProjects: removedUserImportedProjects });
     },
   })),
 );

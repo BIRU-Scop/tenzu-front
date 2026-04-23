@@ -80,6 +80,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
             [landingPage]="project | projectLandingPageUrl"
           />
         }
+        <!--        TODO project importations -->
       } @empty {
         @if (workspace) {
           @if (workspace.userCanCreateProjects) {

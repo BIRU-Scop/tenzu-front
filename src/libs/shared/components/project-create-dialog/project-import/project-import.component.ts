@@ -19,11 +19,11 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
-import { ImportationRepositoryService, ImportationType } from "@tenzu/repository/importation";
+import { ProjectImportationRepositoryService, ProjectImportationType } from "@tenzu/repository/importation";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
@@ -52,17 +52,19 @@ import { getLocError } from "@tenzu/utils/functions/errors";
   },
 })
 export class ProjectImportComponent {
-  readonly importationRepositoryService = inject(ImportationRepositoryService);
+  readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
   readonly notificationService = inject(NotificationService);
   workspaceId = input.required<WorkspaceSummary["id"]>();
+  submitted = output<void>();
 
   async onFileSelected(file: FileValue) {
     if (file) {
       try {
         await this.importationRepositoryService.createProjectImportation(
-          { originType: ImportationType.TAIGA, source: file },
+          { originType: ProjectImportationType.TAIGA, source: file },
           { workspaceId: this.workspaceId() },
         );
+        this.submitted.emit();
       } catch (errorResponse) {
         if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 422) {
           debug("error-422", "importation", errorResponse);

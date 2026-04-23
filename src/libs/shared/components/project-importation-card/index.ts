@@ -19,5 +19,4 @@
  *
  */
 
-export * from "./importation.model";
-export * from "./project-importation-repository.service";
+export * from "./project-importation-card.component";

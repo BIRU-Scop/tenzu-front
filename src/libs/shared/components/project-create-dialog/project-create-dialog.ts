@@ -92,7 +92,7 @@ export type ProjectCreateDialogData = {
             <div class="flex flex-row gap-16 justify-between pb-4">
               <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
               @if (_selectedWorkspace) {
-                <app-project-import [workspaceId]="_selectedWorkspace.id" />
+                <app-project-import [workspaceId]="_selectedWorkspace.id" (submitted)="dialogRef.close()" />
               }
             </div>
             <mat-form-field>

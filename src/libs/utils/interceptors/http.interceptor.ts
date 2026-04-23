@@ -64,7 +64,7 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
               break;
             }
             // 422 on file upload can happen if the file is invalid
-            if (request.url.endsWith("importation") && getLocError(error, "source")) {
+            if (request.url.endsWith("importations") && getLocError(error, "source")) {
               break;
             }
           // eslint-disable-next-line no-fallthrough

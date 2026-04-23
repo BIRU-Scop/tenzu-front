@@ -19,10 +19,10 @@
  *
  */
 
-import { ProjectNested } from "../project";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 
-export enum ImportationType {
+export enum ProjectImportationType {
+  TENZU = "TZ",
   TAIGA = "TA",
   TRELLO = "TR",
 }
@@ -35,16 +35,18 @@ export enum ImportationStatus {
   FAILURE = "F",
 }
 
-export type ImportationSummary = {
+export type ProjectImportationNested = {
   id: string;
-  originType: ImportationType;
   status: ImportationStatus;
-  errorResultFile: string;
 };
 
-export type ProjectImportationSummary = ImportationSummary & { project?: ProjectNested };
+export type ProjectImportationSummary = ProjectImportationNested;
 
-export type ImportationProjectPayload = {
+export type ProjectImportationDetail = ProjectImportationSummary & {
+  originType: ProjectImportationType;
+};
+
+export type ProjectImportationPayload = {
   source: FileValue;
-  originType: ImportationType;
+  originType: ProjectImportationType;
 };

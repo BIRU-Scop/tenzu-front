@@ -21,22 +21,21 @@
 
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
-import { ImportationsApiService } from "./importation-api.service";
-import { ImportationProjectPayload } from "./importation.model";
+import { ProjectImportationApiService } from "./project-importation-api.service";
+import { ProjectImportationPayload } from "./importation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 
 @Injectable({
   providedIn: "root",
 })
-export class ImportationRepositoryService {
-  private importationsApiService = inject(ImportationsApiService);
+export class ProjectImportationRepositoryService {
+  private importationsApiService = inject(ProjectImportationApiService);
   private workspaceService = inject(WorkspaceRepositoryService);
 
-  async createProjectImportation(item: ImportationProjectPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
+  async createProjectImportation(item: ProjectImportationPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
     const importation = await lastValueFrom(this.importationsApiService.createProjectImportation(item, params));
 
-    // TODO append importation data to workspace store once relevant
-    // this.workspaceService.addUserMemberProjects(params);
+    this.workspaceService.addUserImportedProjects({ ...params, projectImportation: importation });
     return importation;
   }
 }
