@@ -25,7 +25,7 @@ import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/m
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
-import { AsyncPipe, NgStyle } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import {
   ProjectCreateDialog,
@@ -48,7 +48,6 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     TranslocoDirective,
     RouterLink,
     MatIcon,
-    NgStyle,
     ButtonAddComponent,
     AsyncPipe,
     GetBase64FromImageUrlPipe,
@@ -62,9 +61,13 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     <mat-card
       appearance="outlined"
       class="min-h-[100px] w-[200px]"
-      [ngStyle]="disabled() ? { position: 'absolute', filter: 'blur(3px)' } : {}"
       *transloco="let t; prefix: 'component.project_card'"
     >
+      @if (disabled()) {
+        <div class="z-50 h-full w-full backdrop-blur-sm flex items-center justify-center absolute">
+          <mat-icon class="text-on-primary-container">lock</mat-icon>
+        </div>
+      }
       <mat-card-header>
         <app-avatar
           mat-card-avatar
@@ -101,11 +104,6 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
         </div>
       </mat-card-content>
     </mat-card>
-    @if (disabled()) {
-      <div class="min-h-[100px] w-[200px] flex items-center justify-center relative">
-        <mat-icon class="text-on-primary-container">lock</mat-icon>
-      </div>
-    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
