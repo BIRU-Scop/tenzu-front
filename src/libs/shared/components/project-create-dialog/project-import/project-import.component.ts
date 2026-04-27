@@ -60,7 +60,7 @@ export class ProjectImportComponent {
   async onFileSelected(file: FileValue) {
     if (file) {
       try {
-        await this.importationRepositoryService.createProjectImportation(
+        await this.importationRepositoryService.createRequest(
           { originType: ProjectImportationType.TAIGA, source: file },
           { workspaceId: this.workspaceId() },
         );

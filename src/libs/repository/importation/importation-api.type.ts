@@ -19,30 +19,10 @@
  *
  */
 
-import { FileValue } from "@tenzu/repository/base/misc.model";
+import { WorkspaceSummary } from "../workspace";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
-export enum ProjectImportationType {
-  TENZU = "TZ",
-  TAIGA = "TA",
-  TRELLO = "TR",
-}
-
-export enum ImportationStatus {
-  PENDING = "P",
-  ONGOING = "O",
-  ACTION_NEEDED = "A",
-  SUCCESS = "S",
-  FAILURE = "F",
-}
-
-export type ProjectImportationNested = {
-  id: string;
-  status: ImportationStatus;
-};
-
-export type ProjectImportation = ProjectImportationNested;
-
-export type CreateProjectImportationPayload = {
-  source: FileValue;
-  originType: ProjectImportationType;
-};
+export type BaseParams = { projectImportationId: ProjectImportation["id"] };
+export type ListEntitiesSummaryParams = { workspaceId: WorkspaceSummary["id"] };
+export type CreateEntityDetailParams = ListEntitiesSummaryParams;
+export type DeleteEntityDetailParams = BaseParams;

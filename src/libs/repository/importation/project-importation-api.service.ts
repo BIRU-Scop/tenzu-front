@@ -19,33 +19,51 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
-import { makeFormData } from "../base";
-import { ProjectImportationPayload, ProjectImportationSummary } from "./importation.model";
+import { Injectable } from "@angular/core";
+import { AbstractApiService } from "../base";
+import { CreateProjectImportationPayload, ProjectImportation } from "./importation.model";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
-import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import type * as ProjectImportationApiServiceType from "./importation-api.type";
 
 @Injectable({
   providedIn: "root",
 })
-export class ProjectImportationApiService {
-  protected http = inject(HttpClient);
-  protected configAppService = inject(ConfigAppService);
+export class ProjectImportationApiService extends AbstractApiService<
+  ProjectImportation,
+  ProjectImportation,
+  ProjectImportationApiServiceType.ListEntitiesSummaryParams,
+  unknown,
+  ProjectImportationApiServiceType.CreateEntityDetailParams,
+  unknown,
+  unknown,
+  ProjectImportationApiServiceType.DeleteEntityDetailParams,
+  CreateProjectImportationPayload
+> {
+  baseUrl = `${this.configAppService.apiUrl()}/projects/importations`;
+  protected override getBaseUrl(params: ProjectImportationApiServiceType.ListEntitiesSummaryParams) {
+    return `${this.configAppService.apiUrl()}/workspaces/${params.workspaceId}/projects/importations`;
+  }
+  protected override getEntityBaseUrl(params: ProjectImportationApiServiceType.BaseParams) {
+    return `${this.baseUrl}/${params.projectImportationId}`;
+  }
 
-  protected baseUrl = `${this.configAppService.apiUrl()}`;
+  override create(
+    item: CreateProjectImportationPayload,
+    params: ProjectImportationApiServiceType.CreateEntityDetailParams,
+    options = { dataIsFormData: true },
+  ): Observable<ProjectImportation> {
+    return super.create(item, params, {}, options);
+  }
 
-  createProjectImportation(
-    item: ProjectImportationPayload,
-    params: { workspaceId: WorkspaceSummary["id"] },
-  ): Observable<ProjectImportationSummary> {
-    const url = `${this.baseUrl}/workspaces/${params.workspaceId}/projects/importations`;
-    const data = makeFormData<ProjectImportationPayload>(item);
-    return this.http
-      .post<BaseDataModel<ProjectImportationSummary>>(url, data)
-      .pipe(map((dataObject) => dataObject.data));
+  override get(): Observable<ProjectImportation> {
+    throw new Error("Method not implemented.");
+  }
+
+  override put(): Observable<ProjectImportation> {
+    throw new Error("Method not implemented.");
+  }
+
+  override patch(): Observable<ProjectImportation> {
+    throw new Error("Method not implemented.");
   }
 }

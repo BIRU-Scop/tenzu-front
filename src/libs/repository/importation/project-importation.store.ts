@@ -19,30 +19,11 @@
  *
  */
 
-import { FileValue } from "@tenzu/repository/base/misc.model";
+import { signalStore } from "@ngrx/signals";
+import { withEntityListFeature } from "../base/features";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
-export enum ProjectImportationType {
-  TENZU = "TZ",
-  TAIGA = "TA",
-  TRELLO = "TR",
-}
-
-export enum ImportationStatus {
-  PENDING = "P",
-  ONGOING = "O",
-  ACTION_NEEDED = "A",
-  SUCCESS = "S",
-  FAILURE = "F",
-}
-
-export type ProjectImportationNested = {
-  id: string;
-  status: ImportationStatus;
-};
-
-export type ProjectImportation = ProjectImportationNested;
-
-export type CreateProjectImportationPayload = {
-  source: FileValue;
-  originType: ProjectImportationType;
-};
+export const ProjectImportationEntitiesStore = signalStore(
+  { providedIn: "root" },
+  withEntityListFeature<ProjectImportation>(),
+);

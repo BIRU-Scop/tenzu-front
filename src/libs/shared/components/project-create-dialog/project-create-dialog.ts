@@ -204,7 +204,10 @@ export class ProjectCreateDialog {
   async submit(event: Event) {
     event.preventDefault();
     await submit(this.projectForm, async (form) => {
-      const project = await this.projectRepositoryService.createRequestWithLogo(form().value());
+      const value = form().value();
+      const project = await this.projectRepositoryService.createRequest(value, {
+        workspaceId: value.workspaceId,
+      });
       this.router.navigateByUrl(`/workspace/${project.workspaceId}/project/${project.id}/kanban/main`).then();
       this.dialogRef.close();
     });

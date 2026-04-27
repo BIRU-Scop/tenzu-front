@@ -48,7 +48,8 @@ export class ProjectRepositoryService extends BaseRepositoryService<
   ProjectApiServiceType.CreateEntityDetailParams,
   ProjectApiServiceType.PutEntityDetailParams,
   ProjectApiServiceType.PatchEntityDetailParams,
-  ProjectApiServiceType.DeleteEntityDetailParams
+  ProjectApiServiceType.DeleteEntityDetailParams,
+  CreateProjectPayload
 > {
   protected apiService = inject(ProjectApiService);
   protected entitiesSummaryStore = inject(ProjectEntitiesSummaryStore);
@@ -65,29 +66,20 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     return selectedProjectWorkflows.length < MAX_WORKFLOWS;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override async createRequest(item: Partial<ProjectDetail>): Promise<ProjectDetail> {
-    throw new Error("Method not implemented.");
-  }
-
-  async createRequestWithLogo(item: CreateProjectPayload, options: { prepend: boolean } = { prepend: false }) {
+  override async createRequest(
+    item: CreateProjectPayload,
+    params: ProjectApiServiceType.CreateEntityDetailParams,
+    options: { prepend: boolean } = { prepend: false },
+  ) {
     this.resetEntityDetail();
 
-    const entity = await lastValueFrom(this.apiService.createWithLogo(item, { workspaceId: item.workspaceId }));
-    this.setEntityDetail(entity, options);
+    const entity = await super.createRequest(item, params, options);
     this.projectMembershipRepositoryService.listProjectMembershipRequest(entity.id).then();
     this.projectRoleRepositoryService.listRequest({ projectId: entity.id }).then();
     return entity;
   }
 
-  override async patchRequest(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    itemId: ProjectSummary["id"],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    partialData: Partial<ProjectDetail>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    params: { projectId: ProjectSummary["id"] },
-  ): Promise<ProjectDetail> {
+  override async patchRequest(): Promise<ProjectDetail> {
     throw new Error("Method not implemented.");
   }
 

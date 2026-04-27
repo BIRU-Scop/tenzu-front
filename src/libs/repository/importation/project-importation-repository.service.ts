@@ -22,8 +22,9 @@
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectImportationApiService } from "./project-importation-api.service";
-import { ProjectImportationPayload } from "./importation.model";
+import { CreateProjectImportationPayload } from "./importation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/project-importation.store";
 
 @Injectable({
   providedIn: "root",
@@ -31,11 +32,25 @@ import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/
 export class ProjectImportationRepositoryService {
   private importationsApiService = inject(ProjectImportationApiService);
   private workspaceService = inject(WorkspaceRepositoryService);
+  private projectImportationEntitiesStore = inject(ProjectImportationEntitiesStore);
+  entities = this.projectImportationEntitiesStore.entities;
+  entityMap = this.projectImportationEntitiesStore.entityMap;
 
-  async createProjectImportation(item: ProjectImportationPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
-    const importation = await lastValueFrom(this.importationsApiService.createProjectImportation(item, params));
+  async createRequest(item: CreateProjectImportationPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
+    const importation = await lastValueFrom(this.importationsApiService.create(item, params));
 
     this.workspaceService.addUserImportedProjects({ ...params, projectImportation: importation });
+    this.projectImportationEntitiesStore.addEntity(importation);
     return importation;
+  }
+
+  async listRequest(params: { workspaceId: WorkspaceSummary["id"] }) {
+    const projectImportations = await lastValueFrom(this.importationsApiService.list(params));
+    this.projectImportationEntitiesStore.setAllEntities(projectImportations);
+    return projectImportations;
+  }
+
+  resetEntitySummaryList(): void {
+    this.projectImportationEntitiesStore.reset();
   }
 }
