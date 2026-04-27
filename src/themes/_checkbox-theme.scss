@@ -39,7 +39,6 @@
   }
 
     @include mat.checkbox-overrides((
-      state-layer-size: 32px,
       selected-focus-icon-color: var(--mat-sys-tertiary),
       selected-focus-state-layer-color: var(--mat-sys-tertiary),
       selected-hover-icon-color: var(--mat-sys-tertiary),

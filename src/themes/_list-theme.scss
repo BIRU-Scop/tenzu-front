@@ -23,112 +23,15 @@
 
 $list-item-spacing: 12px;
 
-body {
-  //.mdc-list {
-  //  padding: 0;
-  //  .mdc-list-item {
-  //    --mat-ripple-color: rgba(0,0,0,0.12);
-  //    &.resized {
-  //      padding-left: $list-item-spacing;
-  //      padding-right: $list-item-spacing;
-  //    }
-  //  }
-  //  &.mat-mdc-selection-list.mat-mdc-list-base .mdc-list-item {
-  //    @apply py-1;
-  //  }
-  //}
-  //.mat-mdc-nav-list {
-  //  @apply flex flex-col gap-0.5;
-  //  .mdc-list-item {
-  //    &:hover {
-  //      @apply no-underline;
-  //    }
-  //    &:focus {
-  //      outline: 1px solid var(--mat-sys-primary);
-  //    }
-  //    @media (prefers-color-scheme: dark) {
-  //      .mat-icon {
-  //        color: var(--mat-sys-on-primary);
-  //      }
-  //      &.mdc-list-item--activated {
-  //        .mat-icon  {
-  //          color: var(--mat-sys-on-surface)
-  //        }
-  //      }
-  //
-  //    }
-  //    @media (prefers-color-scheme: light) {
-  //      .mat-icon {
-  //        color: var(--mat-sys-outline-variant);
-  //      }
-  //      &:hover {
-  //        .mat-icon  {
-  //          color: var(--mat-sys-outline-variant);
-  //        }
-  //      }
-  //      &.mdc-list-item--activated {
-  //        .mat-icon  {
-  //          color: var(--mat-sys-outline-variant)
-  //        }
-  //      }
-  //    }
-  //  }
-  //}
-}
 @mixin tokens-overrides() {
-  //@include mat.list-overrides((
-  //  list-item-one-line-container-height: 32px,
-  //  list-item-container-shape: var(--mat-sys-corner-medium),
-  //  active-indicator-shape: var(--mat-sys-corner-medium),
-  //  list-item-label-text-size: var(--mat-sys-label-large-size),
-  //  list-item-label-text-line-height: var(--mat-sys-label-large-line-height),
-  //  list-item-leading-icon-start-space: $list-item-spacing,
-  //  list-item-leading-icon-end-space: $list-item-spacing,
-  //));
-  //.mat-mdc-nav-list {
-  //  @include mat.list-overrides((
-  //    list-item-container-color: var(--mat-sys-dim),
-  //    list-item-container-shape: 0px,
-  //    active-indicator-shape: 0px,
-  //
-  //  ));
-  //  @media (prefers-color-scheme: dark) {
-  //    @include mat.list-overrides((
-  //      active-indicator-color:  color-mix(in srgb, var(--mat-sys-on-surface) 20%, transparent),
-  //      list-item-label-text-color: var(--mat-sys-on-surface),
-  //      list-item-hover-label-text-color: var(--mat-sys-on-surface),
-  //      list-item-focus-label-text-color: var(--mat-sys-on-surface),
-  //      list-item-hover-state-layer-color: var(--mat-sys-on-surface),
-  //      list-item-focus-state-layer-color: var(--mat-sys-on-surface),
-  //      list-item-focus-state-layer-opacity: 0.2,
-  //      list-item-hover-state-layer-opacity: 0.2,
-  //    ));
-  //  }
-  //  @media (prefers-color-scheme: light) {
-  //    @include mat.list-overrides((
-  //      list-item-hover-state-layer-opacity: 0.3,
-  //      list-item-focus-state-layer-opacity: 0.3,
-  //      active-indicator-color: var(--mat-sys-primary),
-  //      list-item-label-text-color: var(--mat-sys-outline-variant),
-  //      list-item-hover-state-layer-color: var(--mat-list-active-indicator-color, var(--mat-sys-secondary-container)),
-  //      list-item-hover-label-text-color: var(--mat-sys-outline-variant),
-  //
-  //      list-item-focus-label-text-color: var(--mat-sys-outline-variant),
-  //      list-item-focus-state-layer-color: var(--mat-sys-primary),
-  //
-  //    ));
-  //  }
-  //}
-  //.mat-mdc-selection-list {
-  //  @include mat.list-overrides((
-  //    list-item-hover-state-layer-opacity: 0.15,
-  //    list-item-focus-state-layer-opacity: 0.15,
-  //    list-item-one-line-container-height: auto,
-  //    list-item-hover-state-layer-color: var(--mat-sys-primary),
-  //    list-item-focus-state-layer-color: var(--mat-sys-primary),
-  //    list-item-label-text-color: var(--mat-sys-on-primary-container),
-  //    list-item-hover-label-text-color: var(--mat-sys-on-primary-container),
-  //    list-item-focus-label-text-color: var(--mat-sys-on-primary-container),
-  //  ));
-  //}
+  @include mat.list-overrides((
+    list-item-container-shape: var(--mat-sys-corner-medium),
+    list-item-supporting-text-color: var(--mat-sys-on-surface-variant),
+    list-item-leading-icon-color: var(--mat-sys-on-surface),
+    list-item-trailing-icon-color: var(--mat-sys-on-surface),
+    list-item-hover-state-layer-color: var(--mat-sys-on-surface-variant),
+    list-item-hover-state-layer-opacity: 0.1,
+    list-item-focus-state-layer-color: var(--mat-sys-tertiary),
+    list-item-focus-state-layer-opacity: 0.1,
+  ));
 }
