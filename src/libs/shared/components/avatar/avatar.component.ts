@@ -19,46 +19,93 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+
+export type AvatarMode = "outlined" | "filled-circle" | "filled-square";
+export type AvatarSize = "sm" | "md" | "lg" | "xl";
 
 @Component({
   selector: "app-avatar",
   standalone: true,
-  styleUrl: "avatar.component.scss",
-  encapsulation: ViewEncapsulation.None,
+  host: {
+    "[class]": "hostClasses()",
+    "[style.color]": "textColor()",
+    "[style.background-color]": "backgroundColor()",
+    "[style.border-color]": "borderColor()",
+  },
   template: `
     @let _imageData = imageData();
     @if (_imageData) {
-      <img loading="lazy" [class]="class()" [src]="_imageData" [alt]="initials()" />
+      <img loading="lazy" [src]="_imageData" [alt]="initials()" />
     } @else {
-      <div [class]="class()">
-        <span>{{ initials() }}</span>
-      </div>
+      <span>{{ initials() }}</span>
     }
   `,
-  styles: ``,
+  styles: `
+    :host {
+      @apply tracking-widest flex items-center justify-center uppercase;
+      color: var(--mat-sys-on-surface);
+
+      &.avatar-sm {
+        @apply text-xs w-6 h-6;
+      }
+      &.avatar-md {
+        @apply text-sm w-8 h-8;
+      }
+      &.avatar-lg {
+        @apply text-lg w-12 h-12;
+      }
+      &.avatar-xl {
+        @apply text-lg w-16 h-16;
+      }
+
+      &.mode-outlined {
+        background-color: transparent;
+        border: 1px solid var(--mat-sys-outline);
+        @apply rounded-full;
+      }
+
+      &.mode-filled-circle {
+        background-color: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+        @apply rounded-full;
+      }
+
+      &.mode-filled-square {
+        background-color: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+        @apply rounded;
+      }
+
+      & img {
+        @apply w-full h-full object-cover;
+      }
+
+      &.mode-outlined img,
+      &.mode-filled-circle img {
+        @apply rounded-full;
+      }
+
+      &.mode-filled-square img {
+        @apply rounded;
+      }
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarComponent {
   name = input("", {
     transform: (value: undefined | string) => value ?? "?",
   });
-  color = input(0, {
-    transform: (value: undefined | number) => value ?? 0,
-  });
-  rounded = input(false);
-  size = input<"sm" | "md" | "lg" | "xl">("md");
+  mode = input<AvatarMode>("filled-circle");
+  size = input<AvatarSize>("md");
   imageData = input<string | ArrayBuffer | null | undefined>(null);
-  class = computed(() => [
-    "avatar",
-    "flex",
-    "items-center",
-    "justify-center",
-    "uppercase",
-    `color-${this.color()}`,
-    `avatar-${this.size()}`,
-    this.rounded() ? "rounded-full" : "rounded",
-  ]);
+
+  textColor = input<string | undefined>(undefined);
+  backgroundColor = input<string | undefined>(undefined);
+  borderColor = input<string | undefined>(undefined);
+
+  hostClasses = computed(() => ["avatar", `avatar-${this.size()}`, `mode-${this.mode()}`].join(" "));
 
   initials = computed(() => {
     const words = this.name()
