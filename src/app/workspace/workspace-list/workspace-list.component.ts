@@ -100,7 +100,7 @@ import { ProjectImportationCardComponent } from "@tenzu/shared/components/projec
                 />
               }
               @for (projectImportation of workspace.userImportedProjects; track projectImportation.id) {
-                <app-project-importation-card [workspaceId]="workspace.id" />
+                <app-project-importation-card [workspaceId]="workspace.id" [importation]="projectImportation" />
               }
               @if (
                 (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&

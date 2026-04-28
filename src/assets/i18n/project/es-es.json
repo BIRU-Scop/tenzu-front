@@ -16,7 +16,9 @@
     "import": {
       "taiga": "Importar proyecto desde Taiga",
       "taiga_doc": "¿Cómo importar desde Taiga?",
-      "422": "Archivo no válido, error es {{error}}"
+      "422": "Archivo no válido, error es \"{{error}}\"",
+      "ongoing": "Transferencia en curso…",
+      "failed": "Error al importar"
     }
   },
   "settings": {
