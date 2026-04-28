@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,34 +19,14 @@
  *
  */
 
-import { FileValue } from "@tenzu/repository/base/misc.model";
+import { Pipe, PipeTransform } from "@angular/core";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 
-export enum ProjectImportationType {
-  TENZU = "TZ",
-  TAIGA = "TA",
-  TRELLO = "TR",
+@Pipe({
+  name: "workspaceUrl",
+})
+export class WorkspaceUrlPipe implements PipeTransform {
+  transform(value: { workspace: WorkspaceLinkNested }) {
+    return `/workspace/${value.workspace.id}`;
+  }
 }
-
-export enum ImportationError {
-  INVALID = "file_validation_failed",
-}
-
-export enum ImportationStatus {
-  PENDING = "P",
-  ONGOING = "O",
-  ACTION_NEEDED = "A",
-  SUCCESS = "S",
-  FAILURE = "F",
-}
-
-export type ProjectImportationNested = {
-  id: string;
-  status: ImportationStatus;
-};
-
-export type ProjectImportation = ProjectImportationNested;
-
-export type CreateProjectImportationPayload = {
-  source: FileValue;
-  originType: ProjectImportationType;
-};

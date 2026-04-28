@@ -1,6 +1,7 @@
 {
   "general_title": {
     "workspace": "Workspace",
+    "named_workspace": "Workspace {{name}}",
     "workspaces": "Workspaces",
     "workspace_list_projects": "Projects",
     "workspace_settings": "Settings",

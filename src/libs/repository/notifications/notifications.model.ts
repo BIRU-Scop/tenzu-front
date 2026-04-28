@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,6 +22,8 @@
 import { UserNested } from "../user";
 import { StorySummary } from "../story";
 import { ProjectDetail } from "../project";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
+import { ProjectImportationNested } from "@tenzu/repository/importation";
 
 export type NotificationType =
   | "stories.assign"
@@ -29,7 +31,8 @@ export type NotificationType =
   | "story_comment.create"
   | "stories.status_change"
   | "stories.workflow_change"
-  | "stories.delete";
+  | "stories.delete"
+  | "project_importation.fail";
 
 export type NotificationBase = {
   id: string;
@@ -91,10 +94,20 @@ export type StoryWorkflowChangeNotification = NotificationBase & {
     workflow: string;
   };
 };
+export type ProjectImportationFailNotification = NotificationBase & {
+  type: "project_importation.fail";
+  content: {
+    workspace: WorkspaceLinkNested;
+    projectImportation: ProjectImportationNested;
+    fileName: string;
+  };
+};
+// TODO comment create
 
 export type Notification =
   | StoryAssignNotification
   | StoryUnassignNotification
   | StoryStatusChangeNotification
   | StoryDeleteNotification
-  | StoryWorkflowChangeNotification;
+  | StoryWorkflowChangeNotification
+  | ProjectImportationFailNotification;
