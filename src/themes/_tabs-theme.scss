@@ -21,25 +21,19 @@
 
 @use '@angular/material' as mat;
 
-//.mat-mdc-tab-body-content > *, .mat-mdc-tab-body-content > .mdc-list {
-//  @apply mt-4;
-//}
-
 @mixin tokens-overrides {
-  //@include mat.tabs-overrides((
-  //  divider-color: var(--mat-sys-outline),
-  //  active-indicator-color: var(--mat-sys-primary),
-  //  active-ripple-color: var(--mat-sys-on-primary),
-  //  inactive-ripple-color: var(--mat-sys-on-secondary),
-  //  inactive-label-text-color: var(--mat-sys-on-secondary-container),
-  //  inactive-hover-label-text-color: var(--mat-sys-on-secondary-container),
-  //  inactive-focus-label-text-color: var(--mat-sys-on-secondary-container),
-  //  active-label-text-color: var(--mat-sys-on-primary-container),
-  //  active-hover-label-text-color: var(--mat-sys-on-primary-container),
-  //  active-focus-label-text-color: var(--mat-sys-on-primary-container),
-  //  active-focus-indicator-color: var(--mat-sys-on-primary-container),
-  //  active-hover-indicator-color:  var(--mat-sys-on-primary-container),
-  //  label-text-weight: var(--mat-sys-body-medium-weight),
-  //  container-height: '40px'
-  //));
+  @include mat.tabs-overrides((
+    divider-color: var(--mat-sys-outline-variant),
+    active-indicator-color: var(--mat-sys-tertiary),
+    active-hover-indicator-color: var(--mat-sys-tertiary),
+    active-focus-indicator-color: var(--mat-sys-tertiary),
+    active-label-text-color: var(--mat-sys-tertiary),
+    active-hover-label-text-color: var(--mat-sys-tertiary),
+    active-focus-label-text-color: var(--mat-sys-tertiary),
+    active-ripple-color: var(--mat-sys-tertiary),
+    inactive-label-text-color: var(--mat-sys-on-surface-variant),
+    inactive-hover-label-text-color: var(--mat-sys-on-surface),
+    inactive-focus-label-text-color: var(--mat-sys-on-surface),
+    inactive-ripple-color: var(--mat-sys-on-surface),
+  ));
 }

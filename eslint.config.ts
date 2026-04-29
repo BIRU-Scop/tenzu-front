@@ -43,7 +43,9 @@ export default defineConfig(
   {
     files: ["**/*.html"],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      "@angular-eslint/template/click-events-have-key-events": ["error", { ignoreWithDirectives: ["mat-tab-link"] }],
+    },
   },
   eslintPluginPrettierRecommended,
   eslintConfigPrettier,
