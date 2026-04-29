@@ -21,98 +21,43 @@
 
 @use '@angular/material' as mat;
 
-.mat-sidenav-container {
-  //.mat-sidenav {
-  //  height: calc(100vh - var(--mat-toolbar-standard-height));
-  //  transition-duration: 200ms;
-  //  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  //  transition-property: width;
-  //  .nav-button {
-  //    @apply cursor-pointer;
-  //    height: var(--mdc-list-list-item-one-line-container-height);
-  //    min-width: var(--mdc-list-list-item-one-line-container-height);
-  //    color: var(--mat-sys-tertiary);
-  //    border: solid 1px transparent;
-  //    &:focus {
-  //      border-top: var(--mat-sys-on-secondary) solid 1px;
-  //      border-bottom: var(--mat-sys-on-secondary) solid 1px;
-  //      background-color: var(--mat-sys-surface-container);
-  //      //@media (prefers-color-scheme: light) {
-  //      //  background-color: var(--mat-sys-surface-container);
-  //      //}
-  //      //@media (prefers-color-scheme: dark) {
-  //      //  background-color: var(--mat-sys-surface-container);
-  //      //}
-  //    }
-  //    &:hover {
-  //      background-color: var(--mat-sys-surface-container);
-  //      color: var(--mat-sys-tertiary);
-  //      //@media (prefers-color-scheme: light) {
-  //      //  background-color: var(--mat-sys-surface-container);
-  //      //}
-  //      //@media (prefers-color-scheme: dark) {
-  //      //  background-color: var(--mat-sys-surface-container);
-  //      //}
-  //    }
-  //    .mat-icon {
-  //      color: var(--mat-sys-tertiary);
-  //    }
-  //  }
-  //  .mat-mdc-icon-button{
-  //    &.resized {
-  //      padding-left: var(--tw-4);
-  //      padding-right: var(--tw-4);
-  //    }
-  //  }
-  //
-  //}
-  //.mat-sidenav-content {
-  //  height: calc(100vh - var(--mat-toolbar-standard-height) - 2rem);
-  //  transition-duration: 400ms;
-  //  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  //  transition-property: margin-left;
-  //  padding: var(--tw-4);
-  //  margin-left: var(--tz-sidenav-width);
-  //}
+@mixin tokens-overrides() {
+  @include mat.sidenav-overrides((
+    container-shape: 0,
+    container-width: var(--tz-sidenav-width),
+    container-background-color: var(--mat-sys-surface-container),
+    container-text-color: var(--mat-sys-on-surface-variant),
+    container-divider-color: var(--mat-sys-outline-variant),
+    content-background-color: transparent,
+    container-elevation-shadow: none,
+  ));
+
+  .mat-sidenav {
+    @include mat.list-overrides((
+      active-indicator-color: var(--mat-sys-tertiary),
+      active-indicator-shape: var(--mat-sys-corner-medium),
+      list-item-label-text-color: var(--mat-sys-on-surface-variant),
+      list-item-leading-icon-color: var(--mat-sys-tertiary),
+      list-item-leading-icon-start-space: 8px,
+      list-item-leading-icon-end-space: 8px,
+      list-item-hover-state-layer-color: var(--mat-sys-on-surface),
+      list-item-hover-state-layer-opacity: 0.08,
+    ));
+  }
 }
 
-@mixin tokens-overrides() {
-  //@include mat.sidenav-overrides((
-  //  content-background-color: transparent,
-  //  container-divider-color: var(--mat-sys-outline),
-  //  container-shape: var(--mat-sys-corner-medium),
-  //));
-  //.mat-sidenav {
-  //  @include mat.sidenav-overrides((
-  //    container-shape: 0px,
-  //    container-width: var(--tz-sidenav-width),
-  //    container-background-color: var(--mat-sys-surface-container),
-  //    container-divider-color: var(--mat-sys-background),
-  //    container-text-color: var(--mat-sys-tertiary)
-  //  ));
-  //  //@media (prefers-color-scheme: light) {
-  //  //  @include mat.sidenav-overrides((
-  //  //    container-text-color: var(--mat-sys-tertiary),
-  //  //  ));
-  //  //}
-  //  //@media (prefers-color-scheme: dark) {
-  //  //  @include mat.sidenav-overrides((
-  //  //    container-text-color: var(--mat-sys-tertiary),
-  //  //  ));
-  //  //}
-  //  @include mat.divider-overrides((
-  //    color: var(--mat-sys-primary)
-  //  ));
-  //  @include mat.icon-button-overrides((
-  //    state-layer-color: transparent,
-  //    disabled-state-layer-color: transparent,
-  //    ripple-color: transparent,
-  //  ));
-  //  .mat-mdc-icon-button {
-  //    &:focus {
-  //      outline: 0px;
-  //      background-color: transparent;
-  //    }
-  //  }
-  //}
+.mat-sidenav .mat-mdc-list-item {
+  @apply mx-2;
+  width: auto;
+
+  &.resized {
+    @apply justify-center mx-0;
+  }
+
+  &.mdc-list-item--activated {
+    .mdc-list-item__primary-text,
+    .mat-mdc-list-item-icon {
+      color: var(--mat-sys-on-tertiary);
+    }
+  }
 }

@@ -31,6 +31,7 @@ body {
   --tz-tasks-list-padding: var(--tw-4);
   --tz-sidenav-content-padding: var(--tw-4);
   --tz-sidenav-width: 250px;
+  --tz-sidenav-width-collapsed: 56px;
   --tz-margin-top-viewport: var(--tw-4);
   --tz-elements-around-virtual-scroll-height: calc(
           var(--tz-status-card-wrapper-height) + var(--tz-tasks-list-padding) + var(--tz-sidenav-content-padding) +
