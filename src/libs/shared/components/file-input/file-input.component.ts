@@ -77,7 +77,7 @@ export class FileInputComponent {
   selectFile = output<FileValue>();
   allowedFormats = input<string>("");
   maxUploadFileSize = input<number | null>(null);
-  iconName = input<IconName>("upload");
+  iconName = input<IconName | undefined>("upload");
   showDelete = input<boolean>(false);
   translocoUploadKey = input.required<string>();
   translocoDeleteKey = input<string>("");

@@ -29,20 +29,24 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { getLocError } from "@tenzu/utils/functions/errors";
+import { IconName } from "@tenzu/shared/components/ui/ui.types";
 
 @Component({
-  selector: "app-project-import",
+  selector: "app-project-importation-input",
   imports: [TranslocoDirective, FileInputComponent],
   template: `
     <ng-container *transloco="let t">
       <app-file-input
+        [iconName]="iconName()"
         allowedFormats=".json"
-        translocoUploadKey="project.new_project.import.taiga"
+        [translocoUploadKey]="translocoUploadKey()"
         (selectFile)="onFileSelected($event)"
       />
-      <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small text-on-primary-container">{{
-        t("project.new_project.import.taiga_doc")
-      }}</a>
+      @if (displayDoc()) {
+        <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small text-on-primary-container">{{
+          t("project.new_project.import.taiga_doc")
+        }}</a>
+      }
     </ng-container>
   `,
   styles: ``,
@@ -51,11 +55,14 @@ import { getLocError } from "@tenzu/utils/functions/errors";
     class: "flex flex-col gap-1 items-end",
   },
 })
-export class ProjectImportComponent {
+export class ProjectImportationInputComponent {
   readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
   readonly notificationService = inject(NotificationService);
   workspaceId = input.required<WorkspaceSummary["id"]>();
   submitted = output<void>();
+  iconName = input<IconName | undefined>("upload");
+  translocoUploadKey = input("project.new_project.import.taiga");
+  displayDoc = input(true);
 
   async onFileSelected(file: FileValue) {
     if (file) {
@@ -67,11 +74,11 @@ export class ProjectImportComponent {
         this.submitted.emit();
       } catch (errorResponse) {
         if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 422) {
-          debug("error-422", "importation", errorResponse);
+          debug("error-422", "projectImportation", errorResponse);
           const errorDetail = getLocError(errorResponse, "source");
           if (errorDetail) {
             this.notificationService.error({
-              title: "project.new_project.import.422",
+              title: "project.new_project.import.errors.422",
               translocoTitle: true,
               translocoTitleParams: { error: errorDetail },
             });

@@ -52,7 +52,7 @@ import {
   applyWhenValue,
 } from "@angular/forms/signals";
 import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
-import { ProjectImportComponent } from "@tenzu/shared/components/project-create-dialog/project-import/project-import.component";
+import { ProjectImportationInputComponent } from "@tenzu/shared/components/project-importation-input/project-importation-input.component";
 
 export type ProjectCreateDialogData = {
   workspaceId: WorkspaceSummary["id"];
@@ -81,7 +81,7 @@ export type ProjectCreateDialogData = {
     FormField,
     MatSelectTrigger,
     ProjectLogoInputComponent,
-    ProjectImportComponent,
+    ProjectImportationInputComponent,
   ],
   template: `
     @let _selectedWorkspace = selectedWorkspace();
@@ -92,7 +92,7 @@ export type ProjectCreateDialogData = {
             <div class="flex flex-row gap-16 justify-between pb-4">
               <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
               @if (_selectedWorkspace) {
-                <app-project-import [workspaceId]="_selectedWorkspace.id" (submitted)="dialogRef.close()" />
+                <app-project-importation-input [workspaceId]="_selectedWorkspace.id" (submitted)="dialogRef.close()" />
               }
             </div>
             <mat-form-field>

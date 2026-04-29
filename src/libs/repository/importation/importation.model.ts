@@ -39,9 +39,15 @@ export enum ImportationStatus {
   FAILURE = "F",
 }
 
+export type ProjectImportationData = {
+  errorCode?: ImportationError;
+};
+
 export type ProjectImportationNested = {
   id: string;
   status: ImportationStatus;
+  extraData: ProjectImportationData;
+  sourceName: string;
 };
 
 export type ProjectImportation = ProjectImportationNested;

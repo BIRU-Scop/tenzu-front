@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -27,6 +27,13 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressBar } from "@angular/material/progress-bar";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import {
+  ProjectImportationErrorDialog,
+  ProjectImportationErrorDialogData,
+} from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 
 @Component({
   selector: "app-project-importation-card",
@@ -39,13 +46,14 @@ import { MatProgressBar } from "@angular/material/progress-bar";
     TranslocoDirective,
     MatIcon,
     MatProgressBar,
+    ButtonComponent,
   ],
   template: `
     @let _name = "Lorem Ipsum";
     @let _color = 3;
     @let _description = "Lorem Ipsum dolor sit amet";
     @let _workspaceId = workspaceId();
-    @let _importation = importation();
+    @let _importation = projectImportation();
     <!--    TODO if error, card border error color -->
     <mat-card appearance="outlined" class="min-h-[100px] w-[200px]" *transloco="let t">
       <div class="z-50 h-full w-full backdrop-blur-sm flex flex-col items-center justify-center absolute text-center">
@@ -54,6 +62,11 @@ import { MatProgressBar } from "@angular/material/progress-bar";
             <mat-icon class="text-error pr-3 self-center" aria-hidden="true">warning</mat-icon>
             <p class="mat-body-medium text-error align-middle">{{ t("project.new_project.import.failed") }}</p>
           </div>
+          <app-button
+            level="error"
+            translocoKey="project.new_project.import.failed_details"
+            (click)="openImportationError()"
+          />
         } @else {
           <div class="flex flex-col w-full">
             <p>{{ t("project.new_project.import.ongoing") }}</p>
@@ -82,7 +95,20 @@ import { MatProgressBar } from "@angular/material/progress-bar";
 })
 export class ProjectImportationCardComponent {
   protected readonly ImportationStatus = ImportationStatus;
+  readonly dialog = inject(MatDialog);
 
   workspaceId = input.required<WorkspaceSummary["id"]>();
-  importation = input.required<ProjectImportation>();
+  projectImportation = input.required<ProjectImportation>();
+
+  protected openImportationError() {
+    const data: ProjectImportationErrorDialogData = {
+      projectImportation: this.projectImportation,
+      workspaceId: this.workspaceId,
+    };
+    this.dialog.open(ProjectImportationErrorDialog, {
+      ...matDialogConfig,
+      minWidth: 850,
+      data: data,
+    });
+  }
 }

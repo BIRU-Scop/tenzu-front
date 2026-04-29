@@ -109,7 +109,6 @@ export type ProjectImportationFailNotification = NotificationBase & {
   content: {
     workspace: WorkspaceLinkNested;
     projectImportation: ProjectImportationNested;
-    fileName: string;
   };
 };
 

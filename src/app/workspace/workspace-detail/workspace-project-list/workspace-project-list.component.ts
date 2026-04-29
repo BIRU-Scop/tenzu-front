@@ -106,7 +106,7 @@ import { ProjectImportationRepositoryService } from "@tenzu/repository/importati
       }
       @if (workspace) {
         @for (projectImportation of projectImportationService.entities(); track projectImportation.id) {
-          <app-project-importation-card [workspaceId]="workspace.id" [importation]="projectImportation" />
+          <app-project-importation-card [workspaceId]="workspace.id" [projectImportation]="projectImportation" />
         }
       }
     </div>

@@ -16,9 +16,15 @@
     "import": {
       "taiga": "Import project from Taiga",
       "taiga_doc": "How to import from Taiga?",
-      "422": "Invalid file, error is \"{{error}}\"",
       "ongoing": "Transfer in progress…",
-      "failed": "Import failed"
+      "failed": "Import failed",
+      "failed_details": "Details",
+      "failed_redo": "Reimport the file",
+      "errors": {
+        "422": "Invalid file, error is \"{{error}}\"",
+        "file_validation_failed": "The import of {{fileName}} failed because the format is incorrect.",
+        "unknown": "The import of {{fileName}} failed because of an unknown error."
+      }
     }
   },
   "settings": {

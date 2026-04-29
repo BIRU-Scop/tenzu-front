@@ -206,7 +206,7 @@ export class NotificationUnitComponent {
           ...{
             user: undefined,
             translateKey: translateKey,
-            params: { fileName: notification.content.fileName },
+            params: { fileName: notification.content.projectImportation.sourceName },
           },
         };
       }
