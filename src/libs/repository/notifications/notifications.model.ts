@@ -20,10 +20,11 @@
  */
 
 import { UserNested } from "../user";
-import { StorySummary } from "../story";
-import { ProjectDetail } from "../project";
+import { StoryNested } from "../story";
+import { ProjectLinkNested } from "../project";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { StoryCommentNested } from "@tenzu/repository/story-comment";
 
 export type NotificationType =
   | "stories.assign"
@@ -52,8 +53,8 @@ export type NotificationCount = {
 export type StoryAssignNotification = NotificationBase & {
   type: "stories.assign";
   content: {
-    story: StorySummary;
-    project: ProjectDetail;
+    story: StoryNested;
+    project: ProjectLinkNested;
     assignedBy: UserNested;
     assignedTo: UserNested;
   };
@@ -61,8 +62,8 @@ export type StoryAssignNotification = NotificationBase & {
 export type StoryUnassignNotification = NotificationBase & {
   type: "stories.unassign";
   content: {
-    story: StorySummary;
-    project: ProjectDetail;
+    story: StoryNested;
+    project: ProjectLinkNested;
     unassignedBy: UserNested;
     unassignedTo: UserNested;
   };
@@ -70,8 +71,8 @@ export type StoryUnassignNotification = NotificationBase & {
 export type StoryStatusChangeNotification = NotificationBase & {
   type: "stories.status_change";
   content: {
-    story: StorySummary;
-    project: ProjectDetail;
+    story: StoryNested;
+    project: ProjectLinkNested;
     status: string;
     changedBy: UserNested;
   };
@@ -79,19 +80,28 @@ export type StoryStatusChangeNotification = NotificationBase & {
 export type StoryDeleteNotification = NotificationBase & {
   type: "stories.delete";
   content: {
-    story: StorySummary;
-    project: ProjectDetail;
+    story: StoryNested;
+    project: ProjectLinkNested;
     deletedBy: UserNested;
   };
 };
 export type StoryWorkflowChangeNotification = NotificationBase & {
   type: "stories.workflow_change";
   content: {
-    story: StorySummary;
-    project: ProjectDetail;
+    story: StoryNested;
+    project: ProjectLinkNested;
     changedBy: UserNested;
     status: string;
     workflow: string;
+  };
+};
+export type StoryCommentCreateNotification = NotificationBase & {
+  type: "story_comment.create";
+  content: {
+    project: ProjectLinkNested;
+    story: StoryNested;
+    commentedBy: UserNested;
+    comment: StoryCommentNested;
   };
 };
 export type ProjectImportationFailNotification = NotificationBase & {
@@ -102,7 +112,6 @@ export type ProjectImportationFailNotification = NotificationBase & {
     fileName: string;
   };
 };
-// TODO comment create
 
 export type Notification =
   | StoryAssignNotification
@@ -110,4 +119,5 @@ export type Notification =
   | StoryStatusChangeNotification
   | StoryDeleteNotification
   | StoryWorkflowChangeNotification
-  | ProjectImportationFailNotification;
+  | ProjectImportationFailNotification
+  | StoryCommentCreateNotification;

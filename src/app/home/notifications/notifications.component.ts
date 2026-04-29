@@ -181,6 +181,20 @@ export class NotificationUnitComponent {
           },
         };
       }
+      case "story_comment.create": {
+        const user = notification.content.commentedBy;
+        return {
+          link: {
+            url: this.storyUrlPipe.transform(notification.content),
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
+          ...{
+            translateKey: translateKey,
+            params: { fullName: user.fullName },
+            user: user,
+          },
+        };
+      }
       case "project_importation.fail": {
         return {
           link: {

@@ -23,7 +23,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { StoryApiService } from "./story-api.service";
 import { lastValueFrom } from "rxjs";
 import type * as StoryApiServiceType from "./story-api.type";
-import { StorySummary, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
+import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { StatusSummary } from "../status";
@@ -44,7 +44,8 @@ export class StoryRepositoryService extends BaseRepositoryService<
   StoryApiServiceType.CreateEntityDetailParams,
   StoryApiServiceType.PutEntityDetailParams,
   StoryApiServiceType.PatchEntityDetailParams,
-  StoryApiServiceType.DeleteEntityDetailParams
+  StoryApiServiceType.DeleteEntityDetailParams,
+  StoryCreatePayload
 > {
   protected apiService = inject(StoryApiService);
   protected entitiesSummaryStore = inject(StoryEntitiesSummaryStore);
@@ -94,7 +95,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
     return this.entitiesSummary();
   }
 
-  override async createRequest(item: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
+  override async createRequest(item: StoryCreatePayload, params: StoryApiServiceType.CreateEntityDetailParams) {
     const entity = await lastValueFrom(this.apiService.create(item, params));
     this.setEntitySummary(entity);
     this.entitiesSummaryStore.reorder();

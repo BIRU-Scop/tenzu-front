@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,14 +20,14 @@
  */
 
 import { Pipe, PipeTransform } from "@angular/core";
-import { ProjectSummary } from "@tenzu/repository/project";
-import { StorySummary } from "@tenzu/repository/story";
+import { ProjectLinkNested } from "@tenzu/repository/project";
+import { StoryNested } from "@tenzu/repository/story";
 
 @Pipe({
   name: "storyUrl",
 })
 export class StoryUrlPipe implements PipeTransform {
-  transform(value: { project: ProjectSummary; story: StorySummary }) {
+  transform(value: { project: ProjectLinkNested; story: StoryNested }) {
     return `/workspace/${value.project.workspaceId}/project/${value.project.id}/story/${value.story.ref}`;
   }
 }
