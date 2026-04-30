@@ -22,13 +22,14 @@
 @use '@angular/material' as mat;
 
 @mixin tokens-overrides {
-  //@include mat.toolbar-overrides((
-  //  standard-height: 48px,
-  //  mobile-height: 48px,
-  //));
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+    standard-height: 48px,
+    mobile-height: 48px,
+  ));
 }
-//.mat-toolbar {
-//  border-color: var(--mat-sys-tertiary);
-//  box-shadow: 0 0 3px var(--mat-sys-tertiary);
-//  @apply border-b border-x-0 border-t-0 border-solid;
-//}
+
+.mat-toolbar {
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
