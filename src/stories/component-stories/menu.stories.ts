@@ -20,39 +20,52 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatButton } from "@angular/material/button";
-import { CommonModule } from "@angular/common";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { MatIcon } from "@angular/material/icon";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
+import { withTransloco } from "../storybook-providers";
 
-type Story = StoryObj<MatButton>;
+@Component({
+  selector: "app-menu-storybook",
+  standalone: true,
+  imports: [MatButton, MatMenu, MatMenuItem, MatMenuTrigger, MatIcon],
+  template: `
+    <button class="tertiary-button" mat-flat-button [matMenuTriggerFor]="menu">Open menu</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <span>Item 1</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        <span>Item 1</span>
+      </button>
+    </mat-menu>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class StoryMenuStorybookComponent {}
 
-const meta: Meta<MatMenu> = {
-  component: MatMenu,
-  title: "Components/Menu",
+const meta: Meta<StoryMenuStorybookComponent> = {
+  component: StoryMenuStorybookComponent,
+  title: "Components/Components/Menu",
   decorators: [
-    moduleMetadata({
-      imports: [CommonModule, MatButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger],
-    }),
+    withTransloco,
+    moduleMetadata({}),
     applicationConfig({
-      providers: [provideAnimations()],
+      providers: [provideAnimationsAsync()],
     }),
   ],
 };
 
+export default meta;
+
+type Story = StoryObj<StoryMenuStorybookComponent>;
+
 export const Default: Story = {
   render: (args) => ({
     props: args,
-    template: `
-    <button mat-flat-button class="primary-button" [matMenuTriggerFor]="menu">Menu</button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item>Item 1</button>
-      <button mat-menu-item>Item 2</button>
-      <button mat-menu-item><mat-icon>logout</mat-icon>Log out</button>
-    </mat-menu>`,
+    template: `<app-menu-storybook />`,
   }),
 };
-
-export default meta;
