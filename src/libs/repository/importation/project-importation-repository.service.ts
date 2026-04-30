@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectImportationApiService } from "./project-importation-api.service";
-import { CreateProjectImportationPayload } from "./importation.model";
+import { CreateProjectImportationPayload, ProjectImportation } from "./importation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/project-importation.store";
 
@@ -52,5 +52,12 @@ export class ProjectImportationRepositoryService {
 
   resetEntitySummaryList(): void {
     this.projectImportationEntitiesStore.reset();
+  }
+
+  async deleteRequest(params: { projectImportationId: ProjectImportation["id"]; workspaceId: WorkspaceSummary["id"] }) {
+    await lastValueFrom(this.importationsApiService.delete({ projectImportationId: params.projectImportationId }));
+
+    this.workspaceService.removeUserImportedProjects(params);
+    return this.projectImportationEntitiesStore.deleteEntity(params.projectImportationId);
   }
 }

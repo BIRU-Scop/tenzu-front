@@ -32,7 +32,11 @@ import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
-import { ImportationError, ProjectImportation } from "@tenzu/repository/importation";
+import {
+  ImportationError,
+  ProjectImportation,
+  ProjectImportationRepositoryService,
+} from "@tenzu/repository/importation";
 import { ProjectImportationInputComponent } from "@tenzu/shared/components/project-importation-input/project-importation-input.component";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
@@ -58,6 +62,7 @@ export type ProjectImportationErrorDialogData = {
   ],
   template: `
     @let _importation = data.projectImportation();
+    @let _workspaceId = data.workspaceId();
     <div class="p-6 flex flex-col justify-between" *transloco="let t">
       <app-button-close mat-dialog-close class="absolute top-2 end-2" [iconOnly]="true" />
       <mat-dialog-content>
@@ -70,16 +75,16 @@ export type ProjectImportationErrorDialogData = {
           [data]="{
             deleteAction: true,
           }"
-          (popupConfirm)="deleteImportation(_importation)"
+          (popupConfirm)="deleteImportation(_importation.id, _workspaceId)"
         >
           {{ t("commons.delete") }}
         </app-button-delete>
         <app-project-importation-input
-          [workspaceId]="data.workspaceId()"
+          [workspaceId]="_workspaceId"
           [displayDoc]="false"
           translocoUploadKey="project.new_project.import.failed_redo"
           [iconName]="undefined"
-          (submitted)="deleteImportation(_importation)"
+          (submitted)="deleteImportation(_importation.id, _workspaceId)"
         />
       </mat-dialog-actions>
     </div>
@@ -89,9 +94,10 @@ export type ProjectImportationErrorDialogData = {
 })
 export class ProjectImportationErrorDialog {
   readonly dialogRef = inject(MatDialogRef<ProjectImportationErrorDialog>);
+  readonly translocoService = inject(TranslocoService);
+  readonly projectRepositoryService = inject(ProjectRepositoryService);
+  readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
   data = inject<ProjectImportationErrorDialogData>(MAT_DIALOG_DATA);
-  translocoService = inject(TranslocoService);
-  projectRepositoryService = inject(ProjectRepositoryService);
 
   errorTranslocoKey = computed(() => {
     const projectImportation = this.data.projectImportation();
@@ -105,9 +111,8 @@ export class ProjectImportationErrorDialog {
     }
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected deleteImportation(projectImportation: ProjectImportation) {
+  async deleteImportation(projectImportationId: ProjectImportation["id"], workspaceId: WorkspaceSummary["id"]) {
     this.dialogRef.close();
-    //TODO
+    await this.importationRepositoryService.deleteRequest({ projectImportationId, workspaceId });
   }
 }
