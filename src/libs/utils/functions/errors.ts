@@ -25,8 +25,9 @@ export function getLocError(errorResponse: HttpErrorResponse, location: string):
   // Parse an HttpErrorResponse to the expected format to retrieve
   // the error message on the chosen field location if there is one
   try {
-    return errorResponse.error?.detail?.find((detail: { ctx: object; msg: string; type: string; loc: Array<string> }) =>
-      detail?.loc?.some((loc) => loc === location),
+    return errorResponse.error?.error?.detail?.find(
+      (detail: { ctx: object; msg: string; type: string; loc: Array<string> }) =>
+        detail?.loc?.some((loc) => loc === location),
     )?.msg;
   } catch (e) {
     if (e instanceof TypeError) {
