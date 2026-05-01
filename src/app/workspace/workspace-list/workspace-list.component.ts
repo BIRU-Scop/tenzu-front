@@ -43,6 +43,7 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-workspace-list",
@@ -197,7 +198,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        const color = Math.floor(Math.random() * (8 - 1) + 1);
+        const color = RandomColorService.randomColorPicker();
         await this.workspaceService.createRequest(
           {
             name,

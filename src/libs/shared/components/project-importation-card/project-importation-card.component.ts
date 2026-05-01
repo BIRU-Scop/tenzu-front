@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -34,6 +34,7 @@ import {
 } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-project-importation-card",
@@ -50,7 +51,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
   ],
   template: `
     @let _name = "Lorem Ipsum";
-    @let _color = 3;
+    @let _color = color();
     @let _description = "Lorem Ipsum dolor sit amet";
     @let _workspaceId = workspaceId();
     @let _importation = projectImportation();
@@ -99,6 +100,11 @@ export class ProjectImportationCardComponent {
 
   workspaceId = input.required<WorkspaceSummary["id"]>();
   projectImportation = input.required<ProjectImportation>();
+
+  color = computed(() => {
+    const firstLetterCode = this.projectImportation().sourceName.codePointAt(0);
+    return RandomColorService.castToColor(firstLetterCode || 0);
+  });
 
   protected openImportationError() {
     const data: ProjectImportationErrorDialogData = {

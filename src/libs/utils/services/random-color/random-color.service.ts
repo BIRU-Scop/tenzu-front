@@ -20,14 +20,18 @@
  */
 
 import { Injectable } from "@angular/core";
+const MAX_COLOR = 8;
+const MIN_COLOR = 1;
 
 @Injectable({
   providedIn: "root",
 })
 export class RandomColorService {
   public static randomColorPicker(): number {
-    const max = 8;
-    const min = 1;
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (MAX_COLOR - MIN_COLOR) + MIN_COLOR);
+  }
+  public static castToColor(value: number): number {
+    const range = MAX_COLOR - MIN_COLOR;
+    return value - Math.floor(value / range) * range + MIN_COLOR;
   }
 }
