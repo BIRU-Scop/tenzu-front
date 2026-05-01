@@ -25,6 +25,7 @@ import { ProjectImportationApiService } from "./project-importation-api.service"
 import { CreateProjectImportationPayload, ProjectImportation } from "./importation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/project-importation.store";
+import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -36,11 +37,15 @@ export class ProjectImportationRepositoryService {
   entities = this.projectImportationEntitiesStore.entities;
   entityMap = this.projectImportationEntitiesStore.entityMap;
 
+  addEntitySummary(params: { projectImportation: ProjectImportation; workspaceId: WorkspaceSummary["id"] }): void {
+    this.workspaceService.addUserImportedProjects(params);
+    this.projectImportationEntitiesStore.addEntity(params.projectImportation);
+  }
+
   async createRequest(item: CreateProjectImportationPayload, params: { workspaceId: WorkspaceSummary["id"] }) {
     const importation = await lastValueFrom(this.importationsApiService.create(item, params));
 
-    this.workspaceService.addUserImportedProjects({ ...params, projectImportation: importation });
-    this.projectImportationEntitiesStore.addEntity(importation);
+    this.addEntitySummary({ ...params, projectImportation: importation });
     return importation;
   }
 
@@ -54,10 +59,22 @@ export class ProjectImportationRepositoryService {
     this.projectImportationEntitiesStore.reset();
   }
 
+  deleteEntitySummary(params: {
+    projectImportationId: ProjectImportation["id"];
+    workspaceId: WorkspaceSummary["id"];
+  }): void {
+    this.workspaceService.removeUserImportedProjects(params);
+    try {
+      return this.projectImportationEntitiesStore.deleteEntity(params.projectImportationId);
+    } catch (e) {
+      if (!(e instanceof NotFoundEntityError)) {
+        throw e;
+      }
+    }
+  }
+
   async deleteRequest(params: { projectImportationId: ProjectImportation["id"]; workspaceId: WorkspaceSummary["id"] }) {
     await lastValueFrom(this.importationsApiService.delete({ projectImportationId: params.projectImportationId }));
-
-    this.workspaceService.removeUserImportedProjects(params);
-    return this.projectImportationEntitiesStore.deleteEntity(params.projectImportationId);
+    this.deleteEntitySummary(params);
   }
 }
