@@ -29,6 +29,7 @@ export enum ProjectImportationType {
 
 export enum ImportationError {
   INVALID = "file_validation_failed",
+  SERVER_ERROR = "server_error_while_processing",
 }
 
 export enum ImportationStatus {

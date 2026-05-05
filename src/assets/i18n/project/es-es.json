@@ -23,6 +23,7 @@
       "errors": {
         "422": "Archivo no válido, error es \"{{error}}\"",
         "file_validation_failed": "La importación de {{fileName}} ha fallado porque el formato no es correcto.",
+        "server_error_while_processing": "La importación de {{fileName}} ha fallado debido a un error del servidor.<br/><b>Póngase en contacto con el equipo de Tenzu</b> y facilítenos su archivo de importación, así como cualquier dato relevante sobre su configuración que nos permita solucionar el problema.",
         "unknown": "La importación de {{fileName}} ha fallado debido a un error desconocido."
       }
     }

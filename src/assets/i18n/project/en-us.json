@@ -23,6 +23,7 @@
       "errors": {
         "422": "Invalid file, error is \"{{error}}\"",
         "file_validation_failed": "The import of {{fileName}} failed because the format is incorrect.",
+        "server_error_while_processing": "The import of {{fileName}} has failed due to a server error.<br/><b>Please contact the Tenzu team</b> and provide your import file along with any relevant details about your setup so that we can resolve the issue.",
         "unknown": "The import of {{fileName}} failed because of an unknown error."
       }
     }

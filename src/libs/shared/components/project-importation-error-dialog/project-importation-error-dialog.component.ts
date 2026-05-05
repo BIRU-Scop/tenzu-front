@@ -27,6 +27,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
+  MatDialogTitle,
 } from "@angular/material/dialog";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
@@ -59,14 +60,15 @@ export type ProjectImportationErrorDialogData = {
     ButtonDeleteComponent,
     ProjectImportationInputComponent,
     ConfirmDirective,
+    MatDialogTitle,
   ],
   template: `
     @let _importation = data.projectImportation();
     @let _workspaceId = data.workspaceId();
     <div class="p-6 flex flex-col justify-between" *transloco="let t">
       <app-button-close mat-dialog-close class="absolute top-2 end-2" [iconOnly]="true" />
-      <mat-dialog-content>
-        {{ t(errorTranslocoKey(), { fileName: _importation.sourceName }) }}
+      <h2 id="aria-label" mat-dialog-title>{{ t("project.new_project.import.failed") }}</h2>
+      <mat-dialog-content [innerHTML]="t(errorTranslocoKey(), { fileName: _importation.sourceName })">
       </mat-dialog-content>
       <mat-dialog-actions class="!flex-nowrap flex flex-row gap-4">
         <app-button-delete
