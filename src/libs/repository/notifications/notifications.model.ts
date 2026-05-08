@@ -33,7 +33,8 @@ export type NotificationType =
   | "stories.status_change"
   | "stories.workflow_change"
   | "stories.delete"
-  | "project_importation.fail";
+  | "project_importation.fail"
+  | "project_importation.warning.file_too_big";
 
 export type NotificationBase = {
   id: string;
@@ -111,6 +112,15 @@ export type ProjectImportationFailNotification = NotificationBase & {
     projectImportation: ProjectImportationNested;
   };
 };
+export type ProjectImportationWarningFileNotification = NotificationBase & {
+  type: "project_importation.warning.file_too_big";
+  content: {
+    project: ProjectLinkNested;
+    projectImportation: ProjectImportationNested;
+    fileName: string;
+    fileSize: number;
+  };
+};
 
 export type Notification =
   | StoryAssignNotification
@@ -118,5 +128,6 @@ export type Notification =
   | StoryStatusChangeNotification
   | StoryDeleteNotification
   | StoryWorkflowChangeNotification
+  | StoryCommentCreateNotification
   | ProjectImportationFailNotification
-  | StoryCommentCreateNotification;
+  | ProjectImportationWarningFileNotification;

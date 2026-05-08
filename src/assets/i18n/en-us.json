@@ -58,7 +58,8 @@
       "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> commented on the story",
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> deleted the story {{story}}",
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status in the  <span class='text-on-background'>{{workflow}}</span> kanban",
-      "project_importation.fail": "The import of the file {{fileName}} has failed"
+      "project_importation.fail": "The import of the file {{fileName}} has failed",
+      "project_importation.warning.file_too_big": "During the import of {{fileName}}, the file {{errorFileName}} couldn't be imported because it is too big ({{errorFileSize}} > {{maxFileSize}}"
     }
   },
   "component": {

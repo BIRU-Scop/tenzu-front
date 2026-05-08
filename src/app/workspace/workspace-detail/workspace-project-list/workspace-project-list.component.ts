@@ -35,7 +35,7 @@ import {
   ProjectCreateDialogData,
 } from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation";
 

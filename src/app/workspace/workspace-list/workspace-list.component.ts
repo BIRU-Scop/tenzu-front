@@ -41,7 +41,7 @@ import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 

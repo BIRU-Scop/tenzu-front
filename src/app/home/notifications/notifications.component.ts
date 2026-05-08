@@ -35,15 +35,18 @@ import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { StoryNamePipe } from "@tenzu/pipes/story-name.pipe";
-import { StoryUrlPipe } from "@tenzu/pipes/story-url.pipe";
-import { WorkspaceUrlPipe } from "@tenzu/pipes/workspace-url.pipe";
+import { StoryUrlPipe } from "@tenzu/pipes/url/story-url.pipe";
+import { WorkspaceUrlPipe } from "@tenzu/pipes/url/workspace-url.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 @Component({
   selector: "app-notification-unit",
   standalone: true,
 
   imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe, MatBadge],
-  providers: [StoryNamePipe, StoryUrlPipe, WorkspaceUrlPipe],
+  providers: [StoryNamePipe, StoryUrlPipe, ProjectLandingPageUrl, WorkspaceUrlPipe, FileSizePipe],
   template: `
     @let notif = notification();
     <div
@@ -90,8 +93,11 @@ export class NotificationUnitComponent {
   read = output();
   readonly storyNamePipe = inject(StoryNamePipe);
   readonly storyUrlPipe = inject(StoryUrlPipe);
+  readonly projectLandingPageUrl = inject(ProjectLandingPageUrl);
   readonly workspaceUrlPipe = inject(WorkspaceUrlPipe);
   readonly translocoService = inject(TranslocoService);
+  readonly fileSizePipe = inject(FileSizePipe);
+  readonly configAppService = inject(ConfigAppService);
 
   getContext(notification: Notification): {
     user?: UserNested;
@@ -207,6 +213,26 @@ export class NotificationUnitComponent {
             user: undefined,
             translateKey: translateKey,
             params: { fileName: notification.content.projectImportation.sourceName },
+          },
+        };
+      }
+      case "project_importation.warning.file_too_big": {
+        return {
+          link: {
+            url: this.projectLandingPageUrl.transform(notification.content.project),
+            label: this.translocoService.translate("workspace.general_title.named_workspace", {
+              name: notification.content.project.name,
+            }),
+          },
+          ...{
+            user: undefined,
+            translateKey: translateKey,
+            params: {
+              fileName: notification.content.projectImportation.sourceName,
+              errorFileName: notification.content.fileName,
+              errorFileSize: this.fileSizePipe.transform(notification.content.fileSize),
+              maxFileSize: this.fileSizePipe.transform(this.configAppService.config().maxUploadFileSize || 0),
+            },
           },
         };
       }

@@ -20,12 +20,12 @@
  */
 
 import { Pipe, PipeTransform } from "@angular/core";
-import { ProjectNested } from "@tenzu/repository/project";
+import { ProjectLinkNested } from "@tenzu/repository/project";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
 @Pipe({ name: "projectLandingPageUrl" })
 export class ProjectLandingPageUrl implements PipeTransform {
-  transform(project: ProjectNested) {
+  transform(project: ProjectLinkNested) {
     return getProjectLandingPageUrl(project);
   }
 }
