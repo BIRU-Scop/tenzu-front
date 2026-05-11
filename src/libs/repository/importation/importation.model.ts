@@ -42,6 +42,7 @@ export enum ImportationStatus {
 
 export type ProjectImportationData = {
   errorCode?: ImportationError;
+  progressPercentage?: number;
 };
 
 export type ProjectImportationNested = {

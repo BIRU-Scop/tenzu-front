@@ -51,6 +51,14 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
         ].userImportedProjects.filter((projectImportation) => projectImportation.id != projectImportationId);
       store.updateEntity(workspaceId, { userImportedProjects: removedUserImportedProjects });
     },
+    updateUserImportedProjects(workspaceId: WorkspaceDetail["id"], newProjectImportation: ProjectImportationNested) {
+      const updateddUserImportedProjects = store
+        .entityMap()
+        [
+          workspaceId
+        ].userImportedProjects.map((importation) => (importation.id !== newProjectImportation.id ? importation : newProjectImportation));
+      store.updateEntity(workspaceId, { userImportedProjects: updateddUserImportedProjects });
+    },
   })),
 );
 

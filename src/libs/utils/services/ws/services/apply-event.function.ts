@@ -76,7 +76,11 @@ import { WorkspacePermissions } from "@tenzu/repository/permission/permission.mo
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
-import { ProjectImportation, ProjectImportationRepositoryService } from "@tenzu/repository/importation";
+import {
+  ImportationStatus,
+  ProjectImportation,
+  ProjectImportationRepositoryService,
+} from "@tenzu/repository/importation";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectImportationErrorDialog } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
 
@@ -386,6 +390,7 @@ export function applyStoryCommentEvent(message: WSResponseEvent<unknown>) {
 export async function applyProjectImportationEvent(message: WSResponseEvent<unknown>) {
   const importationRepositoryService = inject(ProjectImportationRepositoryService);
   const dialog = inject(MatDialog);
+  const notificationService = inject(NotificationService);
 
   switch (message.event.type) {
     case ProjectImportationEventType.DeleteProjectImportation: {
@@ -402,21 +407,28 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
       break;
     }
     case ProjectImportationEventType.UpdateProjectImportation: {
-      // TODO
-      // const content = message.event.content as {
-      //   projectImportation: ProjectImportation;
-      //   workspaceId: WorkspaceSummary["id"];
-      // };
-      // const projectImportation = content.projectImportation;
+      const content = message.event.content as {
+        projectImportation: ProjectImportation;
+        workspaceId: WorkspaceSummary["id"];
+      };
+      if (content.projectImportation.status === ImportationStatus.SUCCESS) {
+        importationRepositoryService.deleteEntitySummary({
+          projectImportationId: content.projectImportation.id,
+          workspaceId: content.workspaceId,
+        });
 
-      // try {
-      //   importationRepositoryService.updateEntitySummary(projectImportation);
-      //
-      // } catch (e) {
-      //   if (!(e instanceof NotFoundEntityError)) {
-      //     throw e;
-      //   }
-      // }
+        notificationService.success({
+          title: "notification.events.importation_success",
+          translocoTitleParams: {
+            fileName: content.projectImportation.sourceName,
+          },
+        });
+      } else {
+        importationRepositoryService.updateEntitySummary({
+          projectImportation: content.projectImportation,
+          workspaceId: content.workspaceId,
+        });
+      }
       break;
     }
     case ProjectImportationEventType.CreateProjectImportation: {

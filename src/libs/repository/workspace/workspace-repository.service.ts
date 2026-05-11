@@ -86,6 +86,12 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
   }) {
     this.entitiesSummaryStore.removeUserImportedProjects(params.workspaceId, params.projectImportationId);
   }
+  updateUserImportedProjects(params: {
+    workspaceId: WorkspaceSummary["id"];
+    projectImportation: ProjectImportationNested;
+  }) {
+    this.entitiesSummaryStore.updateUserImportedProjects(params.workspaceId, params.projectImportation);
+  }
 
   async denyInvitationWorkspace(params: { workspaceId: WorkspaceSummary["id"] }) {
     await this.workspaceInvitationRepositoryService.denyInvitationForCurrentUser(params.workspaceId);

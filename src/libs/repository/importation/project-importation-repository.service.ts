@@ -58,6 +58,20 @@ export class ProjectImportationRepositoryService {
   resetEntitySummaryList(): void {
     this.projectImportationEntitiesStore.reset();
   }
+  updateEntitySummary(params: {
+    projectImportation: ProjectImportation;
+    workspaceId: WorkspaceSummary["id"];
+  }): ProjectImportation {
+    this.workspaceService.updateUserImportedProjects(params);
+    try {
+      this.projectImportationEntitiesStore.updateEntity(params.projectImportation.id, params.projectImportation);
+    } catch (e) {
+      if (!(e instanceof NotFoundEntityError)) {
+        throw e;
+      }
+    }
+    return params.projectImportation;
+  }
 
   deleteEntitySummary(params: {
     projectImportationId: ProjectImportation["id"];

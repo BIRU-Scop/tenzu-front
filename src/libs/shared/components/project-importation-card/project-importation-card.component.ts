@@ -72,8 +72,11 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
           <div class="flex flex-col w-full">
             <p>{{ t("project.new_project.import.ongoing") }}</p>
             <div class="flex flex-row items-center gap-3 px-3 justify-stretch">
-              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-              <span>0%</span>
+              <mat-progress-bar
+                [mode]="_importation.extraData.progressPercentage ? 'determinate' : 'indeterminate'"
+                [value]="_importation.extraData.progressPercentage"
+              ></mat-progress-bar>
+              <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
             </div>
           </div>
         }

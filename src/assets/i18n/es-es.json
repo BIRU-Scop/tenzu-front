@@ -40,7 +40,8 @@
       "delete_project_membership_self": "Has sido eliminado del proyecto {{name}}",
       "update_workspace_membership": "Tu rol para el espacio de trabajo {{name}} ahora es {{role}}.",
       "delete_workspace_membership_self": "Has sido eliminado del espacio de trabajo {{name}}",
-      "update_project_role": "Tu rol {{role}} para el proyecto {{name}} ha sido editado"
+      "update_project_role": "Tu rol {{role}} para el proyecto {{name}} ha sido editado",
+      "importation_success": "La importación del archivo {{fileName}} ha finalizado"
     }
   },
   "notifications": {
