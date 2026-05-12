@@ -21,29 +21,23 @@
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { form } from "@angular/forms/signals";
 import { JsonPipe } from "@angular/common";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
-import { toObservable } from "@angular/core/rxjs-interop";
+import { ChangeDetectionStrategy, Component, effect, input, isDevMode, signal } from "@angular/core";
 import { provideTransloco } from "@jsverse/transloco";
-import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
+import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
-import { PasswordFieldComponent } from "../../libs/shared/components/form/password-field";
-import {
-  DescriptionFieldComponent,
-  DescriptionOptions,
-} from "../../libs/shared/components/form/description-field/description-field.component";
+import { DescriptionFieldComponent, DescriptionOptions } from "@tenzu/shared/components/form/description-field";
 
 @Component({
   selector: "app-form-password-field",
   standalone: true,
-  imports: [ReactiveFormsModule, PasswordFieldComponent, JsonPipe, DescriptionFieldComponent],
+  imports: [JsonPipe, DescriptionFieldComponent],
   template: `
-    <form [formGroup]="form">
-      {{ value() }} {{ form.value | json }}
+    <form>
+      {{ value() }} {{ form().value() | json }}
       <br />
-      <app-description-field [options]="options()" #descriptionComponent formControlName="description" />
+      <app-description-field [options]="options()" #descriptionComponent [formField]="form.description" />
     </form>
   `,
   styles: ``,
@@ -51,14 +45,16 @@ import {
 })
 class StoryDescriptionFieldComponent {
   options = input.required<Partial<DescriptionOptions>>();
-  value = input<string>("");
-  form = new FormGroup({
-    description: new FormControl<string | undefined>(""),
+  _data = signal({
+    description: "",
   });
+  value = input<string>("");
+  form = form(this._data);
 
   constructor() {
-    toObservable(this.value).subscribe((data) => {
-      this.form.setValue({ description: data });
+    effect(() => {
+      const value = this.value();
+      this._data.set({ description: value });
     });
   }
 }
@@ -66,7 +62,7 @@ class StoryDescriptionFieldComponent {
 type Story = StoryObj<StoryDescriptionFieldComponent>;
 
 const meta: Meta<StoryDescriptionFieldComponent> = {
-  title: "Components/FormFields/Description",
+  title: "FormFields/Description",
   component: StoryDescriptionFieldComponent,
   args: {
     options: {},
@@ -75,7 +71,6 @@ const meta: Meta<StoryDescriptionFieldComponent> = {
     applicationConfig({
       providers: [
         provideHttpClient(),
-        provideAnimations(),
         provideTransloco({
           config: {
             reRenderOnLangChange: true,

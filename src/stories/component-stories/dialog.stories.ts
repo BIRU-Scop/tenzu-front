@@ -21,7 +21,6 @@
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -423,12 +422,12 @@ type Story = StoryObj<StoryDialogStorybookComponent>;
 
 const meta: Meta<StoryDialogStorybookComponent> = {
   component: StoryDialogStorybookComponent,
-  title: "Components/Components/Dialog",
+  title: "Components/Dialog",
   decorators: [
     withTransloco,
     moduleMetadata({}),
     applicationConfig({
-      providers: [provideAnimationsAsync()],
+      providers: [],
     }),
   ],
 };

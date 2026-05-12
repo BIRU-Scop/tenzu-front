@@ -74,7 +74,7 @@ type Story = StoryObj<StoryTabsStorybookComponent>;
 
 const meta: Meta<StoryTabsStorybookComponent> = {
   component: StoryTabsStorybookComponent,
-  title: "Components/Components/Tabs",
+  title: "Components/Tabs",
   decorators: [withTransloco, moduleMetadata({})],
 };
 

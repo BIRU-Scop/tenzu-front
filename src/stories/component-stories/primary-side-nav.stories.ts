@@ -21,7 +21,6 @@
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideRouter } from "@angular/router";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav/primary-side-nav.component";
 import { SideNavStore } from "@tenzu/repository/sidenav";
@@ -72,7 +71,7 @@ type Story = StoryObj<StoryPrimarySideNavStorybookComponent>;
 
 const meta: Meta<StoryPrimarySideNavStorybookComponent> = {
   component: StoryPrimarySideNavStorybookComponent,
-  title: "Components/Components/PrimarySideNav",
+  title: "Components/PrimarySideNav",
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -83,7 +82,6 @@ const meta: Meta<StoryPrimarySideNavStorybookComponent> = {
     withTransloco,
     applicationConfig({
       providers: [
-        provideAnimationsAsync(),
         provideRouter([
           { path: "projects", children: [] },
           { path: "activity", children: [] },

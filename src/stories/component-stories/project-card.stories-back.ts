@@ -22,7 +22,6 @@
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 import { ProjectCardComponent } from "../../libs/shared/components/project-card/project-card.component";
 import { provideHttpClient } from "@angular/common/http";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideTransloco } from "@jsverse/transloco";
 import { isDevMode } from "@angular/core";
 import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
@@ -34,7 +33,6 @@ const meta: Meta<ProjectCardComponent> = {
     applicationConfig({
       providers: [
         provideHttpClient(),
-        provideAnimations(),
         provideTransloco({
           config: {
             reRenderOnLangChange: true,

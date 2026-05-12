@@ -23,7 +23,7 @@ import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
 import { MatBadge, MatBadgeModule } from "@angular/material/badge";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { withTransloco } from "./storybook-providers";
+import { withTransloco } from "../storybook-providers";
 import { MatIcon } from "@angular/material/icon";
 
 const meta: Meta<MatBadge> = {

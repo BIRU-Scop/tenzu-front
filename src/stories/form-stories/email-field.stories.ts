@@ -20,13 +20,9 @@
  */
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
-import { JsonPipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, effect, input, isDevMode, signal } from "@angular/core";
+import { form, required } from "@angular/forms/signals";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { userEvent, within } from "@storybook/test";
 import { provideTransloco } from "@jsverse/transloco";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
@@ -36,10 +32,10 @@ type Story = StoryObj<FormEmailComponent>;
 @Component({
   selector: "app-form-email",
   standalone: true,
-  imports: [ReactiveFormsModule, EmailFieldComponent, JsonPipe],
+  imports: [EmailFieldComponent],
   template: `
-    <form [formGroup]="form">
-      <app-email-field formControlName="email" />
+    <form>
+      <app-email-field [formField]="form.email" />
     </form>
   `,
   styles: ``,
@@ -47,25 +43,26 @@ type Story = StoryObj<FormEmailComponent>;
 })
 class FormEmailComponent {
   value = input<string>("");
-  form = new FormGroup({
-    email: new FormControl<string | undefined>("", Validators.required),
+  _data = signal({ email: "" });
+  form = form(this._data, (path) => {
+    required(path.email);
   });
 
   constructor() {
-    toObservable(this.value).subscribe((data) => {
-      this.form.setValue({ email: data });
+    effect(() => {
+      const value = this.value();
+      this._data.set({ email: value });
     });
   }
 }
 
 const meta: Meta<FormEmailComponent> = {
   component: FormEmailComponent,
-  title: "Components/FormFields/EmailField",
+  title: "FormFields/EmailField",
   decorators: [
     applicationConfig({
       providers: [
         provideHttpClient(),
-        provideAnimations(),
         provideTransloco({
           config: {
             reRenderOnLangChange: true,
@@ -86,32 +83,10 @@ const meta: Meta<FormEmailComponent> = {
 
 export const EmailEmptyPristine: Story = {};
 
-export const EmailEmptyRequired: Story = {
-  // Add the play to blur the field and display error
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const emailInput = await canvas.findByTestId("email-input");
-    await userEvent.click(emailInput);
-    await userEvent.keyboard("{Tab}");
-  },
-};
-
 export const EmailSimple: Story = {
   args: {
     value: "test@email.com",
   },
 };
 
-export const EmailInvalid: Story = {
-  args: {
-    value: "test invalid mail",
-  },
-  // Add the play to blur the field and display error
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const emailInput = await canvas.findByTestId("email-input");
-    await userEvent.click(emailInput);
-    await userEvent.keyboard("{Tab}");
-  },
-};
 export default meta;

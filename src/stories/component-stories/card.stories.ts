@@ -22,7 +22,6 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideRouter } from "@angular/router";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card/project-card.component";
 import { withTransloco } from "../storybook-providers";
@@ -137,12 +136,12 @@ type Story = StoryObj<StoryCardStorybookComponent>;
 
 const meta: Meta<StoryCardStorybookComponent> = {
   component: StoryCardStorybookComponent,
-  title: "Components/Components/Card",
+  title: "Components/Card",
   decorators: [
     withTransloco,
     moduleMetadata({}),
     applicationConfig({
-      providers: [provideHttpClient(), provideAnimationsAsync(), provideRouter([{ path: "**", children: [] }])],
+      providers: [provideHttpClient(), provideRouter([{ path: "**", children: [] }])],
     }),
   ],
 };

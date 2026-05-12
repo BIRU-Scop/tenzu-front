@@ -194,7 +194,7 @@ type Story = StoryObj<StoryFormFieldStorybookComponent>;
 
 const meta: Meta<StoryFormFieldStorybookComponent> = {
   component: StoryFormFieldStorybookComponent,
-  title: "Components/FormFields/FormField",
+  title: "FormFields/FormField",
   decorators: [
     moduleMetadata({
       // imports: [StoryFormFieldStorybookComponent],

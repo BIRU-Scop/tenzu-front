@@ -22,7 +22,6 @@
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 
 import { Component, inject, input } from "@angular/core";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { withTransloco } from "../storybook-providers";
@@ -56,7 +55,7 @@ type Story = StoryObj<OpenNotificationComponent>;
 
 const meta: Meta<OpenNotificationComponent> = {
   component: OpenNotificationComponent,
-  title: "Components/Components/Notification",
+  title: "Components/Notification",
   argTypes: {
     type: {
       options: ["success", "error", "warning", "info"],
@@ -71,7 +70,7 @@ const meta: Meta<OpenNotificationComponent> = {
   decorators: [
     withTransloco,
     applicationConfig({
-      providers: [provideAnimationsAsync()],
+      providers: [],
     }),
   ],
 };
@@ -80,7 +79,7 @@ export default meta;
 
 export const Notification: Story = {
   args: {
-    title: "Message",
+    title: "Components/Message",
     detail: "",
     type: "info",
   },

@@ -20,7 +20,6 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot, validate } from "@angular/forms/signals";
@@ -65,13 +64,11 @@ type Story = StoryObj<StoryCheckboxFieldStorybookComponent>;
 
 const meta: Meta<StoryCheckboxFieldStorybookComponent> = {
   component: StoryCheckboxFieldStorybookComponent,
-  title: "Components/FormFields/Checkbox",
+  title: "FormFields/Checkbox",
   decorators: [
-    moduleMetadata({
-      // imports: [StoryCheckboxFieldStorybookComponent],
-    }),
+    moduleMetadata({}),
     applicationConfig({
-      providers: [provideAnimations()],
+      providers: [],
     }),
   ],
 };

@@ -29,7 +29,7 @@ type Story = StoryObj<ButtonComponent>;
 
 const meta: Meta<ButtonComponent> = {
   component: ButtonComponent,
-  title: "Components/Components/Button",
+  title: "Components/Button",
   decorators: [
     withTransloco,
     moduleMetadata({

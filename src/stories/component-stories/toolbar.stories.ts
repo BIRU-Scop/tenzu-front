@@ -28,7 +28,6 @@ import { MatBadge } from "@angular/material/badge";
 import { MatDivider } from "@angular/material/divider";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { DomSanitizer } from "@angular/platform-browser";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { withTransloco } from "../storybook-providers";
 
@@ -136,12 +135,12 @@ type Story = StoryObj<StoryToolbarStorybookComponent>;
 
 const meta: Meta<StoryToolbarStorybookComponent> = {
   component: StoryToolbarStorybookComponent,
-  title: "Components/Components/Toolbar",
+  title: "Components/Toolbar",
   decorators: [
     withTransloco,
     moduleMetadata({}),
     applicationConfig({
-      providers: [provideAnimationsAsync()],
+      providers: [],
     }),
   ],
 };

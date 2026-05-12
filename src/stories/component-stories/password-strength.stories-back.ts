@@ -54,7 +54,7 @@ class StoryPasswordStrengthComponent {
 type Story = StoryObj<StoryPasswordStrengthComponent>;
 
 const meta: Meta<StoryPasswordStrengthComponent> = {
-  title: "Components/FormFields/Password/PasswordStrength",
+  title: "FormFields/Password/PasswordStrength",
   component: StoryPasswordStrengthComponent,
   args: {
     severity: "none",

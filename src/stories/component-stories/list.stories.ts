@@ -75,7 +75,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
         </mat-list-item>
 
         <mat-list-item>
-          <app-avatar matListItemAvatar name="Gigi Gray" mode="filled-circle" size="sm" />
+          <app-avatar matListItemAvatar name="Gigi Gray" size="sm" />
           <div matListItemTitle>Headline</div>
         </mat-list-item>
       </mat-list>
@@ -106,7 +106,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
         </mat-list-item>
 
         <mat-list-item>
-          <app-avatar matListItemAvatar name="Gigi Gray" mode="filled-circle" size="sm" />
+          <app-avatar matListItemAvatar name="Gigi Gray" size="sm" />
           <div matListItemTitle>Headline</div>
           <div matListItemLine>Short supporting text</div>
         </mat-list-item>
@@ -115,13 +115,13 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
       <h1>Headline + long multi-line supporting text</h1>
 
       <mat-list>
-        <mat-list-item [lines]="3">
+        <mat-list-item>
           <div matListItemTitle>Headline</div>
           <div matListItemLine>Supporting text that is long enough to fill up multiple lines.</div>
         </mat-list-item>
 
-        <mat-list-item [lines]="3">
-          <app-avatar matListItemAvatar name="Gigi Gray" mode="filled-circle" size="sm" />
+        <mat-list-item>
+          <app-avatar matListItemAvatar name="Gigi Gray" size="sm" />
           <div matListItemTitle>Headline</div>
           <div matListItemLine>Supporting text that is long enough to fill up multiple lines.</div>
         </mat-list-item>
@@ -134,12 +134,12 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
         </mat-list-option>
 
         <mat-list-option>
-          <app-avatar matListItemAvatar name="Gigi Gray" mode="filled-circle" size="sm" />
+          <app-avatar matListItemAvatar name="Gigi Gray" size="sm" />
           <div matListItemTitle>Headline</div>
         </mat-list-option>
 
         <mat-list-option>
-          <app-avatar matListItemAvatar name="Gigi Gray" mode="filled-circle" size="sm" />
+          <app-avatar matListItemAvatar name="Gigi Gray" size="sm" />
           <div matListItemTitle>Headline</div>
           <div matListItemLine>Short supporting text</div>
         </mat-list-option>
@@ -147,9 +147,9 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
 
       <h1>Combined leading (radio + person icon + avatar)</h1>
       <mat-list>
-        <mat-list-item [lines]="3">
+        <mat-list-item>
           <mat-icon matListItemIcon>person_add</mat-icon>
-          <app-avatar matListItemAvatar name="Gigi Gray" mode="filled-circle" size="sm" />
+          <app-avatar matListItemAvatar name="Gigi Gray" size="sm" />
           <div matListItemTitle>Headline</div>
           <div matListItemLine>Supporting text that is long enough to fill up multiple lines.</div>
         </mat-list-item>
@@ -159,7 +159,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
       <mat-list cdkDropList (cdkDropListDropped)="drop($event)">
         @for (member of members(); track member.name) {
           <mat-list-item cdkDrag>
-            <app-avatar matListItemAvatar [name]="member.name" mode="filled-circle" size="sm" />
+            <app-avatar matListItemAvatar [name]="member.name" size="sm" />
             <div matListItemTitle>{{ member.name }}</div>
             <div matListItemLine>{{ member.role }}</div>
           </mat-list-item>
@@ -190,7 +190,7 @@ type Story = StoryObj<StoryListStorybookComponent>;
 
 const meta: Meta<StoryListStorybookComponent> = {
   component: StoryListStorybookComponent,
-  title: "Components/Components/List",
+  title: "Components/List",
   decorators: [withTransloco, moduleMetadata({})],
 };
 

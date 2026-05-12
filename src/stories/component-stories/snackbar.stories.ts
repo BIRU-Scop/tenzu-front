@@ -24,9 +24,8 @@ import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/an
 import { CommonModule } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Component, inject, input } from "@angular/core";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { withTransloco } from "./storybook-providers";
+import { withTransloco } from "../storybook-providers";
 
 @Component({
   selector: "app-open-snackbar",
@@ -67,7 +66,7 @@ const meta: Meta<OpenSnackBarComponent> = {
       imports: [CommonModule],
     }),
     applicationConfig({
-      providers: [provideAnimationsAsync()],
+      providers: [],
     }),
   ],
 };

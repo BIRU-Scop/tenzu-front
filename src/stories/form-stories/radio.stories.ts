@@ -67,7 +67,7 @@ type Story = StoryObj<StoryRadioStorybookComponent>;
 
 const meta: Meta<StoryRadioStorybookComponent> = {
   component: StoryRadioStorybookComponent,
-  title: "Components/FormFields/Radio",
+  title: "FormFields/Radio",
   decorators: [withTransloco, moduleMetadata({})],
 };
 

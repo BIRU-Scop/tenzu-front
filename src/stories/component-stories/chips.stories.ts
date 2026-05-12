@@ -105,7 +105,7 @@ type Story = StoryObj<StoryChipsStorybookComponent>;
 
 const meta: Meta<StoryChipsStorybookComponent> = {
   component: StoryChipsStorybookComponent,
-  title: "Components/Components/Chips",
+  title: "Components/Chips",
   decorators: [withTransloco, moduleMetadata({})],
 };
 

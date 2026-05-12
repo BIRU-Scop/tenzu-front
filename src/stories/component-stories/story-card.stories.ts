@@ -29,7 +29,6 @@ import {
   provideEnvironmentInitializer,
 } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideRouter } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { JwtModule } from "@auth0/angular-jwt";
@@ -163,14 +162,13 @@ type Story = StoryObj<StoryStoryCardStorybookComponent>;
 
 const meta: Meta<StoryStoryCardStorybookComponent> = {
   component: StoryStoryCardStorybookComponent,
-  title: "Components/Components/StoryCard",
+  title: "Components/StoryCard",
   decorators: [
     withTransloco,
     moduleMetadata({}),
     applicationConfig({
       providers: [
         provideHttpClient(),
-        provideAnimationsAsync(),
         provideRouter([{ path: "**", children: [] }]),
         provideTranslocoScope("workflow"),
         importProvidersFrom(

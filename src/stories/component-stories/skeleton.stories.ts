@@ -91,7 +91,7 @@ type Story = StoryObj<StorySkeletonStorybookComponent>;
 
 const meta: Meta<StorySkeletonStorybookComponent> = {
   component: StorySkeletonStorybookComponent,
-  title: "Components/Components/Skeleton",
+  title: "Components/Skeleton",
   decorators: [withTransloco, moduleMetadata({})],
 };
 

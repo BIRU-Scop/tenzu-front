@@ -24,7 +24,6 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { withTransloco } from "../storybook-providers";
 
 @Component({
@@ -49,12 +48,12 @@ class StoryMenuStorybookComponent {}
 
 const meta: Meta<StoryMenuStorybookComponent> = {
   component: StoryMenuStorybookComponent,
-  title: "Components/Components/Menu",
+  title: "Components/Menu",
   decorators: [
     withTransloco,
     moduleMetadata({}),
     applicationConfig({
-      providers: [provideAnimationsAsync()],
+      providers: [],
     }),
   ],
 };

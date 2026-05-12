@@ -71,7 +71,7 @@ type Story = StoryObj<SlideToggleFieldStorybookComponent>;
 
 const meta: Meta<SlideToggleFieldStorybookComponent> = {
   component: SlideToggleFieldStorybookComponent,
-  title: "Components/FormFields/SlideToggle",
+  title: "FormFields/SlideToggle",
   decorators: [],
 };
 
