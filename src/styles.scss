@@ -50,6 +50,7 @@
 @use "themes/progress-indicator-theme" as progress-indicator;
 @use "themes/slider-theme" as slider;
 @use "themes/editor" as editor;
+@use "themes/colors" as colors;
 @use 'sass:map';
 @use "themes/mixin" as mixin;
 @use "@blocknote/core/fonts/inter.css";
@@ -162,7 +163,9 @@ strong {
   @include slider.tokens-overrides();
   @include chips.tokens-overrides();
 }
-
+:root {
+  @include colors.tokens-defines();
+}
 body {
   font-family: "Lexend", sans-serif;
   font-size: 14px;
@@ -191,15 +194,16 @@ body {
   ));
   @include mat.elevation-classes();
   @include mat.app-background();
+  @include mat.system-classes();
+  @include tokens-overrides();
 
   @media (prefers-color-scheme: light) {
     @include mixin.theme-overrides(themes.$light_palettes);
-    @include tokens-overrides();
+
   }
 
   @media (prefers-color-scheme: dark) {
     @include mixin.theme-overrides(themes.$dark_palettes);
-    @include tokens-overrides();
   }
 
 }

@@ -1,0 +1,61 @@
+
+
+/*
+ * Copyright (C) 2026 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+@mixin tokens-defines() {
+  @media (prefers-color-scheme: light) {
+    --color-1-background: #fbd7cd;
+    --color-1-color: #90481c;
+    --color-2-background: #f7d7dc;
+    --color-2-color: #aa2850;
+    --color-3-background: #f6d6f0;
+    --color-3-color: #922ca4;
+    --color-4-background: #c2ed7a;
+    --color-4-color: #4e6324;
+    --color-5-background: #bee4ff;
+    --color-5-color: #006385;
+    --color-6-background: #d5dffb;
+    --color-6-color: #1c5da2;
+    --color-7-background: #b9f1b5;
+    --color-7-color: #446442;
+    --color-8-background: #f9dca1;
+    --color-8-color: #6d5a24;
+  }
+  @media (prefers-color-scheme: dark) {
+    --color-1-background: #fbd7cd;
+    --color-1-color: #90481c;
+    --color-2-background: #f7d7dc;
+    --color-2-color: #aa2850;
+    --color-3-background: #f6d6f0;
+    --color-3-color: #922ca4;
+    --color-4-background: #c2ed7a;
+    --color-4-color: #4e6324;
+    --color-5-background: #bee4ff;
+    --color-5-color: #006385;
+    --color-6-background: #d5dffb;
+    --color-6-color: #1c5da2;
+    --color-7-background: #b9f1b5;
+    --color-7-color: #446442;
+    --color-8-background: #f9dca1;
+    --color-8-color: #6d5a24;
+  }
+}

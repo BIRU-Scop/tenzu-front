@@ -29,9 +29,9 @@ export type AvatarSize = "sm" | "md" | "lg" | "xl";
   standalone: true,
   host: {
     "[class]": "hostClasses()",
-    "[style.color]": "textColor()",
-    "[style.background-color]": "backgroundColor()",
-    "[style.border-color]": "borderColor()",
+    "[style.color]": "computeColor()",
+    "[style.background-color]": "computedBackgroundColor()",
+    "[style.border-color]": "computedBorderColor()",
   },
   template: `
     @let _imageData = imageData();
@@ -43,7 +43,8 @@ export type AvatarSize = "sm" | "md" | "lg" | "xl";
   `,
   styles: `
     :host {
-      @apply tracking-widest flex items-center justify-center uppercase;
+      @apply tracking-widest flex items-center justify-center uppercase shrink-0;
+      aspect-ratio: 1;
       color: var(--mat-sys-on-surface);
 
       &.avatar-sm {
@@ -61,19 +62,15 @@ export type AvatarSize = "sm" | "md" | "lg" | "xl";
 
       &.mode-outlined {
         background-color: transparent;
-        border: 1px solid var(--mat-sys-outline);
+        border: 1px solid;
         @apply rounded-full;
       }
 
       &.mode-filled-circle {
-        background-color: var(--mat-sys-primary-container);
-        color: var(--mat-sys-on-primary-container);
         @apply rounded-full;
       }
 
       &.mode-filled-square {
-        background-color: var(--mat-sys-primary-container);
-        color: var(--mat-sys-on-primary-container);
         @apply rounded;
       }
 
@@ -100,11 +97,32 @@ export class AvatarComponent {
   mode = input<AvatarMode>("filled-circle");
   size = input<AvatarSize>("md");
   imageData = input<string | ArrayBuffer | null | undefined>(null);
-
   textColor = input<string | undefined>(undefined);
-  backgroundColor = input<string | undefined>(undefined);
-  borderColor = input<string | undefined>(undefined);
+  color = input<number | string>(1);
 
+  computedBackgroundColor = computed(() => {
+    const color = this.color();
+
+    const mode = this.mode();
+    if (mode === "filled-circle" || mode === "filled-square") {
+      return `var(--color-${color}-background)`;
+    } else {
+      return "transparent";
+    }
+  });
+  computeColor = computed(() => {
+    const color = this.color();
+    return `var(--color-${color}-color)`;
+  });
+  computedBorderColor = computed(() => {
+    const color = this.color();
+    const mode = this.mode();
+    if (mode === "outlined") {
+      return `var(--color-${color}-color)`;
+    } else {
+      return `var(--color-${color}-border)`;
+    }
+  });
   hostClasses = computed(() => ["avatar", `avatar-${this.size()}`, `mode-${this.mode()}`].join(" "));
 
   initials = computed(() => {

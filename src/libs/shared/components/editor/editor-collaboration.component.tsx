@@ -19,7 +19,6 @@ import { codeBlockOptions } from "@blocknote/code-block";
 
 import { BlockNoteView } from "@blocknote/mantine";
 import { User } from "@tenzu/repository/user";
-import { COLORS } from "@tenzu/pipes/color-to-key.pipe";
 import { resolveFileUrl } from "@tenzu/shared/components/editor/utils";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
 
@@ -85,7 +84,11 @@ export class EditorCollaborationComponent
         }
       };
       doc.on("update", onDocUpdate);
+      const elm = this.elm();
       if (!this.editor) {
+        const userColorHex = getComputedStyle(document.body)
+          .getPropertyValue(`--color-${user.color}-background`)
+          .trim();
         this.editor = BlockNoteEditor.create({
           codeBlock,
           resolveFileUrl: this.resolveFileUrl,
@@ -96,7 +99,8 @@ export class EditorCollaborationComponent
             fragment: fragment,
             user: {
               name: user.fullName,
-              color: COLORS[user.color],
+              colorAvatar: user.color,
+              color: userColorHex,
               id: user.id,
             },
           },
@@ -108,13 +112,11 @@ export class EditorCollaborationComponent
               change.type === "delete" &&
               (change.block.type === "file" || change.block.type === "image")
             ) {
-              console.log("deleted");
               this.filedDeleted.emit(change.block.props.url);
             }
           }
         }, false);
       }
-      const elm = this.elm();
       if (!this.root && elm) {
         this.root = createRoot(elm.nativeElement);
       }
