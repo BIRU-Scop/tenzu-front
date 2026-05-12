@@ -258,12 +258,14 @@ src/plugins/*
 ## IA agent
 .junie/
 .claude/
+.agents/
+.ai/
 AGENTS.md
 CLAUDE.md
 GEMINI.md
 .gemini/
-.cursor/rules/
+.cursor/
 .github/instructions/
-.windsurf/rules/
-
+.windsurf/
+skills-lock.json
 *storybook.log
