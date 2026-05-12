@@ -64,6 +64,7 @@ export class StoryDetailDialogComponent {
 @Component({
   selector: "app-kanban-wrapper",
   standalone: true,
+  host: { class: "block h-full" },
   imports: [ProjectKanbanComponent, StoryDetailComponent, MatDrawer, MatDrawerContainer],
   template: `
     @if (kanbanWrapperService.isKanbanView() || kanbanWrapperService.isModalViewOpen()) {
@@ -71,7 +72,7 @@ export class StoryDetailDialogComponent {
     } @else if (kanbanWrapperService.isFullViewOpen()) {
       <app-story-detail />
     } @else if (kanbanWrapperService.isSideViewOpen()) {
-      <mat-drawer-container>
+      <mat-drawer-container class="h-full">
         <app-project-kanban />
         <mat-drawer #drawer mode="side" [opened]="kanbanWrapperService.isSideViewOpen()" position="end">
           <app-story-detail [canBeClosed]="true" (closed)="navigateToKanban()" />

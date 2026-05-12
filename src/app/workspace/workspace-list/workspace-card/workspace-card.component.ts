@@ -50,7 +50,7 @@ import { MatDialog } from "@angular/material/dialog";
         @if (_workspace.userCanCreateProjects) {
           <app-button-add
             class="ml-auto"
-            [level]="'primary'"
+            [level]="'tertiary'"
             [translocoKey]="'commons.project'"
             (click)="openCreateProject(_workspace.id)"
           ></app-button-add>

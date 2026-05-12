@@ -47,7 +47,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   hostDirectives: [NoopValueAccessorDirective],
   imports: [ReactiveFormsModule, TranslocoDirective, MatFormField, MatSelectModule, MatTooltip],
   template: `
-    <mat-form-field *transloco="let t" appearance="outline" [subscriptSizing]="'dynamic'">
+    <mat-form-field *transloco="let t" [subscriptSizing]="'dynamic'">
       <mat-select [formControl]="ngControl.control">
         @for (role of roles(); track role) {
           @let tooltipKey = tooltips[itemType()][role.slug];

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -67,7 +67,7 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
             <input type="hidden" name="acceptPrivacyPolicy" [value]="_acceptTerms" />
           }
           <app-button
-            level="primary"
+            level="tertiary"
             [disabled]="(configLegal || false) && _signup && !_acceptTerms"
             type="submit"
             translocoKey="auth.signup.continue_with"

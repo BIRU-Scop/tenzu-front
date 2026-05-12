@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -68,7 +68,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
               actualEntity: workspace,
               requiredPermission: WorkspacePermissions.CREATE_MODIFY_MEMBER,
             }"
-            level="primary"
+            level="tertiary"
             translocoKey="workspace.members.invite_to_workspace"
             (click)="openInviteDialog()"
           />

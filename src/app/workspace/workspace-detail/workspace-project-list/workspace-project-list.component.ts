@@ -53,10 +53,10 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
       @if (workspace && workspace.userCanCreateProjects) {
         <app-button-add
-          [level]="'primary'"
+          [level]="'tertiary'"
           [translocoKey]="'commons.project'"
           (click)="openCreateProject(workspace.id)"
-        ></app-button-add>
+        />
       }
     </div>
     <div class="flex flex-row flex-wrap gap-4">

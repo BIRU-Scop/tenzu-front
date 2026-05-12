@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -66,7 +66,7 @@ import { StoryUrlPipe } from "@tenzu/pipes/story-url.pipe";
         [name]="context.user.fullName"
         [matTooltip]="context.user.fullName"
         [color]="context.user.color"
-        [rounded]="true"
+        mode="filled-circle"
       ></app-avatar>
       <div class="w-full mr-2">
         <p

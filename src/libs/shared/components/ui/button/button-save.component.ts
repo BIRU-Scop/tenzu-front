@@ -37,7 +37,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonSaveComponent implements ButtonInterface {
-  level = input<LevelType>("tertiary");
+  level = input<LevelType>("primary");
   translocoKey = input<string>("commons.save");
   translocoValue = input<JsonObject>({});
   type = input<ButtonType>("submit");

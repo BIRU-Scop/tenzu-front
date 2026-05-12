@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -45,6 +45,7 @@ import { PLUGINS_TOKEN } from "../app.config";
 
 @Component({
   selector: "app-home",
+  host: { class: "flex flex-col h-dvh" },
   imports: [
     AvatarComponent,
     MatToolbar,
@@ -63,7 +64,7 @@ import { PLUGINS_TOKEN } from "../app.config";
     MatButton,
   ],
   template: `
-    <mat-toolbar role="banner" class="flex" *transloco="let t; prefix: 'home.navigation'">
+    <mat-toolbar role="banner" class="flex shrink-0" *transloco="let t; prefix: 'home.navigation'">
       <a class="h-6" [routerLink]="'/'" [attr.aria-label]="t('go_home')">
         <mat-icon class="icon-full" [svgIcon]="!darkModeOn() ? 'logo-text' : 'logo-text-dark'" />
       </a>
@@ -72,7 +73,7 @@ import { PLUGINS_TOKEN } from "../app.config";
         <button
           *transloco="let t"
           mat-button
-          class="primary-button !me-2"
+          class="tertiary-button !me-2"
           (click)="emitEvent(item.eventName, item.eventData)"
         >
           <mat-icon>{{ item.iconName }}</mat-icon
@@ -80,7 +81,7 @@ import { PLUGINS_TOKEN } from "../app.config";
         </button>
       }
 
-      <button mat-icon-button class="primary-button" (click)="openNotificationDialog($event)">
+      <button mat-icon-button class="tertiary-button" (click)="openNotificationDialog($event)">
         <mat-icon
           [matBadge]="notificationsComponentService.count.unread()"
           [matBadgeHidden]="!notificationsComponentService.count.unread()"
@@ -92,7 +93,12 @@ import { PLUGINS_TOKEN } from "../app.config";
       @let myUser = userStore.myUser();
 
       <button>
-        <app-avatar [matMenuTriggerFor]="userMenu" [name]="myUser.fullName" [color]="myUser.color" [rounded]="true" />
+        <app-avatar
+          [matMenuTriggerFor]="userMenu"
+          [name]="myUser.fullName"
+          [color]="myUser.color"
+          mode="filled-circle"
+        />
       </button>
       <mat-menu #userMenu="matMenu">
         <div class="px-3 py-1.5">
@@ -108,7 +114,7 @@ import { PLUGINS_TOKEN } from "../app.config";
         </button>
       </mat-menu>
     </mat-toolbar>
-    <main>
+    <main class="flex-1 min-h-0">
       <router-outlet />
     </main>
   `,

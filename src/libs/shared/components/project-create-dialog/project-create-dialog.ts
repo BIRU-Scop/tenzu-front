@@ -94,7 +94,7 @@ export type ProjectCreateDialogData = {
                 @for (workspace of workspaceRepositoryService.entitiesSummary(); track workspace.id) {
                   <mat-option value="{{ workspace.id }}" [disabled]="!workspace.userCanCreateProjects">
                     <div class="flex gap-x-2 items-center">
-                      <app-avatar size="sm" [name]="workspace.name" [color]="workspace.color" [rounded]="true" />
+                      <app-avatar size="sm" [name]="workspace.name" [color]="workspace.color" mode="filled-circle" />
                       <span>{{ workspace.name }}</span>
                     </div>
                   </mat-option>

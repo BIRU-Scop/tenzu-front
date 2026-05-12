@@ -142,7 +142,7 @@ import { TitleCasePipe } from "@angular/common";
             <app-button
               [disabled]="!signupForm().dirty() || signupForm().invalid()"
               iconName="add"
-              level="tertiary"
+              level="primary"
               translocoKey="auth.signup.create_account"
               data-testid="submitCreateAccount-button"
               type="submit"

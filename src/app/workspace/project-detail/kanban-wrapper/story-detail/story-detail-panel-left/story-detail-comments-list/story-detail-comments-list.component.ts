@@ -35,7 +35,6 @@ import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button
 import { MatDivider } from "@angular/material/divider";
 import { StoryCommentFacade } from "./story-comment.facade";
 import { EventOnVisibleDirective } from "@tenzu/directives/event-on-visible.directive";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { StoryDetailCommentDetailComponent } from "./story-detail-comment-detail/story-detail-comment-detail.component";
@@ -105,7 +104,6 @@ import { StoryCommentSkeletonComponent } from "./story-detail-comment-detail/sto
       @for (comment of storyCommentRepositoryService.entitiesSummary(); track comment.id; let last = $last) {
         @if (last) {
           <app-story-detail-comment-detail
-            [@newCommentFlyIn]="storyCommentRepositoryService.entitiesSummary().length || 0"
             [comment]="comment"
             [storyDetail]="storyDetail()"
             [hasModifyPermission]="hasModifyPermission"
@@ -135,21 +133,6 @@ import { StoryCommentSkeletonComponent } from "./story-detail-comment-detail/sto
     </div>
   `,
   styles: ``,
-  animations: [
-    trigger("newCommentFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(0, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailCommentsListComponent {

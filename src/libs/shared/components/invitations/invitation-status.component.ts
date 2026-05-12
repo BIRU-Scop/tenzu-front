@@ -21,16 +21,16 @@
 
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
-import { ChipComponent } from "@tenzu/shared/components/chip/chip.component";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
+import { ChipComponent } from "@tenzu/shared/components/ui/chip/chip.component";
 
 @Component({
   selector: "app-invitation-status",
   imports: [ChipComponent, TranslocoDirective, TranslocoDatePipe],
   template: `
     <ng-container *transloco="let t">
-      <app-chip [label]="t(translatedStatusKey())" [color]="statusColor()" />
+      <app-chip [translocoKey]="translatedStatusKey()" [level]="statusColor()" />
       @if (invitation().status === InvitationStatus.PENDING) {
         <p class="mat-label-large text-on-surface-variant">
           {{
@@ -61,7 +61,7 @@ export class InvitationStatusComponent {
       case InvitationStatus.PENDING:
         return "warning";
       case InvitationStatus.ACCEPTED:
-        return "tertiary";
+        return "success";
       case InvitationStatus.REVOKED:
       case InvitationStatus.DENIED:
         return "error";

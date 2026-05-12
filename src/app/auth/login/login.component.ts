@@ -75,7 +75,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
         />
         <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("auth.login.forgot_password") }}</a>
         <app-button
-          level="tertiary"
+          level="primary"
           translocoKey="auth.login.action"
           type="submit"
           iconName="login"
