@@ -26,7 +26,7 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { IconName } from "@tenzu/shared/components/ui/ui.types";
+import { IconName, LevelType } from "@tenzu/shared/components/ui/ui.types";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 
 @Component({
@@ -48,7 +48,7 @@ import { FileValue } from "@tenzu/repository/base/misc.model";
           [translocoKey]="translocoUploadKey()"
           [iconName]="iconName()"
           [iconOnly]="_showDelete"
-          [level]="_showDelete ? 'secondary' : 'tertiary'"
+          [level]="_showDelete ? 'secondary' : level()"
           (click)="resetInput(fileUpload); fileUpload.click()"
         />
         @if (_showDelete) {
@@ -81,7 +81,7 @@ export class FileInputComponent {
   showDelete = input<boolean>(false);
   translocoUploadKey = input.required<string>();
   translocoDeleteKey = input<string>("");
-
+  level = input<LevelType>("tertiary");
   // Necessary to avoid Chrome refusing to upload the file which has just been deleted
   resetInput(fileUpload: HTMLInputElement) {
     fileUpload.value = "";
