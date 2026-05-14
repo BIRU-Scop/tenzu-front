@@ -21,7 +21,6 @@
 
 
 @use '@angular/material' as mat;
-@use 'm3-theme' as theme;
 @use '_mixin' as mixin;
 
 
@@ -68,7 +67,7 @@
     $disabled-color: color-mix(in srgb, var(--mat-sys-on-surface-variant) 50%, transparent),
   );
   @include mixin.button-variant-outlined(
-    $text-color: var(--mat-sys-on-tertiary-container),
+    $text-color: var(--mat-sys-tertiary),
   );
 
 }
@@ -120,7 +119,6 @@
 
 
 .mat-mdc-icon-button {
-
   @include mixin.icon-button-size(24px, 32px); // need to use a mixin because of a angular bug (see  https://github.com/angular/components/issues/30448)
 
 
@@ -142,6 +140,7 @@
 }
 
 @mixin tokens-overrides() {
+
   @include mat.button-overrides((
     filled-container-shape: var(--mat-sys-corner-extra-small),
     outlined-container-shape: var(--mat-sys-corner-extra-small),

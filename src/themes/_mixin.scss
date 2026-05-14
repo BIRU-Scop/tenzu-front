@@ -20,8 +20,19 @@
  */
 @use 'sass:map';
 @use '@angular/material' as mat;
+@use 'sass:meta';
 
 @function  get-color($palette, $level, $token ) {
+  @if not map.has-key($palette, $level) {
+    @error "get-color: level '#{$level}' not found in palette. Available levels: #{map.keys($palette)}.";
+  }
+  $level-map: map.get($palette, $level);
+  @if meta.type-of($level-map) != 'map' {
+    @error "get-color: '#{$level}' should be a map, got #{meta.type-of($level-map)} (#{$level-map}).";
+  }
+  @if not map.has-key($level-map, $token) {
+    @error "get-color: token '#{$token}' not found in level '#{$level}'. Available tokens: #{map.keys($level-map)}.";
+  }
   @return map.get(map.get($palette, $level), $token),
 }
 

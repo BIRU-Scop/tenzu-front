@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -44,11 +44,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
       <router-outlet></router-outlet>
     </main>
   `,
-  styles: `
-    :host ::ng-deep .error .logo-eye {
-      color: var(--mat-sys-on-error);
-    }
-  `,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AuthComponent {
