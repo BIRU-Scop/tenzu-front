@@ -104,7 +104,7 @@ import { TitleCasePipe } from "@angular/common";
             }
           </mat-form-field>
           <app-email-field [formField]="signupForm.email" />
-          <app-password-field [formField]="signupForm.password" [settings]="{ enabledStrength: true }" />
+          <app-password-field [formField]="signupForm.password" [settings]="{ enabledStrength: true }" class="mb-4" />
           <mat-form-field>
             <mat-label>{{ t("general.identity.lang") }}</mat-label>
             <mat-select [formField]="signupForm.lang" data-testid="lang-select">

@@ -44,7 +44,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
   imports: [MatIcon, TranslocoDirective, MatIconButton, MatMenu, MatMenuItem, MatMenuTrigger, HasPermissionDirective],
   template: `
     <div class="status-header" *transloco="let t; prefix: 'workflow'">
-      <span class="whitespace-nowrap mat-font-title-md truncate flex-1 ">{{ name() }}</span>
+      <span class="mat-title-medium whitespace-nowrap truncate flex-1 ">{{ name() }}</span>
 
       <ng-container
         *appHasPermission="{

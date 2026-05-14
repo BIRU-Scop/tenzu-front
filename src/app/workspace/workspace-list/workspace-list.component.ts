@@ -71,6 +71,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
         <div class="flex flex-col gap-4">
           @for (workspace of workpaces; track workspace.id) {
             <app-workspace-card
+              class="mt-4"
               [workspace]="workspace"
               (submitted)="acceptWorkspaceInvitation(workspace)"
               (canceled)="denyWorkspaceInvitation(workspace)"

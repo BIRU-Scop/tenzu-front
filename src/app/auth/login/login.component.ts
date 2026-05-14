@@ -57,7 +57,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
   },
   template: `
     <ng-container *transloco="let t">
-      <h1 class="mat-headline-medium text-center">{{ t("auth.login.title") }}</h1>
+      <h1 class="mat-font-headline-md text-center">{{ t("auth.login.title") }}</h1>
       <form [formRoot]="loginForm" class="flex flex-col gap-2">
         <mat-form-field>
           <mat-label>
@@ -73,7 +73,9 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
           [formField]="loginForm.password"
           [settings]="{ enabledStrength: false }"
         />
-        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("auth.login.forgot_password") }}</a>
+        <a [routerLink]="['/reset-password']" class="mat-body-medium -mt-2 mb-5">{{
+          t("auth.login.forgot_password")
+        }}</a>
         <app-button
           level="primary"
           translocoKey="auth.login.action"

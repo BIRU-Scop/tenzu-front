@@ -80,7 +80,7 @@ import { MatDialog } from "@angular/material/dialog";
     </div>
 
     <form *transloco="let t" class="flex flex-col h-full gap-4">
-      <mat-form-field appearance="fill" class="title-field">
+      <mat-form-field class="title-field">
         <input [attr.aria-label]="t('workflow.detail_story.title')" matInput [formField]="storyForm.title" />
       </mat-form-field>
       <app-editor-collaboration-block

@@ -42,8 +42,8 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
     <mat-card appearance="outlined" *transloco="let t; prefix: 'workflow.detail_story'">
       <mat-card-header>
         <mat-card-title
-          ><a [routerLink]="['../..', 'story', _story.ref]" class="line-clamp-2 w-fit"
-            ><span class="text-on-tertiary-container">#{{ _story.ref }}</span> {{ _story.title }}</a
+          ><a [routerLink]="['../..', 'story', _story.ref]" class="line-clamp-2 w-fit "
+            >#{{ _story.ref }} {{ _story.title }}</a
           ></mat-card-title
         >
       </mat-card-header>

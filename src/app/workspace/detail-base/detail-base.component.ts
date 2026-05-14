@@ -31,7 +31,7 @@ import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
   imports: [BreadcrumbComponent, PrimarySideNavComponent, RouterOutlet],
   template: `
     <app-primary-side-nav>
-      <div class="flex flex-col h-full pt-2 pl-2 box-border">
+      <div class="flex flex-col h-full pt-2 px-4 box-border">
         <app-breadcrumb class="shrink-0" />
         <div class="flex-1 min-h-0 mt-8"><router-outlet /></div>
       </div>

@@ -106,6 +106,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
             >
               <button
                 mat-icon-button
+                class="tertiary-button"
                 [attr.aria-label]="t('aria_label')"
                 [matTooltip]="t('aria_label')"
                 [matMenuTriggerFor]="workflowMenu"

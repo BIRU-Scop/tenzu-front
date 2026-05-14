@@ -48,7 +48,7 @@ import { FileValue } from "@tenzu/repository/base/misc.model";
           [translocoKey]="translocoUploadKey()"
           [iconName]="iconName()"
           [iconOnly]="_showDelete"
-          [level]="_showDelete ? 'secondary' : 'primary'"
+          [level]="_showDelete ? 'secondary' : 'tertiary'"
           (click)="resetInput(fileUpload); fileUpload.click()"
         />
         @if (_showDelete) {

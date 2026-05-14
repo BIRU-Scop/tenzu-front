@@ -28,7 +28,7 @@ import { UserNested, UserStore } from "@tenzu/repository/user";
   selector: "app-avatar-list",
   imports: [MatTooltip, AvatarComponent],
   template: `
-    <div class="flex flex-row">
+    <div class="flex flex-row gap-1">
       @for (user of filteredUsernames().slice(0, userOverflowThreshold()); track user.fullName) {
         <app-avatar [matTooltip]="user.fullName" [name]="user.fullName" mode="filled-circle" [color]="user.color" />
       }
