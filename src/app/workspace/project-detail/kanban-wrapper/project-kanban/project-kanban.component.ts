@@ -23,7 +23,6 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
   EnterNameDialogComponent,
@@ -41,7 +40,6 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
-import { MatTooltip } from "@angular/material/tooltip";
 import {
   DeleteWorkflowDialogComponent,
   FormData as DeleteWorkflowFormData,
@@ -57,6 +55,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 
 @Component({
   selector: "app-project-kanban",
@@ -75,12 +74,11 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     MatMenu,
     MatIcon,
     MatMenuTrigger,
-    MatIconButton,
-    MatTooltip,
     MatMenuItem,
     HasPermissionDirective,
     PermissionOrRedirectDirective,
     ButtonAddComponent,
+    ButtonMoreComponent,
   ],
   template: `
     @let workflow = workflowRepositoryService.entityDetail();
@@ -104,15 +102,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                 requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
               }"
             >
-              <button
-                mat-icon-button
-                class="tertiary-button"
-                [attr.aria-label]="t('aria_label')"
-                [matTooltip]="t('aria_label')"
-                [matMenuTriggerFor]="workflowMenu"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
+              <app-button-more [matMenuTriggerFor]="workflowMenu" />
               <mat-menu #workflowMenu="matMenu">
                 <button mat-menu-item [attr.aria-label]="t('edit_name')" (click)="openEditWorkflow($event)">
                   <mat-icon>edit</mat-icon>

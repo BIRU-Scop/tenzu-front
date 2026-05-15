@@ -20,7 +20,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
-import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
@@ -38,10 +37,19 @@ import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { StatusSummary } from "@tenzu/repository/status";
 import { ProjectDetail } from "@tenzu/repository/project";
+import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 
 @Component({
   selector: "app-status-card",
-  imports: [MatIcon, TranslocoDirective, MatIconButton, MatMenu, MatMenuItem, MatMenuTrigger, HasPermissionDirective],
+  imports: [
+    MatIcon,
+    TranslocoDirective,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    HasPermissionDirective,
+    ButtonMoreComponent,
+  ],
   template: `
     <div class="status-header" *transloco="let t; prefix: 'workflow'">
       <span class="mat-title-medium whitespace-nowrap truncate flex-1 ">{{ name() }}</span>
@@ -52,9 +60,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
           requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
         }"
       >
-        <button mat-icon-button [attr.aria-label]="t('edit_status.aria_label')" [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
+        <app-button-more [matMenuTriggerFor]="menu" />
         <mat-menu #menu="matMenu">
           @if (config().showLeft) {
             <button mat-menu-item (click)="moveLeft()">
@@ -68,6 +74,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
               {{ t("edit_status.move_right") }}
             </button>
           }
+
           <button mat-menu-item (click)="openEditStatus($event)">
             <mat-icon>edit</mat-icon>{{ t("edit_status.edit_name") }}
           </button>
