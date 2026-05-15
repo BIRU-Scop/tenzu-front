@@ -23,6 +23,7 @@
 
 @mixin tokens-overrides() {
   @include mat.dialog-overrides((
+    container-min-width: min-content,
     container-shape: var(--mat-sys-corner-small),
     container-elevation-shadow: var(--mat-sys-level3),
     container-color: var(--mat-sys-surface),
@@ -36,6 +37,7 @@
 }
 
 .mat-mdc-dialog-panel {
+
   &.aligned-center-to-anchor {
     @apply -translate-x-1/2;
   }
