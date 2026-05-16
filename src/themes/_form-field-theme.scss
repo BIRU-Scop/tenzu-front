@@ -32,68 +32,68 @@
     container-vertical-padding: 8px,
 
     // --- Color — General ---
-    error-text-color:                                     var(--mat-sys-error),                                         // Color of the error/hint text
-    leading-icon-color:                                   var(--mat-sys-on-surface-variant),                            // Leading icon color
-    trailing-icon-color:                                  var(--mat-sys-on-surface-variant),                            // Trailing icon color
-    enabled-select-arrow-color:                           var(--mat-sys-on-surface-variant),                            // Select arrow color (enabled)
-    focus-select-arrow-color:                             var(--mat-sys-on-surface),                                       // Select arrow color (focused)
-    state-layer-color:                                    var(--mat-sys-on-surface),                                    // Hover/focus state layer color
-    hover-state-layer-opacity:                            var(--mat-sys-hover-state-layer-opacity),                     // Opacity of hover state layer
-    focus-state-layer-opacity:                            0,                                                            // Opacity of focus state layer
-    select-option-text-color:                             var(--mat-sys-neutral10),                                     // Select option text color
-    disabled-input-text-placeholder-color:                color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Placeholder color (disabled)
-    disabled-leading-icon-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Leading icon color (disabled)
-    disabled-trailing-icon-color:                         color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Trailing icon color (disabled)
-    disabled-select-arrow-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Select arrow color (disabled)
-    select-disabled-option-text-color:                    color-mix(in srgb, var(--mat-sys-neutral10) 38%, transparent), // Select option text color (disabled)
+    error-text-color:                                     var(--mat-sys-error),
+    leading-icon-color:                                   var(--mat-sys-on-surface-variant),
+    trailing-icon-color:                                  var(--mat-sys-on-surface-variant),
+    enabled-select-arrow-color:                           var(--mat-sys-on-surface-variant),
+    focus-select-arrow-color:                             var(--mat-sys-on-surface),
+    state-layer-color:                                    var(--mat-sys-on-surface),
+    hover-state-layer-opacity:                            var(--mat-sys-hover-state-layer-opacity),
+    focus-state-layer-opacity:                            0,
+    select-option-text-color:                             var(--mat-sys-neutral10),
+    disabled-input-text-placeholder-color:                color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
+    disabled-leading-icon-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
+    disabled-trailing-icon-color:                         color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
+    disabled-select-arrow-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
+    select-disabled-option-text-color:                    color-mix(in srgb, var(--mat-sys-neutral10) 38%, transparent),
 
     // --- Color — Error trailing icons ---
-    error-trailing-icon-color:                            var(--mat-sys-error),                                         // Trailing icon color (error)
-    error-hover-trailing-icon-color:                      var(--mat-sys-on-error-container),                            // Trailing icon color (error + hover)
-    error-focus-trailing-icon-color:                      var(--mat-sys-error),                                         // Trailing icon color (error + focus)
+    error-trailing-icon-color:                            var(--mat-sys-error),
+    error-hover-trailing-icon-color:                      var(--mat-sys-on-error-container),
+    error-focus-trailing-icon-color:                      var(--mat-sys-error),
 
 
     // --- Color — Outlined variant ---
-    outlined-outline-color:                               var(--mat-sys-on-surface-variant),                                       // Border color (default)
-    outlined-hover-outline-color:                         var(--mat-sys-on-surface),                                    // Border color (hover)
-    outlined-focus-outline-color:                         var(--mat-sys-on-surface-variant),                                       // Border color (focused)
-    outlined-disabled-outline-color:                      color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent), // Border color (disabled)
-    outlined-caret-color:                                 var(--mat-sys-on-surface-variant),                                       // Caret color
-    outlined-input-text-color:                            var(--mat-sys-on-surface),                                    // Input text color
-    outlined-input-text-placeholder-color:                var(--mat-sys-on-surface-variant),                            // Placeholder color
-    outlined-label-text-color:                            var(--mat-sys-on-surface-variant),                            // Label color (default)
-    outlined-hover-label-text-color:                      var(--mat-sys-on-surface),                                    // Label color (hover)
-    outlined-focus-label-text-color:                      var(--mat-sys-on-surface-variant),                                       // Label color (focused)
-    outlined-disabled-input-text-color:                   color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Input text color (disabled)
-    outlined-disabled-label-text-color:                   color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent), // Label color (disabled)
-    outlined-error-caret-color:                           var(--mat-sys-error),                                         // Caret color (error)
-    outlined-error-outline-color:                         var(--mat-sys-error),                                         // Border color (error)
-    outlined-error-focus-outline-color:                   var(--mat-sys-error),                                         // Border color (error + focus)
-    outlined-error-hover-outline-color:                   var(--mat-sys-on-error-container),                            // Border color (error + hover)
-    outlined-error-label-text-color:                      var(--mat-sys-error),                                         // Label color (error)
-    outlined-error-focus-label-text-color:                var(--mat-sys-error),                                         // Label color (error + focus)
-    outlined-error-hover-label-text-color:                var(--mat-sys-on-error-container),                            // Label color (error + hover)
+    outlined-outline-color:                               var(--mat-sys-on-surface-variant),
+    outlined-hover-outline-color:                         var(--mat-sys-on-surface),
+    outlined-focus-outline-color:                         var(--mat-sys-on-surface-variant),
+    outlined-disabled-outline-color:                      color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent),
+    outlined-caret-color:                                 var(--mat-sys-on-surface-variant),
+    outlined-input-text-color:                            var(--mat-sys-on-surface),
+    outlined-input-text-placeholder-color:                var(--mat-sys-on-surface-variant),
+    outlined-label-text-color:                            var(--mat-sys-on-surface-variant),
+    outlined-hover-label-text-color:                      var(--mat-sys-on-surface),
+    outlined-focus-label-text-color:                      var(--mat-sys-on-surface-variant),
+    outlined-disabled-input-text-color:                   color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
+    outlined-disabled-label-text-color:                   color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
+    outlined-error-caret-color:                           var(--mat-sys-error),
+    outlined-error-outline-color:                         var(--mat-sys-error),
+    outlined-error-focus-outline-color:                   var(--mat-sys-error),
+    outlined-error-hover-outline-color:                   var(--mat-sys-on-error-container),
+    outlined-error-label-text-color:                      var(--mat-sys-error),
+    outlined-error-focus-label-text-color:                var(--mat-sys-error),
+    outlined-error-hover-label-text-color:                var(--mat-sys-on-error-container),
 
     //// --- Typography — Container text ---
-    container-text-font:                                  var(--mat-sys-body-large-font),                               // Input font family
-    container-text-line-height:                           var(--mat-sys-body-large-line-height),                        // Input line height
-    container-text-size:                                  var(--mat-sys-body-medium-size),                               // Input font size
-    container-text-tracking:                              var(--mat-sys-body-large-tracking),                           // Input letter spacing
-    container-text-weight:                                var(--mat-sys-body-large-weight),                             // Input font weight
+    container-text-font:                                  var(--mat-sys-body-large-font),
+    container-text-line-height:                           var(--mat-sys-body-large-line-height),
+    container-text-size:                                  var(--mat-sys-body-medium-size),
+    container-text-tracking:                              var(--mat-sys-body-large-tracking),
+    container-text-weight:                                var(--mat-sys-body-large-weight),
 
     //// --- Typography — Subscript (hint / error text) ---
-    subscript-text-font:                                  var(--mat-sys-body-small-font),                               // Hint/error font family
-    subscript-text-line-height:                           var(--mat-sys-body-small-line-height),                        // Hint/error line height
-    subscript-text-size:                                  var(--mat-sys-body-small-size),                               // Hint/error font size
-    subscript-text-tracking:                              var(--mat-sys-body-small-tracking),                           // Hint/error letter spacing
-    subscript-text-weight:                                var(--mat-sys-body-small-weight),                             // Hint/error font weight
+    subscript-text-font:                                  var(--mat-sys-body-small-font),
+    subscript-text-line-height:                           var(--mat-sys-body-small-line-height),
+    subscript-text-size:                                  var(--mat-sys-body-small-size),
+    subscript-text-tracking:                              var(--mat-sys-body-small-tracking),
+    subscript-text-weight:                                var(--mat-sys-body-small-weight),
 
     // --- Typography — Labels ---
-    outlined-label-text-font:                             var(--mat-sys-body-large-font),                               // Outlined label font family
-    outlined-label-text-size:                             var(--mat-sys-body-medium-size),                               // Outlined label font size
-    outlined-label-text-tracking:                         var(--mat-sys-body-large-tracking),                           // Outlined label letter spacing
-    outlined-label-text-weight:                           var(--mat-sys-body-large-weight),                             // Outlined label font weight
-    outlined-label-text-populated-size:                   null,                                                         // Label size when field has a value (null = inherits)
+    outlined-label-text-font:                             var(--mat-sys-body-large-font),
+    outlined-label-text-size:                             var(--mat-sys-body-medium-size),
+    outlined-label-text-tracking:                         var(--mat-sys-body-large-tracking),
+    outlined-label-text-weight:                           var(--mat-sys-body-large-weight),
+    outlined-label-text-populated-size:                   null,
   ));
 
 
