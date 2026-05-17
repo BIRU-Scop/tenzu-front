@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,11 +19,10 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit, output } from "@angular/core";
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
@@ -32,13 +31,20 @@ import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
+import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
 
 @Component({
   selector: "app-membership-role",
-  imports: [FormsModule, RoleSelectorFieldComponent, ReactiveFormsModule],
+  imports: [FormsModule, RoleSelectorFieldComponent, ReactiveFormsModule, FormField],
   template: `
-    @if (roleControl.value) {
-      <app-role-selector-field [formControl]="roleControl" [itemType]="itemType()" [userRole]="entityRole().userRole" />
+    @if (roleControlForm().value()) {
+      <app-role-selector-field
+        [formField]="roleControlForm"
+        [itemType]="itemType()"
+        [userRole]="entityRole().userRole"
+        (changed)="onRoleChanged($event)"
+      />
     }
   `,
   styles: ``,
@@ -47,7 +53,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> implements OnInit {
+export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> {
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
@@ -67,40 +73,43 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
       }
     }
   });
-  roleControl = new FormControl<Role["id"] | null>(null, { validators: [Validators.required] });
+
+  roleControlForm = form(signal<Role["id"] | null>(null), (path) => {
+    required(path);
+    disabled(path, () => {
+      const entityRole = this.entityRole();
+      return (
+        !hasEntityRequiredPermission({
+          actualEntity: entityRole,
+          requiredPermission: PermissionsBase.CREATE_MODIFY_MEMBER,
+        }) || !!(entityRole.userRole?.isOwner && this.isSelf())
+      );
+    });
+    apply(
+      path,
+      roleSelectorFieldSchema(() => this.entityRole()?.userRole),
+    );
+  });
   changedSelf = output<{ roleId: Role["id"]; entityRole: T }>();
 
   constructor() {
     effect(() => {
       const membership = this.membership();
-      const entityRole = this.entityRole();
-      this.roleControl.reset(
-        {
-          value: membership.roleId,
-          disabled:
-            !hasEntityRequiredPermission({
-              actualEntity: entityRole,
-              requiredPermission: PermissionsBase.CREATE_MODIFY_MEMBER,
-            }) || !!(entityRole.userRole?.isOwner && this.isSelf()),
-        },
-        { onlySelf: true, emitEvent: false },
-      );
+      this.roleControlForm().reset(membership.roleId);
     });
   }
 
-  ngOnInit() {
-    return this.roleControl.valueChanges.pipe(filterNotNull()).subscribe(async (value: Role["id"]) => {
-      const membership = this.membership();
-      if (this.itemType() === "project") {
-        this.projectRoleRepositoryService.updateMembersCount(membership.roleId, value);
-      }
-      await this.membershipRepositoryService().patchRequest(membership.id, {
-        roleId: value,
-      });
-      this.notificationService.success({ title: "notification.action.changes_saved" });
-      if (this.isSelf()) {
-        this.changedSelf.emit({ roleId: value, entityRole: this.entityRole() });
-      }
+  async onRoleChanged(value: Role["id"]) {
+    const membership = this.membership();
+    if (this.itemType() === "project") {
+      this.projectRoleRepositoryService.updateMembersCount(membership.roleId, value);
+    }
+    await this.membershipRepositoryService().patchRequest(membership.id, {
+      roleId: value,
     });
+    this.notificationService.success({ title: "notification.action.changes_saved" });
+    if (this.isSelf()) {
+      this.changedSelf.emit({ roleId: value, entityRole: this.entityRole() });
+    }
   }
 }

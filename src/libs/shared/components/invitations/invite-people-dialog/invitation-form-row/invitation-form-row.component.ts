@@ -25,30 +25,10 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField } from "@angular/material/form-field";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { MatOption } from "@angular/material/core";
-import { ButtonCloseComponent } from "src/libs/shared/components/ui/button/button-close.component";
-import { MatSelect } from "@angular/material/select";
+import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { FieldTree, FormField } from "@angular/forms/signals";
-import {
-  InvitePeopleDialogData,
-  PeopleEmailRow,
-} from "src/libs/shared/components/invitations/invite-people-dialog/invite-people-dialog.type";
-import { Role } from "src/libs/repository/membership";
-import { MatTooltip } from "@angular/material/tooltip";
-
-const ROLE_TOOLTIPS: Record<"project" | "workspace", Record<Role["slug"], string>> = {
-  workspace: {
-    owner: "component.role_selector.workspace.owner",
-    admin: "component.role_selector.workspace.admin",
-    member: "component.role_selector.workspace.member",
-    "readonly-member": "component.role_selector.workspace.readonly_member",
-  },
-  project: {
-    owner: "component.role_selector.project.owner",
-    admin: "component.role_selector.project.admin",
-    "readonly-member": "component.role_selector.project.readonly_member",
-  },
-};
+import { InvitePeopleDialogData, PeopleEmailRow } from "../invite-people-dialog.type";
+import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 
 @Pipe({
   name: "alreadyInvited",
@@ -70,12 +50,10 @@ export class AlreadyInvitedPipe implements PipeTransform {
     MatCheckbox,
     AlreadyInvitedPipe,
     ButtonCloseComponent,
-    MatOption,
-    MatSelect,
     FormField,
-    MatTooltip,
+    RoleSelectorFieldComponent,
   ],
-  selector: "app-invitation-email-field",
+  selector: "app-invitation-form-row",
   styles: ``,
   template: `
     @let _emailRow = emailRow();
@@ -88,10 +66,8 @@ export class AlreadyInvitedPipe implements PipeTransform {
             _emailRow.emailGroup.email().touched() && _emailRow.emailGroup.email().invalid() && visibleErrors.length > 0
           ) {
             <mat-error>
-              @for (error of _emailRow.emailGroup.email().errors(); track error.kind) {
-                @if (error.kind !== "alreadyInvited") {
-                  {{ t(error.message || "") }}
-                }
+              @for (error of visibleErrors; track error.kind) {
+                {{ t(error.message || "") }}
               }
             </mat-error>
           }
@@ -113,30 +89,18 @@ export class AlreadyInvitedPipe implements PipeTransform {
           </div>
         }
       </div>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-select [formField]="_emailRow.roleId">
-          @for (role of availableRoles(); track role.id) {
-            @let tooltipKey = ROLE_TOOLTIPS[data().itemType][role.slug];
-            <mat-option
-              [value]="role.id"
-              [matTooltip]="tooltipKey ? t(tooltipKey) : ''"
-              [matTooltipDisabled]="!tooltipKey"
-              matTooltipPosition="after"
-            >
-              {{ role.name }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <app-role-selector-field
+        [itemType]="data().itemType"
+        [userRole]="data().userRole"
+        [formField]="_emailRow.roleId"
+      />
       <app-button-close class="mt-2" iconSize="sm" (click)="removeRow.emit()" [iconOnly]="true" />
     </div>
   `,
 })
-export class InvitationEmailFieldComponent {
+export class InvitationFormRowComponent {
   data = input.required<InvitePeopleDialogData>();
   notAcceptedInvitationEmails = input.required<string[]>();
-  availableRoles = input.required<Role[]>();
   emailRow = input.required<FieldTree<PeopleEmailRow, number>>();
-  protected readonly ROLE_TOOLTIPS = ROLE_TOOLTIPS;
   removeRow = output<void>();
 }
