@@ -27,18 +27,17 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 @Component({
   selector: "app-detail-base",
+  host: { class: "block h-full" },
   imports: [BreadcrumbComponent, PrimarySideNavComponent, RouterOutlet],
   template: `
     <app-primary-side-nav>
-      <app-breadcrumb></app-breadcrumb>
-      <div class="mt-8 fullscreen"><router-outlet /></div>
+      <div class="flex flex-col h-full pt-2 px-4 box-border">
+        <app-breadcrumb class="shrink-0" />
+        <div class="flex-1 min-h-0 mt-8"><router-outlet /></div>
+      </div>
     </app-primary-side-nav>
   `,
-  styles: `
-    .fullscreen {
-      height: calc(100% - var(--mat-toolbar-standard-height));
-    }
-  `,
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailBaseComponent {

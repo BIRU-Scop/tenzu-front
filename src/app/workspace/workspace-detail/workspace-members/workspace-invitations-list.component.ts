@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
@@ -55,7 +54,7 @@ import { ActivatedRoute } from "@angular/router";
         >
           @let workspaceInvitations = workspaceInvitationRepositoryService.entities();
           @if (workspaceInvitations.length > 0) {
-            <div class="app-table" [@newItemsFlyIn]="workspaceInvitations.length">
+            <div class="app-table">
               <div class="app-table-row-group">
                 @for (invitation of workspaceInvitations; track invitation.id) {
                   <div class="app-table-row">
@@ -91,21 +90,6 @@ import { ActivatedRoute } from "@angular/router";
       </ng-container>
     }
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

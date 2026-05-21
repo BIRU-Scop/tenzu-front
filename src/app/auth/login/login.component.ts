@@ -29,7 +29,7 @@ import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components
 import { Credential } from "@tenzu/repository/auth";
 import { MatDivider } from "@angular/material/divider";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
-import { apply, FormField, form, required, submit } from "@angular/forms/signals";
+import { apply, form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
@@ -50,14 +50,15 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     ButtonComponent,
     PasswordFieldComponent,
     SocialAuthLoginComponent,
+    FormRoot,
   ],
   host: {
     class: "flex flex-col gap-4 w-96",
   },
   template: `
     <ng-container *transloco="let t">
-      <h1 class="mat-headline-medium text-center">{{ t("auth.login.title") }}</h1>
-      <form (submit)="submit($event)" class="flex flex-col gap-2">
+      <h1 class="mat-font-headline-md text-center">{{ t("auth.login.title") }}</h1>
+      <form [formRoot]="loginForm" class="flex flex-col gap-2">
         <mat-form-field>
           <mat-label>
             {{ t("auth.login.email_or_username") }}
@@ -72,9 +73,11 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
           [formField]="loginForm.password"
           [settings]="{ enabledStrength: false }"
         />
-        <a [routerLink]="['/reset-password']" class="mat-body-medium mb-5">{{ t("auth.login.forgot_password") }}</a>
+        <a [routerLink]="['/reset-password']" class="mat-body-medium -mt-2 mb-5">{{
+          t("auth.login.forgot_password")
+        }}</a>
         <app-button
-          level="tertiary"
+          level="primary"
           translocoKey="auth.login.action"
           type="submit"
           iconName="login"
@@ -100,40 +103,40 @@ export default class LoginComponent {
   service = inject(LoginService);
   route = inject(ActivatedRoute);
   readonly authConfigStore = inject(AuthConfigStore);
-
+  credentials = signal<Credential>({
+    username: "",
+    password: "",
+  });
   loginForm = form(
-    signal<Credential>({
-      username: "",
-      password: "",
-    }),
+    this.credentials,
     (schemaPath) => {
       required(schemaPath.username, { message: "auth.login.errors.username_required" });
       apply(schemaPath.password, passwordSchema({ enabledStrength: false }));
+    },
+    {
+      submission: {
+        action: async (form) => {
+          let next = this.route.snapshot.queryParamMap.get("next");
+          if (!next) {
+            next = "/";
+          }
+          try {
+            await lastValueFrom(this.service.login(form().value(), next));
+          } catch {
+            this.authConfigStore.setFormHasError(true);
+            return [
+              { fieldTree: form.username, kind: "invalid-credentials" },
+              { fieldTree: form.password, kind: "invalid-credentials", message: "auth.login.errors.401" },
+            ];
+          }
+          return undefined;
+        },
+      },
     },
   );
 
   constructor() {
     // Track form validation state to trigger logo animation when errors occur
     trackFormValidationEffect(this.loginForm);
-  }
-
-  async submit(event: SubmitEvent) {
-    event.preventDefault();
-    await submit(this.loginForm, async (form) => {
-      let next = this.route.snapshot.queryParamMap.get("next");
-      if (!next) {
-        next = "/";
-      }
-      try {
-        await lastValueFrom(this.service.login(form().value(), next));
-      } catch {
-        this.authConfigStore.setFormHasError(true);
-        return [
-          { fieldTree: this.loginForm.username, kind: "invalid-credentials" },
-          { fieldTree: this.loginForm.password, kind: "invalid-credentials", message: "auth.login.errors.401" },
-        ];
-      }
-      return undefined;
-    });
   }
 }

@@ -168,6 +168,9 @@
     "max_size": "Image size must not exceed {{size}}",
     "allowed_format": "Allowed formats: {{formats}}"
   },
+  "chip": {
+    "remove_action": "Remove {{label}}"
+  },
   "commons": {
     "project": "Project",
     "projects": "Projects",
@@ -177,6 +180,7 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
+    "more": "More",
     "add": "Add",
     "undo": "Undo",
     "select_option": "Select an option"

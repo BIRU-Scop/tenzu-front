@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,42 +20,86 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { PrimarySideNavComponent } from "../../libs/shared/components/primary-side-nav/primary-side-nav.component";
-import { MatToolbar } from "@angular/material/toolbar";
-import { MatIconAnchor } from "@angular/material/button";
-import { MatIcon } from "@angular/material/icon";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
 import { provideRouter } from "@angular/router";
+import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav/primary-side-nav.component";
+import { SideNavStore } from "@tenzu/repository/sidenav";
+import { withTransloco } from "../storybook-providers";
 
-const meta: Meta<PrimarySideNavComponent> = {
-  title: "Components/PrimarySideNavComponent",
-  component: PrimarySideNavComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations(), provideRouter([])],
-    }),
-    moduleMetadata({
-      imports: [MatToolbar, MatIconAnchor, MatIcon],
-    }),
-  ],
+@Component({
+  selector: "app-primary-side-nav-storybook",
+  standalone: true,
+  imports: [PrimarySideNavComponent],
+  host: { style: "display: block; height: 100vh;" },
+  styles: `
+    :host ::ng-deep mat-sidenav-container,
+    :host ::ng-deep mat-sidenav {
+      height: 100%;
+    }
+  `,
+  template: `
+    <app-primary-side-nav>
+      <div class="p-4">
+        <h1>Main content</h1>
+        <p>Side-nav demo content. Use the collapse button at the bottom to toggle the resized state.</p>
+      </div>
+    </app-primary-side-nav>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class StoryPrimarySideNavStorybookComponent implements OnInit {
+  private readonly sideNavStore = inject(SideNavStore);
+
+  ngOnInit() {
+    this.sideNavStore.setAvatar({
+      type: "Workspace",
+      name: "Acme Inc",
+      color: 1,
+    });
+    this.sideNavStore.setPrimaryNavItems([
+      { label: "Projects", iconName: "lists", href: "/projects", testId: "projects-link" },
+      { label: "Activity", iconName: "bolt", href: "/activity", testId: "activity-link" },
+    ]);
+    this.sideNavStore.setSecondaryNavItems([
+      { label: "Members", iconName: "group", href: "/members", testId: "members-link" },
+      { label: "Settings", iconName: "settings", href: "/settings", testId: "settings-link" },
+    ]);
+  }
+}
+
+type Story = StoryObj<StoryPrimarySideNavStorybookComponent>;
+
+const meta: Meta<StoryPrimarySideNavStorybookComponent> = {
+  component: StoryPrimarySideNavStorybookComponent,
+  title: "Components/PrimarySideNav",
   parameters: {
     layout: "fullscreen",
+    docs: {
+      story: { inline: false, iframeHeight: 720 },
+    },
   },
+  decorators: [
+    withTransloco,
+    applicationConfig({
+      providers: [
+        provideRouter([
+          { path: "projects", children: [] },
+          { path: "activity", children: [] },
+          { path: "members", children: [] },
+          { path: "settings", children: [] },
+          { path: "**", redirectTo: "projects" },
+        ]),
+      ],
+    }),
+    moduleMetadata({}),
+  ],
 };
 
 export default meta;
-type Story = StoryObj<PrimarySideNavComponent>;
 
-export const Default: Story = {
-  args: {},
+export const Compositions: Story = {
   render: (args) => ({
     props: args,
-    template: `
-    <mat-toolbar class="w-full flex items-center">
-      <a mat-icon-button class="icon-xl primary-button">
-        <mat-icon>rocket</mat-icon>
-      </a>
-    </mat-toolbar>
-    <app-primary-side-nav>Main</app-primary-side-nav>`,
+    template: `<app-primary-side-nav-storybook />`,
   }),
 };

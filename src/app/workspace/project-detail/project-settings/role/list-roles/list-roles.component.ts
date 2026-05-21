@@ -46,7 +46,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
     >
       @if (project) {
         <div class="flex justify-end">
-          <a [matButton]="'filled'" [routerLink]="['..', 'create-role']" class="tertiary-button mb-4">
+          <a [matButton]="'outlined'" [routerLink]="['..', 'create-role']" class="tertiary-button mb-4">
             <mat-icon>add</mat-icon>
             {{ t("project.settings.roles.create_role") }}</a
           >

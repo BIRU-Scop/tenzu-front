@@ -22,7 +22,7 @@
 import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { apply, FormField, form, submit } from "@angular/forms/signals";
+import { apply, FormField, form, FormRoot } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { UserStore } from "@tenzu/repository/user";
@@ -42,6 +42,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     MatDivider,
     ButtonComponent,
     FormField,
+    FormRoot,
   ],
   host: {
     class: "flex flex-col gap-4 w-96",
@@ -55,7 +56,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
         <p class="mat-body-medium">
           {{ t("resetPassword.subtitle") }}
         </p>
-        <form (submit)="submit($event)" class="flex flex-col gap-2">
+        <form [formRoot]="resetForm" class="flex flex-col gap-2">
           <app-email-field [formField]="resetForm.email"></app-email-field>
           <app-button translocoKey="resetPassword.submit" level="primary" type="submit" iconName="mail" />
         </form>
@@ -98,19 +99,22 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 export default class RequestResetPasswordComponent {
   showConfirmation = model(false);
 
-  resetForm = form(signal({ email: "" }), (schemaPath) => {
-    apply(schemaPath.email, emailSchema);
-  });
+  resetForm = form(
+    signal({ email: "" }),
+    (schemaPath) => {
+      apply(schemaPath.email, emailSchema);
+    },
+    {
+      submission: {
+        action: async (form) => {
+          await this.userStore.requestResetPassword(form().value().email);
+          this.showConfirmation.set(true);
+        },
+      },
+    },
+  );
   userStore = inject(UserStore);
   constructor() {
     trackFormValidationEffect(this.resetForm);
-  }
-
-  async submit(event: Event) {
-    event.preventDefault();
-    await submit(this.resetForm, async (form) => {
-      await this.userStore.requestResetPassword(form().value().email);
-      this.showConfirmation.set(true);
-    });
   }
 }

@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
 import { MatButton, MatButtonAppearance, MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
-import { LevelType, IconName, ButtonType } from "../ui.types";
+import { LevelType, IconName, ButtonType, ButtonIconSize, IconSize } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
 import { MatTooltip } from "@angular/material/tooltip";
 import { JsonObject } from "@tenzu/repository/base/misc.model";
@@ -45,26 +45,27 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
         <button
           *transloco="let t"
           [type]="type()"
-          [class]="level()"
+          [class]="level() + ' ' + iconSize()"
+          [class.no-background]="iconNoBackground()"
           matIconButton
           [attr.aria-label]="t(_translocoKey, _translocoValue)"
           [disabled]="disabled()"
           [matTooltip]="t(_translocoKey, _translocoValue)"
         >
-          <mat-icon>{{ _iconName }}</mat-icon>
+          <mat-icon aria-hidden="true">{{ _iconName }}</mat-icon>
         </button>
       }
       @default {
         <button
           *transloco="let t"
           class="w-full"
+          [class]="level()"
           [matButton]="appearance()"
           [type]="type()"
-          [class]="level()"
           [disabled]="disabled()"
         >
           @if (_iconName) {
-            <mat-icon>{{ _iconName }}</mat-icon>
+            <mat-icon aria-hidden="true">{{ _iconName }}</mat-icon>
           }
           {{ t(_translocoKey, _translocoValue) }}
         </button>
@@ -87,29 +88,50 @@ export class ButtonComponent implements ButtonInterface {
           return "warning-button";
         case "error":
           return "error-button";
+        case "success":
+          return "success-button";
         default:
           throw new Error("value not allowed");
       }
     },
   });
+  iconNoBackground = input(false);
   translocoKey = input.required<string>();
   translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
   appearance = computed<MatButtonAppearance>(() => {
     switch (this.level()) {
       case "primary-button":
-        return "outlined";
+        return "filled";
       case "secondary-button":
         return "filled";
       case "tertiary-button":
-        return "filled";
+        return "outlined";
       case "warning-button":
         return "filled";
       case "error-button":
+        return "filled";
+      case "success-button":
         return "filled";
     }
   });
   iconName = input<IconName | undefined>(undefined);
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);
+  iconSize = input<IconSize, ButtonIconSize>("icon-md", {
+    transform: (value: ButtonIconSize): IconSize => {
+      switch (value) {
+        case "sm":
+          return "icon-sm";
+        case "md":
+          return "icon-md";
+        case "lg":
+          return "icon-lg";
+        case "xl":
+          return "icon-xl";
+        default:
+          return "icon-md";
+      }
+    },
+  });
 }

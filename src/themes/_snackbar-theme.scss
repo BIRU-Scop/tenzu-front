@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,48 +21,39 @@
 
 @use '@angular/material' as mat;
 
-.mdc-snackbar {
-  &.mat-mdc-snack-bar-container {
-   @apply m-4;
-  }
-  .mat-mdc-snackbar-surface {
-    box-shadow: var(--mat-sys-level3);
-    @apply pr-1;
-  }
-  .mat-mdc-simple-snack-bar {
-    @apply items-center;
-  }
-  .mdc-snackbar__label {
-    @apply py-1.5 px-2;
-  }
-}
 @mixin tokens-overrides() {
   @include mat.snack-bar-overrides((
-      container-shape: var(--mat-sys-corner-medium)
+    button-color: var(--mat-sys-inverse-tertiary),
+    container-color: var(--mat-sys-secondary),
+    supporting-text-color: var(--mat-sys-surface)
   ));
   .mdc-snackbar {
-    &.snackbar-success {
-      @include mat.snack-bar-overrides((
-        container-color: var(--mat-sys-tertiary-container),
-        supporting-text-color: var(--mat-sys-on-tertiary-container)
-      ));
-    }
     &.snackbar-info {
       @include mat.snack-bar-overrides((
+        button-color: var(--mat-sys-tertiary),
         container-color: var(--mat-sys-secondary-container),
-        supporting-text-color: var(--mat-sys-on-secondary-container)
+        supporting-text-color: var(--mat-sys-secondary)
       ));
     }
     &.snackbar-error {
       @include mat.snack-bar-overrides((
+        button-color: var(--mat-sys-error),
         container-color: var(--mat-sys-error-container),
-        supporting-text-color: var(--mat-sys-on-error-container)
+        supporting-text-color: var(--mat-sys-secondary)
       ));
     }
     &.snackbar-warning {
       @include mat.snack-bar-overrides((
+        button-color: var(--mat-sys-warning),
         container-color: var(--mat-sys-warning-container),
-        supporting-text-color: var(--mat-sys-on-warning-container)
+        supporting-text-color: var(--mat-sys-secondary)
+      ));
+    }
+    &.snackbar-success {
+      @include mat.snack-bar-overrides((
+        button-color: var(--mat-sys-success),
+        container-color: var(--mat-sys-success-container),
+        supporting-text-color: var(--mat-sys-secondary)
       ));
     }
   }

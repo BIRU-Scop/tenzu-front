@@ -41,7 +41,7 @@ import { MatDialog } from "@angular/material/dialog";
     @let _workspace = workspace();
     <ng-container *transloco="let t">
       <div class="flex flex-row items-center gap-2 mb-2">
-        <app-avatar [name]="_workspace.name" [color]="_workspace.color" />
+        <app-avatar [name]="_workspace.name" [color]="_workspace.color" mode="filled-square" />
         @if (_workspace.userIsMember) {
           <a class="mat-title-medium" [routerLink]="['workspace', _workspace.id]">{{ _workspace.name }} </a>
         } @else {
@@ -50,7 +50,7 @@ import { MatDialog } from "@angular/material/dialog";
         @if (_workspace.userCanCreateProjects) {
           <app-button-add
             class="ml-auto"
-            [level]="'primary'"
+            [level]="'tertiary'"
             [translocoKey]="'commons.project'"
             (click)="openCreateProject(_workspace.id)"
           ></app-button-add>

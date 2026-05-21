@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -28,23 +28,21 @@ import {
   MatSnackBarLabel,
 } from "@angular/material/snack-bar";
 import { NotificationMessage } from "./notification-message.model";
-import { MatIcon } from "@angular/material/icon";
-import { MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NgTemplateOutlet } from "@angular/common";
 import { SafeHtmlPipe } from "../../../shared/pipes";
+import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 
 @Component({
   selector: "app-notification",
   imports: [
     MatSnackBarLabel,
     MatSnackBarActions,
-    MatIcon,
-    MatIconButton,
     MatSnackBarAction,
     TranslocoDirective,
     NgTemplateOutlet,
     SafeHtmlPipe,
+    ButtonCloseComponent,
   ],
   template: ` <div class="flex flex-row-reverse items-center" *transloco="let t">
     <ng-template #content let-data="data">
@@ -62,9 +60,13 @@ import { SafeHtmlPipe } from "../../../shared/pipes";
       </div>
     </ng-template>
     <div class="flex" matSnackBarActions>
-      <button mat-icon-button matSnackBarAction [attr.aria-label]="t('commons.close')" (click)="close()">
-        <mat-icon>close</mat-icon>
-      </button>
+      <app-button-close
+        [iconNoBackground]="true"
+        matSnackBarAction
+        [level]="'secondary'"
+        [iconOnly]="true"
+        (click)="close()"
+      />
     </div>
     @switch (data.type) {
       @case ("error") {

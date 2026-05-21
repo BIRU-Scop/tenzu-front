@@ -35,6 +35,9 @@ export type IconName =
   | "block"
   | "mark_email_read"
   | "upload"
-  | "attach_file";
-export type LevelType = "primary" | "secondary" | "tertiary" | "warning" | "error";
+  | "attach_file"
+  | "more_vert";
+export type IconSize = "icon-sm" | "icon-md" | "icon-lg" | "icon-xl";
+export type ButtonIconSize = "sm" | "md" | "lg" | "xl";
+export type LevelType = "plain" | "primary" | "secondary" | "tertiary" | "warning" | "error" | "success";
 export type ButtonType = "submit" | "button" | "reset";

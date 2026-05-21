@@ -68,6 +68,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
       <mat-card-header>
         <app-avatar
           mat-card-avatar
+          mode="filled-square"
           [name]="_name"
           [color]="_color"
           [imageData]="logo() | getBase64FromImageUrl: 'small' | async"

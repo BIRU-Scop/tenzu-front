@@ -21,7 +21,6 @@
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 import { WorkspacePlaceholderDialogComponent } from "./workspace-placeholder-dialog/workspace-placeholder-dialog.component";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
@@ -69,9 +68,10 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
       </div>
       @let workpaces = workspaceService.entitiesSummary();
       @if (workpaces.length > 0) {
-        <div [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4">
           @for (workspace of workpaces; track workspace.id) {
             <app-workspace-card
+              class="mt-4"
               [workspace]="workspace"
               (submitted)="acceptWorkspaceInvitation(workspace)"
               (canceled)="denyWorkspaceInvitation(workspace)"
@@ -128,21 +128,6 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
       }
     </div>
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

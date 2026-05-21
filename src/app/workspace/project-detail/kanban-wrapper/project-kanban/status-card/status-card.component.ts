@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,8 +20,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
-import { MatCard, MatCardHeader, MatCardTitle } from "@angular/material/card";
-import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
@@ -39,60 +37,62 @@ import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { StatusSummary } from "@tenzu/repository/status";
 import { ProjectDetail } from "@tenzu/repository/project";
+import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 
 @Component({
   selector: "app-status-card",
   imports: [
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
     MatIcon,
     TranslocoDirective,
-    MatIconButton,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
     HasPermissionDirective,
+    ButtonMoreComponent,
   ],
   template: `
-    <mat-card appearance="outlined" class="heading-card" *transloco="let t; prefix: 'workflow'">
-      <mat-card-header>
-        <mat-card-title class="whitespace-nowrap truncate">
-          {{ name() }}
-        </mat-card-title>
+    <div class="status-header" *transloco="let t; prefix: 'workflow'">
+      <span class="mat-title-medium whitespace-nowrap truncate flex-1 ">{{ name() }}</span>
 
-        <ng-container
-          *appHasPermission="{
-            actualEntity: project(),
-            requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
-          }"
-        >
-          <button mat-icon-button [attr.aria-label]="t('edit_status.aria_label')" [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            @if (config().showLeft) {
-              <button mat-menu-item (click)="moveLeft()">
-                <mat-icon>arrow_back</mat-icon>
-                {{ t("edit_status.move_left") }}
-              </button>
-            }
-            @if (config().showRight) {
-              <button mat-menu-item (click)="moveRight()">
-                <mat-icon>arrow_forward</mat-icon>
-                {{ t("edit_status.move_right") }}
-              </button>
-            }
-            <button mat-menu-item (click)="openEditStatus($event)">
-              <mat-icon>edit</mat-icon>{{ t("edit_status.edit_name") }}
+      <ng-container
+        *appHasPermission="{
+          actualEntity: project(),
+          requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
+        }"
+      >
+        <app-button-more [matMenuTriggerFor]="menu" />
+        <mat-menu #menu="matMenu">
+          @if (config().showLeft) {
+            <button mat-menu-item (click)="moveLeft()">
+              <mat-icon>arrow_back</mat-icon>
+              {{ t("edit_status.move_left") }}
             </button>
-            <button mat-menu-item (click)="onDelete()"><mat-icon>delete</mat-icon>{{ t("edit_status.delete") }}</button>
-          </mat-menu>
-        </ng-container>
-      </mat-card-header>
-    </mat-card>
+          }
+          @if (config().showRight) {
+            <button mat-menu-item (click)="moveRight()">
+              <mat-icon>arrow_forward</mat-icon>
+              {{ t("edit_status.move_right") }}
+            </button>
+          }
+
+          <button mat-menu-item (click)="openEditStatus($event)">
+            <mat-icon>edit</mat-icon>{{ t("edit_status.edit_name") }}
+          </button>
+          <button mat-menu-item (click)="onDelete()"><mat-icon>delete</mat-icon>{{ t("edit_status.delete") }}</button>
+        </mat-menu>
+      </ng-container>
+    </div>
   `,
-  styles: ``,
+  styles: `
+    .status-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "w-full",

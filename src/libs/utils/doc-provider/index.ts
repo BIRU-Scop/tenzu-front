@@ -33,6 +33,7 @@ export type OnlineUser = {
   name: string;
   /** Assigned color for user identification in the editor */
   color: string;
+  colorAvatar: number;
   /** Unique identifier of the user */
   id: string;
 };

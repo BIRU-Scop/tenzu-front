@@ -21,72 +21,93 @@
 
 @use '@angular/material' as mat;
 
-.app-chip {
-  @apply rounded-lg flex flex-row place-content-center min-w-24;
-  padding: 7.5px 16px 7.5px 16px;
-}
-
-.mat-mdc-chip {
-  @include mat.chips-overrides((  ));
+@mixin chip-variant-filled($container-color, $on-container-color) {
+  @include mat.chips-overrides((
+    outline-width: 0,
+    elevated-container-color: #{$container-color},
+    elevated-selected-container-color: #{$container-color},
+    label-text-color: #{$on-container-color},
+    selected-label-text-color: #{$on-container-color},
+    with-icon-icon-color: #{$on-container-color},
+    with-icon-selected-icon-color: #{$on-container-color},
+    with-trailing-icon-trailing-icon-color: #{$on-container-color},
+    selected-trailing-icon-color: #{$on-container-color},
+    hover-state-layer-color: #{$on-container-color},
+    hover-state-layer-opacity: 12%,
+    focus-state-layer-color: #{$on-container-color},
+    focus-state-layer-opacity: 12%,
+    selected-focus-state-layer-color: #{$on-container-color},
+    selected-focus-state-layer-opacity: 12%,
+    trailing-action-state-layer-color: #{$on-container-color},
+    trailing-action-hover-state-layer-opacity: 12%,
+    trailing-action-focus-state-layer-opacity: 12%,
+    elevated-disabled-container-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent),
+  ));
 }
 
 .primary-chip {
-  @apply app-chip;
-  color: var(--mat-sys-on-primary-container);
-  background-color: var(--mat-sys-primary-container);
-  @include mat.chips-overrides((
-      outline-width: 0,
-      label-text-color: var(--mat-sys-on-primary-container),
-      elevated-container-color: var(--mat-sys-primary-container),
-      hover-state-layer-color: var(--mat-sys-on-primary),
-      hover-state-layer-opacity: 30%
-  ));
+  @include chip-variant-filled(var(--mat-sys-primary), var(--mat-sys-on-primary));
 }
+
 .secondary-chip {
-  @apply app-chip;
-  color: var(--mat-sys-on-secondary-container);
-  background-color: var(--mat-sys-secondary-container);
-  @include mat.chips-overrides((
-      outline-width: 0,
-      label-text-color: var(--mat-sys-on-secondary-container),
-      elevated-container-color: var(--mat-sys-secondary-container),
-      hover-state-layer-color: var(--mat-sys-on-secondary),
-      hover-state-layer-opacity: 30%
-  ));
+  @include chip-variant-filled(var(--mat-sys-secondary), var(--mat-sys-on-secondary));
 }
+
 .tertiary-chip {
-  @apply app-chip;
-  color: var(--mat-sys-on-tertiary-container);
-  background-color: var(--mat-sys-tertiary-container);
-  @include mat.chips-overrides((
-      outline-width: 0,
-      label-text-color: var(--mat-sys-on-tertiary-container),
-      elevated-container-color: var(--mat-sys-tertiary-container),
-      hover-state-layer-color: var(--mat-sys-on-tertiary),
-      hover-state-layer-opacity: 30%
-  ));
+  @include chip-variant-filled(var(--mat-sys-tertiary), var(--mat-sys-on-tertiary));
 }
-.error-chip {
-  color: var(--mat-sys-on-error-container);
-  background-color: var(--mat-sys-error-container);
-  @apply app-chip;
-  @include mat.chips-overrides((
-      outline-width: 0,
-      label-text-color: var(--mat-sys-on-error-container),
-      elevated-container-color: var(--mat-sys-error-container),
-      hover-state-layer-color: var(--mat-sys-on-error),
-      hover-state-layer-opacity: 30%
-  ));
-}
+
 .warning-chip {
-  color: var(--mat-sys-on-warning-container);
-  background-color: var(--mat-sys-warning-container);
-  @apply app-chip;
+  @include chip-variant-filled(var(--mat-sys-warning), var(--mat-sys-on-warning));
+}
+
+.error-chip {
+  @include chip-variant-filled(var(--mat-sys-error), var(--mat-sys-on-error));
+}
+
+.success-chip {
+  @include chip-variant-filled(var(--mat-sys-success), var(--mat-sys-on-success));
+}
+
+.cdk-drag-preview:has(.mat-mdc-chip) {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  filter: drop-shadow(4px 4px 6px rgba(0, 0, 0, 0.70));
+}
+
+@mixin tokens-overrides() {
+  .mdc-evolution-chip--selecting {
+    // little hack because selected-hover-state-layer-color/opacity do not seem to change anything
+    @include mat.chips-overrides((
+      hover-state-layer-color: var(--mat-sys-on-surface),
+      hover-state-layer-opacity: 40%,
+    ));
+  }
+  .mat-mdc-chip.cdk-focused {
+    @apply outline outline-outline outline-offset-2;
+  }
   @include mat.chips-overrides((
-      outline-width: 0,
-      label-text-color: var(--mat-sys-on-warning-container),
-      elevated-container-color: var(--mat-sys-warning-container),
-      hover-state-layer-color: var(--mat-sys-on-warning),
-      hover-state-layer-opacity: 30%
+    with-trailing-icon-disabled-trailing-icon-opacity: 50%,
+    disabled-label-text-color: color-mix(in srgb, var(--mat-sys-outline) 50%, transparent),
+    with-icon-disabled-icon-color: color-mix(in srgb, var(--mat-sys-outline) 50%, transparent),
+    with-trailing-icon-disabled-trailing-icon-color: color-mix(in srgb, var(--mat-sys-outline) 50%, transparent),
+    disabled-outline-color: color-mix(in srgb, var(--mat-sys-on-surface-variant) 50%, transparent),
+    hover-state-layer-color: var(--mat-sys-tertiary),
+    hover-state-layer-opacity: 20%,
+    label-text-color: var(--mat-sys-on-surface),
+    trailing-action-state-layer-color: color-mix(in srgb, var(--mat-sys-tertiary) 30%, transparent),
+    with-icon-icon-color: var(--mat-sys-on-surface),
+    with-trailing-icon-trailing-icon-color: var(--mat-sys-on-surface),
+    outline-color: var(--mat-sys-outline),
+    focus-outline-color: var(--mat-sys-outline),
+    selected-label-text-color: var(--mat-sys-on-tertiary),
+    selected-trailing-icon-color: var(--mat-sys-on-tertiary),
+    with-icon-selected-icon-color: var(--mat-sys-on-tertiary),
+    elevated-selected-container-color: var(--mat-sys-tertiary),
+    focus-state-layer-color: var(--mat-sys-on-surface),
+    focus-state-layer-opacity: 0%,
+    selected-focus-state-layer-color: var(--mat-sys-on-surface),
+    selected-focus-state-layer-opacity: 0%,
   ));
 }

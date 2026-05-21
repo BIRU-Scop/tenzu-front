@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,17 +19,15 @@
  *
  */
 
-@use "m3-theme" as themes;
 @use "@angular/material" as mat;
 
 .logo-letter {
-  @media (prefers-color-scheme: light) {
-    color: mat.get-theme-color(themes.$light-theme, primary, 40);
-  }
-  @media (prefers-color-scheme: dark) {
-    color: mat.get-theme-color(themes.$dark-theme, primary, 0);
-  }
+  color: light-dark(#1b2660, #f3f5fc);
 }
 .logo-eye {
   color: #fbc259;
+}
+
+mat-icon.error .logo-eye {
+  color: var(--mat-sys-error);
 }

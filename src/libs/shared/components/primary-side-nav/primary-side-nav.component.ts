@@ -35,6 +35,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
 
 @Component({
   selector: "app-primary-side-nav",
+  host: { class: "block h-full" },
   imports: [
     MatSidenavContainer,
     MatSidenav,
@@ -56,7 +57,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     GetBase64FromImageUrlPipe,
   ],
   template: `
-    <mat-sidenav-container *transloco="let t">
+    <mat-sidenav-container class="h-full" *transloco="let t">
       <mat-sidenav #sidenav mode="side" opened>
         <div class="flex flex-col justify-stretch h-full">
           @if (sideNavStore.avatar(); as avatar) {
@@ -65,12 +66,13 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
                 [color]="avatar.color"
                 [name]="avatar.name"
                 [size]="sideNavStore.resized() ? 'md' : 'lg'"
+                mode="filled-square"
                 [imageData]="avatar.imageUrl | getBase64FromImageUrl: 'large' | async"
-              ></app-avatar>
+              />
               @if (!sideNavStore.resized()) {
                 <div class="flex flex-col ">
-                  <div class="mat-label-small text-on-surface-variant">{{ t(avatar.type) | uppercase }} /</div>
-                  <div class="text-sm line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
+                  <div class="mat-label text-on-surface-variant">{{ t(avatar.type) | uppercase }} /</div>
+                  <div class="text-lg text-tertiary line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
                 </div>
               }
             </div>

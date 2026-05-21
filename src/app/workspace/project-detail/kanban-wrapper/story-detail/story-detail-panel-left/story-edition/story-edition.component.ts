@@ -50,7 +50,6 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { HttpClient } from "@angular/common/http";
 import { User } from "@tenzu/repository/user";
-import { ColorToKeyPipe } from "@tenzu/pipes/color-to-key.pipe";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
 import { ConfirmPopupComponent, ConfirmPopupData } from "@tenzu/directives/confirm";
@@ -68,7 +67,6 @@ import { MatDialog } from "@angular/material/dialog";
     TranslocoDirective,
     FormField,
     AvatarComponent,
-    ColorToKeyPipe,
   ],
   template: `
     @let _user = user();
@@ -76,13 +74,13 @@ import { MatDialog } from "@angular/material/dialog";
     <div class="flex flex-row gap-2 mb-2 min-h-8 justify-end">
       @if (onlineUsers().length > 1) {
         @for (user of onlineUsers(); track user.id) {
-          <app-avatar [name]="user.name" [color]="user.color | colorToKey" [rounded]="true" />
+          <app-avatar [name]="user.name" [color]="user.colorAvatar" mode="filled-circle" />
         }
       }
     </div>
 
     <form *transloco="let t" class="flex flex-col h-full gap-4">
-      <mat-form-field appearance="fill" class="title-field">
+      <mat-form-field class="title-field">
         <input [attr.aria-label]="t('workflow.detail_story.title')" matInput [formField]="storyForm.title" />
       </mat-form-field>
       <app-editor-collaboration-block
