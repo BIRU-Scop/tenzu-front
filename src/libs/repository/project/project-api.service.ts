@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,9 +21,11 @@
 
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AbstractApiService } from "../base";
+import { AbstractApiService, makeFormData } from "../base";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
 import type * as ProjectApiServiceType from "./project-api.type";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -47,17 +49,36 @@ export class ProjectApiService extends AbstractApiService<
     return `${this.baseUrl}/${params.projectId}`;
   }
 
-  override create(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override create(item: Partial<ProjectDetail>): Observable<ProjectDetail> {
+    throw new Error("Method not implemented.");
+  }
+
+  createWithLogo(
     newProject: CreateProjectPayload,
     params: ProjectApiServiceType.CreateEntityDetailParams,
   ): Observable<ProjectDetail> {
-    return super.create(newProject, params, undefined, { dataIsFormData: true });
+    const url = this.createUrl(params);
+    const data = makeFormData<CreateProjectPayload>(newProject);
+    return this.http.post<BaseDataModel<ProjectDetail>>(url, data).pipe(map((dataObject) => dataObject.data));
   }
 
   override patch(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    item: Partial<ProjectDetail>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    params: ProjectApiServiceType.PatchEntityDetailParams,
+  ): Observable<ProjectDetail> {
+    throw new Error("Method not implemented.");
+  }
+
+  patchWithLogo(
     item: UpdateProjectPayload,
     params: ProjectApiServiceType.PatchEntityDetailParams,
   ): Observable<ProjectDetail> {
-    return super.patch(item, params, undefined, { dataIsFormData: true });
+    const data = makeFormData<Partial<UpdateProjectPayload>>(item);
+    return this.http
+      .patch<BaseDataModel<ProjectDetail>>(this.patchUrl(params), data)
+      .pipe(map((dataObject) => dataObject.data));
   }
 }

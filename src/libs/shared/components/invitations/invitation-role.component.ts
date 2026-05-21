@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,20 +19,25 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit } from "@angular/core";
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from "@angular/core";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
+import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
 
 @Component({
   selector: "app-invitation-role",
-  imports: [FormsModule, RoleSelectorFieldComponent, ReactiveFormsModule],
+  imports: [RoleSelectorFieldComponent, FormField],
   template: `
-    @if (roleControl.value) {
-      <app-role-selector-field [formControl]="roleControl" [itemType]="itemType()" [userRole]="userRole()" />
+    @if (roleControlForm().value()) {
+      <app-role-selector-field
+        [formField]="roleControlForm"
+        [itemType]="itemType()"
+        [userRole]="userRole()"
+        (changed)="onRoleChanged($event)"
+      />
     }
   `,
   styles: ``,
@@ -41,7 +46,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InvitationRoleComponent implements OnInit {
+export class InvitationRoleComponent {
   workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
 
@@ -58,21 +63,22 @@ export class InvitationRoleComponent implements OnInit {
       }
     }
   });
-  roleControl = new FormControl<Role["id"] | null>(null, { validators: [Validators.required] });
-
+  roleControlForm = form(signal<Role["id"] | null>(null), (path) => {
+    required(path);
+    disabled(path, () => this.invitation().status !== InvitationStatus.PENDING);
+    apply(
+      path,
+      roleSelectorFieldSchema(() => this.userRole()),
+    );
+  });
   constructor() {
     effect(() => {
       const invitation = this.invitation();
-      this.roleControl.reset(
-        { value: invitation.roleId, disabled: invitation.status !== InvitationStatus.PENDING },
-        { onlySelf: true, emitEvent: false },
-      );
+      this.roleControlForm().reset(invitation.roleId);
     });
   }
 
-  ngOnInit() {
-    return this.roleControl.valueChanges.pipe(filterNotNull()).subscribe(async (value: Role["id"]) => {
-      await this.invitationRepositoryService().patchRequest(this.invitation().id, { roleId: value });
-    });
+  async onRoleChanged(value: Role["id"]) {
+    await this.invitationRepositoryService().patchRequest(this.invitation().id, { roleId: value });
   }
 }

@@ -72,7 +72,14 @@ export class ProjectDetailComponent {
       .pipe(filterNotNull())
       .subscribe((project) => {
         this.sideNavStore.setAvatar(
-          project ? { name: project.name, type: "workspace.general_title.project", color: project.color } : undefined,
+          project
+            ? {
+                name: project.name,
+                type: "workspace.general_title.project",
+                color: project.color,
+                imageUrl: project.logo,
+              }
+            : undefined,
         );
       });
 

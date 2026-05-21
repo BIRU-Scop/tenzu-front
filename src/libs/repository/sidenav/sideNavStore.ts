@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -36,6 +36,7 @@ export type SideNavAvatar = {
   type: string;
   name: string;
   color: number;
+  imageUrl?: string;
 };
 
 const initialState = {

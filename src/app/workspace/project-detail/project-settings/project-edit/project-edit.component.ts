@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,19 +19,16 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, linkedSignal } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInput } from "@angular/material/input";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectRepositoryService, UpdateProjectPayload } from "@tenzu/repository/project";
 import { Router } from "@angular/router";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { tap } from "rxjs";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
@@ -41,6 +38,11 @@ import {
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-undo.component";
+import { form, FormField, maxLength, required, submit } from "@angular/forms/signals";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
+import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-project-edit",
@@ -60,6 +62,10 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
     ButtonSaveComponent,
     FormFooterSecondaryActionDirective,
     ButtonUndoComponent,
+    FormField,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
+    ProjectLogoInputComponent,
   ],
   template: `
     @let project = projectService.entityDetail();
@@ -75,27 +81,29 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
           "
         >
           <div class="flex flex-col gap-y-8 w-min">
-            <form class="flex flex-col gap-y-4" [formGroup]="form" (submit)="onSave(project)">
-              <div class="flex flex-row gap-4 items-center">
-                <app-avatar size="xl" [name]="form.controls.name.value!" [color]="project?.color || 0"></app-avatar>
-                <mat-form-field class="w-96">
-                  <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
-                  <input formControlName="name" matInput required placeholder="name" data-testid="project-name-input" />
-                  @if (form.controls.name.hasError("required")) {
-                    <mat-error>{{ t("project.settings.project_edit.errors.name_required") }}</mat-error>
-                  }
-                  @if (form.controls.name.hasError("maxlength")) {
-                    <mat-error>{{ t("project.settings.project_edit.errors.name_max_length") }}</mat-error>
-                  }
-                </mat-form-field>
-              </div>
-              <app-description-field
-                [options]="{ descriptionMaxLength: 200, maxRows: 8 }"
-                formControlName="description"
+            <form class="flex flex-col gap-y-4" (submit)="submit(project, $event)">
+              <app-project-logo-input
+                [(projectModel)]="projectModel"
+                [projectLogo]="projectModel().logo"
+                [projectLogoUrl]="project.logo"
+                (changed)="onLogoChange()"
               />
+              <mat-form-field class="w-96">
+                <mat-label>{{ t("project.settings.project_edit.name") }}</mat-label>
+                <input [formField]="projectForm.name" matInput placeholder="name" data-testid="project-name-input" />
+                @for (error of projectForm.name().errors(); track error.kind) {
+                  <mat-error>{{ t(error.message || "") }}</mat-error>
+                }
+              </mat-form-field>
+              <app-description-field [options]="{ maxRows: 8 }" [formField]="projectForm.description" />
               <app-form-footer>
-                <app-button-undo appFormFooterSecondaryAction (click)="reset()" [disabled]="form.pristine" />
-                <app-button-save [disabled]="form.pristine" />
+                <app-button-undo
+                  appFormFooterSecondaryAction
+                  (click)="reset()"
+                  [disabled]="!projectForm().dirty()"
+                  type="reset"
+                />
+                <app-button-save [disabled]="!projectForm().dirty() || projectForm().invalid()" type="submit" />
               </app-form-footer>
             </form>
             <app-delete-warning-button
@@ -112,7 +120,12 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
       </ng-container>
       <ng-template #noModifyPermission>
         <div class="flex flex-row gap-4 items-center" *transloco="let t">
-          <app-avatar size="xl" [name]="form.controls.name.value" [color]="project.color || 0"></app-avatar>
+          <app-avatar
+            size="xl"
+            [name]="projectForm.name().value()"
+            [color]="project.color || 0"
+            [imageData]="project.logo | getBase64FromImageUrl: 'large' | async"
+          ></app-avatar>
           {{ project.name }}
         </div>
       </ng-template>
@@ -124,36 +137,53 @@ import { ButtonUndoComponent } from "@tenzu/shared/components/ui/button/button-u
 export default class ProjectEditComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
 
+  translocoService = inject(TranslocoService);
   notificationService = inject(NotificationService);
   projectService = inject(ProjectRepositoryService);
   router = inject(Router);
-  fb = inject(FormBuilder);
-  form = this.fb.nonNullable.group({
-    name: ["", [Validators.required, Validators.maxLength(80)]],
-    description: [""],
-  });
-  constructor() {
-    toObservable(this.projectService.entityDetail)
-      .pipe(
-        filterNotNull(),
-        tap((project) =>
-          this.form.patchValue({
-            name: project.name,
-            description: project.description,
-          }),
-        ),
-      )
-      .subscribe();
-  }
 
-  async onSave(project: ProjectDetail) {
-    this.form.reset(this.form.value);
-    if (this.form.valid) {
-      await this.projectService.patchRequest(project.id, this.form.getRawValue(), { projectId: project.id });
+  projectModel = linkedSignal<UpdateProjectPayload>(() => {
+    const project = this.projectService.entityDetail();
+    return project
+      ? {
+          name: project.name,
+          description: project.description,
+          logo: undefined,
+          color: project.color,
+        }
+      : {
+          name: "",
+          description: "",
+          logo: "",
+          color: RandomColorService.randomColorPicker(),
+        };
+  });
+  projectForm = form(this.projectModel, (schemaPath) => {
+    required(schemaPath.name, { message: "form_errors.required" });
+    maxLength(schemaPath.name, 80, {
+      message: () =>
+        this.translocoService.translate("form_errors.max_length", {
+          number: 80,
+        }),
+    });
+
+    maxLength(schemaPath.description, 200, {
+      message: () =>
+        this.translocoService.translate("form_errors.max_length", {
+          number: 200,
+        }),
+    });
+  });
+
+  async submit(project: ProjectDetail, event: Event) {
+    event.preventDefault();
+    await submit(this.projectForm, async (form) => {
+      await this.projectService.patchRequestWithLogo(project.id, form().value(), { projectId: project.id });
       this.notificationService.success({
         title: "notification.action.changes_saved",
       });
-    }
+      this.reset();
+    });
   }
 
   async onDelete(item: ProjectDetail) {
@@ -168,7 +198,11 @@ export default class ProjectEditComponent {
   reset() {
     const selectedEntity = this.projectService.entityDetail();
     if (selectedEntity) {
-      this.form.reset({ ...selectedEntity });
+      this.projectForm().reset({ ...selectedEntity, logo: undefined });
     }
+  }
+
+  protected onLogoChange() {
+    this.projectForm().markAsDirty();
   }
 }

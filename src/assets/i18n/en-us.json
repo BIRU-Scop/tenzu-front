@@ -164,6 +164,13 @@
       }
     }
   },
+  "avatar": {
+    "max_size": "Image size must not exceed {{size}}",
+    "allowed_format": "Allowed formats: {{formats}}"
+  },
+  "chip": {
+    "remove_action": "Remove {{label}}"
+  },
   "commons": {
     "project": "Project",
     "projects": "Projects",
@@ -173,6 +180,7 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
+    "more": "More",
     "add": "Add",
     "undo": "Undo",
     "select_option": "Select an option"
@@ -197,7 +205,8 @@
   "form_errors": {
     "max_length": "Characters limit is {{length}}",
     "min_length": "Minimum characters limit is {{length}}",
-    "required": "This field is required"
+    "required": "This field is required",
+    "exceed_file_size": "{{var}} exceed the size of {{maxSize}}"
   },
   "environment": {
     "demo": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly. We do not keep your emails for any kind of marketing outreach.",

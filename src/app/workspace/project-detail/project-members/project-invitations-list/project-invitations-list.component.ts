@@ -22,7 +22,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
@@ -55,7 +54,7 @@ import { ActivatedRoute } from "@angular/router";
         >
           @let projectInvitations = projectInvitationRepositoryService.entities();
           @if (projectInvitations.length > 0) {
-            <div class="app-table" [@newItemsFlyIn]="projectInvitations.length">
+            <div class="app-table">
               <div class="app-table-row-group">
                 @for (invitation of projectInvitations; track invitation.id) {
                   <div class="app-table-row">
@@ -87,21 +86,6 @@ import { ActivatedRoute } from "@angular/router";
       </ng-container>
     }
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

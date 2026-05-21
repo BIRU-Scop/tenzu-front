@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,6 +30,12 @@ type JsonArray = Array<JsonValue>;
 
 type JsonValue = Primitive | JsonObject | JsonArray;
 
+export type FileValue = File | Blob | "";
+
+export type DataObject = Record<string, JsonValue | undefined | FileValue>;
+
 export type BaseDataModel<T> = {
   data: T;
 };
+
+export type ImageSizeFormat = "small" | "large" | "original";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -93,7 +93,7 @@ export type NameDialogData = {
       </mat-dialog-content>
       <mat-dialog-actions class="!flex-nowrap gap-4">
         <app-button-close mat-dialog-close translocoKey="commons.cancel" />
-        <app-button-add [translocoKey]="data.action" (click)="submit()" [disabled]="name.invalid" />
+        <app-button-add level="primary" [translocoKey]="data.action" (click)="submit()" [disabled]="name.invalid" />
       </mat-dialog-actions>
     </ng-container>
   `,

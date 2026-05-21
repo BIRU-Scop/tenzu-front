@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,13 +27,15 @@ import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatDivider } from "@angular/material/divider";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
+import { AsyncPipe, NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-detail/sidenav-list-workflow/sidenav-list-workflow.component";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-primary-side-nav",
+  host: { class: "block h-full" },
   imports: [
     MatSidenavContainer,
     MatSidenav,
@@ -51,9 +53,11 @@ import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-
     TitleCasePipe,
     TranslocoDirective,
     NgComponentOutlet,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
-    <mat-sidenav-container *transloco="let t">
+    <mat-sidenav-container class="h-full" *transloco="let t">
       <mat-sidenav #sidenav mode="side" opened>
         <div class="flex flex-col justify-stretch h-full">
           @if (sideNavStore.avatar(); as avatar) {
@@ -62,11 +66,13 @@ import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-
                 [color]="avatar.color"
                 [name]="avatar.name"
                 [size]="sideNavStore.resized() ? 'md' : 'lg'"
-              ></app-avatar>
+                mode="filled-square"
+                [imageData]="avatar.imageUrl | getBase64FromImageUrl: 'large' | async"
+              />
               @if (!sideNavStore.resized()) {
                 <div class="flex flex-col ">
-                  <div class="mat-label-small text-on-surface-variant">{{ t(avatar.type) | uppercase }} /</div>
-                  <div class="text-sm line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
+                  <div class="mat-label text-on-surface-variant">{{ t(avatar.type) | uppercase }} /</div>
+                  <div class="text-lg text-tertiary line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
                 </div>
               }
             </div>

@@ -28,7 +28,7 @@
     border-spacing: 0;
     table-layout: auto;
     white-space: normal;
-    background-color: var(--mat-table-background-color, var(--mat-sys-surface));
+    background-color: var(--mat-sys-background);
 
     .app-table-header-group {
       @apply table-header-group;

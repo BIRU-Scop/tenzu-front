@@ -57,7 +57,7 @@ import { MatIcon } from "@angular/material/icon";
     @let _currentRole = currentRole();
     @let projectDetail = currentProjectDetail();
     @if (_currentRole && projectDetail) {
-      <div class="flex flex-col gap-y-8" *transloco="let t">
+      <div class="flex flex-col gap-y-8 " *transloco="let t">
         <ng-container
           [appPermissionOrRedirect]="{
             requiredPermission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
@@ -66,7 +66,7 @@ import { MatIcon } from "@angular/material/icon";
           }"
         >
           <form
-            class="flex flex-col gap-y-2"
+            class="flex flex-col gap-y-2 "
             [formGroup]="form"
             (submit)="onSave({ values: form.getRawValue(), currentRole: _currentRole })"
           >
@@ -86,10 +86,11 @@ import { MatIcon } from "@angular/material/icon";
           </form>
           @if (_currentRole.editable) {
             <app-delete-warning-button
+              class="w-96"
               [translocoKeyTitle]="'project.settings.permissions.delete_role_title'"
               [translocoKeyWarningMessage]="'project.settings.permissions.delete_role_warning'"
               (popupConfirm)="deleteRole(_currentRole, projectDetail)"
-            ></app-delete-warning-button>
+            />
           }
         </ng-container>
       </div>

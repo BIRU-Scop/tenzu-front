@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -74,11 +74,6 @@ export const routes: Routes = [
       {
         path: "settings",
         loadChildren: () => import("./settings/routes").then((m) => m.routes),
-      },
-      {
-        path: "new-project",
-        loadComponent: () => import("./project/project-create/project-create.component"),
-        providers: [provideTranslocoScope("project")],
       },
     ],
   },

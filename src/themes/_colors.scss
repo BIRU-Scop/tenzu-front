@@ -1,0 +1,41 @@
+
+
+/*
+ * Copyright (C) 2026 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+@mixin tokens-defines() {
+    --color-1-background: light-dark(#fbd7cd,#fbd7cd) ;
+    --color-1-color: light-dark(#90481c,#90481c);
+    --color-2-background: light-dark(#f7d7dc,#f7d7dc) ;
+    --color-2-color: light-dark(#aa2850,#aa2850) ;
+    --color-3-background: light-dark(#f6d6f0,#f6d6f0) ;
+    --color-3-color: light-dark(#922ca4,#922ca4) ;
+    --color-4-background: light-dark(#c2ed7a,#c2ed7a) ;
+    --color-4-color: light-dark(#4e6324,#4e6324) ;
+    --color-5-background: light-dark(#bee4ff,#bee4ff) ;
+    --color-5-color: light-dark(#006385,#006385) ;
+    --color-6-background: light-dark(#d5dffb,#d5dffb) ;
+    --color-6-color: light-dark(#1c5da2,#1c5da2) ;
+    --color-7-background: light-dark(#b9f1b5,#b9f1b5) ;
+    --color-7-color: light-dark(#446442,#446442) ;
+    --color-8-background: light-dark(#f9dca1,#f9dca1) ;
+    --color-8-color: light-dark(#6d5a24,#6d5a24) ;
+}

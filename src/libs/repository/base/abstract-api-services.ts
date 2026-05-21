@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { makeOptions, QueryParams } from "./utils";
-import { BaseDataModel, JsonObject } from "./misc.model";
+import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
 
 type OptionRequest = {
   dataIsFormData?: boolean;
@@ -172,11 +172,14 @@ export abstract class AbstractApiService<
   }
 }
 
-function makeFormData<T extends JsonObject>(item: T): FormData {
+export function makeFormData<T extends DataObject>(item: T): FormData {
   const formData = new FormData();
   for (const [key, value] of Object.entries(item)) {
     if (value === undefined || value === null) {
       // Ignore null/undefined values
+    } else if (value instanceof File || value instanceof Blob) {
+      // Handle files
+      formData.append(key, value);
     } else if (typeof value === "object") {
       // Convert objects and tables to json string
       formData.append(key, JSON.stringify(value));

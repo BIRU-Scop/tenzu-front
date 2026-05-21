@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,9 @@
   opacity: 50%;
 }
 .cdk-drag-preview {
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--mat-sys-surface-container);
+  border-radius: var(--mat-sys-corner-medium);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);

@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { apply, form, required, submit, validate } from "@angular/forms/signals";
+import { apply, form, FormRoot, required, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService, UserStore } from "@tenzu/repository/user";
@@ -35,7 +35,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 
 @Component({
   selector: "app-reset-password-form",
-  imports: [FormsModule, ReactiveFormsModule, TranslocoDirective, ButtonComponent, PasswordFieldComponent],
+  imports: [FormsModule, ReactiveFormsModule, TranslocoDirective, ButtonComponent, PasswordFieldComponent, FormRoot],
   host: {
     class: "flex flex-col gap-y-4",
   },
@@ -44,7 +44,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
       <h1 class="mat-headline-medium">
         {{ t("resetPassword.choose_new_password") }}
       </h1>
-      <form (submit)="submit($event)" class="flex flex-col gap-8">
+      <form [formRoot]="resetPasswordForm" class="flex flex-col gap-8">
         <app-password-field
           class="flex"
           [formField]="resetPasswordForm.newPassword"
@@ -79,21 +79,48 @@ export default class ResetPasswordFormComponent {
   route = inject(ActivatedRoute);
 
   passwordModel = signal({ newPassword: "", repeatPassword: "" });
-  resetPasswordForm = form(this.passwordModel, (schemaPath) => {
-    apply(schemaPath.newPassword, passwordSchema({ enabledStrength: true }));
-    required(schemaPath.repeatPassword);
-    validate(schemaPath.repeatPassword, (context) => {
-      const password = context.valueOf(schemaPath.newPassword);
-      const repeatPassword = context.value();
-      return password && repeatPassword && password !== repeatPassword
-        ? {
-            path: schemaPath.repeatPassword,
-            kind: "passwordNotMatch",
-            message: "resetPassword.password_not_match",
+  resetPasswordForm = form(
+    this.passwordModel,
+    (schemaPath) => {
+      apply(schemaPath.newPassword, passwordSchema({ enabledStrength: true }));
+      required(schemaPath.repeatPassword);
+      validate(schemaPath.repeatPassword, (context) => {
+        const password = context.valueOf(schemaPath.newPassword);
+        const repeatPassword = context.value();
+        return password && repeatPassword && password !== repeatPassword
+          ? {
+              path: schemaPath.repeatPassword,
+              kind: "passwordNotMatch",
+              message: "resetPassword.password_not_match",
+            }
+          : undefined;
+      });
+    },
+    {
+      submission: {
+        action: async (form) => {
+          const values = form().value();
+          if (this.token) {
+            try {
+              const value = await lastValueFrom(this.userService.resetPassword(this.token, values.newPassword));
+              this.authService.setToken(value);
+              this.userStore.getMe();
+              this.router.navigateByUrl("/").then();
+            } catch (err) {
+              this.router.navigateByUrl("/reset-password").then();
+              if (err instanceof HttpErrorResponse) {
+                this.notificationService.error({
+                  title: "resetPassword.token_error." + err.error.error.detail,
+                  translocoTitle: true,
+                });
+              }
+              this.token_expired.set(true);
+            }
           }
-        : undefined;
-    });
-  });
+        },
+      },
+    },
+  );
 
   token: string | null = "";
   token_expired = model(false);
@@ -118,29 +145,5 @@ export default class ResetPasswordFormComponent {
       }
     });
     trackFormValidationEffect(this.resetPasswordForm);
-  }
-
-  async submit(event: SubmitEvent) {
-    event.preventDefault();
-    await submit(this.resetPasswordForm, async (form) => {
-      const values = form().value();
-      if (this.token) {
-        try {
-          const value = await lastValueFrom(this.userService.resetPassword(this.token, values.newPassword));
-          this.authService.setToken(value);
-          this.userStore.getMe();
-          this.router.navigateByUrl("/").then();
-        } catch (err) {
-          this.router.navigateByUrl("/reset-password").then();
-          if (err instanceof HttpErrorResponse) {
-            this.notificationService.error({
-              title: "resetPassword.token_error." + err.error.error.detail,
-              translocoTitle: true,
-            });
-          }
-          this.token_expired.set(true);
-        }
-      }
-    });
   }
 }

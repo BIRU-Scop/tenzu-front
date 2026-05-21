@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
+import { MatCard, MatCardActions, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StorySummary } from "@tenzu/repository/story";
@@ -32,7 +32,6 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
     MatCard,
     MatCardHeader,
     RouterLink,
-    MatCardContent,
     MatCardTitle,
     TranslocoDirective,
     StoryAssigneeComponent,
@@ -40,15 +39,14 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
   ],
   template: `
     @let _story = story();
-    <mat-card appearance="outlined" class="h-full" *transloco="let t; prefix: 'workflow.detail_story'">
+    <mat-card appearance="outlined" *transloco="let t; prefix: 'workflow.detail_story'">
       <mat-card-header>
         <mat-card-title
-          ><a [routerLink]="['../..', 'story', _story.ref]" class="line-clamp-2 w-fit"
-            ><span class="text-on-tertiary-container">#{{ _story.ref }}</span> {{ _story.title }}</a
+          ><a [routerLink]="['../..', 'story', _story.ref]" class="line-clamp-2 w-fit "
+            >#{{ _story.ref }} {{ _story.title }}</a
           ></mat-card-title
         >
       </mat-card-header>
-      <mat-card-content class="h-full"> </mat-card-content>
       <mat-card-actions>
         <app-story-assignee
           class="px-1"

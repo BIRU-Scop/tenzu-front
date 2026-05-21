@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,8 +26,8 @@
 }
 
 @mixin tokens-overrides() {
-  @include mat.tooltip-overrides((
-    container-color: var(--mat-sys-on-primary-container),
-    supporting-text-color: var(--mat-sys-surface),
-  ));
+  //@include mat.tooltip-overrides((
+  //  container-color: var(--mat-sys-on-primary-container),
+  //  supporting-text-color: var(--mat-sys-surface),
+  //));
 }

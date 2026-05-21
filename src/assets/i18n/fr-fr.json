@@ -164,6 +164,13 @@
       }
     }
   },
+  "avatar": {
+    "max_size": "La taille de l'image ne doit pas dépasser {{formats}}",
+    "allowed_format": "Formats autorisés : {{formats}}"
+  },
+  "chip": {
+    "remove_action": "Supprimer {{label}}"
+  },
   "commons": {
     "project": "Projet",
     "projects": "Projets",
@@ -175,6 +182,7 @@
     "edit": "Éditer",
     "add": "Ajouter",
     "undo": "Annuler",
+    "more": "Plus",
     "select_option": "Sélectionne une option"
   },
   "general": {
@@ -197,7 +205,8 @@
   "form_errors": {
     "max_length": "La limite de caractères est {{length}}",
     "min_length": "La limite minimale de caractères est {{length}}",
-    "required": "Ce champ est obligatoire"
+    "required": "Ce champ est obligatoire",
+    "exceed_file_size": "{{var}} dépasse la taille de {{maxSize}}"
   },
   "environment": {
     "demo": "Ceci est une version de démo du produit, destinée uniquement à du test. Toutes les données enregistrées seront régulièrement supprimées. Nous ne conservons aucune adresses e-mail à des fins marketing.",

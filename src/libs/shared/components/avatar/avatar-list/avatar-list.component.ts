@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -28,14 +28,9 @@ import { UserNested, UserStore } from "@tenzu/repository/user";
   selector: "app-avatar-list",
   imports: [MatTooltip, AvatarComponent],
   template: `
-    <div class="flex flex-row">
+    <div class="flex flex-row gap-1">
       @for (user of filteredUsernames().slice(0, userOverflowThreshold()); track user.fullName) {
-        <app-avatar
-          [matTooltip]="user.fullName"
-          [name]="user.fullName"
-          [rounded]="true"
-          [color]="user.color"
-        ></app-avatar>
+        <app-avatar [matTooltip]="user.fullName" [name]="user.fullName" mode="filled-circle" [color]="user.color" />
       }
       @if (filteredUsernames().length > userOverflowThreshold()) {
         @let hiddenNamesCount = filteredUsernames().length - userOverflowThreshold();
@@ -43,11 +38,11 @@ import { UserNested, UserStore } from "@tenzu/repository/user";
           <app-avatar
             [matTooltip]="hiddenUsersNames()"
             [name]="'+ ' + hiddenNamesCount"
-            [rounded]="true"
+            mode="filled-circle"
             [color]="1"
-          ></app-avatar>
+          />
         } @else {
-          <app-avatar [matTooltip]="hiddenUsersNames()" name="&hellip;" [rounded]="true" [color]="0"></app-avatar>
+          <app-avatar [matTooltip]="hiddenUsersNames()" name="&hellip;" mode="filled-circle" [color]="0" />
         }
       }
     </div>

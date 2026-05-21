@@ -63,7 +63,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
           <h1 class="mat-headline-medium grow">{{ t("project.members.title") }}</h1>
           <app-button-add
             translocoKey="project.members.invite_to_project"
-            level="primary"
+            level="tertiary"
             *appHasPermission="{ requiredPermission: ProjectPermissions.CREATE_MODIFY_MEMBER, actualEntity: project }"
             (click)="openInviteDialog()"
           />

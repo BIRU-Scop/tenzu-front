@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,12 +23,13 @@
 
 @mixin tokens-overrides {
   @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
     standard-height: 48px,
     mobile-height: 48px,
   ));
 }
+
 .mat-toolbar {
-  border-color: var(--mat-sys-primary);
-  box-shadow: 0 0 3px var(--mat-sys-primary);
-  @apply border-b border-x-0 border-t-0 border-solid;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
