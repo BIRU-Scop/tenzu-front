@@ -50,6 +50,10 @@
 }
 
 .mat-mdc-dialog-container {
+  .mat-mdc-dialog-surface {
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
+
   // For relative-positioned dialogs (no headline), bring content padding to the top
   .mat-mdc-dialog-content:first-child {
     padding-top: 24px;

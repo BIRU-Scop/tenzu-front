@@ -27,4 +27,9 @@
     item-label-text-color: var(--mat-sys-on-surface),
     item-icon-color: var(--mat-sys-on-surface-variant),
   ));
+
+  .mat-mdc-menu-panel,
+  .mat-mdc-autocomplete-panel {
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
 }

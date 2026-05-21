@@ -25,7 +25,7 @@ $list-item-spacing: 12px;
 
 @mixin tokens-overrides() {
   @include mat.list-overrides((
-    list-item-container-shape: var(--mat-sys-corner-medium),
+    list-item-container-shape: 0,
     list-item-supporting-text-color: var(--mat-sys-on-surface-variant),
     list-item-leading-icon-color: var(--mat-sys-on-surface),
     list-item-trailing-icon-color: var(--mat-sys-on-surface),

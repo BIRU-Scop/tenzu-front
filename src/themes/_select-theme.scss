@@ -32,6 +32,10 @@
     focused-arrow-color: var(--mat-sys-on-surface),
   ));
 
+  .mat-mdc-select-panel {
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
+
   @include mat.option-overrides((
     label-text-size : var(--mat-sys-body-medium-size),
     label-text-line-height : var(--mat-sys-body-line-heigh),
