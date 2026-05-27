@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,17 +19,14 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { Pipe, PipeTransform } from "@angular/core";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 
-export type StoryCommentNested = {
-  id: string;
-  text: string;
-  createdAt: string;
-  createdBy?: UserNested;
-};
-
-export type StoryComment = StoryCommentNested & {
-  modifiedAt?: string;
-  deletedAt?: string;
-  deletedBy?: UserNested;
-};
+@Pipe({
+  name: "workspaceUrl",
+})
+export class WorkspaceUrlPipe implements PipeTransform {
+  transform(value: { workspace: WorkspaceLinkNested }) {
+    return `/workspace/${value.workspace.id}`;
+  }
+}

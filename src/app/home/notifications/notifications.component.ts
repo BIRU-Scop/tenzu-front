@@ -25,7 +25,7 @@ import { NotificationsComponentService } from "./notifications-component.service
 import { Notification } from "@tenzu/repository/notifications";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { MatTooltip } from "@angular/material/tooltip";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
@@ -35,22 +35,18 @@ import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { StoryNamePipe } from "@tenzu/pipes/story-name.pipe";
-import { StoryUrlPipe } from "@tenzu/pipes/story-url.pipe";
+import { StoryUrlPipe } from "@tenzu/pipes/url/story-url.pipe";
+import { WorkspaceUrlPipe } from "@tenzu/pipes/url/workspace-url.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 @Component({
   selector: "app-notification-unit",
   standalone: true,
 
-  imports: [
-    AvatarComponent,
-    MatTooltip,
-    TranslocoDirective,
-    RouterLink,
-    SafeHtmlPipe,
-    MatBadge,
-    StoryNamePipe,
-    StoryUrlPipe,
-  ],
+  imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe, MatBadge],
+  providers: [StoryNamePipe, StoryUrlPipe, ProjectLandingPageUrl, WorkspaceUrlPipe, FileSizePipe],
   template: `
     @let notif = notification();
     <div
@@ -62,12 +58,14 @@ import { StoryUrlPipe } from "@tenzu/pipes/story-url.pipe";
       [class.opacity-60]="!!notif.readAt"
     >
       @let context = getContext(notif);
-      <app-avatar
-        [name]="context.user.fullName"
-        [matTooltip]="context.user.fullName"
-        [color]="context.user.color"
-        mode="filled-circle"
-      ></app-avatar>
+      @if (context.user) {
+        <app-avatar
+          [name]="context.user.fullName"
+          [matTooltip]="context.user.fullName"
+          [color]="context.user.color"
+          [mode]="'filled-circle'"
+        />
+      }
       <div class="w-full mr-2">
         <p
           class="text-on-surface-variant"
@@ -76,12 +74,12 @@ import { StoryUrlPipe } from "@tenzu/pipes/story-url.pipe";
           [matBadgeHidden]="!!notif.readAt"
           [innerHTML]="t(context.translateKey, context.params) | safeHtml"
         ></p>
-        @if (context.link) {
-          <a [routerLink]="notif.content | storyUrl" class="line-clamp-1">
-            {{ notif.content.story | storyName }}
+        @if (context.link.url) {
+          <a [routerLink]="context.link.url" class="line-clamp-1">
+            {{ context.link.label }}
           </a>
         } @else {
-          <span class="line-clamp-1">{{ notif.content.story | storyName }} </span>
+          <span class="line-clamp-1">{{ context.link.label }} </span>
         }
       </div>
     </div>
@@ -93,19 +91,28 @@ export class NotificationUnitComponent {
   notificationsComponentService = inject(NotificationsComponentService);
   notification = input.required<Notification>();
   read = output();
+  readonly storyNamePipe = inject(StoryNamePipe);
+  readonly storyUrlPipe = inject(StoryUrlPipe);
+  readonly projectLandingPageUrl = inject(ProjectLandingPageUrl);
+  readonly workspaceUrlPipe = inject(WorkspaceUrlPipe);
+  readonly translocoService = inject(TranslocoService);
+  readonly fileSizePipe = inject(FileSizePipe);
+  readonly configAppService = inject(ConfigAppService);
 
   getContext(notification: Notification): {
-    user: UserNested;
+    user?: UserNested;
     params: Record<string, string>;
     translateKey: string;
-    link: boolean;
+    link: { url?: string; label: string };
   } {
     const translateKey = `notifications.types.${notification.type}`;
-    const response = { link: true };
     switch (notification.type) {
       case "stories.assign": {
         return {
-          ...response,
+          link: {
+            url: this.storyUrlPipe.transform(notification.content),
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
           ...(this.notificationsComponentService.isCurrentUser(notification)
             ? {
                 translateKey: translateKey + ".self",
@@ -121,7 +128,10 @@ export class NotificationUnitComponent {
       }
       case "stories.unassign": {
         return {
-          ...response,
+          link: {
+            url: this.storyUrlPipe.transform(notification.content),
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
           ...(this.notificationsComponentService.isCurrentUser(notification)
             ? {
                 translateKey: translateKey + ".self",
@@ -138,7 +148,10 @@ export class NotificationUnitComponent {
       case "stories.status_change": {
         const user = notification.content.changedBy;
         return {
-          ...response,
+          link: {
+            url: this.storyUrlPipe.transform(notification.content),
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
           ...{
             translateKey: translateKey,
             params: { fullName: user.fullName, status: notification.content.status },
@@ -149,24 +162,81 @@ export class NotificationUnitComponent {
       case "stories.delete": {
         const user = notification.content.deletedBy;
         return {
-          ...response,
+          link: {
+            url: undefined,
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
           ...{
             translateKey: translateKey,
             params: { fullName: user.fullName },
             user: user,
-            link: false,
           },
         };
       }
       case "stories.workflow_change": {
         const user = notification.content.changedBy;
         return {
-          ...response,
+          link: {
+            url: this.storyUrlPipe.transform(notification.content),
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
           ...{
             translateKey: translateKey,
-            params: { fullName: user.fullName, status: notification.content.status },
+            params: {
+              fullName: user.fullName,
+              status: notification.content.status,
+              workflow: notification.content.workflow,
+            },
             user: user,
-            workflow: notification.content.workflow,
+          },
+        };
+      }
+      case "story_comment.create": {
+        const user = notification.content.commentedBy;
+        return {
+          link: {
+            url: this.storyUrlPipe.transform(notification.content),
+            label: this.storyNamePipe.transform(notification.content.story),
+          },
+          ...{
+            translateKey: translateKey,
+            params: { fullName: user.fullName },
+            user: user,
+          },
+        };
+      }
+      case "project_importation.fail": {
+        return {
+          link: {
+            url: this.workspaceUrlPipe.transform(notification.content),
+            label: this.translocoService.translate("workspace.general_title.named_workspace", {
+              name: notification.content.workspace.name,
+            }),
+          },
+          ...{
+            user: undefined,
+            translateKey: translateKey,
+            params: { fileName: notification.content.projectImportation.sourceName },
+          },
+        };
+      }
+      case "project_importation.warning.file_too_big": {
+        return {
+          link: {
+            url: this.projectLandingPageUrl.transform(notification.content.project),
+            label: this.translocoService.translate("project.general_title.named_project", {
+              name: notification.content.project.name,
+            }),
+          },
+          ...{
+            user: undefined,
+            translateKey: translateKey,
+            params: {
+              fileName: notification.content.projectImportation.sourceName,
+              errorFileName: notification.content.fileName,
+              errorFileSize: this.fileSizePipe.transform(notification.content.fileSize),
+              maxFileSize: this.fileSizePipe.transform(this.configAppService.config().maxUploadFileSize || 0),
+            },
           },
         };
       }

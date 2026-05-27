@@ -40,7 +40,8 @@
       "delete_project_membership_self": "Has sido eliminado del proyecto {{name}}",
       "update_workspace_membership": "Tu rol para el espacio de trabajo {{name}} ahora es {{role}}.",
       "delete_workspace_membership_self": "Has sido eliminado del espacio de trabajo {{name}}",
-      "update_project_role": "Tu rol {{role}} para el proyecto {{name}} ha sido editado"
+      "update_project_role": "Tu rol {{role}} para el proyecto {{name}} ha sido editado",
+      "importation_success": "La importación del archivo {{fileName}} ha finalizado"
     }
   },
   "notifications": {
@@ -57,7 +58,9 @@
       "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> cambió el estado de la historia a <span class='text-on-background'>{{status}}</span>",
       "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> comentó la historia",
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> X eliminó la historia {{story}}",
-      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> ha movido la historia al estado <span class='text-on-background'>{{status}}</span> en el kanban  <span class='text-on-background'>{{workflow}}</span>"
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> ha movido la historia al estado <span class='text-on-background'>{{status}}</span> en el kanban  <span class='text-on-background'>{{workflow}}</span>",
+      "project_importation.fail": "No se ha podido importar el archivo {{fileName}}",
+      "project_importation.warning.file_too_big": "Al importar {{fileName}}, no se ha podido importar el archivo {{errorFileName}} porque es demasiado grande ({{errorFileSize}} > {{maxFileSize}})"
     }
   },
   "component": {
@@ -165,7 +168,7 @@
     }
   },
   "avatar": {
-    "max_size": "El tamaño de la imagen no debe superar {{formats}}",
+    "max_size": "El tamaño de la imagen no debe superar {{size}}",
     "allowed_format": "Formatos permitidos: {{formats}}"
   },
   "chip": {

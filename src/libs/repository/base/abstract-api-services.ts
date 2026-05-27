@@ -39,6 +39,7 @@ export abstract class AbstractApiServiceDetail<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
+  CreatePayload extends DataObject = Partial<EntityDetailModel>,
 > {
   protected http = inject(HttpClient);
   protected configAppService = inject(ConfigAppService);
@@ -122,15 +123,15 @@ export abstract class AbstractApiServiceDetail<
   }
 
   create(
-    item: Partial<EntityDetailModel>,
+    item: CreatePayload,
     params?: CreateParams,
     queryParams?: QueryParams,
     options?: OptionRequest,
   ): Observable<EntityDetailModel> {
     const url = Object.keys(params || {}).length > 0 ? this.createUrl(params) : this.createUrl();
-    let data: FormData | Partial<EntityDetailModel>;
+    let data: FormData | CreatePayload;
     if (options?.dataIsFormData) {
-      data = makeFormData<Partial<EntityDetailModel>>(item);
+      data = makeFormData<CreatePayload>(item);
     } else {
       data = item;
     }
@@ -157,7 +158,16 @@ export abstract class AbstractApiService<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
-> extends AbstractApiServiceDetail<EntityDetailModel, GetParams, CreateParams, PutParams, PatchParams, DeleteParams> {
+  CreatePayload extends DataObject = Partial<EntityDetailModel>,
+> extends AbstractApiServiceDetail<
+  EntityDetailModel,
+  GetParams,
+  CreateParams,
+  PutParams,
+  PatchParams,
+  DeleteParams,
+  CreatePayload
+> {
   protected listUrl(params?: ListParams): string {
     return `${this.getBaseUrl(params)}`;
   }

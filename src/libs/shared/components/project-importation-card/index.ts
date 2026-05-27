@@ -19,17 +19,4 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
-
-export type StoryCommentNested = {
-  id: string;
-  text: string;
-  createdAt: string;
-  createdBy?: UserNested;
-};
-
-export type StoryComment = StoryCommentNested & {
-  modifiedAt?: string;
-  deletedAt?: string;
-  deletedBy?: UserNested;
-};
+export * from "./project-importation-card.component";

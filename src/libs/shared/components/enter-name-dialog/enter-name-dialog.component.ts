@@ -34,6 +34,7 @@ import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 type TranslocoParams = Record<string, string | number>;
 
@@ -107,7 +108,7 @@ export class EnterNameDialogComponent {
   readonly dialogRef = inject(MatDialogRef<EnterNameDialogComponent>);
   data = inject<NameDialogData>(MAT_DIALOG_DATA);
   fb = inject(FormBuilder);
-  readonly color = signal(Math.floor(Math.random() * (8 - 1) + 1));
+  readonly color = signal(RandomColorService.randomColorPicker());
   validators = this.data.validators || ([] as ValidatorConfig[]);
   name = this.fb.nonNullable.control(this.data.defaultValue || "", [
     ...this.validators.map((validator) => validator.validatorFn),

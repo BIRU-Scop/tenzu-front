@@ -56,6 +56,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-project-kanban",
@@ -335,7 +336,7 @@ export class ProjectKanbanComponent {
     });
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        const color = Math.floor(Math.random() * (8 - 1) + 1);
+        const color = RandomColorService.randomColorPicker();
         await this.projectKanbanService.createStatus({
           name: name,
           color,

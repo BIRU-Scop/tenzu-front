@@ -1,4 +1,7 @@
 {
+  "general_title": {
+    "named_project": "Projet {{name}}"
+  },
   "buttons": {
     "cancel": "Annuler",
     "save": "Enregistrer les modifications",
@@ -12,7 +15,21 @@
     "title": "Nouveau projet",
     "create_project": "Créer un projet",
     "name": "Nom",
-    "workspace_forbidden": "Tu n'as pas l'autorisation de créer un projet dans cet espace de travail."
+    "workspace_forbidden": "Tu n'as pas l'autorisation de créer un projet dans cet espace de travail.",
+    "import": {
+      "taiga": "Importer un projet depuis Taiga",
+      "taiga_doc": "Comment importer depuis Taiga ?",
+      "ongoing": "Transfert en cours…",
+      "failed": "Échec de l'importation",
+      "failed_details": "Détails",
+      "failed_redo": "Réimportez le fichier",
+      "errors": {
+        "422": "Fichier invalide, l'erreur est \"{{error}}\"",
+        "file_validation_failed": "L'importation de {{fileName}} a échoué car le format n'est pas correct.",
+        "server_error_while_processing": "L'importation de {{fileName}} a échoué en raison d'une erreur serveur.<br/><b>Veuillez contacter l'équipe Tenzu</b> en fournissant votre fichier d'importation ainsi que tout détail utile sur votre configuration qui nous permettront de corriger le problème.",
+        "unknown": "L'importation de {{fileName}} a échoué en raison d'une erreur inconnue."
+      }
+    }
   },
   "settings": {
     "title": "Paramètres du projet",

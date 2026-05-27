@@ -19,17 +19,10 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { WorkspaceSummary } from "../workspace";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
-export type StoryCommentNested = {
-  id: string;
-  text: string;
-  createdAt: string;
-  createdBy?: UserNested;
-};
-
-export type StoryComment = StoryCommentNested & {
-  modifiedAt?: string;
-  deletedAt?: string;
-  deletedBy?: UserNested;
-};
+export type BaseParams = { projectImportationId: ProjectImportation["id"] };
+export type ListEntitiesSummaryParams = { workspaceId: WorkspaceSummary["id"] };
+export type CreateEntityDetailParams = ListEntitiesSummaryParams;
+export type DeleteEntityDetailParams = BaseParams;

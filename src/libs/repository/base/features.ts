@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -39,6 +39,9 @@ import {
 import { patchState, signalStoreFeature, withMethods, withState } from "@ngrx/signals";
 import { NotFoundEntityError } from "./errors";
 import { JsonObject } from "./misc.model";
+import { environment } from "../../../environments/environment";
+
+export const withTreeShakableDevTools = environment.storeWithDevTools;
 
 const defaultSelectId: SelectEntityId<{ id: EntityId }> = (entity) => entity.id;
 

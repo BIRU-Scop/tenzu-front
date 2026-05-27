@@ -19,13 +19,20 @@
  *
  */
 
-import { Pipe, PipeTransform } from "@angular/core";
-import { ProjectNested } from "@tenzu/repository/project";
-import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
+import { HttpErrorResponse } from "@angular/common/http";
 
-@Pipe({ name: "projectLandingPageUrl" })
-export class ProjectLandingPageUrl implements PipeTransform {
-  transform(project: ProjectNested) {
-    return getProjectLandingPageUrl(project);
+export function getLocError(errorResponse: HttpErrorResponse, location: string): string | undefined {
+  // Parse an HttpErrorResponse to the expected format to retrieve
+  // the error message on the chosen field location if there is one
+  try {
+    return errorResponse.error?.error?.detail?.find(
+      (detail: { ctx: object; msg: string; type: string; loc: Array<string> }) =>
+        detail?.loc?.some((loc) => loc === location),
+    )?.msg;
+  } catch (e) {
+    if (e instanceof TypeError) {
+      return undefined;
+    }
+    throw e;
   }
 }

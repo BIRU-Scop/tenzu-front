@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,17 +19,13 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { Pipe, PipeTransform } from "@angular/core";
+import { ProjectLinkNested } from "@tenzu/repository/project";
+import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
-export type StoryCommentNested = {
-  id: string;
-  text: string;
-  createdAt: string;
-  createdBy?: UserNested;
-};
-
-export type StoryComment = StoryCommentNested & {
-  modifiedAt?: string;
-  deletedAt?: string;
-  deletedBy?: UserNested;
-};
+@Pipe({ name: "projectLandingPageUrl" })
+export class ProjectLandingPageUrl implements PipeTransform {
+  transform(project: ProjectLinkNested) {
+    return getProjectLandingPageUrl(project);
+  }
+}
