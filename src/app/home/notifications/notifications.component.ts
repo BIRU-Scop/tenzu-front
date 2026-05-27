@@ -182,7 +182,11 @@ export class NotificationUnitComponent {
           },
           ...{
             translateKey: translateKey,
-            params: { fullName: user.fullName, status: notification.content.status },
+            params: {
+              fullName: user.fullName,
+              status: notification.content.status,
+              workflow: notification.content.workflow,
+            },
             user: user,
           },
         };
@@ -220,7 +224,7 @@ export class NotificationUnitComponent {
         return {
           link: {
             url: this.projectLandingPageUrl.transform(notification.content.project),
-            label: this.translocoService.translate("workspace.general_title.named_workspace", {
+            label: this.translocoService.translate("project.general_title.named_project", {
               name: notification.content.project.name,
             }),
           },

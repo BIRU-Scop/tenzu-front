@@ -28,10 +28,10 @@ const MIN_COLOR = 1;
 })
 export class RandomColorService {
   public static randomColorPicker(): number {
-    return Math.floor(Math.random() * (MAX_COLOR - MIN_COLOR) + MIN_COLOR);
+    return Math.floor(Math.random() * (MAX_COLOR + 1 - MIN_COLOR) + MIN_COLOR);
   }
   public static castToColor(value: number): number {
-    const range = MAX_COLOR - MIN_COLOR;
+    const range = MAX_COLOR + 1 - MIN_COLOR;
     return value - Math.floor(value / range) * range + MIN_COLOR;
   }
 }

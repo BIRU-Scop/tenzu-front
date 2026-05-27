@@ -63,7 +63,7 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./home/home.component"),
-    providers: [provideTranslocoScope("home"), ...providePluginsTransloco()],
+    providers: [provideTranslocoScope("home"), provideTranslocoScope("project"), ...providePluginsTransloco()],
     canActivate: [loginGuard],
     canActivateChild: [loginGuard],
     children: [

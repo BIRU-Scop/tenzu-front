@@ -48,7 +48,7 @@ export type ProjectImportationErrorDialogData = {
 };
 
 @Component({
-  selector: "app-project-create-dialog",
+  selector: "app-project-importation-error-dialog",
   imports: [
     MatDialogContent,
     MatDialogActions,

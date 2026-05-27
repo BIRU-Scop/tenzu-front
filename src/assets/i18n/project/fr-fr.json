@@ -1,4 +1,7 @@
 {
+  "general_title": {
+    "named_project": "Projet {{name}}"
+  },
   "buttons": {
     "cancel": "Annuler",
     "save": "Enregistrer les modifications",

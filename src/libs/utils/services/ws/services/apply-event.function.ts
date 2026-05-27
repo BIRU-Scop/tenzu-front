@@ -400,7 +400,11 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
       };
       importationRepositoryService.deleteEntitySummary(content);
       dialog.openDialogs
-        .filter((value) => value.componentInstance instanceof ProjectImportationErrorDialog)
+        .filter(
+          (value) =>
+            value.componentInstance instanceof ProjectImportationErrorDialog &&
+            value.componentInstance.data.projectImportation().id === content.projectImportationId,
+        )
         .forEach((dialog) => {
           dialog.close();
         });

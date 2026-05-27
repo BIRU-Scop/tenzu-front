@@ -53,7 +53,6 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
     @let _name = "Lorem Ipsum";
     @let _color = color();
     @let _description = "Lorem Ipsum dolor sit amet";
-    @let _workspaceId = workspaceId();
     @let _importation = projectImportation();
     <!--    TODO if error, card border error color -->
     <mat-card appearance="outlined" class="min-h-[100px] w-[200px]" *transloco="let t">
