@@ -1,6 +1,7 @@
 {
   "general_title": {
     "workspace": "Espacio de trabajo",
+    "named_workspace": "Espacio de trabajo {{name}}",
     "workspaces": "Espacios de trabajo",
     "workspace_list_projects": "Proyectos",
     "workspace_settings": "Configuraciones",

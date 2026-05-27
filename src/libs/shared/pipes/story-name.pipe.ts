@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,13 +20,13 @@
  */
 
 import { Pipe, PipeTransform } from "@angular/core";
-import { StorySummary } from "@tenzu/repository/story";
+import { StoryNested } from "@tenzu/repository/story";
 
 @Pipe({
   name: "storyName",
 })
 export class StoryNamePipe implements PipeTransform {
-  transform(value: StorySummary) {
+  transform(value: StoryNested) {
     return `#${value.ref} ${value.title}`;
   }
 }

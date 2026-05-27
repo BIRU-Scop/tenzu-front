@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 import type * as StoryApiServiceType from "./story-api.type";
 import { Injectable } from "@angular/core";
-import { StorySummary, StoryAssign, StoryCreate, StoryDetail, StoryReorderPayload, StoryUpdate } from "./story.model";
+import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayload } from "./story.model";
 import { AbstractApiService } from "../base";
 import { UserNested } from "@tenzu/repository/user";
 import { Observable } from "rxjs";
@@ -38,7 +38,8 @@ export class StoryApiService extends AbstractApiService<
   StoryApiServiceType.CreateEntityDetailParams,
   StoryApiServiceType.PutEntityDetailParams,
   StoryApiServiceType.PatchEntityDetailParams,
-  StoryApiServiceType.DeleteEntityDetailParams
+  StoryApiServiceType.DeleteEntityDetailParams,
+  StoryCreatePayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}`;
 
@@ -54,14 +55,14 @@ export class StoryApiService extends AbstractApiService<
     return this.listUrl(params);
   }
 
-  override create(story: StoryCreate, params: StoryApiServiceType.CreateEntityDetailParams) {
+  override create(story: StoryCreatePayload, params: StoryApiServiceType.CreateEntityDetailParams) {
     return super.create(story, params);
   }
 
   override list(params: StoryApiServiceType.ListEntitiesSummaryParams, queryParams: { limit: number; offset: number }) {
     return super.list(params, queryParams);
   }
-  override patch(story: StoryUpdate, params: StoryApiServiceType.PatchEntityDetailParams) {
+  override patch(story: Partial<StoryDetail>, params: StoryApiServiceType.PatchEntityDetailParams) {
     return super.patch(story, params);
   }
 

@@ -19,17 +19,11 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { signalStore } from "@ngrx/signals";
+import { withEntityListFeature } from "../base/features";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
-export type StoryCommentNested = {
-  id: string;
-  text: string;
-  createdAt: string;
-  createdBy?: UserNested;
-};
-
-export type StoryComment = StoryCommentNested & {
-  modifiedAt?: string;
-  deletedAt?: string;
-  deletedBy?: UserNested;
-};
+export const ProjectImportationEntitiesStore = signalStore(
+  { providedIn: "root" },
+  withEntityListFeature<ProjectImportation>(),
+);

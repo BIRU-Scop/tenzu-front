@@ -40,7 +40,8 @@
       "delete_project_membership_self": "Tu as été retiré du projet {{name}}",
       "update_workspace_membership": "Ton rôle dans l'espace de travail {{name}} est désormais {{role}}",
       "delete_workspace_membership_self": "Tu as été retiré de l'espace de travail {{name}}",
-      "update_project_role": "Ton rôle {{role}} au sein du projet {{name}} a été édité"
+      "update_project_role": "Ton rôle {{role}} au sein du projet {{name}} a été édité",
+      "importation_success": "L'import du fichier {{fileName}} est terminé"
     }
   },
   "notifications": {
@@ -57,7 +58,9 @@
       "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> a changé le statut de la story en <span class='text-on-background'>{{status}}</span>",
       "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> a commenté la story",
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> a supprimé la story {{story}}",
-      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>"
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>",
+      "project_importation.fail": "L'importation du fichier {{fileName}} a échouée",
+      "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})"
     }
   },
   "component": {
@@ -165,7 +168,7 @@
     }
   },
   "avatar": {
-    "max_size": "La taille de l'image ne doit pas dépasser {{formats}}",
+    "max_size": "La taille de l'image ne doit pas dépasser {{size}}",
     "allowed_format": "Formats autorisés : {{formats}}"
   },
   "chip": {

@@ -25,6 +25,7 @@ import { StoryAssign, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repos
 import {
   NotificationEventType,
   ProjectEventType,
+  ProjectImportationEventType,
   ProjectInvitationEventType,
   ProjectMembershipEventType,
   ProjectRoleEventType,
@@ -75,6 +76,13 @@ import { WorkspacePermissions } from "@tenzu/repository/permission/permission.mo
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
+import {
+  ImportationStatus,
+  ProjectImportation,
+  ProjectImportationRepositoryService,
+} from "@tenzu/repository/importation";
+import { MatDialog } from "@angular/material/dialog";
+import { ProjectImportationErrorDialog } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -375,6 +383,64 @@ export function applyStoryCommentEvent(message: WSResponseEvent<unknown>) {
         }
         break;
       }
+    }
+  }
+}
+
+export async function applyProjectImportationEvent(message: WSResponseEvent<unknown>) {
+  const importationRepositoryService = inject(ProjectImportationRepositoryService);
+  const dialog = inject(MatDialog);
+  const notificationService = inject(NotificationService);
+
+  switch (message.event.type) {
+    case ProjectImportationEventType.DeleteProjectImportation: {
+      const content = message.event.content as {
+        projectImportationId: ProjectImportation["id"];
+        workspaceId: WorkspaceSummary["id"];
+      };
+      importationRepositoryService.deleteEntitySummary(content);
+      dialog.openDialogs
+        .filter(
+          (value) =>
+            value.componentInstance instanceof ProjectImportationErrorDialog &&
+            value.componentInstance.data.projectImportation().id === content.projectImportationId,
+        )
+        .forEach((dialog) => {
+          dialog.close();
+        });
+      break;
+    }
+    case ProjectImportationEventType.UpdateProjectImportation: {
+      const content = message.event.content as {
+        projectImportation: ProjectImportation;
+        workspaceId: WorkspaceSummary["id"];
+      };
+      if (content.projectImportation.status === ImportationStatus.SUCCESS) {
+        importationRepositoryService.deleteEntitySummary({
+          projectImportationId: content.projectImportation.id,
+          workspaceId: content.workspaceId,
+        });
+
+        notificationService.success({
+          title: "notification.events.importation_success",
+          translocoTitleParams: {
+            fileName: content.projectImportation.sourceName,
+          },
+        });
+      } else {
+        importationRepositoryService.updateEntitySummary({
+          projectImportation: content.projectImportation,
+          workspaceId: content.workspaceId,
+        });
+      }
+      break;
+    }
+    case ProjectImportationEventType.CreateProjectImportation: {
+      const content = message.event.content as {
+        projectImportation: ProjectImportation;
+        workspaceId: WorkspaceSummary["id"];
+      };
+      importationRepositoryService.addEntitySummary(content);
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,13 +24,15 @@ import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 import { ProjectDetail } from "@tenzu/repository/project";
 
-export type StorySummary = {
+export type StoryNested = {
   ref: number;
   title: string;
-  version: number;
-  description: string | null;
   workflowId: Workflow["id"];
   projectId: ProjectDetail["id"];
+};
+
+export type StorySummary = StoryNested & {
+  version: number;
   statusId: StatusSummary["id"];
   assigneeIds: Array<User["id"]>;
 };
@@ -67,9 +69,7 @@ export type StoryReorderPayloadEvent = StoryReorderPayload & {
   status: StatusSummary;
 };
 
-export type StoryCreate = Pick<StorySummary, "title" | "statusId"> & Partial<Pick<StorySummary, "description">>;
-
-export type StoryUpdate = Partial<StoryDetail>;
+export type StoryCreatePayload = Pick<StorySummary, "title" | "statusId">;
 
 export type StoryAssign = {
   user: UserNested;

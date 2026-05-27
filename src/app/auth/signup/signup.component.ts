@@ -50,6 +50,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
 import { TitleCasePipe } from "@angular/common";
+import { getLocError } from "@tenzu/utils/functions/errors";
 
 @Component({
   selector: "app-signup",
@@ -217,7 +218,7 @@ export default class SignupComponent {
               }),
             );
           } catch (error) {
-            if (error instanceof HttpErrorResponse && error.status === 422 && this.authService.isPasswordError(error)) {
+            if (error instanceof HttpErrorResponse && error.status === 422 && getLocError(error, "password")) {
               debug("error-422", "password", error);
               this.authConfigStore.setFormHasError(true);
               return [{ fieldTree: form.password, kind: "password-rejected", message: "auth.signup.errors.422" }];

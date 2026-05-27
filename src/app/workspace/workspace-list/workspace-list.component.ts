@@ -41,7 +41,9 @@ import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-workspace-list",
@@ -54,6 +56,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
     ActionCardComponent,
     ButtonAddComponent,
     ProjectLandingPageUrl,
+    ProjectImportationCardComponent,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
@@ -97,9 +100,13 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
                   [landingPage]="project | projectLandingPageUrl"
                 />
               }
+              @for (projectImportation of workspace.userImportedProjects; track projectImportation.id) {
+                <app-project-importation-card [workspaceId]="workspace.id" [projectImportation]="projectImportation" />
+              }
               @if (
                 (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
-                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
+                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0) &&
+                (!workspace.userImportedProjects || workspace.userImportedProjects.length === 0)
               ) {
                 @if (workspace.userCanCreateProjects) {
                   <app-project-card [workspaceId]="workspace.id" />
@@ -191,7 +198,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        const color = Math.floor(Math.random() * (8 - 1) + 1);
+        const color = RandomColorService.randomColorPicker();
         await this.workspaceService.createRequest(
           {
             name,

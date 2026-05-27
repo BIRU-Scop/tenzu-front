@@ -35,7 +35,9 @@ import {
   ProjectCreateDialogData,
 } from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation";
 
 @Component({
   selector: "app-workspace-project-list",
@@ -46,6 +48,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
     ActionCardComponent,
     ButtonAddComponent,
     ProjectLandingPageUrl,
+    ProjectImportationCardComponent,
   ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     @let workspace = workspaceService.entityDetail();
@@ -101,6 +104,11 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
           }
         }
       }
+      @if (workspace) {
+        @for (projectImportation of projectImportationService.entities(); track projectImportation.id) {
+          <app-project-importation-card [workspaceId]="workspace.id" [projectImportation]="projectImportation" />
+        }
+      }
     </div>
   </div>`,
   styles: ``,
@@ -110,6 +118,7 @@ export default class WorkspaceProjectListComponent implements AfterViewInit {
   readonly workspaceService = inject(WorkspaceRepositoryService);
   readonly projectService = inject(ProjectRepositoryService);
   readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
+  readonly projectImportationService = inject(ProjectImportationRepositoryService);
   readonly breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -75,6 +75,11 @@ export enum ProjectEventType {
   DeleteProject = "projects.delete",
   UpdateProject = "projects.update",
 }
+export enum ProjectImportationEventType {
+  CreateProjectImportation = "projectimportations.create",
+  DeleteProjectImportation = "projectimportations.delete",
+  UpdateProjectImportation = "projectimportations.update",
+}
 export enum WorkspaceInvitationEventType {
   CreateWorkspaceInvitation = "workspaceinvitations.create",
   UpdateWorkspaceInvitation = "workspaceinvitations.update",
@@ -108,6 +113,7 @@ export enum FamilyEventType {
   StoryAssignment = "storiesassignments",
   StoryAttachment = "storiesattachments",
   StoryComment = "storiescomments",
+  ProjectImportation = "projectimportations",
   ProjectInvitation = "projectinvitations",
   ProjectMembership = "projectmemberships",
   ProjectRole = "projectroles",

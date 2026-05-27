@@ -38,7 +38,8 @@ export class ProjectApiService extends AbstractApiService<
   ProjectApiServiceType.CreateEntityDetailParams,
   ProjectApiServiceType.PutEntityDetailParams,
   ProjectApiServiceType.PatchEntityDetailParams,
-  ProjectApiServiceType.DeleteEntityDetailParams
+  ProjectApiServiceType.DeleteEntityDetailParams,
+  CreateProjectPayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
   protected override getBaseUrl(params: ProjectApiServiceType.ListEntitiesSummaryParams) {
@@ -49,26 +50,15 @@ export class ProjectApiService extends AbstractApiService<
     return `${this.baseUrl}/${params.projectId}`;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  override create(item: Partial<ProjectDetail>): Observable<ProjectDetail> {
-    throw new Error("Method not implemented.");
-  }
-
-  createWithLogo(
-    newProject: CreateProjectPayload,
+  override create(
+    item: CreateProjectPayload,
     params: ProjectApiServiceType.CreateEntityDetailParams,
+    options = { dataIsFormData: true },
   ): Observable<ProjectDetail> {
-    const url = this.createUrl(params);
-    const data = makeFormData<CreateProjectPayload>(newProject);
-    return this.http.post<BaseDataModel<ProjectDetail>>(url, data).pipe(map((dataObject) => dataObject.data));
+    return super.create(item, params, {}, options);
   }
 
-  override patch(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    item: Partial<ProjectDetail>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    params: ProjectApiServiceType.PatchEntityDetailParams,
-  ): Observable<ProjectDetail> {
+  override patch(): Observable<ProjectDetail> {
     throw new Error("Method not implemented.");
   }
 

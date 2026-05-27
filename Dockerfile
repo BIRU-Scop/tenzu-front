@@ -13,6 +13,7 @@ ENV NODE_ENV=production
 ARG RELEASE_VERSION
 ARG PLUGIN_PATH=""
 ARG PLUGIN_GIT=""
+ARG PLUGIN_VERSION=""
 
 WORKDIR /app
 ## replace args in environment file
@@ -21,6 +22,7 @@ RUN envsubst < src/environments/environment.production.ts > res.txt && \
 mv res.txt src/environments/environment.production.ts
 ## build the app in configuration passed
 RUN (if [ -n "${PLUGIN_GIT}" ] ; then git clone ${PLUGIN_GIT} src/plugins/${PLUGIN_PATH}; fi)  &&  \
+    (if [ -n "${PLUGIN_VERSION}" ] ; then cd src/plugins/${PLUGIN_PATH} && git checkout ${PLUGIN_VERSION} && cd /app; fi)  &&  \
     (if [ -n "${PLUGIN_PATH}" ] ; then npx npm run schematics:add-plugins --  --path ${PLUGIN_PATH}; fi) && \
     npx npm run build:production
 RUN  if [ -f "/app/.sentryclirc" ]; then \

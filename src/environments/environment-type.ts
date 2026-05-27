@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -18,7 +18,13 @@
  * You can contact BIRU at ask@biru.sh
  *
  */
+import { DevtoolsFeature } from "@angular-architects/ngrx-toolkit";
+import { EmptyFeatureResult, SignalStoreFeature } from "@ngrx/signals";
 
 export interface EnvironmentConfig {
   appVersion: string;
+  storeWithDevTools: (
+    name: string,
+    ...features: DevtoolsFeature[]
+  ) => SignalStoreFeature<EmptyFeatureResult, EmptyFeatureResult>;
 }

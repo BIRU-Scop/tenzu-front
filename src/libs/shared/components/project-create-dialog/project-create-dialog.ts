@@ -52,6 +52,7 @@ import {
   applyWhenValue,
 } from "@angular/forms/signals";
 import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
+import { ProjectImportationInputComponent } from "@tenzu/shared/components/project-importation-input/project-importation-input.component";
 
 export type ProjectCreateDialogData = {
   workspaceId: WorkspaceSummary["id"];
@@ -80,17 +81,24 @@ export type ProjectCreateDialogData = {
     FormField,
     MatSelectTrigger,
     ProjectLogoInputComponent,
+    ProjectImportationInputComponent,
   ],
   template: `
+    @let _selectedWorkspace = selectedWorkspace();
     <ng-container *transloco="let t">
       <form (submit)="submit($event)">
         <mat-dialog-content class="min-w-96">
           <div class="flex flex-col gap-y-2">
-            <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
+            <div class="flex flex-row gap-16 justify-between pb-4">
+              <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
+              @if (_selectedWorkspace) {
+                <app-project-importation-input [workspaceId]="_selectedWorkspace.id" (submitted)="dialogRef.close()" />
+              }
+            </div>
             <mat-form-field>
               <mat-label>{{ t("commons.workspace") }}</mat-label>
               <mat-select [formField]="projectForm.workspaceId">
-                <mat-select-trigger>{{ selectedWorkspace().name }}</mat-select-trigger>
+                <mat-select-trigger>{{ _selectedWorkspace?.name }}</mat-select-trigger>
                 @for (workspace of workspaceRepositoryService.entitiesSummary(); track workspace.id) {
                   <mat-option value="{{ workspace.id }}" [disabled]="!workspace.userCanCreateProjects">
                     <div class="flex gap-x-2 items-center">
@@ -196,7 +204,10 @@ export class ProjectCreateDialog {
   async submit(event: Event) {
     event.preventDefault();
     await submit(this.projectForm, async (form) => {
-      const project = await this.projectRepositoryService.createRequestWithLogo(form().value());
+      const value = form().value();
+      const project = await this.projectRepositoryService.createRequest(value, {
+        workspaceId: value.workspaceId,
+      });
       this.router.navigateByUrl(`/workspace/${project.workspaceId}/project/${project.id}/kanban/main`).then();
       this.dialogRef.close();
     });

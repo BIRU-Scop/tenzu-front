@@ -28,6 +28,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { MemberPermission } from "@tenzu/repository/membership";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation";
 
 @Component({
   selector: "app-workspace-detail",
@@ -53,13 +54,18 @@ export class WorkspaceDetailComponent {
   router = inject(Router);
   workspaceRepositoryService = inject(WorkspaceRepositoryService);
   projectRepositoryService = inject(ProjectRepositoryService);
+  projectImportationRepositoryService = inject(ProjectImportationRepositoryService);
   sideNavStore = inject(SideNavStore);
 
   constructor() {
     effect((onCleanup) => {
       const workspaceId = this.workspaceId();
       this.projectRepositoryService.listRequest({ workspaceId }).then();
-      onCleanup(() => this.projectRepositoryService.resetEntitySummaryList());
+      this.projectImportationRepositoryService.listRequest({ workspaceId }).then();
+      onCleanup(() => {
+        this.projectRepositoryService.resetEntitySummaryList();
+        this.projectImportationRepositoryService.resetEntitySummaryList();
+      });
     });
 
     toObservable(this.workspaceRepositoryService.entityDetail)

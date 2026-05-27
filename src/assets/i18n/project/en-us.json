@@ -1,4 +1,7 @@
 {
+  "general_title": {
+    "named_project": "Project {{name}}"
+  },
   "buttons": {
     "cancel": "Cancel",
     "save": "Save changes",
@@ -12,7 +15,21 @@
     "title": "New Project",
     "create_project": "Create project",
     "name": "Name",
-    "workspace_forbidden": "You don't have the permission to create a project in this workspace"
+    "workspace_forbidden": "You don't have the permission to create a project in this workspace",
+    "import": {
+      "taiga": "Import project from Taiga",
+      "taiga_doc": "How to import from Taiga?",
+      "ongoing": "Transfer in progress…",
+      "failed": "Import failed",
+      "failed_details": "Details",
+      "failed_redo": "Reimport the file",
+      "errors": {
+        "422": "Invalid file, error is \"{{error}}\"",
+        "file_validation_failed": "The import of {{fileName}} failed because the format is incorrect.",
+        "server_error_while_processing": "The import of {{fileName}} has failed due to a server error.<br/><b>Please contact the Tenzu team</b> and provide your import file along with any relevant details about your setup so that we can resolve the issue.",
+        "unknown": "The import of {{fileName}} failed because of an unknown error."
+      }
+    }
   },
   "settings": {
     "title": "Project settings",
