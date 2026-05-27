@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,9 @@
  */
 
 import { EnvironmentConfig } from "./environment-type";
+import { withDevtools } from "@angular-architects/ngrx-toolkit";
 
 export const environment: EnvironmentConfig = {
   appVersion: "dev",
+  storeWithDevTools: withDevtools,
 };

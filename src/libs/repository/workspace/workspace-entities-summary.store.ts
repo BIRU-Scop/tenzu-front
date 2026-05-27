@@ -21,12 +21,13 @@
 
 import { signalStore, withMethods } from "@ngrx/signals";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
-import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { withEntityDetailStore, withEntityListFeature, withTreeShakableDevTools } from "../base";
 import { ProjectNested } from "@tenzu/repository/project";
 import { ProjectImportationNested } from "@tenzu/repository/importation";
 
 export const WorkspaceEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
+  withTreeShakableDevTools("workspace-entities-summary"),
   withEntityListFeature<WorkspaceSummary>(),
   withMethods((store) => ({
     removeUserInvitedProjects(workspaceId: WorkspaceDetail["id"], projectId: ProjectNested["id"]) {
@@ -62,4 +63,8 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
   })),
 );
 
-export const WorkspaceDetailStore = signalStore({ providedIn: "root" }, withEntityDetailStore<WorkspaceDetail>());
+export const WorkspaceDetailStore = signalStore(
+  { providedIn: "root" },
+  withTreeShakableDevTools("workspace-detail"),
+  withEntityDetailStore<WorkspaceDetail>(),
+);
