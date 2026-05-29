@@ -38,7 +38,13 @@ export class ProjectImportationRepositoryService {
   entityMap = this.projectImportationEntitiesStore.entityMap;
 
   addEntitySummary(params: { projectImportation: ProjectImportation; workspaceId: WorkspaceSummary["id"] }): void {
-    this.workspaceService.addUserImportedProjects(params);
+    try {
+      this.workspaceService.addUserImportedProjects(params);
+    } catch (e) {
+      if (!(e instanceof NotFoundEntityError)) {
+        throw e;
+      }
+    }
     this.projectImportationEntitiesStore.addEntity(params.projectImportation);
   }
 
@@ -62,7 +68,13 @@ export class ProjectImportationRepositoryService {
     projectImportation: ProjectImportation;
     workspaceId: WorkspaceSummary["id"];
   }): ProjectImportation {
-    this.workspaceService.updateUserImportedProjects(params);
+    try {
+      this.workspaceService.updateUserImportedProjects(params);
+    } catch (e) {
+      if (!(e instanceof NotFoundEntityError)) {
+        throw e;
+      }
+    }
     try {
       this.projectImportationEntitiesStore.updateEntity(params.projectImportation.id, params.projectImportation);
     } catch (e) {
@@ -77,7 +89,13 @@ export class ProjectImportationRepositoryService {
     projectImportationId: ProjectImportation["id"];
     workspaceId: WorkspaceSummary["id"];
   }): void {
-    this.workspaceService.removeUserImportedProjects(params);
+    try {
+      this.workspaceService.removeUserImportedProjects(params);
+    } catch (e) {
+      if (!(e instanceof NotFoundEntityError)) {
+        throw e;
+      }
+    }
     try {
       return this.projectImportationEntitiesStore.deleteEntity(params.projectImportationId);
     } catch (e) {
