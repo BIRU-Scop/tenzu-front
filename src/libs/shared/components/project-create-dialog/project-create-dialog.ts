@@ -131,6 +131,7 @@ export type ProjectCreateDialogData = {
           <app-button-close mat-dialog-close translocoKey="commons.cancel" />
           <app-button-add
             translocoKey="project.new_project.create_project"
+            level="primary"
             type="submit"
             [disabled]="!projectForm().dirty() || projectForm().invalid()"
           />

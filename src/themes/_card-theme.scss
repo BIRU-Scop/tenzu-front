@@ -33,23 +33,32 @@
   ));
 }
 
-// Project card
-app-project-card .mat-mdc-card.mat-mdc-card-outlined {
-  .mat-mdc-card-header {
-    @apply px-3 pt-3 pb-1 items-center gap-2;
-    .mat-mdc-card-header-text {
-      @apply line-clamp-1 grow;
-    }
+// Project card & Importation card
+app-project-card,app-project-importation-card {
+  .mat-mdc-card.mat-mdc-card-outlined.mat-card-error {
+    @include mat.card-overrides((
+      outlined-outline-color: var(--mat-sys-error),
+    ));
   }
-  .mat-mdc-card-content {
-    @apply px-3 pb-3;
-    font-size: var(--mat-sys-body-small-size);
-    line-height: var(--mat-sys-body-small-line-height);
-    font-weight: var(--mat-sys-body-small-weight);
-    color: var(--mat-sys-on-surface-variant);
-    p {
-      @apply line-clamp-3;
-      min-height: 3lh;
+  .mat-mdc-card.mat-mdc-card-outlined {
+    .mat-mdc-card-header {
+      @apply px-3 pt-3 pb-1 items-center gap-2;
+      .mat-mdc-card-header-text {
+        @apply line-clamp-1 grow;
+      }
+    }
+
+    .mat-mdc-card-content {
+      @apply px-3 pb-3;
+      font-size: var(--mat-sys-body-small-size);
+      line-height: var(--mat-sys-body-small-line-height);
+      font-weight: var(--mat-sys-body-small-weight);
+      color: var(--mat-sys-on-surface-variant);
+
+      p {
+        @apply line-clamp-3;
+        min-height: 3lh;
+      }
     }
   }
 }

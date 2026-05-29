@@ -40,6 +40,7 @@ import { ResetService } from "@tenzu/repository/base/reset.service";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
+import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
 @Injectable({
   providedIn: "root",
@@ -110,7 +111,7 @@ export class AuthService {
   applyLogout() {
     this.clear();
     const navigationExtras: NavigationExtras =
-      this.router.url === "/"
+      this.router.url === HOMEPAGE_URL
         ? {}
         : {
             queryParams: { next: this.router.url },

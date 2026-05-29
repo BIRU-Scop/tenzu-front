@@ -7,6 +7,6 @@ export class MatIconRegistryConfig {
   iconRegistry = inject(MatIconRegistry);
 
   constructor() {
-    this.iconRegistry.setDefaultFontSetClass("material-symbols-outlined");
+    this.iconRegistry.setDefaultFontSetClass("material-symbols-rounded");
   }
 }

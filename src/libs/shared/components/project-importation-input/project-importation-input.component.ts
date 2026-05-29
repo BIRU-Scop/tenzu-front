@@ -43,7 +43,7 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
         (selectFile)="onFileSelected($event)"
       />
       @if (displayDoc()) {
-        <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small text-on-primary-container">{{
+        <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small">{{
           t("project.new_project.import.taiga_doc")
         }}</a>
       }
@@ -52,7 +52,7 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: "flex flex-col gap-1 items-end",
+    class: "flex flex-col gap-2 items-end",
   },
 })
 export class ProjectImportationInputComponent {
