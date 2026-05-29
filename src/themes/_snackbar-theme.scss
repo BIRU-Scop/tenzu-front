@@ -28,32 +28,36 @@
     supporting-text-color: var(--mat-sys-surface)
   ));
   .mdc-snackbar {
+    @include mat.icon-overrides((
+        color: var(--mat-snack-bar-supporting-text-color),
+    ));
     &.snackbar-info {
       @include mat.snack-bar-overrides((
         button-color: var(--mat-sys-tertiary),
         container-color: var(--mat-sys-secondary-container),
-        supporting-text-color: var(--mat-sys-secondary)
+        supporting-text-color: var(--mat-sys-on-secondary-container),
       ));
+
     }
     &.snackbar-error {
       @include mat.snack-bar-overrides((
         button-color: var(--mat-sys-error),
         container-color: var(--mat-sys-error-container),
-        supporting-text-color: var(--mat-sys-secondary)
+        supporting-text-color: var(--mat-sys-on-warning-container)
       ));
     }
     &.snackbar-warning {
       @include mat.snack-bar-overrides((
         button-color: var(--mat-sys-warning),
         container-color: var(--mat-sys-warning-container),
-        supporting-text-color: var(--mat-sys-secondary)
+        supporting-text-color: var(--mat-sys-on-warning-container)
       ));
     }
     &.snackbar-success {
       @include mat.snack-bar-overrides((
         button-color: var(--mat-sys-success),
         container-color: var(--mat-sys-success-container),
-        supporting-text-color: var(--mat-sys-secondary)
+        supporting-text-color: var(--mat-sys-on-success-container)
       ));
     }
   }
