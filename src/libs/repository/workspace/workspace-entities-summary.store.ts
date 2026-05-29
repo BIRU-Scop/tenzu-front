@@ -31,33 +31,32 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
   withEntityListFeature<WorkspaceSummary>(),
   withMethods((store) => ({
     removeUserInvitedProjects(workspaceId: WorkspaceDetail["id"], projectId: ProjectNested["id"]) {
-      const removedUserInvitedProjects = store
-        .entityMap()
-        [workspaceId].userInvitedProjects.filter((project) => project.id != projectId);
+      const workspace = store.assertEntity(workspaceId);
+      const removedUserInvitedProjects = workspace.userInvitedProjects.filter((project) => project.id != projectId);
       store.updateEntity(workspaceId, { userInvitedProjects: removedUserInvitedProjects });
     },
     addUserMemberProjects(workspaceId: WorkspaceDetail["id"], project: ProjectNested) {
-      const addedUserMemberProjects = [...store.entityMap()[workspaceId].userMemberProjects, project];
+      const workspace = store.assertEntity(workspaceId);
+      const addedUserMemberProjects = [...workspace.userMemberProjects, project];
       store.updateEntity(workspaceId, { userMemberProjects: addedUserMemberProjects });
     },
     addUserImportedProjects(workspaceId: WorkspaceDetail["id"], projectImportation: ProjectImportationNested) {
-      const addedUserImportedProjects = [...store.entityMap()[workspaceId].userImportedProjects, projectImportation];
+      const workspace = store.assertEntity(workspaceId);
+      const addedUserImportedProjects = [...workspace.userImportedProjects, projectImportation];
       store.updateEntity(workspaceId, { userImportedProjects: addedUserImportedProjects });
     },
     removeUserImportedProjects(workspaceId: WorkspaceDetail["id"], projectImportationId: ProjectNested["id"]) {
-      const removedUserImportedProjects = store
-        .entityMap()
-        [
-          workspaceId
-        ].userImportedProjects.filter((projectImportation) => projectImportation.id != projectImportationId);
+      const workspace = store.assertEntity(workspaceId);
+      const removedUserImportedProjects = workspace.userImportedProjects.filter(
+        (projectImportation) => projectImportation.id != projectImportationId,
+      );
       store.updateEntity(workspaceId, { userImportedProjects: removedUserImportedProjects });
     },
     updateUserImportedProjects(workspaceId: WorkspaceDetail["id"], newProjectImportation: ProjectImportationNested) {
-      const updateddUserImportedProjects = store
-        .entityMap()
-        [
-          workspaceId
-        ].userImportedProjects.map((importation) => (importation.id !== newProjectImportation.id ? importation : newProjectImportation));
+      const workspace = store.assertEntity(workspaceId);
+      const updateddUserImportedProjects = workspace.userImportedProjects.map((importation) =>
+        importation.id !== newProjectImportation.id ? importation : newProjectImportation,
+      );
       store.updateEntity(workspaceId, { userImportedProjects: updateddUserImportedProjects });
     },
   })),

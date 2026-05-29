@@ -391,7 +391,17 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
   const importationRepositoryService = inject(ProjectImportationRepositoryService);
   const dialog = inject(MatDialog);
   const notificationService = inject(NotificationService);
+  const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const router = inject(Router);
 
+  const content = message.event.content as {
+    workspaceId: WorkspaceSummary["id"];
+  };
+  const currentWorkspace = workspaceRepositoryService.entityDetail();
+
+  if (!(router.url === HOMEPAGE_URL || (currentWorkspace && content.workspaceId === currentWorkspace.id))) {
+    return;
+  }
   switch (message.event.type) {
     case ProjectImportationEventType.DeleteProjectImportation: {
       const content = message.event.content as {

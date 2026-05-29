@@ -54,9 +54,15 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
     @let _color = color();
     @let _description = "Lorem Ipsum dolor sit amet";
     @let _importation = projectImportation();
-    <!--    TODO if error, card border error color -->
-    <mat-card appearance="outlined" class="min-h-[100px] w-[200px]" *transloco="let t">
-      <div class="z-50 h-full w-full backdrop-blur-sm flex flex-col items-center justify-center absolute text-center">
+    <mat-card
+      appearance="outlined"
+      class="min-h-[100px] w-[200px]"
+      [class.mat-card-error]="_importation.status === ImportationStatus.FAILURE"
+      *transloco="let t"
+    >
+      <div
+        class="z-50 h-full w-full backdrop-blur-sm rounded-lg flex flex-col items-center justify-center absolute text-center"
+      >
         @if (_importation.status === ImportationStatus.FAILURE) {
           <div class="flex flex-row p-0.5">
             <mat-icon class="text-error pr-3 self-center" aria-hidden="true">warning</mat-icon>
@@ -81,7 +87,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
         }
       </div>
       <mat-card-header aria-hidden="true">
-        <app-avatar mat-card-avatar [name]="_name" [color]="_color" />
+        <app-avatar mat-card-avatar mode="filled-square" [name]="_name" [color]="_color" />
         <mat-card-title class="!contents min-h-[40px]">{{ _name }}</mat-card-title>
       </mat-card-header>
       <mat-card-content aria-hidden="true">
