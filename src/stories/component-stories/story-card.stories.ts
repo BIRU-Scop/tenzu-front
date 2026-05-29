@@ -36,6 +36,7 @@ import { StoryCardComponent } from "../../app/workspace/project-detail/kanban-wr
 import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { withTransloco } from "../storybook-providers";
+import { withDevToolsStub } from "@angular-architects/ngrx-toolkit";
 
 const members = [
   {
@@ -179,6 +180,7 @@ const meta: Meta<StoryStoryCardStorybookComponent> = {
         provideEnvironmentInitializer(() => {
           inject(ConfigAppService).config.set({
             env: "dev",
+            storeWithDevTools: withDevToolsStub,
             debug: false,
             wsUrl: "ws://localhost",
             api: { scheme: "http", baseDomain: "localhost", suffixDomain: "api", prefix: "v1" },
