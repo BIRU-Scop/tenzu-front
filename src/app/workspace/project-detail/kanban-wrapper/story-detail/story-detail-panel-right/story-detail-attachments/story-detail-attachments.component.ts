@@ -20,7 +20,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from "@angular/core";
-import { MatIconButton } from "@angular/material/button";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "src/libs/repository/story-attachment";
@@ -35,6 +34,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
+import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 
 @Component({
   selector: "app-story-detail-attachments",
@@ -44,7 +44,6 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
     MatExpansionPanelTitle,
     TranslocoDirective,
     MatIcon,
-    MatIconButton,
     MatIcon,
     TranslocoDatePipe,
     FileInputComponent,
@@ -52,6 +51,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
     MatMenuTrigger,
     MatMenuItem,
     ConfirmDirective,
+    ButtonMoreComponent,
   ],
   host: { class: "flex flex-col gap-y-4" },
   template: `
@@ -82,7 +82,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
                   <th class="app-table-header-cell">{{ t("workflow.detail_story.attachments.name") }}</th>
                   <th class="hidden 2xl:app-table-header-cell">{{ t("workflow.detail_story.attachments.size") }}</th>
                   <th class="hidden xl:app-table-header-cell">{{ t("workflow.detail_story.attachments.date") }}</th>
-                  <th class="app-table-header-cell sticky end-0 bg-surface-container !pe-0">
+                  <th class="app-table-header-cell sticky end-0  !pe-0">
                     <span class="sr-only">{{ t("workflow.detail_story.attachments.action") }}</span>
                   </th>
                 </tr>
@@ -97,7 +97,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
                     <td class="xl:app-table-cell hidden">
                       {{ storyAttachment.createdAt | translocoDate: { dateStyle: "short", timeStyle: "short" } }}
                     </td>
-                    <td class="app-table-cell  end-0 bg-surface-container !pe-0">
+                    <td class="app-table-cell  end-0  !pe-0">
                       <mat-menu #appMenu="matMenu">
                         <button mat-menu-item (click)="previewFile(storyAttachment)" type="button">
                           <mat-icon>visibility</mat-icon>
@@ -128,9 +128,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
                           </button>
                         }
                       </mat-menu>
-                      <button mat-icon-button [matMenuTriggerFor]="appMenu">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
+                      <app-button-more [matMenuTriggerFor]="appMenu" />
                     </td>
                   </tr>
                 }

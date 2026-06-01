@@ -157,7 +157,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                   <cdk-virtual-scroll-viewport [itemSize]="114" class="virtual-scroll">
                     <ul
                       [id]="status.id"
-                      class="stories-list flex flex-col items-center dark:bg-surface-dim mat-bg-surface-container"
+                      class="stories-list flex flex-col items-center mat-bg-surface-container"
                       cdkDropList
                       [cdkDropListData]="status"
                       [cdkDropListDisabled]="!hasModifyPermission || isLoading"

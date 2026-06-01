@@ -59,8 +59,8 @@ import { ActivatedRoute } from "@angular/router";
         />
 
         <div class="flex flex-row">
-          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-on-error-container align-middle">
+          <mat-icon class="mat-text-error pr-3 self-center">warning</mat-icon>
+          <p class="mat-body-medium mat-text-error align-middle">
             {{ t("settings.security.warning") }}
           </p>
         </div>

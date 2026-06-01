@@ -32,9 +32,10 @@ import {
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 
 type TranslocoParams = Record<string, string | number>;
 
@@ -65,8 +66,9 @@ export type NameDialogData = {
     MatLabel,
     ReactiveFormsModule,
     TranslocoDirective,
-    ButtonCloseComponent,
     ButtonAddComponent,
+    ButtonCancelComponent,
+    FormFooterComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -92,9 +94,11 @@ export type NameDialogData = {
           }
         </mat-form-field>
       </mat-dialog-content>
-      <mat-dialog-actions class="!flex-nowrap gap-4">
-        <app-button-close mat-dialog-close translocoKey="commons.cancel" />
-        <app-button-add level="primary" [translocoKey]="data.action" (click)="submit()" [disabled]="name.invalid" />
+      <mat-dialog-actions class="!flex-nowrap">
+        <app-form-footer>
+          <app-button-cancel appFormFooterSecondaryAction mat-dialog-close translocoKey="commons.cancel" />
+          <app-button-add level="primary" [translocoKey]="data.action" (click)="submit()" [disabled]="name.invalid" />
+        </app-form-footer>
       </mat-dialog-actions>
     </ng-container>
   `,

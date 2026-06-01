@@ -84,9 +84,7 @@ import { filter } from "rxjs/operators";
         </span>
       </div>
       @if (_comment.deletedAt) {
-        <span class="italic ms-10 text-on-surface-variant">{{
-          t("workflow.detail_story.comments.deleted_comment")
-        }}</span>
+        <span class="ms-10 mat-body-small !italic">{{ t("workflow.detail_story.comments.deleted_comment") }}</span>
       } @else {
         <div class="flex flex-row justify-between w-full gap-2">
           <form class="flex flex-col gap-4 w-full" (submit)="$event.preventDefault()">

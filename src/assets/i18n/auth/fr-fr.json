@@ -1,7 +1,7 @@
 {
   "login": {
     "action": "Se connecter",
-    "title": "Connecte-toi à ton compte Tenzu",
+    "title": "Connecte-toi à ton compte",
     "email_or_username": "Adresse e-mail ou nom d'utilisateur",
     "not_registered_yet": "Tu n'es pas encore inscrit ?",
     "create_account": "Créer un compte",
@@ -16,7 +16,7 @@
     "unknown_error_exit": "Merci de réessayer."
   },
   "signup": {
-    "title": "Créer un compte Tenzu",
+    "title": "Créer un compte",
     "create_account_email": "Créer un compte avec ton adresse e-mail.",
     "no_social_connect": "Pas d'option de connexion tierce disponible",
     "alternatives": "ou",

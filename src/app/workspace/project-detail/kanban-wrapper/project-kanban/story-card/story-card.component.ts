@@ -39,7 +39,7 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
   ],
   template: `
     @let _story = story();
-    <mat-card appearance="outlined" *transloco="let t; prefix: 'workflow.detail_story'">
+    <mat-card appearance="outlined" class="mat-bg-surface" *transloco="let t; prefix: 'workflow.detail_story'">
       <mat-card-header>
         <mat-card-title
           ><a [routerLink]="['../..', 'story', _story.ref]" class="line-clamp-2 w-fit "
@@ -48,11 +48,7 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
         >
       </mat-card-header>
       <mat-card-actions>
-        <app-story-assignee
-          class="px-1"
-          [story]="story()"
-          [hasModifyPermission]="hasModifyPermission()"
-        ></app-story-assignee>
+        <app-story-assignee class="px-1" [story]="story()" [hasModifyPermission]="hasModifyPermission()" />
       </mat-card-actions>
     </mat-card>
   `,

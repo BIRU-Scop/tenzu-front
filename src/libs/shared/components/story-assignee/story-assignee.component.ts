@@ -44,7 +44,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
       <button
         matIconButton
         type="button"
-        class="tertiary-button"
+        class="secondary-button"
         (click)="openAssignStoryDialog($event)"
         [attr.aria-label]="t('add_assignees')"
         [matTooltip]="t('add_assignees')"
