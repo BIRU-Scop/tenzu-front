@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -51,10 +51,10 @@ import { PasswordSeverity } from "../utils";
       inline-size: 64px;
     }
     .bar-part {
-      background-color: var(--mat-sys-outline);
+      background-color: var(--mat-sys-outline-variant);
     }
     .weak {
-      color: var(--mat-sys-on-error);
+      color: var(--mat-sys-error);
       .one {
         background-color: var(--mat-sys-error);
       }
@@ -67,11 +67,11 @@ import { PasswordSeverity } from "../utils";
       }
     }
     .strong {
-      color: var(--mat-sys-on-tertiary);
+      color: var(--mat-sys-primary);
       .one,
       .two,
       .three {
-        background-color: var(--mat-sys-tertiary);
+        background-color: var(--mat-sys-primary);
       }
     }
   `,

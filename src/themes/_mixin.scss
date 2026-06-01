@@ -55,6 +55,7 @@
     surface:  get-color($palette, neutral, surface),
     surface-container: get-color($palette, neutral, surface-container),
     surface-dim: get-color($palette, neutral, surface-dim),
+    surface-container-high: get-color($palette, neutral, surface-high),
     on-surface: get-color($palette, neutral, on-surface),
     on-surface-variant: get-color($palette, neutral, on-surface-variant),
     outline:  get-color($palette, neutral, outline),
@@ -172,5 +173,6 @@
     width: $icon-size;
     height: $icon-size;
     font-size: $icon-size;
+    overflow: visible;
   }
 }

@@ -37,7 +37,7 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonMoreComponent implements ButtonInterface {
-  level = input<LevelType>("tertiary");
+  level = input<LevelType>("secondary");
   translocoKey = input<string>("commons.more");
   translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");

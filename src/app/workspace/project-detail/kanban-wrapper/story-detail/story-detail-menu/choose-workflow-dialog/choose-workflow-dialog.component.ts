@@ -21,7 +21,6 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -33,6 +32,9 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 import { StorySummary } from "@tenzu/repository/story";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 
 export type ChooseWorkflowDialogData = {
   currentWorkflowId: StorySummary["workflowId"];
@@ -44,11 +46,13 @@ export type ChooseWorkflowDialogData = {
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
-    MatButton,
     ReactiveFormsModule,
     TranslocoDirective,
     MatRadioGroup,
     MatRadioButton,
+    ButtonCancelComponent,
+    ButtonSaveComponent,
+    FormFooterComponent,
   ],
   template: `
     <ng-container *transloco="let t">
@@ -69,12 +73,10 @@ export type ChooseWorkflowDialogData = {
         </div>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button data-testid="choose-workflow-submit" mat-flat-button class="tertiary-button" (click)="submit()">
-          {{ t("commons.save") }}
-        </button>
-        <button data-testid="close-dialog" mat-flat-button class="secondary-button" mat-dialog-close>
-          {{ t("commons.cancel") }}
-        </button>
+        <app-form-footer>
+          <app-button-cancel appFormFooterSecondaryAction mat-dialog-close />
+          <app-button-save (click)="submit()" />
+        </app-form-footer>
       </mat-dialog-actions>
     </ng-container>
   `,

@@ -61,7 +61,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
       <mat-sidenav #sidenav mode="side" opened>
         <div class="flex flex-col justify-stretch h-full">
           @if (sideNavStore.avatar(); as avatar) {
-            <div class="flex flex-row gap-2 p-2">
+            <div class="flex flex-row gap-4 p-2 items-center">
               <app-avatar
                 [color]="avatar.color"
                 [name]="avatar.name"
@@ -70,9 +70,11 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
                 [imageData]="avatar.imageUrl | getBase64FromImageUrl: 'large' | async"
               />
               @if (!sideNavStore.resized()) {
-                <div class="flex flex-col ">
+                <div class="flex flex-col gap ">
                   <div class="mat-label text-on-surface-variant">{{ t(avatar.type) | uppercase }} /</div>
-                  <div class="text-lg text-tertiary line-clamp-2 leading-4">{{ avatar.name | titlecase }}</div>
+                  <div class="mat-title-medium text-tertiary line-clamp-2 !leading-5">
+                    {{ avatar.name | titlecase }}
+                  </div>
                 </div>
               }
             </div>
