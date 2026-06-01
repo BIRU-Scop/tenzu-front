@@ -61,7 +61,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     @let _disabled = disabled();
     <mat-card
       appearance="outlined"
-      class="min-h-[100px] w-[200px]"
+      class="min-h-[120px] w-[200px] mat-bg-surface-container-high"
       *transloco="let t; prefix: 'component.project_card'"
     >
       @if (_disabled) {
@@ -69,33 +69,35 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
           <mat-icon class="text-tertiary">lock</mat-icon>
         </div>
       }
-      <mat-card-header [aria-hidden]="_disabled">
-        <app-avatar
-          mat-card-avatar
-          mode="filled-square"
-          [name]="_name"
-          [color]="_color"
-          [imageData]="logo() | getBase64FromImageUrl: 'small' | async"
-        />
-        <mat-card-title class="!contents min-h-[40px]">
-          @if (_landingPage) {
-            <a [routerLink]="_landingPage">{{ _name }}</a>
-          } @else {
-            {{ _name }}
-          }
-        </mat-card-title>
-      </mat-card-header>
+      @if (_name && _description && _color) {
+        <mat-card-header [aria-hidden]="_disabled">
+          <app-avatar
+            mat-card-avatar
+            mode="filled-square"
+            [name]="_name"
+            [color]="_color"
+            [imageData]="logo() | getBase64FromImageUrl: 'small' | async"
+          />
+          <mat-card-title class="!contents min-h-[40px]">
+            @if (_landingPage) {
+              <a [routerLink]="_landingPage">{{ _name }}</a>
+            } @else {
+              {{ _name }}
+            }
+          </mat-card-title>
+        </mat-card-header>
+      }
       <mat-card-content [aria-hidden]="_disabled">
-        <div class="pt-2 pl-2 flex flex-col gap-1">
+        <div class="pt-2 pl-2 flex flex-col gap-1 ">
           @if (!_name && !_description && !_color) {
             <span class="pb-2">{{ t("create_first_project") }}</span>
             @if (_workspaceId) {
               <app-button-add
-                class="ml-auto"
-                [level]="'primary'"
+                [iconOnly]="true"
+                [level]="'tertiary'"
                 [translocoKey]="'commons.project'"
                 (click)="openCreateProject(_workspaceId)"
-              ></app-button-add>
+              />
             }
           } @else {
             <p>

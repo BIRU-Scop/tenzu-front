@@ -53,7 +53,7 @@ import { MatDialog } from "@angular/material/dialog";
             [level]="'tertiary'"
             [translocoKey]="'commons.project'"
             (click)="openCreateProject(_workspace.id)"
-          ></app-button-add>
+          />
         } @else if (_workspace.userIsInvited) {
           <button
             class="secondary-button"

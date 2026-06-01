@@ -31,7 +31,6 @@ import {
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
@@ -42,17 +41,19 @@ import { CreateProjectPayload, ProjectRepositoryService } from "@tenzu/repositor
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import {
+  applyWhenValue,
   form,
+  FormField,
   maxLength,
   readonly,
   required,
-  validate,
   submit,
-  FormField,
-  applyWhenValue,
+  validate,
 } from "@angular/forms/signals";
 import { ProjectLogoInputComponent } from "@tenzu/shared/components/project-logo-input/project-logo-input.component";
 import { ProjectImportationInputComponent } from "@tenzu/shared/components/project-importation-input/project-importation-input.component";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 
 export type ProjectCreateDialogData = {
   workspaceId: WorkspaceSummary["id"];
@@ -70,18 +71,18 @@ export type ProjectCreateDialogData = {
     MatLabel,
     ReactiveFormsModule,
     TranslocoDirective,
-    ButtonCloseComponent,
     ButtonAddComponent,
     AvatarComponent,
     DescriptionFieldComponent,
     MatOption,
     MatSelect,
-    ButtonCloseComponent,
     ButtonAddComponent,
     FormField,
     MatSelectTrigger,
     ProjectLogoInputComponent,
     ProjectImportationInputComponent,
+    ButtonCancelComponent,
+    FormFooterComponent,
   ],
   template: `
     @let _selectedWorkspace = selectedWorkspace();
@@ -90,7 +91,7 @@ export type ProjectCreateDialogData = {
         <mat-dialog-content class="min-w-96">
           <div class="flex flex-col gap-y-2">
             <div class="flex flex-row gap-16 justify-between pb-4">
-              <h1 class="mat-headline-medium">{{ t("project.new_project.title") }}</h1>
+              <h1 class="mat-headline-medium mat-text-on-surface">{{ t("project.new_project.title") }}</h1>
               @if (_selectedWorkspace) {
                 <app-project-importation-input [workspaceId]="_selectedWorkspace.id" (submitted)="dialogRef.close()" />
               }
@@ -127,14 +128,16 @@ export type ProjectCreateDialogData = {
           </div>
         </mat-dialog-content>
 
-        <mat-dialog-actions class="!flex-nowrap gap-4">
-          <app-button-close mat-dialog-close translocoKey="commons.cancel" />
-          <app-button-add
-            translocoKey="project.new_project.create_project"
-            level="primary"
-            type="submit"
-            [disabled]="!projectForm().dirty() || projectForm().invalid()"
-          />
+        <mat-dialog-actions class="!flex-nowrap">
+          <app-form-footer>
+            <app-button-cancel appFormFooterSecondaryAction mat-dialog-close translocoKey="commons.cancel" />
+            <app-button-add
+              translocoKey="project.new_project.create_project"
+              level="primary"
+              type="submit"
+              [disabled]="!projectForm().dirty() || projectForm().invalid()"
+            />
+          </app-form-footer>
         </mat-dialog-actions>
       </form>
     </ng-container>

@@ -1,7 +1,7 @@
 {
   "login": {
     "action": "Log in",
-    "title": "Log in to your Tenzu account",
+    "title": "Log in to your account",
     "email_or_username": "Email or username",
     "not_registered_yet": "Not registered yet?",
     "create_account": "Create an account",
@@ -16,7 +16,7 @@
     "unknown_error_exit": "Please try again."
   },
   "signup": {
-    "title": "Create a Tenzu account",
+    "title": "Create an account",
     "create_account_email": "Create an account with your email",
     "no_social_connect": "No social connect option",
     "alternatives": "or",

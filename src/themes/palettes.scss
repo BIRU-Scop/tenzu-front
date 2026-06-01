@@ -65,11 +65,12 @@ $palettes: (
     on-success-container: light-dark(#30313f, #30313f),
   ),
   neutral: (
-    background: light-dark(#fefefe, #19191c),
+    background: light-dark(#fefefe, #100f0f),
     on-background: light-dark(#252a28, #fbfbfb),
     surface:  light-dark(#fbfbfb, #19191c),
     surface-container: light-dark(#f1f3fb, #292a31),
     surface-dim: light-dark(#f9f9fa, #292a31),
+    surface-high: light-dark(#f9f9fa, #292a31),
     on-surface: light-dark(#19191c, #fbfbfd),
     on-surface-variant: light-dark(#5b5d72, #e6e7f4),
     outline:  light-dark(#30313f, #f9f9fa),

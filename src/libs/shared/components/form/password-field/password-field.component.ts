@@ -43,7 +43,7 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
   selector: "app-password-field",
   styles: `
     .valid {
-      color: var(--mat-sys-on-tertiary);
+      color: var(--mat-sys-primary);
     }
   `,
   host: {
@@ -87,7 +87,7 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
         <ul class="mb-4">
           <li [class.valid]="_hints.valid.minLength" class="list-decimal list-inside">
             @if (_hints.valid.minLength) {
-              <mat-icon class="align-middle">check</mat-icon>
+              <mat-icon [class.icon-valid]="_hints.valid.minLength" class="align-middle">check</mat-icon>
             }
             {{ t("component.password.hints.minLength", { minLength: _hints.minLength }) }}
           </li>
@@ -100,25 +100,25 @@ import { PasswordStrengthComponent } from "@tenzu/shared/components/form/passwor
             <ul class="ml-4">
               <li [class.valid]="_hints.valid.lowercase" class="list-disc list-inside">
                 @if (_hints.valid.lowercase) {
-                  <mat-icon class="align-middle">check</mat-icon>
+                  <mat-icon class="align-middle" [class.icon-valid]="_hints.valid.lowercase">check</mat-icon>
                 }
                 {{ t("component.password.hints.lowercase") }}
               </li>
               <li [class.valid]="_hints.valid.uppercase" class="list-disc  list-inside">
                 @if (_hints.valid.uppercase) {
-                  <mat-icon class="align-middle">check</mat-icon>
+                  <mat-icon class="align-middle" [class.icon-valid]="_hints.valid.uppercase">check</mat-icon>
                 }
                 {{ t("component.password.hints.uppercase") }}
               </li>
               <li [class.valid]="_hints.valid.number" class="list-disc  list-inside">
                 @if (_hints.valid.number) {
-                  <mat-icon class="align-middle">check</mat-icon>
+                  <mat-icon class="align-middle" [class.icon-valid]="_hints.valid.number">check</mat-icon>
                 }
                 {{ t("component.password.hints.number") }}
               </li>
               <li [class.valid]="_hints.valid.symbol" class="list-disc list-inside">
                 @if (_hints.valid.symbol) {
-                  <mat-icon class="align-middle">check</mat-icon>
+                  <mat-icon class="align-middle" [class.icon-valid]="_hints.valid.symbol">check</mat-icon>
                 }
                 {{ t("component.password.hints.symbol", { symbols: SYMBOLS }) }}
               </li>

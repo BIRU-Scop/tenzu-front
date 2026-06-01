@@ -243,8 +243,8 @@ body {
     title-medium:   400 1rem/1.5rem       'Lexend',
     title-small:    400 0.875rem/1.25rem  'Lexend',
     headline-large: 500 2rem/2.5rem       'Lexend',
-    headline-medium:500 1.75rem/2.25rem   'Lexend',
-    headline-small: 500 1.5rem/2rem       'Lexend',
+    headline-medium:400 1.75rem/2.25rem   'Lexend',
+    headline-small: 400 1.5rem/2rem       'Lexend',
 
     // longhands ( (used by Material components)
     label-large-weight: 500,
@@ -257,8 +257,8 @@ body {
     title-medium-weight: 400,
     title-small-weight: 400,
     headline-large-weight: 500,
-    headline-medium-weight: 500,
-    headline-small-weight: 500,
+    headline-medium-weight: 400,
+    headline-small-weight: 400,
   ));
   @include mat.typography-hierarchy(mat.define-theme((
     typography: (
@@ -272,6 +272,7 @@ body {
   @include tokens-overrides();
 
   @include mixin.theme-overrides(themes.$palettes);
+
 
 }
 

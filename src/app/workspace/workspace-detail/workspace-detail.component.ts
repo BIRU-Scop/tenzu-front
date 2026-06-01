@@ -80,7 +80,7 @@ export class WorkspaceDetailComponent {
     this.sideNavStore.setPrimaryNavItems([
       {
         label: "workspace.general_title.workspace_list_projects",
-        iconName: "lists",
+        iconName: "format_list_bulleted",
         href: "projects",
         testId: "projects-link",
       },
