@@ -69,7 +69,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
           <mat-icon class="text-tertiary">lock</mat-icon>
         </div>
       }
-      @if (_name && _description && _color) {
+      @if (_name) {
         <mat-card-header [aria-hidden]="_disabled">
           <app-avatar
             mat-card-avatar
