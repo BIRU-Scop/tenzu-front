@@ -21,11 +21,11 @@
 
 import { ChangeDetectionStrategy, Component, inject, input, linkedSignal } from "@angular/core";
 import { MatFormField, MatOption, MatSelect } from "@angular/material/select";
-import { WorkflowRepositoryService } from "src/libs/repository/workflow";
-import { StoryDetail, StoryRepositoryService } from "src/libs/repository/story";
-import { NotificationService } from "src/libs/utils/services/notification";
-import { StatusSummary } from "src/libs/repository/status";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
+import { NotificationService } from "@tenzu/utils/services/notification";
+import { StatusSummary } from "@tenzu/repository/status";
 
 @Component({
   selector: "app-story-status",

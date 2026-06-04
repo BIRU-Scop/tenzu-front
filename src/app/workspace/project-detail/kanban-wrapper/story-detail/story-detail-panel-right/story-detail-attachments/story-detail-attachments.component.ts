@@ -22,19 +22,19 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from "@angular/core";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { StoryAttachment, StoryAttachmentRepositoryService } from "src/libs/repository/story-attachment";
-import { StoryDetail } from "src/libs/repository/story";
-import { ProjectDetail } from "src/libs/repository/project";
-import { NotificationService } from "src/libs/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
-import { ConfigAppService } from "src/libs/repository/config-app/config-app.service";
-import { FileSizePipe } from "src/libs/shared/pipes/humanize-file-size";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
+import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
+import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
+import { StoryDetail } from "@tenzu/repository/story";
+import { ProjectDetail } from "@tenzu/repository/project";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-story-detail-attachments",
