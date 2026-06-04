@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -184,7 +184,6 @@ export type ConfirmDialogData = UserDeleteInfo;
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteAccountDialogComponent {
   data: ConfirmDialogData = inject<ConfirmDialogData>(MAT_DIALOG_DATA);

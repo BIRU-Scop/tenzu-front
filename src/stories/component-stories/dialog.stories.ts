@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import {
   MatDialog,
@@ -75,7 +75,6 @@ const description =
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogCreationComponent {}
 
@@ -106,7 +105,6 @@ class DialogCreationComponent {}
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogMessageComponent {
   readonly description = description;
@@ -141,7 +139,6 @@ class DialogMessageComponent {
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogHeadlineBodyComponent {
   readonly description = description;
@@ -192,7 +189,6 @@ class DialogHeadlineBodyComponent {
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogSelectsComponent {}
 
@@ -242,7 +238,6 @@ class DialogSelectsComponent {}
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogBodySelectsComponent {
   readonly description = description;
@@ -293,7 +288,6 @@ class DialogBodySelectsComponent {
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogInlinePickerComponent {
   readonly description = description;
@@ -366,7 +360,6 @@ class DialogInlinePickerComponent {
       </app-form-footer>
     </mat-dialog-actions>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DialogErrorComponent implements OnInit {
   readonly description = description;
@@ -391,7 +384,6 @@ class DialogErrorComponent implements OnInit {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryDialogStorybookComponent {
   private readonly dialog = inject(MatDialog);

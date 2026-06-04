@@ -20,7 +20,7 @@
  */
 
 import { Meta, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot } from "@angular/forms/signals";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 
@@ -57,7 +57,6 @@ import { MatSlideToggle } from "@angular/material/slide-toggle";
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class SlideToggleFieldStorybookComponent {
   values = signal({ input1: true, input2: false, input3: true, input4: false });

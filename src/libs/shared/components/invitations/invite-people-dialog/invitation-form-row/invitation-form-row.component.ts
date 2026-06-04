@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output, Pipe, PipeTransform } from "@angular/core";
+import { Component, input, output, Pipe, PipeTransform } from "@angular/core";
 import { MatInput } from "@angular/material/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -40,7 +40,6 @@ export class AlreadyInvitedPipe implements PipeTransform {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatInput,
     ReactiveFormsModule,

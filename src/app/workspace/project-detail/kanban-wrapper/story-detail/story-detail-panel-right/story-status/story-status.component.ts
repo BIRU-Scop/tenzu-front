@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal } from "@angular/core";
+import { Component, inject, input, linkedSignal } from "@angular/core";
 import { MatFormField, MatOption, MatSelect } from "@angular/material/select";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
@@ -48,7 +48,6 @@ import { StatusSummary } from "@tenzu/repository/status";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryStatusComponent {
   workflowRepositoryService = inject(WorkflowRepositoryService);

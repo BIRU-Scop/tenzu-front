@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -85,7 +85,6 @@ import { TitleCasePipe } from "@angular/common";
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "w-full",
   },

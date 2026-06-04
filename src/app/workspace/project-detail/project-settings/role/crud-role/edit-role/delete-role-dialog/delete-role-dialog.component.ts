@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/repository/project-roles";
 import { TypedDialog } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -72,7 +72,6 @@ import { ProjectDetail } from "@tenzu/repository/project";
     </mat-dialog-actions>
   </ng-container>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteRoleDialogComponent extends TypedDialog<
   { projectRoleSummary: ProjectRoleSummary; projectDetail: ProjectDetail },

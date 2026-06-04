@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -27,7 +27,6 @@ import { FormField, FieldTree } from "@angular/forms/signals";
 import { MatInput } from "@angular/material/input";
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatLabel, ReactiveFormsModule, TranslocoDirective, MatFormField, MatError, MatLabel, FormField, MatInput],
   providers: [],
   selector: "app-email-field",

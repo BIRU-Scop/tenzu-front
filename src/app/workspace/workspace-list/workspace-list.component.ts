@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
+import { AfterViewInit, Component, inject, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 
 import { WorkspacePlaceholderDialogComponent } from "./workspace-placeholder-dialog/workspace-placeholder-dialog.component";
@@ -136,7 +136,6 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
   readonly workspaceService = inject(WorkspaceRepositoryService);

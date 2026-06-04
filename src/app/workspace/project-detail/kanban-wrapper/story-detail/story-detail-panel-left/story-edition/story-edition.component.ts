@@ -20,7 +20,6 @@
  */
 
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -108,7 +107,6 @@ import { MatDialog } from "@angular/material/dialog";
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryEditionComponent {
   httpClient = inject(HttpClient);

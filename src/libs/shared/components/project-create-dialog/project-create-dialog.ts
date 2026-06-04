@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import {
   MAT_DIALOG_DATA,
@@ -143,7 +143,6 @@ export type ProjectCreateDialogData = {
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectCreateDialog {
   readonly dialogRef = inject(MatDialogRef<ProjectCreateDialog>);

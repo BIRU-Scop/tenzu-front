@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
   MAT_DIALOG_DATA,
@@ -100,7 +100,6 @@ import { InvitationFormRowComponent } from "@tenzu/shared/components/invitations
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitePeopleDialogComponent {
   data = inject<InvitePeopleDialogData>(MAT_DIALOG_DATA);

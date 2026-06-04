@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
@@ -93,7 +93,6 @@ import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-m
       border-bottom: 1px solid var(--mat-sys-outline-variant);
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "w-full",
   },

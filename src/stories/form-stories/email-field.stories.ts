@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component, effect, input, isDevMode, signal } from "@angular/core";
+import { Component, effect, input, isDevMode, signal } from "@angular/core";
 import { form, required } from "@angular/forms/signals";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { provideTransloco } from "@jsverse/transloco";
@@ -39,7 +39,6 @@ type Story = StoryObj<FormEmailComponent>;
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class FormEmailComponent {
   value = input<string>("");

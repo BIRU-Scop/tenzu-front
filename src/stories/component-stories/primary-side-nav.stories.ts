@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav/primary-side-nav.component";
 import { SideNavStore } from "@tenzu/repository/sidenav";
@@ -45,7 +45,6 @@ import { withTransloco } from "../storybook-providers";
       </div>
     </app-primary-side-nav>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryPrimarySideNavStorybookComponent implements OnInit {
   private readonly sideNavStore = inject(SideNavStore);

@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from "@angular/core";
+import { Component, computed, effect, inject, input, untracked } from "@angular/core";
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
@@ -141,7 +141,6 @@ import { NotificationService } from "@tenzu/utils/services/notification";
   `,
   styles: ``,
   providers: [FileSizePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailAttachmentsComponent {
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);

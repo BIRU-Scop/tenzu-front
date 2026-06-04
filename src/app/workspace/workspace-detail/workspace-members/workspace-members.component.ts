@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 
@@ -104,7 +104,6 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceMembersComponent implements AfterViewInit {
   links = [

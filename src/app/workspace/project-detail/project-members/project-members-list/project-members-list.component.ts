@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, Signal } from "@angular/core";
+import { Component, inject, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
@@ -104,7 +104,6 @@ import { Router } from "@angular/router";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent {
   protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;

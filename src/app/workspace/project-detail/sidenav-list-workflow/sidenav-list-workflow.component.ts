@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list";
 import { RouterLink, RouterLinkActive } from "@angular/router";
@@ -141,7 +141,6 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavListWorkflowComponent {
   protected readonly ProjectPermissions = ProjectPermissions;

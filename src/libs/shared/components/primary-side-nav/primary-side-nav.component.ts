@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
+import { Component, inject, OnDestroy } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from "@angular/material/sidenav";
 import { ResizeSideNavDirective } from "@tenzu/directives/side-nav";
@@ -158,7 +158,6 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     </mat-sidenav-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrimarySideNavComponent implements OnDestroy {
   sideNavStore = inject(SideNavStore);

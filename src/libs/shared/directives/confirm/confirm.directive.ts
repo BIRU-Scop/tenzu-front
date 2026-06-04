@@ -19,16 +19,7 @@
  *
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Directive,
-  ElementRef,
-  inject,
-  input,
-  InputSignal,
-  output,
-} from "@angular/core";
+import { Component, Directive, ElementRef, inject, input, InputSignal, output } from "@angular/core";
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -54,7 +45,6 @@ export type ConfirmPopupData = {
 
 @Component({
   selector: "app-confirm-popup-component",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [``],
   template: `
     <ng-container *transloco="let t; prefix: 'directives.confirm_popup_component'">

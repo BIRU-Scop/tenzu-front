@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
@@ -49,7 +49,6 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     </mat-card>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionCardComponent {
   name = input("");

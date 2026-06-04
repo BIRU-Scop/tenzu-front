@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from "@angular/core";
+import { Component, computed, effect, inject, input, signal } from "@angular/core";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
@@ -44,7 +44,6 @@ import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-sele
   host: {
     class: "w-full",
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationRoleComponent {
   workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);

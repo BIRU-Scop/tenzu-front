@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 
 export type AvatarMode = "outlined" | "filled-circle" | "filled-square";
 export type AvatarSize = "sm" | "md" | "lg" | "xl";
@@ -88,7 +88,6 @@ export type AvatarSize = "sm" | "md" | "lg" | "xl";
       }
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarComponent {
   name = input("", {

@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, output, signal } from "@angular/core";
+import { Component, output, signal } from "@angular/core";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { MatIcon } from "@angular/material/icon";
@@ -40,7 +40,6 @@ import { form, FormField, required } from "@angular/forms/signals";
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddInvitationFieldComponent {
   peopleEmails = output<string>();

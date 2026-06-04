@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from "@angular/core";
+import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
@@ -51,7 +51,6 @@ import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-sele
   host: {
     class: "w-full",
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> {
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);

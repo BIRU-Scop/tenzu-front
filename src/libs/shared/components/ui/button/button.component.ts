@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 import { MatButton, MatButtonAppearance, MatIconButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
@@ -72,7 +72,6 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
       }
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent implements ButtonInterface {
   level = input.required({

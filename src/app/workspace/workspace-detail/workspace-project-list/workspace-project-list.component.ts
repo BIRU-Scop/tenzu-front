@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
@@ -112,7 +112,6 @@ import { ProjectImportationRepositoryService } from "@tenzu/repository/importati
     </div>
   </div>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceProjectListComponent implements AfterViewInit {
   readonly workspaceService = inject(WorkspaceRepositoryService);

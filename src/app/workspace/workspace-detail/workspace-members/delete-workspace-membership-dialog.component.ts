@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,16 +19,7 @@
  *
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  Signal,
-  WritableSignal,
-} from "@angular/core";
+import { Component, computed, effect, inject, signal, Signal, WritableSignal } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -192,7 +183,6 @@ type DeleteMembershipDialogData = {
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteWorkspaceMembershipDialogComponent {
   data = inject<DeleteMembershipDialogData>(MAT_DIALOG_DATA);

@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card/project-card.component";
@@ -121,7 +121,6 @@ import { withTransloco } from "../storybook-providers";
       </section>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryCardStorybookComponent {
   readonly colorVariants = [

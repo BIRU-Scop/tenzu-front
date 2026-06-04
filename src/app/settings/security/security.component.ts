@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { apply, form, FormField, FormRoot, required, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -74,7 +74,6 @@ import { ActivatedRoute } from "@angular/router";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "w-full max-w-2xl mx-auto flex flex-col gap-y-8",
   },

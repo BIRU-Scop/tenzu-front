@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { MatCard, MatCardActions, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -53,7 +53,6 @@ import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/
     </mat-card>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryCardComponent {
   story = input.required<Pick<StorySummary, "ref" | "title" | "projectId" | "assigneeIds">>();

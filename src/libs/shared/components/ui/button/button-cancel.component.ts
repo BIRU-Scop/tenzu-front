@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
 import { ButtonIconSize, ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
@@ -34,7 +34,6 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
     "[style.pointer-events]": "disabled() ? 'none' : 'auto'",
   },
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonCancelComponent implements ButtonInterface {
   level = input<LevelType>("secondary");

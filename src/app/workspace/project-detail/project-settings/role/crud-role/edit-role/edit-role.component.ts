@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { ProjectRoleSummary } from "@tenzu/repository/project-roles";
 import { Role } from "@tenzu/repository/membership";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -97,7 +97,6 @@ import { MatIcon } from "@angular/material/icon";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class EditRoleComponent {
   readonly roleId = input.required<Role["id"]>();

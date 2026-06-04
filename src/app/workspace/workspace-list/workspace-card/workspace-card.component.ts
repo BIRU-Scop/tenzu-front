@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -79,7 +79,6 @@ import { MatDialog } from "@angular/material/dialog";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceCardComponent {
   readonly dialog = inject(MatDialog);

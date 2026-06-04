@@ -21,7 +21,7 @@
 
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 import { JsonPipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
+import { Component, input, isDevMode } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideTransloco } from "@jsverse/transloco";
@@ -38,7 +38,6 @@ type Story = StoryObj<ConfirmStoryComponent>;
   imports: [ReactiveFormsModule, ConfirmDirective, JsonPipe, MatButton],
   template: `C'est un example`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ConfirmStoryExampleComponent {}
 
@@ -48,7 +47,6 @@ class ConfirmStoryExampleComponent {}
   imports: [ReactiveFormsModule, ConfirmDirective, JsonPipe, MatButton],
   template: ` <button mat-button appConfirm [data]="data()">click me</button> `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ConfirmStoryComponent {
   data = input<ConfirmPopupData>({ deleteAction: false });
