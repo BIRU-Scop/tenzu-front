@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,23 +24,44 @@
 
 .slide-toggle-notification {
   @include mat.slide-toggle-overrides((
-    unselected-focus-state-layer-opacity: 0,
-    unselected-hover-state-layer-opacity: 0,
-    unselected-pressed-state-layer-opacity: 0,
-    selected-focus-state-layer-opacity: 0,
-    selected-hover-state-layer-opacity: 0,
-    selected-pressed-state-layer-opacity: 0,
     track-width: 40px,
     track-height: 22px,
     with-icon-handle-size: 16px,
-    selected-with-icon-handle-horizontal-margin: 0 calc(var(--mdc-switch-track-width) - var(--mat-switch-with-icon-handle-size) - var(--mat-switch-track-outline-width)),
-    label-text-size: label-small-size,
-    label-text-color: var(--mat-sys-on-surface-variant),
     selected-icon-size: 14px,
     unselected-icon-size: 14px,
+    state-layer-size: 28px,
   ));
 }
 
 @mixin tokens-overrides() {
+  $opacity: 0.5;
+  @include mat.slide-toggle-overrides((
+    disabled-selected-icon-color: var(--mat-sys-on-surface-variant),
 
+    selected-track-outline-color: var(--mat-sys-tertiary),
+    selected-handle-color: var(--mat-sys-on-tertiary),
+    selected-track-color: var(--mat-sys-tertiary),
+    selected-icon-color: var(--mat-sys-tertiary),
+
+    selected-focus-state-layer-opacity: $opacity,
+    selected-focus-handle-color : var(--mat-sys-on-tertiary),
+    selected-focus-state-layer-color:  var(--mat-sys-tertiary),
+    selected-focus-track-color: var(--mat-sys-tertiary),
+
+    selected-hover-state-layer-opacity: $opacity,
+    selected-hover-handle-color : var(--mat-sys-on-tertiary),
+    selected-hover-track-color: var(--mat-sys-tertiary),
+    selected-hover-state-layer-color: var(--mat-sys-tertiary),
+
+    selected-pressed-state-layer-opacity: $opacity,
+    selected-pressed-handle-color : var(--mat-sys-on-tertiary),
+    selected-pressed-state-layer-color : var(--mat-sys-tertiary),
+    selected-pressed-track-color:  var(--mat-sys-tertiary),
+
+    unselected-icon-color: var(--mat-sys-on-secondary),
+    unselected-focus-state-layer-opacity: $opacity,
+    unselected-hover-state-layer-opacity: $opacity,
+    unselected-pressed-state-layer-opacity: $opacity,
+
+  ));
 }

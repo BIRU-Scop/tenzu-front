@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -57,6 +57,13 @@
   &.icon-full {
       width: 100%;
       height: 100%;
+  }
+  &.icon-valid {
+    @include mat.icon-overrides(
+      (
+        color: var(--mat-sys-primary),
+      )
+    );
   }
 }
 

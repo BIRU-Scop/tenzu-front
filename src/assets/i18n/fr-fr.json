@@ -40,7 +40,8 @@
       "delete_project_membership_self": "Tu as été retiré du projet {{name}}",
       "update_workspace_membership": "Ton rôle dans l'espace de travail {{name}} est désormais {{role}}",
       "delete_workspace_membership_self": "Tu as été retiré de l'espace de travail {{name}}",
-      "update_project_role": "Ton rôle {{role}} au sein du projet {{name}} a été édité"
+      "update_project_role": "Ton rôle {{role}} au sein du projet {{name}} a été édité",
+      "importation_success": "L'import du fichier {{fileName}} est terminé"
     }
   },
   "notifications": {
@@ -57,7 +58,9 @@
       "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> a changé le statut de la story en <span class='text-on-background'>{{status}}</span>",
       "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> a commenté la story",
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> a supprimé la story {{story}}",
-      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>"
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>",
+      "project_importation.fail": "L'importation du fichier {{fileName}} a échouée",
+      "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})"
     }
   },
   "component": {
@@ -164,6 +167,13 @@
       }
     }
   },
+  "avatar": {
+    "max_size": "La taille de l'image ne doit pas dépasser {{size}}",
+    "allowed_format": "Formats autorisés : {{formats}}"
+  },
+  "chip": {
+    "remove_action": "Supprimer {{label}}"
+  },
   "commons": {
     "project": "Projet",
     "projects": "Projets",
@@ -175,6 +185,7 @@
     "edit": "Éditer",
     "add": "Ajouter",
     "undo": "Annuler",
+    "more": "Plus",
     "select_option": "Sélectionne une option"
   },
   "general": {
@@ -197,7 +208,8 @@
   "form_errors": {
     "max_length": "La limite de caractères est {{length}}",
     "min_length": "La limite minimale de caractères est {{length}}",
-    "required": "Ce champ est obligatoire"
+    "required": "Ce champ est obligatoire",
+    "exceed_file_size": "{{var}} dépasse la taille de {{maxSize}}"
   },
   "environment": {
     "demo": "Ceci est une version de démo du produit, destinée uniquement à du test. Toutes les données enregistrées seront régulièrement supprimées. Nous ne conservons aucune adresses e-mail à des fins marketing.",

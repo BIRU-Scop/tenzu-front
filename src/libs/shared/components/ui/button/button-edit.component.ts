@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ButtonComponent } from "./button.component";
-import { ButtonType, IconName, LevelType } from "../ui.types";
+import { ButtonIconSize, ButtonType, IconName, LevelType } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
 import { JsonObject } from "@tenzu/repository/base/misc.model";
 
@@ -43,5 +43,7 @@ export class ButtonEditComponent implements ButtonInterface {
   type = input<ButtonType>("button");
   iconName = input<IconName | undefined>("edit");
   iconOnly = input<boolean>(false);
+  iconNoBackground = input(false);
   disabled = input<boolean>(false);
+  iconSize = input<ButtonIconSize>("md");
 }

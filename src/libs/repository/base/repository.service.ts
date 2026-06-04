@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -27,7 +27,7 @@ import { QueryParams } from "./utils";
 import { lastValueFrom } from "rxjs";
 import { inject, Signal } from "@angular/core";
 import { NotFoundEntityError } from "./errors";
-import { JsonObject } from "./misc.model";
+import { DataObject, JsonObject } from "./misc.model";
 import { ResetService } from "@tenzu/repository/base/reset.service";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,6 +72,7 @@ export interface ServiceEntityDetail<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
+  CreatePayload extends DataObject = Partial<EntityDetailModel>,
 > {
   setEntityDetail(item: EntityDetailModel): void;
   updateEntityDetail(id: EntityDetailModel): EntityDetailModel;
@@ -86,7 +87,7 @@ export interface ServiceEntityDetail<
     queryParams?: QueryParams,
   ): Promise<EntityDetailModel>;
   putRequest(item: EntityDetailModel, params: PutParams, queryParams?: QueryParams): Promise<EntityDetailModel>;
-  createRequest(item: Partial<EntityDetailModel>, params?: CreateParams): Promise<EntityDetailModel>;
+  createRequest(item: CreatePayload, params?: CreateParams): Promise<EntityDetailModel>;
   deleteRequest(item: EntityDetailModel, params: DeleteParams, queryParams?: QueryParams): Promise<EntityDetailModel>;
   resetAll(): void;
 }
@@ -98,15 +99,24 @@ export abstract class BaseRepositoryDetailService<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
-> implements ServiceEntityDetail<EntityDetail, GetParams, CreateParams, PutParams, PatchParams, DeleteParams>
-{
+  CreatePayload extends DataObject = Partial<EntityDetail>,
+> implements ServiceEntityDetail<
+  EntityDetail,
+  GetParams,
+  CreateParams,
+  PutParams,
+  PatchParams,
+  DeleteParams,
+  CreatePayload
+> {
   protected abstract apiService: AbstractApiServiceDetail<
     EntityDetail,
     GetParams,
     CreateParams,
     PutParams,
     PatchParams,
-    DeleteParams
+    DeleteParams,
+    CreatePayload
   >;
   protected selectIdFn: SelectEntityId<NoInfer<EntityDetail>> | undefined = undefined;
   protected abstract entityDetailStore: StoreWithEntityDetailStore<EntityDetail>;
@@ -144,7 +154,7 @@ export abstract class BaseRepositoryDetailService<
     }
     throw new NotFoundEntityError(`Entity ${this.getEntityIdFn(item)} not found`, item);
   }
-  async createRequest(item: Partial<EntityDetail>, params?: CreateParams): Promise<EntityDetail> {
+  async createRequest(item: CreatePayload, params?: CreateParams): Promise<EntityDetail> {
     const entity = await lastValueFrom(this.apiService.create(item, params));
     this.setEntityDetail(entity);
     return entity;
@@ -173,16 +183,25 @@ export abstract class BaseRepositoryDetailService<
 }
 
 export abstract class BaseRepositoryService<
-    EntitySummary extends JsonObject,
-    EntityDetail extends EntitySummary = EntitySummary,
-    ListParams extends Record<string, EntityId> | undefined = undefined,
-    GetParams extends Record<string, EntityId> | unknown = { id: EntityId },
-    CreateParams extends Record<string, EntityId> | undefined = undefined,
-    PutParams extends Record<string, EntityId> | unknown = GetParams,
-    PatchParams extends Record<string, EntityId> | unknown = GetParams,
-    DeleteParams extends Record<string, EntityId> | unknown = GetParams,
+  EntitySummary extends JsonObject,
+  EntityDetail extends EntitySummary = EntitySummary,
+  ListParams extends Record<string, EntityId> | undefined = undefined,
+  GetParams extends Record<string, EntityId> | unknown = { id: EntityId },
+  CreateParams extends Record<string, EntityId> | undefined = undefined,
+  PutParams extends Record<string, EntityId> | unknown = GetParams,
+  PatchParams extends Record<string, EntityId> | unknown = GetParams,
+  DeleteParams extends Record<string, EntityId> | unknown = GetParams,
+  CreatePayload extends DataObject = Partial<EntityDetail>,
+>
+  extends BaseRepositoryDetailService<
+    EntityDetail,
+    GetParams,
+    CreateParams,
+    PutParams,
+    PatchParams,
+    DeleteParams,
+    CreatePayload
   >
-  extends BaseRepositoryDetailService<EntityDetail, GetParams, CreateParams, PutParams, PatchParams, DeleteParams>
   implements ServiceEntitySummaryList<EntitySummary, ListParams>
 {
   protected abstract entitiesSummaryStore: StoreWithEntityListFeature<EntitySummary>;
@@ -194,7 +213,8 @@ export abstract class BaseRepositoryService<
     CreateParams,
     PutParams,
     PatchParams,
-    DeleteParams
+    DeleteParams,
+    CreatePayload
   >;
 
   get entitiesSummary(): Signal<EntitySummary[]> {
@@ -204,7 +224,7 @@ export abstract class BaseRepositoryService<
     return this.entitiesSummaryStore.entityMap;
   }
   override async createRequest(
-    item: Partial<EntityDetail>,
+    item: CreatePayload,
     params?: CreateParams,
     options: { prepend: boolean } = { prepend: false },
   ): Promise<EntityDetail> {

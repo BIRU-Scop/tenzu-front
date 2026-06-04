@@ -19,36 +19,27 @@
  *
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  Injector,
-  input,
-  OnInit,
-  runInInjectionContext,
-} from "@angular/core";
-import { injectNgControl } from "@tenzu/utils/injectors";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatFormField } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
-import { ReactiveFormsModule } from "@angular/forms";
 import { Role } from "@tenzu/repository/membership";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
-import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
 import { MatTooltip } from "@angular/material/tooltip";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
+import { FormValueControl } from "@angular/forms/signals";
 
 @Component({
   selector: "app-role-selector-field",
-  hostDirectives: [NoopValueAccessorDirective],
-  imports: [ReactiveFormsModule, TranslocoDirective, MatFormField, MatSelectModule, MatTooltip],
+  imports: [TranslocoDirective, MatFormField, MatSelectModule, MatTooltip],
   template: `
-    <mat-form-field *transloco="let t" appearance="outline" [subscriptSizing]="'dynamic'">
-      <mat-select [formControl]="ngControl.control">
+    <mat-form-field *transloco="let t" [subscriptSizing]="'dynamic'">
+      <mat-select
+        [value]="value()"
+        [disabled]="disabled()"
+        (selectionChange)="value.set($event.value); changed.emit($event.value)"
+        (closed)="touched.set(true)"
+      >
         @for (role of roles(); track role) {
           @let tooltipKey = tooltips[itemType()][role.slug];
           <mat-option
@@ -65,9 +56,12 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RoleSelectorFieldComponent implements OnInit {
-  injector = inject(Injector);
-  ngControl = injectNgControl();
+export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] | null> {
+  readonly value = model<Role["id"] | null>(null);
+  readonly invalid = input<boolean>(false);
+  readonly disabled = input<boolean>(false);
+  readonly touched = model<boolean>(false);
+  readonly changed = output<Role["id"]>();
   projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
@@ -87,17 +81,13 @@ export class RoleSelectorFieldComponent implements OnInit {
   roles = computed(() => {
     const roleRepositoryService = this.roleRepositoryService();
     let roles: Role[] = roleRepositoryService.entitiesSummary();
-
-    if (!this.ngControl.control.disabled && !this.userRole()?.isOwner) {
-      if (this.ngControl.control.value === roleRepositoryService.ownerRole()?.id) {
-        this.ngControl.control.disable({ onlySelf: true, emitEvent: false });
-      } else {
-        roles = roles.filter((role) => !role.isOwner);
-      }
+    if (!this.disabled() && !this.userRole()?.isOwner) {
+      roles = roles.filter((role) => !role.isOwner);
     }
     return roles;
   });
   defaultRole = computed(() => this.roleRepositoryService().defaultRole());
+
   tooltips: Record<"project" | "workspace", Record<Role["slug"], string>> = {
     workspace: {
       owner: "component.role_selector.workspace.owner",
@@ -111,16 +101,12 @@ export class RoleSelectorFieldComponent implements OnInit {
       "readonly-member": "component.role_selector.project.readonly_member",
     },
   };
-
-  ngOnInit(): void {
-    runInInjectionContext(this.injector, () => {
-      toObservable(this.defaultRole)
-        .pipe(filterNotNull())
-        .subscribe((defaultRole) => {
-          if (!this.ngControl.control.value) {
-            this.ngControl.control.setValue(defaultRole.id);
-          }
-        });
+  constructor() {
+    effect(() => {
+      const defautRole = this.defaultRole();
+      if (!this.value() && defautRole) {
+        this.value.set(defautRole.id);
+      }
     });
   }
 }

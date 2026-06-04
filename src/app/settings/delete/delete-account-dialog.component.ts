@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,6 +30,8 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { RouterLink } from "@angular/router";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 export type ConfirmDialogData = UserDeleteInfo;
 
@@ -47,6 +49,8 @@ export type ConfirmDialogData = UserDeleteInfo;
     MatMenuItem,
     MatMenuTrigger,
     ButtonDeleteComponent,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
     <ng-container *transloco="let t; prefix: 'settings.delete'">
@@ -85,7 +89,11 @@ export type ConfirmDialogData = UserDeleteInfo;
               <p class="text-sm text-on-error-container">{{ t("confirm_dialog.info_owner_projects") }}</p>
               @for (project of data.onlyOwnerCollectiveProjects; track project.id) {
                 <div class="flex flex-row gap-x-4 items-center">
-                  <app-avatar [name]="project.name" [color]="project.color" />
+                  <app-avatar
+                    [name]="project.name"
+                    [color]="project.color"
+                    [imageData]="project.logo | getBase64FromImageUrl: 'small' | async"
+                  />
                   <a
                     target="_blank"
                     [routerLink]="['workspace', project.workspaceId, 'project', project.id, 'members']"
@@ -145,7 +153,11 @@ export type ConfirmDialogData = UserDeleteInfo;
               <p class="text-sm">{{ t("confirm_dialog.info_delete_project") }}</p>
               @for (project of data.onlyMemberProjects; track project.id) {
                 <div class="flex flex-row gap-x-4 items-center">
-                  <app-avatar [name]="project.name" [color]="project.color" />
+                  <app-avatar
+                    [name]="project.name"
+                    [color]="project.color"
+                    [imageData]="project.logo | getBase64FromImageUrl: 'small' | async"
+                  />
                   <a
                     target="_blank"
                     [routerLink]="['workspace', project.workspaceId, 'project', project.id, 'members']"

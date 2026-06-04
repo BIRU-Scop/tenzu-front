@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,69 +19,83 @@
  *
  */
 
-import { argsToTemplate, Meta, StoryObj } from "@storybook/angular";
-import { AvatarComponent } from "../../libs/shared/components/avatar/avatar.component";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-const meta: Meta<AvatarComponent> = {
-  title: "Components/Avatar",
-  component: AvatarComponent,
-  // waiting for https://github.com/storybookjs/storybook/issues/28412 to remove manual argTypes
-  argTypes: {
-    name: { type: "string" },
-    rounded: { type: "boolean" },
-    color: { type: "number" },
-  },
-};
+import { CommonModule } from "@angular/common";
+import { withTransloco } from "../storybook-providers";
+import { AvatarComponent } from "@tenzu/shared/components/avatar";
 
-export default meta;
 type Story = StoryObj<AvatarComponent>;
 
-export const WorkspaceAvatar: Story = {
-  args: {
-    name: "🐕 Dogs workspace",
-    rounded: false,
-    size: "sm",
-    color: 2,
-  },
+const meta: Meta<AvatarComponent> = {
+  component: AvatarComponent,
+  title: "Components/Avatar",
+  decorators: [
+    withTransloco,
+    moduleMetadata({
+      imports: [CommonModule, AvatarComponent],
+    }),
+  ],
 };
 
-export const ProjectCardAvatar: Story = {
-  args: {
-    name: "Awesome project",
-    rounded: false,
-    size: "md",
-    color: 1,
-  },
-};
-
-export const ProjectAvatar: Story = {
-  args: {
-    name: "Awesome project",
-    rounded: false,
-    size: "xl",
-    color: 4,
-  },
-};
-
-export const UserAvatar: Story = {
-  args: {
-    name: "Emeline",
-    rounded: true,
-    size: "md",
-    color: 3,
-  },
-};
-
-export const ButtonAvatar: Story = {
-  args: {
-    name: "Emeline",
-    rounded: true,
-    size: "md",
-    color: 3,
-  },
+export const Compositions: Story = {
   render: (args) => ({
     props: args,
     template: `
-    <button><app-avatar ${argsToTemplate(args)}/></button>`,
+  <div class="flex flex-col gap-8">
+    <h1>Outlined — sizes</h1>
+    <div class="flex flex-row flex-wrap gap-8 items-center">
+      <app-avatar name="Gigi Gray" mode="outlined" size="sm" [color]="1" />
+      <app-avatar name="Gigi Gray" mode="outlined" size="md" [color]="2" />
+      <app-avatar name="Gigi Gray" mode="outlined" size="lg" [color]="3" />
+      <app-avatar name="Gigi Gray" mode="outlined" size="xl" [color]="4" />
+    </div>
+
+    <h1>Outlined — wrapped in button</h1>
+    <div class="flex flex-row flex-wrap gap-8 items-center">
+      <button><app-avatar name="Gigi Gray" mode="outlined" size="sm" [color]="1" /></button>
+      <button><app-avatar name="Gigi Gray" mode="outlined" size="md" [color]="2" /></button>
+      <button><app-avatar name="Gigi Gray" mode="outlined" size="lg" [color]="3" /></button>
+      <button><app-avatar name="Gigi Gray" mode="outlined" size="xl" [color]="4" /></button>
+    </div>
+
+    <h1>Filled circle — sizes</h1>
+    <div class="flex flex-row flex-wrap gap-8 items-center">
+      <app-avatar name="Gigi Gray" mode="filled-circle" size="sm" [color]="4" />
+      <app-avatar name="Gigi Gray" mode="filled-circle" size="md" [color]="5" />
+      <app-avatar name="Gigi Gray" mode="filled-circle" size="lg" [color]="6" />
+      <app-avatar name="Gigi Gray" mode="filled-circle" size="xl" [color]="8" />
+    </div>
+
+    <h1>Filled square — sizes</h1>
+    <div class="flex flex-row flex-wrap gap-8 items-center">
+      <app-avatar name="Gigi Gray" mode="filled-square" size="sm" [color]="4" />
+      <app-avatar name="Gigi Gray" mode="filled-square" size="md" [color]="5" />
+      <app-avatar name="Gigi Gray" mode="filled-square" size="lg" [color]="6" />
+      <app-avatar name="Gigi Gray" mode="filled-square" size="xl" [color]="8" />
+    </div>
+
+
+    <h1>Grouped</h1>
+    <div class="flex flex-row -space-x-2 items-center">
+      <app-avatar name="Gigi Gray" mode="filled-circle" size="md" [color]="4" />
+      <app-avatar name="Ayla Yilmaz" mode="filled-circle" size="md" backgroundColor="#7c3aed" textColor="#ffffff" />
+    </div>
+
+    <h1>With image</h1>
+    <div class="flex flex-row flex-wrap gap-8 items-center">
+      <app-avatar name="Gigi Gray" mode="filled-circle" size="md" imageData="https://i.pravatar.cc/64?img=12" />
+      <app-avatar name="Gigi Gray" mode="filled-square" size="md" imageData="https://i.pravatar.cc/64?img=15" />
+    </div>
+
+    <h1>Overflow indicator (avatar-list pattern)</h1>
+    <div class="flex flex-row flex-wrap gap-8 items-center">
+      <app-avatar name="+ 3" mode="filled-circle" size="md" [color]="7" />
+      <app-avatar name="&hellip;" mode="outlined" size="md" [color]="8"/>
+    </div>
+  </div>
+`,
   }),
 };
+
+export default meta;

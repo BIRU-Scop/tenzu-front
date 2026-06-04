@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2024-2026 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+@use 'sass:map';
+@use 'sass:color';
+@use '@angular/material' as mat;
+
+$light-on: #fbfbfd;
+
+$palettes: (
+  primary: (
+    primary : light-dark(#00795b, #63ffd7),
+    primary-container : light-dark(#C9FFF1, #C9FFF1),
+    inverse-primary: light-dark(#63ffd7, #00795b),
+    on-primary: light-dark($light-on, #30313F),
+    on-primary-container: light-dark(#00795b, #00795b),
+  ),
+  secondary: (
+    secondary: light-dark(#30313f, #f1f3fd),
+    secondary-container: light-dark(#e6e7f4, #30313f),
+    on-secondary: light-dark($light-on, #5b5d72),
+    on-secondary-container: light-dark(#30313f, #f1f3fd)
+  ),
+  tertiary: (
+    tertiary: light-dark(#212d69, #8a9bf1),
+    tertiary-container: light-dark(#dbe1ff, #dbe1ff),
+    inverse-tertiary: light-dark(#8a9bf1, #212d69),
+    on-tertiary: light-dark($light-on, #30313f),
+    on-tertiary-container: light-dark(#212d69, #212d69),
+  ),
+  error: (
+    error: light-dark(#ba1a1a, #ff7272),
+    error-container: light-dark(#fce9e9, #fce9e9),
+    on-error: light-dark($light-on, #30313f),
+    on-error-container: light-dark(#ba1a1a, #ba1a1a),
+  ),
+  warning : (
+    warning: light-dark(#a06a06, #fab027),
+    warning-container: light-dark(#ffe6b9, #ffe6b9),
+    on-warning: light-dark($light-on, #30313f),
+    on-warning-container: light-dark(#30313f, #30313f),
+  ),
+  success : (
+    success: light-dark(#008813, #00cd5a),
+    success-container: light-dark(#aff1b3, #aff1b3),
+    on-success: light-dark($light-on, #30313f),
+    on-success-container: light-dark(#30313f, #30313f),
+  ),
+  neutral: (
+    background: light-dark(#fefefe, #100f0f),
+    on-background: light-dark(#252a28, #fbfbfb),
+    surface:  light-dark(#fbfbfb, #19191c),
+    surface-container: light-dark(#f1f3fb, #292a31),
+    surface-dim: light-dark(#f9f9fa, #292a31),
+    surface-high: light-dark(#f9f9fa, #292a31),
+    on-surface: light-dark(#19191c, #fbfbfd),
+    on-surface-variant: light-dark(#5b5d72, #e6e7f4),
+    outline:  light-dark(#30313f, #f9f9fa),
+    outline-variant:  light-dark(#e6e7f4, #5b5d72),
+  ),
+  level: (
+    level1:  0px 2px 2px rgba(0, 0, 0, 0.16),
+    level2:  0px 3px 3px rgba(0, 0, 0, 0.13),
+    level3:  0px 4px 4px rgba(0, 0, 0, 0.1)
+  )
+
+);
+

@@ -29,7 +29,6 @@ import {
   InputSignal,
   output,
 } from "@angular/core";
-import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -40,6 +39,9 @@ import {
 } from "@angular/material/dialog";
 import { NgComponentOutlet } from "@angular/common";
 import { TranslocoDirective } from "@jsverse/transloco";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
+import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 
 export type ConfirmPopupData = {
   title?: string;
@@ -74,28 +76,29 @@ export type ConfirmPopupData = {
           }
         }
       </mat-dialog-content>
-      <mat-dialog-actions [align]="'end'">
-        <button mat-flat-button class="secondary-button" [mat-dialog-close]="false">{{ t("cancelAction") }}</button>
+      <mat-dialog-actions [align]="'end'" class="gap-2">
+        <app-button-cancel [mat-dialog-close]="false" />
         @if (_data.deleteAction) {
-          <button mat-flat-button class="error-button" [mat-dialog-close]="true">
-            {{ _data.actionButtonContent || t("deleteAction") }}
-          </button>
+          <app-button-delete
+            [mat-dialog-close]="true"
+            [translocoKey]="_data.actionButtonContent || t('deleteAction')"
+          />
         } @else {
-          <button mat-flat-button class="tertiary-button" [mat-dialog-close]="true">
-            {{ _data.actionButtonContent || t("confirmAction") }}
-          </button>
+          <app-button-save [mat-dialog-close]="true" [translocoKey]="_data.actionButtonContent || t('confirmAction')" />
         }
       </mat-dialog-actions>
     </ng-container>
   `,
   imports: [
     MatDialogActions,
-    MatButton,
     MatDialogClose,
     MatDialogContent,
     NgComponentOutlet,
     TranslocoDirective,
     MatDialogTitle,
+    ButtonCancelComponent,
+    ButtonDeleteComponent,
+    ButtonSaveComponent,
   ],
 })
 export class ConfirmPopupComponent {
@@ -117,7 +120,7 @@ export class ConfirmDirective {
   dialog = inject(MatDialog);
   elementRef = inject(ElementRef);
   data = input<ConfirmPopupData>({
-    deleteAction: false,
+    deleteAction: true,
   });
   popupConfirm = output<void>();
 

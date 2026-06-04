@@ -21,7 +21,6 @@
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 
 import { WorkspacePlaceholderDialogComponent } from "./workspace-placeholder-dialog/workspace-placeholder-dialog.component";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
@@ -42,7 +41,9 @@ import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-workspace-list",
@@ -55,6 +56,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
     ActionCardComponent,
     ButtonAddComponent,
     ProjectLandingPageUrl,
+    ProjectImportationCardComponent,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
@@ -69,9 +71,10 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
       </div>
       @let workpaces = workspaceService.entitiesSummary();
       @if (workpaces.length > 0) {
-        <div [@newItemsFlyIn]="workpaces.length" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4">
           @for (workspace of workpaces; track workspace.id) {
             <app-workspace-card
+              class="mt-4"
               [workspace]="workspace"
               (submitted)="acceptWorkspaceInvitation(workspace)"
               (canceled)="denyWorkspaceInvitation(workspace)"
@@ -92,18 +95,24 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
                   [workspaceId]="workspace.id"
                   [name]="project.name"
                   [color]="project.color"
+                  [logo]="project.logo"
                   [description]="project.description ? project.description : null"
                   [landingPage]="project | projectLandingPageUrl"
                 />
               }
+              @for (projectImportation of workspace.userImportedProjects; track projectImportation.id) {
+                <app-project-importation-card [workspaceId]="workspace.id" [projectImportation]="projectImportation" />
+              }
               @if (
                 (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
-                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0)
+                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0) &&
+                (!workspace.userImportedProjects || workspace.userImportedProjects.length === 0)
               ) {
                 @if (workspace.userCanCreateProjects) {
                   <app-project-card [workspaceId]="workspace.id" />
                 } @else {
                   <app-project-card
+                    [workspaceId]="workspace.id"
                     [name]="'Lorem Ipsum'"
                     [color]="3"
                     [description]="'Lorem Ipsum dolor sit amet'"
@@ -126,21 +135,6 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/projectLandingPageUrl.pipe";
       }
     </div>
   `,
-  animations: [
-    trigger("newItemsFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(50, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -204,7 +198,7 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        const color = Math.floor(Math.random() * (8 - 1) + 1);
+        const color = RandomColorService.randomColorPicker();
         await this.workspaceService.createRequest(
           {
             name,

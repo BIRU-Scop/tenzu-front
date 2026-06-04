@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,10 +21,10 @@
 
 import { inject, Injectable } from "@angular/core";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
-import { StoryUpdate } from "@tenzu/repository/story";
 import { Router } from "@angular/router";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
+import { StoryDetail } from "@tenzu/repository/story";
 
 @Injectable({
   providedIn: "root",
@@ -35,7 +35,7 @@ export class StoryDetailFacade {
   storyRepositoryService = inject(StoryRepositoryService);
   router = inject(Router);
 
-  async patchSelectedStory(data: Partial<StoryUpdate>) {
+  async patchSelectedStory(data: Partial<StoryDetail>) {
     const project = this.projectRepositoryService.entityDetail();
     const story = this.storyRepositoryService.entityDetail();
     if (project && story) {
@@ -51,7 +51,7 @@ export class StoryDetailFacade {
     throw new Error("No story to update");
   }
 
-  async changeWorkflowSelectedStory(data: Partial<StoryUpdate>) {
+  async changeWorkflowSelectedStory(data: Partial<StoryDetail>) {
     const project = this.projectRepositoryService.entityDetail();
     const story = this.storyRepositoryService.entityDetail();
     if (project && story) {

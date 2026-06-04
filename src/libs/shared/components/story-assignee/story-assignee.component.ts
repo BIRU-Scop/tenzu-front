@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -44,6 +44,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
       <button
         matIconButton
         type="button"
+        class="secondary-button"
         (click)="openAssignStoryDialog($event)"
         [attr.aria-label]="t('add_assignees')"
         [matTooltip]="t('add_assignees')"

@@ -27,10 +27,10 @@
   border-color: var(--mat-sys-outline);
   border-width: 1px;
   &:hover:has(> :not(.disabled-editor):not(.readonly-editor)) {
-    border-color: var(--mat-sys-on-primary);
+    border-color: var(--mat-sys-tertiary);
   }
   &:has(.ProseMirror-focused):has(> :not(.disabled-editor):not(.readonly-editor)) {
-    border-color: var(--mat-sys-primary);
+    border-color: var(--mat-sys-tertiary);
     border-width: 2px;
     padding: calc(1em - 1px);
   }

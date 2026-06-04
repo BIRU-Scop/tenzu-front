@@ -53,7 +53,7 @@ import { TitleCasePipe } from "@angular/common";
       <h1 class="mat-headline-medium">{{ t("settings.profile.title") }}</h1>
       <app-avatar
         [name]="form.value.fullName || userStore.myUser().fullName"
-        [rounded]="true"
+        mode="filled-circle"
         [color]="userStore.myUser().color"
         size="xl"
       ></app-avatar>

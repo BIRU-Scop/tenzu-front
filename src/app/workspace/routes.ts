@@ -26,12 +26,12 @@ export const routes: Routes = [
   {
     path: "",
     loadComponent: () => import("./workspace-list/workspace-list.component").then((m) => m.WorkspaceListComponent),
-    providers: [provideTranslocoScope("workspace")],
+    providers: [provideTranslocoScope("workspace", "project")],
   },
   {
     path: "workspace/:workspaceId",
     loadComponent: () => import("./detail-base/detail-base.component").then((m) => m.DetailBaseComponent),
-    providers: [provideTranslocoScope("workspace", "workflow")],
+    providers: [provideTranslocoScope("workspace", "workflow", "project")],
     children: [
       {
         path: "project/:projectId",

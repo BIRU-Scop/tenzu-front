@@ -56,6 +56,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import {
   applyNotificationEvent,
   applyProjectEvent,
+  applyProjectImportationEvent,
   applyProjectInvitationEventType,
   applyProjectMembershipEventType,
   applyProjectRoleEventType,
@@ -407,6 +408,10 @@ export class WsService {
         }
         case FamilyEventType.Project: {
           await applyProjectEvent(message);
+          break;
+        }
+        case FamilyEventType.ProjectImportation: {
+          await applyProjectImportationEvent(message);
           break;
         }
         case FamilyEventType.Workspace: {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,19 +25,18 @@ import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { NoopValueAccessorDirective } from "@tenzu/directives/noop-value-accessor.directive";
-import { injectNgControl } from "@tenzu/utils/injectors";
+import { FieldTree, FormField } from "@angular/forms/signals";
 
 export type DescriptionOptions = {
   autoSize: boolean;
   minRows: number;
   maxRows: number;
   resizeType: "none" | "both" | "horizontal" | "vertical" | "block" | "inline";
-  descriptionMaxLength: number;
 };
 
 @Component({
   selector: "app-description-field",
-  imports: [MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatLabel, TranslocoDirective],
+  imports: [MatFormField, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatLabel, TranslocoDirective, FormField],
   hostDirectives: [NoopValueAccessorDirective],
   template: `
     <mat-form-field class="mat-form-field w-full" *transloco="let t; prefix: 'component.description'">
@@ -47,8 +46,7 @@ export type DescriptionOptions = {
         matInput
         id="description"
         type="text"
-        [maxlength]="options().descriptionMaxLength"
-        [formControl]="ngControl.control"
+        [formField]="formField()"
         [cdkTextareaAutosize]="options().autoSize"
         [cdkAutosizeMinRows]="options().minRows"
         [cdkAutosizeMaxRows]="options().maxRows"
@@ -60,12 +58,12 @@ export type DescriptionOptions = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DescriptionFieldComponent {
-  ngControl = injectNgControl();
+  formField = input.required<FieldTree<string, string>>();
+
   defaultValue: DescriptionOptions = {
     autoSize: true,
     minRows: 5,
     resizeType: "none",
-    descriptionMaxLength: 200,
     maxRows: 5,
   };
   options = input(this.defaultValue, {

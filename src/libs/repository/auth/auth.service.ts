@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable, Signal } from "@angular/core";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {
   AuthConfig,
   Credential,
@@ -40,6 +40,7 @@ import { ResetService } from "@tenzu/repository/base/reset.service";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
+import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
 @Injectable({
   providedIn: "root",
@@ -110,7 +111,7 @@ export class AuthService {
   applyLogout() {
     this.clear();
     const navigationExtras: NavigationExtras =
-      this.router.url === "/"
+      this.router.url === HOMEPAGE_URL
         ? {}
         : {
             queryParams: { next: this.router.url },
@@ -211,19 +212,5 @@ export class AuthService {
 
   continueSignup(payload: ProviderContinueSignupPayload) {
     return this.http.post<ProviderCallback>(`${this.url}/provider/continue_signup`, payload);
-  }
-
-  isPasswordError(errorResponse: HttpErrorResponse): boolean {
-    try {
-      return errorResponse.error?.detail?.some(
-        (detail: { ctx: object; msg: string; type: string; loc: Array<string> }) =>
-          detail?.loc?.some((loc) => loc === "password"),
-      );
-    } catch (e) {
-      if (e instanceof TypeError) {
-        return false;
-      }
-      throw e;
-    }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,20 +20,27 @@
  */
 
 import { InputSignal, InputSignalWithTransform } from "@angular/core";
-import { IconName, LevelType, ButtonType } from "@tenzu/shared/components/ui/ui.types";
+import { IconName, LevelType, ButtonType, ButtonIconSize, IconSize } from "@tenzu/shared/components/ui/ui.types";
 import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 export interface ButtonInterface {
   translocoKey: InputSignal<string>;
   translocoValue: InputSignal<JsonObject>;
+  iconNoBackground: InputSignal<boolean>;
   iconName: InputSignal<IconName | undefined>;
   type: InputSignal<ButtonType>;
   iconOnly: InputSignal<boolean>;
   disabled: InputSignal<boolean>;
   level:
     | InputSignalWithTransform<
-        "primary-button" | "secondary-button" | "tertiary-button" | "warning-button" | "error-button",
+        | "primary-button"
+        | "secondary-button"
+        | "tertiary-button"
+        | "warning-button"
+        | "error-button"
+        | "success-button",
         LevelType
       >
     | InputSignal<LevelType>;
+  iconSize: InputSignalWithTransform<IconSize, ButtonIconSize> | InputSignal<ButtonIconSize>;
 }

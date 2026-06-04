@@ -21,7 +21,7 @@
 
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { apply, FormField, form, required, submit, validate } from "@angular/forms/signals";
+import { apply, form, FormField, FormRoot, required, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { UserStore } from "@tenzu/repository/user";
@@ -41,11 +41,12 @@ import { ActivatedRoute } from "@angular/router";
     FormFooterComponent,
     PasswordFieldComponent,
     FormField,
+    FormRoot,
   ],
   template: `
     <ng-container *transloco="let t">
       <h1 class="mat-headline-medium">{{ t("settings.security.change_password") }}</h1>
-      <form (submit)="submit($event)" class="flex flex-col gap-y-5">
+      <form [formRoot]="securityForm" class="flex flex-col gap-y-5">
         <app-password-field
           [formField]="securityForm.newPassword"
           label="settings.security.new_password"
@@ -58,8 +59,8 @@ import { ActivatedRoute } from "@angular/router";
         />
 
         <div class="flex flex-row">
-          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-          <p class="mat-body-medium text-on-error-container align-middle">
+          <mat-icon class="mat-text-error pr-3 self-center">warning</mat-icon>
+          <p class="mat-body-medium mat-text-error align-middle">
             {{ t("settings.security.warning") }}
           </p>
         </div>
@@ -87,30 +88,33 @@ export class SecurityComponent {
     repeatPassword: "",
   });
 
-  securityForm = form(this.securityModel, (schemaPath) => {
-    apply(schemaPath.newPassword, passwordSchema({ enabledStrength: true }));
-    required(schemaPath.repeatPassword, { message: "form_errors.required" });
-    validate(schemaPath.repeatPassword, (context) => {
-      const password = context.valueOf(schemaPath.newPassword);
-      const repeatPassword = context.value();
-      return password && repeatPassword && password !== repeatPassword
-        ? {
-            path: schemaPath.repeatPassword,
-            kind: "passwordNotMatch",
-            message: "resetPassword.password_not_match",
-          }
-        : undefined;
-    });
-  });
-
-  async submit(event: Event) {
-    event.preventDefault();
-    await submit(this.securityForm, async (form) => {
-      await this.userStore.changePassword(form().value().newPassword);
-      this.notificationService.success({
-        title: "settings.security.changes_saved",
-        translocoTitle: true,
+  securityForm = form(
+    this.securityModel,
+    (schemaPath) => {
+      apply(schemaPath.newPassword, passwordSchema({ enabledStrength: true }));
+      required(schemaPath.repeatPassword, { message: "form_errors.required" });
+      validate(schemaPath.repeatPassword, (context) => {
+        const password = context.valueOf(schemaPath.newPassword);
+        const repeatPassword = context.value();
+        return password && repeatPassword && password !== repeatPassword
+          ? {
+              path: schemaPath.repeatPassword,
+              kind: "passwordNotMatch",
+              message: "resetPassword.password_not_match",
+            }
+          : undefined;
       });
-    });
-  }
+    },
+    {
+      submission: {
+        action: async (form) => {
+          await this.userStore.changePassword(form().value().newPassword);
+          this.notificationService.success({
+            title: "settings.security.changes_saved",
+            translocoTitle: true,
+          });
+        },
+      },
+    },
+  );
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -66,24 +66,16 @@ export class ResizeSideNavDirective implements OnInit {
     resizeIconComponent.instance.toggled.subscribe((resized) => {
       const navContainer = document.querySelector<HTMLElement>(".mat-sidenav");
       const contentContainer = document.querySelector<HTMLElement>(".mat-sidenav-content");
-      const navList = document.querySelector<HTMLElement>(".mat-mdc-nav-list");
       this.resized.emit(resized);
-      if (!navContainer || !contentContainer || !navList) {
+      if (!navContainer || !contentContainer) {
         return;
       }
-      if (resized) {
-        const newWidth =
-          parseFloat(
-            getComputedStyle(navList).getPropertyValue("--mat-list-list-item-leading-icon-start-space").split("px")[0],
-          ) *
-            2 +
-          24;
-        contentContainer.style.marginLeft = `${newWidth}px`;
-        navContainer.style.width = `${newWidth}px`;
-      } else {
-        contentContainer.style.marginLeft = "250px";
-        navContainer.style.width = "250px";
-      }
+      const rootStyles = getComputedStyle(document.body);
+      const expanded = rootStyles.getPropertyValue("--tz-sidenav-width").trim() || "250px";
+      const collapsed = rootStyles.getPropertyValue("--tz-sidenav-width-collapsed").trim() || "56px";
+      const width = resized ? collapsed : expanded;
+      contentContainer.style.marginLeft = width;
+      navContainer.style.width = width;
     });
   }
 }

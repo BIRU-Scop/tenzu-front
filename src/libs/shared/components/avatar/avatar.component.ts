@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,38 +19,111 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+
+export type AvatarMode = "outlined" | "filled-circle" | "filled-square";
+export type AvatarSize = "sm" | "md" | "lg" | "xl";
 
 @Component({
   selector: "app-avatar",
   standalone: true,
-  styleUrl: "avatar.component.scss",
-  encapsulation: ViewEncapsulation.None,
-  template: `<div [class]="class()">
-    <span>{{ initials() }}</span>
-  </div> `,
-  styles: ``,
+  host: {
+    "[class]": "hostClasses()",
+    "[style.color]": "computeColor()",
+    "[style.background-color]": "computedBackgroundColor()",
+    "[style.border-color]": "computedBorderColor()",
+  },
+  template: `
+    @let _imageData = imageData();
+    @if (_imageData) {
+      <img loading="lazy" [src]="_imageData" [alt]="initials()" />
+    } @else {
+      <span>{{ initials() }}</span>
+    }
+  `,
+  styles: `
+    :host {
+      @apply tracking-widest flex items-center justify-center uppercase shrink-0;
+      aspect-ratio: 1;
+      color: var(--mat-sys-on-surface);
+
+      &.avatar-sm {
+        @apply text-xs w-6 h-6;
+      }
+      &.avatar-md {
+        @apply text-sm w-8 h-8;
+      }
+      &.avatar-lg {
+        @apply text-lg w-12 h-12;
+      }
+      &.avatar-xl {
+        @apply text-lg w-16 h-16;
+      }
+
+      &.mode-outlined {
+        background-color: transparent;
+        border: 1px solid;
+        @apply rounded-full;
+      }
+
+      &.mode-filled-circle {
+        @apply rounded-full;
+      }
+
+      &.mode-filled-square {
+        @apply rounded;
+      }
+
+      & img {
+        @apply w-full h-full object-cover;
+      }
+
+      &.mode-outlined img,
+      &.mode-filled-circle img {
+        @apply rounded-full;
+      }
+
+      &.mode-filled-square img {
+        @apply rounded;
+      }
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarComponent {
   name = input("", {
     transform: (value: undefined | string) => value ?? "?",
   });
-  color = input(0, {
-    transform: (value: undefined | number) => value ?? 0,
+  mode = input<AvatarMode>("filled-circle");
+  size = input<AvatarSize>("md");
+  imageData = input<string | ArrayBuffer | null | undefined>(null);
+  textColor = input<string | undefined>(undefined);
+  color = input<number | string>(1);
+
+  computedBackgroundColor = computed(() => {
+    const color = this.color();
+
+    const mode = this.mode();
+    if (mode === "filled-circle" || mode === "filled-square") {
+      return `var(--color-${color}-background)`;
+    } else {
+      return "transparent";
+    }
   });
-  rounded = input(false);
-  size = input<"sm" | "md" | "lg" | "xl">("md");
-  class = computed(() => [
-    "avatar",
-    "flex",
-    "items-center",
-    "justify-center",
-    "uppercase",
-    `color-${this.color()}`,
-    `avatar-${this.size()}`,
-    this.rounded() ? "rounded-full" : "rounded",
-  ]);
+  computeColor = computed(() => {
+    const color = this.color();
+    return `var(--color-${color}-color)`;
+  });
+  computedBorderColor = computed(() => {
+    const color = this.color();
+    const mode = this.mode();
+    if (mode === "outlined") {
+      return `var(--color-${color}-color)`;
+    } else {
+      return `var(--color-${color}-border)`;
+    }
+  });
+  hostClasses = computed(() => ["avatar", `avatar-${this.size()}`, `mode-${this.mode()}`].join(" "));
 
   initials = computed(() => {
     const words = this.name()

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,11 +21,14 @@
 
 import { UserNested } from "@tenzu/repository/user";
 
-export type StoryComment = {
+export type StoryCommentNested = {
   id: string;
   text: string;
   createdAt: string;
   createdBy?: UserNested;
+};
+
+export type StoryComment = StoryCommentNested & {
   modifiedAt?: string;
   deletedAt?: string;
   deletedBy?: UserNested;

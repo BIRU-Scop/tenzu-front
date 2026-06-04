@@ -1,7 +1,7 @@
 {
   "login": {
     "action": "Iniciar sesión",
-    "title": "Inicia sesión en tu cuenta Tenzu",
+    "title": "Inicia sesión en tu cuenta",
     "email_or_username": "Correo electrónico o nombre de usuario",
     "not_registered_yet": "¿Aún no estás registrado?",
     "create_account": "Crea una cuenta",
@@ -16,7 +16,7 @@
     "unknown_error_exit": "Vuelva a intentarlo."
   },
   "signup": {
-    "title": "Crea una cuenta Tenzu",
+    "title": "Crea una cuenta",
     "create_account_email": "Crea una cuenta con tu correo electrónico",
     "no_social_connect": "No hay opciones de conexión social disponibles",
     "alternatives": "o",

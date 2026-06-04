@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,11 +21,10 @@
 
 import { UserRole } from "../membership";
 import { WorkflowNested } from "../workflow";
+import { FileValue } from "@tenzu/repository/base/misc.model";
 
 export type ProjectLogoBase = {
   logo?: string;
-  logoSmall?: string;
-  logoLarge?: string;
 };
 
 type _ProjectBaseNested = {
@@ -53,7 +52,10 @@ export type ProjectDetail = ProjectSummary &
     workflows: WorkflowNested[];
   };
 
-export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId"> &
-  Partial<Pick<ProjectNested, "description" | "color" | "logo">>;
+export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> & {
+  logo: FileValue;
+};
 
-export type UpdateProjectPayload = Partial<Pick<ProjectNested, "description" | "name">>;
+export type UpdateProjectPayload = Pick<ProjectNested, "description" | "name" | "color"> & {
+  logo?: FileValue;
+};

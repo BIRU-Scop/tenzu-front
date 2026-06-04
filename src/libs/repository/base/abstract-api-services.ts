@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { makeOptions, QueryParams } from "./utils";
-import { BaseDataModel, JsonObject } from "./misc.model";
+import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
 
 type OptionRequest = {
   dataIsFormData?: boolean;
@@ -39,6 +39,7 @@ export abstract class AbstractApiServiceDetail<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
+  CreatePayload extends DataObject = Partial<EntityDetailModel>,
 > {
   protected http = inject(HttpClient);
   protected configAppService = inject(ConfigAppService);
@@ -122,15 +123,15 @@ export abstract class AbstractApiServiceDetail<
   }
 
   create(
-    item: Partial<EntityDetailModel>,
+    item: CreatePayload,
     params?: CreateParams,
     queryParams?: QueryParams,
     options?: OptionRequest,
   ): Observable<EntityDetailModel> {
     const url = Object.keys(params || {}).length > 0 ? this.createUrl(params) : this.createUrl();
-    let data: FormData | Partial<EntityDetailModel>;
+    let data: FormData | CreatePayload;
     if (options?.dataIsFormData) {
-      data = makeFormData<Partial<EntityDetailModel>>(item);
+      data = makeFormData<CreatePayload>(item);
     } else {
       data = item;
     }
@@ -157,7 +158,16 @@ export abstract class AbstractApiService<
   PutParams extends Record<string, EntityId> | unknown = GetParams,
   PatchParams extends Record<string, EntityId> | unknown = GetParams,
   DeleteParams extends Record<string, EntityId> | unknown = GetParams,
-> extends AbstractApiServiceDetail<EntityDetailModel, GetParams, CreateParams, PutParams, PatchParams, DeleteParams> {
+  CreatePayload extends DataObject = Partial<EntityDetailModel>,
+> extends AbstractApiServiceDetail<
+  EntityDetailModel,
+  GetParams,
+  CreateParams,
+  PutParams,
+  PatchParams,
+  DeleteParams,
+  CreatePayload
+> {
   protected listUrl(params?: ListParams): string {
     return `${this.getBaseUrl(params)}`;
   }
@@ -172,11 +182,14 @@ export abstract class AbstractApiService<
   }
 }
 
-function makeFormData<T extends JsonObject>(item: T): FormData {
+export function makeFormData<T extends DataObject>(item: T): FormData {
   const formData = new FormData();
   for (const [key, value] of Object.entries(item)) {
     if (value === undefined || value === null) {
       // Ignore null/undefined values
+    } else if (value instanceof File || value instanceof Blob) {
+      // Handle files
+      formData.append(key, value);
     } else if (typeof value === "object") {
       // Convert objects and tables to json string
       formData.append(key, JSON.stringify(value));

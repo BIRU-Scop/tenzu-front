@@ -40,7 +40,8 @@
       "delete_project_membership_self": "You have been removed from project {{name}}",
       "update_workspace_membership": "Your role for workspace {{name}} is now {{role}}",
       "delete_workspace_membership_self": "You have been removed from workspace {{name}}",
-      "update_project_role": "Your role {{role}} for project {{name}} was edited"
+      "update_project_role": "Your role {{role}} for project {{name}} was edited",
+      "importation_success": "The import of {{fileName}} is complete"
     }
   },
   "notifications": {
@@ -57,7 +58,9 @@
       "stories.status_change": "<span class='text-on-background'>{{fullName}}</span> changed the status of the story to <span class='text-on-background'>{{status}}</span>",
       "story_comment.create": "<span class='text-on-background'>{{fullName}}</span> commented on the story",
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> deleted the story {{story}}",
-      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status in the  <span class='text-on-background'>{{workflow}}</span> kanban"
+      "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status in the  <span class='text-on-background'>{{workflow}}</span> kanban",
+      "project_importation.fail": "The import of the file {{fileName}} has failed",
+      "project_importation.warning.file_too_big": "During the import of {{fileName}}, the file {{errorFileName}} couldn't be imported because it is too big ({{errorFileSize}} > {{maxFileSize}})"
     }
   },
   "component": {
@@ -164,6 +167,13 @@
       }
     }
   },
+  "avatar": {
+    "max_size": "Image size must not exceed {{size}}",
+    "allowed_format": "Allowed formats: {{formats}}"
+  },
+  "chip": {
+    "remove_action": "Remove {{label}}"
+  },
   "commons": {
     "project": "Project",
     "projects": "Projects",
@@ -173,6 +183,7 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
+    "more": "More",
     "add": "Add",
     "undo": "Undo",
     "select_option": "Select an option"
@@ -197,7 +208,8 @@
   "form_errors": {
     "max_length": "Characters limit is {{length}}",
     "min_length": "Minimum characters limit is {{length}}",
-    "required": "This field is required"
+    "required": "This field is required",
+    "exceed_file_size": "{{var}} exceed the size of {{maxSize}}"
   },
   "environment": {
     "demo": "This is a demo version of the product, for testing purposes only. All registered data will be deleted regularly. We do not keep your emails for any kind of marketing outreach.",

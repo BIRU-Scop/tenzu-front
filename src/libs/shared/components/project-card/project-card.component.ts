@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,13 +19,23 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
-import { NgStyle } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import {
+  ProjectCreateDialog,
+  ProjectCreateDialogData,
+} from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
+import { matDialogConfig } from "@tenzu/utils/mat-config";
+import { MatDialog } from "@angular/material/dialog";
+import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { ProjectSummary } from "@tenzu/repository/project";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-project-card",
@@ -38,53 +48,88 @@ import { NgStyle } from "@angular/common";
     TranslocoDirective,
     RouterLink,
     MatIcon,
-    NgStyle,
+    ButtonAddComponent,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
+    @let _landingPage = landingPage();
+    @let _name = name();
+    @let _color = color();
+    @let _description = description();
+    @let _workspaceId = workspaceId();
+    @let _disabled = disabled();
     <mat-card
       appearance="outlined"
-      class="min-h-[100px] w-[200px]"
-      [ngStyle]="disabled() ? { position: 'absolute', filter: 'blur(3px)' } : {}"
+      class="min-h-[120px] w-[200px] mat-bg-surface-container-high"
       *transloco="let t; prefix: 'component.project_card'"
     >
-      <mat-card-header>
-        <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
-        <mat-card-title class="!contents min-h-[40px]">
-          @if (landingPage()) {
-            <a [routerLink]="landingPage()">{{ name() }}</a>
-          } @else {
-            {{ name() }}
-          }
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="pt-2 pl-2">
-          @if (!name() && !description() && !color()) {
-            <a routerLink="/new-project" [queryParams]="{ workspaceId: workspaceId() }">{{
-              t("create_first_project")
-            }}</a>
+      @if (_disabled) {
+        <div class="z-50 h-full w-full backdrop-blur-sm rounded-lg flex items-center justify-center absolute">
+          <mat-icon class="text-tertiary">lock</mat-icon>
+        </div>
+      }
+      @if (_name) {
+        <mat-card-header [aria-hidden]="_disabled">
+          <app-avatar
+            mat-card-avatar
+            mode="filled-square"
+            [name]="_name"
+            [color]="_color"
+            [imageData]="logo() | getBase64FromImageUrl: 'small' | async"
+          />
+          <mat-card-title class="!contents min-h-[40px]">
+            @if (_landingPage) {
+              <a [routerLink]="_landingPage">{{ _name }}</a>
+            } @else {
+              {{ _name }}
+            }
+          </mat-card-title>
+        </mat-card-header>
+      }
+      <mat-card-content [aria-hidden]="_disabled">
+        <div class="pt-2 pl-2 flex flex-col gap-1 ">
+          @if (!_name && !_description && !_color) {
+            <span class="pb-2">{{ t("create_first_project") }}</span>
+            @if (_workspaceId) {
+              <app-button-add
+                [iconOnly]="true"
+                [level]="'tertiary'"
+                [translocoKey]="'commons.project'"
+                (click)="openCreateProject(_workspaceId)"
+              />
+            }
           } @else {
             <p>
-              {{ description() }}
+              {{ _description }}
             </p>
           }
-        </p>
+        </div>
       </mat-card-content>
     </mat-card>
-    @if (disabled()) {
-      <div class="min-h-[100px] w-[200px] flex items-center justify-center relative">
-        <mat-icon class="text-on-primary-container">lock</mat-icon>
-      </div>
-    }
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectCardComponent {
-  name = input("");
-  color = input(0);
-  description = input<string | null>("");
-  workspaceId = input<string | null>("");
-  landingPage = input<string | null>("");
+  readonly dialog = inject(MatDialog);
+
+  workspaceId = input.required<WorkspaceSummary["id"]>();
+  name = input<ProjectSummary["name"]>("");
+  color = input<ProjectSummary["color"]>(0);
+  logo = input<ProjectSummary["logo"]>(undefined);
+  description = input<ProjectSummary["description"] | null>("");
+  landingPage = input<ProjectSummary["landingPage"] | null>("");
   disabled = input<boolean>(false);
+
+  openCreateProject(workspaceId: WorkspaceSummary["id"]): void {
+    const data: ProjectCreateDialogData = {
+      workspaceId,
+    };
+    this.dialog.open(ProjectCreateDialog, {
+      ...matDialogConfig,
+      minWidth: 850,
+      data: data,
+    });
+  }
 }

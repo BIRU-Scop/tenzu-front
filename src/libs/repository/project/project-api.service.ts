@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,9 +21,11 @@
 
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AbstractApiService } from "../base";
+import { AbstractApiService, makeFormData } from "../base";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
 import type * as ProjectApiServiceType from "./project-api.type";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -36,7 +38,8 @@ export class ProjectApiService extends AbstractApiService<
   ProjectApiServiceType.CreateEntityDetailParams,
   ProjectApiServiceType.PutEntityDetailParams,
   ProjectApiServiceType.PatchEntityDetailParams,
-  ProjectApiServiceType.DeleteEntityDetailParams
+  ProjectApiServiceType.DeleteEntityDetailParams,
+  CreateProjectPayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
   protected override getBaseUrl(params: ProjectApiServiceType.ListEntitiesSummaryParams) {
@@ -48,16 +51,24 @@ export class ProjectApiService extends AbstractApiService<
   }
 
   override create(
-    newProject: CreateProjectPayload,
+    item: CreateProjectPayload,
     params: ProjectApiServiceType.CreateEntityDetailParams,
+    options = { dataIsFormData: true },
   ): Observable<ProjectDetail> {
-    return super.create(newProject, params, undefined, { dataIsFormData: true });
+    return super.create(item, params, {}, options);
   }
 
-  override patch(
+  override patch(): Observable<ProjectDetail> {
+    throw new Error("Method not implemented.");
+  }
+
+  patchWithLogo(
     item: UpdateProjectPayload,
     params: ProjectApiServiceType.PatchEntityDetailParams,
   ): Observable<ProjectDetail> {
-    return super.patch(item, params, undefined, { dataIsFormData: true });
+    const data = makeFormData<Partial<UpdateProjectPayload>>(item);
+    return this.http
+      .patch<BaseDataModel<ProjectDetail>>(this.patchUrl(params), data)
+      .pipe(map((dataObject) => dataObject.data));
   }
 }

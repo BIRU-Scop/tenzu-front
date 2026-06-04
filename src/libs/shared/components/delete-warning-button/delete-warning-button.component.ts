@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -34,9 +34,9 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
       @let _translocoKeyWarningMessage = translocoKeyWarningMessage();
       @if (_translocoKeyWarningMessage) {
         <div class="flex flex-row">
-          <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
+          <mat-icon class="mat-text-error pr-3 self-center">warning</mat-icon>
           <p
-            class="mat-body-medium text-on-error-container align-middle"
+            class="mat-body-medium mat-text-error align-middle"
             [innerHTML]="t(_translocoKeyWarningMessage, translocoKeyWarningMessageParams())"
           ></p>
         </div>

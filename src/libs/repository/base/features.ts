@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -39,6 +39,9 @@ import {
 import { patchState, signalStoreFeature, withMethods, withState } from "@ngrx/signals";
 import { NotFoundEntityError } from "./errors";
 import { JsonObject } from "./misc.model";
+import { environment } from "../../../environments/environment";
+
+export const withTreeShakableDevTools = environment.storeWithDevTools;
 
 const defaultSelectId: SelectEntityId<{ id: EntityId }> = (entity) => entity.id;
 
@@ -56,6 +59,16 @@ export function withEntityListFeature<T extends JsonObject, State extends object
   return signalStoreFeature(
     withEntities<T>(),
     withMethods((store) => ({
+      assertEntity(id: EntityId): T {
+        /**
+         * Assert an entity with that id exists and returns it, else throw error
+         */
+        const item = store.entityMap()[id];
+        if (item) {
+          return item as T;
+        }
+        throw new NotFoundEntityError(`Entity ${id} not found`);
+      },
       /**
        * Replaces all existing entities with the provided list.
        *
@@ -139,19 +152,14 @@ export function withEntityListFeature<T extends JsonObject, State extends object
       },
 
       updateEntity(id: EntityId, entity: Partial<T>) {
-        if (store.entityMap()[id]) {
-          patchState(store, updateEntity({ id: id, changes: entity }, { selectId }));
-          return { ...store.entityMap()[id] };
-        }
-        throw new NotFoundEntityError(`Entity ${id} not found`);
+        this.assertEntity(id);
+        patchState(store, updateEntity({ id: id, changes: entity }, { selectId }));
+        return { ...store.entityMap()[id] };
       },
 
       deleteEntity(id: EntityId) {
-        if (store.entityMap()[id]) {
-          patchState(store, removeEntity(id));
-        } else {
-          throw new NotFoundEntityError(`Entity ${id} not found`);
-        }
+        this.assertEntity(id);
+        patchState(store, removeEntity(id));
       },
 
       /**
@@ -177,6 +185,13 @@ export function withEntityDetailStore<T extends JsonObject>(
       set(item: T) {
         patchState(store, { item: item });
       },
+      get(id: EntityId): T {
+        const item = store.item();
+        if (item && selectId(item) === id) {
+          return item as T;
+        }
+        throw new NotFoundEntityError(`Entity ${id} not found`);
+      },
       /**
        * Updates an existing entity in the store with the provided partial data.
        *
@@ -186,25 +201,19 @@ export function withEntityDetailStore<T extends JsonObject>(
        * @throws {Error} If the entity with the specified ID is not found.
        */
       update(id: EntityId, partialItem: Partial<T>): T {
-        const item = store.item();
-        if (item && selectId(item) === id) {
-          patchState(store, {
-            item: {
-              ...item,
-              ...partialItem,
-            },
-          });
-          return store.item() as T;
-        }
-        throw new NotFoundEntityError(`Entity ${id} not found`);
+        const item = this.get(id);
+        patchState(store, {
+          item: {
+            ...item,
+            ...partialItem,
+          },
+        });
+        return store.item() as T;
       },
       delete(id: EntityId) {
-        const item = store.item();
-        if (item && selectId(item) === id) {
-          patchState(store, { item: undefined });
-          return item;
-        }
-        throw new NotFoundEntityError(`Entity ${id} not found`);
+        const item = this.get(id);
+        patchState(store, { item: undefined });
+        return item;
       },
       reset() {
         patchState(store, { item: undefined });

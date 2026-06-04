@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,43 +21,106 @@
 
 
 @use '@angular/material' as mat;
-@use 'm3-theme' as theme;
 @use '_mixin' as mixin;
 
 
 .primary-button {
-  @include mixin.button-variant(var(--mat-sys-primary), var(--mat-sys-primary-container), var(--mat-sys-on-primary-container));
+  @include mixin.button-general-override(
+    $container-color: var(--mat-sys-primary)
+  );
+  @include mixin.button-variant-filled(
+    $text-color: var(--mat-sys-on-primary),
+    $container-color: var(--mat-sys-primary),
+    $disabled-transparency: 50%,
+    $disabled-color: var(--mat-sys-on-primary)
+  );
+  @include mixin.button-variant-outlined(
+    $text-color: var(--mat-sys-primary),
+  );
+
 }
 
 .secondary-button {
-  @include mixin.button-variant(var(--mat-sys-secondary), var(--mat-sys-secondary-container), var(--mat-sys-on-secondary-container));
+  @include mixin.button-general-override(
+    $container-color: var(--mat-sys-secondary),
+  );
+  @include mixin.button-variant-filled(
+    $text-color: var(--mat-sys-on-secondary-container),
+    $container-color: var(--mat-sys-secondary-container),
+    $disabled-transparency: 20%,
+    $disabled-color: var(--mat-sys-on-secondary)
+  );
+  @include mixin.button-variant-outlined(
+    $text-color: var(--mat-sys-secondary),
+  );
+
 }
 
 .tertiary-button {
-  @include mixin.button-variant(var(--mat-sys-tertiary), var(--mat-sys-tertiary-container), var(--mat-sys-on-tertiary-container));
+  @include mixin.button-general-override(
+    $container-color: var(--mat-sys-tertiary),
+  );
+  @include mixin.button-variant-filled(
+    $text-color: var(--mat-sys-on-tertiary),
+    $container-color:  var(--mat-sys-tertiary),
+    $disabled-transparency: 50%,
+    $disabled-color: color-mix(in srgb, var(--mat-sys-on-surface-variant) 50%, transparent),
+  );
+  @include mixin.button-variant-outlined(
+    $text-color: var(--mat-sys-tertiary),
+  );
+
 }
 
 .warning-button {
-  @include mixin.button-variant(var(--mat-sys-warning), var(--mat-sys-warning-container), var(--mat-sys-on-warning-container));
+  @include mixin.button-general-override(
+    $container-color: var(--mat-sys-warning),
+  );
+  @include mixin.button-variant-filled(
+    $text-color: var(--mat-sys-on-warning),
+    $container-color: var(--mat-sys-warning),
+    $disabled-transparency: 20%,
+    $disabled-color: var(--mat-sys-on-warning)
+  );
+  @include mixin.button-variant-outlined(
+    $text-color: var(--mat-sys-on-warning-container),
+    $container-color: var(--mat-sys-warning-container),
+  );
 }
 .error-button {
-  @include mixin.button-variant(var(--mat-sys-error), var(--mat-sys-error-container), var(--mat-sys-on-error-container));
+  @include mixin.button-general-override(
+    $container-color: var(--mat-sys-error),
+  );
+  @include mixin.button-variant-filled(
+    $text-color: var(--mat-sys-on-error),
+    $container-color: var(--mat-sys-error),
+    $disabled-transparency: 20%,
+    $disabled-color: var(--mat-sys-on-error)
+  );
+  @include mixin.button-variant-outlined(
+    $text-color: var(--mat-sys-on-error-container),
+  );
 }
 
-.mdc-button {
-  &.primary-button .mdc-button__label, &.secondary-button .mdc-button__label, &.tertiary-button .mdc-button__label, &.warning-button .mdc-button__label, &.error-button .mdc-button__label {
-    z-index: 0;
-  }
+.success-button {
+  @include mixin.button-general-override(
+    $container-color: var(--mat-sys-success),
+  );
+  @include mixin.button-variant-filled(
+    $text-color: var(--mat-sys-on-success),
+    $container-color: var(--mat-sys-success),
+    $disabled-transparency: 20%,
+    $disabled-color: var(--mat-sys-on-success)
+  );
+  @include mixin.button-variant-outlined(
+    $text-color: var(--mat-sys-on-success-container),
+  );
 }
 
 
 .mat-mdc-icon-button {
-
   @include mixin.icon-button-size(24px, 32px); // need to use a mixin because of a angular bug (see  https://github.com/angular/components/issues/30448)
-  
-  &.mat-mdc-button-base .mat-mdc-button-persistent-ripple::before {
-    opacity: 0.1;
-  }
+
 
   &.icon-sm {
     @include mixin.icon-button-size(16px, 24px);
@@ -77,33 +140,20 @@
 }
 
 @mixin tokens-overrides() {
+
   @include mat.button-overrides((
-    filled-container-shape: var(--mat-sys-corner-medium),
-    outlined-container-shape: var(--mat-sys-corner-medium),
+    filled-container-shape: var(--mat-sys-corner-extra-small),
+    outlined-container-shape: var(--mat-sys-corner-extra-small),
     filled-container-height: 32px,
     outlined-container-height: 32px,
     filled-horizontal-padding: 12px,
     outlined-horizontal-padding: 12px,
     outlined-icon-spacing: 4px,
     filled-icon-spacing: 4px,
-    filled-hover-state-layer-opacity: 0.25,
-    outlined-hover-state-layer-opacity: 0.25,
-    filled-focus-state-layer-opacity: 0.25,
-    outlined-focus-state-layer-opacity: 0.25,
-    filled-disabled-container-color: var(--mat-sys-on-surface-variant),
-    filled-disabled-label-text-color: var(--mat-sys-outline),
-    outlined-disabled-label-text-color: var(--mat-sys-outline),
-    outlined-disabled-outline-color: var(--mat-sys-outline-variant),
     filled-label-text-size : var(--mat-sys-label-large-size),
     outlined-label-text-size:  var(--mat-sys-label-large-size),
     filled-label-text-weight : var(--mat-sys-label-large-weight),
     outlined-label-text-weight:  var(--mat-sys-label-large-weight),
-  ));
-  @include mat.icon-button-overrides((
-    state-layer-color: var(--mat-sys-on-secondary),
-    hover-state-layer-opacity: 0.2,
-    focus-state-layer-opacity: 0.1,
-    icon-color: var(--mat-sys-on-secondary)
   ));
 }
 

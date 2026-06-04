@@ -23,14 +23,12 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { MatIconButton } from "@angular/material/button";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
   EnterNameDialogComponent,
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
-import { animate, query, stagger, style, transition, trigger } from "@angular/animations";
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
@@ -42,7 +40,6 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
-import { MatTooltip } from "@angular/material/tooltip";
 import {
   DeleteWorkflowDialogComponent,
   FormData as DeleteWorkflowFormData,
@@ -58,9 +55,12 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
+import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 
 @Component({
   selector: "app-project-kanban",
+  host: { class: "block h-full flex flex-col min-h-0" },
   imports: [
     TranslocoDirective,
     StatusCardComponent,
@@ -75,12 +75,11 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     MatMenu,
     MatIcon,
     MatMenuTrigger,
-    MatIconButton,
-    MatTooltip,
     MatMenuItem,
     HasPermissionDirective,
     PermissionOrRedirectDirective,
     ButtonAddComponent,
+    ButtonMoreComponent,
   ],
   template: `
     @let workflow = workflowRepositoryService.entityDetail();
@@ -104,14 +103,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                 requiredPermission: ProjectPermissions.MODIFY_WORKFLOW,
               }"
             >
-              <button
-                mat-icon-button
-                [attr.aria-label]="t('aria_label')"
-                [matTooltip]="t('aria_label')"
-                [matMenuTriggerFor]="workflowMenu"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
+              <app-button-more [matMenuTriggerFor]="workflowMenu" />
               <mat-menu #workflowMenu="matMenu">
                 <button mat-menu-item [attr.aria-label]="t('edit_name')" (click)="openEditWorkflow($event)">
                   <mat-icon>edit</mat-icon>
@@ -146,13 +138,12 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
             <ul
               class="grid grid-flow-col gap-8 kanban-viewport"
               *transloco="let t; prefix: 'workflow'"
-              [@newStatusFlyIn]="statuses.length"
               cdkDropListGroup
             >
               @for (status of statuses; track status.id) {
                 @let storiesRef = storyRepositoryService.groupedByStatus()[status.id];
 
-                <li class="group w-64 flex flex-col">
+                <li class="group w-64 flex flex-col pb-2">
                   <app-status-card
                     (movedLeft)="moveStatus($index, Step.LEFT)"
                     (movedRight)="moveStatus($index, Step.RIGHT)"
@@ -165,9 +156,8 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
 
                   <cdk-virtual-scroll-viewport [itemSize]="114" class="virtual-scroll">
                     <ul
-                      [@newStoryFlyIn]="storyRepositoryService.entitiesSummary().length || 0"
                       [id]="status.id"
-                      class="stories-list flex flex-col items-center dark:bg-surface-dim bg-surface-container rounded-b shadow-inner"
+                      class="stories-list flex flex-col items-center mat-bg-surface-container"
                       cdkDropList
                       [cdkDropListData]="status"
                       [cdkDropListDisabled]="!hasModifyPermission || isLoading"
@@ -202,10 +192,10 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                   >
                     <app-button-add
                       class="whitespace-nowrap shrink-0 mt-4 mx-auto"
-                      [level]="'primary'"
+                      level="tertiary"
                       [translocoKey]="'workflow.add_story'"
                       (click)="openCreateStory($event, status.id)"
-                    ></app-button-add>
+                    />
                   </ng-container>
                 </li>
               }
@@ -233,6 +223,8 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
   `,
   styles: `
     .kanban-viewport {
+      flex: 1 1 0;
+      min-height: 0;
       padding-bottom: 1.5px;
       width: fit-content;
       max-width: 100%;
@@ -240,43 +232,14 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
       overflow-y: hidden;
     }
     .virtual-scroll {
-      height: var(--tz-virtual-scroll-height);
+      flex: 1 1 0;
+      min-height: 0;
+      container-type: size;
     }
     .stories-list {
-      min-height: var(--tz-virtual-scroll-height);
-    }
-    ::ng-deep.cdk-virtual-scroll-content-wrapper {
-      min-height: 100%;
+      min-height: 100cqh;
     }
   `,
-  animations: [
-    trigger("newStoryFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, height: 0 }),
-            stagger(0, [animate("200ms ease-out", style({ opacity: 1, height: "*" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-    trigger("newStatusFlyIn", [
-      transition(":enter, * => 0, * => -1", []),
-      transition(":increment", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, width: 0 }),
-            stagger(0, [animate("200ms ease-out", style({ opacity: 1, width: "192px" }))]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectKanbanComponent {
@@ -373,7 +336,7 @@ export class ProjectKanbanComponent {
     });
     dialogRef.afterClosed().subscribe(async (name?: string) => {
       if (name) {
-        const color = Math.floor(Math.random() * (8 - 1) + 1);
+        const color = RandomColorService.randomColorPicker();
         await this.projectKanbanService.createStatus({
           name: name,
           color,

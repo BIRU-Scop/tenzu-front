@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -30,7 +30,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   template: ` <div class="flex flex-row gap-2 items-center" *transloco="let t; prefix: 'component.user_card'">
     @let _fullname = fullName();
     @let _avatarname = avatarName();
-    <app-avatar [rounded]="true" [name]="_avatarname === null ? _fullname : _avatarname" [color]="color()" />
+    <app-avatar mode="filled-circle" [name]="_avatarname === null ? _fullname : _avatarname" [color]="color()" />
     <div class="flex flex-col min-h-9 justify-center">
       @if (_fullname) {
         <div class="flex flex-row gap-1">
