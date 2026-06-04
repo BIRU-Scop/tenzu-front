@@ -79,9 +79,9 @@ import { HttpErrorResponse } from "@angular/common/http";
                 </mat-checkbox>
               </div>
               @for (error of callbackForm.acceptTermsOfService().errors(); track error.kind) {
-                <div class="flex flex-row">
-                  <mat-icon class="text-on-error-container pr-3 self-center">warning</mat-icon>
-                  <p class="mat-body-medium text-on-error-container align-middle">
+                <div class="flex flex-row mat-text-error">
+                  <mat-icon class="pr-3 self-center">warning</mat-icon>
+                  <p class="mat-body-medium  align-middle">
                     {{ t(error?.message || "") }}
                   </p>
                 </div>
