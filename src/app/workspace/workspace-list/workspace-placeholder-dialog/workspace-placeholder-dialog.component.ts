@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,13 +20,28 @@
  */
 
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { MatButton } from "@angular/material/button";
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
+import {
+  FormFooterComponent,
+  FormFooterSecondaryActionDirective,
+} from "@tenzu/shared/components/ui/form-footer/form-footer.component";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-workspace-placeholder-dialog",
-  imports: [MatDialogContent, MatDialogActions, MatDialogTitle, MatDialogClose, MatButton, TranslocoDirective],
+  imports: [
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogTitle,
+    MatDialogClose,
+    TranslocoDirective,
+    FormFooterComponent,
+    ButtonCancelComponent,
+    FormFooterSecondaryActionDirective,
+    ButtonAddComponent,
+  ],
   template: `
     <ng-container *transloco="let t; prefix: 'workspace'">
       <h2 id="aria-label" mat-dialog-title>{{ t("placeholder.placeholder_title") }}</h2>
@@ -34,17 +49,10 @@ import { TranslocoDirective } from "@jsverse/transloco";
         ><p>{{ t("placeholder.placeholder_text") }}</p>
       </mat-dialog-content>
       <mat-dialog-actions>
-        <button
-          *transloco="let t; prefix: 'commons'"
-          mat-dialog-close
-          mat-stroked-button
-          class="primary-button whitespace-nowrap shrink-0"
-        >
-          {{ t("close") }}
-        </button>
-        <button mat-flat-button class="primary-button" [mat-dialog-close]="true" cdkFocusInitial>
-          {{ t("create.create_workspace") }}
-        </button>
+        <app-form-footer>
+          <app-button-cancel appFormFooterSecondaryAction mat-dialog-close />
+          <app-button-add [mat-dialog-close]="true" translocoKey="workspace.create.create_workspace" cdkFocusInitial />
+        </app-form-footer>
       </mat-dialog-actions>
     </ng-container>
   `,
