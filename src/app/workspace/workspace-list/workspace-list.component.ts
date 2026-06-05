@@ -40,10 +40,10 @@ import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-s
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
+import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 
 @Component({
   selector: "app-workspace-list",
@@ -54,9 +54,9 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
     ActionCardComponent,
-    ButtonAddComponent,
     ProjectLandingPageUrl,
     ProjectImportationCardComponent,
+    ButtonAddComponent,
   ],
   template: `
     <div *transloco="let t" class="p-4 max-w-7xl mx-auto">
