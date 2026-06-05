@@ -20,23 +20,36 @@
  */
 
 import { Component, inject, input, output } from "@angular/core";
-import { MatButton } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { MatDivider } from "@angular/material/divider";
-import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import {
   ProjectCreateDialog,
   ProjectCreateDialogData,
 } from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
+import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: "app-workspace-card",
-  imports: [AvatarComponent, RouterLink, MatButton, TranslocoDirective, MatDivider, ButtonAddComponent],
+  imports: [
+    AvatarComponent,
+    RouterLink,
+    TranslocoDirective,
+    MatDivider,
+    ButtonComponent,
+    ButtonMoreComponent,
+    MatMenuTrigger,
+    MatIcon,
+    MatMenu,
+    MatMenuItem,
+  ],
   template: `
     @let _workspace = workspace();
     <ng-container *transloco="let t">
@@ -48,31 +61,27 @@ import { MatDialog } from "@angular/material/dialog";
           {{ _workspace.name }}
         }
         @if (_workspace.userCanCreateProjects) {
-          <app-button-add
-            class="ml-auto"
-            [level]="'tertiary'"
-            [translocoKey]="'commons.project'"
-            (click)="openCreateProject(_workspace.id)"
-          />
+          <app-button-more class="ml-auto" [matMenuTriggerFor]="workspaceMenu" />
+          <mat-menu #workspaceMenu="matMenu">
+            <button mat-menu-item (click)="openCreateProject(_workspace.id)">
+              <mat-icon>add</mat-icon>
+              {{ t("commons.project") }}
+            </button>
+          </mat-menu>
         } @else if (_workspace.userIsInvited) {
-          <button
-            class="secondary-button"
-            mat-flat-button
-            type="button"
-            [attr.aria-label]="'component.invitation.accept'"
+          <app-button
+            class="ml-auto"
+            translocoKey="component.invitation.accept"
+            [level]="'primary'"
+            iconName="check"
             (click)="submitted.emit()"
-          >
-            {{ t("component.invitation.accept") }}
-          </button>
-          <button
-            class="error-button"
-            mat-flat-button
-            type="button"
-            [attr.aria-label]="'component.invitation.deny'"
+          />
+          <app-button
+            [level]="'error'"
+            translocoKey="component.invitation.deny"
+            [iconName]="'block'"
             (click)="canceled.emit()"
-          >
-            {{ t("component.invitation.deny") }}
-          </button>
+          />
         }
       </div>
       <mat-divider />
