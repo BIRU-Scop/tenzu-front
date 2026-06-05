@@ -59,11 +59,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     @let _description = description();
     @let _workspaceId = workspaceId();
     @let _disabled = disabled();
-    <mat-card
-      appearance="outlined"
-      class="min-h-[120px] w-[200px] mat-bg-surface-container-high"
-      *transloco="let t; prefix: 'component.project_card'"
-    >
+    <mat-card appearance="outlined" class="min-h-[120px] w-[200px] mat-bg-surface-container-high" *transloco="let t">
       @if (_disabled) {
         <div class="z-50 h-full w-full backdrop-blur-sm rounded-lg flex items-center justify-center absolute">
           <mat-icon class="text-tertiary">lock</mat-icon>
@@ -90,7 +86,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
       <mat-card-content [aria-hidden]="_disabled">
         <div class="pt-2 pl-2 flex flex-col gap-1 ">
           @if (!_name && !_description && !_color) {
-            <span class="pb-2">{{ t("create_first_project") }}</span>
+            <span class="pb-2">{{ t("component.project_card.create_first_project") }}</span>
             @if (_workspaceId) {
               <app-button-add
                 [iconOnly]="true"
