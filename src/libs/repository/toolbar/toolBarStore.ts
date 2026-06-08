@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,10 +20,11 @@
  */
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
+import { IconName } from "@tenzu/shared/components/ui/ui.types";
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export type ToolBarItem = {
-  iconName: string;
+  iconName: IconName;
   label: string;
   eventName: string;
   eventData?: any;
