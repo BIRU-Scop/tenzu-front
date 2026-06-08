@@ -98,6 +98,10 @@
     container-color: $container-color,
     supporting-text-color: var(--mat-sys-surface),
   ));
+  @include mat.button-overrides((
+    text-ripple-color: color-mix(in srgb, #{$container-color} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent),
+    text-state-layer-color: $container-color,
+  ));
   @include mat.icon-button-overrides((
     disabled-icon-color:  var(--mat-sys-surface),
     icon-color: $container-color,
