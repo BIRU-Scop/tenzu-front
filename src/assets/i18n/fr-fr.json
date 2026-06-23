@@ -1,4 +1,9 @@
 {
+  "feed": {
+    "action": {
+      "new_tab": "(nouvel onglet)"
+    }
+  },
   "notification": {
     "server_errors": {
       "http500": {

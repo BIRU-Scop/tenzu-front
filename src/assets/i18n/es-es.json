@@ -1,4 +1,9 @@
 {
+  "feed": {
+    "action": {
+      "new_tab": "(nueva pestaña)"
+    }
+  },
   "notification": {
     "server_errors": {
       "http500": {
