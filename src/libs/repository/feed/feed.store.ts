@@ -40,6 +40,7 @@ export const FeedStore = signalStore(
       ),
     ),
     unreadCount: computed<number>(() => store.entities().filter((item) => !item.readAt).length),
+    hasMaintenance: computed<boolean>(() => store.entities().some((item) => item.type === "maintenance")),
   })),
   withMethods((store) => ({
     updateReadState(readStates: FeedItemReadState[]) {

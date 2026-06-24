@@ -42,6 +42,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
 import { NgEventBus } from "ng-event-bus";
 import { ToolBarStore } from "@tenzu/repository/toolbar";
 import { PLUGINS_TOKEN } from "../app.config";
+import { FeedOrchestratorService } from "../feed/feed-orchestrator.service";
 
 @Component({
   selector: "app-home",
@@ -131,6 +132,7 @@ export default class HomeComponent implements AfterViewInit {
   notificationsComponentService = inject(NotificationsComponentService);
   toolBarStore = inject(ToolBarStore);
   plugins = inject(PLUGINS_TOKEN);
+  feedOrchestrator = inject(FeedOrchestratorService);
   constructor() {
     this.iconRegistry.addSvgIcon("logo-text", this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu.svg"));
     this.iconRegistry.addSvgIcon(
@@ -141,6 +143,7 @@ export default class HomeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.notificationsComponentService.getCount().then();
+    this.feedOrchestrator.init();
   }
 
   logout() {

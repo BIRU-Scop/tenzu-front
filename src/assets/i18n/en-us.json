@@ -1,5 +1,13 @@
 {
   "feed": {
+    "dialog": {
+      "title_maintenance": "Maintenance",
+      "title_release": "Release Notes",
+      "title_call_to_action": "Call to Action",
+      "previous": "Previous announcement",
+      "next": "Next announcement",
+      "go_to": "Go to announcement {{ number }}"
+    },
     "action": {
       "new_tab": "(new tab)"
     }

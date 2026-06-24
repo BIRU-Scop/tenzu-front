@@ -1,5 +1,13 @@
 {
   "feed": {
+    "dialog": {
+      "title_maintenance": "Maintenance",
+      "title_release": "Notes de publication",
+      "title_call_to_action": "Appel à l'action",
+      "previous": "Annonce précédente",
+      "next": "Annonce suivante",
+      "go_to": "Aller à l'annonce {{ number }}"
+    },
     "action": {
       "new_tab": "(nouvel onglet)"
     }
