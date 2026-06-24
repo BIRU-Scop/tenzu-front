@@ -42,7 +42,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
 import { NgEventBus } from "ng-event-bus";
 import { ToolBarStore } from "@tenzu/repository/toolbar";
 import { PLUGINS_TOKEN } from "../app.config";
-import { FeedOrchestratorService } from "../feed/feed-orchestrator.service";
+import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
 
 @Component({
   selector: "app-home",
@@ -109,6 +109,15 @@ import { FeedOrchestratorService } from "../feed/feed-orchestrator.service";
           <mat-icon>settings</mat-icon>
           <span>{{ t("settings") }}</span>
         </button>
+        <button mat-menu-item [attr.aria-label]="t('news')" (click)="feedOrchestrator.openModal()">
+          <mat-icon
+            [matBadge]="feedOrchestrator.unreadCount()"
+            [matBadgeHidden]="!feedOrchestrator.unreadCount()"
+            aria-hidden="false"
+            >news</mat-icon
+          >
+          <span>{{ t("news") }}</span>
+        </button>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>{{ t("logout") }}</span>
@@ -143,7 +152,7 @@ export default class HomeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.notificationsComponentService.getCount().then();
-    this.feedOrchestrator.init();
+    this.feedOrchestrator.init().then();
   }
 
   logout() {
