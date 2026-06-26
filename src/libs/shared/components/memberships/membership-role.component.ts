@@ -33,6 +33,7 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-membership-role",
@@ -59,7 +60,7 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
   notificationService = inject(NotificationService);
 
   membership = input.required<MembershipBase>();
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   entityRole = input.required<T>();
   isSelf = input(false);
   membershipRepositoryService = computed(() => {

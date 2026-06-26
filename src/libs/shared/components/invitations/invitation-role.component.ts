@@ -26,6 +26,7 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-invitation-role",
@@ -50,7 +51,7 @@ export class InvitationRoleComponent {
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
 
   invitation = input.required<InvitationBase>();
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   userRole = input<Role>();
   invitationRepositoryService = computed(() => {
     switch (this.itemType()) {

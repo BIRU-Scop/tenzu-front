@@ -27,8 +27,10 @@ import { MatError, MatFormField } from "@angular/material/form-field";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { FieldTree, FormField } from "@angular/forms/signals";
-import { InvitePeopleDialogData, PeopleEmailRow } from "../invite-people-dialog.type";
+import { PeopleEmailRow } from "../invite-people-dialog.type";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
+import { Role } from "@tenzu/repository/membership";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Pipe({
   name: "alreadyInvited",
@@ -93,17 +95,14 @@ export class AlreadyInvitedPipe implements PipeTransform {
           </div>
         }
       </div>
-      <app-role-selector-field
-        [itemType]="data().itemType"
-        [userRole]="data().userRole"
-        [formField]="_emailRow.roleId"
-      />
+      <app-role-selector-field [itemType]="itemType()" [userRole]="userRole()" [formField]="_emailRow.roleId" />
       <app-button-close class="mt-2" iconSize="sm" (click)="removeRow.emit()" [iconOnly]="true" />
     </div>
   `,
 })
 export class InvitationFormRowComponent {
-  data = input.required<InvitePeopleDialogData>();
+  itemType = input.required<ItemType>();
+  userRole = input.required<Role | undefined>();
   notAcceptedInvitationEmails = input.required<string[]>();
   emailRow = input.required<FieldTree<PeopleEmailRow, number>>();
   removeRow = output<void>();
