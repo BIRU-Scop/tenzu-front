@@ -22,9 +22,13 @@
 import { Component, computed, inject, input } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation";
+import {
+  ImportationStatus,
+  ProjectImportation,
+  ProjectImportationRepositoryService,
+} from "@tenzu/repository/importation";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressBar } from "@angular/material/progress-bar";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -35,6 +39,9 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
+import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 
 @Component({
   selector: "app-project-importation-card",
@@ -60,35 +67,49 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
       [class.mat-card-error]="_importation.status === ImportationStatus.FAILURE"
       *transloco="let t"
     >
-      <div
-        class="z-50 h-full w-full backdrop-blur-sm rounded-lg flex flex-col items-center justify-center absolute text-center"
-      >
-        @if (_importation.status === ImportationStatus.FAILURE) {
-          <div class="flex flex-row p-0.5">
-            <mat-icon class="text-error pr-3 self-center" aria-hidden="true">warning</mat-icon>
-            <p class="mat-body-medium text-error align-middle">{{ t("project.new_project.import.failed") }}</p>
-          </div>
-          <app-button
-            level="error"
-            translocoKey="project.new_project.import.failed_details"
-            (click)="openImportationError()"
-          />
-        } @else {
-          <div class="flex flex-col w-full">
-            <p>{{ t("project.new_project.import.ongoing") }}</p>
-            <div class="flex flex-row items-center gap-3 px-3 justify-stretch">
-              <mat-progress-bar
-                [mode]="_importation.extraData.progressPercentage ? 'determinate' : 'indeterminate'"
-                [value]="_importation.extraData.progressPercentage"
-              ></mat-progress-bar>
-              <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
+      @if (_importation.status !== ImportationStatus.ACTION_NEEDED) {
+        <div
+          class="z-50 h-full w-full backdrop-blur-sm rounded-lg flex flex-col items-center justify-center absolute text-center"
+        >
+          @if (_importation.status === ImportationStatus.FAILURE) {
+            <div class="flex flex-row p-0.5">
+              <mat-icon class="text-error pr-3 self-center" aria-hidden="true">warning</mat-icon>
+              <p class="mat-body-medium text-error align-middle">{{ t("project.new_project.import.failed") }}</p>
             </div>
-          </div>
-        }
-      </div>
+            <app-button
+              level="error"
+              translocoKey="project.new_project.import.failed_details"
+              (click)="openImportationError()"
+            />
+          } @else {
+            <div class="flex flex-col w-full">
+              <p>{{ t("project.new_project.import.ongoing") }}</p>
+              <div class="flex flex-row items-center gap-3 px-3 justify-stretch">
+                <mat-progress-bar
+                  [mode]="_importation.extraData.progressPercentage ? 'determinate' : 'indeterminate'"
+                  [value]="_importation.extraData.progressPercentage"
+                ></mat-progress-bar>
+                <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
       <mat-card-header aria-hidden="true">
         <app-avatar mat-card-avatar mode="filled-square" [name]="_name" [color]="_color" />
         <mat-card-title class="!contents min-h-[40px]">{{ _name }}</mat-card-title>
+        @if (_importation.status === ImportationStatus.ACTION_NEEDED) {
+          <!--          TODO text content-->
+          <app-button
+            level="warning"
+            [iconOnly]="true"
+            iconName="warning"
+            translocoKey="TODO"
+            class="ms-auto"
+            iconSize="sm"
+            (click)="openInviteDialog()"
+          ></app-button>
+        }
       </mat-card-header>
       <mat-card-content aria-hidden="true">
         <div class="pt-2 pl-2 flex flex-col gap-1">
@@ -104,6 +125,10 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
 export class ProjectImportationCardComponent {
   protected readonly ImportationStatus = ImportationStatus;
   readonly dialog = inject(MatDialog);
+  readonly projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
+  readonly projectImportationRepositoryService = inject(ProjectImportationRepositoryService);
+  readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+  readonly translocoService = inject(TranslocoService);
 
   workspaceId = input.required<WorkspaceSummary["id"]>();
   projectImportation = input.required<ProjectImportation>();
@@ -123,5 +148,37 @@ export class ProjectImportationCardComponent {
       minWidth: 850,
       data: data,
     });
+  }
+
+  public async openInviteDialog() {
+    const projectImportation = this.projectImportation();
+    if (projectImportation.project) {
+      this.projectInvitationRepositoryService.listProjectInvitations(projectImportation.project.id).then();
+      this.projectRoleRepositoryService.listRequest({ projectId: projectImportation.project.id }).then();
+
+      // TODO remove async/await and just use .then() in order to prevent blocking
+      //  once we have switch all data argument to binding signals
+      await Promise.all([
+        this.projectInvitationRepositoryService.listProjectInvitations(projectImportation.project.id),
+        this.projectRoleRepositoryService.listRequest({ projectId: projectImportation.project.id }),
+      ]);
+      const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
+        ...matDialogConfig,
+        minWidth: 850,
+        data: {
+          // TODO text content
+          title: this.translocoService.translate("TODO", {
+            name: projectImportation.project.name,
+          }),
+          // TODO text content
+          description: this.translocoService.translateObject("TODO"),
+          existingMembers: signal([]), // members shouldn't ever be present in pending invites list so we don't need this check
+          existingInvitations: this.projectInvitationRepositoryService.entities,
+          itemType: "project",
+          userRole: this.projectRoleRepositoryService.ownerRole(),
+        },
+      });
+      dialogRef.afterClosed().subscribe();
+    }
   }
 }

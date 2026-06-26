@@ -146,10 +146,7 @@ export default class ProjectMembersComponent implements AfterViewInit {
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
-          await this.projectInvitationRepositoryService.createBulkInvitations(
-            selectedProject,
-            invitations.map(({ email, roleId }) => ({ email, roleId })),
-          );
+          await this.projectInvitationRepositoryService.createBulkInvitations(selectedProject, invitations);
           await this.router.navigate(["list-project-invitations"], { relativeTo: this.activatedRoute });
         }
       });

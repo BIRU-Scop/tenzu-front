@@ -20,6 +20,7 @@
  */
 
 import { FileValue } from "@tenzu/repository/base/misc.model";
+import { ProjectLinkNested } from "@tenzu/repository/project";
 
 export enum ProjectImportationType {
   TENZU = "TZ",
@@ -45,11 +46,18 @@ export type ProjectImportationData = {
   progressPercentage?: number;
 };
 
+export type ProjectImportationPendingInvitationNested = {
+  email: string;
+  roleId: string;
+};
+
 export type ProjectImportationNested = {
   id: string;
   status: ImportationStatus;
   extraData: ProjectImportationData;
   sourceName: string;
+  project: ProjectLinkNested;
+  pendingInvites: ProjectImportationPendingInvitationNested[];
 };
 
 export type ProjectImportation = ProjectImportationNested;

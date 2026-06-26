@@ -156,10 +156,7 @@ export default class WorkspaceMembersComponent implements AfterViewInit {
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
-          await this.workspaceInvitationRepositoryService.createBulkInvitations(
-            selectedWorkspace,
-            invitations.map(({ email, roleId }) => ({ email, roleId })),
-          );
+          await this.workspaceInvitationRepositoryService.createBulkInvitations(selectedWorkspace, invitations);
           await this.router.navigate(["list-workspace-invitations"], { relativeTo: this.activatedRoute });
         }
       });
