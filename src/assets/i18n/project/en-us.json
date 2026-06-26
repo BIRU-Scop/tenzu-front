@@ -20,6 +20,8 @@
       "taiga": "Import project from Taiga",
       "taiga_doc": "How to import from Taiga?",
       "ongoing": "Transfer in progress…",
+      "action_needed": "Action required",
+      "invite_description_modal": "You can invite users from your imported project, and they will automatically be reassigned to their former position once they accept the invitation.",
       "failed": "Import failed",
       "failed_details": "Details",
       "failed_redo": "Reimport the file",

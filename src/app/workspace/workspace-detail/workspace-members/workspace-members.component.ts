@@ -152,6 +152,7 @@ export default class WorkspaceMembersComponent implements AfterViewInit {
           existingInvitations: this.workspaceInvitationRepositoryService.entities,
           itemType: "workspace",
           userRole: selectedWorkspace.userRole,
+          canAddEmails: true,
         },
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {

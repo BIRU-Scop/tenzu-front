@@ -142,6 +142,7 @@ export default class ProjectMembersComponent implements AfterViewInit {
           existingInvitations: this.projectInvitationRepositoryService.entities,
           itemType: "project",
           userRole: selectedProject.userRole,
+          canAddEmails: true,
         },
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {

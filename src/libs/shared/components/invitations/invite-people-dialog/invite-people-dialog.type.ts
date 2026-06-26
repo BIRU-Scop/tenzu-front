@@ -23,6 +23,7 @@ import { Signal } from "@angular/core";
 import { UserNested } from "@tenzu/repository/user";
 import { InvitationBase, Role } from "@tenzu/repository/membership";
 import { ItemType } from "@tenzu/repository/base/misc.model";
+import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation";
 
 export type InvitationEmailFieldValue = {
   email: string;
@@ -36,6 +37,8 @@ export interface InvitePeopleDialogData {
   existingInvitations: Signal<InvitationBase[]>;
   itemType: ItemType;
   userRole?: Role;
+  initialInvites?: ProjectImportationPendingInvitationNested[];
+  canAddEmails: boolean;
 }
 
 export type PeopleEmailRow = {

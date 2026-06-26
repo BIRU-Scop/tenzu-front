@@ -19,7 +19,7 @@
  *
  */
 
-import { Component, computed, inject, input } from "@angular/core";
+import { Component, computed, inject, input, signal } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
@@ -40,6 +40,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
+import { Role } from "@tenzu/repository/membership";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { AsyncPipe } from "@angular/common";
@@ -120,12 +121,11 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
           }
         </mat-card-title>
         @if (_importation.status === ImportationStatus.ACTION_NEEDED) {
-          <!--          TODO text content-->
           <app-button
             level="warning"
             [iconOnly]="true"
             iconName="warning"
-            translocoKey="TODO"
+            translocoKey="project.new_project.import.action_needed"
             class="ms-auto"
             iconSize="sm"
             (click)="openInviteDialog()"
@@ -177,6 +177,7 @@ export class ProjectImportationCardComponent {
 
   public async openInviteDialog() {
     const projectImportation = this.projectImportation();
+    const workspaceId = this.workspaceId();
     if (projectImportation.project) {
       this.projectInvitationRepositoryService.listProjectInvitations(projectImportation.project.id).then();
       this.projectRoleRepositoryService.listRequest({ projectId: projectImportation.project.id }).then();
@@ -191,19 +192,27 @@ export class ProjectImportationCardComponent {
         ...matDialogConfig,
         minWidth: 850,
         data: {
-          // TODO text content
-          title: this.translocoService.translate("TODO", {
+          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
             name: projectImportation.project.name,
           }),
-          // TODO text content
-          description: this.translocoService.translateObject("TODO"),
+          description: this.translocoService.translateObject("project.new_project.import.invite_description_modal"),
           existingMembers: signal([]), // members shouldn't ever be present in pending invites list so we don't need this check
           existingInvitations: this.projectInvitationRepositoryService.entities,
+          initialInvites: projectImportation.pendingInvites,
           itemType: "project",
           userRole: this.projectRoleRepositoryService.ownerRole(),
+          canAddEmails: false,
         },
       });
-      dialogRef.afterClosed().subscribe();
+      dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
+        if (invitations?.length) {
+          await this.projectImportationRepositoryService.handlePendingInvites({
+            projectImportation,
+            invitations,
+            workspaceId,
+          });
+        }
+      });
     }
   }
 }

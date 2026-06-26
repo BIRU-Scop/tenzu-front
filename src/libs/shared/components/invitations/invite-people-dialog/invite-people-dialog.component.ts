@@ -19,7 +19,7 @@
  *
  */
 
-import { Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, effect, inject, signal, untracked } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
   MAT_DIALOG_DATA,
@@ -66,8 +66,10 @@ import { AppInvitationFormComponent } from "@tenzu/shared/components/invitations
       <mat-dialog-content>
         <div class="flex flex-col gap-4">
           <div [innerHTML]="data.description"></div>
-          <app-add-invitation-field (peopleEmails)="addToPeopleList($event)" />
-          <mat-divider />
+          @if (data.canAddEmails) {
+            <app-add-invitation-field (peopleEmails)="addToPeopleList($event)" />
+            <mat-divider />
+          }
           @if (peopleEmailsModel().emailRows.length) {
             <app-invitation-form
               [userRole]="data.userRole"
@@ -111,6 +113,27 @@ export class InvitePeopleDialogComponent {
   submitValue = computed(() =>
     this.peopleEmailsModel().emailRows.map(({ emailGroup, roleId }) => ({ email: emailGroup.email, roleId })),
   );
+
+  constructor() {
+    effect(() => {
+      const initialInvites = this.data.initialInvites; // TODO make it a signal using bindings
+      if (initialInvites && initialInvites.length) {
+        untracked(() => {
+          this.peopleEmailsModel.update((value) => ({
+            emailRows: [
+              ...value.emailRows,
+              ...initialInvites.map((initialInvite) => {
+                return {
+                  emailGroup: { email: initialInvite.email, resendExisting: false },
+                  roleId: initialInvite.roleId,
+                };
+              }),
+            ],
+          }));
+        });
+      }
+    });
+  }
 
   addToPeopleList(raw: string) {
     const existing = this.peopleEmailsModel().emailRows;

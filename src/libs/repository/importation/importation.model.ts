@@ -20,6 +20,7 @@
  */
 
 import { FileValue } from "@tenzu/repository/base/misc.model";
+import { InvitationBase } from "@tenzu/repository/membership";
 import { ProjectNested } from "@tenzu/repository/project";
 
 export enum ProjectImportationType {
@@ -65,4 +66,9 @@ export type ProjectImportation = ProjectImportationNested;
 export type CreateProjectImportationPayload = {
   source: FileValue;
   originType: ProjectImportationType;
+};
+
+export type InvitedProjectImportation = {
+  invitations: InvitationBase[];
+  projectImportation: ProjectImportation;
 };
