@@ -20,7 +20,7 @@
  */
 
 import { FileValue } from "@tenzu/repository/base/misc.model";
-import { ProjectLinkNested } from "@tenzu/repository/project";
+import { ProjectNested } from "@tenzu/repository/project";
 
 export enum ProjectImportationType {
   TENZU = "TZ",
@@ -56,7 +56,7 @@ export type ProjectImportationNested = {
   status: ImportationStatus;
   extraData: ProjectImportationData;
   sourceName: string;
-  project: ProjectLinkNested;
+  project: ProjectNested;
   pendingInvites: ProjectImportationPendingInvitationNested[];
 };
 

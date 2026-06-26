@@ -42,6 +42,10 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
+import { RouterLink } from "@angular/router";
+import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 
 @Component({
   selector: "app-project-importation-card",
@@ -55,12 +59,17 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
     MatIcon,
     MatProgressBar,
     ButtonComponent,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
+    RouterLink,
+    ProjectLandingPageUrl,
   ],
   template: `
-    @let _name = "Lorem Ipsum";
     @let _color = color();
-    @let _description = "Lorem Ipsum dolor sit amet";
     @let _importation = projectImportation();
+    @let _landingPage = _importation.project | projectLandingPageUrl;
+    @let _name = _importation.project?.name || "Lorem Ipsum";
+    @let _description = _importation.project?.description || "Lorem Ipsum dolor sit amet";
     <mat-card
       appearance="outlined"
       class="min-h-[100px] w-[200px]"
@@ -96,8 +105,20 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
         </div>
       }
       <mat-card-header aria-hidden="true">
-        <app-avatar mat-card-avatar mode="filled-square" [name]="_name" [color]="_color" />
-        <mat-card-title class="!contents min-h-[40px]">{{ _name }}</mat-card-title>
+        <app-avatar
+          mat-card-avatar
+          mode="filled-square"
+          [name]="_name"
+          [color]="_color"
+          [imageData]="_importation.project?.logo | getBase64FromImageUrl: 'small' | async"
+        />
+        <mat-card-title class="!contents min-h-[40px]">
+          @if (_landingPage) {
+            <a [routerLink]="_landingPage">{{ _name }}</a>
+          } @else {
+            {{ _name }}
+          }
+        </mat-card-title>
         @if (_importation.status === ImportationStatus.ACTION_NEEDED) {
           <!--          TODO text content-->
           <app-button
@@ -134,7 +155,11 @@ export class ProjectImportationCardComponent {
   projectImportation = input.required<ProjectImportation>();
 
   color = computed(() => {
-    const firstLetterCode = this.projectImportation().sourceName.codePointAt(0);
+    const projectImportation = this.projectImportation();
+    if (projectImportation.project) {
+      return projectImportation.project.color;
+    }
+    const firstLetterCode = projectImportation.sourceName.codePointAt(0);
     return RandomColorService.castToColor(firstLetterCode || 0);
   });
 
