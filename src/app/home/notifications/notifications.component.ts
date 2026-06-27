@@ -204,7 +204,8 @@ export class NotificationUnitComponent {
           },
         };
       }
-      case "project_importation.fail": {
+      case "project_importation.fail":
+      case "project_importation.action_needed": {
         return {
           link: {
             url: this.workspaceUrlPipe.transform(notification.content),
@@ -268,6 +269,7 @@ export class NotificationUnitComponent {
               [iconOnly]="true"
               iconName="mark_email_read"
               translocoKey="notifications.read_all"
+              iconSize="sm"
               (click)="readAll()"
             />
           }

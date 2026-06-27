@@ -34,6 +34,7 @@ export type NotificationType =
   | "stories.workflow_change"
   | "stories.delete"
   | "project_importation.fail"
+  | "project_importation.action_needed"
   | "project_importation.warning.file_too_big";
 
 export type NotificationBase = {
@@ -112,6 +113,13 @@ export type ProjectImportationFailNotification = NotificationBase & {
     projectImportation: ProjectImportationNested;
   };
 };
+export type ProjectImportationActionNeededNotification = NotificationBase & {
+  type: "project_importation.action_needed";
+  content: {
+    workspace: WorkspaceLinkNested;
+    projectImportation: ProjectImportationNested;
+  };
+};
 export type ProjectImportationWarningFileNotification = NotificationBase & {
   type: "project_importation.warning.file_too_big";
   content: {
@@ -130,4 +138,5 @@ export type Notification =
   | StoryWorkflowChangeNotification
   | StoryCommentCreateNotification
   | ProjectImportationFailNotification
+  | ProjectImportationActionNeededNotification
   | ProjectImportationWarningFileNotification;
