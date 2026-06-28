@@ -22,6 +22,8 @@
       "ongoing": "Transfert en cours…",
       "action_needed": "Une action est requise",
       "invite_description_modal": "Tu peux inviter les utilisateurs de ton projet importé et ils seront automatiquement réassignés à leur place une fois l'invitation acceptée.",
+      "invite_warning": "Les utilisateurs du projet importé n'ont pas été réinvités sur Tenzu.",
+      "invite_action": "Voir les utiliseurs concernés",
       "failed": "Échec de l'importation",
       "failed_details": "Détails",
       "failed_redo": "Réimportez le fichier",

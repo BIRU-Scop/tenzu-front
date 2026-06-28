@@ -55,13 +55,14 @@ export type ProjectImportationPendingInvitationNested = {
 export type ProjectImportationNested = {
   id: string;
   status: ImportationStatus;
-  extraData: ProjectImportationData;
-  sourceName: string;
-  project: ProjectNested;
   pendingInvites: ProjectImportationPendingInvitationNested[];
 };
 
-export type ProjectImportation = ProjectImportationNested;
+export type ProjectImportation = ProjectImportationNested & {
+  extraData: ProjectImportationData;
+  sourceName: string;
+  project: ProjectNested;
+};
 
 export type CreateProjectImportationPayload = {
   source: FileValue;

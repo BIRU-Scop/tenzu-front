@@ -29,6 +29,8 @@ import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspac
 import { MemberPermission } from "@tenzu/repository/membership";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
+import { combineLatest } from "rxjs";
+import { ImportationStatus } from "@tenzu/repository/importation";
 
 @Component({
   selector: "app-project-detail",
@@ -54,10 +56,7 @@ export class ProjectDetailComponent {
   sideNavStore = inject(SideNavStore);
   workspaceService = inject(WorkspaceRepositoryService);
   projectRepositoryService = inject(ProjectRepositoryService);
-  baseUrl = computed(
-    () =>
-      `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectRepositoryService.entityDetail()?.id}`,
-  );
+  baseUrl = computed(() => `/workspace/${this.workspaceService.entityDetail()?.id}/project/${this.projectId()}`);
 
   constructor() {
     effect(() => {
@@ -67,22 +66,21 @@ export class ProjectDetailComponent {
         handleHttpError(error, this.router, { context: "Project", message: "Could not load project." });
       });
     });
-    toObservable(this.projectRepositoryService.entityDetail)
-      .pipe(filterNotNull())
-      .subscribe((project) => {
-        this.sideNavStore.setAvatar(
-          project
-            ? {
-                name: project.name,
-                type: "workspace.general_title.project",
-                color: project.color,
-                imageUrl: project.logo,
-              }
-            : undefined,
-        );
-      });
+    const projectObservable = toObservable(this.projectRepositoryService.entityDetail).pipe(filterNotNull());
 
-    toObservable(this.baseUrl).subscribe((baseUrl) => {
+    projectObservable.subscribe((project) => {
+      this.sideNavStore.setAvatar(
+        project
+          ? {
+              name: project.name,
+              type: "workspace.general_title.project",
+              color: project.color,
+              imageUrl: project.logo,
+            }
+          : undefined,
+      );
+    });
+    combineLatest([projectObservable, toObservable(this.baseUrl)]).subscribe(([projectDetail, baseUrl]) => {
       this.sideNavStore.setPrimaryNavItems([
         {
           label: "workspace.general_title.kanban",
@@ -100,6 +98,7 @@ export class ProjectDetailComponent {
           iconName: "group",
           href: `${baseUrl}/members`,
           testId: "members-link",
+          hasWarning: projectDetail.importation?.status === ImportationStatus.ACTION_NEEDED,
         },
         {
           label: "workspace.general_title.project_settings",

@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectImportationApiService } from "./project-importation-api.service";
-import { CreateProjectImportationPayload, ProjectImportation } from "./importation.model";
+import { CreateProjectImportationPayload, ProjectImportation, ProjectImportationNested } from "./importation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/project-importation.store";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
@@ -42,13 +42,14 @@ import { Router } from "@angular/router";
 export class ProjectImportationRepositoryService {
   private importationsApiService = inject(ProjectImportationApiService);
   private projectImportationEntitiesStore = inject(ProjectImportationEntitiesStore);
-  private projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
 
+  private projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   private workspaceRepositoryService = inject(WorkspaceRepositoryService);
   private workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
-  private notificationService = inject(NotificationService);
   private projectRepositoryService = inject(ProjectRepositoryService);
   private userStore = inject(UserStore);
+
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
 
   entities = this.projectImportationEntitiesStore.entities;
@@ -128,7 +129,7 @@ export class ProjectImportationRepositoryService {
   }
 
   async handlePendingInvites(params: {
-    projectImportation: ProjectImportation;
+    projectImportation: ProjectImportationNested;
     workspaceId: WorkspaceSummary["id"];
     invitations: InvitationsPayload["invitations"];
   }) {
@@ -157,7 +158,7 @@ export class ProjectImportationRepositoryService {
       workspaceId: params.workspaceId,
     });
 
-    // update project list
+    // update projects
     if (this.router.url === HOMEPAGE_URL) {
       await this.workspaceRepositoryService.listRequest();
       return;
@@ -166,6 +167,15 @@ export class ProjectImportationRepositoryService {
         userIsInvited: false,
         ...handlePendingInvitesResponse.projectImportation.project,
       });
+
+      const currentProject = this.projectRepositoryService.entityDetail();
+      if (currentProject && currentProject.id === handlePendingInvitesResponse.projectImportation.project.id) {
+        this.projectRepositoryService.updateEntityDetail({
+          ...currentProject,
+          importation: handlePendingInvitesResponse.projectImportation,
+        });
+      }
+
       const currentWorkspace = this.workspaceRepositoryService.entityDetail();
       if (currentWorkspace && currentWorkspace.id === params.workspaceId) {
         this.workspaceRepositoryService.updateEntityDetail({

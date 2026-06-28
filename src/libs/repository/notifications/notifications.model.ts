@@ -23,7 +23,7 @@ import { UserNested } from "../user";
 import { StoryNested } from "../story";
 import { ProjectLinkNested } from "../project";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
-import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation";
 import { StoryCommentNested } from "@tenzu/repository/story-comment";
 
 export type NotificationType =
@@ -110,21 +110,21 @@ export type ProjectImportationFailNotification = NotificationBase & {
   type: "project_importation.fail";
   content: {
     workspace: WorkspaceLinkNested;
-    projectImportation: ProjectImportationNested;
+    projectImportation: ProjectImportation;
   };
 };
 export type ProjectImportationActionNeededNotification = NotificationBase & {
   type: "project_importation.action_needed";
   content: {
     workspace: WorkspaceLinkNested;
-    projectImportation: ProjectImportationNested;
+    projectImportation: ProjectImportation;
   };
 };
 export type ProjectImportationWarningFileNotification = NotificationBase & {
   type: "project_importation.warning.file_too_big";
   content: {
     project: ProjectLinkNested;
-    projectImportation: ProjectImportationNested;
+    projectImportation: ProjectImportation;
     fileName: string;
     fileSize: number;
   };

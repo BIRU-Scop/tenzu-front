@@ -191,6 +191,7 @@ export class ProjectImportationCardComponent {
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
         minWidth: 850,
+        // TODO make it reactive with new binding system for modal
         data: {
           title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
             name: projectImportation.project.name,

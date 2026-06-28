@@ -27,6 +27,7 @@ export type NavListItem = {
   label: string;
   href: string;
   testId: string;
+  hasWarning?: boolean;
   componentConfig?: {
     componentRef: string;
     data?: any;

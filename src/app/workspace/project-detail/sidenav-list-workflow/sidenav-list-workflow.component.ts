@@ -91,6 +91,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
               }"
             >
               <div
+                class="flex justify-center"
                 [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
                 [matTooltipDisabled]="_canCreateWorkflow"
               >
