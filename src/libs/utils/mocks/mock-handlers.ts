@@ -20,5 +20,6 @@
  */
 
 import { MockDomain } from "./mock.types";
+import { feedMockHandlers } from "@tenzu/repository/feed/feed.mock";
 
-export const MOCK_DOMAINS: MockDomain[] = [];
+export const MOCK_DOMAINS: MockDomain[] = [{ name: "feed", handlers: feedMockHandlers }];
