@@ -67,12 +67,18 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.production.ts"
                 }
-              ]
+              ],
+              "define": {
+                "NG_MOCK_ENABLED": "false"
+              }
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "define": {
+                "NG_MOCK_ENABLED": "true"
+              }
             }
           },
           "defaultConfiguration": "production"

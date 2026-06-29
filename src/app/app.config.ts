@@ -21,12 +21,16 @@
 
 import {
   ApplicationConfig,
+  ApplicationRef,
+  createComponent,
+  EnvironmentInjector,
   ErrorHandler,
   importProvidersFrom,
   inject,
   InjectionToken,
   isDevMode,
   provideAppInitializer,
+  provideEnvironmentInitializer,
   provideZonelessChangeDetection,
 } from "@angular/core";
 import { NgEventBus } from "ng-event-bus";
@@ -48,6 +52,9 @@ import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 import { providePlugins } from "./providers-plugins";
 import { environment } from "../environments/environment";
 import { lastValueFrom } from "rxjs";
+import { mockInterceptor } from "@tenzu/utils/mocks/mock.interceptor";
+import { DomainMockStore } from "@tenzu/utils/mocks/mock-state";
+import { MockControlPanelComponent } from "@tenzu/utils/mocks/mock-control-panel.component";
 
 export type Plugin = object;
 
@@ -132,7 +139,34 @@ export const appConfig: ApplicationConfig = {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler(),
     },
-    provideHttpClient(withInterceptors([httpInterceptor]), withInterceptorsFromDi()),
+    provideHttpClient(
+      withInterceptors([
+        // mockInterceptor before httpInterceptor ; NG_MOCK_ENABLED = false literal in production => tree-shaken branch
+        ...(NG_MOCK_ENABLED ? [mockInterceptor] : []),
+        httpInterceptor,
+      ]),
+      withInterceptorsFromDi(),
+    ),
+    ...(NG_MOCK_ENABLED
+      ? [
+          provideEnvironmentInitializer(() => {
+            const domainMockStore = inject(DomainMockStore);
+            domainMockStore.logMockState();
+          }),
+          provideEnvironmentInitializer(() => {
+            if (document.querySelector("app-mock-control-panel")) {
+              return;
+            }
+            const host = document.createElement("app-mock-control-panel");
+            document.body.appendChild(host);
+            const componentRef = createComponent(MockControlPanelComponent, {
+              environmentInjector: inject(EnvironmentInjector),
+              hostElement: host,
+            });
+            inject(ApplicationRef).attachView(componentRef.hostView);
+          }),
+        ]
+      : []),
     NgEventBus,
   ],
 };

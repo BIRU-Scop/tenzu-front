@@ -51,6 +51,7 @@
 @use "themes/slider-theme" as slider;
 @use "themes/editor" as editor;
 @use "themes/colors" as colors;
+@use '@angular/cdk' as cdk;
 @use 'sass:map';
 @use "themes/mixin" as mixin;
 @use "@blocknote/core/fonts/inter.css";
@@ -270,7 +271,7 @@ body {
   @include mat.app-background();
   @include mat.system-classes();
   @include tokens-overrides();
-
+  @include cdk.overlay();
   @include mixin.theme-overrides(themes.$palettes);
 
 
