@@ -50,6 +50,14 @@
   @apply mx-2;
   width: auto;
 
+  &:has(.mat-badge) {
+    &,
+    .mdc-list-item__content,
+    .mdc-list-item__primary-text {
+      overflow: visible;
+    }
+  }
+
   &.resized {
     @apply justify-center mx-0;
   }

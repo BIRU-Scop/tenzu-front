@@ -40,19 +40,19 @@ import { ProjectSummary } from "@tenzu/repository/project";
   imports: [MatIcon, ButtonComponent, ButtonCloseComponent, TranslocoDirective, ConfirmDirective],
   template: `
     <ng-container *transloco="let t">
-      <!--      TODO fix display to make it like mockup-->
-      <p class="flex items-center gap-8">
+      <p class="flex flex-1 items-center gap-8">
         <mat-icon aria-hidden="true">info</mat-icon>
         <span>{{ t("project.new_project.import.invite_warning") }}</span>
       </p>
       <app-button
         type="button"
-        level="tertiary"
+        level="secondary"
+        forceAppearance="outlined"
         translocoKey="project.new_project.import.invite_action"
         (click)="openInviteDialog()"
       />
       <app-button-close
-        level="warning"
+        level="secondary"
         iconSize="sm"
         [iconOnly]="true"
         [iconNoBackground]="true"
