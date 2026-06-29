@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, resource } from "@angular/core";
+import { Component, computed, inject, input, model, output, resource } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { CreateProjectPayload, ProjectSummary, UpdateProjectPayload } from "@tenzu/repository/project";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
@@ -64,7 +64,6 @@ import { FileValue } from "@tenzu/repository/base/misc.model";
     class: "flex flex-row gap-4 items-center",
   },
   providers: [FileSizePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectLogoInputComponent {
   readonly fileDownloaderService = inject(FileDownloaderService);

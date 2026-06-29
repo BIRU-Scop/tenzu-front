@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormValue, RoleFacade } from "../role.facade";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { FormRoleComponent } from "../form-role/form-role.component";
@@ -70,7 +70,6 @@ import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-s
       </ng-container>
     }`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CreateRoleComponent {
   readonly roleFacade = inject(RoleFacade);

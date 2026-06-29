@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, signal, viewChild } from "@angular/core";
+import { Component, inject, input, signal, viewChild } from "@angular/core";
 import { StoryDetail } from "@tenzu/repository/story";
 import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
@@ -133,7 +133,6 @@ import { StoryCommentSkeletonComponent } from "./story-detail-comment-detail/sto
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailCommentsListComponent {
   storyCommentFacade = inject(StoryCommentFacade);

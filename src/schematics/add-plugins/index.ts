@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -52,7 +52,7 @@ export function addPlugins(options: Options): Rule {
     try {
       config = JSON.parse(configRaw);
     } catch (e) {
-      throw new Error(`Invalid JSON in ${configPath}: ${(e as Error).message}`);
+      throw new Error(`Invalid JSON in ${configPath}: ${(e as Error).message}`, { cause: e });
     }
 
     const targetPath = "src/app/providers-plugins.ts";

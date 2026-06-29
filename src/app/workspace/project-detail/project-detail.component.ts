@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from "@angular/core";
+import { Component, computed, effect, inject, input } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
@@ -46,7 +46,6 @@ import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
       </ng-container>
     }`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailComponent {
   projectId = input.required<string>();

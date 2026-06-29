@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output, Signal } from "@angular/core";
+import { Component, input, output, Signal } from "@angular/core";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
@@ -65,7 +65,6 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "flex gap-2 justify-end w-full",
   },

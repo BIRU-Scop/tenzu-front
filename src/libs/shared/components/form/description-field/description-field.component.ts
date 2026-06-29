@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -55,7 +55,6 @@ export type DescriptionOptions = {
     </mat-form-field>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DescriptionFieldComponent {
   formField = input.required<FieldTree<string, string>>();

@@ -36,7 +36,7 @@ import {
 import { MatIcon } from "@angular/material/icon";
 import { withTransloco } from "../storybook-providers";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
 
 @Component({
@@ -167,7 +167,6 @@ import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk
       </mat-list>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryListStorybookComponent {
   readonly members = signal<{ name: string; role: string }[]>([

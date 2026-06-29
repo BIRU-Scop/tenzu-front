@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -100,7 +100,6 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
     </mat-card>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectImportationCardComponent {
   protected readonly ImportationStatus = ImportationStatus;

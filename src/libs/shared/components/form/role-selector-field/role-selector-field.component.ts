@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, output } from "@angular/core";
+import { Component, computed, effect, inject, input, model, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatFormField } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -54,7 +54,6 @@ import { FormValueControl } from "@angular/forms/signals";
     </mat-form-field>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] | null> {
   readonly value = model<Role["id"] | null>(null);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -51,7 +51,6 @@ import { TranslocoDirective } from "@jsverse/transloco";
       ><router-outlet
     /></mat-tab-nav-panel>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent {
   baseUrl = `/settings/`;

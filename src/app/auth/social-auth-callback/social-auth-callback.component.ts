@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from "@angular/core";
+import { Component, effect, inject, signal, untracked } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import * as Sentry from "@sentry/angular";
 import { debug } from "@tenzu/utils/functions/logging";
@@ -115,7 +115,6 @@ import { HttpErrorResponse } from "@angular/common/http";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SocialAuthCallbackComponent {
   readonly route = inject(ActivatedRoute);

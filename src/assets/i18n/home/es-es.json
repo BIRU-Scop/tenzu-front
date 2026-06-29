@@ -2,6 +2,7 @@
   "navigation": {
     "go_home": "Ir a inicio",
     "settings": "Configuraciones",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "news": "Actualidades"
   }
 }

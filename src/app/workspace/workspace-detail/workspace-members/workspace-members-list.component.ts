@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, Signal } from "@angular/core";
+import { Component, inject, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { WorkspaceMembership, WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
@@ -111,7 +111,6 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceMembersComponent {
   protected readonly hasEntityRequiredPermission = hasEntityRequiredPermission;

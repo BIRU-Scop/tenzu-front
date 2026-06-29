@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
+import { Component, computed, inject, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -87,7 +87,6 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "flex gap-2",
   },

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatDivider } from "@angular/material/divider";
 import { MatError, MatInput, MatLabel } from "@angular/material/input";
@@ -106,7 +106,6 @@ import { PermissionsFormGroupControl } from "../role.facade";
   host: {
     class: "flex flex-col gap-y-4",
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormRoleComponent {
   form = input.required<PermissionsFormGroupControl>();

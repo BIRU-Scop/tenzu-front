@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
 import {
@@ -57,6 +57,5 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspacePlaceholderDialogComponent {}

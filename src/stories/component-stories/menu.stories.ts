@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { MatIcon } from "@angular/material/icon";
@@ -42,7 +42,6 @@ import { withTransloco } from "../storybook-providers";
       </button>
     </mat-menu>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryMenuStorybookComponent {}
 

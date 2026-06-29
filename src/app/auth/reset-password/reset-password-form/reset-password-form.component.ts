@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
+import { Component, inject, model, signal } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { apply, form, FormRoot, required, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -68,7 +68,6 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ResetPasswordFormComponent {
   userService = inject(UserService);

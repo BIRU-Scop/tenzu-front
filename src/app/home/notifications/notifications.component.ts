@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
+import { Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
 
 import { NotificationsComponentService } from "./notifications-component.service";
 import { Notification } from "@tenzu/repository/notifications";
@@ -85,7 +85,6 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationUnitComponent {
   notificationsComponentService = inject(NotificationsComponentService);
@@ -296,7 +295,6 @@ export class NotificationUnitComponent {
     </mat-dialog-content>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsComponent implements OnInit {
   notificationsComponentService = inject(NotificationsComponentService);

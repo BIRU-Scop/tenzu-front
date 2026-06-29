@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, signal } from "@angular/core";
+import { Component, inject, input, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AuthService } from "@tenzu/repository/auth";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
@@ -98,7 +98,6 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SocialAuthLoginComponent {
   readonly route = inject(ActivatedRoute);

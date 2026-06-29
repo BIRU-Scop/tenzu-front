@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
@@ -28,13 +28,14 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
   selector: "app-action-card",
   imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, ButtonComponent],
   template: `
-    <mat-card appearance="outlined" class="min-h-[100px] w-[200px] h-[100px] flex flex-col">
-      <mat-card-header>
-        <app-avatar mat-card-avatar [name]="name()" [color]="color()" />
-        <mat-card-title>
+    <mat-card appearance="outlined" class="min-h-[120px] w-[200px] mat-bg-surface-container-high">
+      <mat-card-header class="items-center">
+        <app-avatar mode="filled-square" mat-card-avatar [name]="name()" [color]="color()" />
+        <mat-card-title class="!contents min-h-[40px] ">
           {{ name() }}
         </mat-card-title>
         <app-button
+          class="ml-auto"
           [translocoKey]="cancelLabel()"
           [iconOnly]="true"
           level="error"
@@ -49,7 +50,6 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
     </mat-card>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionCardComponent {
   name = input("");

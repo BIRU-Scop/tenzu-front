@@ -23,7 +23,7 @@ import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 
 import { form } from "@angular/forms/signals";
 import { JsonPipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, effect, input, isDevMode, signal } from "@angular/core";
+import { Component, effect, input, isDevMode, signal } from "@angular/core";
 import { provideTransloco } from "@jsverse/transloco";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
@@ -41,7 +41,6 @@ import { DescriptionFieldComponent, DescriptionOptions } from "@tenzu/shared/com
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryDescriptionFieldComponent {
   options = input.required<Partial<DescriptionOptions>>();

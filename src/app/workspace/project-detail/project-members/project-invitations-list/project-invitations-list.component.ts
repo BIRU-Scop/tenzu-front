@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from "@angular/core";
+import { Component, effect, inject, input, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
@@ -87,7 +87,6 @@ import { ActivatedRoute } from "@angular/router";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent {
   projectId = input.required<ProjectDetail["id"]>();

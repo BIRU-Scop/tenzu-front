@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -74,7 +74,6 @@ import { MemberPermission } from "@tenzu/repository/membership";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectSettingsComponent implements AfterViewInit {
   protected readonly ProjectPermissions = ProjectPermissions;

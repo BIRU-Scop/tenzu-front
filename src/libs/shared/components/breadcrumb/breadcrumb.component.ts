@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { UpperCasePipe } from "@angular/common";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -49,7 +49,6 @@ import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
     }
   </div>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BreadcrumbComponent {
   breadcrumbStore = inject(BreadcrumbStore);

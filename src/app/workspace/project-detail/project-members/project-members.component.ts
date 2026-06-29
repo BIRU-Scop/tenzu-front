@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
@@ -100,7 +100,6 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
   `,
   styles: ``,
   host: { class: "flex flex-col" },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectMembersComponent implements AfterViewInit {
   links = [

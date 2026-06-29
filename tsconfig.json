@@ -17,17 +17,16 @@
     "module": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": false,
-    "baseUrl": "./",
     "paths": {
-      "@tenzu/shared/components/*": ["src/libs/shared/components/*"],
-      "@tenzu/shared/layouts/*": ["src/libs/shared/layouts/*"],
-      "@tenzu/directives/*" : ["src/libs/shared/directives/*"],
-      "@tenzu/pipes/*" : ["src/libs/shared/pipes/*"],
-      "@tenzu/repository/*": ["src/libs/repository/*"],
-      "@tenzu/utils/*": ["src/libs/utils/*"],
-      "@tenzu/plugins/*": ["src/plugins/*"],
+      "@tenzu/shared/components/*": ["./src/libs/shared/components/*"],
+      "@tenzu/shared/layouts/*": ["./src/libs/shared/layouts/*"],
+      "@tenzu/directives/*" : ["./src/libs/shared/directives/*"],
+      "@tenzu/pipes/*" : ["./src/libs/shared/pipes/*"],
+      "@tenzu/repository/*": ["./src/libs/repository/*"],
+      "@tenzu/utils/*": ["./src/libs/utils/*"],
+      "@tenzu/plugins/*": ["./src/plugins/*"],
       "@tenzu/utils/services/*": [
-        "src/libs/utils/services/*"
+        "./src/libs/utils/services/*"
       ]
     }
   },
@@ -37,5 +36,10 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "typeCheckHostBindings": true
-  }
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
 }

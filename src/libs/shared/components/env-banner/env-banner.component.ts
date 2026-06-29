@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
@@ -52,7 +52,6 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
       background-color: var(--mat-sys-tertiary-container);
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnvBannerComponent {
   configAppService = inject(ConfigAppService);

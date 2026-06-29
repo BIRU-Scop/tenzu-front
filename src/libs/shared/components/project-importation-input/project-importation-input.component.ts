@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
@@ -50,7 +50,6 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "flex flex-col gap-2 items-end",
   },

@@ -23,7 +23,7 @@ import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { MatIcon } from "@angular/material/icon";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { withTransloco } from "../storybook-providers";
 
 @Component({
@@ -62,7 +62,6 @@ import { withTransloco } from "../storybook-providers";
     <mat-tab-nav-panel #panelText class="hidden"></mat-tab-nav-panel>
     <mat-tab-nav-panel #panelIcon class="hidden"></mat-tab-nav-panel>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryTabsStorybookComponent {
   readonly items = ["Item 1", "Item 2", "Item 3"];

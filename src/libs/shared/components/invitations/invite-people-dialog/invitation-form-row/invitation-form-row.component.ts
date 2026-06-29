@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output, Pipe, PipeTransform } from "@angular/core";
+import { Component, input, output, Pipe, PipeTransform } from "@angular/core";
 import { MatInput } from "@angular/material/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -40,7 +40,6 @@ export class AlreadyInvitedPipe implements PipeTransform {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatInput,
     ReactiveFormsModule,
@@ -61,7 +60,12 @@ export class AlreadyInvitedPipe implements PipeTransform {
       <div class="flex flex-col grow min-w-0 basis-0">
         <mat-form-field subscriptSizing="dynamic">
           <input matInput type="email" autocomplete="email" [formField]="_emailRow.emailGroup.email" />
-          @let visibleErrors = _emailRow.emailGroup.email().errors().filter(e => e.kind !== "alreadyInvited");
+          @let visibleErrors =
+            _emailRow.emailGroup
+              .email()
+              .errors()
+              .filter((e) => e.kind !== "alreadyInvited");
+
           @if (
             _emailRow.emailGroup.email().touched() && _emailRow.emailGroup.email().invalid() && visibleErrors.length > 0
           ) {

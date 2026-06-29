@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { MatDivider } from "@angular/material/list";
 import { StoryDetailAttachmentsComponent } from "./story-detail-attachments/story-detail-attachments.component";
@@ -101,7 +101,6 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailPanelRightComponent {
   story = input.required<StoryDetail>();

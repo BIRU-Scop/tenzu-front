@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { IconName, LevelType } from "../ui.types";
 import { ChipInterface } from "./chip.interface";
@@ -97,7 +97,6 @@ import { MatTooltip } from "@angular/material/tooltip";
       }
     </ng-container>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChipComponent implements ChipInterface {
   level = input.required({

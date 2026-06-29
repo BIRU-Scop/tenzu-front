@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -53,7 +53,6 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteWarningButtonComponent {
   translocoKeyTitle = input.required<string>();

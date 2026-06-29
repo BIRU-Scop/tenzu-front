@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,12 +22,13 @@
 import { TestBed } from "@angular/core/testing";
 
 import { LoginService } from "./login.service";
+import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("LoginService", () => {
   let service: LoginService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [...testingProviders] });
     service = TestBed.inject(LoginService);
   });
 

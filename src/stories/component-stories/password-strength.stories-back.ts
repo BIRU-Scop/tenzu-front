@@ -25,7 +25,7 @@ import { PasswordFieldComponent } from "../../libs/shared/components/form/passwo
 import { ReactiveFormsModule } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
 import { provideAnimations } from "@angular/platform-browser/animations";
-import { ChangeDetectionStrategy, Component, input, isDevMode } from "@angular/core";
+import { Component, input, isDevMode } from "@angular/core";
 import { PasswordStrengthComponent } from "../../libs/shared/components/form/password-field/password-strength/password-strength.component";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";
@@ -45,7 +45,6 @@ import { PasswordSeverity } from "../../libs/shared/components/form/password-fie
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryPasswordStrengthComponent {
   severity = input.required<PasswordSeverity>();

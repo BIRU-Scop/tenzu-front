@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { MatTooltip } from "@angular/material/tooltip";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { UserNested, UserStore } from "@tenzu/repository/user";
@@ -48,7 +48,6 @@ import { UserNested, UserStore } from "@tenzu/repository/user";
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarListComponent {
   userStore = inject(UserStore);

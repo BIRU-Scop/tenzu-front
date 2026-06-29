@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,21 +21,65 @@
 
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { importProvidersFrom } from "@angular/core";
-import { JwtModule } from "@auth0/angular-jwt";
-import { tokenGetter } from "../../../app/app.config";
+import { EnvironmentProviders, importProvidersFrom, inject, provideEnvironmentInitializer } from "@angular/core";
+import { provideRouter } from "@angular/router";
+import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
+import { TranslocoTestingModule } from "@jsverse/transloco";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigModel, ConfigSchema } from "@tenzu/repository/config-app/config.model";
+import { EnvironmentConfig } from "../../../environments/environment-type";
 import { environment } from "../../../environments/environment";
+import { tokenGetter } from "../../../app/app.config";
 
-export const httpTestingProviders = [
+export const TEST_CONFIG: EnvironmentConfig & ConfigModel = {
+  ...environment,
+  ...ConfigSchema.parse({
+    env: "dev",
+    wsUrl: "ws://localhost/ws",
+    api: {
+      prefix: "api",
+      baseDomain: "localhost",
+      scheme: "http",
+      suffixDomain: "v1",
+    },
+  }),
+};
+
+export function provideConfigAppTesting(): EnvironmentProviders {
+  return provideEnvironmentInitializer(() => {
+    inject(ConfigAppService).config.set(TEST_CONFIG);
+  });
+}
+
+export function provideTranslocoTesting(): EnvironmentProviders {
+  return importProvidersFrom(
+    TranslocoTestingModule.forRoot({
+      langs: { en: {} },
+      translocoConfig: { availableLangs: ["en"], defaultLang: "en" },
+      preloadLangs: true,
+    }),
+  );
+}
+
+export const testingProviders = [
   provideHttpClient(),
   provideHttpClientTesting(),
+  provideConfigAppTesting(),
+  provideTranslocoTesting(),
+  provideRouter([]),
   importProvidersFrom(
     JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: [environment.api.baseDomain],
-        headerName: "Authorization",
-        authScheme: "Bearer ",
+      jwtOptionsProvider: {
+        provide: JWT_OPTIONS,
+        useFactory: () => {
+          const apiConfig = inject(ConfigAppService).configApi();
+          return {
+            tokenGetter: tokenGetter,
+            allowedDomains: [apiConfig.baseDomain],
+            headerName: "Authorization",
+            authScheme: "Bearer ",
+          };
+        },
       },
     }),
   ),
