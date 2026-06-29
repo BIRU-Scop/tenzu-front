@@ -107,7 +107,7 @@ export class FeedDialog extends TypedDialog<void, void> {
   private readonly titleByType: Record<FeedItem["type"], string> = {
     maintenance: "feed.dialog.title_maintenance",
     release: "feed.dialog.title_release",
-    callToAction: "feed.dialog.title_call_to_action",
+    call_to_action: "feed.dialog.title_call_to_action",
   };
   protected readonly dialogTitle = computed(() => {
     const type = this.activeFeed()?.type;

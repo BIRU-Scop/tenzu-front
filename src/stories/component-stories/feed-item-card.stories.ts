@@ -53,7 +53,7 @@ class StoryFeedItemCardStorybookComponent {
 
   readonly withAction: FeedItem = makeFeedItem({
     id: "feed-survey",
-    type: "callToAction",
+    type: "call_to_action",
     title: "Tenzu needs you!",
     content: "Help us make Tenzu the product that meets your needs by answering this **form**.",
     actionTitle: "I want to help improve Tenzu",

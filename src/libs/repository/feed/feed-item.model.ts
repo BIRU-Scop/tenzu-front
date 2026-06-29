@@ -38,7 +38,7 @@ const feedItemBase = {
 
 const callToActionFeedItemSchema = z.object({
   ...feedItemBase,
-  type: z.literal("callToAction"),
+  type: z.literal("call_to_action"),
   actionTitle: z.string().min(1),
   actionUrl: z.url({ protocol: /^https?$/ }),
 });

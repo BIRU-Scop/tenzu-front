@@ -48,7 +48,7 @@ describe("FeedStore", () => {
   it("hasMaintenance", () => {
     store.setAllEntities([
       makeFeedItem({ id: "release", type: "release" }),
-      makeFeedItem({ id: "survey", type: "callToAction" }),
+      makeFeedItem({ id: "survey", type: "call_to_action" }),
     ]);
     expect(store.hasMaintenance()).toBe(false);
 
@@ -59,7 +59,7 @@ describe("FeedStore", () => {
 
   it("test the sorting of items()", () => {
     const release = makeFeedItem({ id: "release", type: "release", publicationDate: "2026-01-01T00:00:00.000Z" });
-    const survey = makeFeedItem({ id: "survey", type: "callToAction", publicationDate: "2026-03-01T00:00:00.000Z" });
+    const survey = makeFeedItem({ id: "survey", type: "call_to_action", publicationDate: "2026-03-01T00:00:00.000Z" });
     const maintenance = makeFeedItem({
       id: "maintenance",
       type: "maintenance",

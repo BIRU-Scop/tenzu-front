@@ -65,7 +65,7 @@ export class FeedItemCardComponent {
   private readonly imageByType: Record<FeedItem["type"], string> = {
     maintenance: "feeds_maintenance.svg",
     release: "feeds_release.svg",
-    callToAction: "feeds_cta.svg",
+    call_to_action: "feeds_cta.svg",
   };
   protected readonly imageUrl = computed(() => this.imageByType[this.feeditem().type]);
 }

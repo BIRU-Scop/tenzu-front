@@ -45,7 +45,7 @@ export const MOCK_FEED_ITEMS: FeedItem[] = [
   },
   {
     id: "mock-survey",
-    type: "callToAction",
+    type: "call_to_action",
     title: "Tell us what you think",
     content: "Help us improve Tenzu by answering a short survey.",
     actionTitle: "Answer the survey",

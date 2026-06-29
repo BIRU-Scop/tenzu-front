@@ -61,7 +61,7 @@ describe("FeedDialog", () => {
     store.setAllEntities([
       makeFeedItem({ id: "a", type: "maintenance" }),
       makeFeedItem({ id: "b", type: "release" }),
-      makeFeedItem({ id: "c", type: "callToAction" }),
+      makeFeedItem({ id: "c", type: "call_to_action" }),
     ]);
     fixture.detectChanges();
 

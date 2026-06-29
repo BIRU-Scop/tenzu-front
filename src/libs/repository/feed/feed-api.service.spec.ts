@@ -85,7 +85,7 @@ describe("FeedApiService", () => {
   });
 
   it("raises an error on a callToAction without action", async () => {
-    const raw = { ...makeFeedItem({ id: "m1" }), type: "callToAction", actionTitle: "", actionUrl: "" };
+    const raw = { ...makeFeedItem({ id: "m1" }), type: "call_to_action", actionTitle: "", actionUrl: "" };
     const promise = lastValueFrom(service.list());
 
     httpMock.expectOne(`${BASE}/feeds`).flush({ data: [raw] });
