@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, Component, computed, inject } from "@angular/core";
+import { AfterViewInit, Component, computed, inject, inputBinding, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
@@ -145,17 +145,22 @@ export default class ProjectMembersComponent implements AfterViewInit {
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
         minWidth: 850,
-        data: {
-          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-            name: selectedProject.name,
-          }),
-          description: this.translocoService.translateObject("project.members.description_modal"),
-          existingMembers: this.projectMembershipRepositoryService.members,
-          existingInvitations: this.projectInvitationRepositoryService.entities,
-          itemType: "project",
-          userRole: selectedProject.userRole,
-          canAddEmails: true,
-        },
+        bindings: [
+          inputBinding(
+            "title",
+            signal(
+              this.translocoService.translate("component.invite_dialog.invite_people_to", {
+                name: selectedProject.name,
+              }),
+            ),
+          ),
+          inputBinding("description", signal(this.translocoService.translate("project.members.description_modal"))),
+          inputBinding("existingMembers", this.projectMembershipRepositoryService.members),
+          inputBinding("existingInvitations", this.projectInvitationRepositoryService.entities),
+          inputBinding("itemType", signal("project")),
+          inputBinding("userRole", signal(selectedProject.userRole)),
+          inputBinding("canAddEmails", signal(true)),
+        ],
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {

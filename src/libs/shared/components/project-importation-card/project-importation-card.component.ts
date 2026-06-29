@@ -19,7 +19,7 @@
  *
  */
 
-import { Component, computed, inject, input, signal } from "@angular/core";
+import { Component, computed, inject, input, inputBinding, signal } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
@@ -182,28 +182,32 @@ export class ProjectImportationCardComponent {
       this.projectInvitationRepositoryService.listProjectInvitations(projectImportation.project.id).then();
       this.projectRoleRepositoryService.listRequest({ projectId: projectImportation.project.id }).then();
 
-      // TODO remove async/await and just use .then() in order to prevent blocking
-      //  once we have switch all data argument to binding signals
-      await Promise.all([
-        this.projectInvitationRepositoryService.listProjectInvitations(projectImportation.project.id),
-        this.projectRoleRepositoryService.listRequest({ projectId: projectImportation.project.id }),
-      ]);
+      this.projectInvitationRepositoryService.listProjectInvitations(projectImportation.project.id).then();
+      this.projectRoleRepositoryService.listRequest({ projectId: projectImportation.project.id }).then();
+
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
         minWidth: 850,
-        // TODO make it reactive with new binding system for modal
-        data: {
-          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-            name: projectImportation.project.name,
-          }),
-          description: this.translocoService.translateObject("project.new_project.import.invite_description_modal"),
-          existingMembers: signal([]), // members shouldn't ever be present in pending invites list so we don't need this check
-          existingInvitations: this.projectInvitationRepositoryService.entities,
-          initialInvites: projectImportation.pendingInvites,
-          itemType: "project",
-          userRole: this.projectRoleRepositoryService.ownerRole(),
-          canAddEmails: false,
-        },
+        bindings: [
+          inputBinding(
+            "title",
+            signal(
+              this.translocoService.translate("component.invite_dialog.invite_people_to", {
+                name: projectImportation.project.name,
+              }),
+            ),
+          ),
+          inputBinding(
+            "description",
+            signal(this.translocoService.translateObject("project.new_project.import.invite_description_modal")),
+          ),
+          inputBinding("existingMembers", signal([])),
+          inputBinding("existingInvitations", this.projectInvitationRepositoryService.entities),
+          inputBinding("initialInvites", signal(projectImportation.pendingInvites)),
+          inputBinding("itemType", signal("project")),
+          inputBinding("userRole", this.projectRoleRepositoryService.ownerRole),
+          inputBinding("canAddEmails", signal(false)),
+        ],
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
