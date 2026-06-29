@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,4 +19,5 @@
  *
  */
 
-export * from "./http.interceptor";
+export * from "./feed-item.model";
+export * from "./feed-repository.service";

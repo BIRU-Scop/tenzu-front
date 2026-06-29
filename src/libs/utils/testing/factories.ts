@@ -23,6 +23,7 @@ import { UserNested } from "@tenzu/repository/user";
 import { ProjectLinkNested } from "@tenzu/repository/project";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story";
+import { FeedItem } from "@tenzu/repository/feed";
 
 export function makeUserNested(overrides: Partial<UserNested> = {}): UserNested {
   return {
@@ -104,4 +105,19 @@ export function makeStoryAssign(overrides: Partial<StoryAssign> = {}): StoryAssi
     story: { ref: 1, title: "My story" },
     ...overrides,
   };
+}
+
+type FeedItemFields = { [K in keyof FeedItem]: FeedItem[K] };
+
+export function makeFeedItem(overrides: Partial<FeedItemFields> = {}): FeedItem {
+  return {
+    id: "feed-item-1",
+    type: "release",
+    title: "New features",
+    content: "## What's new\n\nLots of improvements.",
+    actionTitle: "See the release",
+    actionUrl: "https://example.com/release",
+    publicationDate: "2026-01-01T00:00:00.000Z",
+    ...overrides,
+  } as FeedItem;
 }
