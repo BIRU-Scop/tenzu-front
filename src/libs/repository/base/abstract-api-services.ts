@@ -26,9 +26,9 @@ import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { z } from "zod/v4";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { debug } from "@tenzu/utils/functions/logging";
 import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
+import { parseWithDebug } from "./schema-utils";
 
 type OptionRequest = {
   dataIsFormData?: boolean;
@@ -51,18 +51,7 @@ export abstract class AbstractApiServiceDetail<
   protected detailSchema?: z.ZodType<EntityDetailModel>;
 
   protected parseDetail(data: unknown): EntityDetailModel {
-    return this.detailSchema ? this.parseWithDebug(this.detailSchema, data) : (data as EntityDetailModel);
-  }
-
-  protected parseWithDebug<T>(schema: z.ZodType<T>, data: unknown): T {
-    try {
-      return schema.parse(data);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        debug("schema", z.prettifyError(error), error.issues);
-      }
-      throw error;
-    }
+    return this.detailSchema ? parseWithDebug(this.detailSchema, data) : (data as EntityDetailModel);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -192,7 +181,7 @@ export abstract class AbstractApiService<
   protected summarySchema?: z.ZodType<EntityListModel>;
 
   protected parseSummaryList(data: unknown): EntityListModel[] {
-    return this.summarySchema ? this.parseWithDebug(z.array(this.summarySchema), data) : (data as EntityListModel[]);
+    return this.summarySchema ? parseWithDebug(z.array(this.summarySchema), data) : (data as EntityListModel[]);
   }
 
   protected listUrl(params?: ListParams): string {
