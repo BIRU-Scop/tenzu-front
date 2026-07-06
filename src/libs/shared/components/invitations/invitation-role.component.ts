@@ -19,13 +19,14 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from "@angular/core";
+import { Component, computed, effect, inject, input, signal } from "@angular/core";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-invitation-role",
@@ -44,14 +45,13 @@ import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-sele
   host: {
     class: "w-full",
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationRoleComponent {
   workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
 
   invitation = input.required<InvitationBase>();
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   userRole = input<Role>();
   invitationRepositoryService = computed(() => {
     switch (this.itemType()) {

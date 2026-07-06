@@ -1,5 +1,5 @@
 # Step 1: Build the dev environment
-ARG NODE_VERSION=20
+ARG NODE_VERSION=26
 FROM node:${NODE_VERSION} AS dev-env
 WORKDIR /app
 COPY package*.json ./

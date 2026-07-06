@@ -34,7 +34,7 @@
 }
 
 // Project card & Importation card
-app-project-card,app-project-importation-card {
+app-action-card, app-project-card,app-project-importation-card {
   .mat-mdc-card.mat-mdc-card-outlined.mat-card-error {
     @include mat.card-overrides((
       outlined-outline-color: var(--mat-sys-error),

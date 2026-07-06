@@ -51,6 +51,7 @@
 @use "themes/slider-theme" as slider;
 @use "themes/editor" as editor;
 @use "themes/colors" as colors;
+@use '@angular/cdk' as cdk;
 @use 'sass:map';
 @use "themes/mixin" as mixin;
 @use "@blocknote/core/fonts/inter.css";
@@ -270,9 +271,32 @@ body {
   @include mat.app-background();
   @include mat.system-classes();
   @include tokens-overrides();
-
+  @include cdk.overlay();
   @include mixin.theme-overrides(themes.$palettes);
 
-
+  .mat-bg-warning {
+    background-color: var(--mat-sys-warning);
+  }
+  .mat-bg-warning-container {
+    background-color: var(--mat-sys-warning-container);
+  }
+  .mat-bg-success {
+    background-color: var(--mat-sys-success);
+  }
+  .mat-bg-success-container {
+    background-color: var(--mat-sys-success-container);
+  }
+  .mat-text-on-warning {
+    color: var(--mat-sys-on-warning);
+  }
+  .mat-text-on-warning-container {
+    color: var(--mat-sys-on-warning-container);
+  }
+  .mat-text-on-success {
+    color: var(--mat-sys-on-success);
+  }
+  .mat-text-on-success-container {
+    color: var(--mat-sys-on-success-container);
+  }
 }
 

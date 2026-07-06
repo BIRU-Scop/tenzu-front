@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/project-kanban-skeleton.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -38,7 +38,6 @@ import { getWorkflowUrl } from "@tenzu/utils/functions/urls";
   imports: [ProjectKanbanSkeletonComponent, TranslocoDirective],
   template: ` <app-project-kanban-skeleton *transloco="let t" /> `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectKanbanCreateComponent {
   readonly breadcrumbStore = inject(BreadcrumbStore);

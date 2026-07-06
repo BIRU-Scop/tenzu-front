@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -52,24 +52,22 @@ export const WorkflowDetailStore = signalStore(
       patchState(store, setAllEntities(selectedEntityStatusOrder));
       const statuses = store.entities();
       const status = statuses[newPosition];
-      let payload: ReorderWorkflowStatusesPayload | null = null;
-      if (newPosition < oldPosition) {
-        payload = {
-          statusIds: [status.id],
-          reorder: {
-            place: "before",
-            statusId: statuses[newPosition + 1].id,
-          },
-        };
-      } else {
-        payload = {
-          statusIds: [status.id],
-          reorder: {
-            place: "after",
-            statusId: statuses[newPosition - 1].id,
-          },
-        };
-      }
+      const payload: ReorderWorkflowStatusesPayload =
+        newPosition < oldPosition
+          ? {
+              statusIds: [status.id],
+              reorder: {
+                place: "before",
+                statusId: statuses[newPosition + 1].id,
+              },
+            }
+          : {
+              statusIds: [status.id],
+              reorder: {
+                place: "after",
+                statusId: statuses[newPosition - 1].id,
+              },
+            };
       return payload;
     },
     removeStatus(statusId: string) {

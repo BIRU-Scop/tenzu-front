@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input, output, Pipe, PipeTransform } from "@angular/core";
+import { Component, input, output, Pipe, PipeTransform } from "@angular/core";
 import { MatInput } from "@angular/material/input";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -27,8 +27,10 @@ import { MatError, MatFormField } from "@angular/material/form-field";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { FieldTree, FormField } from "@angular/forms/signals";
-import { InvitePeopleDialogData, PeopleEmailRow } from "../invite-people-dialog.type";
+import { PeopleEmailRow } from "../invite-people-dialog.type";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
+import { Role } from "@tenzu/repository/membership";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Pipe({
   name: "alreadyInvited",
@@ -40,7 +42,6 @@ export class AlreadyInvitedPipe implements PipeTransform {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatInput,
     ReactiveFormsModule,
@@ -61,7 +62,12 @@ export class AlreadyInvitedPipe implements PipeTransform {
       <div class="flex flex-col grow min-w-0 basis-0">
         <mat-form-field subscriptSizing="dynamic">
           <input matInput type="email" autocomplete="email" [formField]="_emailRow.emailGroup.email" />
-          @let visibleErrors = _emailRow.emailGroup.email().errors().filter(e => e.kind !== "alreadyInvited");
+          @let visibleErrors =
+            _emailRow.emailGroup
+              .email()
+              .errors()
+              .filter((e) => e.kind !== "alreadyInvited");
+
           @if (
             _emailRow.emailGroup.email().touched() && _emailRow.emailGroup.email().invalid() && visibleErrors.length > 0
           ) {
@@ -89,17 +95,14 @@ export class AlreadyInvitedPipe implements PipeTransform {
           </div>
         }
       </div>
-      <app-role-selector-field
-        [itemType]="data().itemType"
-        [userRole]="data().userRole"
-        [formField]="_emailRow.roleId"
-      />
+      <app-role-selector-field [itemType]="itemType()" [userRole]="userRole()" [formField]="_emailRow.roleId" />
       <app-button-close class="mt-2" iconSize="sm" (click)="removeRow.emit()" [iconOnly]="true" />
     </div>
   `,
 })
 export class InvitationFormRowComponent {
-  data = input.required<InvitePeopleDialogData>();
+  itemType = input.required<ItemType>();
+  userRole = input.required<Role | undefined>();
   notAcceptedInvitationEmails = input.required<string[]>();
   emailRow = input.required<FieldTree<PeopleEmailRow, number>>();
   removeRow = output<void>();

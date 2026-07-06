@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { RouterLink, RouterOutlet } from "@angular/router";
@@ -42,6 +42,7 @@ import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-bann
 import { NgEventBus } from "ng-event-bus";
 import { ToolBarStore } from "@tenzu/repository/toolbar";
 import { PLUGINS_TOKEN } from "../app.config";
+import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
 
 @Component({
   selector: "app-home",
@@ -108,6 +109,15 @@ import { PLUGINS_TOKEN } from "../app.config";
           <mat-icon>settings</mat-icon>
           <span>{{ t("settings") }}</span>
         </button>
+        <button mat-menu-item [attr.aria-label]="t('news')" (click)="feedOrchestrator.openModal()">
+          <mat-icon
+            [matBadge]="feedOrchestrator.unreadCount()"
+            [matBadgeHidden]="!feedOrchestrator.unreadCount()"
+            aria-hidden="false"
+            >news</mat-icon
+          >
+          <span>{{ t("news") }}</span>
+        </button>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>{{ t("logout") }}</span>
@@ -119,7 +129,6 @@ import { PLUGINS_TOKEN } from "../app.config";
     </main>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class HomeComponent implements AfterViewInit {
   readonly eventBus = inject(NgEventBus);
@@ -132,6 +141,7 @@ export default class HomeComponent implements AfterViewInit {
   notificationsComponentService = inject(NotificationsComponentService);
   toolBarStore = inject(ToolBarStore);
   plugins = inject(PLUGINS_TOKEN);
+  feedOrchestrator = inject(FeedOrchestratorService);
   constructor() {
     this.iconRegistry.addSvgIcon("logo-text", this.sanitizer.bypassSecurityTrustResourceUrl("logo-text-tenzu.svg"));
     this.iconRegistry.addSvgIcon(
@@ -142,6 +152,7 @@ export default class HomeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.notificationsComponentService.getCount().then();
+    this.feedOrchestrator.init().then();
   }
 
   logout() {

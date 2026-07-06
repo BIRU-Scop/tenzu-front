@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { Component, inject, model } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
@@ -61,7 +61,6 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
   `,
   imports: [TranslocoDirective, MatCheckbox, ReactiveFormsModule, MatError, ButtonDeleteComponent, FormFooterComponent],
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: "w-full",
   },

@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
@@ -60,7 +60,6 @@ import { TranslocoDirective } from "@jsverse/transloco";
     }
   </ng-container>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryAssigneeComponent {
   storyRepositoryService = inject(StoryRepositoryService);

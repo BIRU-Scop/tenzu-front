@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
@@ -67,7 +67,6 @@ import { FileValue } from "@tenzu/repository/base/misc.model";
     class: "flex flex-row gap-4 items-center",
   },
   providers: [FileSizePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileInputComponent {
   readonly configAppService = inject(ConfigAppService);

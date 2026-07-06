@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, SecurityContext } from "@angular/core";
+import { Component, computed, inject, input, SecurityContext } from "@angular/core";
 import { AvatarComponent } from "../avatar/avatar.component";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { DomSanitizer } from "@angular/platform-browser";
@@ -50,7 +50,6 @@ import { DomSanitizer } from "@angular/platform-browser";
     </div>
   </div>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCardComponent {
   domSanitizer = inject(DomSanitizer);

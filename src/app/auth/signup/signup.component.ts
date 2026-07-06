@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from "@angular/core";
+import { Component, effect, inject, signal, untracked } from "@angular/core";
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
@@ -168,7 +168,6 @@ import { getLocError } from "@tenzu/utils/functions/errors";
     }
   </ng-container>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SignupComponent {
   userService = inject(UserService);

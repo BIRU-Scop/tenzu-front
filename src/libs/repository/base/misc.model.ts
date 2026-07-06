@@ -39,3 +39,5 @@ export type BaseDataModel<T> = {
 };
 
 export type ImageSizeFormat = "small" | "large" | "original";
+
+export type ItemType = "project" | "workspace";

@@ -20,14 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  importProvidersFrom,
-  inject,
-  OnInit,
-  provideEnvironmentInitializer,
-} from "@angular/core";
+import { Component, importProvidersFrom, inject, OnInit, provideEnvironmentInitializer } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
@@ -126,7 +119,6 @@ const members = [
       </section>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryStoryCardStorybookComponent implements OnInit {
   private readonly membershipStore = inject(ProjectMembershipEntitiesStore);

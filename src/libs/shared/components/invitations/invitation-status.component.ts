@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
@@ -44,7 +44,6 @@ import { ChipComponent } from "@tenzu/shared/components/ui/chip/chip.component";
   `,
   styles: ``,
   host: { class: "flex flex-row gap-2 items-center" },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationStatusComponent {
   protected readonly InvitationStatus = InvitationStatus;

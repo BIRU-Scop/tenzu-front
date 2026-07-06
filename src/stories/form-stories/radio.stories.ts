@@ -23,7 +23,7 @@ import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 import { withTransloco } from "../storybook-providers";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { disabled, form, FormField } from "@angular/forms/signals";
 import { MatFormField } from "@angular/material/input";
 
@@ -55,7 +55,6 @@ import { MatFormField } from "@angular/material/input";
       </mat-radio-group>
     </form>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryRadioStorybookComponent {
   form = form(signal({ input1: "actif", input2: "actif", input3: "" }), (path) => {

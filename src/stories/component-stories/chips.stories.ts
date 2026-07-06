@@ -25,7 +25,7 @@ import { MatChipListbox, MatChipSet } from "@angular/material/chips";
 import { withTransloco } from "../storybook-providers";
 import { ChipComponent } from "@tenzu/shared/components/ui/chip/chip.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from "@angular/cdk/drag-drop";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { LevelType } from "@tenzu/shared/components/ui/ui.types";
 
 const LEVELS: LevelType[] = ["plain", "primary", "secondary", "tertiary", "warning", "error", "success"];
@@ -81,7 +81,6 @@ const LEVELS: LevelType[] = ["plain", "primary", "secondary", "tertiary", "warni
       </mat-chip-listbox>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryChipsStorybookComponent {
   readonly levels = LEVELS;

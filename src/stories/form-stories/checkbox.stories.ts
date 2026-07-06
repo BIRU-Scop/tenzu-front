@@ -21,7 +21,7 @@
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot, validate } from "@angular/forms/signals";
 
 @Component({
@@ -44,7 +44,6 @@ import { disabled, form, FormField, FormRoot, validate } from "@angular/forms/si
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryCheckboxFieldStorybookComponent {
   values = signal({ input1: true, input2: false, input3: true, input4: false, input5: false, input6: false });

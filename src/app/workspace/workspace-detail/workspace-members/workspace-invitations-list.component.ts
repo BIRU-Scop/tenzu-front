@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
@@ -91,7 +91,6 @@ import { ActivatedRoute } from "@angular/router";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceMembersComponent {
   protected readonly WorkspacePermissions = WorkspacePermissions;

@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
@@ -144,7 +144,6 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailMenuComponent {
   storyViewIconMap: Record<StoryDisplayMode, string> = {

@@ -392,6 +392,7 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
   const dialog = inject(MatDialog);
   const notificationService = inject(NotificationService);
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
   const router = inject(Router);
 
   const content = message.event.content as {
@@ -441,6 +442,13 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
         importationRepositoryService.updateEntitySummary({
           projectImportation: content.projectImportation,
           workspaceId: content.workspaceId,
+        });
+      }
+      const currentProject = projectRepositoryService.entityDetail();
+      if (currentProject && currentProject.id === content.projectImportation.project.id) {
+        projectRepositoryService.updateEntityDetail({
+          ...currentProject,
+          importation: content.projectImportation,
         });
       }
       break;

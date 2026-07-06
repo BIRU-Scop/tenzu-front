@@ -21,7 +21,7 @@
 
 import { ProjectNested } from "../project";
 import { UserRole } from "../membership";
-import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation";
 
 type _WorkspaceBaseNested = {
   id: string;
@@ -38,7 +38,7 @@ export type WorkspaceNested = _WorkspaceBaseNested & {
 type _WorkspaceListProjectsSummary = {
   userMemberProjects: ProjectNested[];
   userInvitedProjects: ProjectNested[];
-  userImportedProjects: ProjectImportationNested[];
+  userImportedProjects: ProjectImportation[];
 };
 
 export type WorkspaceSummary = WorkspaceNested &

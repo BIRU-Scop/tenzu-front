@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -63,7 +63,6 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
       @apply flex flex-col gap-4;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class PendingVerificationComponent {
   email = input.required<string>();

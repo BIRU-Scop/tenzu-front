@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input } from "@angular/core";
+import { Component, effect, inject, input } from "@angular/core";
 import { BreadcrumbComponent } from "@tenzu/shared/components/breadcrumb";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav";
 import { Router, RouterOutlet } from "@angular/router";
@@ -38,7 +38,6 @@ import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
     </app-primary-side-nav>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailBaseComponent {
   workspaceId = input.required<string>();

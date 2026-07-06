@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input } from "@angular/core";
+import { Component, effect, inject, input } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/repository/sidenav";
@@ -46,7 +46,6 @@ import { ProjectImportationRepositoryService } from "@tenzu/repository/importati
       </ng-container>
     }`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkspaceDetailComponent {
   workspaceId = input.required<string>();

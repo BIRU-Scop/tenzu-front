@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list";
 import { RouterLink, RouterLinkActive } from "@angular/router";
@@ -91,6 +91,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
               }"
             >
               <div
+                class="flex justify-center"
                 [matTooltip]="!_canCreateWorkflow ? t('workflow.create_workflow.dialog.maximum_reached') : ''"
                 [matTooltipDisabled]="_canCreateWorkflow"
               >
@@ -141,7 +142,6 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavListWorkflowComponent {
   protected readonly ProjectPermissions = ProjectPermissions;

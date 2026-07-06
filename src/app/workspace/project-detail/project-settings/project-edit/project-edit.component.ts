@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, linkedSignal } from "@angular/core";
+import { Component, inject, linkedSignal } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { DescriptionFieldComponent } from "@tenzu/shared/components/form/description-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -132,7 +132,6 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ProjectEditComponent {
   protected readonly ProjectPermissions = ProjectPermissions;

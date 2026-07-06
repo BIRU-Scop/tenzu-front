@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,6 +22,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import LoginComponent from "./login.component";
+import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("LoginComponentComponent", () => {
   let component: LoginComponent;
@@ -30,6 +31,7 @@ describe("LoginComponentComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
+      providers: [...testingProviders],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);

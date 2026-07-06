@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";
 import { MatIconButton, MatButton } from "@angular/material/button";
@@ -114,7 +114,6 @@ import { withTransloco } from "../storybook-providers";
       </section>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryToolbarStorybookComponent {
   private readonly iconRegistry = inject(MatIconRegistry);

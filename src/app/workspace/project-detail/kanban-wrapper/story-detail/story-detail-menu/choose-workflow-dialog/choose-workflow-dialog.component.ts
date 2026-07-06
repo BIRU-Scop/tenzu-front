@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import {
   MAT_DIALOG_DATA,
@@ -81,7 +81,6 @@ export type ChooseWorkflowDialogData = {
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     "(window:keyup.Enter)": "onPressEnter()",
   },

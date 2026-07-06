@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { MatDivider } from "@angular/material/list";
 
@@ -55,7 +55,6 @@ import { StoryDetailCommentsListComponent } from "./story-detail-comments-list/s
     />
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailPanelLeftComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
