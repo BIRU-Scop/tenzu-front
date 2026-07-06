@@ -29,6 +29,8 @@ import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/
 import { InvitationActionsComponent } from "@tenzu/shared/components/invitations/invitation-actions.component";
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 import { ActivatedRoute } from "@angular/router";
+import { ProjectInvitationsListImportationWarningComponent } from "./project-invitations-list-importation-warning/project-invitations-list-importation-warning.component";
+import { ImportationStatus } from "@tenzu/repository/importation";
 
 @Component({
   selector: "app-project-invitations-list",
@@ -38,6 +40,7 @@ import { ActivatedRoute } from "@angular/router";
     InvitationActionsComponent,
     InvitationRoleComponent,
     PermissionOrRedirectDirective,
+    ProjectInvitationsListImportationWarningComponent,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -52,6 +55,13 @@ import { ActivatedRoute } from "@angular/router";
             redirectUrlExtras: { relativeTo: activatedRoute },
           }"
         >
+          @if (project.importation && project.importation?.status === ImportationStatus.ACTION_NEEDED) {
+            <app-project-invitations-list-importation-warning
+              [projectImportation]="project.importation"
+              [project]="project"
+              [workspaceId]="project.workspaceId"
+            />
+          }
           @let projectInvitations = projectInvitationRepositoryService.entities();
           @if (projectInvitations.length > 0) {
             <div class="app-table">
@@ -89,6 +99,8 @@ import { ActivatedRoute } from "@angular/router";
   styles: ``,
 })
 export default class ProjectMembersComponent {
+  protected readonly ImportationStatus = ImportationStatus;
+
   projectId = input.required<ProjectDetail["id"]>();
 
   protected readonly ProjectPermissions = ProjectPermissions;

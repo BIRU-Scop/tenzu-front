@@ -98,7 +98,12 @@ export class ButtonComponent implements ButtonInterface {
   translocoKey = input.required<string>();
   translocoValue = input<JsonObject>({});
   type = input<ButtonType>("button");
+  forceAppearance = input<MatButtonAppearance | undefined>(undefined);
   appearance = computed<MatButtonAppearance>(() => {
+    const forceAppearance = this.forceAppearance();
+    if (forceAppearance) {
+      return forceAppearance;
+    }
     switch (this.level()) {
       case "primary-button":
         return "filled";

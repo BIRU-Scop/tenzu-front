@@ -32,6 +32,7 @@ import { SideNavStore } from "@tenzu/repository/sidenav";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-detail/sidenav-list-workflow/sidenav-list-workflow.component";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
+import { MatBadge } from "@angular/material/badge";
 
 @Component({
   selector: "app-primary-side-nav",
@@ -55,6 +56,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
     NgComponentOutlet,
     AsyncPipe,
     GetBase64FromImageUrlPipe,
+    MatBadge,
   ],
   template: `
     <mat-sidenav-container class="h-full" *transloco="let t">
@@ -122,6 +124,7 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
             <mat-nav-list [attr.aria-label]="t('component.primary_side_nav.secondary_nav')">
               @for (item of sideNavStore.secondaryNavItems(); track item.href) {
                 @if (!sideNavStore.resized()) {
+                  <!--                  TODO fix badge display issue-->
                   <a
                     mat-list-item
                     href="#"
@@ -130,10 +133,20 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
                     #routerLinkActive="routerLinkActive"
                     [activated]="routerLinkActive.isActive"
                     attr.data-testid="{{ item.testId }}"
-                    ><mat-icon matListItemIcon>{{ item.iconName }}</mat-icon>
-                    {{ t(item.label) }}
+                  >
+                    <mat-icon matListItemIcon>{{ item.iconName }}</mat-icon>
+                    <p
+                      class="w-min"
+                      matBadge="!"
+                      matBadgeSize="medium"
+                      [matBadgeHidden]="!item.hasWarning"
+                      matBadgeOverlap="false"
+                    >
+                      {{ t(item.label) }}
+                    </p>
                   </a>
                 } @else {
+                  <!--                  TODO fix badge display issue-->
                   <a
                     class="resized"
                     mat-list-item
@@ -143,7 +156,14 @@ import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-ur
                     #routerLinkActive="routerLinkActive"
                     [activated]="routerLinkActive.isActive"
                     attr.data-testid="{{ item.testId }}"
-                    ><mat-icon class="pt-1">{{ item.iconName }}</mat-icon>
+                    ><mat-icon
+                      matBadge="!"
+                      matBadgeSize="medium"
+                      [matBadgeHidden]="!item.hasWarning"
+                      matBadgeOverlap="true"
+                      class="pt-1"
+                      >{{ item.iconName }}</mat-icon
+                    >
                   </a>
                 }
               }

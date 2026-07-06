@@ -32,7 +32,7 @@ import { ProjectNested } from "@tenzu/repository/project";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation";
 
 @Injectable({
   providedIn: "root",
@@ -74,22 +74,16 @@ export class WorkspaceRepositoryService extends BaseRepositoryService<
     this.entitiesSummaryStore.addUserMemberProjects(params.workspaceId, params.project);
   }
 
-  addUserImportedProjects(params: {
-    workspaceId: WorkspaceSummary["id"];
-    projectImportation: ProjectImportationNested;
-  }) {
+  addUserImportedProjects(params: { workspaceId: WorkspaceSummary["id"]; projectImportation: ProjectImportation }) {
     this.entitiesSummaryStore.addUserImportedProjects(params.workspaceId, params.projectImportation);
   }
   removeUserImportedProjects(params: {
     workspaceId: WorkspaceSummary["id"];
-    projectImportationId: ProjectImportationNested["id"];
+    projectImportationId: ProjectImportation["id"];
   }) {
     this.entitiesSummaryStore.removeUserImportedProjects(params.workspaceId, params.projectImportationId);
   }
-  updateUserImportedProjects(params: {
-    workspaceId: WorkspaceSummary["id"];
-    projectImportation: ProjectImportationNested;
-  }) {
+  updateUserImportedProjects(params: { workspaceId: WorkspaceSummary["id"]; projectImportation: ProjectImportation }) {
     this.entitiesSummaryStore.updateUserImportedProjects(params.workspaceId, params.projectImportation);
   }
 

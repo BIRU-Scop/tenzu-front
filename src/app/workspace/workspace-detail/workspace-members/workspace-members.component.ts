@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject, inputBinding, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 
@@ -143,23 +143,26 @@ export default class WorkspaceMembersComponent implements AfterViewInit {
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
         minWidth: 850,
-        data: {
-          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-            name: selectedWorkspace.name,
-          }),
-          description: this.translocoService.translate("workspace.members.description_modal"),
-          existingMembers: this.workspaceMembershipRepositoryService.members,
-          existingInvitations: this.workspaceInvitationRepositoryService.entities,
-          itemType: "workspace",
-          userRole: selectedWorkspace.userRole,
-        },
+        bindings: [
+          inputBinding(
+            "title",
+            signal(
+              this.translocoService.translate("component.invite_dialog.invite_people_to", {
+                name: selectedWorkspace.name,
+              }),
+            ),
+          ),
+          inputBinding("description", signal(this.translocoService.translate("workspace.members.description_modal"))),
+          inputBinding("existingMembers", this.workspaceMembershipRepositoryService.members),
+          inputBinding("existingInvitations", this.workspaceInvitationRepositoryService.entities),
+          inputBinding("itemType", signal("workspace")),
+          inputBinding("userRole", signal(selectedWorkspace.userRole)),
+          inputBinding("canAddEmails", signal(true)),
+        ],
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
-          await this.workspaceInvitationRepositoryService.createBulkInvitations(
-            selectedWorkspace,
-            invitations.map(({ email, roleId }) => ({ email, roleId })),
-          );
+          await this.workspaceInvitationRepositoryService.createBulkInvitations(selectedWorkspace, invitations);
           await this.router.navigate(["list-workspace-invitations"], { relativeTo: this.activatedRoute });
         }
       });

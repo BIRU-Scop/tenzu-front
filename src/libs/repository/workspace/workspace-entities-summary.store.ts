@@ -23,7 +23,7 @@ import { signalStore, withMethods } from "@ngrx/signals";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
 import { withEntityDetailStore, withEntityListFeature, withTreeShakableDevTools } from "../base";
 import { ProjectNested } from "@tenzu/repository/project";
-import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation";
 
 export const WorkspaceEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
@@ -40,7 +40,7 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
       const addedUserMemberProjects = [...workspace.userMemberProjects, project];
       store.updateEntity(workspaceId, { userMemberProjects: addedUserMemberProjects });
     },
-    addUserImportedProjects(workspaceId: WorkspaceDetail["id"], projectImportation: ProjectImportationNested) {
+    addUserImportedProjects(workspaceId: WorkspaceDetail["id"], projectImportation: ProjectImportation) {
       const workspace = store.assertEntity(workspaceId);
       const addedUserImportedProjects = [...workspace.userImportedProjects, projectImportation];
       store.updateEntity(workspaceId, { userImportedProjects: addedUserImportedProjects });
@@ -52,7 +52,7 @@ export const WorkspaceEntitiesSummaryStore = signalStore(
       );
       store.updateEntity(workspaceId, { userImportedProjects: removedUserImportedProjects });
     },
-    updateUserImportedProjects(workspaceId: WorkspaceDetail["id"], newProjectImportation: ProjectImportationNested) {
+    updateUserImportedProjects(workspaceId: WorkspaceDetail["id"], newProjectImportation: ProjectImportation) {
       const workspace = store.assertEntity(workspaceId);
       const updateddUserImportedProjects = workspace.userImportedProjects.map((importation) =>
         importation.id !== newProjectImportation.id ? importation : newProjectImportation,

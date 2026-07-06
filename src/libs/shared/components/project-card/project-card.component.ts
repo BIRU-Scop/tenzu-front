@@ -114,7 +114,7 @@ export class ProjectCardComponent {
   color = input<ProjectSummary["color"]>(0);
   logo = input<ProjectSummary["logo"]>(undefined);
   description = input<ProjectSummary["description"] | null>("");
-  landingPage = input<ProjectSummary["landingPage"] | null>("");
+  landingPage = input<string | null>("");
   disabled = input<boolean>(false);
 
   openCreateProject(workspaceId: WorkspaceSummary["id"]): void {

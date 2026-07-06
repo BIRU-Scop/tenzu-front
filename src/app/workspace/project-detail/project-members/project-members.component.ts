@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, computed, inject, inputBinding, signal } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
@@ -37,6 +37,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { ImportationStatus } from "@tenzu/repository/importation";
+import { MatBadge } from "@angular/material/badge";
 
 @Component({
   selector: "app-project-members",
@@ -54,6 +56,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
     HasPermissionDirective,
     NgTemplateOutlet,
     ButtonAddComponent,
+    MatBadge,
   ],
   template: `
     @let project = projectRepositoryService.entityDetail();
@@ -69,7 +72,7 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
           />
         </div>
         <nav mat-tab-nav-bar [mat-stretch-tabs]="false" class="flex flex-row" [tabPanel]="tabPanel">
-          @for (link of links; track link.path) {
+          @for (link of links(); track link.path) {
             <ng-template #RouterContent>
               <a
                 mat-tab-link
@@ -79,8 +82,16 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
                 [active]="RouterLinkActive.isActive"
                 [routerLinkActiveOptions]="{ exact: true }"
               >
-                <mat-icon class="icon-sm mr-1">{{ link.iconName }}</mat-icon
-                >{{ t(link.labelKey) }}
+                <p
+                  class="w-min flex items-center"
+                  matBadge="!"
+                  matBadgeSize="medium"
+                  [matBadgeHidden]="!link.hasWarning"
+                  matBadgeOverlap="false"
+                >
+                  <mat-icon class="icon-sm mr-1" aria-hidden="true">{{ link.iconName }}</mat-icon>
+                  {{ t(link.labelKey) }}
+                </p>
               </a>
             </ng-template>
             @if (link.permission) {
@@ -102,15 +113,16 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
   host: { class: "flex flex-col" },
 })
 export default class ProjectMembersComponent implements AfterViewInit {
-  links = [
+  links = computed(() => [
     { path: "./list-project-members", labelKey: "project.members.members_tab", iconName: "group", permission: null },
     {
       path: "./list-project-invitations",
       labelKey: "project.members.invitation_tab",
       iconName: "schedule",
       permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
+      hasWarning: this.projectRepositoryService.entityDetail()?.importation?.status === ImportationStatus.ACTION_NEEDED,
     },
-  ];
+  ]);
   protected readonly ProjectPermissions = ProjectPermissions;
 
   breadcrumbStore = inject(BreadcrumbStore);
@@ -133,23 +145,26 @@ export default class ProjectMembersComponent implements AfterViewInit {
       const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
         ...matDialogConfig,
         minWidth: 850,
-        data: {
-          title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-            name: selectedProject.name,
-          }),
-          description: this.translocoService.translateObject("project.members.description_modal"),
-          existingMembers: this.projectMembershipRepositoryService.members,
-          existingInvitations: this.projectInvitationRepositoryService.entities,
-          itemType: "project",
-          userRole: selectedProject.userRole,
-        },
+        bindings: [
+          inputBinding(
+            "title",
+            signal(
+              this.translocoService.translate("component.invite_dialog.invite_people_to", {
+                name: selectedProject.name,
+              }),
+            ),
+          ),
+          inputBinding("description", signal(this.translocoService.translate("project.members.description_modal"))),
+          inputBinding("existingMembers", this.projectMembershipRepositoryService.members),
+          inputBinding("existingInvitations", this.projectInvitationRepositoryService.entities),
+          inputBinding("itemType", signal("project")),
+          inputBinding("userRole", signal(selectedProject.userRole)),
+          inputBinding("canAddEmails", signal(true)),
+        ],
       });
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
-          await this.projectInvitationRepositoryService.createBulkInvitations(
-            selectedProject,
-            invitations.map(({ email, roleId }) => ({ email, roleId })),
-          );
+          await this.projectInvitationRepositoryService.createBulkInvitations(selectedProject, invitations);
           await this.router.navigate(["list-project-invitations"], { relativeTo: this.activatedRoute });
         }
       });

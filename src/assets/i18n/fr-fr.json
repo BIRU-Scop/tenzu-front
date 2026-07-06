@@ -73,6 +73,7 @@
       "stories.delete": "<span class='text-on-background'>{{fullName}}</span> a supprimé la story {{story}}",
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>",
       "project_importation.fail": "L'importation du fichier {{fileName}} a échouée",
+      "project_importation.action_needed": "L'importation du fichier {{fileName}} nécessite une action.",
       "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})"
     }
   },

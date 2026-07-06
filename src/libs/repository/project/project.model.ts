@@ -22,6 +22,7 @@
 import { UserRole } from "../membership";
 import { WorkflowNested } from "../workflow";
 import { FileValue } from "@tenzu/repository/base/misc.model";
+import { ProjectImportationNested } from "@tenzu/repository/importation";
 
 export type ProjectLogoBase = {
   logo?: string;
@@ -50,6 +51,7 @@ export type ProjectSummary = ProjectNested & {
 export type ProjectDetail = ProjectSummary &
   UserRole & {
     workflows: WorkflowNested[];
+    importation: ProjectImportationNested | null;
   };
 
 export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> & {

@@ -31,6 +31,7 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { LowerCasePipe } from "@angular/common";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-invitation-actions",
@@ -98,7 +99,7 @@ export class InvitationActionsComponent {
   workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
   invitation = input.required<InvitationBase>();
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   item = input.required<ProjectDetail | WorkspaceDetail>();
   resentInvitation = input.required<boolean>();
 

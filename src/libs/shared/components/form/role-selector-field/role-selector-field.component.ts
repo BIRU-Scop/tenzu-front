@@ -28,6 +28,7 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { MatTooltip } from "@angular/material/tooltip";
 import { FormValueControl } from "@angular/forms/signals";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-role-selector-field",
@@ -64,7 +65,7 @@ export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] |
   projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   userRole = input<Role>();
   roleRepositoryService = computed(() => {
     switch (this.itemType()) {
@@ -87,7 +88,7 @@ export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] |
   });
   defaultRole = computed(() => this.roleRepositoryService().defaultRole());
 
-  tooltips: Record<"project" | "workspace", Record<Role["slug"], string>> = {
+  tooltips: Record<ItemType, Record<Role["slug"], string>> = {
     workspace: {
       owner: "component.role_selector.workspace.owner",
       admin: "component.role_selector.workspace.admin",
