@@ -19,8 +19,8 @@
  *
  */
 
-import { UserRole } from "../membership";
-import { WorkflowNested } from "../workflow";
+import { z } from "zod/v4";
+import { Role } from "../membership";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 import { ProjectImportationNested } from "@tenzu/repository/importation";
 
@@ -44,15 +44,39 @@ export type ProjectNested = ProjectLogoBase &
 
 export type ProjectLinkNested = _ProjectBaseNested;
 
-export type ProjectSummary = ProjectNested & {
-  userIsInvited: boolean;
-};
+export const projectSummarySchema = z.object({
+  id: z.string(),
+  workspaceId: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  landingPage: z.string(),
+  description: z.string(),
+  color: z.number(),
+  logo: z.string().optional(),
+  userIsInvited: z.boolean(),
+});
 
-export type ProjectDetail = ProjectSummary &
-  UserRole & {
-    workflows: WorkflowNested[];
-    importation: ProjectImportationNested | null;
-  };
+// export type ProjectDetail = ProjectSummary &
+//   UserRole & {
+//   workflows: WorkflowNested[];
+//   importation: ProjectImportationNested | null;
+// };
+
+export const projectDetailSchema = projectSummarySchema.extend({
+  userRole: z.custom<Role>().optional(),
+  workflows: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+      projectId: z.string(),
+    }),
+  ),
+  importation: z.custom<ProjectImportationNested>().optional(),
+});
+
+export type ProjectSummary = z.infer<typeof projectSummarySchema>;
+export type ProjectDetail = z.infer<typeof projectDetailSchema>;
 
 export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> & {
   logo: FileValue;

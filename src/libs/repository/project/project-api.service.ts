@@ -22,7 +22,14 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AbstractApiService, makeFormData } from "../base";
-import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
+import {
+  CreateProjectPayload,
+  projectDetailSchema,
+  ProjectDetail,
+  projectSummarySchema,
+  ProjectSummary,
+  UpdateProjectPayload,
+} from "./project.model";
 import type * as ProjectApiServiceType from "./project-api.type";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
@@ -42,6 +49,9 @@ export class ProjectApiService extends AbstractApiService<
   CreateProjectPayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override summarySchema = projectSummarySchema;
+  protected override detailSchema = projectDetailSchema;
+
   protected override getBaseUrl(params: ProjectApiServiceType.ListEntitiesSummaryParams) {
     return `${this.configAppService.apiUrl()}/workspaces/${params.workspaceId}/projects`;
   }

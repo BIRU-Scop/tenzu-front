@@ -20,7 +20,7 @@
  */
 
 import { UserNested } from "@tenzu/repository/user";
-import { ProjectLinkNested } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectLinkNested, ProjectSummary } from "@tenzu/repository/project";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story";
 import { FeedItem } from "@tenzu/repository/feed";
@@ -52,6 +52,24 @@ export function makeProjectLinkNested(overrides: Partial<ProjectLinkNested> = {}
     name: "My Project",
     slug: "my-project",
     landingPage: "kanban",
+    ...overrides,
+  };
+}
+
+export function makeProjectSummary(overrides: Partial<ProjectSummary> = {}): ProjectSummary {
+  return {
+    ...makeProjectLinkNested(),
+    description: "My project description",
+    color: 1,
+    userIsInvited: false,
+    ...overrides,
+  };
+}
+
+export function makeProjectDetail(overrides: Partial<ProjectDetail> = {}): ProjectDetail {
+  return {
+    ...makeProjectSummary(),
+    workflows: [],
     ...overrides,
   };
 }
