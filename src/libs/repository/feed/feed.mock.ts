@@ -19,10 +19,8 @@
  *
  */
 
-import { HttpHandlerFn, HttpRequest, HttpResponse } from "@angular/common/http";
-import { isDevMode } from "@angular/core";
-import { of } from "rxjs";
-import { FeedItem } from "@tenzu/repository/feed";
+import { FeedItem } from "./feed-item.model";
+import { defineMock, MockHandler } from "@tenzu/utils/mocks/mock.types";
 
 export const MOCK_FEED_ITEMS: FeedItem[] = [
   {
@@ -55,17 +53,14 @@ export const MOCK_FEED_ITEMS: FeedItem[] = [
   },
 ];
 
-export function feedMockInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
-  if (!isDevMode()) {
-    return next(req);
-  }
-  if (req.url.endsWith("/feeds") && req.method === "GET") {
-    return of(new HttpResponse({ status: 200, body: { data: MOCK_FEED_ITEMS } }));
-  }
-  if (req.url.endsWith("/feeds/read") && req.method === "POST") {
-    const ids = (req.body as { ids?: string[] })?.ids ?? [];
-    const readStates = ids.map((id) => ({ id, readAt: "2026-06-08T10:00:00.000Z" }));
-    return of(new HttpResponse({ status: 200, body: { data: readStates } }));
-  }
-  return next(req);
-}
+export const feedMockHandlers: MockHandler[] = [
+  defineMock({ method: "GET", urlMatch: "/feeds", respond: () => ({ data: MOCK_FEED_ITEMS }) }),
+  defineMock({
+    method: "POST",
+    urlMatch: "/feeds/read",
+    respond: (request) => {
+      const ids = (request.body as { ids?: string[] })?.ids ?? [];
+      return { data: ids.map((id) => ({ id, readAt: "2026-06-08T10:00:00.000Z" })) };
+    },
+  }),
+];

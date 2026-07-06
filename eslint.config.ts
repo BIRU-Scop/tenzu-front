@@ -20,6 +20,7 @@ export default defineConfig(
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      curly: ["error", "all"],
       "@angular-eslint/directive-selector": [
         "error",
         {
