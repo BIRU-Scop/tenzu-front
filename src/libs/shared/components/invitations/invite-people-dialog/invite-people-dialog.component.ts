@@ -19,7 +19,7 @@
  *
  */
 
-import { Component, effect, inject, input } from "@angular/core";
+import { Component, effect, inject, input, untracked } from "@angular/core";
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 
@@ -100,6 +100,6 @@ export class InvitePeopleDialogComponent {
 
   constructor() {
     effect(() => this.store.setContext(this.existingMembers(), this.existingInvitations(), this.userRole()));
-    effect(() => this.store.addInitialInvites(this.initialInvites()));
+    effect(() => untracked(() => this.store.addInitialInvites(this.initialInvites())));
   }
 }

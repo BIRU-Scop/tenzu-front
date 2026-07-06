@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, signal } from "@angular/core";
+import { Component, inject, input, inputBinding, signal } from "@angular/core";
 import { ProjectImportationNested, ProjectImportationRepositoryService } from "@tenzu/repository/importation";
 import { MatIcon } from "@angular/material/icon";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
@@ -68,7 +68,6 @@ import { ProjectSummary } from "@tenzu/repository/project";
   host: {
     class: "mat-bg-warning-container mat-text-on-warning-container my-8 py-2 px-4 rounded flex items-center gap-8",
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectInvitationsListImportationWarningComponent {
   readonly dialog = inject(MatDialog);
@@ -94,19 +93,26 @@ export class ProjectInvitationsListImportationWarningComponent {
     const dialogRef = this.dialog.open(InvitePeopleDialogComponent, {
       ...matDialogConfig,
       minWidth: 850,
-      // TODO make it reactive with new binding system for modal
-      data: {
-        title: this.translocoService.translate("component.invite_dialog.invite_people_to", {
-          name: this.project().name,
-        }),
-        description: this.translocoService.translateObject("project.new_project.import.invite_description_modal"),
-        existingMembers: signal([]), // members shouldn't ever be present in pending invites list so we don't need this check
-        existingInvitations: this.projectInvitationRepositoryService.entities,
-        initialInvites: projectImportation.pendingInvites,
-        itemType: "project",
-        userRole: this.projectRoleRepositoryService.ownerRole(),
-        canAddEmails: false,
-      },
+      bindings: [
+        inputBinding(
+          "title",
+          signal(
+            this.translocoService.translate("component.invite_dialog.invite_people_to", {
+              name: this.project().name,
+            }),
+          ),
+        ),
+        inputBinding(
+          "description",
+          signal(this.translocoService.translateObject("project.new_project.import.invite_description_modal")),
+        ),
+        inputBinding("existingMembers", signal([])),
+        inputBinding("existingInvitations", this.projectInvitationRepositoryService.entities),
+        inputBinding("initialInvites", signal(projectImportation.pendingInvites)),
+        inputBinding("itemType", signal("project")),
+        inputBinding("userRole", this.projectRoleRepositoryService.ownerRole),
+        inputBinding("canAddEmails", signal(false)),
+      ],
     });
     dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
       if (invitations?.length) {
