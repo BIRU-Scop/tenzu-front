@@ -24,7 +24,9 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { z } from "zod/v4";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { debug } from "@tenzu/utils/functions/logging";
 import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
 
@@ -45,6 +47,23 @@ export abstract class AbstractApiServiceDetail<
   protected configAppService = inject(ConfigAppService);
 
   protected abstract baseUrl: string;
+
+  protected detailSchema?: z.ZodType<EntityDetailModel>;
+
+  protected parseDetail(data: unknown): EntityDetailModel {
+    return this.detailSchema ? this.parseWithDebug(this.detailSchema, data) : (data as EntityDetailModel);
+  }
+
+  protected parseWithDebug<T>(schema: z.ZodType<T>, data: unknown): T {
+    try {
+      return schema.parse(data);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        debug("schema", z.prettifyError(error), error.issues);
+      }
+      throw error;
+    }
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected getBaseUrl(params?: Record<string, EntityId> | unknown): string {
@@ -78,10 +97,10 @@ export abstract class AbstractApiServiceDetail<
 
   get(params: GetParams, queryParams?: QueryParams): Observable<EntityDetailModel> {
     return this.http
-      .get<BaseDataModel<EntityDetailModel>>(this.getUrl(params), {
+      .get<BaseDataModel<unknown>>(this.getUrl(params), {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => this.parseDetail(dataObject.data)));
   }
 
   patch(
@@ -97,10 +116,10 @@ export abstract class AbstractApiServiceDetail<
       data = item;
     }
     return this.http
-      .patch<BaseDataModel<EntityDetailModel>>(this.patchUrl(params), data, {
+      .patch<BaseDataModel<unknown>>(this.patchUrl(params), data, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => this.parseDetail(dataObject.data)));
   }
 
   put(
@@ -116,10 +135,10 @@ export abstract class AbstractApiServiceDetail<
       data = item;
     }
     return this.http
-      .put<BaseDataModel<EntityDetailModel>>(this.putUrl(params), data, {
+      .put<BaseDataModel<unknown>>(this.putUrl(params), data, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => this.parseDetail(dataObject.data)));
   }
 
   create(
@@ -136,16 +155,18 @@ export abstract class AbstractApiServiceDetail<
       data = item;
     }
     return this.http
-      .post<BaseDataModel<EntityDetailModel>>(url, data, {
+      .post<BaseDataModel<unknown>>(url, data, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => this.parseDetail(dataObject.data)));
   }
 
   delete(params: DeleteParams, queryParams?: QueryParams): Observable<void | EntityDetailModel> {
-    return this.http.delete<void>(this.deleteUrl(params), {
-      params: queryParams ? makeOptions(queryParams) : {},
-    });
+    return this.http
+      .delete<BaseDataModel<unknown> | null>(this.deleteUrl(params), {
+        params: queryParams ? makeOptions(queryParams) : {},
+      })
+      .pipe(map((dataObject) => (dataObject == null ? undefined : this.parseDetail(dataObject.data))));
   }
 }
 
@@ -168,6 +189,12 @@ export abstract class AbstractApiService<
   DeleteParams,
   CreatePayload
 > {
+  protected summarySchema?: z.ZodType<EntityListModel>;
+
+  protected parseSummaryList(data: unknown): EntityListModel[] {
+    return this.summarySchema ? this.parseWithDebug(z.array(this.summarySchema), data) : (data as EntityListModel[]);
+  }
+
   protected listUrl(params?: ListParams): string {
     return `${this.getBaseUrl(params)}`;
   }
@@ -175,10 +202,10 @@ export abstract class AbstractApiService<
   list(params?: ListParams, queryParams?: QueryParams): Observable<EntityListModel[]> {
     const url = params ? this.listUrl(params) : this.listUrl();
     return this.http
-      .get<BaseDataModel<EntityListModel[]>>(url, {
+      .get<BaseDataModel<unknown>>(url, {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => this.parseSummaryList(dataObject.data)));
   }
 }
 
