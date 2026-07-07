@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,11 +19,13 @@
  *
  */
 
-import { z } from "zod/v4";
-import { membershipBaseSchema } from "../membership/membership.model";
-import type { ProjectSummary } from "@tenzu/repository/project/project.model";
+import { makeMembershipBase } from "@tenzu/repository/membership/membership.factories";
+import { ProjectMembership } from "./project-membership.model";
 
-export const projectMembershipSchema = membershipBaseSchema.extend({
-  projectId: z.string<ProjectSummary["id"]>(),
-});
-export type ProjectMembership = z.infer<typeof projectMembershipSchema>;
+export function makeProjectMembership(overrides: Partial<ProjectMembership> = {}): ProjectMembership {
+  return {
+    ...makeMembershipBase(),
+    projectId: "project-1",
+    ...overrides,
+  };
+}

@@ -22,7 +22,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { ProjectSummary } from "../project/project.model";
-import { ProjectMembership } from "./project-membership.model";
+import { ProjectMembership, projectMembershipSchema } from "./project-membership.model";
 import { Observable } from "rxjs";
 
 export type ListProjectMembershipParams = {
@@ -48,6 +48,8 @@ export class ProjectMembershipApiService extends AbstractApiService<
   DeleteProjectMembershipParams
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override summarySchema = projectMembershipSchema;
+  protected override detailSchema = projectMembershipSchema;
   protected override getBaseUrl(params: { projectId: ProjectSummary["id"] }) {
     return `${this.baseUrl}/${params.projectId}/memberships`;
   }
