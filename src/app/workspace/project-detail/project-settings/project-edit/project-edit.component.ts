@@ -25,7 +25,8 @@ import { DescriptionFieldComponent } from "@tenzu/shared/components/form/descrip
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatInput } from "@angular/material/input";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectDetail, ProjectRepositoryService, UpdateProjectPayload } from "@tenzu/repository/project";
+import { ProjectDetail, UpdateProjectPayload } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { Router } from "@angular/router";
 import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";

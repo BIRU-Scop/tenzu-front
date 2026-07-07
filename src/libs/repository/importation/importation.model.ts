@@ -21,7 +21,7 @@
 
 import { FileValue } from "@tenzu/repository/base/misc.model";
 import { InvitationBase } from "@tenzu/repository/membership";
-import { ProjectNested } from "@tenzu/repository/project";
+import { ProjectNested } from "@tenzu/repository/project/project.model";
 
 export enum ProjectImportationType {
   TENZU = "TZ",

@@ -32,7 +32,7 @@ import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-m
 import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { StoryDetail } from "@tenzu/repository/story";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 

@@ -22,7 +22,7 @@
 import { Component, computed, effect, inject, input } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";

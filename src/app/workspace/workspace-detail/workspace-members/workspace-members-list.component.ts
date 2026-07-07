@@ -38,7 +38,7 @@ import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { DeleteWorkspaceMembershipDialogComponent } from "./delete-workspace-membership-dialog.component";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 
 @Component({
   selector: "app-workspace-members",

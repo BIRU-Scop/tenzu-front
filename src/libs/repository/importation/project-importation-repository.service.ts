@@ -30,7 +30,7 @@ import { InvitationsPayload } from "@tenzu/repository/membership";
 import { map } from "rxjs/operators";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
 import { UserStore } from "@tenzu/repository/user";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { InvitationBase, PublicPendingInvitationBase } from "../membership";
-import { ProjectLinkNested } from "../project";
+import { ProjectLinkNested } from "../project/project.model";
 
 export type PublicProjectPendingInvitation = PublicPendingInvitationBase & {
   project: ProjectLinkNested;

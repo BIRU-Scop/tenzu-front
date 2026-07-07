@@ -31,7 +31,7 @@ import {
 } from "@angular/material/dialog";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 import { ImportationError, ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";

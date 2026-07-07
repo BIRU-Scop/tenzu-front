@@ -21,7 +21,7 @@
 
 import { UserNested } from "../user";
 import { StoryNested } from "../story";
-import { ProjectLinkNested } from "../project";
+import { ProjectLinkNested } from "../project/project.model";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { StoryCommentNested } from "@tenzu/repository/story-comment";

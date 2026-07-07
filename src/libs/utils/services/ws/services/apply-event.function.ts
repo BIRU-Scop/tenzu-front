@@ -41,7 +41,8 @@ import {
   WorkspaceMembershipEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
-import { ProjectDetail, ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectSummary } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";

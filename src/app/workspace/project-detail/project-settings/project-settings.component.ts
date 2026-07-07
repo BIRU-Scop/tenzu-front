@@ -27,7 +27,7 @@ import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatIcon } from "@angular/material/icon";
 import { MemberPermission } from "@tenzu/repository/membership";
 

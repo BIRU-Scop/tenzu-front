@@ -24,7 +24,7 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";

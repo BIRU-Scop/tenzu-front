@@ -19,7 +19,7 @@
  *
  */
 
-import { ProjectDetail, ProjectLinkNested, ProjectSummary } from "@tenzu/repository/project";
+import { ProjectDetail, ProjectLinkNested, ProjectSummary } from "@tenzu/repository/project/project.model";
 
 export function makeProjectLinkNested(overrides: Partial<ProjectLinkNested> = {}): ProjectLinkNested {
   return {

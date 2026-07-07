@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { MembershipBase } from "../membership";
-import { ProjectNested } from "../project";
+import { ProjectNested } from "../project/project.model";
 
 export type WorkspaceMembershipNested = MembershipBase & {
   workspaceId: string;

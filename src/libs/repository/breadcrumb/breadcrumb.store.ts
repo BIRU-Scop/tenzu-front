@@ -23,7 +23,7 @@ import { patchState, signalStore, withComputed, withMethods, withProps, withStat
 import { computed, inject } from "@angular/core";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryRepositoryService } from "@tenzu/repository/story";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 

@@ -28,7 +28,7 @@ import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { HttpErrorResponse } from "@angular/common/http";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { Validators } from "@angular/forms";
 import { getWorkflowUrl } from "@tenzu/utils/functions/urls";

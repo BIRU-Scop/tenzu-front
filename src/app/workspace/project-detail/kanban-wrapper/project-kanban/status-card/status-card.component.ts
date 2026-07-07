@@ -36,7 +36,7 @@ import { Validators } from "@angular/forms";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { StatusSummary } from "@tenzu/repository/status";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 
 @Component({

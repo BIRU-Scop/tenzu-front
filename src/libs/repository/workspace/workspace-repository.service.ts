@@ -28,7 +28,7 @@ import { BaseRepositoryService } from "../base/repository.service";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
-import { ProjectNested } from "@tenzu/repository/project";
+import { ProjectNested } from "@tenzu/repository/project/project.model";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";

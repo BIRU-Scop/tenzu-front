@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story";
 import { Router } from "@angular/router";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";

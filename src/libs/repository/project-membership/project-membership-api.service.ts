@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { ProjectSummary } from "../project";
+import { ProjectSummary } from "../project/project.model";
 import { ProjectMembership } from "./project-membership.model";
 import { Observable } from "rxjs";
 

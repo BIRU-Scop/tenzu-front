@@ -21,7 +21,8 @@
 
 import { Component, effect, inject, input, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";

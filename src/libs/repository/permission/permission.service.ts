@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { inject, Injectable, Injector, runInInjectionContext, Signal } from "@angular/core";
 import { WorkspaceRepositoryService } from "../workspace";
-import { ProjectRepositoryService } from "../project";
+import { ProjectRepositoryService } from "../project/project-repository.service";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { tap } from "rxjs";
 import { NavigationExtras, Router } from "@angular/router";

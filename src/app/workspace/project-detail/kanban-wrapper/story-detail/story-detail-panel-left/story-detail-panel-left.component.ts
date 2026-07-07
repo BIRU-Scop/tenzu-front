@@ -25,7 +25,7 @@ import { MatDivider } from "@angular/material/list";
 
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story";
 
 import { UserStore } from "@tenzu/repository/user";

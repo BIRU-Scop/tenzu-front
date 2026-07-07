@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ProjectLinkNested } from "@tenzu/repository/project";
+import { ProjectLinkNested } from "@tenzu/repository/project/project.model";
 import { Workflow } from "@tenzu/repository/workflow";
 import { StorySummary } from "@tenzu/repository/story";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";

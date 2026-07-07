@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,8 @@ import {
   ProjectPermissions,
 } from "@tenzu/repository/permission/permission.model";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/repository/project-roles";
 import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { DeleteRoleDialogComponent } from "./edit-role/delete-role-dialog/delete-role-dialog.component";

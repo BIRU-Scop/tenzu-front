@@ -27,7 +27,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 import { UserNested } from "../user";
-import { ProjectSummary } from "@tenzu/repository/project";
+import { ProjectSummary } from "@tenzu/repository/project/project.model";
 import { Workflow } from "@tenzu/repository/workflow";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 

@@ -25,7 +25,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { MemberPermission } from "@tenzu/repository/membership";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";

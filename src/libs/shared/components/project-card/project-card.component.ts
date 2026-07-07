@@ -34,7 +34,7 @@ import {
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectSummary } from "@tenzu/repository/project";
+import { ProjectSummary } from "@tenzu/repository/project/project.model";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({

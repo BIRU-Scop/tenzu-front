@@ -22,7 +22,7 @@
 import { StatusSummary } from "../status";
 import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 
 export type StoryNested = {
   ref: number;

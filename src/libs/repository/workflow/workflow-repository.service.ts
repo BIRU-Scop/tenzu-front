@@ -24,7 +24,7 @@ import { StatusSummary, StatusDetail } from "../status";
 import { lastValueFrom } from "rxjs";
 import { WorkflowApiService } from "./workflow-api.service";
 import { Workflow } from "./workflow.model";
-import { ProjectRepositoryService } from "../project";
+import { ProjectRepositoryService } from "../project/project-repository.service";
 import { WorkflowDetailStore } from "./workflow-entities.store";
 import { BaseRepositoryDetailService } from "../base/repository.service";
 import type * as WorkflowApiServiceType from "./workflow-api.type";

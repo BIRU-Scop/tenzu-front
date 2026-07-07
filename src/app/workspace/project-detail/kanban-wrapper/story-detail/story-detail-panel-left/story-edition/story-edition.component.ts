@@ -37,7 +37,7 @@ import { EditorCollaborationComponent } from "@tenzu/shared/components/editor";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { MatFormField, MatInput } from "@angular/material/input";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story";
 import { form, FormField, readonly, submit } from "@angular/forms/signals";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";

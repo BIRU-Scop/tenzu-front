@@ -20,7 +20,8 @@
  */
 
 import { AfterViewInit, Component, inject } from "@angular/core";
-import { ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
+import { ProjectSummary } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";

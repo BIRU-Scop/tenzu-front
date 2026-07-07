@@ -28,7 +28,7 @@ import { MatButton } from "@angular/material/button";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 
 @Component({
   selector: "app-delete-role-dialog",

@@ -28,7 +28,7 @@ import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-me
 import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { apply, disabled, form, FormField, required } from "@angular/forms/signals";

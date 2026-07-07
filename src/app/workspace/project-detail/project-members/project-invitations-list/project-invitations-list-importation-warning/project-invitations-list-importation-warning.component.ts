@@ -34,7 +34,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectSummary } from "@tenzu/repository/project";
+import { ProjectSummary } from "@tenzu/repository/project/project.model";
 
 @Component({
   selector: "app-project-invitations-list-importation-warning",

@@ -20,7 +20,7 @@
  */
 
 import { Pipe, PipeTransform } from "@angular/core";
-import { ProjectLinkNested } from "@tenzu/repository/project";
+import { ProjectLinkNested } from "@tenzu/repository/project/project.model";
 import { StoryNested } from "@tenzu/repository/story";
 
 @Pipe({

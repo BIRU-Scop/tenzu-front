@@ -27,7 +27,7 @@ import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.dire
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 
 @Component({
   selector: "app-list-roles",

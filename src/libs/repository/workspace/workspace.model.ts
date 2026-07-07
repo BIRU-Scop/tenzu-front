@@ -19,7 +19,7 @@
  *
  */
 
-import { ProjectNested } from "../project";
+import { ProjectNested } from "../project/project.model";
 import { UserRole } from "../membership";
 import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 

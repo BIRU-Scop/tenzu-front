@@ -35,7 +35,7 @@ import { MatOption } from "@angular/material/core";
 import { MatFormField, MatLabel, MatSelect } from "@angular/material/select";
 import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatIcon } from "@angular/material/icon";
 
 type DeleteMembershipDialogData = {
