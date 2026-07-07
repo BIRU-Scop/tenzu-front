@@ -24,7 +24,7 @@ import { ProjectKanbanSkeletonComponent } from "../project-kanban-skeleton/proje
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EnterNameDialogComponent } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { HttpErrorResponse } from "@angular/common/http";
 import { NotificationService } from "@tenzu/utils/services/notification";

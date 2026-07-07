@@ -20,7 +20,7 @@
  */
 
 import { AfterViewInit, Component, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";

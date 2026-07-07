@@ -20,7 +20,7 @@
  */
 
 import { Component, computed, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StatusCardComponent } from "./status-card/status-card.component";

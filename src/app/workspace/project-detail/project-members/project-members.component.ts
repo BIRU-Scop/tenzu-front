@@ -20,7 +20,7 @@
  */
 
 import { AfterViewInit, Component, computed, inject, inputBinding, signal } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";

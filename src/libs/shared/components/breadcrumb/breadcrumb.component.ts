@@ -23,7 +23,7 @@ import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { UpperCasePipe } from "@angular/common";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 
 @Component({
   selector: "app-breadcrumb",
