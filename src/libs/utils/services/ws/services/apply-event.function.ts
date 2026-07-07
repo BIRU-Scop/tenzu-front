@@ -67,7 +67,7 @@ import { StoryAttachment } from "@tenzu/repository/story-attachment/story-attach
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment/story-attachment-repository.service";
 import { WorkspaceDetail, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations/workspace-invitation-repository.service";
 import {
   WorkspaceMembership,
   WorkspaceMembershipNested,

@@ -25,7 +25,7 @@ import { of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { WorkspaceInvitationsApiService } from "@tenzu/repository/workspace-invitations/workspace-invitation-api-service";
-import { PublicWorkspacePendingInvitation } from "@tenzu/repository/workspace-invitations";
+import { PublicWorkspacePendingInvitation } from "@tenzu/repository/workspace-invitations/workspace-invitation.model";
 
 export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
