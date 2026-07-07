@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { Workflow, workflowSchema, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { StatusSummary } from "../status/status.model";
+import { StatusSummary, statusSummarySchema } from "../status/status.model";
 import { AbstractApiServiceDetail } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/schema-utils";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
@@ -67,8 +67,8 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
 
   createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">): Observable<StatusSummary> {
     return this.http
-      .post<BaseDataModel<StatusSummary>>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus)
+      .pipe(map((dataObject) => parseWithDebug(statusSummarySchema, dataObject.data)));
   }
 
   deleteStatus(params: { statusId: string; moveToStatus?: string }): Observable<void> {
@@ -79,10 +79,10 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
 
   editStatus(status: Pick<StatusSummary, "name" | "id">): Observable<StatusSummary> {
     return this.http
-      .patch<BaseDataModel<StatusSummary>>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
+      .patch<BaseDataModel<unknown>>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
         name: status.name,
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => parseWithDebug(statusSummarySchema, dataObject.data)));
   }
 
   reorderStatus(workflowId: Workflow["id"], payload: ReorderWorkflowStatusesPayload): Observable<void> {

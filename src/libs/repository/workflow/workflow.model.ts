@@ -20,24 +20,20 @@
  */
 
 import { z } from "zod/v4";
-import type { StatusSummary } from "../status/status.model";
+import { statusSummarySchema } from "../status/status.model";
+import { workflowNestedSchema } from "./workflow-nested.model";
+
+export { workflowNestedSchema } from "./workflow-nested.model";
+export type { WorkflowNested } from "./workflow-nested.model";
 
 export enum Step {
   LEFT = -1,
   RIGHT = 1,
 }
 
-export const workflowNestedSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  slug: z.string(),
-  projectId: z.string(),
-});
-export type WorkflowNested = z.infer<typeof workflowNestedSchema>;
-
 export const workflowSchema = workflowNestedSchema.extend({
   order: z.number(),
-  statuses: z.array(z.custom<StatusSummary>()),
+  statuses: z.array(statusSummarySchema),
 });
 export type Workflow = z.infer<typeof workflowSchema>;
 

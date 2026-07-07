@@ -28,6 +28,7 @@ import { WorkflowApiService } from "./workflow-api.service";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { makeWorkflow } from "./workflow.factories";
+import { makeStatusSummary } from "../status/status.factories";
 
 describe(WorkflowApiService.name, () => {
   let service: WorkflowApiService;
@@ -72,5 +73,14 @@ describe(WorkflowApiService.name, () => {
     httpMock.expectOne(`${BASE}/projects/p-1/workflows/by_slug/my-workflow`).flush({ data: workflow });
 
     expect(await promise).toEqual(workflow);
+  });
+
+  it("createStatus parses the created status", async () => {
+    const status = makeStatusSummary({ name: "Todo" });
+    const promise = lastValueFrom(service.createStatus("wf-1", { name: "Todo" }));
+
+    httpMock.expectOne(`${BASE}/workflows/wf-1/statuses`).flush({ data: status });
+
+    expect(await promise).toEqual(status);
   });
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,18 +20,11 @@
  */
 
 import { z } from "zod/v4";
-import { optionalNullable } from "../base/schema-utils";
-import { workflowNestedSchema } from "../workflow/workflow-nested.model";
 
-export const statusSummarySchema = z.object({
+export const workflowNestedSchema = z.object({
   id: z.string(),
   name: z.string(),
-  color: z.number(),
-  order: z.number().apply(optionalNullable),
+  slug: z.string(),
+  projectId: z.string(),
 });
-export type StatusSummary = z.infer<typeof statusSummarySchema>;
-
-export const statusDetailSchema = statusSummarySchema.extend({
-  workflow: workflowNestedSchema,
-});
-export type StatusDetail = z.infer<typeof statusDetailSchema>;
+export type WorkflowNested = z.infer<typeof workflowNestedSchema>;
