@@ -24,7 +24,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MembershipBase, Role } from "@tenzu/repository/membership/membership.model";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";

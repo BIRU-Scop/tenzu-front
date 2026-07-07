@@ -28,7 +28,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { MatIcon } from "@angular/material/icon";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";

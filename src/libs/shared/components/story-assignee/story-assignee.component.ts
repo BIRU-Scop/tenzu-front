@@ -27,7 +27,7 @@ import { MatIcon } from "@angular/material/icon";
 import { AssignDialogComponent } from "@tenzu/shared/components/assign-dialog/assign-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { getAssignees, StorySummary, StoryRepositoryService } from "@tenzu/repository/story";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 

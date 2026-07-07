@@ -32,7 +32,7 @@ import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/reposit
 import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { DeleteRoleDialogComponent } from "./edit-role/delete-role-dialog/delete-role-dialog.component";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 
 export type PermissionValuesFor<K extends GroupPermissionKey> =
   | (typeof AllProjectPermissionsByTheme)[K]["permissions"][number]

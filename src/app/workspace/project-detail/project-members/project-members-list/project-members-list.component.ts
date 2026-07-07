@@ -22,7 +22,8 @@
 import { Component, inject, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
-import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembership } from "@tenzu/repository/project-membership/project-membership.model";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { MatTableModule } from "@angular/material/table";
 import { UserNested, UserStore } from "@tenzu/repository/user";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";

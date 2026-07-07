@@ -72,7 +72,8 @@ import {
   WorkspaceMembershipNested,
   WorkspaceMembershipRepositoryService,
 } from "@tenzu/repository/workspace-membership";
-import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembership } from "@tenzu/repository/project-membership/project-membership.model";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
