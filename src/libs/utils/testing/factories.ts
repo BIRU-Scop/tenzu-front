@@ -19,7 +19,7 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { User, UserNested } from "@tenzu/repository/user";
 import { ProjectDetail, ProjectLinkNested, ProjectSummary } from "@tenzu/repository/project";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story";
@@ -32,6 +32,14 @@ export function makeUserNested(overrides: Partial<UserNested> = {}): UserNested 
     fullName: "John Doe",
     color: 1,
     email: "john.doe@example.com",
+    ...overrides,
+  };
+}
+
+export function makeUser(overrides: Partial<User> = {}): User {
+  return {
+    ...makeUserNested(),
+    lang: "en",
     ...overrides,
   };
 }

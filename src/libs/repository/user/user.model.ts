@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,41 +19,46 @@
  *
  */
 
-import { InvitationTokens, Tokens } from "../auth";
+import { z } from "zod/v4";
+import { InvitationTokens, tokensSchema } from "../auth";
 import { WorkspaceNested } from "../workspace";
 
 import { ProjectLinkNested, ProjectNested } from "../project";
 import { ProjectInvitationNested } from "../project-invitations";
 import { WorkspaceInvitationNested } from "../workspace-invitations";
 
-export type UserNested = {
-  id: string;
-  username: string;
-  fullName: string;
-  color: number;
-  email: string;
-};
+export const userNestedSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  fullName: z.string(),
+  color: z.number(),
+  email: z.string(),
+});
+export type UserNested = z.infer<typeof userNestedSchema>;
 
-export type User = UserNested & {
-  lang: string;
-};
+export const userSchema = userNestedSchema.extend({
+  lang: z.string(),
+});
+export type User = z.infer<typeof userSchema>;
 
-export type VerificationInfo = {
-  auth: Tokens;
-  workspaceInvitation: WorkspaceInvitationNested;
-  projectInvitationToken: ProjectInvitationNested;
-};
+export const verificationInfoSchema = z.object({
+  auth: tokensSchema,
+  workspaceInvitation: z.custom<WorkspaceInvitationNested>(),
+  projectInvitationToken: z.custom<ProjectInvitationNested>(),
+});
+export type VerificationInfo = z.infer<typeof verificationInfoSchema>;
 
 type _WorkspaceForDeleteWithProjectsNested = WorkspaceNested & {
   projects: ProjectLinkNested[];
 };
 
-export type UserDeleteInfo = {
-  onlyOwnerCollectiveWorkspaces: WorkspaceNested[];
-  onlyOwnerCollectiveProjects: ProjectNested[];
-  onlyMemberWorkspaces: _WorkspaceForDeleteWithProjectsNested[];
-  onlyMemberProjects: ProjectNested[];
-};
+export const userDeleteInfoSchema = z.object({
+  onlyOwnerCollectiveWorkspaces: z.array(z.custom<WorkspaceNested>()),
+  onlyOwnerCollectiveProjects: z.array(z.custom<ProjectNested>()),
+  onlyMemberWorkspaces: z.array(z.custom<_WorkspaceForDeleteWithProjectsNested>()),
+  onlyMemberProjects: z.array(z.custom<ProjectNested>()),
+});
+export type UserDeleteInfo = z.infer<typeof userDeleteInfoSchema>;
 
 export type SendVerifyUserValidator = Pick<User, "email"> & InvitationTokens;
 

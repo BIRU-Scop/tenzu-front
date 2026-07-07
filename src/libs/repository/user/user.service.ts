@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,19 +20,24 @@
  */
 
 import { inject, Injectable } from "@angular/core";
+import { z } from "zod/v4";
 import {
   CreateUserPayload,
   SendVerifyUserValidator,
   UpdateUserPayload,
   User,
+  userSchema,
   UserDeleteInfo,
+  userDeleteInfoSchema,
   VerificationInfo,
+  verificationInfoSchema,
 } from "./user.model";
 import { HttpClient } from "@angular/common/http";
-import { Tokens } from "../auth";
+import { Tokens, tokensSchema } from "../auth";
 import { Observable, tap } from "rxjs";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { parseWithDebug } from "@tenzu/repository/base/schema-utils";
 import { map } from "rxjs/operators";
 import { NotificationService } from "@tenzu/utils/services/notification";
 
@@ -48,33 +53,47 @@ export class UserService {
   usersUrl = `${this.endpoint}/users`;
 
   getMyUser(): Observable<User> {
-    return this.http.get<BaseDataModel<User>>(`${this.myUserUrl}`).pipe(map((dataObject) => dataObject.data));
+    return this.http
+      .get<BaseDataModel<unknown>>(`${this.myUserUrl}`)
+      .pipe(map((dataObject) => parseWithDebug(userSchema, dataObject.data)));
   }
 
   patchMyUser(item: UpdateUserPayload): Observable<User> {
-    return this.http.put<BaseDataModel<User>>(`${this.myUserUrl}`, item).pipe(map((dataObject) => dataObject.data));
+    return this.http
+      .put<BaseDataModel<unknown>>(`${this.myUserUrl}`, item)
+      .pipe(map((dataObject) => parseWithDebug(userSchema, dataObject.data)));
   }
 
   create(item: CreateUserPayload): Observable<User> {
-    return this.http.post<BaseDataModel<User>>(`${this.usersUrl}`, item).pipe(map((dataObject) => dataObject.data));
+    return this.http
+      .post<BaseDataModel<unknown>>(`${this.usersUrl}`, item)
+      .pipe(map((dataObject) => parseWithDebug(userSchema, dataObject.data)));
   }
 
   requestResetPassword(email: string): Observable<{ email: string }> {
-    return this.http.post<{ email: string }>(`${this.usersUrl}/reset-password`, {
-      email,
-    });
+    return this.http
+      .post<unknown>(`${this.usersUrl}/reset-password`, {
+        email,
+      })
+      .pipe(map((data) => parseWithDebug(z.object({ email: z.string() }), data)));
   }
 
   resetPassword(token: string, password: string): Observable<Tokens> {
-    return this.http.post<Tokens>(`${this.usersUrl}/reset-password/${token}`, { password });
+    return this.http
+      .post<unknown>(`${this.usersUrl}/reset-password/${token}`, { password })
+      .pipe(map((data) => parseWithDebug(tokensSchema, data)));
   }
 
   verifyResetTokenPassword(token: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.usersUrl}/reset-password/${token}/verify`);
+    return this.http
+      .get<unknown>(`${this.usersUrl}/reset-password/${token}/verify`)
+      .pipe(map((data) => parseWithDebug(z.boolean(), data)));
   }
 
   verifyUser(token: string): Observable<VerificationInfo> {
-    return this.http.post<VerificationInfo>(`${this.usersUrl}/verify`, { token: token });
+    return this.http
+      .post<unknown>(`${this.usersUrl}/verify`, { token: token })
+      .pipe(map((data) => parseWithDebug(verificationInfoSchema, data)));
   }
 
   resentVerification(item: SendVerifyUserValidator): Observable<null> {
@@ -92,7 +111,9 @@ export class UserService {
   }
 
   getDeleteInfo(): Observable<UserDeleteInfo> {
-    return this.http.get<UserDeleteInfo>(`${this.myUserUrl}/delete-info`);
+    return this.http
+      .get<unknown>(`${this.myUserUrl}/delete-info`)
+      .pipe(map((data) => parseWithDebug(userDeleteInfoSchema, data)));
   }
 
   deleteUser(): Observable<void> {
