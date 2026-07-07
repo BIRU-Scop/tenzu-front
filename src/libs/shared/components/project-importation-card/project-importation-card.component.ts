@@ -37,7 +37,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { AsyncPipe } from "@angular/common";

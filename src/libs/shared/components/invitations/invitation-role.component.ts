@@ -20,7 +20,8 @@
  */
 
 import { Component, computed, effect, inject, input, signal } from "@angular/core";
-import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership/invitation.model";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";

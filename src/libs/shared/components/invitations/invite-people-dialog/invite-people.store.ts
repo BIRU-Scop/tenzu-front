@@ -21,7 +21,8 @@
 
 import { computed, signal } from "@angular/core";
 import { patchState, signalStore, withComputed, withMethods, withProps, withState } from "@ngrx/signals";
-import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership/invitation.model";
 import { UserNested } from "@tenzu/repository/user";
 import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation/importation.model";
 import { PeopleEmailRow } from "./invite-people-dialog.type";

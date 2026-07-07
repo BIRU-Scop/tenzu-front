@@ -20,7 +20,7 @@
  */
 
 import { ProjectSummary } from "../project/project.model";
-import { Role } from "../membership";
+import { Role } from "../membership/membership.model";
 
 export type ProjectRoleSummary = Role & {
   projectId: ProjectSummary["id"];

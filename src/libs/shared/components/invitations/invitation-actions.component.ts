@@ -21,7 +21,7 @@
 
 import { Component, computed, inject, input, output } from "@angular/core";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
-import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership/invitation.model";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";

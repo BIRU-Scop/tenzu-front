@@ -28,7 +28,7 @@ import { UserNested, UserStore } from "@tenzu/repository/user";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { MembershipActionsComponent } from "@tenzu/shared/components/memberships/membership-actions.component";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";

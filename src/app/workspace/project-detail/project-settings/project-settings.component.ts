@@ -29,7 +29,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatIcon } from "@angular/material/icon";
-import { MemberPermission } from "@tenzu/repository/membership";
+import { MemberPermission } from "@tenzu/repository/membership/membership.model";
 
 @Component({
   selector: "app-project-settings",

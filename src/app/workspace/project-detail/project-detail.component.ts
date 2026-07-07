@@ -26,7 +26,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project/project-repo
 import { SideNavStore } from "@tenzu/repository/sidenav";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
-import { MemberPermission } from "@tenzu/repository/membership";
+import { MemberPermission } from "@tenzu/repository/membership/membership.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 import { combineLatest } from "rxjs";

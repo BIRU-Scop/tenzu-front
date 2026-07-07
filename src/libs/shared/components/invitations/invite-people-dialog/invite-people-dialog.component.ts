@@ -23,7 +23,8 @@ import { Component, effect, inject, input, untracked } from "@angular/core";
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 
-import { InvitationBase, Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { InvitationBase } from "@tenzu/repository/membership/invitation.model";
 import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,

@@ -19,7 +19,7 @@
  *
  */
 
-import { MembershipBase } from "../membership";
+import { MembershipBase } from "../membership/membership.model";
 import { ProjectNested } from "../project/project.model";
 
 export type WorkspaceMembershipNested = MembershipBase & {

@@ -32,7 +32,7 @@ import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-me
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";

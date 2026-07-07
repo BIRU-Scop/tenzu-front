@@ -21,7 +21,7 @@
 
 import { Component, inject, input } from "@angular/core";
 import { ProjectRoleSummary } from "@tenzu/repository/project-roles";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { ReactiveFormsModule } from "@angular/forms";

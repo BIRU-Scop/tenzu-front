@@ -27,7 +27,7 @@ import { tap } from "rxjs";
 import { NavigationExtras, Router } from "@angular/router";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { EntityId } from "@ngrx/signals/entities";
-import { UserRole, Permission, MemberPermission } from "@tenzu/repository/membership";
+import { UserRole, Permission, MemberPermission } from "@tenzu/repository/membership/membership.model";
 
 type EntityRole = UserRole & {
   id: EntityId;

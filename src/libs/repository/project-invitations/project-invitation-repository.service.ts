@@ -24,7 +24,7 @@ import { lastValueFrom } from "rxjs";
 import { ProjectInvitationsEntitiesSummaryStore } from "./project-invitations-entities.store";
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
 import { ProjectDetail, ProjectNested } from "../project/project.model";
-import { InvitationsPayload } from "../membership";
+import { InvitationsPayload } from "../membership/invitation.model";
 import { map } from "rxjs/operators";
 import { ProjectInvitation } from "./project-invitation.model";
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";

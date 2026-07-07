@@ -27,7 +27,7 @@ import { MatTableModule } from "@angular/material/table";
 import { UserNested, UserStore } from "@tenzu/repository/user";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
 import { WorkspaceDetail, WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { LowerCasePipe } from "@angular/common";
 import { MembershipActionsComponent } from "@tenzu/shared/components/memberships/membership-actions.component";

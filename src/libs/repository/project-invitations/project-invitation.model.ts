@@ -19,7 +19,7 @@
  *
  */
 
-import { InvitationBase, PublicPendingInvitationBase } from "../membership";
+import { InvitationBase, PublicPendingInvitationBase } from "../membership/invitation.model";
 import { ProjectLinkNested } from "../project/project.model";
 
 export type PublicProjectPendingInvitation = PublicPendingInvitationBase & {

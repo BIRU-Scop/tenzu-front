@@ -26,7 +26,7 @@ import { CreateProjectImportationPayload, ProjectImportation, ProjectImportation
 import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/project-importation.store";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
-import { InvitationsPayload } from "@tenzu/repository/membership";
+import { InvitationsPayload } from "@tenzu/repository/membership/invitation.model";
 import { map } from "rxjs/operators";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { NotificationService } from "@tenzu/utils/services/notification";

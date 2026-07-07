@@ -22,7 +22,7 @@
 import { disabled, schema } from "@angular/forms/signals";
 import { computed, inject } from "@angular/core";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { ItemType } from "@tenzu/repository/base/misc.model";
 

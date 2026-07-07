@@ -21,7 +21,8 @@
 
 import { Signal } from "@angular/core";
 import { UserNested } from "@tenzu/repository/user";
-import { InvitationBase, Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { InvitationBase } from "@tenzu/repository/membership/invitation.model";
 import { ItemType } from "@tenzu/repository/base/misc.model";
 import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation/importation.model";
 

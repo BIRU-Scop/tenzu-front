@@ -29,7 +29,7 @@ import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";

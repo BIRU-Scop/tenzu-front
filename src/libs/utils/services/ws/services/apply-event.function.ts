@@ -73,7 +73,7 @@ import {
   WorkspaceMembershipRepositoryService,
 } from "@tenzu/repository/workspace-membership";
 import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";

@@ -29,7 +29,7 @@ import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-
 import { FieldTree, FormField } from "@angular/forms/signals";
 import { PeopleEmailRow } from "../invite-people-dialog.type";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Pipe({

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { Role } from "../membership";
+import { Role } from "../membership/membership.model";
 import { WorkspaceSummary } from "../workspace";
 
 export type WorkspaceRoleSummary = Role & {

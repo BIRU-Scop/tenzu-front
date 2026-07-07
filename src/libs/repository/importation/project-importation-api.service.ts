@@ -24,7 +24,7 @@ import { AbstractApiService } from "../base/abstract-api-services";
 import { CreateProjectImportationPayload, InvitedProjectImportation, ProjectImportation } from "./importation.model";
 import { Observable } from "rxjs";
 import type * as ProjectImportationApiServiceType from "./importation-api.type";
-import { InvitationsPayload } from "@tenzu/repository/membership";
+import { InvitationsPayload } from "@tenzu/repository/membership/invitation.model";
 
 @Injectable({
   providedIn: "root",

@@ -21,13 +21,12 @@
 
 import { describe, expect, it } from "vitest";
 
+import { membershipBaseSchema, roleSchema } from "@tenzu/repository/membership/membership.model";
 import {
   createInvitationsSchema,
   invitationBaseSchema,
-  membershipBaseSchema,
   publicPendingInvitationBaseSchema,
-  roleSchema,
-} from "@tenzu/repository/membership";
+} from "@tenzu/repository/membership/invitation.model";
 import {
   makeCreateInvitations,
   makeInvitationBase,

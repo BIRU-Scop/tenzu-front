@@ -32,7 +32,7 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";

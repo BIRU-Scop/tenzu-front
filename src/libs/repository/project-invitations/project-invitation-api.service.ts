@@ -24,7 +24,7 @@ import { AbstractApiService } from "../base/abstract-api-services";
 import { ProjectDetail, ProjectSummary } from "../project/project.model";
 import { ProjectInvitation, PublicProjectPendingInvitation } from "./project-invitation.model";
 import { Observable } from "rxjs";
-import { CreateInvitations, InvitationsPayload } from "../membership";
+import { CreateInvitations, InvitationsPayload } from "../membership/invitation.model";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";
 

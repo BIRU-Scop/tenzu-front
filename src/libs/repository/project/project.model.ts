@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod/v4";
-import { roleSchema } from "../membership";
+import { roleSchema } from "../membership/membership.model";
 import type { FileValue } from "@tenzu/repository/base/misc.model";
 import type { ProjectImportationNested } from "@tenzu/repository/importation/importation.model";
 import type { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
