@@ -30,7 +30,7 @@ import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
 import { Role } from "@tenzu/repository/membership/membership.model";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { MembershipActionsComponent } from "@tenzu/shared/components/memberships/membership-actions.component";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { PermissionsBase } from "@tenzu/repository/permission/permission.model";

@@ -20,7 +20,7 @@
  */
 
 import { Component, inject, input } from "@angular/core";
-import { ProjectRoleSummary } from "@tenzu/repository/project-roles";
+import { ProjectRoleSummary } from "@tenzu/repository/project-roles/project-roles.model";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";

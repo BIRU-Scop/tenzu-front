@@ -20,7 +20,8 @@
  */
 
 import { Component, computed, inject } from "@angular/core";
-import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/repository/project-roles";
+import { ProjectRoleSummary } from "@tenzu/repository/project-roles/project-roles.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { TypedDialog } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";

@@ -30,7 +30,7 @@ import { BaseRepositoryService } from "../base/repository.service";
 import { QueryParams } from "../base/utils";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story";
 import { lastValueFrom } from "rxjs";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";

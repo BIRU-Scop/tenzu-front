@@ -27,7 +27,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project/project-repo
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
-import { SideNavStore } from "@tenzu/repository/sidenav";
+import { SideNavStore } from "@tenzu/repository/sidenav/sideNavStore";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";

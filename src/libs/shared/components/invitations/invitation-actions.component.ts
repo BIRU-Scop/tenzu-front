@@ -27,7 +27,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { LowerCasePipe } from "@angular/common";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";

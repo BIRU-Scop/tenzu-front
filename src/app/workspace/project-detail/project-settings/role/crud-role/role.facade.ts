@@ -28,7 +28,8 @@ import {
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/repository/project-roles";
+import { ProjectRoleSummary } from "@tenzu/repository/project-roles/project-roles.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { DeleteRoleDialogComponent } from "./edit-role/delete-role-dialog/delete-role-dialog.component";
 import { ActivatedRoute, Router } from "@angular/router";

@@ -23,7 +23,7 @@ import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/an
 import { Component, inject, OnInit } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav/primary-side-nav.component";
-import { SideNavStore } from "@tenzu/repository/sidenav";
+import { SideNavStore } from "@tenzu/repository/sidenav/sideNavStore";
 import { withTransloco } from "../storybook-providers";
 
 @Component({

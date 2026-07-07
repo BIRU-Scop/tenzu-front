@@ -35,7 +35,7 @@ import { MatOption } from "@angular/material/core";
 import { MatFormField, MatLabel, MatSelect } from "@angular/material/select";
 import { ProjectMembership } from "@tenzu/repository/project-membership/project-membership.model";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatIcon } from "@angular/material/icon";
 

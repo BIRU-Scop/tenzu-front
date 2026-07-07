@@ -39,7 +39,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { AsyncPipe } from "@angular/common";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 import { RouterLink } from "@angular/router";

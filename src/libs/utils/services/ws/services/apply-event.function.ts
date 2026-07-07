@@ -77,7 +77,8 @@ import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-me
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
-import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleDetail } from "@tenzu/repository/project-roles/project-roles.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
 import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";

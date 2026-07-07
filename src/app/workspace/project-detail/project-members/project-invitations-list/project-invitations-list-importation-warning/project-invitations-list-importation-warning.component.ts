@@ -32,7 +32,7 @@ import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitation
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectSummary } from "@tenzu/repository/project/project.model";
 
