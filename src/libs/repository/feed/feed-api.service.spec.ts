@@ -25,7 +25,7 @@ import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 import { FeedApiService } from "./feed-api.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { makeFeedItem } from "@tenzu/utils/testing/factories";
+import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
 import { provideConfigAppTesting, testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("FeedApiService", () => {

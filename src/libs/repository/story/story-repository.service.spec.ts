@@ -27,7 +27,8 @@ import { StoryRepositoryService } from "./story-repository.service";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
 import { StatusSummary } from "../status";
-import { makeStoryAssign, makeStoryDetail, makeStorySummary, makeUserNested } from "@tenzu/utils/testing/factories";
+import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "@tenzu/repository/story/story.factories";
+import { makeUserNested } from "@tenzu/repository/user/user.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 
 /**

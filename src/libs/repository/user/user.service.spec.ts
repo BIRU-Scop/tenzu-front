@@ -27,7 +27,7 @@ import { lastValueFrom } from "rxjs";
 import { UserService } from "./user.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
-import { makeUser } from "@tenzu/utils/testing/factories";
+import { makeUser } from "@tenzu/repository/user/user.factories";
 
 describe(UserService.name, () => {
   let service: UserService;

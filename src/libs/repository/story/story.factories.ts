@@ -19,68 +19,8 @@
  *
  */
 
-import { User, UserNested } from "@tenzu/repository/user";
-import { ProjectDetail, ProjectLinkNested, ProjectSummary } from "@tenzu/repository/project";
-import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story";
-import { FeedItem } from "@tenzu/repository/feed";
-
-export function makeUserNested(overrides: Partial<UserNested> = {}): UserNested {
-  return {
-    id: "user-1",
-    username: "jdoe",
-    fullName: "John Doe",
-    color: 1,
-    email: "john.doe@example.com",
-    ...overrides,
-  };
-}
-
-export function makeUser(overrides: Partial<User> = {}): User {
-  return {
-    ...makeUserNested(),
-    lang: "en",
-    ...overrides,
-  };
-}
-
-export function makeWorkspaceLinkNested(overrides: Partial<WorkspaceLinkNested> = {}): WorkspaceLinkNested {
-  return {
-    id: "workspace-1",
-    name: "My Workspace",
-    slug: "my-workspace",
-    ...overrides,
-  };
-}
-
-export function makeProjectLinkNested(overrides: Partial<ProjectLinkNested> = {}): ProjectLinkNested {
-  return {
-    id: "project-1",
-    workspaceId: "workspace-1",
-    name: "My Project",
-    slug: "my-project",
-    landingPage: "kanban",
-    ...overrides,
-  };
-}
-
-export function makeProjectSummary(overrides: Partial<ProjectSummary> = {}): ProjectSummary {
-  return {
-    ...makeProjectLinkNested(),
-    description: "My project description",
-    color: 1,
-    userIsInvited: false,
-    ...overrides,
-  };
-}
-
-export function makeProjectDetail(overrides: Partial<ProjectDetail> = {}): ProjectDetail {
-  return {
-    ...makeProjectSummary(),
-    workflows: [],
-    ...overrides,
-  };
-}
+import { makeUserNested } from "@tenzu/repository/user/user.factories";
 
 export function makeStoryNested(overrides: Partial<StoryNested> = {}): StoryNested {
   return {
@@ -131,19 +71,4 @@ export function makeStoryAssign(overrides: Partial<StoryAssign> = {}): StoryAssi
     story: { ref: 1, title: "My story" },
     ...overrides,
   };
-}
-
-type FeedItemFields = { [K in keyof FeedItem]: FeedItem[K] };
-
-export function makeFeedItem(overrides: Partial<FeedItemFields> = {}): FeedItem {
-  return {
-    id: "feed-item-1",
-    type: "release",
-    title: "New features",
-    content: "## What's new\n\nLots of improvements.",
-    actionTitle: "See the release",
-    actionUrl: "https://example.com/release",
-    publicationDate: "2026-01-01T00:00:00.000Z",
-    ...overrides,
-  } as FeedItem;
 }

@@ -24,7 +24,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslocoTestingModule } from "@jsverse/transloco";
 import { FeedItemCardComponent } from "./feed-item-card.component";
 import { FeedItem } from "@tenzu/repository/feed";
-import { makeFeedItem } from "@tenzu/utils/testing/factories";
+import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
 import { HarnessLoader } from "@angular/cdk/testing";
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed";
 import { MatButtonHarness } from "@angular/material/button/testing";

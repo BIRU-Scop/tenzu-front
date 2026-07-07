@@ -28,7 +28,7 @@ import { ProjectApiService } from "./project-api.service";
 import { projectDetailSchema, projectSummarySchema } from "./project.model";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
-import { makeProjectDetail, makeProjectSummary } from "@tenzu/utils/testing/factories";
+import { makeProjectDetail, makeProjectSummary } from "@tenzu/repository/project/project.factories";
 
 describe(ProjectApiService.name, () => {
   let service: ProjectApiService;

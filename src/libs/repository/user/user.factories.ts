@@ -19,15 +19,23 @@
  *
  */
 
-import { describe, expect, it } from "vitest";
-import { WorkspaceUrlPipe } from "./workspace-url.pipe";
-import { makeWorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.factories";
+import { User, UserNested } from "@tenzu/repository/user";
 
-describe("WorkspaceUrlPipe", () => {
-  const pipe = new WorkspaceUrlPipe();
+export function makeUserNested(overrides: Partial<UserNested> = {}): UserNested {
+  return {
+    id: "user-1",
+    username: "jdoe",
+    fullName: "John Doe",
+    color: 1,
+    email: "john.doe@example.com",
+    ...overrides,
+  };
+}
 
-  it("builds the workspace url", () => {
-    const workspace = makeWorkspaceLinkNested({ id: "w1" });
-    expect(pipe.transform({ workspace })).toBe("/workspace/w1");
-  });
-});
+export function makeUser(overrides: Partial<User> = {}): User {
+  return {
+    ...makeUserNested(),
+    lang: "en",
+    ...overrides,
+  };
+}

@@ -24,7 +24,8 @@ import { TestBed } from "@angular/core/testing";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
 import { StatusSummary } from "../status";
-import { makeStoryAssign, makeStoryDetail, makeStorySummary, makeUserNested } from "@tenzu/utils/testing/factories";
+import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "@tenzu/repository/story/story.factories";
+import { makeUserNested } from "@tenzu/repository/user/user.factories";
 
 describe("StoryEntitiesSummaryStore", () => {
   let store: InstanceType<typeof StoryEntitiesSummaryStore>;

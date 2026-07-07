@@ -24,7 +24,7 @@ import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
 import { getAssignees } from "./utils";
-import { makeUserNested } from "@tenzu/utils/testing/factories";
+import { makeUserNested } from "@tenzu/repository/user/user.factories";
 
 describe("getAssignees", () => {
   const userA = makeUserNested({ id: "user-a", fullName: "Alice" });

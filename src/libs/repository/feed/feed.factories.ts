@@ -19,15 +19,19 @@
  *
  */
 
-import { describe, expect, it } from "vitest";
-import { WorkspaceUrlPipe } from "./workspace-url.pipe";
-import { makeWorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.factories";
+import { FeedItem } from "@tenzu/repository/feed";
 
-describe("WorkspaceUrlPipe", () => {
-  const pipe = new WorkspaceUrlPipe();
+type FeedItemFields = { [K in keyof FeedItem]: FeedItem[K] };
 
-  it("builds the workspace url", () => {
-    const workspace = makeWorkspaceLinkNested({ id: "w1" });
-    expect(pipe.transform({ workspace })).toBe("/workspace/w1");
-  });
-});
+export function makeFeedItem(overrides: Partial<FeedItemFields> = {}): FeedItem {
+  return {
+    id: "feed-item-1",
+    type: "release",
+    title: "New features",
+    content: "## What's new\n\nLots of improvements.",
+    actionTitle: "See the release",
+    actionUrl: "https://example.com/release",
+    publicationDate: "2026-01-01T00:00:00.000Z",
+    ...overrides,
+  } as FeedItem;
+}

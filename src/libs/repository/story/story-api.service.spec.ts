@@ -36,7 +36,7 @@ import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 import { StoryApiService } from "./story-api.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { makeStorySummary } from "@tenzu/utils/testing/factories";
+import { makeStorySummary } from "@tenzu/repository/story/story.factories";
 import { provideConfigAppTesting, testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("StoryApiService", () => {
