@@ -39,7 +39,7 @@ import {
   WorkspaceMembershipDeleteInfo,
 } from "@tenzu/repository/workspace-membership/workspace-membership.model";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { LowerCasePipe } from "@angular/common";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";

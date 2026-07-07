@@ -31,7 +31,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { StoryDetailFacade } from "../story-detail.facade";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { StoryDisplayMode } from "../../kanban-wrapper.store";
 import { KanbanWrapperService } from "../../kanban-wrapper.service";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";

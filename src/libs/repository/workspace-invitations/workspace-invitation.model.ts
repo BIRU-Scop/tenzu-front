@@ -20,7 +20,7 @@
  */
 
 import { InvitationBase, PublicPendingInvitationBase } from "../membership/invitation.model";
-import { WorkspaceLinkNested } from "../workspace";
+import { WorkspaceLinkNested } from "../workspace/workspace.model";
 
 export type PublicWorkspacePendingInvitation = PublicPendingInvitationBase & {
   workspace: WorkspaceLinkNested;

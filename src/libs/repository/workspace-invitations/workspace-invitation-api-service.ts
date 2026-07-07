@@ -23,7 +23,7 @@ import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { PublicWorkspacePendingInvitation, WorkspaceInvitation } from "./workspace-invitation.model";
 import { Observable } from "rxjs";
-import { WorkspaceSummary } from "../workspace";
+import { WorkspaceSummary } from "../workspace/workspace.model";
 import { CreateInvitations, InvitationsPayload } from "../membership/invitation.model";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";

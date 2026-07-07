@@ -23,7 +23,7 @@ import { Component, computed, inject, input, inputBinding, signal } from "@angul
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatIcon } from "@angular/material/icon";

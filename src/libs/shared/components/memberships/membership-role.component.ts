@@ -27,7 +27,7 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
-import { WorkspaceDetail } from "@tenzu/repository/workspace";
+import { WorkspaceDetail } from "@tenzu/repository/workspace/workspace.model";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";

@@ -19,7 +19,7 @@
  *
  */
 
-import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.model";
 
 export function makeWorkspaceLinkNested(overrides: Partial<WorkspaceLinkNested> = {}): WorkspaceLinkNested {
   return {

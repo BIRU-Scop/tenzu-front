@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable, Injector, runInInjectionContext, Signal } from "@angular/core";
-import { WorkspaceRepositoryService } from "../workspace";
+import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
 import { ProjectRepositoryService } from "../project/project-repository.service";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { tap } from "rxjs";

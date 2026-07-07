@@ -27,7 +27,7 @@ import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { Workflow } from "@tenzu/repository/workflow/workflow.model";
 
 /**

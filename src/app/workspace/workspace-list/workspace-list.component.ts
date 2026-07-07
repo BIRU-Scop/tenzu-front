@@ -39,7 +39,7 @@ import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";

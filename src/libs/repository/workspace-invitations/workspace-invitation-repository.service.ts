@@ -23,7 +23,7 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceInvitationEntitiesStore } from "./workspace-invitation.store";
 import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-service";
-import { WorkspaceDetail, WorkspaceSummary } from "../workspace";
+import { WorkspaceDetail, WorkspaceSummary } from "../workspace/workspace.model";
 import { InvitationsPayload } from "../membership/invitation.model";
 import { map } from "rxjs/operators";
 import { WorkspaceInvitation } from "./workspace-invitation.model";

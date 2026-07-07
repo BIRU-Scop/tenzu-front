@@ -20,7 +20,7 @@
  */
 
 import { Role } from "../membership/membership.model";
-import { WorkspaceSummary } from "../workspace";
+import { WorkspaceSummary } from "../workspace/workspace.model";
 
 export type WorkspaceRoleSummary = Role & {
   workspaceId: WorkspaceSummary["id"];

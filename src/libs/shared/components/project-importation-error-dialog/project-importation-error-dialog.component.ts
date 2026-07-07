@@ -36,7 +36,7 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
 import { ImportationError, ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { ProjectImportationInputComponent } from "@tenzu/shared/components/project-importation-input/project-importation-input.component";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 export type ProjectImportationErrorDialogData = {

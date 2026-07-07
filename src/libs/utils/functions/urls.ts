@@ -22,7 +22,7 @@
 import { ProjectLinkNested } from "@tenzu/repository/project/project.model";
 import { Workflow } from "@tenzu/repository/workflow/workflow.model";
 import { StorySummary } from "@tenzu/repository/story/story.model";
-import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.model";
 import { Role } from "@tenzu/repository/membership/membership.model";
 
 export const HOMEPAGE_URL = "/";

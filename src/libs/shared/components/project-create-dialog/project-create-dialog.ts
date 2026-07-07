@@ -39,7 +39,8 @@ import { MatSelect, MatSelectTrigger } from "@angular/material/select";
 import { Router } from "@angular/router";
 import { CreateProjectPayload } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import {
   applyWhenValue,

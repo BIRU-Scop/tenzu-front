@@ -25,7 +25,7 @@ import { FileInputComponent } from "@tenzu/shared/components/file-input/file-inp
 import { FileValue } from "@tenzu/repository/base/misc.model";
 import { ProjectImportationType } from "@tenzu/repository/importation/importation.model";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
 import { NotificationService } from "@tenzu/utils/services/notification";
