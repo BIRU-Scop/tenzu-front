@@ -22,7 +22,7 @@
 import { Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
 
 import { NotificationsComponentService } from "./notifications-component.service";
-import { Notification } from "@tenzu/repository/notifications";
+import { Notification } from "@tenzu/repository/notifications/notifications.model";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
