@@ -47,7 +47,7 @@ import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user";
-import { StatusDetail } from "@tenzu/repository/status";
+import { StatusDetail } from "@tenzu/repository/status/status.model";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { Notification } from "@tenzu/repository/notifications/notifications.model";
 import { NotificationsStore } from "@tenzu/repository/notifications/notifications.store";

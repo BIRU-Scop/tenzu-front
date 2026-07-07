@@ -19,7 +19,7 @@
  *
  */
 
-import { StatusSummary } from "../status";
+import { StatusSummary } from "../status/status.model";
 
 export enum Step {
   LEFT = -1,

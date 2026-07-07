@@ -35,7 +35,7 @@ import { DeleteStatusDialogComponent } from "./delete-status-dialog/delete-statu
 import { Validators } from "@angular/forms";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { StatusSummary } from "@tenzu/repository/status";
+import { StatusSummary } from "@tenzu/repository/status/status.model";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 

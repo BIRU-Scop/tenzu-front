@@ -19,7 +19,7 @@
  *
  */
 
-import { StatusSummary } from "../status";
+import { StatusSummary } from "../status/status.model";
 import { User, UserNested } from "../user";
 import { Workflow } from "../workflow";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";

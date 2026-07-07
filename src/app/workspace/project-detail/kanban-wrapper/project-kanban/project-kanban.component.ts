@@ -32,7 +32,7 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
-import { StatusSummary } from "@tenzu/repository/status";
+import { StatusSummary } from "@tenzu/repository/status/status.model";
 import { Step, Workflow, WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";

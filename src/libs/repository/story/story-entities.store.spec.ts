@@ -23,7 +23,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
-import { StatusSummary } from "../status";
+import { StatusSummary } from "../status/status.model";
 import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "@tenzu/repository/story/story.factories";
 import { makeUserNested } from "@tenzu/repository/user/user.factories";
 

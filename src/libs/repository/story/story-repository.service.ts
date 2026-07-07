@@ -26,7 +26,7 @@ import type * as StoryApiServiceType from "./story-api.type";
 import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
-import { StatusSummary } from "../status";
+import { StatusSummary } from "../status/status.model";
 import { Workflow } from "../workflow";
 import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
 import { EntityId } from "@ngrx/signals/entities";

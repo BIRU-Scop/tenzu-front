@@ -25,7 +25,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
 import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { StatusSummary } from "@tenzu/repository/status";
+import { StatusSummary } from "@tenzu/repository/status/status.model";
 
 @Component({
   selector: "app-story-status",

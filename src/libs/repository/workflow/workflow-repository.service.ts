@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { StatusSummary, StatusDetail } from "../status";
+import { StatusSummary, StatusDetail } from "../status/status.model";
 import { lastValueFrom } from "rxjs";
 import { WorkflowApiService } from "./workflow-api.service";
 import { Workflow } from "./workflow.model";
