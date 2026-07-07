@@ -36,7 +36,7 @@ import { MatButton } from "@angular/material/button";
       <img class="w-44 h-44 shrink-0 self-center object-contain" [ngSrc]="imageUrl()" width="176" height="176" alt="" />
       <div class="flex flex-1 flex-col gap-3">
         <h3 class="mat-headline-small">{{ _feed.title }}</h3>
-        <div class="flex-1 mat-body-large" [innerHTML]="renderedContent() | safeHtml"></div>
+        <div class="flex-1 mat-body-large feed-rendered" [innerHTML]="renderedContent() | safeHtml"></div>
         @if (hasAction()) {
           <a
             class="self-start inline-flex items-center gap-1 rounded-lg border px-4 py-2 font-semibold tertiary-button"
