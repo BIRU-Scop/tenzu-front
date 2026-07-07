@@ -40,7 +40,7 @@ import { NotificationsComponentService } from "./notifications/notifications-com
 import { MatDivider } from "@angular/material/divider";
 import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 import { NgEventBus } from "ng-event-bus";
-import { ToolBarStore } from "@tenzu/repository/toolbar";
+import { ToolBarStore } from "@tenzu/repository/toolbar/toolBarStore";
 import { PLUGINS_TOKEN } from "../app.config";
 import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
 
