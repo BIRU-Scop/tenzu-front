@@ -19,15 +19,19 @@
  *
  */
 
-import { InvitationBase, PublicPendingInvitationBase } from "../membership/invitation.model";
-import { ProjectLinkNested } from "../project/project.model";
+import { z } from "zod/v4";
+import { invitationBaseSchema, publicPendingInvitationBaseSchema } from "../membership/invitation.model";
+import type { ProjectLinkNested } from "../project/project.model";
 
-export type PublicProjectPendingInvitation = PublicPendingInvitationBase & {
-  project: ProjectLinkNested;
-};
+export const publicProjectPendingInvitationSchema = publicPendingInvitationBaseSchema.extend({
+  project: z.custom<ProjectLinkNested>(),
+});
+export type PublicProjectPendingInvitation = z.infer<typeof publicProjectPendingInvitationSchema>;
 
-export type ProjectInvitation = InvitationBase & {
-  project: ProjectLinkNested;
-};
+export const projectInvitationSchema = invitationBaseSchema.extend({
+  project: z.custom<ProjectLinkNested>(),
+});
+export type ProjectInvitation = z.infer<typeof projectInvitationSchema>;
 
-export type ProjectInvitationNested = Pick<ProjectInvitation, "project" | "status">;
+export const projectInvitationNestedSchema = projectInvitationSchema.pick({ project: true, status: true });
+export type ProjectInvitationNested = z.infer<typeof projectInvitationNestedSchema>;

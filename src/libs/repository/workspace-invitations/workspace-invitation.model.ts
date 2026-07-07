@@ -19,15 +19,19 @@
  *
  */
 
-import { InvitationBase, PublicPendingInvitationBase } from "../membership/invitation.model";
-import { WorkspaceLinkNested } from "../workspace/workspace.model";
+import { z } from "zod/v4";
+import { invitationBaseSchema, publicPendingInvitationBaseSchema } from "../membership/invitation.model";
+import type { WorkspaceLinkNested } from "../workspace/workspace.model";
 
-export type PublicWorkspacePendingInvitation = PublicPendingInvitationBase & {
-  workspace: WorkspaceLinkNested;
-};
+export const publicWorkspacePendingInvitationSchema = publicPendingInvitationBaseSchema.extend({
+  workspace: z.custom<WorkspaceLinkNested>(),
+});
+export type PublicWorkspacePendingInvitation = z.infer<typeof publicWorkspacePendingInvitationSchema>;
 
-export type WorkspaceInvitation = InvitationBase & {
-  workspace: WorkspaceLinkNested;
-};
+export const workspaceInvitationSchema = invitationBaseSchema.extend({
+  workspace: z.custom<WorkspaceLinkNested>(),
+});
+export type WorkspaceInvitation = z.infer<typeof workspaceInvitationSchema>;
 
-export type WorkspaceInvitationNested = Pick<WorkspaceInvitation, "workspace" | "status">;
+export const workspaceInvitationNestedSchema = workspaceInvitationSchema.pick({ workspace: true, status: true });
+export type WorkspaceInvitationNested = z.infer<typeof workspaceInvitationNestedSchema>;
