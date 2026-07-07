@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { KanbanWrapperStore, StoryDisplayMode } from "./kanban-wrapper.store";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/story-comment-repository.service";
 

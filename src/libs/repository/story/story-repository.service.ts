@@ -27,7 +27,7 @@ import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorde
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { StatusSummary } from "../status/status.model";
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
 import { EntityId } from "@ngrx/signals/entities";
 import { UserNested } from "@tenzu/repository/user/user.model";

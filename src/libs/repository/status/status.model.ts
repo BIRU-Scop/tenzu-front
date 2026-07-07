@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 
 export type StatusSummary = {
   id: string;

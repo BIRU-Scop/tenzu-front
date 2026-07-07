@@ -43,7 +43,7 @@ import {
 import { Location } from "@angular/common";
 import { ProjectDetail, ProjectSummary } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow";
+import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow/workflow.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user/user.model";

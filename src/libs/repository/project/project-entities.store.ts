@@ -21,7 +21,7 @@
 
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { ProjectDetail, ProjectSummary } from "./project.model";
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 
 export const ProjectEntitiesSummaryStore = signalStore({ providedIn: "root" }, withEntityListFeature<ProjectSummary>());

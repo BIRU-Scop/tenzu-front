@@ -24,7 +24,7 @@ import { computed, inject } from "@angular/core";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
 type BreadCrumbNodeConfig = {

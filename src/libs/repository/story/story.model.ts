@@ -21,7 +21,7 @@
 
 import { StatusSummary } from "../status/status.model";
 import { User, UserNested } from "../user/user.model";
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 
 export type StoryNested = {

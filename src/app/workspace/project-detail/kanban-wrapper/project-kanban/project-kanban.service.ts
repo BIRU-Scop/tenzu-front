@@ -28,7 +28,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project/project-repo
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { Workflow } from "@tenzu/repository/workflow";
+import { Workflow } from "@tenzu/repository/workflow/workflow.model";
 
 /**
  * This service create a modal positioned relatively to its trigger button

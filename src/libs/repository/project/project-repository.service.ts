@@ -23,7 +23,7 @@ import { computed, inject, Injectable } from "@angular/core";
 import * as ProjectApiServiceType from "./project-api.type";
 import { ProjectApiService } from "./project-api.service";
 import { ProjectDetailStore, ProjectEntitiesSummaryStore } from "./project-entities.store";
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
 import { BaseRepositoryService } from "../base/repository.service";
 
