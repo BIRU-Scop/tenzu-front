@@ -31,7 +31,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
 import { ProjectSummary } from "@tenzu/repository/project/project.model";

@@ -28,7 +28,7 @@ import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/p
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { InvitationsPayload } from "@tenzu/repository/membership/invitation.model";
 import { map } from "rxjs/operators";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";

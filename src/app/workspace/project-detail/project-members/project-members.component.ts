@@ -29,7 +29,7 @@ import { ProjectRepositoryService } from "@tenzu/repository/project/project-repo
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { MatIcon } from "@angular/material/icon";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { Role } from "@tenzu/repository/membership/membership.model";

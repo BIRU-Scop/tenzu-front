@@ -28,7 +28,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import {

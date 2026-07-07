@@ -40,7 +40,7 @@ import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skele
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
