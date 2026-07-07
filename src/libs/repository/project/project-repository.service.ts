@@ -25,7 +25,7 @@ import { ProjectApiService } from "./project-api.service";
 import { ProjectDetailStore, ProjectEntitiesSummaryStore } from "./project-entities.store";
 import { Workflow } from "../workflow";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
-import { BaseRepositoryService } from "../base";
+import { BaseRepositoryService } from "../base/repository.service";
 
 import { QueryParams } from "../base/utils";
 import { WsService } from "@tenzu/utils/services/ws";

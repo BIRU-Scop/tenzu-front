@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AbstractApiService, makeFormData } from "../base";
+import { AbstractApiService, makeFormData } from "../base/abstract-api-services";
 import {
   CreateProjectPayload,
   projectDetailSchema,

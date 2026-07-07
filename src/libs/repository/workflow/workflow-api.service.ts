@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,7 +22,7 @@
 import { Injectable } from "@angular/core";
 import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { StatusSummary } from "../status";
-import { AbstractApiServiceDetail } from "../base";
+import { AbstractApiServiceDetail } from "../base/abstract-api-services";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 import { Observable } from "rxjs";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";

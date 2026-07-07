@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,7 +29,7 @@ import { map } from "rxjs/operators";
 import { WorkspaceInvitation } from "./workspace-invitation.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
-import { getEntityIdSelector } from "@tenzu/repository/base";
+import { getEntityIdSelector } from "@tenzu/repository/base/features";
 import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({

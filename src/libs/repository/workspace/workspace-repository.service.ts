@@ -24,7 +24,7 @@ import { WorkspaceApiService } from "./workspace-api.service";
 import { WorkspaceDetailStore, WorkspaceEntitiesSummaryStore } from "./workspace-entities-summary.store";
 import { WsService } from "@tenzu/utils/services/ws";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
-import { BaseRepositoryService } from "../base";
+import { BaseRepositoryService } from "../base/repository.service";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";

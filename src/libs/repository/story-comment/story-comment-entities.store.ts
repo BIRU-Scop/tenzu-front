@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { StoryComment } from "./story-comment.model";
-import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base";
+import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base/features";
 import { StorySummary } from "@tenzu/repository/story";
 
 const initialState = {

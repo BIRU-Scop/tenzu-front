@@ -25,7 +25,7 @@ import { StorySummary, StoryAssign, StoryDetail, StoryReorderPayload, StoryReord
 import { StatusSummary } from "../status";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
-import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 import { UserNested } from "../user";
 import { ProjectSummary } from "@tenzu/repository/project";
 import { Workflow } from "@tenzu/repository/workflow";

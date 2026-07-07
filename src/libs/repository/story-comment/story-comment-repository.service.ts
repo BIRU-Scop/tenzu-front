@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,7 +23,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { StoryCommentApiService } from "./story-comment-api.service";
 import { StoryComment } from "./story-comment.model";
 import { StoryCommentDetailStore, StoryCommentEntitiesSummaryStore } from "./story-comment-entities.store";
-import { BaseRepositoryService } from "@tenzu/repository/base";
+import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
 import type * as StoryCommentApiServiceType from "./story-comment-api.type";
 import { QueryParams } from "@tenzu/repository/base/utils";
 import { lastValueFrom } from "rxjs";

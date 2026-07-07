@@ -20,7 +20,7 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { AbstractApiService } from "../base";
+import { AbstractApiService } from "../base/abstract-api-services";
 import { StoryAttachment } from "./story-attachment.model";
 import * as StoryAttachmentApiType from "./story-attachment-api.type";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";

@@ -24,7 +24,7 @@ import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { StatusSummary } from "../status";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
 import { removeEntity, setAllEntities, updateEntity, withEntities } from "@ngrx/signals/entities";
-import { withEntityDetailStore } from "../base";
+import { withEntityDetailStore } from "../base/features";
 
 export const WorkflowDetailStore = signalStore(
   { providedIn: "root" },

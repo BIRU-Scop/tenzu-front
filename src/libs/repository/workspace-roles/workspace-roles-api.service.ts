@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { WorkspaceRoleDetail, WorkspaceRoleSummary } from "./workspace-roles.model";
-import { AbstractApiService } from "../base";
+import { AbstractApiService } from "../base/abstract-api-services";
 import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
 
 @Injectable({

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractApiService } from "../base";
+import { AbstractApiService } from "../base/abstract-api-services";
 import { ProjectSummary } from "../project";
 import { ProjectMembership } from "./project-membership.model";
 import { Observable } from "rxjs";

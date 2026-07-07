@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,7 +26,7 @@ import { WorkflowApiService } from "./workflow-api.service";
 import { Workflow } from "./workflow.model";
 import { ProjectRepositoryService } from "../project";
 import { WorkflowDetailStore } from "./workflow-entities.store";
-import { BaseRepositoryDetailService } from "../base";
+import { BaseRepositoryDetailService } from "../base/repository.service";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 
 @Injectable({

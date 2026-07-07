@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { signalStore, withComputed } from "@ngrx/signals";
-import { withEntityListFeature } from "../base";
+import { withEntityListFeature } from "../base/features";
 import { ProjectMembership } from "./project-membership.model";
 import { computed } from "@angular/core";
 import { UserNested } from "@tenzu/repository/user";

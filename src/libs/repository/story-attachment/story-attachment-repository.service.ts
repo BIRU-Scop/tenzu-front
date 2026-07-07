@@ -23,7 +23,7 @@ import { inject, Injectable } from "@angular/core";
 import { StoryAttachmentApiService } from "./story-attachment-api.service";
 import { StoryAttachment } from "./story-attachment.model";
 import { StoryAttachmentDetailStore, StoryAttachmentEntitiesSummaryStore } from "./story-attachment-entities.store";
-import { BaseRepositoryService } from "@tenzu/repository/base";
+import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
 import type * as StoryAttachmentApiServiceType from "./story-attachment-api.type";
 import * as StoryAttachmentApiType from "@tenzu/repository/story-attachment/story-attachment-api.type";
 import { lastValueFrom } from "rxjs";

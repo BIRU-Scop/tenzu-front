@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { signalStore } from "@ngrx/signals";
 import { StoryAttachment } from "./story-attachment.model";
-import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base";
+import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base/features";
 
 export const StoryAttachmentEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
