@@ -22,6 +22,7 @@
 import { describe, expect, it } from "vitest";
 
 import { membershipBaseSchema, roleSchema } from "@tenzu/repository/membership/membership.model";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import {
   createInvitationsSchema,
   invitationBaseSchema,
@@ -49,5 +50,12 @@ describe("membership schemas", () => {
     expect(() => invitationBaseSchema.parse({ ...makeInvitationBase(), status: "unknown" })).toThrow();
     expect(() => invitationBaseSchema.parse({ ...makeInvitationBase(), createdAt: "not-a-date" })).toThrow();
     expect(() => membershipBaseSchema.parse({ ...makeMembershipBase(), user: { id: "user-1" } })).toThrow();
+  });
+
+  it("roleSchema strictly validates permission values", () => {
+    expect(() =>
+      roleSchema.parse({ ...makeRole(), permissions: [ProjectPermissions.VIEW_STORY, "is_member"] }),
+    ).not.toThrow();
+    expect(() => roleSchema.parse({ ...makeRole(), permissions: ["not_a_permission"] })).toThrow();
   });
 });

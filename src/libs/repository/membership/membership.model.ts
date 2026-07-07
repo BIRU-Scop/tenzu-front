@@ -23,9 +23,14 @@ import { z } from "zod/v4";
 import { PermissionsBase, ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
 import { userNestedSchema } from "../user/user.model";
 
-type MemberPermission = "is_member";
-export type Permission = PermissionsBase | WorkspacePermissions | ProjectPermissions | MemberPermission;
-export const MemberPermission = "is_member" as const satisfies MemberPermission;
+export const permissionSchema = z.union([
+  z.enum(PermissionsBase),
+  z.enum(WorkspacePermissions),
+  z.enum(ProjectPermissions),
+  z.literal("is_member"),
+]);
+export type Permission = z.infer<typeof permissionSchema>;
+export const MemberPermission = "is_member" as const satisfies Permission;
 
 export const membershipBaseSchema = z.object({
   id: z.string(),
@@ -41,7 +46,7 @@ export const roleSchema = z.object({
   isOwner: z.boolean(),
   order: z.number(),
   editable: z.boolean(),
-  permissions: z.array(z.custom<Permission>()),
+  permissions: z.array(permissionSchema),
 });
 export type Role = z.infer<typeof roleSchema>;
 
