@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,8 +19,10 @@
  *
  */
 
-import { UserNested } from "../user";
-import { Role } from "./membership.model";
+import { z } from "zod/v4";
+import { isoDatetime } from "@tenzu/repository/base/schema-utils";
+import { userNestedSchema } from "../user/user.model";
+import type { Role } from "./membership.model";
 
 export enum InvitationStatus {
   PENDING = "pending",
@@ -29,26 +31,29 @@ export enum InvitationStatus {
   DENIED = "denied",
 }
 
-export type InvitationBase = {
-  id: string;
-  status: InvitationStatus;
-  user?: UserNested;
-  roleId: Role["id"];
-  email: string;
-  resentAt?: string;
-  createdAt: string;
-  numEmailsSent: number;
-};
+export const invitationBaseSchema = z.object({
+  id: z.string(),
+  status: z.enum(InvitationStatus),
+  user: userNestedSchema.optional(),
+  roleId: z.string<Role["id"]>(),
+  email: z.string(),
+  resentAt: isoDatetime.optional(),
+  createdAt: isoDatetime,
+  numEmailsSent: z.number(),
+});
+export type InvitationBase = z.infer<typeof invitationBaseSchema>;
 
-export type CreateInvitations = {
-  invitations: InvitationBase[];
-  alreadyMembers: number;
-};
+export const createInvitationsSchema = z.object({
+  invitations: z.array(invitationBaseSchema),
+  alreadyMembers: z.number(),
+});
+export type CreateInvitations = z.infer<typeof createInvitationsSchema>;
 
-export type PublicPendingInvitationBase = {
-  email: string;
-  existingUser: boolean;
-};
+export const publicPendingInvitationBaseSchema = z.object({
+  email: z.string(),
+  existingUser: z.boolean(),
+});
+export type PublicPendingInvitationBase = z.infer<typeof publicPendingInvitationBaseSchema>;
 
 export type InvitationsPayload = {
   invitations: {

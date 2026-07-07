@@ -20,12 +20,12 @@
  */
 
 import { z } from "zod/v4";
-import { InvitationTokens, tokensSchema } from "../auth";
-import { WorkspaceNested } from "../workspace";
-
-import { ProjectLinkNested, ProjectNested } from "../project";
-import { ProjectInvitationNested } from "../project-invitations";
-import { WorkspaceInvitationNested } from "../workspace-invitations";
+import { tokensSchema } from "../auth/auth.model";
+import type { InvitationTokens } from "../auth/auth.model";
+import type { WorkspaceNested } from "../workspace/workspace.model";
+import type { ProjectLinkNested, ProjectNested } from "../project/project.model";
+import type { ProjectInvitationNested } from "../project-invitations/project-invitation.model";
+import type { WorkspaceInvitationNested } from "../workspace-invitations/workspace-invitation.model";
 
 export const userNestedSchema = z.object({
   id: z.string(),

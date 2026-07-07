@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,29 +19,33 @@
  *
  */
 
+import { z } from "zod/v4";
 import { PermissionsBase, ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
-import { UserNested } from "../user";
+import { userNestedSchema } from "../user/user.model";
 
 type MemberPermission = "is_member";
 export type Permission = PermissionsBase | WorkspacePermissions | ProjectPermissions | MemberPermission;
 export const MemberPermission = "is_member" as const satisfies MemberPermission;
 
-export type MembershipBase = {
-  id: string;
-  user: UserNested;
-  roleId: string;
-};
+export const membershipBaseSchema = z.object({
+  id: z.string(),
+  user: userNestedSchema,
+  roleId: z.string<Role["id"]>(),
+});
+export type MembershipBase = z.infer<typeof membershipBaseSchema>;
 
-export type Role = {
-  id: string;
-  name: string;
-  slug: string;
-  isOwner: boolean;
-  order: number;
-  editable: boolean;
-  permissions: Permission[];
-};
+export const roleSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  isOwner: z.boolean(),
+  order: z.number(),
+  editable: z.boolean(),
+  permissions: z.array(z.custom<Permission>()),
+});
+export type Role = z.infer<typeof roleSchema>;
 
-export type UserRole = {
-  userRole?: Role;
-};
+export const userRoleSchema = z.object({
+  userRole: roleSchema.optional(),
+});
+export type UserRole = z.infer<typeof userRoleSchema>;

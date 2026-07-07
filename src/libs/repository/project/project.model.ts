@@ -20,9 +20,11 @@
  */
 
 import { z } from "zod/v4";
-import { Role } from "../membership";
-import { FileValue } from "@tenzu/repository/base/misc.model";
-import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { roleSchema } from "../membership";
+import type { FileValue } from "@tenzu/repository/base/misc.model";
+import type { ProjectImportationNested } from "@tenzu/repository/importation/importation.model";
+import type { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import type { WorkflowNested } from "@tenzu/repository/workflow/workflow.model";
 
 export type ProjectLogoBase = {
   logo?: string;
@@ -46,7 +48,7 @@ export type ProjectLinkNested = _ProjectBaseNested;
 
 export const projectSummarySchema = z.object({
   id: z.string(),
-  workspaceId: z.string(),
+  workspaceId: z.string<WorkspaceSummary["id"]>(),
   name: z.string(),
   slug: z.string(),
   landingPage: z.string(),
@@ -56,22 +58,9 @@ export const projectSummarySchema = z.object({
   userIsInvited: z.boolean(),
 });
 
-// export type ProjectDetail = ProjectSummary &
-//   UserRole & {
-//   workflows: WorkflowNested[];
-//   importation: ProjectImportationNested | null;
-// };
-
 export const projectDetailSchema = projectSummarySchema.extend({
-  userRole: z.custom<Role>().optional(),
-  workflows: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      slug: z.string(),
-      projectId: z.string(),
-    }),
-  ),
+  userRole: roleSchema.optional(),
+  workflows: z.custom<WorkflowNested[]>(),
   importation: z.custom<ProjectImportationNested>().optional(),
 });
 
