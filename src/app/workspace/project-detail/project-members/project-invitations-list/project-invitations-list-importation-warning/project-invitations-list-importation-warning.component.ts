@@ -20,7 +20,8 @@
  */
 
 import { Component, inject, input, inputBinding, signal } from "@angular/core";
-import { ProjectImportationNested, ProjectImportationRepositoryService } from "@tenzu/repository/importation";
+import { ProjectImportationNested } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatIcon } from "@angular/material/icon";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";

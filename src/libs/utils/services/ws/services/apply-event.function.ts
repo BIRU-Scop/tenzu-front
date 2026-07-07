@@ -76,11 +76,8 @@ import { WorkspacePermissions } from "@tenzu/repository/permission/permission.mo
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
-import {
-  ImportationStatus,
-  ProjectImportation,
-  ProjectImportationRepositoryService,
-} from "@tenzu/repository/importation";
+import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectImportationErrorDialog } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
 

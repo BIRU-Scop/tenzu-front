@@ -37,7 +37,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
-import { ImportationStatus } from "@tenzu/repository/importation";
+import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 import { MatBadge } from "@angular/material/badge";
 
 @Component({

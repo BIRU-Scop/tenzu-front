@@ -30,7 +30,7 @@ import { MemberPermission } from "@tenzu/repository/membership";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 import { combineLatest } from "rxjs";
-import { ImportationStatus } from "@tenzu/repository/importation";
+import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 
 @Component({
   selector: "app-project-detail",

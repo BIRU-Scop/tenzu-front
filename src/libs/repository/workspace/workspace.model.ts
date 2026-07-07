@@ -21,7 +21,7 @@
 
 import { ProjectNested } from "../project";
 import { UserRole } from "../membership";
-import { ProjectImportation } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
 type _WorkspaceBaseNested = {
   id: string;

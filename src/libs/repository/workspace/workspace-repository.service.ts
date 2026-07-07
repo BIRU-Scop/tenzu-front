@@ -32,7 +32,7 @@ import { ProjectNested } from "@tenzu/repository/project";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { ProjectImportation } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
 @Injectable({
   providedIn: "root",

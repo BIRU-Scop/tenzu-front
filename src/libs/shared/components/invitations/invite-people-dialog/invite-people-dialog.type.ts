@@ -23,7 +23,7 @@ import { Signal } from "@angular/core";
 import { UserNested } from "@tenzu/repository/user";
 import { InvitationBase, Role } from "@tenzu/repository/membership";
 import { ItemType } from "@tenzu/repository/base/misc.model";
-import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation";
+import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation/importation.model";
 
 export type InvitationEmailFieldValue = {
   email: string;

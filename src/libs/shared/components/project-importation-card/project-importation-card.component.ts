@@ -24,11 +24,8 @@ import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import {
-  ImportationStatus,
-  ProjectImportation,
-  ProjectImportationRepositoryService,
-} from "@tenzu/repository/importation";
+import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressBar } from "@angular/material/progress-bar";
 import { matDialogConfig } from "@tenzu/utils/mat-config";

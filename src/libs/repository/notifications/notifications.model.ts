@@ -23,7 +23,7 @@ import { UserNested } from "../user";
 import { StoryNested } from "../story";
 import { ProjectLinkNested } from "../project";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
-import { ProjectImportation } from "@tenzu/repository/importation";
+import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { StoryCommentNested } from "@tenzu/repository/story-comment";
 
 export type NotificationType =

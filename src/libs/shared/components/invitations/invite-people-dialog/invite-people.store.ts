@@ -23,7 +23,7 @@ import { computed, signal } from "@angular/core";
 import { patchState, signalStore, withComputed, withMethods, withProps, withState } from "@ngrx/signals";
 import { InvitationBase, InvitationStatus, Role } from "@tenzu/repository/membership";
 import { UserNested } from "@tenzu/repository/user";
-import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation";
+import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation/importation.model";
 import { PeopleEmailRow } from "./invite-people-dialog.type";
 import { apply, applyEach, email, form, required, validate } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";

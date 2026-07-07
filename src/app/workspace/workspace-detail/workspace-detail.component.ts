@@ -28,7 +28,7 @@ import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { ProjectRepositoryService } from "@tenzu/repository/project";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { MemberPermission } from "@tenzu/repository/membership";
-import { ProjectImportationRepositoryService } from "@tenzu/repository/importation";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 
 @Component({
   selector: "app-workspace-detail",

@@ -30,7 +30,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitations
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 import { ActivatedRoute } from "@angular/router";
 import { ProjectInvitationsListImportationWarningComponent } from "./project-invitations-list-importation-warning/project-invitations-list-importation-warning.component";
-import { ImportationStatus } from "@tenzu/repository/importation";
+import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 
 @Component({
   selector: "app-project-invitations-list",
