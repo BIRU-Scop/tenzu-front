@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,32 +19,23 @@
  *
  */
 
-import { z } from "zod/v4";
-import type { StatusSummary } from "../status/status.model";
+import { Workflow, WorkflowNested } from "./workflow.model";
 
-export enum Step {
-  LEFT = -1,
-  RIGHT = 1,
+export function makeWorkflowNested(overrides: Partial<WorkflowNested> = {}): WorkflowNested {
+  return {
+    id: "workflow-1",
+    name: "My Workflow",
+    slug: "my-workflow",
+    projectId: "project-1",
+    ...overrides,
+  };
 }
 
-export const workflowNestedSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  slug: z.string(),
-  projectId: z.string(),
-});
-export type WorkflowNested = z.infer<typeof workflowNestedSchema>;
-
-export const workflowSchema = workflowNestedSchema.extend({
-  order: z.number(),
-  statuses: z.array(z.custom<StatusSummary>()),
-});
-export type Workflow = z.infer<typeof workflowSchema>;
-
-export type ReorderWorkflowStatusesPayload = {
-  statusIds: string[];
-  reorder: {
-    place: "after" | "before";
-    statusId: string;
+export function makeWorkflow(overrides: Partial<Workflow> = {}): Workflow {
+  return {
+    ...makeWorkflowNested(),
+    order: 0,
+    statuses: [],
+    ...overrides,
   };
-};
+}

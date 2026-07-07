@@ -20,12 +20,13 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
+import { Workflow, workflowSchema, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { StatusSummary } from "../status/status.model";
 import { AbstractApiServiceDetail } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/schema-utils";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -40,6 +41,7 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   WorkflowApiServiceType.DeleteEntityDetailParams
 > {
   override baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override detailSchema = workflowSchema;
 
   protected override getBaseUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
     return `${this.baseUrl}/${params.projectId}/workflows`;
@@ -58,9 +60,9 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }): Observable<Workflow> {
     return this.http
       .get<
-        BaseDataModel<Workflow>
+        BaseDataModel<unknown>
       >(`${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`)
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => parseWithDebug(workflowSchema, dataObject.data)));
   }
 
   createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">): Observable<StatusSummary> {

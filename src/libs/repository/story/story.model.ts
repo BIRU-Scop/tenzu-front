@@ -24,7 +24,7 @@ import { isoDatetime, optionalNullable } from "../base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
 import type { User } from "../user/user.model";
 import type { StatusSummary } from "../status/status.model";
-import type { Workflow } from "../workflow/workflow.model";
+import { Workflow, workflowNestedSchema } from "../workflow/workflow.model";
 import type { ProjectDetail } from "../project/project.model";
 
 export const storyNestedSchema = z.object({
@@ -54,12 +54,7 @@ const storyLinkSchema = z.object({
 });
 
 export const storyDetailSchema = storySummarySchema.extend({
-  workflow: z.object({
-    id: z.string<Workflow["id"]>(),
-    name: z.string(),
-    slug: z.string(),
-    projectId: z.string<ProjectDetail["id"]>(),
-  }),
+  workflow: workflowNestedSchema,
   prev: storyLinkSchema.nullable(),
   next: storyLinkSchema.nullable(),
   createdBy: storyUserSchema.apply(optionalNullable),

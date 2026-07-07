@@ -22,10 +22,10 @@
 import { z } from "zod/v4";
 import { optionalNullable } from "../base/schema-utils";
 import { roleSchema } from "../membership/membership.model";
-import type { FileValue } from "@tenzu/repository/base/misc.model";
-import type { ProjectImportationNested } from "@tenzu/repository/importation/importation.model";
-import type { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
-import type { WorkflowNested } from "@tenzu/repository/workflow/workflow.model";
+import type { FileValue } from "../base/misc.model";
+import type { ProjectImportationNested } from "../importation/importation.model";
+import type { WorkspaceSummary } from "../workspace/workspace.model";
+import { workflowNestedSchema } from "../workflow/workflow.model";
 
 export type ProjectLogoBase = {
   logo?: string;
@@ -61,7 +61,7 @@ export const projectSummarySchema = z.object({
 
 export const projectDetailSchema = projectSummarySchema.extend({
   userRole: roleSchema.apply(optionalNullable),
-  workflows: z.custom<WorkflowNested[]>(),
+  workflows: z.array(workflowNestedSchema),
   importation: z.custom<ProjectImportationNested>().apply(optionalNullable),
 });
 
