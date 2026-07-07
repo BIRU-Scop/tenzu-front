@@ -29,9 +29,9 @@ import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
 import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations/workspace-invitation-repository.service";
 import { ProjectNested } from "@tenzu/repository/project/project.model";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles/workspace-role-repository.service";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
 import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
 
 @Injectable({

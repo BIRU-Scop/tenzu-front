@@ -25,7 +25,7 @@ import { MatFormField } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles/workspace-role-repository.service";
 import { MatTooltip } from "@angular/material/tooltip";
 import { FormValueControl } from "@angular/forms/signals";
 import { ItemType } from "@tenzu/repository/base/misc.model";

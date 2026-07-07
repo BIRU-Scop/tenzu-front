@@ -71,8 +71,8 @@ import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspac
 import {
   WorkspaceMembership,
   WorkspaceMembershipNested,
-  WorkspaceMembershipRepositoryService,
-} from "@tenzu/repository/workspace-membership";
+} from "@tenzu/repository/workspace-membership/workspace-membership.model";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
 import { ProjectMembership } from "@tenzu/repository/project-membership/project-membership.model";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { Role } from "@tenzu/repository/membership/membership.model";

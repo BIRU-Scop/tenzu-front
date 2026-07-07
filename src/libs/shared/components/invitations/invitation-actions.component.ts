@@ -26,7 +26,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { WorkspaceDetail } from "@tenzu/repository/workspace";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles/workspace-role-repository.service";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { LowerCasePipe } from "@angular/common";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
