@@ -30,7 +30,7 @@ import {
   viewChild,
 } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { StoryComment } from "@tenzu/repository/story-comment";
+import { StoryComment } from "@tenzu/repository/story-comment/story-comment.model";
 import { DatePipe } from "@angular/common";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";

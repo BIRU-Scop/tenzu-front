@@ -24,7 +24,7 @@ import { StoryNested } from "../story";
 import { ProjectLinkNested } from "../project/project.model";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
-import { StoryCommentNested } from "@tenzu/repository/story-comment";
+import { StoryCommentNested } from "@tenzu/repository/story-comment/story-comment.model";
 
 export type NotificationType =
   | "stories.assign"

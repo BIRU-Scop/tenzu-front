@@ -22,7 +22,7 @@
 import { Component, inject, input, signal, viewChild } from "@angular/core";
 import { StoryDetail } from "@tenzu/repository/story";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
-import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
+import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/story-comment-repository.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { MatInput } from "@angular/material/input";

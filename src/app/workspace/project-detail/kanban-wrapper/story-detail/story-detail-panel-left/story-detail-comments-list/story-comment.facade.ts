@@ -24,7 +24,8 @@ import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story";
 import { Router } from "@angular/router";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
+import { StoryComment } from "@tenzu/repository/story-comment/story-comment.model";
+import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/story-comment-repository.service";
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { NotificationService } from "@tenzu/utils/services/notification";
 
