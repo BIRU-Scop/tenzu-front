@@ -33,7 +33,7 @@ import { MatDivider } from "@angular/material/divider";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { LanguageStore } from "@tenzu/repository/transloco";
+import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { apply, applyWhenValue, form, FormField, FormRoot, maxLength, required } from "@angular/forms/signals";

@@ -26,7 +26,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { UserStore } from "@tenzu/repository/user";
-import { LanguageStore } from "@tenzu/repository/transloco";
+import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
