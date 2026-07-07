@@ -23,7 +23,8 @@ import { Component, inject, input, linkedSignal } from "@angular/core";
 import { MatFormField, MatOption, MatSelect } from "@angular/material/select";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow";
-import { StoryDetail, StoryRepositoryService } from "@tenzu/repository/story";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
+import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { StatusSummary } from "@tenzu/repository/status/status.model";
 

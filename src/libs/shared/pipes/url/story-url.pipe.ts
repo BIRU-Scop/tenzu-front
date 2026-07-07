@@ -21,7 +21,7 @@
 
 import { Pipe, PipeTransform } from "@angular/core";
 import { ProjectLinkNested } from "@tenzu/repository/project/project.model";
-import { StoryNested } from "@tenzu/repository/story";
+import { StoryNested } from "@tenzu/repository/story/story.model";
 
 @Pipe({
   name: "storyUrl",

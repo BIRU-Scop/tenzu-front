@@ -31,7 +31,7 @@ import { QueryParams } from "../base/utils";
 import { WsService } from "@tenzu/utils/services/ws";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
-import { StoryRepositoryService } from "@tenzu/repository/story";
+import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { lastValueFrom } from "rxjs";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 // todo temporary way to handle workflows maximum before implementing user settings

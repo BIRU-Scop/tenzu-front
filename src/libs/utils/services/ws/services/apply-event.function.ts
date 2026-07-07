@@ -21,7 +21,7 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
-import { StoryAssign, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story";
+import { StoryAssign, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story/story.model";
 import {
   NotificationEventType,
   ProjectEventType,

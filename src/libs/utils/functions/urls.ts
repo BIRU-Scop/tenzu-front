@@ -21,7 +21,7 @@
 
 import { ProjectLinkNested } from "@tenzu/repository/project/project.model";
 import { Workflow } from "@tenzu/repository/workflow";
-import { StorySummary } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story/story.model";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
 import { Role } from "@tenzu/repository/membership/membership.model";
 

@@ -24,7 +24,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIcon } from "@angular/material/icon";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
-import { StoryDetail } from "@tenzu/repository/story";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { Router, RouterLink } from "@angular/router";
 import { ChooseWorkflowDialogComponent } from "./choose-workflow-dialog/choose-workflow-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";

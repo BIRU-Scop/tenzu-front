@@ -29,7 +29,7 @@ import { QueryParams } from "@tenzu/repository/base/utils";
 import { lastValueFrom } from "rxjs";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { EntityId } from "@ngrx/signals/entities";
-import { StorySummary } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story/story.model";
 
 @Injectable({
   providedIn: "root",

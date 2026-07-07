@@ -19,7 +19,7 @@
  *
  */
 
-import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story";
+import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story/story.model";
 import { makeUserNested } from "@tenzu/repository/user/user.factories";
 
 export function makeStoryNested(overrides: Partial<StoryNested> = {}): StoryNested {

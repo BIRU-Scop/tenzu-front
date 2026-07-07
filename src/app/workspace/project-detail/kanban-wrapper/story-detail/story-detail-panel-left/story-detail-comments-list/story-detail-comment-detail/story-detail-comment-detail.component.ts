@@ -36,7 +36,7 @@ import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { ButtonEditComponent } from "@tenzu/shared/components/ui/button/button-edit.component";
-import { StoryDetail } from "@tenzu/repository/story";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { StoryCommentFacade } from "../story-comment.facade";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";

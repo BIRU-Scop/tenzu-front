@@ -23,7 +23,7 @@ import { Component, input } from "@angular/core";
 import { MatCard, MatCardActions, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { StorySummary } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story/story.model";
 import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
 
 @Component({

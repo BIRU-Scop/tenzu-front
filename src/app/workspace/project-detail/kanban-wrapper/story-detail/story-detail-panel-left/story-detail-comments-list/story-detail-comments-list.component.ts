@@ -20,7 +20,7 @@
  */
 
 import { Component, inject, input, signal, viewChild } from "@angular/core";
-import { StoryDetail } from "@tenzu/repository/story";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/story-comment-repository.service";
 import { TranslocoDirective } from "@jsverse/transloco";
