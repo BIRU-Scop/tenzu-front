@@ -19,13 +19,47 @@
  *
  */
 
-import { WorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.model";
+import {
+  WorkspaceDetail,
+  WorkspaceLinkNested,
+  WorkspaceNested,
+  WorkspaceSummary,
+} from "@tenzu/repository/workspace/workspace.model";
 
 export function makeWorkspaceLinkNested(overrides: Partial<WorkspaceLinkNested> = {}): WorkspaceLinkNested {
   return {
     id: "workspace-1",
     name: "My Workspace",
     slug: "my-workspace",
+    ...overrides,
+  };
+}
+
+export function makeWorkspaceNested(overrides: Partial<WorkspaceNested> = {}): WorkspaceNested {
+  return {
+    ...makeWorkspaceLinkNested(),
+    color: 1,
+    ...overrides,
+  };
+}
+
+export function makeWorkspaceSummary(overrides: Partial<WorkspaceSummary> = {}): WorkspaceSummary {
+  return {
+    ...makeWorkspaceNested(),
+    userMemberProjects: [],
+    userInvitedProjects: [],
+    userImportedProjects: [],
+    userIsInvited: false,
+    userIsMember: true,
+    userCanCreateProjects: true,
+    ...overrides,
+  };
+}
+
+export function makeWorkspaceDetail(overrides: Partial<WorkspaceDetail> = {}): WorkspaceDetail {
+  return {
+    ...makeWorkspaceSummary(),
+    totalProjects: 0,
     ...overrides,
   };
 }

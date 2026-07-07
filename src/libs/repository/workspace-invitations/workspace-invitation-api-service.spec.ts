@@ -66,6 +66,15 @@ describe(WorkspaceInvitationsApiService.name, () => {
     await expect(promise).rejects.toThrow();
   });
 
+  it("list throws when the nested workspace is malformed", async () => {
+    const raw = { ...makeWorkspaceInvitation(), workspace: { id: 123, name: "W", slug: "w" } };
+    const promise = lastValueFrom(service.list({ workspaceId: "workspace-1" }));
+
+    httpMock.expectOne(`${BASE}/workspaces/workspace-1/invitations`).flush({ data: [raw] });
+
+    await expect(promise).rejects.toThrow();
+  });
+
   it("getByToken parses the public pending invitation", async () => {
     const publicInvitation = makePublicWorkspacePendingInvitation();
     const promise = lastValueFrom(service.getByToken({ token: "tok-1" }));

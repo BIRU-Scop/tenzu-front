@@ -20,7 +20,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
+import { WorkspaceDetail, workspaceDetailSchema, WorkspaceSummary, workspaceSummarySchema } from "./workspace.model";
 import { AbstractApiService } from "../base/abstract-api-services";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 
@@ -38,6 +38,8 @@ export class WorkspaceApiService extends AbstractApiService<
   WorkspaceApiServiceType.DeleteEntityDetailParams
 > {
   override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
+  protected override summarySchema = workspaceSummarySchema;
+  protected override detailSchema = workspaceDetailSchema;
 
   protected override getBaseUrl(): string {
     return this.baseUrl;

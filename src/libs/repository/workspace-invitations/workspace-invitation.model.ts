@@ -21,15 +21,15 @@
 
 import { z } from "zod/v4";
 import { invitationBaseSchema, publicPendingInvitationBaseSchema } from "../membership/invitation.model";
-import type { WorkspaceLinkNested } from "../workspace/workspace.model";
+import { workspaceLinkNestedSchema } from "../workspace/workspace.model";
 
 export const publicWorkspacePendingInvitationSchema = publicPendingInvitationBaseSchema.extend({
-  workspace: z.custom<WorkspaceLinkNested>(),
+  workspace: workspaceLinkNestedSchema,
 });
 export type PublicWorkspacePendingInvitation = z.infer<typeof publicWorkspacePendingInvitationSchema>;
 
 export const workspaceInvitationSchema = invitationBaseSchema.extend({
-  workspace: z.custom<WorkspaceLinkNested>(),
+  workspace: workspaceLinkNestedSchema,
 });
 export type WorkspaceInvitation = z.infer<typeof workspaceInvitationSchema>;
 

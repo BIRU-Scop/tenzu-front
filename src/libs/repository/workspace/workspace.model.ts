@@ -19,36 +19,35 @@
  *
  */
 
-import { ProjectNested } from "../project/project.model";
-import { UserRole } from "../membership/membership.model";
-import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { z } from "zod/v4";
+import { userRoleSchema } from "../membership/membership.model";
+import type { ProjectNested } from "../project/project.model";
+import type { ProjectImportation } from "../importation/importation.model";
 
-type _WorkspaceBaseNested = {
-  id: string;
-  name: string;
-  slug: string;
-};
+export const workspaceLinkNestedSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+});
+export type WorkspaceLinkNested = z.infer<typeof workspaceLinkNestedSchema>;
 
-export type WorkspaceLinkNested = _WorkspaceBaseNested;
+export const workspaceNestedSchema = workspaceLinkNestedSchema.extend({
+  color: z.number(),
+});
+export type WorkspaceNested = z.infer<typeof workspaceNestedSchema>;
 
-export type WorkspaceNested = _WorkspaceBaseNested & {
-  color: number;
-};
+export const workspaceSummarySchema = workspaceNestedSchema.extend({
+  userMemberProjects: z.array(z.custom<ProjectNested>()),
+  userInvitedProjects: z.array(z.custom<ProjectNested>()),
+  userImportedProjects: z.array(z.custom<ProjectImportation>()),
+  userIsInvited: z.boolean(),
+  userIsMember: z.boolean(),
+  userCanCreateProjects: z.boolean(),
+});
+export type WorkspaceSummary = z.infer<typeof workspaceSummarySchema>;
 
-type _WorkspaceListProjectsSummary = {
-  userMemberProjects: ProjectNested[];
-  userInvitedProjects: ProjectNested[];
-  userImportedProjects: ProjectImportation[];
-};
-
-export type WorkspaceSummary = WorkspaceNested &
-  _WorkspaceListProjectsSummary & {
-    userIsInvited: boolean;
-    userIsMember: boolean;
-    userCanCreateProjects: boolean;
-  };
-
-export type WorkspaceDetail = WorkspaceSummary &
-  UserRole & {
-    totalProjects: number;
-  };
+export const workspaceDetailSchema = workspaceSummarySchema.extend({
+  ...userRoleSchema.shape,
+  totalProjects: z.number(),
+});
+export type WorkspaceDetail = z.infer<typeof workspaceDetailSchema>;
