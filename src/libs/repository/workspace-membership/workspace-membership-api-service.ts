@@ -21,9 +21,16 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/schema-utils";
 import { WorkspaceSummary } from "../workspace/workspace.model";
-import { WorkspaceMembership, WorkspaceMembershipDeleteInfo } from "./workspace-membership.model";
+import {
+  WorkspaceMembership,
+  workspaceMembershipSchema,
+  WorkspaceMembershipDeleteInfo,
+  workspaceMembershipDeleteInfoSchema,
+} from "./workspace-membership.model";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 type ListWorkspaceMembershipParams = {
   workspaceId: WorkspaceSummary["id"];
@@ -48,6 +55,8 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   DeleteWorkspaceMembershipParams
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
+  protected override summarySchema = workspaceMembershipSchema;
+  protected override detailSchema = workspaceMembershipSchema;
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/memberships`;
   }
@@ -68,8 +77,8 @@ export class WorkspaceMembershipApiService extends AbstractApiService<
   }
 
   getDeleteInfo(item: WorkspaceMembership): Observable<WorkspaceMembershipDeleteInfo> {
-    return this.http.get<WorkspaceMembershipDeleteInfo>(
-      `${this.getEntityBaseUrl({ membershipId: item.id })}/delete-info`,
-    );
+    return this.http
+      .get<unknown>(`${this.getEntityBaseUrl({ membershipId: item.id })}/delete-info`)
+      .pipe(map((data) => parseWithDebug(workspaceMembershipDeleteInfoSchema, data)));
   }
 }

@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod/v4";
-import { isoDatetime } from "@tenzu/repository/base/schema-utils";
+import { isoDatetime, optionalNullable } from "@tenzu/repository/base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
 import type { Role } from "./membership.model";
 
@@ -34,10 +34,10 @@ export enum InvitationStatus {
 export const invitationBaseSchema = z.object({
   id: z.string(),
   status: z.enum(InvitationStatus),
-  user: userNestedSchema.optional(),
+  user: userNestedSchema.apply(optionalNullable),
   roleId: z.string<Role["id"]>(),
   email: z.string(),
-  resentAt: isoDatetime.optional(),
+  resentAt: isoDatetime.apply(optionalNullable),
   createdAt: isoDatetime,
   numEmailsSent: z.number(),
 });

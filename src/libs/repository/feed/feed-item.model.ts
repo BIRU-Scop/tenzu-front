@@ -20,12 +20,9 @@
  */
 
 import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
 
-const optionalDate = z.iso
-  .datetime({ offset: true })
-  .nullable()
-  .transform((value) => value ?? undefined)
-  .optional();
+const optionalDate = z.iso.datetime({ offset: true }).apply(optionalNullable);
 
 const feedItemBase = {
   id: z.string(),

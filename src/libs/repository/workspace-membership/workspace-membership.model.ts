@@ -19,19 +19,24 @@
  *
  */
 
-import { MembershipBase } from "../membership/membership.model";
-import { ProjectNested } from "../project/project.model";
+import { z } from "zod/v4";
+import { membershipBaseSchema } from "../membership/membership.model";
+import type { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import type { ProjectSummary } from "@tenzu/repository/project/project.model";
 
-export type WorkspaceMembershipNested = MembershipBase & {
-  workspaceId: string;
-};
+export const workspaceMembershipNestedSchema = membershipBaseSchema.extend({
+  workspaceId: z.string<WorkspaceSummary["id"]>(),
+});
+export type WorkspaceMembershipNested = z.infer<typeof workspaceMembershipNestedSchema>;
 
-export type WorkspaceMembership = WorkspaceMembershipNested & {
-  totalProjectsIsMember: number;
-};
+export const workspaceMembershipSchema = workspaceMembershipNestedSchema.extend({
+  totalProjectsIsMember: z.number(),
+});
+export type WorkspaceMembership = z.infer<typeof workspaceMembershipSchema>;
 
-export type WorkspaceMembershipDeleteInfo = {
-  isUniqueOwner: boolean;
-  memberOfProjects: ProjectNested["name"][];
-  uniqueOwnerOfProjects: ProjectNested["name"][];
-};
+export const workspaceMembershipDeleteInfoSchema = z.object({
+  isUniqueOwner: z.boolean(),
+  memberOfProjects: z.array(z.string<ProjectSummary["id"]>()),
+  uniqueOwnerOfProjects: z.array(z.string<ProjectSummary["id"]>()),
+});
+export type WorkspaceMembershipDeleteInfo = z.infer<typeof workspaceMembershipDeleteInfoSchema>;

@@ -57,14 +57,14 @@
     "tslib": "^2.3.0",
     "y-websocket": "^3.0.0",
     "yjs": "^13.6.29",
-    "zod": "^3.25.61"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@angular-architects/ngrx-toolkit": "^21.0.1",
     "@angular-devkit/architect": "^0.2200.3",
+    "@angular-devkit/build-angular": "^22.0.3",
     "@angular-devkit/core": "^22.0.0",
     "@angular-devkit/schematics-cli": "^22.0.3",
-    "@angular-devkit/build-angular": "^22.0.3",
     "@angular-eslint/builder": "^22.0.0",
     "@angular/build": "^22.0.0",
     "@angular/cli": "^22.0.0",

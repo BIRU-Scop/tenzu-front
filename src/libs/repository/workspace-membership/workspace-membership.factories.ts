@@ -19,27 +19,25 @@
  *
  */
 
-import { z } from "zod/v4";
-import { debug } from "@tenzu/utils/functions/logging";
+import { makeMembershipBase } from "@tenzu/repository/membership/membership.factories";
+import { WorkspaceMembership, WorkspaceMembershipDeleteInfo } from "./workspace-membership.model";
 
-export function optionalNullable<Output>(schema: z.ZodType<Output>) {
-  return schema
-    .nullable()
-    .transform((value) => value ?? undefined)
-    .optional();
+export function makeWorkspaceMembership(overrides: Partial<WorkspaceMembership> = {}): WorkspaceMembership {
+  return {
+    ...makeMembershipBase(),
+    workspaceId: "workspace-1",
+    totalProjectsIsMember: 0,
+    ...overrides,
+  };
 }
 
-export const isoDatetime = z.iso.datetime({ offset: true });
-
-export const httpUrl = z.url({ protocol: /^https?$/ });
-
-export function parseWithDebug<T>(schema: z.ZodType<T>, data: unknown): T {
-  try {
-    return schema.parse(data);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      debug("schema", z.prettifyError(error), error.issues);
-    }
-    throw error;
-  }
+export function makeWorkspaceMembershipDeleteInfo(
+  overrides: Partial<WorkspaceMembershipDeleteInfo> = {},
+): WorkspaceMembershipDeleteInfo {
+  return {
+    isUniqueOwner: false,
+    memberOfProjects: [],
+    uniqueOwnerOfProjects: [],
+    ...overrides,
+  };
 }

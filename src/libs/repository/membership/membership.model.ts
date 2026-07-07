@@ -20,6 +20,7 @@
  */
 
 import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
 import { PermissionsBase, ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
 import { userNestedSchema } from "../user/user.model";
 
@@ -51,6 +52,6 @@ export const roleSchema = z.object({
 export type Role = z.infer<typeof roleSchema>;
 
 export const userRoleSchema = z.object({
-  userRole: roleSchema.optional(),
+  userRole: roleSchema.apply(optionalNullable),
 });
 export type UserRole = z.infer<typeof userRoleSchema>;

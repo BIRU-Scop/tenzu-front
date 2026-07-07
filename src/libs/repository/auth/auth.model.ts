@@ -20,6 +20,7 @@
  */
 
 import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
 
 export type Credential = {
   username: string;
@@ -34,10 +35,10 @@ export const tokensSchema = z.object({
 export type Tokens = z.infer<typeof tokensSchema>;
 
 export const invitationTokensSchema = z.object({
-  projectInvitationToken: z.string().optional(),
-  workspaceInvitationToken: z.string().optional(),
-  acceptProjectInvitation: z.boolean().optional(),
-  acceptWorkspaceInvitation: z.boolean().optional(),
+  projectInvitationToken: z.string().apply(optionalNullable),
+  workspaceInvitationToken: z.string().apply(optionalNullable),
+  acceptProjectInvitation: z.boolean().apply(optionalNullable),
+  acceptWorkspaceInvitation: z.boolean().apply(optionalNullable),
 });
 export type InvitationTokens = z.infer<typeof invitationTokensSchema>;
 
@@ -78,10 +79,10 @@ export const providerCallbackSchema = z.object({
       "unverified",
       "missing_terms_acceptance",
     ])
-    .optional(),
-  socialSessionKey: z.string().optional(),
-  email: z.string().optional(),
-  next: z.string().optional(),
+    .apply(optionalNullable),
+  socialSessionKey: z.string().apply(optionalNullable),
+  email: z.string().apply(optionalNullable),
+  next: z.string().apply(optionalNullable),
   fromSignup: z.boolean(),
 });
 export type ProviderCallback = z.infer<typeof providerCallbackSchema>;

@@ -20,6 +20,7 @@
  */
 
 import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
 import { roleSchema } from "../membership/membership.model";
 import type { FileValue } from "@tenzu/repository/base/misc.model";
 import type { ProjectImportationNested } from "@tenzu/repository/importation/importation.model";
@@ -54,14 +55,14 @@ export const projectSummarySchema = z.object({
   landingPage: z.string(),
   description: z.string(),
   color: z.number(),
-  logo: z.string().optional(),
+  logo: z.string().apply(optionalNullable),
   userIsInvited: z.boolean(),
 });
 
 export const projectDetailSchema = projectSummarySchema.extend({
-  userRole: roleSchema.optional(),
+  userRole: roleSchema.apply(optionalNullable),
   workflows: z.custom<WorkflowNested[]>(),
-  importation: z.custom<ProjectImportationNested>().optional(),
+  importation: z.custom<ProjectImportationNested>().apply(optionalNullable),
 });
 
 export type ProjectSummary = z.infer<typeof projectSummarySchema>;
