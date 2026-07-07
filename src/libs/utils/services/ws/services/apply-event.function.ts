@@ -47,7 +47,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user";
 import { StatusDetail } from "@tenzu/repository/status";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { Notification, NotificationsStore } from "@tenzu/repository/notifications";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";

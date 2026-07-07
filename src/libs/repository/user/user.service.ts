@@ -33,7 +33,7 @@ import {
   verificationInfoSchema,
 } from "./user.model";
 import { HttpClient } from "@angular/common/http";
-import { Tokens, tokensSchema } from "../auth";
+import { Tokens, tokensSchema } from "../auth/auth.model";
 import { Observable, tap } from "rxjs";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";

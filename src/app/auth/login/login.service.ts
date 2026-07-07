@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,7 +24,8 @@ import { inject, Injectable } from "@angular/core";
 import { tap } from "rxjs";
 import { Router } from "@angular/router";
 import { UserStore } from "@tenzu/repository/user";
-import { AuthService, Credential } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { Credential } from "@tenzu/repository/auth/auth.model";
 
 @Injectable({
   providedIn: "root",

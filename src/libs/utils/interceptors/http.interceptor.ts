@@ -21,7 +21,7 @@
 
 import { HttpErrorResponse, HttpHandlerFn, HttpRequest } from "@angular/common/http";
 import { inject } from "@angular/core";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { catchError, EMPTY, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";

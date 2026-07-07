@@ -26,7 +26,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService, UserStore } from "@tenzu/repository/user";
 import { HttpErrorResponse } from "@angular/common/http";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";

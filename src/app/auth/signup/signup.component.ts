@@ -43,7 +43,9 @@ import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { AuthService, InvitationTokens, trackFormValidationEffect } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { InvitationTokens } from "@tenzu/repository/auth/auth.model";
+import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";

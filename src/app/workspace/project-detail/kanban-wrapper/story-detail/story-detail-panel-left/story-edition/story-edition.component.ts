@@ -41,7 +41,7 @@ import { ProjectDetail } from "@tenzu/repository/project";
 import { StoryDetail } from "@tenzu/repository/story";
 import { form, FormField, readonly, submit } from "@angular/forms/signals";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { StoryDetailFacade } from "../../story-detail.facade";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";

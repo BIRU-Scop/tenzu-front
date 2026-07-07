@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,7 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { switchMap, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { UserService, UserStore, VerificationInfo } from "@tenzu/repository/user";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 
 export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const userService = inject(UserService);
