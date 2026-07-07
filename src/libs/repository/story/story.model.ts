@@ -19,42 +19,58 @@
  *
  */
 
-import { StatusSummary } from "../status/status.model";
-import { User, UserNested } from "../user/user.model";
-import { Workflow } from "../workflow/workflow.model";
-import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { z } from "zod/v4";
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
+import { userNestedSchema } from "../user/user.model";
+import type { User } from "../user/user.model";
+import type { StatusSummary } from "../status/status.model";
+import type { Workflow } from "../workflow/workflow.model";
+import type { ProjectDetail } from "../project/project.model";
 
-export type StoryNested = {
-  ref: number;
-  title: string;
-  workflowId: Workflow["id"];
-  projectId: ProjectDetail["id"];
-};
+export const storyNestedSchema = z.object({
+  ref: z.number(),
+  title: z.string(),
+  workflowId: z.string<Workflow["id"]>(),
+  projectId: z.string<ProjectDetail["id"]>(),
+});
+export type StoryNested = z.infer<typeof storyNestedSchema>;
 
-export type StorySummary = StoryNested & {
-  version: number;
-  statusId: StatusSummary["id"];
-  assigneeIds: Array<User["id"]>;
-};
+export const storySummarySchema = storyNestedSchema.extend({
+  version: z.number(),
+  statusId: z.string<StatusSummary["id"]>(),
+  assigneeIds: z.array(z.string<User["id"]>()),
+});
+export type StorySummary = z.infer<typeof storySummarySchema>;
 
-export type StoryDetail = StorySummary & {
-  workflow: Pick<Workflow, "id" | "name" | "slug" | "projectId">;
-  prev: null | {
-    ref: StorySummary["ref"];
-    title: StorySummary["title"];
-  };
-  next: null | {
-    ref: StorySummary["ref"];
-    title: StorySummary["title"];
-  };
-  createdBy?: Pick<User, "username" | "fullName" | "color">;
-  createdAt: string;
-  titleUpdatedAt: string | null;
-  titleUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
-  descriptionUpdatedAt: string | null;
-  descriptionUpdatedBy: Pick<User, "username" | "fullName" | "color"> | null;
-  totalComments: number;
-};
+const storyUserSchema = z.object({
+  username: z.string(),
+  fullName: z.string(),
+  color: z.number(),
+});
+
+const storyLinkSchema = z.object({
+  ref: z.number(),
+  title: z.string(),
+});
+
+export const storyDetailSchema = storySummarySchema.extend({
+  workflow: z.object({
+    id: z.string<Workflow["id"]>(),
+    name: z.string(),
+    slug: z.string(),
+    projectId: z.string<ProjectDetail["id"]>(),
+  }),
+  prev: storyLinkSchema.nullable(),
+  next: storyLinkSchema.nullable(),
+  createdBy: storyUserSchema.apply(optionalNullable),
+  createdAt: isoDatetime,
+  titleUpdatedAt: isoDatetime.nullable(),
+  titleUpdatedBy: storyUserSchema.nullable(),
+  descriptionUpdatedAt: isoDatetime.nullable(),
+  descriptionUpdatedBy: storyUserSchema.nullable(),
+  totalComments: z.number(),
+});
+export type StoryDetail = z.infer<typeof storyDetailSchema>;
 
 export type StoryReorder = {
   place: "after" | "before";
@@ -71,7 +87,8 @@ export type StoryReorderPayloadEvent = StoryReorderPayload & {
 
 export type StoryCreatePayload = Pick<StorySummary, "title" | "statusId">;
 
-export type StoryAssign = {
-  user: UserNested;
-  story: Pick<StorySummary, "ref" | "title">;
-};
+export const storyAssignSchema = z.object({
+  user: userNestedSchema,
+  story: storyLinkSchema,
+});
+export type StoryAssign = z.infer<typeof storyAssignSchema>;

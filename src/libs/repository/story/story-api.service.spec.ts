@@ -30,13 +30,13 @@
  * restate the implementation. The real back/front contract is covered by E2E.
  */
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 import { StoryApiService } from "./story-api.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { makeStorySummary } from "@tenzu/repository/story/story.factories";
+import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "@tenzu/repository/story/story.factories";
 import { provideConfigAppTesting, testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("StoryApiService", () => {
@@ -51,10 +51,12 @@ describe("StoryApiService", () => {
     service = TestBed.inject(StoryApiService);
     httpMock = TestBed.inject(HttpTestingController);
     BASE = TestBed.inject(ConfigAppService).apiUrl();
+    vi.spyOn(console, "debug").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     httpMock.verify();
+    vi.restoreAllMocks();
   });
 
   it("lists stories", async () => {
@@ -66,8 +68,17 @@ describe("StoryApiService", () => {
     expect(await promise).toEqual(stories);
   });
 
+  it("throws on a non-conforming payload", async () => {
+    const raw = { ...makeStorySummary({ ref: 1 }), version: "one" };
+    const promise = lastValueFrom(service.list({ workflowId: "wf-1" }, { limit: 50, offset: 0 }));
+
+    httpMock.expectOne((r) => r.url === `${BASE}/workflows/wf-1/stories`).flush({ data: [raw] });
+
+    await expect(promise).rejects.toThrow();
+  });
+
   it("gets a story detail", async () => {
-    const detail = makeStorySummary({ ref: 3 });
+    const detail = makeStoryDetail({ ref: 3 });
     const promise = lastValueFrom(service.get({ projectId: "p-1", ref: 3 }));
 
     httpMock.expectOne(`${BASE}/projects/p-1/stories/3`).flush({ data: detail });
@@ -76,7 +87,7 @@ describe("StoryApiService", () => {
   });
 
   it("creates an assignee", async () => {
-    const assign = { user: { id: "user-1" }, story: { ref: 4, title: "t" } };
+    const assign = makeStoryAssign({ story: { ref: 4, title: "t" } });
     const promise = lastValueFrom(service.createAssignee("user-1", { projectId: "p-1", ref: 4 }));
 
     const req = httpMock.expectOne(`${BASE}/projects/p-1/stories/4/assignments`);
