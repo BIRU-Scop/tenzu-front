@@ -23,7 +23,7 @@ import { beforeEach, describe, expect, it, Mocked, vi } from "vitest";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { FeedDialog } from "./feed-dialog";
-import { FeedRepositoryService } from "@tenzu/repository/feed";
+import { FeedRepositoryService } from "@tenzu/repository/feed/feed-repository.service";
 import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";

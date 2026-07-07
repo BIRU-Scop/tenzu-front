@@ -19,7 +19,7 @@
  *
  */
 
-import { FeedItem } from "@tenzu/repository/feed";
+import { FeedItem } from "./feed-item.model";
 
 type FeedItemFields = { [K in keyof FeedItem]: FeedItem[K] };
 
