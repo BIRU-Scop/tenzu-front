@@ -25,7 +25,7 @@ import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { MatOption, MatSelect } from "@angular/material/select";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";

@@ -48,7 +48,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { HttpClient } from "@angular/common/http";
-import { User } from "@tenzu/repository/user";
+import { User } from "@tenzu/repository/user/user.model";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
 import { ConfirmPopupComponent, ConfirmPopupData } from "@tenzu/directives/confirm";

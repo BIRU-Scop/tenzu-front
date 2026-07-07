@@ -22,7 +22,7 @@ import type * as StoryApiServiceType from "./story-api.type";
 import { Injectable } from "@angular/core";
 import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayload } from "./story.model";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { Observable } from "rxjs";
 import { BaseDataModel } from "@tenzu/repository/base/misc.model";
 import { map } from "rxjs/operators";

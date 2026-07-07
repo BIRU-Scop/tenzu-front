@@ -19,7 +19,7 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 
 export type StoryCommentNested = {
   id: string;

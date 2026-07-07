@@ -42,7 +42,7 @@ import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { ReactiveFormsModule } from "@angular/forms";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { skip } from "rxjs";
 import { filter } from "rxjs/operators";

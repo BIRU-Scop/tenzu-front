@@ -23,7 +23,7 @@ import { computed, signal } from "@angular/core";
 import { patchState, signalStore, withComputed, withMethods, withProps, withState } from "@ngrx/signals";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership/invitation.model";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation/importation.model";
 import { PeopleEmailRow } from "./invite-people-dialog.type";
 import { apply, applyEach, email, form, required, validate } from "@angular/forms/signals";

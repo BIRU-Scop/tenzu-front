@@ -20,7 +20,7 @@
  */
 
 import { Signal } from "@angular/core";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { Role } from "@tenzu/repository/membership/membership.model";
 import { InvitationBase } from "@tenzu/repository/membership/invitation.model";
 import { ItemType } from "@tenzu/repository/base/misc.model";

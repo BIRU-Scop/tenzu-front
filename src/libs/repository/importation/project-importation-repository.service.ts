@@ -33,7 +33,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { Router } from "@angular/router";
 
 @Injectable({

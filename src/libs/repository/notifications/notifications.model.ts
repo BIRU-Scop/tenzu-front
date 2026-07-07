@@ -19,7 +19,7 @@
  *
  */
 
-import { UserNested } from "../user";
+import { UserNested } from "../user/user.model";
 import { StoryNested } from "../story/story.model";
 import { ProjectLinkNested } from "../project/project.model";
 import { WorkspaceLinkNested } from "@tenzu/repository/workspace";

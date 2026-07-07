@@ -29,7 +29,7 @@ import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { MatDialogContent } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";

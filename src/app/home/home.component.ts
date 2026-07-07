@@ -27,7 +27,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toSignal } from "@angular/core/rxjs-interop";

@@ -30,7 +30,7 @@ import { StatusSummary } from "../status/status.model";
 import { Workflow } from "../workflow";
 import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
 import { EntityId } from "@ngrx/signals/entities";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 
 @Injectable({

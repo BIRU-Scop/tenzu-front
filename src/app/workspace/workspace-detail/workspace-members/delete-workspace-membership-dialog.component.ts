@@ -40,7 +40,7 @@ import {
   WorkspaceMembershipRepositoryService,
 } from "@tenzu/repository/workspace-membership";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { LowerCasePipe } from "@angular/common";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 

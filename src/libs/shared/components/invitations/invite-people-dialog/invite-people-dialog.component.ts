@@ -34,7 +34,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { AddInvitationFieldComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/add-invitation-field/add-invitation-field.component";
 import { InvitationFormComponent } from "./invitation-form/invitation-form.component";
 import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation/importation.model";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { ItemType } from "@tenzu/repository/base/misc.model";
 import { InvitePeopleStore } from "./invite-people.store";
 

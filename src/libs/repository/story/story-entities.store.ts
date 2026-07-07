@@ -26,7 +26,7 @@ import { StatusSummary } from "../status/status.model";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base/features";
-import { UserNested } from "../user";
+import { UserNested } from "../user/user.model";
 import { ProjectSummary } from "@tenzu/repository/project/project.model";
 import { Workflow } from "@tenzu/repository/workflow";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";

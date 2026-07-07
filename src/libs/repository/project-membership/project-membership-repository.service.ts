@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -25,7 +25,7 @@ import { ProjectMembershipApiService } from "./project-membership-api.service";
 import { lastValueFrom } from "rxjs";
 import { ProjectMembershipEntitiesStore } from "./project-membership-entities.store";
 import { NotFoundEntityError } from "../base/errors";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { ResetService } from "@tenzu/repository/base/reset.service";
 
 @Injectable({

@@ -28,7 +28,7 @@ import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permis
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story/story.model";
 
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 
 import { StoryEditionComponent } from "./story-edition/story-edition.component";
 import { StoryDetailCommentsListComponent } from "./story-detail-comments-list/story-detail-comments-list.component";

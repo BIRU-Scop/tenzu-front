@@ -19,7 +19,7 @@
  *
  */
 
-import { User, UserNested } from "@tenzu/repository/user";
+import { User, UserNested } from "@tenzu/repository/user/user.model";
 
 export function makeUserNested(overrides: Partial<UserNested> = {}): UserNested {
   return {

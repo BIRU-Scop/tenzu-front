@@ -31,7 +31,8 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { MatCheckbox } from "@angular/material/checkbox";
 import { MatIcon } from "@angular/material/icon";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { SendVerifyUserValidator, UserService } from "@tenzu/repository/user";
+import { SendVerifyUserValidator } from "@tenzu/repository/user/user.model";
+import { UserService } from "@tenzu/repository/user/user.service";
 import PendingVerificationComponent from "../signup/pending-verification/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";

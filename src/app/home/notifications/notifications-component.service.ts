@@ -28,7 +28,7 @@ import {
 import { NotificationsService } from "@tenzu/repository/notifications/notifications.service";
 import { NotificationsStore } from "@tenzu/repository/notifications/notifications.store";
 import { lastValueFrom } from "rxjs";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 
 @Injectable({
   providedIn: "root",

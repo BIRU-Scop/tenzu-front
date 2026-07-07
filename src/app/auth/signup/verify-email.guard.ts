@@ -24,7 +24,9 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { switchMap, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
-import { UserService, UserStore, VerificationInfo } from "@tenzu/repository/user";
+import { VerificationInfo } from "@tenzu/repository/user/user.model";
+import { UserService } from "@tenzu/repository/user/user.service";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 
 export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {

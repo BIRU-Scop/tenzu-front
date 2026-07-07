@@ -23,7 +23,7 @@ import { Component, inject } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { UserDeleteInfo } from "@tenzu/repository/user";
+import { UserDeleteInfo } from "@tenzu/repository/user/user.model";
 import { MatIcon } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
