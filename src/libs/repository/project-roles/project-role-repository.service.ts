@@ -25,7 +25,7 @@ import { ProjectRolesDetailStore, ProjectRolesEntitiesSummaryStore } from "./pro
 import { BaseRepositoryService } from "../base/repository.service";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 
 @Injectable({
   providedIn: "root",

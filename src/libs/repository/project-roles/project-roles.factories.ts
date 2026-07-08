@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,15 +19,15 @@
  *
  */
 
-import { z } from "zod/v4";
-import { roleSchema } from "../membership/membership.model";
+import { makeRole } from "../membership/membership.factories";
+import { ProjectRoleSummary } from "./project-roles.model";
 
-export const projectRoleSummarySchema = roleSchema.extend({
-  projectId: z.string(),
-  totalMembers: z.number(),
-  hasInvitees: z.boolean(),
-});
-export type ProjectRoleSummary = z.infer<typeof projectRoleSummarySchema>;
-
-export const projectRoleDetailSchema = projectRoleSummarySchema;
-export type ProjectRoleDetail = z.infer<typeof projectRoleDetailSchema>;
+export function makeProjectRoleSummary(overrides: Partial<ProjectRoleSummary> = {}): ProjectRoleSummary {
+  return {
+    ...makeRole(),
+    projectId: "project-1",
+    totalMembers: 0,
+    hasInvitees: false,
+    ...overrides,
+  };
+}
