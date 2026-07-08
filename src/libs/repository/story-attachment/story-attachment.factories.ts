@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,15 +19,16 @@
  *
  */
 
-import { z } from "zod/v4";
-import { isoDatetime } from "../base/schema-utils";
+import { StoryAttachment } from "./story-attachment.model";
 
-export const storyAttachmentSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  contentType: z.string(),
-  createdAt: isoDatetime,
-  size: z.number(),
-  file: z.string(),
-});
-export type StoryAttachment = z.infer<typeof storyAttachmentSchema>;
+export function makeStoryAttachment(overrides: Partial<StoryAttachment> = {}): StoryAttachment {
+  return {
+    id: "attachment-1",
+    name: "diagram.png",
+    contentType: "image/png",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    size: 1024,
+    file: "https://example.com/files/diagram.png",
+    ...overrides,
+  };
+}
