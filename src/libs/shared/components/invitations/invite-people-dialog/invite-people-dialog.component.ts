@@ -99,7 +99,9 @@ export class InvitePeopleDialogComponent {
   protected store = inject(InvitePeopleStore);
 
   constructor() {
-    effect(() => this.store.setContext(this.existingMembers(), this.existingInvitations(), this.userRole()));
+    effect(() =>
+      this.store.setContext(this.existingMembers(), this.existingInvitations(), this.userRole(), this.itemType()),
+    );
     effect(() => untracked(() => this.store.addInitialInvites(this.initialInvites())));
   }
 }

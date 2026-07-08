@@ -87,7 +87,10 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
     });
     apply(
       path,
-      roleSelectorFieldSchema(() => this.entityRole()?.userRole),
+      roleSelectorFieldSchema(
+        () => this.entityRole()?.userRole,
+        () => this.itemType(),
+      ),
     );
   });
   changedSelf = output<{ roleId: Role["id"]; entityRole: T }>();

@@ -27,13 +27,15 @@ import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/imp
 import { PeopleEmailRow } from "./invite-people-dialog.type";
 import { apply, applyEach, email, form, required, validate } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 export const InvitePeopleStore = signalStore(
   withState<{
     existingMembers: UserNested[];
     existingInvitations: InvitationBase[];
     userRole: Role | undefined;
-  }>({ existingMembers: [], existingInvitations: [], userRole: undefined }),
+    itemType: ItemType;
+  }>({ existingMembers: [], existingInvitations: [], userRole: undefined, itemType: "project" }),
 
   withComputed((store) => {
     const memberEmails = computed(() => store.existingMembers().map((member) => member.email));
@@ -51,7 +53,10 @@ export const InvitePeopleStore = signalStore(
         email(item.emailGroup.email, { message: "component.email.errors.email" });
         apply(
           item.roleId,
-          roleSelectorFieldSchema(() => store.userRole()),
+          roleSelectorFieldSchema(
+            () => store.userRole(),
+            () => store.itemType(),
+          ),
         );
         validate(item.emailGroup.email, ({ value }) => {
           return store.memberEmails().includes(value())
@@ -86,8 +91,13 @@ export const InvitePeopleStore = signalStore(
     ),
   })),
   withMethods((store) => ({
-    setContext(existingMembers: UserNested[], existingInvitations: InvitationBase[], userRole: Role | undefined) {
-      patchState(store, { existingMembers, existingInvitations, userRole });
+    setContext(
+      existingMembers: UserNested[],
+      existingInvitations: InvitationBase[],
+      userRole: Role | undefined,
+      itemType: ItemType,
+    ) {
+      patchState(store, { existingMembers, existingInvitations, userRole, itemType });
     },
     addInitialInvites(initialInvites: ProjectImportationPendingInvitationNested[]) {
       const existing = store.emailRowsModel().emailRows;

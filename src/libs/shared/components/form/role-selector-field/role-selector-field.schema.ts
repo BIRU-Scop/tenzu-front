@@ -20,18 +20,33 @@
  */
 
 import { disabled, schema } from "@angular/forms/signals";
-import { inject } from "@angular/core";
+import { computed, inject } from "@angular/core";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { Role } from "@tenzu/repository/membership";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
-export const roleSelectorFieldSchema = (userRole: () => Role | undefined) => {
+export const roleSelectorFieldSchema = (userRole: () => Role | undefined, itemType: () => ItemType) => {
   return schema<string | null>((field) => {
-    const roleRepositoryService = inject(WorkspaceRoleRepositoryService);
-    disabled(field, ({ value }) => {
-      if (!userRole()?.isOwner) {
-        return value() === roleRepositoryService.ownerRole()?.id;
+    const projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
+    const workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
+    const roleRepositoryService = computed(() => {
+      switch (itemType()) {
+        case "project": {
+          return projectRoleRepositoryService;
+        }
+        case "workspace": {
+          return workspaceRoleRepositoryService;
+        }
       }
-      return false;
+    });
+    disabled(field, {
+      when: ({ value }) => {
+        if (!userRole()?.isOwner) {
+          return value() === roleRepositoryService().ownerRole()?.id;
+        }
+        return false;
+      },
     });
   });
 };
