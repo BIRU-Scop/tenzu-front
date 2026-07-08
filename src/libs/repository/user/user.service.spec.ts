@@ -28,6 +28,8 @@ import { UserService } from "./user.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { makeUser } from "@tenzu/repository/user/user.factories";
+import { makeProjectLinkNested, makeProjectNested } from "@tenzu/repository/project/project.factories";
+import { makeWorkspaceLinkNested, makeWorkspaceNested } from "@tenzu/repository/workspace/workspace.factories";
 
 describe(UserService.name, () => {
   let service: UserService;
@@ -77,8 +79,8 @@ describe(UserService.name, () => {
   it("verifyUser parses conforming payload", async () => {
     const info = {
       auth: { access: "access-token", refresh: "refresh-token", username: "jdoe" },
-      workspaceInvitation: { workspace: { id: "workspace-1" }, status: "pending" },
-      projectInvitationToken: { project: { id: "project-1" }, status: "pending" },
+      workspaceInvitation: { workspace: makeWorkspaceLinkNested(), status: "pending" },
+      projectInvitationToken: { project: makeProjectLinkNested(), status: "pending" },
     };
     const promise = lastValueFrom(service.verifyUser("verify-token"));
 
@@ -89,10 +91,10 @@ describe(UserService.name, () => {
 
   it("getDeleteInfo parses conforming payload", async () => {
     const info = {
-      onlyOwnerCollectiveWorkspaces: [{ id: "workspace-1" }],
-      onlyOwnerCollectiveProjects: [{ id: "project-1" }],
-      onlyMemberWorkspaces: [{ id: "workspace-2", projects: [{ id: "project-2" }] }],
-      onlyMemberProjects: [{ id: "project-3" }],
+      onlyOwnerCollectiveWorkspaces: [makeWorkspaceNested({ id: "workspace-1" })],
+      onlyOwnerCollectiveProjects: [makeProjectNested({ id: "project-1" })],
+      onlyMemberWorkspaces: [{ ...makeWorkspaceNested({ id: "workspace-2" }), projects: [makeProjectLinkNested()] }],
+      onlyMemberProjects: [makeProjectNested({ id: "project-3" })],
     };
     const promise = lastValueFrom(service.getDeleteInfo());
 

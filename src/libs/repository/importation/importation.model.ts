@@ -23,7 +23,7 @@ import { z } from "zod/v4";
 import { optionalNullable } from "../base/schema-utils";
 import { invitationBaseSchema } from "../membership/invitation.model";
 import type { FileValue } from "../base/misc.model";
-import type { ProjectNested } from "../project/project.model";
+import { projectNestedSchema } from "../project/project-nested.model";
 
 export enum ProjectImportationType {
   TENZU = "TZ",
@@ -66,7 +66,7 @@ export type ProjectImportationNested = z.infer<typeof projectImportationNestedSc
 export const projectImportationSchema = projectImportationNestedSchema.extend({
   extraData: projectImportationDataSchema,
   sourceName: z.string(),
-  project: z.custom<ProjectNested>(),
+  project: projectNestedSchema,
 });
 export type ProjectImportation = z.infer<typeof projectImportationSchema>;
 

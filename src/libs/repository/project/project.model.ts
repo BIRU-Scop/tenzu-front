@@ -24,38 +24,18 @@ import { optionalNullable } from "../base/schema-utils";
 import { roleSchema } from "../membership/membership.model";
 import type { FileValue } from "../base/misc.model";
 import { projectImportationNestedSchema } from "../importation/importation.model";
-import type { WorkspaceSummary } from "../workspace/workspace.model";
 import { workflowNestedSchema } from "../workflow/workflow.model";
+import {
+  projectNestedSchema,
+  projectLinkNestedSchema,
+  type ProjectNested,
+  type ProjectLinkNested,
+} from "./project-nested.model";
 
-export type ProjectLogoBase = {
-  logo?: string;
-};
+export { projectNestedSchema, projectLinkNestedSchema };
+export type { ProjectNested, ProjectLinkNested };
 
-type _ProjectBaseNested = {
-  id: string;
-  workspaceId: string;
-  name: string;
-  slug: string;
-  landingPage: string;
-};
-
-export type ProjectNested = ProjectLogoBase &
-  _ProjectBaseNested & {
-    description: string;
-    color: number;
-  };
-
-export type ProjectLinkNested = _ProjectBaseNested;
-
-export const projectSummarySchema = z.object({
-  id: z.string(),
-  workspaceId: z.string<WorkspaceSummary["id"]>(),
-  name: z.string(),
-  slug: z.string(),
-  landingPage: z.string(),
-  description: z.string(),
-  color: z.number(),
-  logo: z.string().apply(optionalNullable),
+export const projectSummarySchema = projectNestedSchema.extend({
   userIsInvited: z.boolean(),
 });
 

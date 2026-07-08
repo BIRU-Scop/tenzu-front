@@ -22,10 +22,10 @@
 import { z } from "zod/v4";
 import { tokensSchema } from "../auth/auth.model";
 import type { InvitationTokens } from "../auth/auth.model";
-import type { WorkspaceNested } from "../workspace/workspace.model";
-import type { ProjectLinkNested, ProjectNested } from "../project/project.model";
-import type { ProjectInvitationNested } from "../project-invitations/project-invitation.model";
-import type { WorkspaceInvitationNested } from "../workspace-invitations/workspace-invitation.model";
+import { workspaceNestedSchema } from "../workspace/workspace-nested.model";
+import { projectNestedSchema, projectLinkNestedSchema } from "../project/project-nested.model";
+import { projectInvitationNestedSchema } from "../project-invitations/project-invitation-nested.model";
+import { workspaceInvitationNestedSchema } from "../workspace-invitations/workspace-invitation-nested.model";
 
 export const userNestedSchema = z.object({
   id: z.string(),
@@ -43,20 +43,20 @@ export type User = z.infer<typeof userSchema>;
 
 export const verificationInfoSchema = z.object({
   auth: tokensSchema,
-  workspaceInvitation: z.custom<WorkspaceInvitationNested>(),
-  projectInvitationToken: z.custom<ProjectInvitationNested>(),
+  workspaceInvitation: workspaceInvitationNestedSchema,
+  projectInvitationToken: projectInvitationNestedSchema,
 });
 export type VerificationInfo = z.infer<typeof verificationInfoSchema>;
 
-type _WorkspaceForDeleteWithProjectsNested = WorkspaceNested & {
-  projects: ProjectLinkNested[];
-};
+const workspaceForDeleteWithProjectsNestedSchema = workspaceNestedSchema.extend({
+  projects: z.array(projectLinkNestedSchema),
+});
 
 export const userDeleteInfoSchema = z.object({
-  onlyOwnerCollectiveWorkspaces: z.array(z.custom<WorkspaceNested>()),
-  onlyOwnerCollectiveProjects: z.array(z.custom<ProjectNested>()),
-  onlyMemberWorkspaces: z.array(z.custom<_WorkspaceForDeleteWithProjectsNested>()),
-  onlyMemberProjects: z.array(z.custom<ProjectNested>()),
+  onlyOwnerCollectiveWorkspaces: z.array(workspaceNestedSchema),
+  onlyOwnerCollectiveProjects: z.array(projectNestedSchema),
+  onlyMemberWorkspaces: z.array(workspaceForDeleteWithProjectsNestedSchema),
+  onlyMemberProjects: z.array(projectNestedSchema),
 });
 export type UserDeleteInfo = z.infer<typeof userDeleteInfoSchema>;
 

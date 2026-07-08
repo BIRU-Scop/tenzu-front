@@ -22,14 +22,10 @@
 import { z } from "zod/v4";
 import { isoDatetime, optionalNullable } from "@tenzu/repository/base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
+import { InvitationStatus } from "./invitation-status.model";
 import type { Role } from "./membership.model";
 
-export enum InvitationStatus {
-  PENDING = "pending",
-  ACCEPTED = "accepted",
-  REVOKED = "revoked",
-  DENIED = "denied",
-}
+export { InvitationStatus } from "./invitation-status.model";
 
 export const invitationBaseSchema = z.object({
   id: z.string(),

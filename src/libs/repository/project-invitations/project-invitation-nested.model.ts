@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,18 +20,11 @@
  */
 
 import { z } from "zod/v4";
-import { invitationBaseSchema, publicPendingInvitationBaseSchema } from "../membership/invitation.model";
 import { projectLinkNestedSchema } from "../project/project-nested.model";
+import { invitationStatusSchema } from "../membership/invitation-status.model";
 
-export const publicProjectPendingInvitationSchema = publicPendingInvitationBaseSchema.extend({
+export const projectInvitationNestedSchema = z.object({
   project: projectLinkNestedSchema,
+  status: invitationStatusSchema,
 });
-export type PublicProjectPendingInvitation = z.infer<typeof publicProjectPendingInvitationSchema>;
-
-export const projectInvitationSchema = invitationBaseSchema.extend({
-  project: projectLinkNestedSchema,
-});
-export type ProjectInvitation = z.infer<typeof projectInvitationSchema>;
-
-export { projectInvitationNestedSchema } from "./project-invitation-nested.model";
-export type { ProjectInvitationNested } from "./project-invitation-nested.model";
+export type ProjectInvitationNested = z.infer<typeof projectInvitationNestedSchema>;
