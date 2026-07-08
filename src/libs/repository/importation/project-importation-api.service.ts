@@ -21,8 +21,16 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { CreateProjectImportationPayload, InvitedProjectImportation, ProjectImportation } from "./importation.model";
+import { parseWithDebug } from "../base/schema-utils";
+import {
+  CreateProjectImportationPayload,
+  InvitedProjectImportation,
+  invitedProjectImportationSchema,
+  ProjectImportation,
+  projectImportationSchema,
+} from "./importation.model";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import type * as ProjectImportationApiServiceType from "./importation-api.type";
 import { InvitationsPayload } from "@tenzu/repository/membership/invitation.model";
 
@@ -41,6 +49,8 @@ export class ProjectImportationApiService extends AbstractApiService<
   CreateProjectImportationPayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects/importations`;
+  protected override summarySchema = projectImportationSchema;
+  protected override detailSchema = projectImportationSchema;
   protected override getBaseUrl(params: ProjectImportationApiServiceType.ListEntitiesSummaryParams) {
     return `${this.configAppService.apiUrl()}/workspaces/${params.workspaceId}/projects/importations`;
   }
@@ -72,6 +82,8 @@ export class ProjectImportationApiService extends AbstractApiService<
     data: InvitationsPayload,
     params: ProjectImportationApiServiceType.BaseParams,
   ): Observable<InvitedProjectImportation> {
-    return this.http.post<InvitedProjectImportation>(`${this.getEntityBaseUrl(params)}/invite`, data);
+    return this.http
+      .post<unknown>(`${this.getEntityBaseUrl(params)}/invite`, data)
+      .pipe(map((response) => parseWithDebug(invitedProjectImportationSchema, response)));
   }
 }

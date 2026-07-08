@@ -19,7 +19,12 @@
  *
  */
 
-import { ProjectDetail, ProjectLinkNested, ProjectSummary } from "@tenzu/repository/project/project.model";
+import {
+  ProjectDetail,
+  ProjectLinkNested,
+  ProjectNested,
+  ProjectSummary,
+} from "@tenzu/repository/project/project.model";
 
 export function makeProjectLinkNested(overrides: Partial<ProjectLinkNested> = {}): ProjectLinkNested {
   return {
@@ -28,6 +33,15 @@ export function makeProjectLinkNested(overrides: Partial<ProjectLinkNested> = {}
     name: "My Project",
     slug: "my-project",
     landingPage: "kanban",
+    ...overrides,
+  };
+}
+
+export function makeProjectNested(overrides: Partial<ProjectNested> = {}): ProjectNested {
+  return {
+    ...makeProjectLinkNested(),
+    description: "My project description",
+    color: 1,
     ...overrides,
   };
 }

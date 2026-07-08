@@ -23,7 +23,7 @@ import { z } from "zod/v4";
 import { optionalNullable } from "../base/schema-utils";
 import { roleSchema } from "../membership/membership.model";
 import type { FileValue } from "../base/misc.model";
-import type { ProjectImportationNested } from "../importation/importation.model";
+import { projectImportationNestedSchema } from "../importation/importation.model";
 import type { WorkspaceSummary } from "../workspace/workspace.model";
 import { workflowNestedSchema } from "../workflow/workflow.model";
 
@@ -62,7 +62,7 @@ export const projectSummarySchema = z.object({
 export const projectDetailSchema = projectSummarySchema.extend({
   userRole: roleSchema.apply(optionalNullable),
   workflows: z.array(workflowNestedSchema),
-  importation: z.custom<ProjectImportationNested>().apply(optionalNullable),
+  importation: projectImportationNestedSchema.apply(optionalNullable),
 });
 
 export type ProjectSummary = z.infer<typeof projectSummarySchema>;

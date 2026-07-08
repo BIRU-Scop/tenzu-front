@@ -22,7 +22,7 @@
 import { z } from "zod/v4";
 import { userRoleSchema } from "../membership/membership.model";
 import type { ProjectNested } from "../project/project.model";
-import type { ProjectImportation } from "../importation/importation.model";
+import { projectImportationSchema } from "../importation/importation.model";
 
 export const workspaceLinkNestedSchema = z.object({
   id: z.string(),
@@ -39,7 +39,7 @@ export type WorkspaceNested = z.infer<typeof workspaceNestedSchema>;
 export const workspaceSummarySchema = workspaceNestedSchema.extend({
   userMemberProjects: z.array(z.custom<ProjectNested>()),
   userInvitedProjects: z.array(z.custom<ProjectNested>()),
-  userImportedProjects: z.array(z.custom<ProjectImportation>()),
+  userImportedProjects: z.array(projectImportationSchema),
   userIsInvited: z.boolean(),
   userIsMember: z.boolean(),
   userCanCreateProjects: z.boolean(),
