@@ -65,10 +65,13 @@ export class InvitationRoleComponent {
   });
   roleControlForm = form(signal<Role["id"] | null>(null), (path) => {
     required(path);
-    disabled(path, () => this.invitation().status !== InvitationStatus.PENDING);
+    disabled(path, { when: () => this.invitation().status !== InvitationStatus.PENDING });
     apply(
       path,
-      roleSelectorFieldSchema(() => this.userRole()),
+      roleSelectorFieldSchema(
+        () => this.userRole(),
+        () => this.itemType(),
+      ),
     );
   });
   constructor() {
