@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,13 +19,13 @@
  *
  */
 
-import { z } from "zod/v4";
-import { roleSchema } from "../membership/membership.model";
+import { makeRole } from "@tenzu/repository/membership/membership.factories";
+import { WorkspaceRoleSummary } from "./workspace-roles.model";
 
-export const workspaceRoleSummarySchema = roleSchema.extend({
-  workspaceId: z.string(),
-});
-export type WorkspaceRoleSummary = z.infer<typeof workspaceRoleSummarySchema>;
-
-export const workspaceRoleDetailSchema = workspaceRoleSummarySchema;
-export type WorkspaceRoleDetail = z.infer<typeof workspaceRoleDetailSchema>;
+export function makeWorkspaceRoleSummary(overrides: Partial<WorkspaceRoleSummary> = {}): WorkspaceRoleSummary {
+  return {
+    ...makeRole(),
+    workspaceId: "workspace-1",
+    ...overrides,
+  };
+}
