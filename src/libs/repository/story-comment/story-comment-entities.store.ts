@@ -21,8 +21,8 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { StoryComment } from "./story-comment.model";
-import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base/features";
-import { StorySummary } from "@tenzu/repository/story/story.model";
+import { withEntityDetailStore, withEntityListFeature } from "../base/features";
+import { StorySummary } from "../story/story.model";
 
 const initialState = {
   currentStoryRef: null as StorySummary["ref"] | null,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,21 +19,15 @@
  *
  */
 
-import { z } from "zod/v4";
-import { isoDatetime, optionalNullable } from "../base/schema-utils";
-import { userNestedSchema } from "../user/user.model";
+import { makeUserNested } from "../user/user.factories";
+import { StoryComment } from "./story-comment.model";
 
-export const storyCommentNestedSchema = z.object({
-  id: z.string(),
-  text: z.string(),
-  createdAt: isoDatetime,
-  createdBy: userNestedSchema.apply(optionalNullable),
-});
-export type StoryCommentNested = z.infer<typeof storyCommentNestedSchema>;
-
-export const storyCommentSchema = storyCommentNestedSchema.extend({
-  modifiedAt: isoDatetime.apply(optionalNullable),
-  deletedAt: isoDatetime.apply(optionalNullable),
-  deletedBy: userNestedSchema.apply(optionalNullable),
-});
-export type StoryComment = z.infer<typeof storyCommentSchema>;
+export function makeStoryComment(overrides: Partial<StoryComment> = {}): StoryComment {
+  return {
+    id: "comment-1",
+    text: "A comment",
+    createdAt: "2026-01-01T00:00:00.000Z",
+    createdBy: makeUserNested(),
+    ...overrides,
+  };
+}

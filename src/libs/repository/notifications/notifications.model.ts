@@ -26,7 +26,7 @@ import { storyNestedSchema } from "../story/story.model";
 import { projectLinkNestedSchema } from "../project/project-nested.model";
 import { workspaceLinkNestedSchema } from "../workspace/workspace-nested.model";
 import { projectImportationSchema } from "../importation/importation.model";
-import type { StoryCommentNested } from "../story-comment/story-comment.model";
+import { storyCommentNestedSchema } from "../story-comment/story-comment.model";
 
 export type NotificationType =
   | "stories.assign"
@@ -120,7 +120,7 @@ export const storyCommentCreateNotificationSchema = z.object({
     project: projectLinkNestedSchema,
     story: storyNestedSchema,
     commentedBy: userNestedSchema,
-    comment: z.custom<StoryCommentNested>(),
+    comment: storyCommentNestedSchema,
   }),
 });
 export type StoryCommentCreateNotification = z.infer<typeof storyCommentCreateNotificationSchema>;

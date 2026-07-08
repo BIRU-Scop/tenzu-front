@@ -21,11 +21,12 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { StoryComment } from "./story-comment.model";
+import { parseWithDebug } from "../base/schema-utils";
+import { StoryComment, storyCommentSchema } from "./story-comment.model";
 import * as CommentApiType from "./story-comment-api.type";
 import { Observable } from "rxjs";
-import { makeOptions, QueryParams } from "@tenzu/repository/base/utils";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { makeOptions, QueryParams } from "../base/utils";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -42,6 +43,8 @@ export class StoryCommentApiService extends AbstractApiService<
   CommentApiType.DeleteEntityDetailParams
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override summarySchema = storyCommentSchema;
+  protected override detailSchema = storyCommentSchema;
 
   protected override getBaseUrl(params: CommentApiType.BaseParams): string {
     return `${this.baseUrl}/${params.projectId}/stories/${params.ref}/comments`;
@@ -58,9 +61,9 @@ export class StoryCommentApiService extends AbstractApiService<
     queryParams?: QueryParams,
   ): Observable<StoryComment> {
     return this.http
-      .delete<BaseDataModel<StoryComment>>(this.deleteUrl(params), {
+      .delete<BaseDataModel<unknown>>(this.deleteUrl(params), {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => parseWithDebug(storyCommentSchema, dataObject.data)));
   }
 }
