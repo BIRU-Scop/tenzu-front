@@ -22,6 +22,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AbstractApiService, makeFormData } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/schema-utils";
 import {
   CreateProjectPayload,
   projectDetailSchema,
@@ -78,7 +79,7 @@ export class ProjectApiService extends AbstractApiService<
   ): Observable<ProjectDetail> {
     const data = makeFormData<Partial<UpdateProjectPayload>>(item);
     return this.http
-      .patch<BaseDataModel<ProjectDetail>>(this.patchUrl(params), data)
-      .pipe(map((dataObject) => dataObject.data));
+      .patch<BaseDataModel<unknown>>(this.patchUrl(params), data)
+      .pipe(map((dataObject) => parseWithDebug(projectDetailSchema, dataObject.data)));
   }
 }
