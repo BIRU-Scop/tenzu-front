@@ -19,11 +19,14 @@
  *
  */
 
-export interface Language {
-  code: string;
-  name: string;
-  englishName: string;
-  textDirection: "rtl" | "ltr";
-  isDefault: boolean;
-  scriptType: "latin" | "cyrillic" | "greek" | "hebrew" | "arabic" | "chinese_and_devs" | "other";
-}
+import { z } from "zod/v4";
+
+export const languageSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  englishName: z.string(),
+  textDirection: z.enum(["rtl", "ltr"]),
+  isDefault: z.boolean(),
+  scriptType: z.enum(["latin", "cyrillic", "greek", "hebrew", "arabic", "chinese_and_devs", "other"]),
+});
+export type Language = z.infer<typeof languageSchema>;
