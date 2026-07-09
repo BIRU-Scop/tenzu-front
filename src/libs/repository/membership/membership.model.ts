@@ -45,7 +45,7 @@ export const roleSchema = z.object({
   name: z.string(),
   slug: z.string(),
   isOwner: z.boolean(),
-  order: z.number(),
+  order: z.int(),
   editable: z.boolean(),
   permissions: z.array(permissionSchema),
 });

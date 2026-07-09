@@ -26,13 +26,14 @@ import { workspaceNestedSchema } from "../workspace/workspace-nested.model";
 import { projectNestedSchema, projectLinkNestedSchema } from "../project/project-nested.model";
 import { projectInvitationNestedSchema } from "../project-invitations/project-invitation-nested.model";
 import { workspaceInvitationNestedSchema } from "../workspace-invitations/workspace-invitation-nested.model";
+import { optionalNullable } from "@tenzu/repository/base/schema-utils";
 
 export const userNestedSchema = z.object({
   id: z.string(),
   username: z.string(),
   fullName: z.string(),
-  color: z.number(),
-  email: z.string(),
+  color: z.int(),
+  email: z.email(),
 });
 export type UserNested = z.infer<typeof userNestedSchema>;
 
@@ -43,8 +44,8 @@ export type User = z.infer<typeof userSchema>;
 
 export const verificationInfoSchema = z.object({
   auth: tokensSchema,
-  workspaceInvitation: workspaceInvitationNestedSchema,
-  projectInvitationToken: projectInvitationNestedSchema,
+  workspaceInvitation: workspaceInvitationNestedSchema.apply(optionalNullable),
+  projectInvitation: projectInvitationNestedSchema.apply(optionalNullable),
 });
 export type VerificationInfo = z.infer<typeof verificationInfoSchema>;
 

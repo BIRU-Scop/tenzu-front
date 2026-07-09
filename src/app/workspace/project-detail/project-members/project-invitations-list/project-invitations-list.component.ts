@@ -57,7 +57,7 @@ import { ImportationStatus } from "@tenzu/repository/importation/importation.mod
             redirectUrlExtras: { relativeTo: activatedRoute },
           }"
         >
-          @if (project.importation && project.importation?.status === ImportationStatus.ACTION_NEEDED) {
+          @if (project.importation && project.importation.status === ImportationStatus.ACTION_NEEDED) {
             <app-project-invitations-list-importation-warning
               [projectImportation]="project.importation"
               [project]="project"

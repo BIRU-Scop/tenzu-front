@@ -19,7 +19,7 @@
  *
  */
 
-import { makeInvitationBase } from "../membership/membership.factories";
+import { makeProjectInvitation } from "../project-invitations/project-invitation.factories";
 import { makeProjectNested } from "../project/project.factories";
 import {
   ImportationStatus,
@@ -53,7 +53,7 @@ export function makeInvitedProjectImportation(
   overrides: Partial<InvitedProjectImportation> = {},
 ): InvitedProjectImportation {
   return {
-    invitations: [makeInvitationBase()],
+    invitations: [makeProjectInvitation()],
     projectImportation: makeProjectImportation(),
     ...overrides,
   };

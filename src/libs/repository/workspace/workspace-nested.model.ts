@@ -29,6 +29,6 @@ export const workspaceLinkNestedSchema = z.object({
 export type WorkspaceLinkNested = z.infer<typeof workspaceLinkNestedSchema>;
 
 export const workspaceNestedSchema = workspaceLinkNestedSchema.extend({
-  color: z.number(),
+  color: z.int(),
 });
 export type WorkspaceNested = z.infer<typeof workspaceNestedSchema>;

@@ -32,7 +32,7 @@ export enum Step {
 }
 
 export const workflowSchema = workflowNestedSchema.extend({
-  order: z.number(),
+  order: z.int(),
   statuses: z.array(statusSummarySchema),
 });
 export type Workflow = z.infer<typeof workflowSchema>;

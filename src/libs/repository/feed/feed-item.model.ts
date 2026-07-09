@@ -20,17 +20,15 @@
  */
 
 import { z } from "zod/v4";
-import { optionalNullable } from "../base/schema-utils";
-
-const optionalDate = z.iso.datetime({ offset: true }).apply(optionalNullable);
+import { isoDatetime, optionalNullable } from "@tenzu/repository/base/schema-utils";
 
 const feedItemBase = {
   id: z.string(),
   title: z.string(),
   content: z.string(),
   publicationDate: z.iso.datetime({ offset: true }),
-  expirationDate: optionalDate,
-  readAt: optionalDate,
+  expirationDate: isoDatetime.apply(optionalNullable),
+  readAt: isoDatetime.apply(optionalNullable),
 };
 
 const callToActionFeedItemSchema = z.object({
@@ -56,7 +54,7 @@ const feedItemSchema = z.discriminatedUnion("type", [callToActionFeedItemSchema,
 
 const feedItemReadStateSchema = z.object({
   id: z.string(),
-  readAt: optionalDate,
+  readAt: isoDatetime,
 });
 
 export type FeedItem = z.infer<typeof feedItemSchema>;

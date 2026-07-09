@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod/v4";
-import { optionalNullable } from "../base/schema-utils";
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
 
 export const projectLinkNestedSchema = z.object({
   id: z.string(),
@@ -34,6 +34,7 @@ export type ProjectLinkNested = z.infer<typeof projectLinkNestedSchema>;
 export const projectNestedSchema = projectLinkNestedSchema.extend({
   logo: z.string().apply(optionalNullable),
   description: z.string(),
-  color: z.number(),
+  color: z.int(),
+  modifiedAt: isoDatetime.apply(optionalNullable),
 });
 export type ProjectNested = z.infer<typeof projectNestedSchema>;

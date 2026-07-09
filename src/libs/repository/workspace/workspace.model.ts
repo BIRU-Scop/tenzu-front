@@ -40,6 +40,6 @@ export type WorkspaceSummary = z.infer<typeof workspaceSummarySchema>;
 
 export const workspaceDetailSchema = workspaceSummarySchema.extend({
   ...userRoleSchema.shape,
-  totalProjects: z.number(),
+  totalProjects: z.int(),
 });
 export type WorkspaceDetail = z.infer<typeof workspaceDetailSchema>;

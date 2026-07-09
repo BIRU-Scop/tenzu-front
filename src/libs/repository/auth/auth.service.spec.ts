@@ -67,7 +67,7 @@ describe(AuthService.name, () => {
   });
 
   it("initConfig parses the config and pushes the providers into the store", async () => {
-    const provider = { id: "google", name: "Google", client_id: "client-123" };
+    const provider = { id: "google", name: "Google", clientId: "client-123" };
     const initPromise = service.initConfig();
 
     httpMock.expectOne(`${BASE}/auth/config`).flush({ data: { socialaccount: { providers: [provider] } } });

@@ -32,21 +32,21 @@ export const invitationBaseSchema = z.object({
   status: z.enum(InvitationStatus),
   user: userNestedSchema.apply(optionalNullable),
   roleId: z.string<Role["id"]>(),
-  email: z.string(),
+  email: z.email(),
   resentAt: isoDatetime.apply(optionalNullable),
   createdAt: isoDatetime,
-  numEmailsSent: z.number(),
+  numEmailsSent: z.int(),
 });
 export type InvitationBase = z.infer<typeof invitationBaseSchema>;
 
 export const createInvitationsSchema = z.object({
   invitations: z.array(invitationBaseSchema),
-  alreadyMembers: z.number(),
+  alreadyMembers: z.int(),
 });
 export type CreateInvitations = z.infer<typeof createInvitationsSchema>;
 
 export const publicPendingInvitationBaseSchema = z.object({
-  email: z.string(),
+  email: z.email(),
   existingUser: z.boolean(),
 });
 export type PublicPendingInvitationBase = z.infer<typeof publicPendingInvitationBaseSchema>;

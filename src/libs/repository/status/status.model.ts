@@ -26,8 +26,8 @@ import { workflowNestedSchema } from "../workflow/workflow-nested.model";
 export const statusSummarySchema = z.object({
   id: z.string(),
   name: z.string(),
-  color: z.number(),
-  order: z.number().apply(optionalNullable),
+  color: z.int(),
+  order: z.int().apply(optionalNullable),
 });
 export type StatusSummary = z.infer<typeof statusSummarySchema>;
 

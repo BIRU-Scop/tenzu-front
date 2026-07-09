@@ -65,7 +65,7 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
   template: `
     @let _color = color();
     @let _importation = projectImportation();
-    @let _landingPage = _importation.project | projectLandingPageUrl;
+    @let _landingPage = _importation.project ? (_importation.project | projectLandingPageUrl) : false;
     @let _name = _importation.project?.name || "Lorem Ipsum";
     @let _description = _importation.project?.description || "Lorem Ipsum dolor sit amet";
     <mat-card
@@ -156,7 +156,7 @@ export class ProjectImportationCardComponent {
     if (projectImportation.project) {
       return projectImportation.project.color;
     }
-    const firstLetterCode = projectImportation.sourceName.codePointAt(0);
+    const firstLetterCode = projectImportation.sourceName?.codePointAt(0);
     return RandomColorService.castToColor(firstLetterCode || 0);
   });
 

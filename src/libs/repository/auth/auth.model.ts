@@ -45,7 +45,7 @@ export type InvitationTokens = z.infer<typeof invitationTokensSchema>;
 export const socialProviderSchema = z.object({
   id: z.string(),
   name: z.string(),
-  client_id: z.string(),
+  clientId: z.string().apply(optionalNullable),
 });
 export type SocialProvider = z.infer<typeof socialProviderSchema>;
 
@@ -81,7 +81,7 @@ export const providerCallbackSchema = z.object({
     ])
     .apply(optionalNullable),
   socialSessionKey: z.string().apply(optionalNullable),
-  email: z.string().apply(optionalNullable),
+  email: z.email().apply(optionalNullable),
   next: z.string().apply(optionalNullable),
   fromSignup: z.boolean(),
 });

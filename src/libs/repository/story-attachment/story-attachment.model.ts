@@ -27,7 +27,7 @@ export const storyAttachmentSchema = z.object({
   name: z.string(),
   contentType: z.string(),
   createdAt: isoDatetime,
-  size: z.number(),
+  size: z.int(),
   file: z.string(),
 });
 export type StoryAttachment = z.infer<typeof storyAttachmentSchema>;

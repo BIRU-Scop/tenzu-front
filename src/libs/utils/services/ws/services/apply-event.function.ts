@@ -448,7 +448,7 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
         });
       }
       const currentProject = projectRepositoryService.entityDetail();
-      if (currentProject && currentProject.id === content.projectImportation.project.id) {
+      if (currentProject && currentProject.id === content.projectImportation.project?.id) {
         projectRepositoryService.updateEntityDetail({
           ...currentProject,
           importation: content.projectImportation,

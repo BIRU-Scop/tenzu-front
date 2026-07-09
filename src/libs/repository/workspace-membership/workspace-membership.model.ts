@@ -30,7 +30,7 @@ export const workspaceMembershipNestedSchema = membershipBaseSchema.extend({
 export type WorkspaceMembershipNested = z.infer<typeof workspaceMembershipNestedSchema>;
 
 export const workspaceMembershipSchema = workspaceMembershipNestedSchema.extend({
-  totalProjectsIsMember: z.number(),
+  totalProjectsIsMember: z.int(),
 });
 export type WorkspaceMembership = z.infer<typeof workspaceMembershipSchema>;
 

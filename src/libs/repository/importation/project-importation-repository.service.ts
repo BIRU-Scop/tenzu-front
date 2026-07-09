@@ -142,11 +142,16 @@ export class ProjectImportationRepositoryService {
         )
         .pipe(
           map((invitedResult) => {
+            const { project } = invitedResult.projectImportation;
+            if (!project) {
+              throw new Error("handlePendingInvites: projectImportation.project missing");
+            }
             return {
               ...invitedResult,
+              projectImportation: { ...invitedResult.projectImportation, project },
               invitations: invitedResult.invitations.map((invitation) => ({
                 ...invitation,
-                project: invitedResult.projectImportation.project,
+                project,
               })),
             };
           }),

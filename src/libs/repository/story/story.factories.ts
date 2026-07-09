@@ -21,6 +21,7 @@
 
 import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story/story.model";
 import { makeUserNested } from "@tenzu/repository/user/user.factories";
+import { makeStatusSummary } from "@tenzu/repository/status/status.factories";
 
 export function makeStoryNested(overrides: Partial<StoryNested> = {}): StoryNested {
   return {
@@ -52,15 +53,16 @@ export function makeStoryDetail(overrides: Partial<StoryDetail> = {}): StoryDeta
       slug: "my-workflow",
       projectId: summary.projectId,
     },
-    prev: null,
-    next: null,
+    prev: undefined,
+    next: undefined,
     createdBy: { username: "jdoe", fullName: "John Doe", color: 1 },
     createdAt: "2026-01-01T00:00:00.000Z",
-    titleUpdatedAt: null,
-    titleUpdatedBy: null,
-    descriptionUpdatedAt: null,
-    descriptionUpdatedBy: null,
+    titleUpdatedAt: undefined,
+    titleUpdatedBy: undefined,
+    descriptionUpdatedAt: undefined,
+    descriptionUpdatedBy: undefined,
     totalComments: 0,
+    status: makeStatusSummary(),
     ...overrides,
   };
 }

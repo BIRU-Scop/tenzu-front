@@ -23,12 +23,12 @@ import { z } from "zod/v4";
 import { isoDatetime, optionalNullable } from "../base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
 import type { User } from "../user/user.model";
-import type { StatusSummary } from "../status/status.model";
+import { StatusSummary, statusSummarySchema } from "../status/status.model";
 import { Workflow, workflowNestedSchema } from "../workflow/workflow.model";
 import type { ProjectDetail } from "../project/project.model";
 
 export const storyNestedSchema = z.object({
-  ref: z.number(),
+  ref: z.int(),
   title: z.string(),
   workflowId: z.string<Workflow["id"]>(),
   projectId: z.string<ProjectDetail["id"]>(),
@@ -36,7 +36,7 @@ export const storyNestedSchema = z.object({
 export type StoryNested = z.infer<typeof storyNestedSchema>;
 
 export const storySummarySchema = storyNestedSchema.extend({
-  version: z.number(),
+  version: z.int(),
   statusId: z.string<StatusSummary["id"]>(),
   assigneeIds: z.array(z.string<User["id"]>()),
 });
@@ -45,25 +45,26 @@ export type StorySummary = z.infer<typeof storySummarySchema>;
 const storyUserSchema = z.object({
   username: z.string(),
   fullName: z.string(),
-  color: z.number(),
+  color: z.int(),
 });
 
 const storyLinkSchema = z.object({
-  ref: z.number(),
+  ref: z.int(),
   title: z.string(),
 });
 
 export const storyDetailSchema = storySummarySchema.extend({
   workflow: workflowNestedSchema,
-  prev: storyLinkSchema.nullable(),
-  next: storyLinkSchema.nullable(),
+  prev: storyLinkSchema.apply(optionalNullable),
+  next: storyLinkSchema.apply(optionalNullable),
   createdBy: storyUserSchema.apply(optionalNullable),
   createdAt: isoDatetime,
-  titleUpdatedAt: isoDatetime.nullable(),
-  titleUpdatedBy: storyUserSchema.nullable(),
-  descriptionUpdatedAt: isoDatetime.nullable(),
-  descriptionUpdatedBy: storyUserSchema.nullable(),
-  totalComments: z.number(),
+  titleUpdatedAt: isoDatetime.apply(optionalNullable),
+  titleUpdatedBy: storyUserSchema.apply(optionalNullable),
+  descriptionUpdatedAt: isoDatetime.apply(optionalNullable),
+  descriptionUpdatedBy: storyUserSchema.apply(optionalNullable),
+  totalComments: z.int(),
+  status: statusSummarySchema,
 });
 export type StoryDetail = z.infer<typeof storyDetailSchema>;
 

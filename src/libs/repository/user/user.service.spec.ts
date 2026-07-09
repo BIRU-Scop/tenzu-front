@@ -80,7 +80,7 @@ describe(UserService.name, () => {
     const info = {
       auth: { access: "access-token", refresh: "refresh-token", username: "jdoe" },
       workspaceInvitation: { workspace: makeWorkspaceLinkNested(), status: "pending" },
-      projectInvitationToken: { project: makeProjectLinkNested(), status: "pending" },
+      projectInvitation: { project: makeProjectLinkNested(), status: "pending" },
     };
     const promise = lastValueFrom(service.verifyUser("verify-token"));
 
