@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { ProjectDetail, ProjectSummary } from "../project/project.model";
 import {
   ProjectInvitation,

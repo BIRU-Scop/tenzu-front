@@ -28,7 +28,7 @@ import { z } from "zod/v4";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
-import { parseWithDebug } from "./schema-utils";
+import { parseWithDebug } from "./parse-with-debug";
 
 type OptionRequest = {
   dataIsFormData?: boolean;

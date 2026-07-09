@@ -31,7 +31,7 @@ import {
   StoryReorderPayload,
 } from "./story.model";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { UserNested } from "../user/user.model";
 import { Observable } from "rxjs";
 import { BaseDataModel } from "../base/misc.model";

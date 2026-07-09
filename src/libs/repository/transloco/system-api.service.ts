@@ -27,7 +27,7 @@ import { Language, languageSchema } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 
 @Injectable({
   providedIn: "root",

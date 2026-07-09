@@ -25,7 +25,7 @@ import { HttpClient } from "@angular/common/http";
 import { Notification, notificationSchema, NotificationCount, notificationCountSchema } from "./notifications.model";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { z } from "zod/v4";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";

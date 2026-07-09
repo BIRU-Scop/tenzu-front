@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { StoryComment, storyCommentSchema } from "./story-comment.model";
 import * as CommentApiType from "./story-comment-api.type";
 import { Observable } from "rxjs";

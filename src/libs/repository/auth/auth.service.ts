@@ -33,7 +33,7 @@ import {
   Tokens,
   tokensSchema,
 } from "./auth.model";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
 import { NavigationExtras, Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";

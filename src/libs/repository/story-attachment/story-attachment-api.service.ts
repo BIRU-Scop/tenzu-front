@@ -21,7 +21,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { StoryAttachment, storyAttachmentSchema } from "./story-attachment.model";
 import * as StoryAttachmentApiType from "./story-attachment-api.type";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";

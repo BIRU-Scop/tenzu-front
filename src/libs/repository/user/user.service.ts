@@ -37,7 +37,7 @@ import { Tokens, tokensSchema } from "../auth/auth.model";
 import { Observable, tap } from "rxjs";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { map } from "rxjs/operators";
 import { NotificationService } from "@tenzu/utils/services/notification";
 

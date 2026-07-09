@@ -23,7 +23,7 @@ import { Injectable } from "@angular/core";
 import { Workflow, workflowSchema, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { StatusSummary, statusSummarySchema } from "../status/status.model";
 import { AbstractApiServiceDetail } from "../base/abstract-api-services";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 import { Observable } from "rxjs";
 import { BaseDataModel } from "../base/misc.model";

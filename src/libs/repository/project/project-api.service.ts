@@ -22,7 +22,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AbstractApiService, makeFormData } from "../base/abstract-api-services";
-import { parseWithDebug } from "../base/schema-utils";
+import { parseWithDebug } from "../base/parse-with-debug";
 import {
   CreateProjectPayload,
   projectDetailSchema,
