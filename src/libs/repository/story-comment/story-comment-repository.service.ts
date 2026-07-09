@@ -23,13 +23,13 @@ import { inject, Injectable, signal } from "@angular/core";
 import { StoryCommentApiService } from "./story-comment-api.service";
 import { StoryComment } from "./story-comment.model";
 import { StoryCommentDetailStore, StoryCommentEntitiesSummaryStore } from "./story-comment-entities.store";
-import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
+import { BaseRepositoryService } from "../base/repository.service";
 import type * as StoryCommentApiServiceType from "./story-comment-api.type";
-import { QueryParams } from "@tenzu/repository/base/utils";
+import { QueryParams } from "../base/utils";
 import { lastValueFrom } from "rxjs";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 import { EntityId } from "@ngrx/signals/entities";
-import { StorySummary } from "@tenzu/repository/story/story.model";
+import { StorySummary } from "../story/story.model";
 
 @Injectable({
   providedIn: "root",

@@ -33,16 +33,16 @@ import {
   Tokens,
   tokensSchema,
 } from "./auth.model";
-import { parseWithDebug } from "@tenzu/repository/base/schema-utils";
+import { parseWithDebug } from "../base/schema-utils";
 import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
 import { NavigationExtras, Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ResetService } from "@tenzu/repository/base/reset.service";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
-import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
+import { ResetService } from "../base/reset.service";
+import { BaseDataModel } from "../base/misc.model";
+import { AuthConfigStore } from "../auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 

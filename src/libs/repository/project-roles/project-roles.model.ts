@@ -21,9 +21,10 @@
 
 import { z } from "zod/v4";
 import { roleSchema } from "../membership/membership.model";
+import { ProjectSummary } from "../project/project.model";
 
 export const projectRoleSummarySchema = roleSchema.extend({
-  projectId: z.string(),
+  projectId: z.string<ProjectSummary["id"]>(),
   totalMembers: z.number(),
   hasInvitees: z.boolean(),
 });

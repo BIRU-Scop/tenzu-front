@@ -25,7 +25,7 @@ import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { z } from "zod/v4";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
 import { parseWithDebug } from "./schema-utils";

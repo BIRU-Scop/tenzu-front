@@ -25,7 +25,7 @@ import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { makeProjectInvitation, makePublicProjectPendingInvitation } from "./project-invitation.factories";
 import { makeCreateInvitations } from "@tenzu/repository/membership/membership.factories";

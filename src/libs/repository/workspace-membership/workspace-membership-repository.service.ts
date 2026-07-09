@@ -25,9 +25,9 @@ import { WorkspaceMembershipApiService } from "./workspace-membership-api-servic
 import { WorkspaceMembership } from "./workspace-membership.model";
 import { WorkspaceMembershipEntitiesStore } from "./workspace-membership.store";
 import { NotFoundEntityError } from "../base/errors";
-import { UserNested } from "@tenzu/repository/user/user.model";
-import { ResetService } from "@tenzu/repository/base/reset.service";
-import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { UserNested } from "../user/user.model";
+import { ResetService } from "../base/reset.service";
+import { WorkspaceSummary } from "../workspace/workspace.model";
 
 @Injectable({
   providedIn: "root",

@@ -35,8 +35,8 @@ import { TestBed } from "@angular/core/testing";
 import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 import { StoryApiService } from "./story-api.service";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "@tenzu/repository/story/story.factories";
+import { ConfigAppService } from "../config-app/config-app.service";
+import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "../story/story.factories";
 import { provideConfigAppTesting, testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("StoryApiService", () => {

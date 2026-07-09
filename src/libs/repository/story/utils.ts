@@ -21,7 +21,7 @@
 
 import { StorySummary } from "./story.model";
 import { computed, inject, Signal } from "@angular/core";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
+import { ProjectMembershipRepositoryService } from "../project-membership/project-membership-repository.service";
 
 export function getAssignees(story: Signal<Pick<StorySummary, "assigneeIds">>) {
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);

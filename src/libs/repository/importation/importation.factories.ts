@@ -19,8 +19,8 @@
  *
  */
 
-import { makeInvitationBase } from "@tenzu/repository/membership/membership.factories";
-import { makeProjectNested } from "@tenzu/repository/project/project.factories";
+import { makeInvitationBase } from "../membership/membership.factories";
+import { makeProjectNested } from "../project/project.factories";
 import {
   ImportationStatus,
   InvitedProjectImportation,

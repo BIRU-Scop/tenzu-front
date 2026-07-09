@@ -25,7 +25,7 @@ import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 
 import { ProjectImportationApiService } from "./project-importation-api.service";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { makeInvitedProjectImportation, makeProjectImportation } from "./importation.factories";
 

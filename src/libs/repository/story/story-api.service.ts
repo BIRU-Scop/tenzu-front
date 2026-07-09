@@ -32,9 +32,9 @@ import {
 } from "./story.model";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/schema-utils";
-import { UserNested } from "@tenzu/repository/user/user.model";
+import { UserNested } from "../user/user.model";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({

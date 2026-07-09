@@ -31,7 +31,7 @@ import {
 } from "./project-invitation.model";
 import { Observable } from "rxjs";
 import { CreateInvitations, createInvitationsSchema, InvitationsPayload } from "../membership/invitation.model";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 type ListProjectInvitationParams = {

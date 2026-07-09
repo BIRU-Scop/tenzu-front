@@ -19,7 +19,7 @@
  *
  */
 
-import { makeMembershipBase } from "@tenzu/repository/membership/membership.factories";
+import { makeMembershipBase } from "../membership/membership.factories";
 import { ProjectMembership } from "./project-membership.model";
 
 export function makeProjectMembership(overrides: Partial<ProjectMembership> = {}): ProjectMembership {

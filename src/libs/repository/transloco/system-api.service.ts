@@ -25,9 +25,9 @@ import { map, Observable } from "rxjs";
 import { z } from "zod/v4";
 import { Language, languageSchema } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
-import { parseWithDebug } from "@tenzu/repository/base/schema-utils";
+import { ConfigAppService } from "../config-app/config-app.service";
+import { BaseDataModel } from "../base/misc.model";
+import { parseWithDebug } from "../base/schema-utils";
 
 @Injectable({
   providedIn: "root",

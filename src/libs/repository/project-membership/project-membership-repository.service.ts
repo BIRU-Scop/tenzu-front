@@ -25,8 +25,8 @@ import { ProjectMembershipApiService } from "./project-membership-api.service";
 import { lastValueFrom } from "rxjs";
 import { ProjectMembershipEntitiesStore } from "./project-membership-entities.store";
 import { NotFoundEntityError } from "../base/errors";
-import { UserNested } from "@tenzu/repository/user/user.model";
-import { ResetService } from "@tenzu/repository/base/reset.service";
+import { UserNested } from "../user/user.model";
+import { ResetService } from "../base/reset.service";
 
 @Injectable({
   providedIn: "root",

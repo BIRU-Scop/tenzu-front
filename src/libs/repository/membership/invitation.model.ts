@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod/v4";
-import { isoDatetime, optionalNullable } from "@tenzu/repository/base/schema-utils";
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
 import { InvitationStatus } from "./invitation-status.model";
 import type { Role } from "./membership.model";

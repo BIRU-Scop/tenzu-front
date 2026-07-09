@@ -21,8 +21,8 @@
 
 import { z } from "zod/v4";
 import { membershipBaseSchema } from "../membership/membership.model";
-import type { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
-import type { ProjectSummary } from "@tenzu/repository/project/project.model";
+import type { WorkspaceSummary } from "../workspace/workspace.model";
+import type { ProjectSummary } from "../project/project.model";
 
 export const workspaceMembershipNestedSchema = membershipBaseSchema.extend({
   workspaceId: z.string<WorkspaceSummary["id"]>(),

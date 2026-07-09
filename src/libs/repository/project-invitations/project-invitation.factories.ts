@@ -19,7 +19,7 @@
  *
  */
 
-import { makeInvitationBase, makePublicPendingInvitationBase } from "@tenzu/repository/membership/membership.factories";
+import { makeInvitationBase, makePublicPendingInvitationBase } from "../membership/membership.factories";
 import { makeProjectLinkNested } from "@tenzu/repository/project/project.factories";
 import { ProjectInvitation, PublicProjectPendingInvitation } from "./project-invitation.model";
 

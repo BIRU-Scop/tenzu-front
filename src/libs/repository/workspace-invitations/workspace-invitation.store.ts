@@ -22,7 +22,7 @@
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { withEntityListFeature } from "../base/features";
 import { WorkspaceInvitation } from "./workspace-invitation.model";
-import { sortInvitation } from "@tenzu/repository/membership/invitation.model";
+import { sortInvitation } from "../membership/invitation.model";
 import { setAllEntities } from "@ngrx/signals/entities";
 
 export const WorkspaceInvitationEntitiesStore = signalStore(

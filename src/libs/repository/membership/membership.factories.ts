@@ -19,14 +19,14 @@
  *
  */
 
-import { MembershipBase, MemberPermission, Role } from "@tenzu/repository/membership/membership.model";
+import { MembershipBase, MemberPermission, Role } from "../membership/membership.model";
 import {
   CreateInvitations,
   InvitationBase,
   InvitationStatus,
   PublicPendingInvitationBase,
-} from "@tenzu/repository/membership/invitation.model";
-import { makeUserNested } from "@tenzu/repository/user/user.factories";
+} from "../membership/invitation.model";
+import { makeUserNested } from "../user/user.factories";
 
 export function makeRole(overrides: Partial<Role> = {}): Role {
   return {

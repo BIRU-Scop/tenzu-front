@@ -27,10 +27,10 @@ import { WorkspaceDetail, WorkspaceSummary } from "../workspace/workspace.model"
 import { InvitationsPayload } from "../membership/invitation.model";
 import { map } from "rxjs/operators";
 import { WorkspaceInvitation } from "./workspace-invitation.model";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
-import { getEntityIdSelector } from "@tenzu/repository/base/features";
-import { ResetService } from "@tenzu/repository/base/reset.service";
+import { getEntityIdSelector } from "../base/features";
+import { ResetService } from "../base/reset.service";
 
 @Injectable({
   providedIn: "root",

@@ -20,7 +20,7 @@
  */
 
 import { WorkspaceSummary } from "../workspace/workspace.model";
-import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportation } from "../importation/importation.model";
 
 export type BaseParams = { projectImportationId: ProjectImportation["id"] };
 export type ListEntitiesSummaryParams = { workspaceId: WorkspaceSummary["id"] };

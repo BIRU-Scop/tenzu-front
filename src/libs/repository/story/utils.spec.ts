@@ -22,7 +22,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
+import { ProjectMembershipRepositoryService } from "../project-membership/project-membership-repository.service";
 import { getAssignees } from "./utils";
 import { makeUserNested } from "@tenzu/repository/user/user.factories";
 

@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod/v4";
-import { statusSummarySchema } from "../status/status.model";
+import { StatusSummary, statusSummarySchema } from "../status/status.model";
 import { workflowNestedSchema } from "./workflow-nested.model";
 
 export { workflowNestedSchema } from "./workflow-nested.model";
@@ -38,7 +38,7 @@ export const workflowSchema = workflowNestedSchema.extend({
 export type Workflow = z.infer<typeof workflowSchema>;
 
 export type ReorderWorkflowStatusesPayload = {
-  statusIds: string[];
+  statusIds: StatusSummary["id"][];
   reorder: {
     place: "after" | "before";
     statusId: string;

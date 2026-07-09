@@ -32,7 +32,7 @@ import {
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import type * as ProjectImportationApiServiceType from "./importation-api.type";
-import { InvitationsPayload } from "@tenzu/repository/membership/invitation.model";
+import { InvitationsPayload } from "../membership/invitation.model";
 
 @Injectable({
   providedIn: "root",

@@ -28,10 +28,10 @@ import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.st
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { StatusSummary } from "../status/status.model";
 import { Workflow } from "../workflow/workflow.model";
-import { BaseRepositoryService } from "@tenzu/repository/base/repository.service";
+import { BaseRepositoryService } from "../base/repository.service";
 import { EntityId } from "@ngrx/signals/entities";
-import { UserNested } from "@tenzu/repository/user/user.model";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { UserNested } from "../user/user.model";
+import { NotFoundEntityError } from "../base/errors";
 
 @Injectable({
   providedIn: "root",

@@ -35,9 +35,9 @@ import {
 import { HttpClient } from "@angular/common/http";
 import { Tokens, tokensSchema } from "../auth/auth.model";
 import { Observable, tap } from "rxjs";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
-import { parseWithDebug } from "@tenzu/repository/base/schema-utils";
+import { ConfigAppService } from "../config-app/config-app.service";
+import { BaseDataModel } from "../base/misc.model";
+import { parseWithDebug } from "../base/schema-utils";
 import { map } from "rxjs/operators";
 import { NotificationService } from "@tenzu/utils/services/notification";
 

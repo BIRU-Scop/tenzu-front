@@ -21,7 +21,7 @@
 
 import { z } from "zod/v4";
 import { membershipBaseSchema } from "../membership/membership.model";
-import type { ProjectSummary } from "@tenzu/repository/project/project.model";
+import type { ProjectSummary } from "../project/project.model";
 
 export const projectMembershipSchema = membershipBaseSchema.extend({
   projectId: z.string<ProjectSummary["id"]>(),

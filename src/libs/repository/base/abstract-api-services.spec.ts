@@ -27,7 +27,7 @@ import { lastValueFrom } from "rxjs";
 import { z } from "zod/v4";
 
 import { AbstractApiService } from "./abstract-api-services";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 const testSummarySchema = z.object({ id: z.string(), name: z.string() });

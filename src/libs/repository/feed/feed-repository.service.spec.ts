@@ -25,7 +25,7 @@ import { of } from "rxjs";
 import { FeedRepositoryService } from "./feed-repository.service";
 import { FeedApiService } from "./feed-api.service";
 import { FeedStore } from "./feed.store";
-import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
+import { makeFeedItem } from "../feed/feed.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 
 describe("FeedRepositoryService", () => {

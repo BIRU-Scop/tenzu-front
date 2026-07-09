@@ -32,7 +32,7 @@ import {
   UpdateProjectPayload,
 } from "./project.model";
 import type * as ProjectApiServiceType from "./project-api.type";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({

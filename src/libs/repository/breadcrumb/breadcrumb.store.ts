@@ -21,10 +21,10 @@
 
 import { patchState, signalStore, withComputed, withMethods, withProps, withState } from "@ngrx/signals";
 import { computed, inject } from "@angular/core";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
-import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
+import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
+import { StoryRepositoryService } from "../story/story-repository.service";
+import { ProjectRepositoryService } from "../project/project-repository.service";
+import { WorkflowRepositoryService } from "../workflow/workflow-repository.service";
 import { getProjectLandingPageUrl } from "@tenzu/utils/functions/urls";
 
 type BreadCrumbNodeConfig = {

@@ -21,7 +21,7 @@
 
 import { signalStore } from "@ngrx/signals";
 import { StoryAttachment } from "./story-attachment.model";
-import { withEntityDetailStore, withEntityListFeature } from "@tenzu/repository/base/features";
+import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 
 export const StoryAttachmentEntitiesSummaryStore = signalStore(
   { providedIn: "root" },
