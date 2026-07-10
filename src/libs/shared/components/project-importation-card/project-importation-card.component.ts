@@ -47,6 +47,8 @@ import { AsyncPipe } from "@angular/common";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 import { RouterLink } from "@angular/router";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 @Component({
   selector: "app-project-importation-card",
@@ -64,6 +66,8 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
     GetBase64FromImageUrlPipe,
     RouterLink,
     ProjectLandingPageUrl,
+    ButtonCancelComponent,
+    ConfirmDirective,
   ],
   template: `
     @let _color = color();
@@ -101,6 +105,13 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
                 ></mat-progress-bar>
                 <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
               </div>
+              <app-button-cancel
+                class="mt-2"
+                level="tertiary"
+                [iconName]="undefined"
+                appConfirm
+                (popupConfirm)="deleteImportation(_importation.id, workspaceId())"
+              />
             </div>
           }
         </div>
@@ -150,6 +161,7 @@ export class ProjectImportationCardComponent {
   readonly projectImportationRepositoryService = inject(ProjectImportationRepositoryService);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   readonly translocoService = inject(TranslocoService);
+  readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
 
   workspaceId = input.required<WorkspaceSummary["id"]>();
   projectImportation = input.required<ProjectImportation>();
@@ -173,6 +185,10 @@ export class ProjectImportationCardComponent {
       minWidth: 850,
       data: data,
     });
+  }
+
+  async deleteImportation(projectImportationId: ProjectImportation["id"], workspaceId: WorkspaceSummary["id"]) {
+    await this.importationRepositoryService.deleteRequest({ projectImportationId, workspaceId });
   }
 
   public async openInviteDialog() {
