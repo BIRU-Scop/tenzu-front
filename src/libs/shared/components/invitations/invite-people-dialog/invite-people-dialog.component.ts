@@ -19,19 +19,11 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
-import { TranslocoDirective } from "@jsverse/transloco";
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-} from "@angular/material/dialog";
+import { Component, effect, inject, input, untracked } from "@angular/core";
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
-import { apply, applyEach, email, form, required, validate } from "@angular/forms/signals";
 
-import { InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationBase, Role } from "@tenzu/repository/membership";
 import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,
@@ -39,17 +31,16 @@ import {
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { AddInvitationFieldComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/add-invitation-field/add-invitation-field.component";
-import {
-  InvitePeopleDialogData,
-  PeopleEmailRow,
-} from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.type";
-import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
-import { InvitationFormRowComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invitation-form-row/invitation-form-row.component";
+import { InvitationFormComponent } from "./invitation-form/invitation-form.component";
+import { ProjectImportationPendingInvitationNested } from "@tenzu/repository/importation";
+import { UserNested } from "@tenzu/repository/user";
+import { ItemType } from "@tenzu/repository/base/misc.model";
+import { InvitePeopleStore } from "./invite-people.store";
 
 @Component({
   selector: "app-invite-people-dialog",
+  providers: [InvitePeopleStore],
   imports: [
-    TranslocoDirective,
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
@@ -60,27 +51,20 @@ import { InvitationFormRowComponent } from "@tenzu/shared/components/invitations
     ButtonCloseComponent,
     ButtonComponent,
     AddInvitationFieldComponent,
-    InvitationFormRowComponent,
+    InvitationFormComponent,
   ],
   template: `
-    <ng-container *transloco="let t">
-      <h2 id="aria-label" mat-dialog-title>{{ data.title }}</h2>
+    <ng-container>
+      <h2 id="aria-label" mat-dialog-title>{{ title() }}</h2>
       <mat-dialog-content>
         <div class="flex flex-col gap-4">
-          <div [innerHTML]="data.description"></div>
-          <app-add-invitation-field (peopleEmails)="addToPeopleList($event)" />
-          <mat-divider />
-          @if (peopleEmailsModel().emailRows.length) {
-            <div class="flex flex-col py-4 gap-2">
-              @for (emailRow of peopleEmailsForm.emailRows; track $index) {
-                <app-invitation-form-row
-                  [data]="data"
-                  [notAcceptedInvitationEmails]="notAcceptedInvitationEmails()"
-                  [emailRow]="emailRow"
-                  (removeRow)="removeFromPeopleList($index)"
-                />
-              }
-            </div>
+          <div [innerHTML]="description()"></div>
+          @if (canAddEmails()) {
+            <app-add-invitation-field (peopleEmails)="store.addEmails($event)" />
+            <mat-divider />
+          }
+          <app-invitation-form [itemType]="itemType()" />
+          @if (store.emailRowsModel().emailRows.length) {
             <mat-divider />
           }
         </div>
@@ -92,84 +76,32 @@ import { InvitationFormRowComponent } from "@tenzu/shared/components/invitations
             translocoKey="component.invite_dialog.invite_people"
             level="primary"
             iconName="mail"
-            [mat-dialog-close]="submitValue()"
-            [disabled]="!peopleEmailsModel().emailRows.length || peopleEmailsForm().invalid()"
+            type="submit"
+            [mat-dialog-close]="store.validValue()"
+            [disabled]="store.formInvalid()"
           />
         </app-form-footer>
       </mat-dialog-actions>
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitePeopleDialogComponent {
-  data = inject<InvitePeopleDialogData>(MAT_DIALOG_DATA);
-  memberEmails = computed(() => this.data.existingMembers().map((member) => member.email));
-  notAcceptedInvitations = computed(() =>
-    this.data.existingInvitations().filter((invitation) => invitation.status !== InvitationStatus.ACCEPTED),
-  );
-  notAcceptedInvitationEmails = computed(() => this.notAcceptedInvitations().map((invitation) => invitation.email));
+  title = input.required<string>();
+  description = input.required<string>();
+  canAddEmails = input.required<boolean>();
+  initialInvites = input<ProjectImportationPendingInvitationNested[]>([]);
+  existingMembers = input.required<UserNested[]>();
+  existingInvitations = input.required<InvitationBase[]>();
+  userRole = input.required<Role | undefined>();
+  itemType = input.required<ItemType>();
 
-  peopleEmailsModel = signal<{ emailRows: PeopleEmailRow[] }>({ emailRows: [] });
-  peopleEmailsForm = form(this.peopleEmailsModel, (path) => {
-    applyEach(path.emailRows, (item) => {
-      required(item.emailGroup.email, { message: "component.email.errors.required" });
-      email(item.emailGroup.email, { message: "component.email.errors.email" });
-      apply(
-        item.roleId,
-        roleSelectorFieldSchema(() => this.data.userRole),
-      );
-      validate(item.emailGroup.email, ({ value }) => {
-        return this.memberEmails().includes(value())
-          ? { kind: "memberExists", message: "component.invite_dialog.member_error", path: item.emailGroup }
-          : null;
-      });
-      validate(item.emailGroup.email, ({ value, valueOf }) => {
-        if (this.notAcceptedInvitationEmails().includes(value()) && !valueOf(item.emailGroup.resendExisting)) {
-          return {
-            kind: "alreadyInvited",
-            message: "component.invite_dialog.duplicate_error",
-            path: item.emailGroup,
-          };
-        }
-        return null;
-      });
-    });
-  });
+  protected store = inject(InvitePeopleStore);
 
-  submitValue = computed(() =>
-    this.peopleEmailsModel().emailRows.map(({ emailGroup, roleId }) => ({ email: emailGroup.email, roleId })),
-  );
-
-  addToPeopleList(raw: string) {
-    const existing = this.peopleEmailsModel().emailRows;
-    const notAccepted = this.notAcceptedInvitations();
-    const newRows: PeopleEmailRow[] = [];
-    raw.split(",").forEach((str) => {
-      const value = str.trim();
-      if (!value) return;
-      if (existing.some((row) => row.emailGroup.email === value)) return;
-      if (newRows.some((row) => row.emailGroup.email === value)) return;
-      const existingInvitation = notAccepted.find((invitation) => invitation.email === value);
-      newRows.push({
-        emailGroup: { email: value, resendExisting: false },
-        roleId: existingInvitation?.roleId ?? null,
-      });
-    });
-    if (newRows.length) {
-      this.peopleEmailsForm().value.update((rows) => ({
-        emailRows: [...rows.emailRows, ...newRows],
-      }));
-      for (const row of this.peopleEmailsForm.emailRows) {
-        row.emailGroup.email().markAsTouched();
-        row.emailGroup.resendExisting().markAsTouched();
-      }
-    }
-  }
-
-  removeFromPeopleList(index: number) {
-    this.peopleEmailsModel.update((rows) => ({
-      emailRows: rows.emailRows.filter((_, i) => i !== index),
-    }));
+  constructor() {
+    effect(() =>
+      this.store.setContext(this.existingMembers(), this.existingInvitations(), this.userRole(), this.itemType()),
+    );
+    effect(() => untracked(() => this.store.addInitialInvites(this.initialInvites())));
   }
 }

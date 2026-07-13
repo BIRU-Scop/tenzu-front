@@ -21,7 +21,6 @@
 
 import {
   AfterViewChecked,
-  ChangeDetectionStrategy,
   Component,
   inject,
   Injector,
@@ -139,7 +138,6 @@ import { filter } from "rxjs/operators";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailCommentDetailComponent implements AfterViewChecked {
   injector = inject(Injector);

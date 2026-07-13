@@ -21,9 +21,10 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base";
-import { CreateProjectImportationPayload, ProjectImportation } from "./importation.model";
+import { CreateProjectImportationPayload, InvitedProjectImportation, ProjectImportation } from "./importation.model";
 import { Observable } from "rxjs";
 import type * as ProjectImportationApiServiceType from "./importation-api.type";
+import { InvitationsPayload } from "@tenzu/repository/membership";
 
 @Injectable({
   providedIn: "root",
@@ -65,5 +66,12 @@ export class ProjectImportationApiService extends AbstractApiService<
 
   override patch(): Observable<ProjectImportation> {
     throw new Error("Method not implemented.");
+  }
+
+  handlePendingInvites(
+    data: InvitationsPayload,
+    params: ProjectImportationApiServiceType.BaseParams,
+  ): Observable<InvitedProjectImportation> {
+    return this.http.post<InvitedProjectImportation>(`${this.getEntityBaseUrl(params)}/invite`, data);
   }
 }

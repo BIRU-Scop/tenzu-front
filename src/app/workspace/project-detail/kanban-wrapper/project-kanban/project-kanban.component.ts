@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
 import { StorySummary } from "@tenzu/repository/story";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -240,7 +240,6 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
       min-height: 100cqh;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectKanbanComponent {
   protected readonly ProjectPermissions = ProjectPermissions;

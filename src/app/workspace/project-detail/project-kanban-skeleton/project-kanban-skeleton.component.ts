@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { StatusSkeletonComponent } from "./status-skeleton/status-skeleton.component";
 import { StorySkeletonComponent } from "./story-skeleton/story-skeleton.component";
 
@@ -47,6 +47,5 @@ import { StorySkeletonComponent } from "./story-skeleton/story-skeleton.componen
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectKanbanSkeletonComponent {}

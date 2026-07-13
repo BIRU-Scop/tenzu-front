@@ -21,22 +21,26 @@
 
 import {
   ApplicationConfig,
+  ApplicationRef,
+  createComponent,
+  EnvironmentInjector,
   ErrorHandler,
   importProvidersFrom,
   inject,
+  InjectionToken,
   isDevMode,
   provideAppInitializer,
+  provideEnvironmentInitializer,
   provideZonelessChangeDetection,
 } from "@angular/core";
 import { NgEventBus } from "ng-event-bus";
 import { provideRouter, RouteReuseStrategy, withComponentInputBinding, withRouterConfig } from "@angular/router";
 import * as Sentry from "@sentry/angular";
 import { CustomReuseStrategy, routes } from "./app.routes";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideTransloco } from "@jsverse/transloco";
 import { provideTranslocoMessageformat } from "@jsverse/transloco-messageformat";
-import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from "@angular/common/http";
 import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
 import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
@@ -46,10 +50,11 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { WsService } from "@tenzu/utils/services/ws";
 import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 import { providePlugins } from "./providers-plugins";
-
-import { InjectionToken } from "@angular/core";
 import { environment } from "../environments/environment";
 import { lastValueFrom } from "rxjs";
+import { mockInterceptor } from "@tenzu/utils/mocks/mock.interceptor";
+import { DomainMockStore } from "@tenzu/utils/mocks/mock-state";
+import { MockControlPanelComponent } from "@tenzu/utils/mocks/mock-control-panel.component";
 
 export type Plugin = object;
 
@@ -115,7 +120,6 @@ export const appConfig: ApplicationConfig = {
     ),
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding(), withRouterConfig({ paramsInheritanceStrategy: "always" })),
-    provideAnimationsAsync(),
     provideTransloco({
       config: {
         reRenderOnLangChange: true,
@@ -135,7 +139,34 @@ export const appConfig: ApplicationConfig = {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler(),
     },
-    provideHttpClient(withFetch(), withInterceptors([httpInterceptor]), withInterceptorsFromDi()),
+    provideHttpClient(
+      withInterceptors([
+        // mockInterceptor before httpInterceptor ; NG_MOCK_ENABLED = false literal in production => tree-shaken branch
+        ...(NG_MOCK_ENABLED ? [mockInterceptor] : []),
+        httpInterceptor,
+      ]),
+      withInterceptorsFromDi(),
+    ),
+    ...(NG_MOCK_ENABLED
+      ? [
+          provideEnvironmentInitializer(() => {
+            const domainMockStore = inject(DomainMockStore);
+            domainMockStore.logMockState();
+          }),
+          provideEnvironmentInitializer(() => {
+            if (document.querySelector("app-mock-control-panel")) {
+              return;
+            }
+            const host = document.createElement("app-mock-control-panel");
+            document.body.appendChild(host);
+            const componentRef = createComponent(MockControlPanelComponent, {
+              environmentInjector: inject(EnvironmentInjector),
+              hostElement: host,
+            });
+            inject(ApplicationRef).attachView(componentRef.hostView);
+          }),
+        ]
+      : []),
     NgEventBus,
   ],
 };

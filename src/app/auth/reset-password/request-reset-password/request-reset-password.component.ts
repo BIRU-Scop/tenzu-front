@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, model, signal } from "@angular/core";
+import { Component, inject, model, signal } from "@angular/core";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { apply, FormField, form, FormRoot } from "@angular/forms/signals";
@@ -94,7 +94,6 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class RequestResetPasswordComponent {
   showConfirmation = model(false);

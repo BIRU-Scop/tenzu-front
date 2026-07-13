@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import type { Validators } from "@angular/forms";
 import { FormBuilder, ReactiveFormsModule, ValidatorFn } from "@angular/forms";
 import {
@@ -103,7 +103,6 @@ export type NameDialogData = {
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     "(window:keyup.Enter)": "onPressEnter()",
   },

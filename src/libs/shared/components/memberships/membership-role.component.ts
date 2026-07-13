@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from "@angular/core";
+import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MembershipBase, Role } from "@tenzu/repository/membership";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
@@ -33,6 +33,7 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-membership-role",
@@ -51,7 +52,6 @@ import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-sele
   host: {
     class: "w-full",
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> {
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
@@ -60,7 +60,7 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
   notificationService = inject(NotificationService);
 
   membership = input.required<MembershipBase>();
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   entityRole = input.required<T>();
   isSelf = input(false);
   membershipRepositoryService = computed(() => {
@@ -87,7 +87,10 @@ export class MembershipRoleComponent<T extends WorkspaceDetail | ProjectDetail> 
     });
     apply(
       path,
-      roleSelectorFieldSchema(() => this.entityRole()?.userRole),
+      roleSelectorFieldSchema(
+        () => this.entityRole()?.userRole,
+        () => this.itemType(),
+      ),
     );
   });
   changedSelf = output<{ roleId: Role["id"]; entityRole: T }>();

@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from "@angular/core";
+import { Component, effect, inject, input, untracked } from "@angular/core";
 import { ProjectKanbanComponent } from "./project-kanban/project-kanban.component";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import StoryDetailComponent from "./story-detail/story-detail.component";
@@ -42,7 +42,6 @@ import { HttpErrorResponse } from "@angular/common/http";
   imports: [StoryDetailComponent],
   template: ` <app-story-detail class="overflow-auto" [canBeClosed]="true" (closed)="dialogRef.close()" /> `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryDetailDialogComponent {
   /** Reference to the Material dialog instance */
@@ -95,7 +94,6 @@ export class StoryDetailDialogComponent {
       box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.3);
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class KanbanWrapperComponent {
   projectId = input<string | undefined>(undefined);

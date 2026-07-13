@@ -23,7 +23,7 @@ import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
 import { MatError, MatFormField, MatHint, MatLabel, MatPrefix, MatSuffix } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot, validate } from "@angular/forms/signals";
 import { MatIcon } from "@angular/material/icon";
 import { MatOption, MatSelect } from "@angular/material/select";
@@ -162,7 +162,6 @@ import { MatOption, MatSelect } from "@angular/material/select";
     </form>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class StoryFormFieldStorybookComponent {
   values = signal({

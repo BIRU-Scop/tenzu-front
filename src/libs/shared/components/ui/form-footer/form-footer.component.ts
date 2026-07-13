@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, Directive, input } from "@angular/core";
+import { Component, Directive, input } from "@angular/core";
 import { BackDirective } from "@tenzu/directives/back/back.directive";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 
@@ -40,7 +40,6 @@ export class FormFooterSecondaryActionDirective {}
     <ng-content></ng-content>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "flex gap-4 justify-end" },
 })
 export class FormFooterComponent {

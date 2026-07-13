@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import {
   MAT_SNACK_BAR_DATA,
   MatSnackBar,
@@ -84,7 +84,6 @@ import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-
     }
   </div>`,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent {
   data: NotificationMessage = inject(MAT_SNACK_BAR_DATA);

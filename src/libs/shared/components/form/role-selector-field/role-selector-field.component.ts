@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, output } from "@angular/core";
+import { Component, computed, effect, inject, input, model, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatFormField } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -28,6 +28,7 @@ import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
 import { MatTooltip } from "@angular/material/tooltip";
 import { FormValueControl } from "@angular/forms/signals";
+import { ItemType } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-role-selector-field",
@@ -54,7 +55,6 @@ import { FormValueControl } from "@angular/forms/signals";
     </mat-form-field>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] | null> {
   readonly value = model<Role["id"] | null>(null);
@@ -65,7 +65,7 @@ export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] |
   projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   workspaceRoleRepositoryService = inject(WorkspaceRoleRepositoryService);
 
-  itemType = input.required<"project" | "workspace">();
+  itemType = input.required<ItemType>();
   userRole = input<Role>();
   roleRepositoryService = computed(() => {
     switch (this.itemType()) {
@@ -88,7 +88,7 @@ export class RoleSelectorFieldComponent implements FormValueControl<Role["id"] |
   });
   defaultRole = computed(() => this.roleRepositoryService().defaultRole());
 
-  tooltips: Record<"project" | "workspace", Record<Role["slug"], string>> = {
+  tooltips: Record<ItemType, Record<Role["slug"], string>> = {
     workspace: {
       owner: "component.role_selector.workspace.owner",
       admin: "component.role_selector.workspace.admin",

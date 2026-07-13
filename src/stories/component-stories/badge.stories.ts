@@ -45,20 +45,30 @@ export const Badge: Story = {
     props: args,
     template: `
 <div class="flex flex-col gap-4 items-start">
-  <div matBadge="4" matBadgeOverlap="false">Text with a badge</div>
+  <div matBadge="4" matBadgeOverlap="false">Text with a badge and no overlap</div>
+  <div matBadge="4" matBadgeOverlap="false" matBadgeDisabled="true">Text with a disabled badge and no overlap</div>
   
   <div matBadge="1" matBadgeSize="small">Text with small badge</div>
-  <div matBadge="1" matBadgeSize="large">Text with large badge</div>
+  <div matBadge="1" matBadgeSize="small" matBadgeOverlap="false">Text with small badge and no overlap</div>
+  <div matBadge="&#8203;" matBadgeSize="medium">Text with empty medium badge</div>
+  <div matBadge="&#8203;" matBadgeSize="large">Text with empty large badge</div>
   
   <div>
-    Button with a badge on the left
-      <app-button [level]="'tertiary'" translocoKey="Action" matBadge="8" matBadgePosition="before" />
+    Button with a badge on the start
+    <app-button [level]="'tertiary'" translocoKey="Action" matBadge="8" matBadgePosition="before" />
   </div>
-  
   <div>
-    Button with a badge on the right
-      <app-button [level]="'tertiary'" translocoKey="Action" matBadge="7" />
-    </div>
+    Button with a badge on the end
+    <app-button [level]="'tertiary'" translocoKey="Action" matBadge="7" />
+  </div>
+  <div>
+    Button with a badge below
+    <app-button [level]="'tertiary'" translocoKey="Action" matBadge="8" matBadgePosition="below before" />
+  </div>
+  <div>
+    Button with a badge below and at end
+    <app-button [level]="'tertiary'" translocoKey="Action" matBadge="8" matBadgePosition="below after" />
+  </div>
   
   <div>
     Icon with a badge

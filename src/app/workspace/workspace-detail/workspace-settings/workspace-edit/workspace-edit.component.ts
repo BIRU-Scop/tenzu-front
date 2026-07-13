@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, effect, inject } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatInput, MatLabel } from "@angular/material/input";
@@ -120,7 +120,6 @@ import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-wa
     }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceEditComponent {
   protected readonly WorkspacePermissions = WorkspacePermissions;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
@@ -66,7 +66,6 @@ import { MatIcon } from "@angular/material/icon";
     </div>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class WorkspaceSettingsComponent implements AfterViewInit {
   links = [{ path: "./workspace-edit", labelKey: "workspace.settings.edit.title", iconName: "info" }];

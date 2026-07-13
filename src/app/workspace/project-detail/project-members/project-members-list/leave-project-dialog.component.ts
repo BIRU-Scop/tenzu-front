@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, computed, inject, Signal } from "@angular/core";
+import { Component, computed, inject, Signal } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -99,7 +99,6 @@ type DeleteMembershipDialogData = {
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeaveProjectDialogComponent {
   data = inject<DeleteMembershipDialogData>(MAT_DIALOG_DATA);

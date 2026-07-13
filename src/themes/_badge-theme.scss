@@ -25,5 +25,6 @@
   @include mat.badge-overrides((
     background-color: var(--mat-sys-error) ,
     text-color:  var(--mat-sys-on-error),
+    disabled-state-text-color:  var(--mat-sys-error),
   ));
 }

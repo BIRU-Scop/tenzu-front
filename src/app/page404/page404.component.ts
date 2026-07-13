@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatAnchor, MatButton } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
@@ -42,6 +42,5 @@ import { NgOptimizedImage } from "@angular/common";
     </main>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class Page404Component {}

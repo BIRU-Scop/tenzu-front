@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordSeverity } from "../utils";
 
@@ -75,7 +75,6 @@ import { PasswordSeverity } from "../utils";
       }
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordStrengthComponent {
   severity = input<PasswordSeverity>();

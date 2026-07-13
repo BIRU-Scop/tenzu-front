@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { MatError, MatFormField, MatInput } from "@angular/material/input";
 import { LoginService } from "./login.service";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -97,7 +97,6 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class LoginComponent {
   service = inject(LoginService);

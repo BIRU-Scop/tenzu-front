@@ -19,7 +19,7 @@
  *
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, signal } from "@angular/core";
+import { Component, inject, input, signal } from "@angular/core";
 import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
@@ -70,7 +70,6 @@ import { ProjectRepositoryService } from "@tenzu/repository/project";
     </ng-container>
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ListRolesComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
