@@ -24,7 +24,7 @@ import {
   StorySummary,
   storySummarySchema,
   StoryAssign,
-  storyAssignSchema,
+  storyAssignmentSchema,
   StoryCreatePayload,
   StoryDetail,
   storyDetailSchema,
@@ -89,7 +89,7 @@ export class StoryApiService extends AbstractApiService<
   createAssignee(userId: UserNested["id"], params: StoryApiServiceType.BaseParams): Observable<StoryAssign> {
     return this.http
       .post<BaseDataModel<unknown>>(`${this.baseStoryAssignmentUrl(params)}`, { userId })
-      .pipe(map((dataObject) => parseWithDebug(storyAssignSchema, dataObject.data)));
+      .pipe(map((dataObject) => parseWithDebug(storyAssignmentSchema, dataObject.data)));
   }
   deleteAssignee(params: StoryApiServiceType.BaseParams & { userId: UserNested["id"] }) {
     return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.userId}`);

@@ -29,5 +29,3 @@ export function optionalNullable<Output>(schema: z.ZodType<Output>) {
 }
 
 export const isoDatetime = z.iso.datetime({ offset: true });
-
-export const httpUrl = z.url({ protocol: /^https?$/ });

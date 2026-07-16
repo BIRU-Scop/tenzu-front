@@ -36,7 +36,7 @@ import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 import { StoryApiService } from "./story-api.service";
 import { ConfigAppService } from "../config-app/config-app.service";
-import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "../story/story.factories";
+import { makeStoryAssign, makeStoryDetail, makeStoryNested, makeStorySummary } from "../story/story.factories";
 import { provideConfigAppTesting, testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("StoryApiService", () => {
@@ -87,7 +87,7 @@ describe("StoryApiService", () => {
   });
 
   it("creates an assignee", async () => {
-    const assign = makeStoryAssign({ story: { ref: 4, title: "t" } });
+    const assign = makeStoryAssign({ story: makeStoryNested({ ref: 4, title: "t" }) });
     const promise = lastValueFrom(service.createAssignee("user-1", { projectId: "p-1", ref: 4 }));
 
     const req = httpMock.expectOne(`${BASE}/projects/p-1/stories/4/assignments`);

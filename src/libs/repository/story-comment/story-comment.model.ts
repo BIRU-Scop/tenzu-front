@@ -29,11 +29,10 @@ export const storyCommentNestedSchema = z.object({
   createdAt: isoDatetime,
   createdBy: userNestedSchema.apply(optionalNullable),
 });
-export type StoryCommentNested = z.infer<typeof storyCommentNestedSchema>;
 
-export const storyCommentSchema = storyCommentNestedSchema.extend({
+export const commentSchema = storyCommentNestedSchema.extend({
   modifiedAt: isoDatetime.apply(optionalNullable),
   deletedAt: isoDatetime.apply(optionalNullable),
   deletedBy: userNestedSchema.apply(optionalNullable),
 });
-export type StoryComment = z.infer<typeof storyCommentSchema>;
+export type StoryComment = z.infer<typeof commentSchema>;

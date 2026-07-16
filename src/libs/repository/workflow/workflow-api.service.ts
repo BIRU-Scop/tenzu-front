@@ -21,7 +21,7 @@
 
 import { Injectable } from "@angular/core";
 import { Workflow, workflowSchema, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { StatusSummary, statusSummarySchema } from "../status/status.model";
+import { WorkflowStatusNested, workflowStatusNestedSchema } from "../status/status.model";
 import { AbstractApiServiceDetail } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
@@ -65,10 +65,13 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
       .pipe(map((dataObject) => parseWithDebug(workflowSchema, dataObject.data)));
   }
 
-  createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">): Observable<StatusSummary> {
+  createStatus(
+    workflowId: Workflow["id"],
+    newStatus: Pick<WorkflowStatusNested, "name">,
+  ): Observable<WorkflowStatusNested> {
     return this.http
       .post<BaseDataModel<unknown>>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus)
-      .pipe(map((dataObject) => parseWithDebug(statusSummarySchema, dataObject.data)));
+      .pipe(map((dataObject) => parseWithDebug(workflowStatusNestedSchema, dataObject.data)));
   }
 
   deleteStatus(params: { statusId: string; moveToStatus?: string }): Observable<void> {
@@ -77,12 +80,12 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
     });
   }
 
-  editStatus(status: Pick<StatusSummary, "name" | "id">): Observable<StatusSummary> {
+  editStatus(status: Pick<WorkflowStatusNested, "name" | "id">): Observable<WorkflowStatusNested> {
     return this.http
       .patch<BaseDataModel<unknown>>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
         name: status.name,
       })
-      .pipe(map((dataObject) => parseWithDebug(statusSummarySchema, dataObject.data)));
+      .pipe(map((dataObject) => parseWithDebug(workflowStatusNestedSchema, dataObject.data)));
   }
 
   reorderStatus(workflowId: Workflow["id"], payload: ReorderWorkflowStatusesPayload): Observable<void> {

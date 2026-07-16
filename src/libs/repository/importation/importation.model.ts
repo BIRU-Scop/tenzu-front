@@ -23,7 +23,8 @@ import { z } from "zod/v4";
 import { optionalNullable } from "../base/schema-utils";
 import type { FileValue } from "../base/misc.model";
 import { projectNestedSchema } from "../project/project-nested.model";
-import { projectInvitationSchema } from "@tenzu/repository/project-invitations/project-invitation.model";
+import { invitationBaseSchema } from "../membership/invitation.model";
+import { Role } from "../membership/membership.model";
 
 export enum ProjectImportationType {
   TENZU = "TZ",
@@ -52,7 +53,7 @@ export type ProjectImportationData = z.infer<typeof projectImportationDataSchema
 
 export const projectImportationPendingInvitationNestedSchema = z.object({
   email: z.email(),
-  roleId: z.string(),
+  roleId: z.string<Role["id"]>(),
 });
 export type ProjectImportationPendingInvitationNested = z.infer<typeof projectImportationPendingInvitationNestedSchema>;
 
@@ -76,7 +77,7 @@ export type CreateProjectImportationPayload = {
 };
 
 export const invitedProjectImportationSchema = z.object({
-  invitations: z.array(projectInvitationSchema),
+  invitations: z.array(invitationBaseSchema),
   projectImportation: projectImportationSchema,
 });
 export type InvitedProjectImportation = z.infer<typeof invitedProjectImportationSchema>;

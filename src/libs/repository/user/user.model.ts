@@ -26,7 +26,7 @@ import { workspaceNestedSchema } from "../workspace/workspace-nested.model";
 import { projectNestedSchema, projectLinkNestedSchema } from "../project/project-nested.model";
 import { projectInvitationNestedSchema } from "../project-invitations/project-invitation-nested.model";
 import { workspaceInvitationNestedSchema } from "../workspace-invitations/workspace-invitation-nested.model";
-import { optionalNullable } from "@tenzu/repository/base/schema-utils";
+import { optionalNullable } from "../base/schema-utils";
 
 export const userNestedSchema = z.object({
   id: z.string(),

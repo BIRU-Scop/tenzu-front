@@ -23,7 +23,7 @@ import { z } from "zod/v4";
 import { isoDatetime, optionalNullable } from "../base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
 import type { User } from "../user/user.model";
-import { StatusSummary, statusSummarySchema } from "../status/status.model";
+import { WorkflowStatusNested, workflowStatusNestedSchema } from "../status/status.model";
 import { Workflow, workflowNestedSchema } from "../workflow/workflow.model";
 import type { ProjectDetail } from "../project/project.model";
 
@@ -37,16 +37,10 @@ export type StoryNested = z.infer<typeof storyNestedSchema>;
 
 export const storySummarySchema = storyNestedSchema.extend({
   version: z.int(),
-  statusId: z.string<StatusSummary["id"]>(),
+  statusId: z.string<WorkflowStatusNested["id"]>(),
   assigneeIds: z.array(z.string<User["id"]>()),
 });
 export type StorySummary = z.infer<typeof storySummarySchema>;
-
-const storyUserSchema = z.object({
-  username: z.string(),
-  fullName: z.string(),
-  color: z.int(),
-});
 
 const storyLinkSchema = z.object({
   ref: z.int(),
@@ -57,14 +51,14 @@ export const storyDetailSchema = storySummarySchema.extend({
   workflow: workflowNestedSchema,
   prev: storyLinkSchema.apply(optionalNullable),
   next: storyLinkSchema.apply(optionalNullable),
-  createdBy: storyUserSchema.apply(optionalNullable),
+  createdBy: userNestedSchema.apply(optionalNullable),
   createdAt: isoDatetime,
   titleUpdatedAt: isoDatetime.apply(optionalNullable),
-  titleUpdatedBy: storyUserSchema.apply(optionalNullable),
+  titleUpdatedBy: userNestedSchema.apply(optionalNullable),
   descriptionUpdatedAt: isoDatetime.apply(optionalNullable),
-  descriptionUpdatedBy: storyUserSchema.apply(optionalNullable),
+  descriptionUpdatedBy: userNestedSchema.apply(optionalNullable),
   totalComments: z.int(),
-  status: statusSummarySchema,
+  status: workflowStatusNestedSchema,
 });
 export type StoryDetail = z.infer<typeof storyDetailSchema>;
 
@@ -78,13 +72,13 @@ export type StoryReorderPayload = {
   stories: StorySummary["ref"][];
 };
 export type StoryReorderPayloadEvent = StoryReorderPayload & {
-  status: StatusSummary;
+  status: WorkflowStatusNested;
 };
 
 export type StoryCreatePayload = Pick<StorySummary, "title" | "statusId">;
 
-export const storyAssignSchema = z.object({
+export const storyAssignmentSchema = z.object({
   user: userNestedSchema,
-  story: storyLinkSchema,
+  story: storyNestedSchema,
 });
-export type StoryAssign = z.infer<typeof storyAssignSchema>;
+export type StoryAssign = z.infer<typeof storyAssignmentSchema>;

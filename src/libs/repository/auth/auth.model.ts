@@ -28,9 +28,9 @@ export type Credential = {
 };
 
 export const tokensSchema = z.object({
-  access: z.string().nullable(),
-  refresh: z.string().nullable(),
-  username: z.string().nullable(),
+  access: z.string(),
+  refresh: z.string(),
+  username: z.string(),
 });
 export type Tokens = z.infer<typeof tokensSchema>;
 

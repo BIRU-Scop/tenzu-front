@@ -20,9 +20,9 @@
  */
 
 import { makeRole } from "@tenzu/repository/membership/membership.factories";
-import { WorkspaceRoleSummary } from "./workspace-roles.model";
+import { WorkspaceRole } from "./workspace-roles.model";
 
-export function makeWorkspaceRoleSummary(overrides: Partial<WorkspaceRoleSummary> = {}): WorkspaceRoleSummary {
+export function makeWorkspaceRoleSummary(overrides: Partial<WorkspaceRole> = {}): WorkspaceRole {
   return {
     ...makeRole(),
     workspaceId: "workspace-1",

@@ -22,10 +22,7 @@
 import { z } from "zod/v4";
 import { roleSchema } from "../membership/membership.model";
 
-export const workspaceRoleSummarySchema = roleSchema.extend({
+export const workspaceRoleSchema = roleSchema.extend({
   workspaceId: z.string(),
 });
-export type WorkspaceRoleSummary = z.infer<typeof workspaceRoleSummarySchema>;
-
-export const workspaceRoleDetailSchema = workspaceRoleSummarySchema;
-export type WorkspaceRoleDetail = z.infer<typeof workspaceRoleDetailSchema>;
+export type WorkspaceRole = z.infer<typeof workspaceRoleSchema>;

@@ -32,7 +32,7 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
-import { StatusSummary } from "@tenzu/repository/status/status.model";
+import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
 import { Step, Workflow } from "@tenzu/repository/workflow/workflow.model";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { Validators } from "@angular/forms";
@@ -345,7 +345,10 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>, workflow: Workflow) {
+  async drop(
+    event: CdkDragDrop<WorkflowStatusNested, WorkflowStatusNested, [StorySummary, number]>,
+    workflow: Workflow,
+  ) {
     // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
     // so we use workarounds
     const [, index] = event.item.data;

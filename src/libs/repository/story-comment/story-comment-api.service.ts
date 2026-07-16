@@ -22,7 +22,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
-import { StoryComment, storyCommentSchema } from "./story-comment.model";
+import { StoryComment, commentSchema } from "./story-comment.model";
 import * as CommentApiType from "./story-comment-api.type";
 import { Observable } from "rxjs";
 import { makeOptions, QueryParams } from "../base/utils";
@@ -43,8 +43,8 @@ export class StoryCommentApiService extends AbstractApiService<
   CommentApiType.DeleteEntityDetailParams
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
-  protected override summarySchema = storyCommentSchema;
-  protected override detailSchema = storyCommentSchema;
+  protected override summarySchema = commentSchema;
+  protected override detailSchema = commentSchema;
 
   protected override getBaseUrl(params: CommentApiType.BaseParams): string {
     return `${this.baseUrl}/${params.projectId}/stories/${params.ref}/comments`;
@@ -64,6 +64,6 @@ export class StoryCommentApiService extends AbstractApiService<
       .delete<BaseDataModel<unknown>>(this.deleteUrl(params), {
         params: queryParams ? makeOptions(queryParams) : {},
       })
-      .pipe(map((dataObject) => parseWithDebug(storyCommentSchema, dataObject.data)));
+      .pipe(map((dataObject) => parseWithDebug(commentSchema, dataObject.data)));
   }
 }

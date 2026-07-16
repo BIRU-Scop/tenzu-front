@@ -75,7 +75,7 @@ export class UserService {
       .post<unknown>(`${this.usersUrl}/reset-password`, {
         email,
       })
-      .pipe(map((data) => parseWithDebug(z.object({ email: z.string() }), data)));
+      .pipe(map((data) => parseWithDebug(z.object({ email: z.email() }), data)));
   }
 
   resetPassword(token: string, password: string): Observable<Tokens> {

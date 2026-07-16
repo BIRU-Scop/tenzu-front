@@ -137,8 +137,8 @@ export class AuthService {
 
   getToken(): Tokens {
     return {
-      access: localStorage.getItem("token"),
-      refresh: localStorage.getItem("refresh"),
+      access: localStorage.getItem("token") || "",
+      refresh: localStorage.getItem("refresh") || "",
       username: localStorage.getItem("username") || "",
     };
   }

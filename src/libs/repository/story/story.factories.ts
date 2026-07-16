@@ -19,9 +19,9 @@
  *
  */
 
-import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "@tenzu/repository/story/story.model";
-import { makeUserNested } from "@tenzu/repository/user/user.factories";
-import { makeStatusSummary } from "@tenzu/repository/status/status.factories";
+import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "../story/story.model";
+import { makeUserNested } from "../user/user.factories";
+import { makeStatusSummary } from "../status/status.factories";
 
 export function makeStoryNested(overrides: Partial<StoryNested> = {}): StoryNested {
   return {
@@ -55,7 +55,7 @@ export function makeStoryDetail(overrides: Partial<StoryDetail> = {}): StoryDeta
     },
     prev: undefined,
     next: undefined,
-    createdBy: { username: "jdoe", fullName: "John Doe", color: 1 },
+    createdBy: makeUserNested(),
     createdAt: "2026-01-01T00:00:00.000Z",
     titleUpdatedAt: undefined,
     titleUpdatedBy: undefined,
@@ -70,7 +70,7 @@ export function makeStoryDetail(overrides: Partial<StoryDetail> = {}): StoryDeta
 export function makeStoryAssign(overrides: Partial<StoryAssign> = {}): StoryAssign {
   return {
     user: makeUserNested(),
-    story: { ref: 1, title: "My story" },
+    story: makeStoryNested(),
     ...overrides,
   };
 }

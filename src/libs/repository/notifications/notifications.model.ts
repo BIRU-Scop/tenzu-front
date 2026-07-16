@@ -46,12 +46,12 @@ const notificationCommonFields = {
   readAt: isoDatetime.apply(optionalNullable),
 };
 
-export const notificationCountSchema = z.object({
-  total: z.number(),
-  read: z.number(),
-  unread: z.number(),
+export const notificationCountersSchema = z.object({
+  total: z.int(),
+  read: z.int(),
+  unread: z.int(),
 });
-export type NotificationCount = z.infer<typeof notificationCountSchema>;
+export type NotificationCount = z.infer<typeof notificationCountersSchema>;
 
 export const storyAssignNotificationSchema = z.object({
   ...notificationCommonFields,

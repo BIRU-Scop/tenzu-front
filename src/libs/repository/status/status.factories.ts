@@ -20,9 +20,9 @@
  */
 
 import { makeWorkflowNested } from "../workflow/workflow.factories";
-import { StatusDetail, StatusSummary } from "./status.model";
+import { WorkflowStatus, WorkflowStatusNested } from "./status.model";
 
-export function makeStatusSummary(overrides: Partial<StatusSummary> = {}): StatusSummary {
+export function makeStatusSummary(overrides: Partial<WorkflowStatusNested> = {}): WorkflowStatusNested {
   return {
     id: "status-1",
     name: "Todo",
@@ -32,7 +32,7 @@ export function makeStatusSummary(overrides: Partial<StatusSummary> = {}): Statu
   };
 }
 
-export function makeStatusDetail(overrides: Partial<StatusDetail> = {}): StatusDetail {
+export function makeStatusDetail(overrides: Partial<WorkflowStatus> = {}): WorkflowStatus {
   return {
     ...makeStatusSummary(),
     workflow: makeWorkflowNested(),

@@ -20,12 +20,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import {
-  WorkspaceRoleDetail,
-  workspaceRoleDetailSchema,
-  WorkspaceRoleSummary,
-  workspaceRoleSummarySchema,
-} from "./workspace-roles.model";
+import { WorkspaceRole, workspaceRoleSchema } from "./workspace-roles.model";
 import { AbstractApiService } from "../base/abstract-api-services";
 import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
 
@@ -33,8 +28,8 @@ import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
   providedIn: "root",
 })
 export class WorkspaceRolesApiService extends AbstractApiService<
-  WorkspaceRoleSummary,
-  WorkspaceRoleDetail,
+  WorkspaceRole,
+  WorkspaceRole,
   WorkspaceRolesApiServiceType.ListEntitiesSummaryParams,
   WorkspaceRolesApiServiceType.GetEntityDetailParams,
   WorkspaceRolesApiServiceType.CreateEntityDetailParams,
@@ -43,8 +38,8 @@ export class WorkspaceRolesApiService extends AbstractApiService<
   WorkspaceRolesApiServiceType.DeleteEntityDetailParams
 > {
   override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
-  protected override summarySchema = workspaceRoleSummarySchema;
-  protected override detailSchema = workspaceRoleDetailSchema;
+  protected override summarySchema = workspaceRoleSchema;
+  protected override detailSchema = workspaceRoleSchema;
 
   protected override getBaseUrl(params: WorkspaceRolesApiServiceType.BaseParams): string {
     return `${this.baseUrl}/${params.workspaceId}/roles`;

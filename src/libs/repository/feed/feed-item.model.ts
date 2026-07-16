@@ -20,13 +20,13 @@
  */
 
 import { z } from "zod/v4";
-import { isoDatetime, optionalNullable } from "@tenzu/repository/base/schema-utils";
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
 
 const feedItemBase = {
   id: z.string(),
   title: z.string(),
   content: z.string(),
-  publicationDate: z.iso.datetime({ offset: true }),
+  publicationDate: isoDatetime,
   expirationDate: isoDatetime.apply(optionalNullable),
   readAt: isoDatetime.apply(optionalNullable),
 };
@@ -35,7 +35,7 @@ const callToActionFeedItemSchema = z.object({
   ...feedItemBase,
   type: z.literal("call_to_action"),
   actionTitle: z.string().min(1),
-  actionUrl: z.url({ protocol: /^https?$/ }),
+  actionUrl: z.httpUrl(),
 });
 
 const passiveFeedItemSchema = z
@@ -43,7 +43,7 @@ const passiveFeedItemSchema = z
     ...feedItemBase,
     type: z.enum(["maintenance", "release"]),
     actionTitle: z.string(),
-    actionUrl: z.literal("").or(z.url({ protocol: /^https?$/ })),
+    actionUrl: z.literal("").or(z.httpUrl()),
   })
   .refine((item) => item.actionTitle.length > 0 === item.actionUrl.length > 0, {
     error: "actionTitle and actionUrl must be both set or both empty",

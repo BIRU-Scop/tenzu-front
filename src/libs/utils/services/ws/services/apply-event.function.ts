@@ -47,7 +47,7 @@ import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user/user.model";
-import { StatusDetail } from "@tenzu/repository/status/status.model";
+import { WorkflowStatus } from "@tenzu/repository/status/status.model";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { Notification } from "@tenzu/repository/notifications/notifications.model";
 import { NotificationsStore } from "@tenzu/repository/notifications/notifications.store";
@@ -311,17 +311,17 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
 
   switch (message.event.type) {
     case WorkflowStatusEventType.CreateWorkflowStatus: {
-      const content = message.event.content as { workflowStatus: StatusDetail };
+      const content = message.event.content as { workflowStatus: WorkflowStatus };
       workflowService.wsAddStatus(content.workflowStatus);
       break;
     }
     case WorkflowStatusEventType.UpdateWorkflowStatus: {
-      const content = message.event.content as { workflowStatus: StatusDetail };
+      const content = message.event.content as { workflowStatus: WorkflowStatus };
       workflowService.wsUpdateStatus(content.workflowStatus);
       break;
     }
     case WorkflowStatusEventType.DeleteWorkflowStatus: {
-      const content = message.event.content as { workflowStatus: StatusDetail; targetStatus: StatusDetail };
+      const content = message.event.content as { workflowStatus: WorkflowStatus; targetStatus: WorkflowStatus };
       workflowService.wsRemoveStatus(content.workflowStatus.id);
       storyService.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
       break;

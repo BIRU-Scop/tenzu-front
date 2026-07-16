@@ -26,8 +26,8 @@ import { StoryApiService } from "./story-api.service";
 import { StoryRepositoryService } from "./story-repository.service";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
-import { StatusSummary } from "../status/status.model";
-import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "../story/story.factories";
+import { WorkflowStatusNested } from "../status/status.model";
+import { makeStoryAssign, makeStoryDetail, makeStoryNested, makeStorySummary } from "../story/story.factories";
 import { makeUserNested } from "../user/user.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 
@@ -105,7 +105,7 @@ describe("StoryRepositoryService", () => {
       summaryStore.addEntities([makeStorySummary({ ref: 1, assigneeIds: [] })]);
       detailStore.set(makeStoryDetail({ ref: 1, assigneeIds: [] }));
       const user = makeUserNested({ id: "user-x" });
-      api.createAssignee.mockReturnValue(of(makeStoryAssign({ user, story: { ref: 1, title: "t" } })));
+      api.createAssignee.mockReturnValue(of(makeStoryAssign({ user, story: makeStoryNested({ ref: 1, title: "t" }) })));
 
       await service.createAssign(user, { projectId: "p-1", ref: 1 });
 
@@ -137,7 +137,7 @@ describe("StoryRepositoryService", () => {
       const event: StoryReorderPayloadEvent = {
         statusId: "done",
         stories: [1],
-        status: { id: "done" } as StatusSummary,
+        status: { id: "done" } as WorkflowStatusNested,
       };
 
       expect(() => service.wsReorderStoryByEvent(event)).not.toThrow();

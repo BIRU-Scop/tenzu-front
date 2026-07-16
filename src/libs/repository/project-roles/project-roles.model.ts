@@ -23,12 +23,10 @@ import { z } from "zod/v4";
 import { roleSchema } from "../membership/membership.model";
 import { ProjectSummary } from "../project/project.model";
 
-export const projectRoleSummarySchema = roleSchema.extend({
+export const projectRoleSchema = roleSchema.extend({
   projectId: z.string<ProjectSummary["id"]>(),
-  totalMembers: z.number(),
+  totalMembers: z.int(),
   hasInvitees: z.boolean(),
 });
-export type ProjectRoleSummary = z.infer<typeof projectRoleSummarySchema>;
-
-export const projectRoleDetailSchema = projectRoleSummarySchema;
-export type ProjectRoleDetail = z.infer<typeof projectRoleDetailSchema>;
+export type ProjectRoleSummary = z.infer<typeof projectRoleSchema>;
+export type ProjectRoleDetail = z.infer<typeof projectRoleSchema>;

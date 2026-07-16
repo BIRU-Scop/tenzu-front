@@ -148,7 +148,7 @@ export class ProjectImportationRepositoryService {
             }
             return {
               ...invitedResult,
-              projectImportation: { ...invitedResult.projectImportation, project },
+              projectImportation: { ...invitedResult.projectImportation, project }, // make project required
               invitations: invitedResult.invitations.map((invitation) => ({
                 ...invitation,
                 project,

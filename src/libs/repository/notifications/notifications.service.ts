@@ -22,7 +22,7 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-import { Notification, notificationSchema, NotificationCount, notificationCountSchema } from "./notifications.model";
+import { Notification, notificationSchema, NotificationCount, notificationCountersSchema } from "./notifications.model";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
 import { parseWithDebug } from "../base/parse-with-debug";
@@ -53,7 +53,7 @@ export class NotificationsService {
   count(): Observable<NotificationCount> {
     return this.http
       .get<unknown>(`${this.notificationsUrl}/count`)
-      .pipe(map((data) => parseWithDebug(notificationCountSchema, data)));
+      .pipe(map((data) => parseWithDebug(notificationCountersSchema, data)));
   }
 
   read(notificationId: string): Observable<Notification> {

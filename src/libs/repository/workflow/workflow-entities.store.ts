@@ -21,14 +21,14 @@
 
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { StatusSummary } from "../status/status.model";
+import { WorkflowStatusNested } from "../status/status.model";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
 import { removeEntity, setAllEntities, updateEntity, withEntities } from "@ngrx/signals/entities";
 import { withEntityDetailStore } from "../base/features";
 
 export const WorkflowDetailStore = signalStore(
   { providedIn: "root" },
-  withEntities<StatusSummary>(),
+  withEntities<WorkflowStatusNested>(),
   withEntityDetailStore<Workflow>(),
   withMethods((store) => ({
     setWorkflow(refreshedWorkflow: Workflow) {
@@ -37,9 +37,9 @@ export const WorkflowDetailStore = signalStore(
       return refreshedWorkflow;
     },
     deleteAllStatuses() {
-      patchState(store, setAllEntities([] as StatusSummary[]));
+      patchState(store, setAllEntities([] as WorkflowStatusNested[]));
     },
-    addStatus(status: StatusSummary) {
+    addStatus(status: WorkflowStatusNested) {
       const selectedWorkflow = store.item();
       if (selectedWorkflow) {
         patchState(store, setAllEntities([...store.entities(), status]));
@@ -73,7 +73,7 @@ export const WorkflowDetailStore = signalStore(
     removeStatus(statusId: string) {
       patchState(store, removeEntity(statusId));
     },
-    updateStatus(status: StatusSummary) {
+    updateStatus(status: WorkflowStatusNested) {
       patchState(store, updateEntity({ id: status.id, changes: { ...status } }));
     },
   })),

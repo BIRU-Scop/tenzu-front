@@ -20,18 +20,17 @@
  */
 
 import { z } from "zod/v4";
-import { optionalNullable } from "../base/schema-utils";
 import { workflowNestedSchema } from "../workflow/workflow-nested.model";
 
-export const statusSummarySchema = z.object({
+export const workflowStatusNestedSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.int(),
-  order: z.int().apply(optionalNullable),
+  order: z.int(),
 });
-export type StatusSummary = z.infer<typeof statusSummarySchema>;
+export type WorkflowStatusNested = z.infer<typeof workflowStatusNestedSchema>;
 
-export const statusDetailSchema = statusSummarySchema.extend({
+export const workflowStatusSchema = workflowStatusNestedSchema.extend({
   workflow: workflowNestedSchema,
 });
-export type StatusDetail = z.infer<typeof statusDetailSchema>;
+export type WorkflowStatus = z.infer<typeof workflowStatusSchema>;

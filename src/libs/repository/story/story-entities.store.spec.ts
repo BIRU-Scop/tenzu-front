@@ -23,7 +23,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
-import { StatusSummary } from "../status/status.model";
+import { WorkflowStatusNested } from "../status/status.model";
 import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "../story/story.factories";
 import { makeUserNested } from "../user/user.factories";
 
@@ -93,7 +93,7 @@ describe("StoryEntitiesSummaryStore", () => {
         makeStorySummary({ ref: 1, statusId: "old" }),
         makeStorySummary({ ref: 2, statusId: "keep" }),
       ]);
-      const newStatus = { id: "new" } as StatusSummary;
+      const newStatus = { id: "new" } as WorkflowStatusNested;
 
       store.deleteStatusGroup("old", newStatus);
 
@@ -113,7 +113,7 @@ describe("StoryEntitiesSummaryStore", () => {
       const event: StoryReorderPayloadEvent = {
         statusId: "done",
         stories: [1],
-        status: { id: "done" } as StatusSummary,
+        status: { id: "done" } as WorkflowStatusNested,
       };
       store.reorderStoryByEvent(event);
 
@@ -131,7 +131,7 @@ describe("StoryEntitiesSummaryStore", () => {
         statusId: "todo",
         stories: [1],
         reorder: { place: "after", ref: 3 },
-        status: { id: "todo" } as StatusSummary,
+        status: { id: "todo" } as WorkflowStatusNested,
       };
       store.reorderStoryByEvent(event);
 

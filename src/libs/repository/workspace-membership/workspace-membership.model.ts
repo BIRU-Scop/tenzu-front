@@ -22,7 +22,7 @@
 import { z } from "zod/v4";
 import { membershipBaseSchema } from "../membership/membership.model";
 import type { WorkspaceSummary } from "../workspace/workspace.model";
-import type { ProjectSummary } from "../project/project.model";
+import type { ProjectNested } from "../project/project.model";
 
 export const workspaceMembershipNestedSchema = membershipBaseSchema.extend({
   workspaceId: z.string<WorkspaceSummary["id"]>(),
@@ -36,7 +36,7 @@ export type WorkspaceMembership = z.infer<typeof workspaceMembershipSchema>;
 
 export const workspaceMembershipDeleteInfoSchema = z.object({
   isUniqueOwner: z.boolean(),
-  memberOfProjects: z.array(z.string<ProjectSummary["id"]>()),
-  uniqueOwnerOfProjects: z.array(z.string<ProjectSummary["id"]>()),
+  memberOfProjects: z.array(z.string<ProjectNested["name"]>()),
+  uniqueOwnerOfProjects: z.array(z.string<ProjectNested["name"]>()),
 });
 export type WorkspaceMembershipDeleteInfo = z.infer<typeof workspaceMembershipDeleteInfoSchema>;

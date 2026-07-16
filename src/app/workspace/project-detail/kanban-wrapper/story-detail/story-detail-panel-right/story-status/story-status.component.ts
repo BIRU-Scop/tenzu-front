@@ -22,11 +22,11 @@
 import { Component, inject, input, linkedSignal } from "@angular/core";
 import { MatFormField, MatOption, MatSelect } from "@angular/material/select";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { StatusSummary } from "@tenzu/repository/status/status.model";
+import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 
 @Component({
   selector: "app-story-status",
@@ -59,7 +59,7 @@ export class StoryStatusComponent {
   hasModifyPermission = input(false);
   statusSelected = linkedSignal(() => this.storyDetail().statusId);
 
-  async changeStatus(statusId: StatusSummary["id"], storyDetail: StoryDetail) {
+  async changeStatus(statusId: WorkflowStatusNested["id"], storyDetail: StoryDetail) {
     await this.storyRepositoryService.patchRequest(
       storyDetail.ref,
       {
