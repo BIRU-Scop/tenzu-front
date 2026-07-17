@@ -26,12 +26,12 @@ import type * as StoryApiServiceType from "./story-api.type";
 import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
-import { StatusSummary } from "../status";
-import { Workflow } from "../workflow";
-import { BaseRepositoryService } from "@tenzu/repository/base";
+import { WorkflowStatusNested } from "../status/status.model";
+import { Workflow } from "../workflow/workflow.model";
+import { BaseRepositoryService } from "../base/repository.service";
 import { EntityId } from "@ngrx/signals/entities";
-import { UserNested } from "@tenzu/repository/user";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { UserNested } from "../user/user.model";
+import { NotFoundEntityError } from "../base/errors";
 
 @Injectable({
   providedIn: "root",
@@ -146,7 +146,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
     this.entityDetailStore.reorderStoryByEvent(reorder);
   }
   async dropStoryIntoStatus(
-    event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>,
+    event: CdkDragDrop<WorkflowStatusNested, WorkflowStatusNested, [StorySummary, number]>,
     workflowId: StorySummary["workflowId"],
   ) {
     const payload = this.entitiesSummaryStore.dropStoryIntoStatus(event);
@@ -154,7 +154,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
     await lastValueFrom(this.apiService.reorder(payload, { workflowId }));
   }
 
-  deleteStatusGroup(oldStatusId: string, newStatus: StatusSummary) {
+  deleteStatusGroup(oldStatusId: string, newStatus: WorkflowStatusNested) {
     this.entitiesSummaryStore.deleteStatusGroup(oldStatusId, newStatus);
   }
 

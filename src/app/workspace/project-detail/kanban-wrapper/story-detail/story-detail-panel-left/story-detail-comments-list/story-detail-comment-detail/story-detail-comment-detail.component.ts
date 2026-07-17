@@ -30,19 +30,19 @@ import {
   viewChild,
 } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { StoryComment } from "@tenzu/repository/story-comment";
+import { StoryComment } from "@tenzu/repository/story-comment/story-comment.model";
 import { DatePipe } from "@angular/common";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { ButtonEditComponent } from "@tenzu/shared/components/ui/button/button-edit.component";
-import { StoryDetail } from "@tenzu/repository/story";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { StoryCommentFacade } from "../story-comment.facade";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { ReactiveFormsModule } from "@angular/forms";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { skip } from "rxjs";
 import { filter } from "rxjs/operators";

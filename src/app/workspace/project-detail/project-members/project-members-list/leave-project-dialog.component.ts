@@ -33,9 +33,10 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatOption } from "@angular/material/core";
 import { MatFormField, MatLabel, MatSelect } from "@angular/material/select";
-import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectMembership } from "@tenzu/repository/project-membership/project-membership.model";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatIcon } from "@angular/material/icon";
 
 type DeleteMembershipDialogData = {

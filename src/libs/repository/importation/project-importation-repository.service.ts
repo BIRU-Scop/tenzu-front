@@ -23,17 +23,18 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectImportationApiService } from "./project-importation-api.service";
 import { CreateProjectImportationPayload, ProjectImportation, ProjectImportationNested } from "./importation.model";
-import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectImportationEntitiesStore } from "@tenzu/repository/importation/project-importation.store";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
-import { InvitationsPayload } from "@tenzu/repository/membership";
+import { WorkspaceSummary } from "../workspace/workspace.model";
+import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
+import { ProjectImportationEntitiesStore } from "../importation/project-importation.store";
+import { NotFoundEntityError } from "../base/errors";
+import { InvitationsPayload } from "../membership/invitation.model";
 import { map } from "rxjs/operators";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "../project-invitations/project-invitation-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "../project/project-repository.service";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { UserStore } from "@tenzu/repository/user";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { Router } from "@angular/router";
 
 @Injectable({
@@ -141,11 +142,16 @@ export class ProjectImportationRepositoryService {
         )
         .pipe(
           map((invitedResult) => {
+            const { project } = invitedResult.projectImportation;
+            if (!project) {
+              throw new Error("handlePendingInvites: projectImportation.project missing");
+            }
             return {
               ...invitedResult,
+              projectImportation: { ...invitedResult.projectImportation, project }, // make project required
               invitations: invitedResult.invitations.map((invitation) => ({
                 ...invitation,
-                project: invitedResult.projectImportation.project,
+                project,
               })),
             };
           }),

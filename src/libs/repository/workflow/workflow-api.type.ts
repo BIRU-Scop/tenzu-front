@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { Workflow } from "./workflow.model";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "../project/project.model";
 
 export type BaseParams = { workflowId: Workflow["id"] };
 export type GetEntityDetailParams = BaseParams;

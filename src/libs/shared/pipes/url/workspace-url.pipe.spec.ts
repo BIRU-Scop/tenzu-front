@@ -21,7 +21,7 @@
 
 import { describe, expect, it } from "vitest";
 import { WorkspaceUrlPipe } from "./workspace-url.pipe";
-import { makeWorkspaceLinkNested } from "@tenzu/utils/testing/factories";
+import { makeWorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.factories";
 
 describe("WorkspaceUrlPipe", () => {
   const pipe = new WorkspaceUrlPipe();

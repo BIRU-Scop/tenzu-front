@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,10 +22,10 @@
 import { inject, Injectable } from "@angular/core";
 import { ProjectRolesApiService } from "./project-roles-api.service";
 import { ProjectRolesDetailStore, ProjectRolesEntitiesSummaryStore } from "./project-roles-entities.store";
-import { BaseRepositoryService } from "../base";
+import { BaseRepositoryService } from "../base/repository.service";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 
 @Injectable({
   providedIn: "root",

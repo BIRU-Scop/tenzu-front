@@ -26,7 +26,7 @@ import { provideRouter } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { JwtModule } from "@auth0/angular-jwt";
 import { StoryCardComponent } from "../../app/workspace/project-detail/kanban-wrapper/project-kanban/story-card/story-card.component";
-import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership";
+import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership/project-membership-entities.store";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { withTransloco } from "../storybook-providers";
 import { withDevToolsStub } from "@angular-architects/ngrx-toolkit";

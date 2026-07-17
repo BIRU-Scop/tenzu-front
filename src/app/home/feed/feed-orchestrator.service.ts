@@ -22,7 +22,7 @@
 import { effect, inject, Injectable, signal } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { FeedDialog } from "./feed-dialog/feed-dialog";
-import { FeedRepositoryService } from "@tenzu/repository/feed";
+import { FeedRepositoryService } from "@tenzu/repository/feed/feed-repository.service";
 import { TypedDialog, TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 

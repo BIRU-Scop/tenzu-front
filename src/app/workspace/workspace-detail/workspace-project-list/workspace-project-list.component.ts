@@ -20,14 +20,15 @@
  */
 
 import { AfterViewInit, Component, inject } from "@angular/core";
-import { ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
+import { ProjectSummary } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import {
@@ -37,7 +38,7 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
-import { ProjectImportationRepositoryService } from "@tenzu/repository/importation";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 
 @Component({
   selector: "app-workspace-project-list",

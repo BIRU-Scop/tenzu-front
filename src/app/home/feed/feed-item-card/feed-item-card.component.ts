@@ -23,7 +23,7 @@ import { Component, computed, input, output } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { marked } from "marked";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
-import { FeedItem } from "@tenzu/repository/feed";
+import { FeedItem } from "@tenzu/repository/feed/feed-item.model";
 import { NgOptimizedImage } from "@angular/common";
 import { MatButton } from "@angular/material/button";
 

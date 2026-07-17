@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,11 +19,15 @@
  *
  */
 
-export type StoryAttachment = {
-  id: string;
-  name: string;
-  contentType: string;
-  createdAt: string;
-  size: number;
-  file: string;
-};
+import { z } from "zod/v4";
+import { isoDatetime } from "../base/schema-utils";
+
+export const storyAttachmentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  contentType: z.string(),
+  createdAt: isoDatetime,
+  size: z.int(),
+  file: z.string(),
+});
+export type StoryAttachment = z.infer<typeof storyAttachmentSchema>;

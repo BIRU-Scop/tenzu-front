@@ -23,17 +23,17 @@ import { computed, inject, Injectable } from "@angular/core";
 import * as ProjectApiServiceType from "./project-api.type";
 import { ProjectApiService } from "./project-api.service";
 import { ProjectDetailStore, ProjectEntitiesSummaryStore } from "./project-entities.store";
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
-import { BaseRepositoryService } from "../base";
+import { BaseRepositoryService } from "../base/repository.service";
 
 import { QueryParams } from "../base/utils";
 import { WsService } from "@tenzu/utils/services/ws";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { StoryRepositoryService } from "@tenzu/repository/story";
+import { ProjectMembershipRepositoryService } from "../project-membership/project-membership-repository.service";
+import { ProjectRoleRepositoryService } from "../project-roles/project-role-repository.service";
+import { StoryRepositoryService } from "../story/story-repository.service";
 import { lastValueFrom } from "rxjs";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 // todo temporary way to handle workflows maximum before implementing user settings
 const MAX_WORKFLOWS = 8;
 

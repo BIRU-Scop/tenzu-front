@@ -23,12 +23,12 @@ import { Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatListItem, MatListItemIcon, MatNavList } from "@angular/material/list";
 import { RouterLink, RouterLinkActive } from "@angular/router";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatIconAnchor, MatIconButton } from "@angular/material/button";
 import { MatTooltip } from "@angular/material/tooltip";
-import { SideNavStore } from "@tenzu/repository/sidenav";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { SideNavStore } from "@tenzu/repository/sidenav/sideNavStore";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 

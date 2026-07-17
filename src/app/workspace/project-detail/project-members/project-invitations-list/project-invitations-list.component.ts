@@ -21,8 +21,10 @@
 
 import { Component, effect, inject, input, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
-import { ProjectInvitation, ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { ProjectInvitation } from "@tenzu/repository/project-invitations/project-invitation.model";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";
@@ -30,7 +32,7 @@ import { InvitationActionsComponent } from "@tenzu/shared/components/invitations
 import { InvitationRoleComponent } from "@tenzu/shared/components/invitations/invitation-role.component";
 import { ActivatedRoute } from "@angular/router";
 import { ProjectInvitationsListImportationWarningComponent } from "./project-invitations-list-importation-warning/project-invitations-list-importation-warning.component";
-import { ImportationStatus } from "@tenzu/repository/importation";
+import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 
 @Component({
   selector: "app-project-invitations-list",
@@ -55,7 +57,7 @@ import { ImportationStatus } from "@tenzu/repository/importation";
             redirectUrlExtras: { relativeTo: activatedRoute },
           }"
         >
-          @if (project.importation && project.importation?.status === ImportationStatus.ACTION_NEEDED) {
+          @if (project.importation && project.importation.status === ImportationStatus.ACTION_NEEDED) {
             <app-project-invitations-list-importation-warning
               [projectImportation]="project.importation"
               [project]="project"

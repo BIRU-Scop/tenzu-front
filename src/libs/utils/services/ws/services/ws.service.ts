@@ -73,7 +73,7 @@ import {
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;

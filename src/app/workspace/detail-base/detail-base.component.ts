@@ -23,7 +23,7 @@ import { Component, effect, inject, input } from "@angular/core";
 import { BreadcrumbComponent } from "@tenzu/shared/components/breadcrumb";
 import { PrimarySideNavComponent } from "@tenzu/shared/components/primary-side-nav";
 import { Router, RouterOutlet } from "@angular/router";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 @Component({
   selector: "app-detail-base",

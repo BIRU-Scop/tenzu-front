@@ -31,15 +31,12 @@ import {
 } from "@angular/material/dialog";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";
-import {
-  ImportationError,
-  ProjectImportation,
-  ProjectImportationRepositoryService,
-} from "@tenzu/repository/importation";
+import { ImportationError, ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { ProjectImportationInputComponent } from "@tenzu/shared/components/project-importation-input/project-importation-input.component";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 export type ProjectImportationErrorDialogData = {

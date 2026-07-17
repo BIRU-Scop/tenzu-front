@@ -26,7 +26,7 @@ import { MatTableModule } from "@angular/material/table";
 import { StoryDetailFacade } from "./story-detail.facade";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { StoryDetailMenuComponent } from "./story-detail-menu/story-detail-menu.component";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";

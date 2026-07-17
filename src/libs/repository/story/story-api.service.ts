@@ -20,11 +20,21 @@
  */
 import type * as StoryApiServiceType from "./story-api.type";
 import { Injectable } from "@angular/core";
-import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayload } from "./story.model";
-import { AbstractApiService } from "../base";
-import { UserNested } from "@tenzu/repository/user";
+import {
+  StorySummary,
+  storySummarySchema,
+  StoryAssign,
+  storyAssignmentSchema,
+  StoryCreatePayload,
+  StoryDetail,
+  storyDetailSchema,
+  StoryReorderPayload,
+} from "./story.model";
+import { AbstractApiService } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/parse-with-debug";
+import { UserNested } from "../user/user.model";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -42,6 +52,8 @@ export class StoryApiService extends AbstractApiService<
   StoryCreatePayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}`;
+  protected override summarySchema = storySummarySchema;
+  protected override detailSchema = storyDetailSchema;
 
   protected override getEntityBaseUrl(params: StoryApiServiceType.BaseParams): string {
     return `${this.baseUrl}/projects/${params.projectId}/stories/${params.ref}`;
@@ -76,8 +88,8 @@ export class StoryApiService extends AbstractApiService<
 
   createAssignee(userId: UserNested["id"], params: StoryApiServiceType.BaseParams): Observable<StoryAssign> {
     return this.http
-      .post<BaseDataModel<StoryAssign>>(`${this.baseStoryAssignmentUrl(params)}`, { userId })
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.baseStoryAssignmentUrl(params)}`, { userId })
+      .pipe(map((dataObject) => parseWithDebug(storyAssignmentSchema, dataObject.data)));
   }
   deleteAssignee(params: StoryApiServiceType.BaseParams & { userId: UserNested["id"] }) {
     return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.userId}`);

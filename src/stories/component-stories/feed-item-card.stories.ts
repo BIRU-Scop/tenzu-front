@@ -23,8 +23,8 @@ import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { Component, signal } from "@angular/core";
 import { withTransloco } from "../storybook-providers";
 import { FeedItemCardComponent } from "../../app/home/feed/feed-item-card/feed-item-card.component";
-import { FeedItem } from "@tenzu/repository/feed";
-import { makeFeedItem } from "@tenzu/utils/testing/factories";
+import { FeedItem } from "@tenzu/repository/feed/feed-item.model";
+import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
 
 @Component({
   selector: "app-feed-item-card-storybook",

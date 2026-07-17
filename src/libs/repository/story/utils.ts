@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { StorySummary } from "./story.model";
 import { computed, inject, Signal } from "@angular/core";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "../project-membership/project-membership-repository.service";
 
 export function getAssignees(story: Signal<Pick<StorySummary, "assigneeIds">>) {
   const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);

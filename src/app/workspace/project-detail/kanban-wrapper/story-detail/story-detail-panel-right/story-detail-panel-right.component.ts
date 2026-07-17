@@ -30,8 +30,8 @@ import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
-import { StoryDetail } from "@tenzu/repository/story";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 
 @Component({

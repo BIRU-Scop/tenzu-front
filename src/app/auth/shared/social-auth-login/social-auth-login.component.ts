@@ -21,7 +21,7 @@
 
 import { Component, inject, input, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { KeyValuePipe } from "@angular/common";
 import { MatCheckbox } from "@angular/material/checkbox";

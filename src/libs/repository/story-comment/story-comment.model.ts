@@ -19,17 +19,20 @@
  *
  */
 
-import { UserNested } from "@tenzu/repository/user";
+import { z } from "zod/v4";
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
+import { userNestedSchema } from "../user/user.model";
 
-export type StoryCommentNested = {
-  id: string;
-  text: string;
-  createdAt: string;
-  createdBy?: UserNested;
-};
+export const storyCommentNestedSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  createdAt: isoDatetime,
+  createdBy: userNestedSchema.apply(optionalNullable),
+});
 
-export type StoryComment = StoryCommentNested & {
-  modifiedAt?: string;
-  deletedAt?: string;
-  deletedBy?: UserNested;
-};
+export const commentSchema = storyCommentNestedSchema.extend({
+  modifiedAt: isoDatetime.apply(optionalNullable),
+  deletedAt: isoDatetime.apply(optionalNullable),
+  deletedBy: userNestedSchema.apply(optionalNullable),
+});
+export type StoryComment = z.infer<typeof commentSchema>;

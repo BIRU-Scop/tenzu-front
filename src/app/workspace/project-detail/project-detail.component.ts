@@ -22,15 +22,15 @@
 import { Component, computed, effect, inject, input } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
-import { SideNavStore } from "@tenzu/repository/sidenav";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { SideNavStore } from "@tenzu/repository/sidenav/sideNavStore";
 import { filterNotNull } from "@tenzu/utils/functions/rxjs.operators";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
-import { MemberPermission } from "@tenzu/repository/membership";
+import { MemberPermission } from "@tenzu/repository/membership/membership.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { handleHttpError } from "@tenzu/utils/functions/http-error-handler";
 import { combineLatest } from "rxjs";
-import { ImportationStatus } from "@tenzu/repository/importation";
+import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 
 @Component({
   selector: "app-project-detail",

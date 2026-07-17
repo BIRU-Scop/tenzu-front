@@ -20,8 +20,8 @@
  */
 
 import { Component, inject, input } from "@angular/core";
-import { ProjectRoleSummary } from "@tenzu/repository/project-roles";
-import { Role } from "@tenzu/repository/membership";
+import { ProjectRoleSummary } from "@tenzu/repository/project-roles/project-roles.model";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -34,7 +34,7 @@ import { FormRoleComponent } from "../form-role/form-role.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { DeleteWarningButtonComponent } from "@tenzu/shared/components/delete-warning-button/delete-warning-button.component";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { MatIcon } from "@angular/material/icon";

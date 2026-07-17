@@ -22,14 +22,14 @@
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { SelectEntityId } from "@ngrx/signals/entities";
 import { StorySummary, StoryAssign, StoryDetail, StoryReorderPayload, StoryReorderPayloadEvent } from "./story.model";
-import { StatusSummary } from "../status";
+import { WorkflowStatusNested } from "../status/status.model";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { debug } from "@tenzu/utils/functions/logging";
-import { withEntityDetailStore, withEntityListFeature } from "../base";
-import { UserNested } from "../user";
-import { ProjectSummary } from "@tenzu/repository/project";
-import { Workflow } from "@tenzu/repository/workflow";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { withEntityDetailStore, withEntityListFeature } from "../base/features";
+import { UserNested } from "../user/user.model";
+import { ProjectSummary } from "../project/project.model";
+import { Workflow } from "../workflow/workflow.model";
+import { NotFoundEntityError } from "../base/errors";
 
 const selectId: SelectEntityId<StorySummary> = (story) => story.ref;
 const initialState = {
@@ -73,7 +73,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       const removedAssigneeIds = [...store.entityMap()[ref].assigneeIds].filter((assigneeId) => assigneeId != userId);
       store.updateEntity(ref, { assigneeIds: removedAssigneeIds });
     },
-    deleteStatusGroup(oldStatusId: string, newStatus: StatusSummary) {
+    deleteStatusGroup(oldStatusId: string, newStatus: WorkflowStatusNested) {
       store.entities().forEach((story) => {
         if (story.statusId === oldStatusId) {
           store.deleteEntity(story.ref);
@@ -109,7 +109,7 @@ export const StoryEntitiesSummaryStore = signalStore(
       }
     },
 
-    dropStoryIntoStatus(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>) {
+    dropStoryIntoStatus(event: CdkDragDrop<WorkflowStatusNested, WorkflowStatusNested, [StorySummary, number]>) {
       const story = event.item.data[0];
       const lastStatus = event.previousContainer.data;
       const nextStatus = event.container.data;

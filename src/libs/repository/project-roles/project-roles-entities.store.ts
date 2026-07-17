@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { signalStore, withComputed } from "@ngrx/signals";
 import { ProjectRoleSummary, ProjectRoleDetail } from "./project-roles.model";
-import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 import { computed } from "@angular/core";
 
 export const ProjectRolesEntitiesSummaryStore = signalStore(

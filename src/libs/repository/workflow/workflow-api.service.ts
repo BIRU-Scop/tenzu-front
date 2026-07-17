@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,12 +20,13 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Workflow, ReorderWorkflowStatusesPayload } from "./workflow.model";
-import { StatusSummary } from "../status";
-import { AbstractApiServiceDetail } from "../base";
+import { Workflow, workflowSchema, ReorderWorkflowStatusesPayload } from "./workflow.model";
+import { WorkflowStatusNested, workflowStatusNestedSchema } from "../status/status.model";
+import { AbstractApiServiceDetail } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/parse-with-debug";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 import { Observable } from "rxjs";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -40,6 +41,7 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   WorkflowApiServiceType.DeleteEntityDetailParams
 > {
   override baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override detailSchema = workflowSchema;
 
   protected override getBaseUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
     return `${this.baseUrl}/${params.projectId}/workflows`;
@@ -58,15 +60,18 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }): Observable<Workflow> {
     return this.http
       .get<
-        BaseDataModel<Workflow>
+        BaseDataModel<unknown>
       >(`${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`)
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => parseWithDebug(workflowSchema, dataObject.data)));
   }
 
-  createStatus(workflowId: Workflow["id"], newStatus: Pick<StatusSummary, "name">): Observable<StatusSummary> {
+  createStatus(
+    workflowId: Workflow["id"],
+    newStatus: Pick<WorkflowStatusNested, "name">,
+  ): Observable<WorkflowStatusNested> {
     return this.http
-      .post<BaseDataModel<StatusSummary>>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.getStatusesBaseUrl({ workflowId })}`, newStatus)
+      .pipe(map((dataObject) => parseWithDebug(workflowStatusNestedSchema, dataObject.data)));
   }
 
   deleteStatus(params: { statusId: string; moveToStatus?: string }): Observable<void> {
@@ -75,12 +80,12 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
     });
   }
 
-  editStatus(status: Pick<StatusSummary, "name" | "id">): Observable<StatusSummary> {
+  editStatus(status: Pick<WorkflowStatusNested, "name" | "id">): Observable<WorkflowStatusNested> {
     return this.http
-      .patch<BaseDataModel<StatusSummary>>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
+      .patch<BaseDataModel<unknown>>(`${this.configAppService.apiUrl()}/workflows/statuses/${status.id}`, {
         name: status.name,
       })
-      .pipe(map((dataObject) => dataObject.data));
+      .pipe(map((dataObject) => parseWithDebug(workflowStatusNestedSchema, dataObject.data)));
   }
 
   reorderStatus(workflowId: Workflow["id"], payload: ReorderWorkflowStatusesPayload): Observable<void> {

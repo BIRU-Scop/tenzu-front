@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,14 +23,15 @@ import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectInvitationsEntitiesSummaryStore } from "./project-invitations-entities.store";
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
-import { ProjectDetail, ProjectNested } from "../project";
-import { InvitationsPayload } from "../membership";
+import { ProjectDetail, ProjectNested } from "../project/project.model";
+import { InvitationsPayload } from "../membership/invitation.model";
 import { map } from "rxjs/operators";
 import { ProjectInvitation } from "./project-invitation.model";
-import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "../workspace/workspace.model";
+import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
 import { EntityId } from "@ngrx/signals/entities";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
-import { ResetService } from "@tenzu/repository/base/reset.service";
+import { NotFoundEntityError } from "../base/errors";
+import { ResetService } from "../base/reset.service";
 
 @Injectable({
   providedIn: "root",

@@ -44,7 +44,7 @@ import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from "@an
 import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
 import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { LanguageStore } from "@tenzu/repository/transloco";
+import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { httpInterceptor } from "@tenzu/utils/interceptors";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { WsService } from "@tenzu/utils/services/ws";

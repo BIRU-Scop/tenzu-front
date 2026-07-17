@@ -20,12 +20,13 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { AbstractApiService } from "../base";
-import { StoryAttachment } from "./story-attachment.model";
+import { AbstractApiService } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/parse-with-debug";
+import { StoryAttachment, storyAttachmentSchema } from "./story-attachment.model";
 import * as StoryAttachmentApiType from "./story-attachment-api.type";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 import { Observable } from "rxjs";
-import { BaseDataModel, FileValue } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel, FileValue } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -42,6 +43,8 @@ export class StoryAttachmentApiService extends AbstractApiService<
   StoryAttachmentApiType.DeleteEntityDetailParams
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override summarySchema = storyAttachmentSchema;
+  protected override detailSchema = storyAttachmentSchema;
   fileDownloaderService = inject(FileDownloaderService);
 
   protected override getBaseUrl(params: StoryAttachmentApiType.BaseParams): string {
@@ -58,8 +61,8 @@ export class StoryAttachmentApiService extends AbstractApiService<
     const formData = new FormData();
     formData.append("file", attachment);
     return this.http
-      .post<BaseDataModel<StoryAttachment>>(`${this.createUrl(params)}`, formData)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.createUrl(params)}`, formData)
+      .pipe(map((dataObject) => parseWithDebug(storyAttachmentSchema, dataObject.data)));
   }
   downloadAttachment(attachment: StoryAttachment) {
     this.fileDownloaderService.downloadFileFromUrl(attachment.file, attachment.name);

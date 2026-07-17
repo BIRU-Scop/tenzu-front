@@ -19,27 +19,26 @@
  *
  */
 
-import { StatusSummary } from "../status";
+import { z } from "zod/v4";
+import { WorkflowStatusNested, workflowStatusNestedSchema } from "../status/status.model";
+import { workflowNestedSchema } from "./workflow-nested.model";
+
+export { workflowNestedSchema } from "./workflow-nested.model";
+export type { WorkflowNested } from "./workflow-nested.model";
 
 export enum Step {
   LEFT = -1,
   RIGHT = 1,
 }
 
-export type WorkflowNested = {
-  id: string;
-  name: string;
-  slug: string;
-  projectId: string;
-};
-
-export type Workflow = WorkflowNested & {
-  order: number;
-  statuses: StatusSummary[];
-};
+export const workflowSchema = workflowNestedSchema.extend({
+  order: z.int(),
+  statuses: z.array(workflowStatusNestedSchema),
+});
+export type Workflow = z.infer<typeof workflowSchema>;
 
 export type ReorderWorkflowStatusesPayload = {
-  statusIds: string[];
+  statusIds: WorkflowStatusNested["id"][];
   reorder: {
     place: "after" | "before";
     statusId: string;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -26,12 +26,14 @@ import {
   ProjectPermissions,
 } from "@tenzu/repository/permission/permission.model";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
-import { ProjectRoleRepositoryService, ProjectRoleSummary } from "@tenzu/repository/project-roles";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { ProjectRoleSummary } from "@tenzu/repository/project-roles/project-roles.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { DeleteRoleDialogComponent } from "./edit-role/delete-role-dialog/delete-role-dialog.component";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 
 export type PermissionValuesFor<K extends GroupPermissionKey> =
   | (typeof AllProjectPermissionsByTheme)[K]["permissions"][number]

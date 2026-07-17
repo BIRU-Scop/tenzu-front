@@ -20,8 +20,8 @@
  */
 
 import { Component, computed, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { StorySummary } from "@tenzu/repository/story";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
+import { StorySummary } from "@tenzu/repository/story/story.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
@@ -32,8 +32,9 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
-import { StatusSummary } from "@tenzu/repository/status";
-import { Step, Workflow, WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
+import { Step, Workflow } from "@tenzu/repository/workflow/workflow.model";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -51,7 +52,7 @@ import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
 import { Location } from "@angular/common";
 import { HasPermissionDirective, PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
@@ -344,7 +345,10 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>, workflow: Workflow) {
+  async drop(
+    event: CdkDragDrop<WorkflowStatusNested, WorkflowStatusNested, [StorySummary, number]>,
+    workflow: Workflow,
+  ) {
     // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
     // so we use workarounds
     const [, index] = event.item.data;

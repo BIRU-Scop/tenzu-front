@@ -22,7 +22,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { FeedStore } from "./feed.store";
-import { makeFeedItem } from "@tenzu/utils/testing/factories";
+import { makeFeedItem } from "../feed/feed.factories";
 
 describe("FeedStore", () => {
   let store: InstanceType<typeof FeedStore>;

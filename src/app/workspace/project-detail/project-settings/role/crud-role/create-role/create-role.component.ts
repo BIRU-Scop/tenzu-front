@@ -26,7 +26,7 @@ import { FormRoleComponent } from "../form-role/form-role.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";

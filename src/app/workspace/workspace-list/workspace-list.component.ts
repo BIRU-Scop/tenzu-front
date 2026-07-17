@@ -29,7 +29,8 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
-import { ProjectNested, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectNested } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
@@ -38,8 +39,8 @@ import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { ActionCardComponent } from "@tenzu/shared/components/action-card";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";

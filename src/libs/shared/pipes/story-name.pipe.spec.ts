@@ -21,7 +21,7 @@
 
 import { describe, expect, it } from "vitest";
 import { StoryNamePipe } from "./story-name.pipe";
-import { makeStoryNested } from "@tenzu/utils/testing/factories";
+import { makeStoryNested } from "@tenzu/repository/story/story.factories";
 
 describe("StoryNamePipe", () => {
   const pipe = new StoryNamePipe();

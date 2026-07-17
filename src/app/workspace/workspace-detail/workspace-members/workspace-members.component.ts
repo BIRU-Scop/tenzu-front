@@ -28,11 +28,11 @@ import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitation
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations/workspace-invitation-repository.service";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
