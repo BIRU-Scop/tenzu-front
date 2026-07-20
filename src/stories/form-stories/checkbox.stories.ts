@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot, validate } from "@angular/forms/signals";

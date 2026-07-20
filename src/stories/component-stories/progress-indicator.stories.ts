@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatProgressBar, MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinner, MatProgressSpinnerModule } from "@angular/material/progress-spinner";

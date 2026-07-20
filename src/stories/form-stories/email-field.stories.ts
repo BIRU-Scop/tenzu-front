@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 import { Component, effect, input, isDevMode, signal } from "@angular/core";
 import { form, required } from "@angular/forms/signals";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";

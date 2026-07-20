@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 import { Component, inject, signal } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
 import { MatIcon, MatIconRegistry } from "@angular/material/icon";

@@ -19,12 +19,11 @@
  *
  */
 
-import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 
 import { PasswordFieldComponent } from "../../libs/shared/components/form/password-field/password-field.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { Component, input, isDevMode } from "@angular/core";
 import { PasswordStrengthComponent } from "../../libs/shared/components/form/password-field/password-strength/password-strength.component";
 import { provideHttpClient } from "@angular/common/http";
@@ -62,7 +61,6 @@ const meta: Meta<StoryPasswordStrengthComponent> = {
     applicationConfig({
       providers: [
         provideHttpClient(),
-        provideAnimations(),
         provideTransloco({
           config: {
             reRenderOnLangChange: true,

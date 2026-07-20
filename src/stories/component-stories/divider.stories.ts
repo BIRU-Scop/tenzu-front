@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatDivider, MatDividerModule } from "@angular/material/divider";
 import { MatListModule } from "@angular/material/list";

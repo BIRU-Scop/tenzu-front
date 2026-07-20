@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, StoryObj } from "@storybook/angular";
+import { Meta, StoryObj } from "@storybook/angular-vite";
 import { Component, signal } from "@angular/core";
 import { disabled, form, FormField, FormRoot } from "@angular/forms/signals";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
