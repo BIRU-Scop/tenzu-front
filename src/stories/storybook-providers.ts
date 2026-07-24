@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig } from "@storybook/angular";
+import { applicationConfig } from "@storybook/angular-vite";
 import { ErrorHandler, isDevMode } from "@angular/core";
 import { provideTransloco } from "@jsverse/transloco";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";

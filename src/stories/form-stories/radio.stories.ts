@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 import { withTransloco } from "../storybook-providers";

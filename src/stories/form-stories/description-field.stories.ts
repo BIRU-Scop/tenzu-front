@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 
 import { form } from "@angular/forms/signals";
 import { JsonPipe } from "@angular/common";

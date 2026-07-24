@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 import { Component, signal } from "@angular/core";
 import { withTransloco } from "../storybook-providers";
 import { FeedItemCardComponent } from "../../app/home/feed/feed-item-card/feed-item-card.component";

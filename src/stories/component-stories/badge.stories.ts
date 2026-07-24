@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatBadge, MatBadgeModule } from "@angular/material/badge";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
