@@ -21,7 +21,6 @@
 
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { Component, computed, inject, input, signal } from "@angular/core";
-import { HttpErrorResponse } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { MatChipGrid } from "@angular/material/chips";
@@ -29,7 +28,6 @@ import { MatOption } from "@angular/material/core";
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { NotificationService } from "@tenzu/utils/services/notification";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { StoryTagRepositoryService } from "@tenzu/repository/story-tag/story-tag-repository.service";
@@ -79,7 +77,6 @@ export class StoryTagsComponent {
   private storyTagRepositoryService = inject(StoryTagRepositoryService);
   private storyRepositoryService = inject(StoryRepositoryService);
   private liveAnnouncer = inject(LiveAnnouncer);
-  private notificationService = inject(NotificationService);
   private translocoService = inject(TranslocoService);
 
   story = input.required<StoryDetail>();
@@ -110,39 +107,20 @@ export class StoryTagsComponent {
     const tagId = event.option.value as StoryTag["id"];
     event.option.deselect();
     this.searchText.set("");
-    try {
-      const storyTagAssign = await this.storyRepositoryService.createTagAssign(tagId, {
-        projectId: story.projectId,
-        ref: story.ref,
-      });
-      void this.liveAnnouncer.announce(
-        this.translocoService.translate("component.story_tags.tag_added", { label: storyTagAssign.tag.label }),
-      );
-    } catch (error) {
-      this.toastGoneTag(error);
-    }
+    const storyTagAssign = await this.storyRepositoryService.createTagAssign(tagId, {
+      projectId: story.projectId,
+      ref: story.ref,
+    });
+    void this.liveAnnouncer.announce(
+      this.translocoService.translate("component.story_tags.tag_added", { label: storyTagAssign.tag.label }),
+    );
   }
 
   protected async unassignTag(tag: StoryTag) {
     const story = this.story();
-    try {
-      await this.storyRepositoryService.deleteTagAssign(tag.id, { projectId: story.projectId, ref: story.ref });
-      void this.liveAnnouncer.announce(
-        this.translocoService.translate("component.story_tags.tag_removed", { label: tag.label }),
-      );
-    } catch (error) {
-      this.toastGoneTag(error);
-    }
-  }
-
-  private toastGoneTag(error: unknown): void {
-    if (error instanceof HttpErrorResponse && error.status === 404) {
-      this.notificationService.error(
-        { title: "component.story_tags.tag_gone", translocoTitle: true },
-        { duration: 5000 },
-      );
-      return;
-    }
-    throw error;
+    await this.storyRepositoryService.deleteTagAssign(tag.id, { projectId: story.projectId, ref: story.ref });
+    void this.liveAnnouncer.announce(
+      this.translocoService.translate("component.story_tags.tag_removed", { label: tag.label }),
+    );
   }
 }

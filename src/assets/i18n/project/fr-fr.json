@@ -51,7 +51,6 @@
         "confirm": "Réaffecter",
         "project_role_select_title": "Rôles"
       },
-
       "role": {
         "label": "Rôle",
         "no_member_permissions": "pour attribuer une permission sur les rôles, tu dois définir une permission sur les membres au préalable",
@@ -111,6 +110,38 @@
       "not_editable": "Non modifiable",
       "editable": "Modifiable",
       "create_role": "Créer un rôle"
+    },
+    "attributes": {
+      "title": "Attributs",
+      "tags": {
+        "empty_message": "Aucun tag pour l'instant; créez-en un pour catégoriser les stories de ce projet.",
+        "add": "Tag",
+        "dialog": {
+          "title_create": "Créer un tag",
+          "title_edit": "Modifier le tag",
+          "name_label": "Nom",
+          "choose_color": "Choisissez une couleur",
+          "create": "Créer le tag",
+          "save": "Enregistrer",
+          "errors": {
+            "unique": "Un tag porte déjà ce nom.",
+            "required": "Le nom est requis.",
+            "max_length": "50 caractères maximum.",
+            "invalid_characters": "Le nom contient des caractères invalides."
+          }
+        },
+        "title": "Tags",
+        "related_stories": "{count, plural, one {# story liée} other {# stories liées}}",
+        "edit_aria": "Modifier le tag {{label}}",
+        "delete_aria": "Supprimer le tag {{label}}",
+        "delete_confirm_used": "Voulez-vous vraiment supprimer le tag « {{label}} » ? Il est utilisé par {count, plural, one {# story} other {# stories}} et en sera retiré automatiquement.",
+        "delete_confirm_unused": "Le tag « {{label}} » n'est utilisé par aucune story. Voulez-vous vraiment le supprimer ?",
+        "errors": {
+          "conflict": "Un tag « {{label}} » existe déjà; il vient peut-être d'être créé par quelqu'un d'autre.",
+          "max_reached": "Ce projet a atteint son nombre maximal de tags.",
+          "gone": "Ce tag n'existe plus; il vient d'être supprimé."
+        }
+      }
     }
   },
   "members": {

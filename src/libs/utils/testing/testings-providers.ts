@@ -23,14 +23,17 @@ import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { EnvironmentProviders, importProvidersFrom, inject, provideEnvironmentInitializer } from "@angular/core";
 import { provideRouter } from "@angular/router";
+import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
 import { TranslocoTestingModule } from "@jsverse/transloco";
+import { provideTranslocoMessageformat } from "@jsverse/transloco-messageformat";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { ConfigModel, ConfigSchema } from "@tenzu/repository/config-app/config.model";
 import { EnvironmentConfig } from "../../../environments/environment-type";
 import { environment } from "../../../environments/environment";
 import { tokenGetter } from "../../../app/app.config";
 import enTranslations from "../../../assets/i18n/en-us.json";
+import projectEnTranslations from "../../../assets/i18n/project/en-us.json";
 
 export const TEST_CONFIG: EnvironmentConfig & ConfigModel = {
   ...environment,
@@ -52,21 +55,23 @@ export function provideConfigAppTesting(): EnvironmentProviders {
   });
 }
 
-export function provideTranslocoTesting(): EnvironmentProviders {
-  return importProvidersFrom(
-    TranslocoTestingModule.forRoot({
-      // Real application translations, so specs can assert user-visible strings
-      // (aria-labels, messages) instead of raw keys.
-      langs: { en: enTranslations },
-      translocoConfig: { availableLangs: ["en"], defaultLang: "en" },
-      preloadLangs: true,
-    }),
-  );
+export function provideTranslocoTesting(): EnvironmentProviders[] {
+  return [
+    importProvidersFrom(
+      TranslocoTestingModule.forRoot({
+        langs: { en: enTranslations, "project/en": projectEnTranslations },
+        translocoConfig: { availableLangs: ["en"], defaultLang: "en" },
+        preloadLangs: true,
+      }),
+    ),
+    provideTranslocoMessageformat(),
+  ];
 }
 
 export const testingProviders = [
   provideHttpClient(),
   provideHttpClientTesting(),
+  provideNoopAnimations(),
   provideConfigAppTesting(),
   provideTranslocoTesting(),
   provideRouter([]),

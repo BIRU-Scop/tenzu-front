@@ -92,6 +92,12 @@ export default class ProjectSettingsComponent implements AfterViewInit {
       permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
       iconName: "assignment_ind",
     },
+    {
+      path: "./attributes",
+      labelKey: "project.settings.attributes.title",
+      permission: ProjectPermissions.MODIFY_PROJECT,
+      iconName: "label",
+    },
   ];
   breadcrumbStore = inject(BreadcrumbStore);
   ngAfterViewInit(): void {

@@ -27,20 +27,20 @@ import { StorySkeletonComponent } from "./story-skeleton/story-skeleton.componen
   selector: "app-project-kanban-skeleton",
   imports: [StatusSkeletonComponent, StorySkeletonComponent],
   template: `
-    <div class="flex flex-row gap-x-8">
-      <div class="flex flex-col w-64 shrink-0">
+    <div class="flex flex-row gap-x-5">
+      <div class="flex flex-col w-[280px] shrink-0">
         <app-status-skeleton></app-status-skeleton>
         <app-story-skeleton></app-story-skeleton>
       </div>
-      <div class="flex flex-col w-64 shrink-0">
+      <div class="flex flex-col w-[280px] shrink-0">
         <app-status-skeleton></app-status-skeleton>
         <app-story-skeleton></app-story-skeleton>
       </div>
-      <div class="flex flex-col w-64 shrink-0">
+      <div class="flex flex-col w-[280px] shrink-0">
         <app-status-skeleton></app-status-skeleton>
         <app-story-skeleton></app-story-skeleton>
       </div>
-      <div class="flex flex-col w-64 shrink-0">
+      <div class="flex flex-col w-[280px] shrink-0">
         <app-status-skeleton></app-status-skeleton>
         <app-story-skeleton></app-story-skeleton>
       </div>

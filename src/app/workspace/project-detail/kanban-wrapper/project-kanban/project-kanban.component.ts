@@ -137,14 +137,14 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                 actualEntity: project,
               });
             <ul
-              class="grid grid-flow-col gap-8 kanban-viewport"
+              class="grid grid-flow-col gap-5 kanban-viewport"
               *transloco="let t; prefix: 'workflow'"
               cdkDropListGroup
             >
               @for (status of statuses; track status.id) {
                 @let storiesRef = storyRepositoryService.groupedByStatus()[status.id];
 
-                <li class="group w-64 flex flex-col pb-2">
+                <li class="group w-[280px] flex flex-col pb-2">
                   <app-status-card
                     (movedLeft)="moveStatus($index, Step.LEFT)"
                     (movedRight)="moveStatus($index, Step.RIGHT)"
@@ -155,7 +155,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                     [project]="project"
                   />
 
-                  <cdk-virtual-scroll-viewport [itemSize]="114" class="virtual-scroll">
+                  <cdk-virtual-scroll-viewport [itemSize]="146" class="virtual-scroll">
                     <ul
                       [id]="status.id"
                       class="stories-list flex flex-col items-center mat-bg-surface-container"
@@ -169,7 +169,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                         cdkDrag
                         [cdkDragData]="[storySummaryEntityMap[storyRef], idx]"
                         [attr.data-drag-index]="idx"
-                        class="w-60 h-[102px] my-[6px] "
+                        class="w-[260px] h-[134px] my-[6px] "
                         *cdkVirtualFor="
                           let storyRef of storiesRef;
                           templateCacheSize: 0;
@@ -180,7 +180,11 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                         [class.cursor-progress]="hasModifyPermission && isLoading"
                       >
                         @let story = storySummaryEntityMap[storyRef];
-                        <app-story-card class="w-56 min" [story]="story" [hasModifyPermission]="hasModifyPermission" />
+                        <app-story-card
+                          class="block w-full h-full"
+                          [story]="story"
+                          [hasModifyPermission]="hasModifyPermission"
+                        />
                       </li>
                     </ul>
                   </cdk-virtual-scroll-viewport>
@@ -208,7 +212,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
               >
                 <app-button-add
                   (click)="openCreateStatus($event)"
-                  class="whitespace-nowrap w-64"
+                  class="whitespace-nowrap w-[280px]"
                   [translocoKey]="'workflow.add_status'"
                 />
               </li>

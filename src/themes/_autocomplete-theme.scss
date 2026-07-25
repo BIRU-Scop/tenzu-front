@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,19 +22,12 @@
 @use '@angular/material' as mat;
 
 @mixin tokens-overrides() {
-  .flat-expansion {
-    .mat-expansion-panel-header,
-    .mat-expansion-panel-body {
-      border-bottom: 1px solid var(--mat-divider-color);
-    }
-    .mat-expansion-panel-header {
-      margin-bottom: 16px;
-    }
+  @include mat.autocomplete-overrides((
+    background-color: var(--mat-sys-surface),
+    container-elevation-shadow: var(--mat-sys-level3),
+  ));
 
-    @include mat.expansion-overrides((
-      container-shape: 0,
-      container-elevation-shadow: 0,
-      container-background-color: var(--background-color),
-    ));
+  .mat-mdc-autocomplete-panel {
+    border: 1px solid var(--mat-sys-outline-variant);
   }
 }

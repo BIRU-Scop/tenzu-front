@@ -71,6 +71,11 @@ const routes: Routes = [
     loadComponent: () => import("./role/list-roles/list-roles.component"),
     providers: [provideTranslocoScope("project")],
   },
+  {
+    path: "attributes",
+    loadComponent: () => import("./attributes/attributes.component"),
+    providers: [provideTranslocoScope("project")],
+  },
 ];
 
 export default routes;

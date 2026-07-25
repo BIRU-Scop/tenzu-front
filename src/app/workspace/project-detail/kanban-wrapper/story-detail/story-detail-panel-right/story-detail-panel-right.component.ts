@@ -29,6 +29,7 @@ import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { StoryAssigneeComponent } from "@tenzu/shared/components/story-assignee/story-assignee.component";
+import { StoryTagsComponent } from "@tenzu/shared/components/story-tags/story-tags.component";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
@@ -43,6 +44,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
     HasPermissionDirective,
     MatDivider,
     StoryAssigneeComponent,
+    StoryTagsComponent,
     StoryDetailAttachmentsComponent,
     StoryStatusComponent,
     UserCardComponent,
@@ -52,12 +54,14 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
   template: `
     @let _project = project();
     @let _story = story();
-    <ng-container *transloco="let t; prefix: 'workflow.detail_story'">
+    <ng-container *transloco="let t">
       <div class="flex flex-col gap-4 content-start mb-2">
         <div class="flex flex-row">
-          <div class="text-on-surface-variant mat-label-medium self-center basis-24">{{ t("created_by") }}</div>
+          <div class="text-on-surface-variant mat-label-medium self-center basis-24">
+            {{ t("workflow.detail_story.created_by") }}
+          </div>
           <app-user-card
-            [fullName]="_story.createdBy?.fullName || t('former_user')"
+            [fullName]="_story.createdBy?.fullName || t('workflow.detail_story.former_user')"
             [avatarName]="_story.createdBy?.fullName || ''"
             [subtext]="_story.createdAt | date: 'short'"
             [color]="_story.createdBy?.color || 0"
@@ -65,12 +69,20 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
         </div>
         <app-story-status [storyDetail]="_story" [hasModifyPermission]="hasModifyPermission()" />
         <div class="flex flex-row">
-          <span class="text-on-surface-variant mat-label-medium self-center basis-24">{{ t("assigned_to") }}</span>
+          <span class="text-on-surface-variant mat-label-medium self-center basis-24">{{
+            t("workflow.detail_story.assigned_to")
+          }}</span>
           <app-story-assignee
             [story]="_story"
             [hasModifyPermission]="hasModifyPermission()"
             [config]="{ relativeXPosition: 'left' }"
           />
+        </div>
+        <div class="flex flex-row">
+          <span class="text-on-surface-variant mat-label-medium self-center pt-2 basis-24">{{
+            t("workflow.detail_story.tags")
+          }}</span>
+          <app-story-tags class="flex-1" [story]="_story" [hasModifyPermission]="hasModifyPermission()" />
         </div>
       </div>
       <mat-divider />
@@ -86,8 +98,8 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
           appConfirm
           [data]="{
             deleteAction: true,
-            title: t('confirm_delete_story'),
-            message: t('confirm_delete_story_message'),
+            title: t('workflow.detail_story.confirm_delete_story'),
+            message: t('workflow.detail_story.confirm_delete_story_message'),
           }"
           (popupConfirm)="deleteStory.emit()"
         />
