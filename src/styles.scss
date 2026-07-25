@@ -27,6 +27,7 @@
 @use "themes/card-theme" as card;
 @use "themes/form-field-theme" as form-field;
 @use "themes/select-theme" as select;
+@use "themes/autocomplete-theme" as autocomplete;
 @use "themes/radio-theme" as radio;
 @use "themes/checkbox-theme" as checkbox;
 @use "themes/menu-theme" as menu;
@@ -51,6 +52,8 @@
 @use "themes/slider-theme" as slider;
 @use "themes/editor" as editor;
 @use "themes/colors" as colors;
+@use "themes/tag-colors" as tag-colors;
+@use "themes/color-picker-theme" as color-picker;
 @use '@angular/cdk' as cdk;
 @use 'sass:map';
 @use "themes/mixin" as mixin;
@@ -176,6 +179,7 @@ strong {
   @include card.tokens-overrides;
   @include form-field.tokens-overrides;
   @include select.tokens-overrides;
+  @include autocomplete.tokens-overrides;
   @include radio.tokens-overrides;
   @include checkbox.tokens-overrides;
   @include dialog.tokens-overrides;
@@ -197,6 +201,8 @@ strong {
 :root {
   @include colors.tokens-defines();
 }
+@include tag-colors.classes-defines();
+@include color-picker.classes-defines();
 
 html {
   height: 100%;
@@ -322,5 +328,6 @@ body {
       color: var(--mat-sys-on-surface-variant);
     }
   }
+
 }
 

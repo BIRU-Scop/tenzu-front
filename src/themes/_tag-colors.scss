@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,21 +19,16 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { TAG_COLOR_COUNT } from "@tenzu/repository/story-tag/story-tag.model";
+@use "chips-theme" as chips;
+@use "colors" as colors;
 
-const MAX_COLOR = TAG_COLOR_COUNT;
-const MIN_COLOR = 1;
 
-@Injectable({
-  providedIn: "root",
-})
-export class RandomColorService {
-  public static randomColorPicker(): number {
-    return Math.floor(Math.random() * (MAX_COLOR + 1 - MIN_COLOR) + MIN_COLOR);
-  }
-  public static castToColor(value: number): number {
-    const range = MAX_COLOR + 1 - MIN_COLOR;
-    return value - Math.floor(value / range) * range + MIN_COLOR;
+@mixin classes-defines() {
+  @for $index from 1 through colors.$num-colors {
+    .tag-color-#{$index} {
+      --tag-background: var(--color-#{$index}-background);
+      --tag-on-background: var(--color-#{$index}-color);
+      @include chips.chip-variant-filled(var(--tag-background), var(--tag-on-background));
+    }
   }
 }

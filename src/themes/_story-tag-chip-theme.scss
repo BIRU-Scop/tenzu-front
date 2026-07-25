@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,21 +19,19 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { TAG_COLOR_COUNT } from "@tenzu/repository/story-tag/story-tag.model";
+@use "@angular/material" as mat;
 
-const MAX_COLOR = TAG_COLOR_COUNT;
-const MIN_COLOR = 1;
-
-@Injectable({
-  providedIn: "root",
-})
-export class RandomColorService {
-  public static randomColorPicker(): number {
-    return Math.floor(Math.random() * (MAX_COLOR + 1 - MIN_COLOR) + MIN_COLOR);
+@mixin tokens-overrides() {
+  app-story-tag-chip {
+    @include mat.chips-overrides((
+      container-height: 16px,
+      label-text-size: 0.7rem,
+      label-text-line-height: 1rem,
+    ));
   }
-  public static castToColor(value: number): number {
-    const range = MAX_COLOR + 1 - MIN_COLOR;
-    return value - Math.floor(value / range) * range + MIN_COLOR;
+
+  .story-card-tags .mdc-evolution-chip-set__chips {
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
 }

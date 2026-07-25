@@ -30,6 +30,7 @@ import { ConfigModel, ConfigSchema } from "@tenzu/repository/config-app/config.m
 import { EnvironmentConfig } from "../../../environments/environment-type";
 import { environment } from "../../../environments/environment";
 import { tokenGetter } from "../../../app/app.config";
+import enTranslations from "../../../assets/i18n/en-us.json";
 
 export const TEST_CONFIG: EnvironmentConfig & ConfigModel = {
   ...environment,
@@ -54,7 +55,9 @@ export function provideConfigAppTesting(): EnvironmentProviders {
 export function provideTranslocoTesting(): EnvironmentProviders {
   return importProvidersFrom(
     TranslocoTestingModule.forRoot({
-      langs: { en: {} },
+      // Real application translations, so specs can assert user-visible strings
+      // (aria-labels, messages) instead of raw keys.
+      langs: { en: enTranslations },
       translocoConfig: { availableLangs: ["en"], defaultLang: "en" },
       preloadLangs: true,
     }),
