@@ -27,9 +27,11 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { debug } from "@tenzu/utils/functions/logging";
 import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 import { UserNested } from "../user/user.model";
+import type { StoryTag } from "../story-tag/story-tag.model";
 import { ProjectSummary } from "../project/project.model";
 import { Workflow } from "../workflow/workflow.model";
 import { NotFoundEntityError } from "../base/errors";
+import { prependIdIfAbsent, removeId } from "../base/utils";
 
 const selectId: SelectEntityId<StorySummary> = (story) => story.ref;
 const initialState = {
@@ -62,16 +64,30 @@ export const StoryEntitiesSummaryStore = signalStore(
   withMethods((store) => ({
     addAssign(storyAssign: StoryAssign, ref: StorySummary["ref"]) {
       const currentAssigneeIds = store.entityMap()[ref].assigneeIds;
-
-      // avoid the double event from user event channel and project event channel
-      if (!currentAssigneeIds.find((assigneeId) => assigneeId === storyAssign.user.id)) {
-        const newAssigneeIds = [storyAssign.user.id, ...store.entityMap()[ref].assigneeIds];
-        store.updateEntity(ref, { assigneeIds: newAssigneeIds });
+      const newAssigneeIds = prependIdIfAbsent(currentAssigneeIds, storyAssign.user.id);
+      if (newAssigneeIds !== currentAssigneeIds) {
+        store.updateEntity(ref, { assigneeIds: [...newAssigneeIds] });
       }
     },
     removeAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
-      const removedAssigneeIds = [...store.entityMap()[ref].assigneeIds].filter((assigneeId) => assigneeId != userId);
-      store.updateEntity(ref, { assigneeIds: removedAssigneeIds });
+      store.updateEntity(ref, { assigneeIds: [...removeId(store.entityMap()[ref].assigneeIds, userId)] });
+    },
+    addTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
+      const story = store.entityMap()[ref];
+      if (!story) {
+        return;
+      }
+      const newTagIds = prependIdIfAbsent(story.tagIds, tagId);
+      if (newTagIds !== story.tagIds) {
+        store.updateEntity(ref, { tagIds: [...newTagIds] });
+      }
+    },
+    removeTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
+      const story = store.entityMap()[ref];
+      if (!story) {
+        return;
+      }
+      store.updateEntity(ref, { tagIds: [...removeId(story.tagIds, tagId)] });
     },
     deleteStatusGroup(oldStatusId: string, newStatus: WorkflowStatusNested) {
       store.entities().forEach((story) => {
@@ -102,7 +118,6 @@ export const StoryEntitiesSummaryStore = signalStore(
           } else if (reorder.reorder?.place === "before") {
             moveItemInArray(stories, currentIndex, siblingStoryIndex - 1);
           }
-          // if no place, nothing to do
         }
         store.setAllEntities(stories);
         store.reorder();
@@ -152,9 +167,9 @@ export const StoryDetailStore = signalStore(
       const story = store.item();
       if (story && story.ref === storyAssign.story.ref) {
         const currentAssigneeIds = story.assigneeIds;
-        if (!currentAssigneeIds.find((assigneeId) => assigneeId === storyAssign.user.id)) {
-          const newAssigneeIds = [storyAssign.user.id, ...story.assigneeIds];
-          store.update(story.ref, { assigneeIds: newAssigneeIds });
+        const newAssigneeIds = prependIdIfAbsent(currentAssigneeIds, storyAssign.user.id);
+        if (newAssigneeIds !== currentAssigneeIds) {
+          store.update(story.ref, { assigneeIds: [...newAssigneeIds] });
         }
       }
     },
@@ -168,8 +183,23 @@ export const StoryDetailStore = signalStore(
     removeAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
       const story = store.item();
       if (story && story.ref === ref) {
-        const removedAssigneeIds = [...story.assigneeIds].filter((assigneeId) => assigneeId != userId);
-        store.update(ref, { assigneeIds: removedAssigneeIds });
+        store.update(ref, { assigneeIds: [...removeId(story.assigneeIds, userId)] });
+      }
+    },
+    addTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
+      const story = store.item();
+      if (story && story.ref === ref) {
+        const currentTagIds = story.tagIds;
+        const newTagIds = prependIdIfAbsent(currentTagIds, tagId);
+        if (newTagIds !== currentTagIds) {
+          store.update(ref, { tagIds: [...newTagIds] });
+        }
+      }
+    },
+    removeTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
+      const story = store.item();
+      if (story && story.ref === ref) {
+        store.update(ref, { tagIds: [...removeId(story.tagIds, tagId)] });
       }
     },
     updateCommentsCount(ref: StorySummary["ref"], increment: number) {

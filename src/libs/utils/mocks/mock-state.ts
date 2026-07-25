@@ -102,7 +102,7 @@ export const DomainMockStore = signalStore(
       for (const domain of store.domainMock()) {
         debug("MOCK", `${domain.name} : mock ${domain.enabled ? "on" : "off"}`);
       }
-      debug("MOCK", "global — ?mock=on | ?mock=off | ?mock=reset");
+      debug("MOCK", "global - ?mock=on | ?mock=off | ?mock=reset");
     },
   })),
   withHooks({
