@@ -52,7 +52,7 @@ export class StoryRepositoryService extends BaseRepositoryService<
   protected apiService = inject(StoryApiService);
   protected entitiesSummaryStore = inject(StoryEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryDetailStore);
-  // The tag STORE (not the repository service, which injects us — DI cycle).
+  // The tag STORE (not the tag repository service, since it injects this repository service also and that would cause a DI cycle).
   private storyTagEntitiesSummaryStore = inject(StoryTagEntitiesSummaryStore);
   override getEntityIdFn = (story: StorySummary) => story.ref;
   groupedByStatus = this.entitiesSummaryStore.groupedByStatus;
@@ -164,6 +164,10 @@ export class StoryRepositoryService extends BaseRepositoryService<
   wsRemoveTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
     this.entitiesSummaryStore.removeTag(tagId, ref);
     this.entityDetailStore.removeTag(tagId, ref);
+  }
+  wsRemoveTagFromStories(tagId: StoryTag["id"]) {
+    this.entitiesSummaryStore.removeTagFromStories(tagId);
+    this.entityDetailStore.removeTagFromStories(tagId);
   }
   wsReorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
     try {

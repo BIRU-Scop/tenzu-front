@@ -91,3 +91,7 @@ export const storyTagAssignmentSchema = z.object({
   story: storyNestedSchema,
 });
 export type StoryTagAssign = z.infer<typeof storyTagAssignmentSchema>;
+
+export const storyTagAssignmentEventContentSchema = z.object({
+  storyTagAssignment: storyTagAssignmentSchema,
+});

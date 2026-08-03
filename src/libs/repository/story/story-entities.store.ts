@@ -63,14 +63,24 @@ export const StoryEntitiesSummaryStore = signalStore(
   })),
   withMethods((store) => ({
     addAssign(storyAssign: StoryAssign, ref: StorySummary["ref"]) {
-      const currentAssigneeIds = store.entityMap()[ref].assigneeIds;
-      const newAssigneeIds = prependIdIfAbsent(currentAssigneeIds, storyAssign.user.id);
-      if (newAssigneeIds !== currentAssigneeIds) {
+      const story = store.entityMap()[ref];
+      if (!story) {
+        return;
+      }
+      const newAssigneeIds = prependIdIfAbsent(story.assigneeIds, storyAssign.user.id);
+      if (newAssigneeIds !== story.assigneeIds) {
         store.updateEntity(ref, { assigneeIds: [...newAssigneeIds] });
       }
     },
     removeAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
-      store.updateEntity(ref, { assigneeIds: [...removeId(store.entityMap()[ref].assigneeIds, userId)] });
+      const story = store.entityMap()[ref];
+      if (!story) {
+        return;
+      }
+      const newAssigneeIds = removeId(story.assigneeIds, userId);
+      if (newAssigneeIds !== story.assigneeIds) {
+        store.updateEntity(ref, { assigneeIds: [...newAssigneeIds] });
+      }
     },
     addTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
       const story = store.entityMap()[ref];
@@ -87,7 +97,19 @@ export const StoryEntitiesSummaryStore = signalStore(
       if (!story) {
         return;
       }
-      store.updateEntity(ref, { tagIds: [...removeId(story.tagIds, tagId)] });
+      const newTagIds = removeId(story.tagIds, tagId);
+      if (newTagIds !== story.tagIds) {
+        store.updateEntity(ref, { tagIds: [...newTagIds] });
+      }
+    },
+
+    removeTagFromStories(tagId: StoryTag["id"]) {
+      store.entities().forEach((story) => {
+        const newTagIds = removeId(story.tagIds, tagId);
+        if (newTagIds !== story.tagIds) {
+          store.updateEntity(story.ref, { tagIds: [...newTagIds] });
+        }
+      });
     },
     deleteStatusGroup(oldStatusId: string, newStatus: WorkflowStatusNested) {
       store.entities().forEach((story) => {
@@ -200,6 +222,18 @@ export const StoryDetailStore = signalStore(
       const story = store.item();
       if (story && story.ref === ref) {
         store.update(ref, { tagIds: [...removeId(story.tagIds, tagId)] });
+      }
+    },
+    removeTagFromStories(tagId: StoryTag["id"]) {
+      // fonction to be used with the StoryEntitiesSummaryStore.removeTagFromStories
+      // when a tag is deleted
+      const story = store.item();
+      if (!story) {
+        return;
+      }
+      const newTagIds = removeId(story.tagIds, tagId);
+      if (newTagIds !== story.tagIds) {
+        store.update(story.ref, { tagIds: [...newTagIds] });
       }
     },
     updateCommentsCount(ref: StorySummary["ref"], increment: number) {

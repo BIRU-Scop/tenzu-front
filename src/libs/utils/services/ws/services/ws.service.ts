@@ -64,6 +64,8 @@ import {
   applyStoryAttachmentEvent,
   applyStoryCommentEvent,
   applyStoryEvent,
+  applyStoryTagAssignmentEvent,
+  applyStoryTagEvent,
   applyUserEvent,
   applyWorkflowEvent,
   applyWorkflowStatusEvent,
@@ -396,6 +398,14 @@ export class WsService {
         }
         case FamilyEventType.StoryAssignment: {
           applyStoryAssignmentEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryTag: {
+          applyStoryTagEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryTagAssignment: {
+          applyStoryTagAssignmentEvent(message);
           break;
         }
         case FamilyEventType.StoryAttachment: {
