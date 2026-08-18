@@ -27,8 +27,7 @@ import { Mocked, vi } from "vitest";
  * chain (own + inherited) becomes a `vi.fn()`. Intended to stub a service at the
  * I/O boundary (e.g. an `*-api.service`) in repository/orchestration tests.
  *
- * Each method returns `undefined` by default — configure the ones a test
- * exercise:
+ * Each method returns `undefined` by default; configure the ones a test evaluates:
  *
  *   const api = mockService(StoryApiService);
  *   TestBed.configureTestingModule({ providers: [{ provide: StoryApiService, useValue: api }] });

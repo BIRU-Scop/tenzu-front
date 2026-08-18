@@ -1,0 +1,65 @@
+/*
+ * Copyright (C) 2026 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+import {
+  WorkspaceDetail,
+  WorkspaceLinkNested,
+  WorkspaceNested,
+  WorkspaceSummary,
+} from "@tenzu/repository/workspace/workspace.model";
+
+export function makeWorkspaceLinkNested(overrides: Partial<WorkspaceLinkNested> = {}): WorkspaceLinkNested {
+  return {
+    id: "workspace-1",
+    name: "My Workspace",
+    slug: "my-workspace",
+    ...overrides,
+  };
+}
+
+export function makeWorkspaceNested(overrides: Partial<WorkspaceNested> = {}): WorkspaceNested {
+  return {
+    ...makeWorkspaceLinkNested(),
+    color: 1,
+    ...overrides,
+  };
+}
+
+export function makeWorkspaceSummary(overrides: Partial<WorkspaceSummary> = {}): WorkspaceSummary {
+  return {
+    ...makeWorkspaceNested(),
+    userMemberProjects: [],
+    userInvitedProjects: [],
+    userImportedProjects: [],
+    userIsInvited: false,
+    userIsMember: true,
+    userCanCreateProjects: true,
+    ...overrides,
+  };
+}
+
+export function makeWorkspaceDetail(overrides: Partial<WorkspaceDetail> = {}): WorkspaceDetail {
+  return {
+    ...makeWorkspaceSummary(),
+    totalProjects: 0,
+    ...overrides,
+  };
+}

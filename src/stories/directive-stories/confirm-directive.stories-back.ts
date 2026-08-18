@@ -19,11 +19,10 @@
  *
  */
 
-import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 import { JsonPipe } from "@angular/common";
 import { Component, input, isDevMode } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideTransloco } from "@jsverse/transloco";
 import { TranslocoHttpLoaderService } from "../../libs/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideHttpClient } from "@angular/common/http";
@@ -59,7 +58,6 @@ const meta: Meta<ConfirmStoryComponent> = {
     applicationConfig({
       providers: [
         provideHttpClient(),
-        provideAnimations(),
         provideTransloco({
           config: {
             reRenderOnLangChange: true,

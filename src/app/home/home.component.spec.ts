@@ -26,7 +26,7 @@ import { NgEventBus } from "ng-event-bus";
 import HomeComponent from "./home.component";
 import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
 import { NotificationsComponentService } from "./notifications/notifications-component.service";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { PLUGINS_TOKEN } from "../app.config";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";

@@ -179,6 +179,16 @@
         "admin": "peut inviter/supprimer des membres (sauf les owners), attribuer/retirer tout rôle autre que celui d'owner, modifier les informations du projet, modifier les rôles dynamiques et consulter tout le contenu du projet.",
         "readonly_member": "peut voir le contenu du projet : kanbans, story et commentaires."
       }
+    },
+    "color_picker": {
+      "color_name": "Couleur {{index}}"
+    },
+    "story_tags": {
+      "input_label": "Ajouter un tag",
+      "no_tags": "Aucun tag dans ce projet; ils se créent dans Réglages → Tags.",
+      "tag_added": "Tag {{label}} ajouté.",
+      "tag_removed": "Tag {{label}} retiré.",
+      "tag_gone": "Ce tag n'existe plus; il vient d'être supprimé."
     }
   },
   "avatar": {

@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 
 import { Component, inject, input } from "@angular/core";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";

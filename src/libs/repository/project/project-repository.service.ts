@@ -20,20 +20,23 @@
  */
 
 import { computed, inject, Injectable } from "@angular/core";
+import { hasEntityRequiredPermission } from "../permission/permission.service";
+import { ProjectPermissions } from "../permission/permission.model";
 import * as ProjectApiServiceType from "./project-api.type";
 import { ProjectApiService } from "./project-api.service";
 import { ProjectDetailStore, ProjectEntitiesSummaryStore } from "./project-entities.store";
-import { Workflow } from "../workflow";
+import { Workflow } from "../workflow/workflow.model";
 import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
-import { BaseRepositoryService } from "../base";
+import { BaseRepositoryService } from "../base/repository.service";
 
 import { QueryParams } from "../base/utils";
 import { WsService } from "@tenzu/utils/services/ws";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { StoryRepositoryService } from "@tenzu/repository/story";
+import { ProjectMembershipRepositoryService } from "../project-membership/project-membership-repository.service";
+import { ProjectRoleRepositoryService } from "../project-roles/project-role-repository.service";
+import { StoryRepositoryService } from "../story/story-repository.service";
+import { StoryTagRepositoryService } from "../story-tag/story-tag-repository.service";
 import { lastValueFrom } from "rxjs";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 // todo temporary way to handle workflows maximum before implementing user settings
 const MAX_WORKFLOWS = 8;
 
@@ -58,6 +61,7 @@ export class ProjectRepositoryService extends BaseRepositoryService<
   protected projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   protected projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   protected storyRepositoryService = inject(StoryRepositoryService);
+  protected storyTagRepositoryService = inject(StoryTagRepositoryService);
 
   canCreateWorkflow = computed(() => {
     const selectedProject = this.entityDetail();
@@ -126,6 +130,7 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     this.storyRepositoryService.resetAll();
     this.projectMembershipRepositoryService.resetAll();
     this.projectRoleRepositoryService.resetAll();
+    this.storyTagRepositoryService.resetAll();
   }
 
   unsubscribeFromPrevious() {
@@ -140,7 +145,18 @@ export class ProjectRepositoryService extends BaseRepositoryService<
     if (oldProjectDetail?.id != projectId) {
       this.resetEntityDetail();
       return Promise.all([
-        this.getRequest({ projectId }),
+        this.getRequest({ projectId }).then(async (project) => {
+          const canListTags =
+            hasEntityRequiredPermission({ actualEntity: project, requiredPermission: ProjectPermissions.VIEW_STORY }) ||
+            hasEntityRequiredPermission({
+              actualEntity: project,
+              requiredPermission: ProjectPermissions.MODIFY_PROJECT,
+            });
+          if (canListTags) {
+            await this.storyTagRepositoryService.listRequest({ projectId });
+          }
+          return project;
+        }),
         this.projectMembershipRepositoryService.listProjectMembershipRequest(projectId),
         this.projectRoleRepositoryService.listRequest({ projectId }),
       ]);

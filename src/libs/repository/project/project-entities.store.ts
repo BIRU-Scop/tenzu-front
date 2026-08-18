@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,8 +21,8 @@
 
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { ProjectDetail, ProjectSummary } from "./project.model";
-import { Workflow } from "../workflow";
-import { withEntityDetailStore, withEntityListFeature } from "../base";
+import { Workflow } from "../workflow/workflow.model";
+import { withEntityDetailStore, withEntityListFeature } from "../base/features";
 
 export const ProjectEntitiesSummaryStore = signalStore({ providedIn: "root" }, withEntityListFeature<ProjectSummary>());
 

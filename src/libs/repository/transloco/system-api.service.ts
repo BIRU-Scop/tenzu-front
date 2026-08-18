@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,10 +22,12 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { Language } from "./language.model";
+import { z } from "zod/v4";
+import { Language, languageSchema } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { ConfigAppService } from "../config-app/config-app.service";
+import { BaseDataModel } from "../base/misc.model";
+import { parseWithDebug } from "../base/parse-with-debug";
 
 @Injectable({
   providedIn: "root",
@@ -55,7 +57,7 @@ export class SystemApiService {
   }
   getLanguages(): Observable<Language[]> {
     return this.http
-      .get<BaseDataModel<Language[]>>(`${this.configAppService.apiUrl()}/system/languages`)
-      .pipe(map((dataObject) => dataObject.data));
+      .get<BaseDataModel<unknown>>(`${this.configAppService.apiUrl()}/system/languages`)
+      .pipe(map((dataObject) => parseWithDebug(z.array(languageSchema), dataObject.data)));
   }
 }

@@ -27,7 +27,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { ActivatedRoute, Router } from "@angular/router";
 import { KanbanWrapperService } from "./kanban-wrapper.service";
 import { MatDrawer, MatDrawerContainer } from "@angular/material/sidenav";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { HttpErrorResponse } from "@angular/common/http";
 
 /**

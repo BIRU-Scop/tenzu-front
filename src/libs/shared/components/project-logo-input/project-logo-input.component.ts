@@ -21,7 +21,7 @@
 
 import { Component, computed, inject, input, model, output, resource } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { CreateProjectPayload, ProjectSummary, UpdateProjectPayload } from "@tenzu/repository/project";
+import { CreateProjectPayload, ProjectSummary, UpdateProjectPayload } from "@tenzu/repository/project/project.model";
 import { FileDownloaderService } from "@tenzu/utils/services/fileDownloader/file-downloader.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";

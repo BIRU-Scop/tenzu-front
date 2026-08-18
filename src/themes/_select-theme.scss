@@ -44,7 +44,7 @@
 
   ));
 
-   //selected-state-layer-color uses opacity — solid background requires CSS override
+   //selected-state-layer-color uses opacity: solid background requires CSS override
   .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
     background-color: var(--mat-sys-tertiary);
 

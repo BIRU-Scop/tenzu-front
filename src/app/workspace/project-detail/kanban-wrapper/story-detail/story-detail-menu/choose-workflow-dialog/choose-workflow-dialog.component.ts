@@ -29,9 +29,9 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
-import { StorySummary } from "@tenzu/repository/story";
+import { StorySummary } from "@tenzu/repository/story/story.model";
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";

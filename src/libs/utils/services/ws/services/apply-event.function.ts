@@ -21,7 +21,14 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
-import { StoryAssign, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story";
+import {
+  StoryAssign,
+  StoryDetail,
+  StoryReorderPayloadEvent,
+  storyTagAssignmentEventContentSchema,
+} from "@tenzu/repository/story/story.model";
+import { storyTagEventContentSchema } from "@tenzu/repository/story-tag/story-tag.model";
+import { StoryTagRepositoryService } from "@tenzu/repository/story-tag/story-tag-repository.service";
 import {
   NotificationEventType,
   ProjectEventType,
@@ -31,6 +38,8 @@ import {
   ProjectRoleEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
+  StoryTagAssignmentEventType,
+  StoryTagEventType,
   StoryCommentEventType,
   StoryEventType,
   UserEventType,
@@ -41,14 +50,16 @@ import {
   WorkspaceMembershipEventType,
 } from "./event-type.enum";
 import { Location } from "@angular/common";
-import { ProjectDetail, ProjectRepositoryService, ProjectSummary } from "@tenzu/repository/project";
-import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow";
+import { ProjectDetail, ProjectSummary } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow/workflow.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { UserNested } from "@tenzu/repository/user";
-import { StatusDetail } from "@tenzu/repository/status";
-import { AuthService } from "@tenzu/repository/auth";
-import { Notification, NotificationsStore } from "@tenzu/repository/notifications";
+import { UserNested } from "@tenzu/repository/user/user.model";
+import { WorkflowStatus } from "@tenzu/repository/status/status.model";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { Notification } from "@tenzu/repository/notifications/notifications.model";
+import { NotificationsStore } from "@tenzu/repository/notifications/notifications.store";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
@@ -61,28 +72,79 @@ import {
   getWorkspaceMembersRootUrl,
   HOMEPAGE_URL,
 } from "@tenzu/utils/functions/urls";
-import { StoryAttachment, StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment";
-import { WorkspaceDetail, WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { StoryAttachment } from "@tenzu/repository/story-attachment/story-attachment.model";
+import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment/story-attachment-repository.service";
+import { WorkspaceDetail, WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations/workspace-invitation-repository.service";
 import {
   WorkspaceMembership,
   WorkspaceMembershipNested,
-  WorkspaceMembershipRepositoryService,
-} from "@tenzu/repository/workspace-membership";
-import { ProjectMembership, ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { Role } from "@tenzu/repository/membership";
+} from "@tenzu/repository/workspace-membership/workspace-membership.model";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
+import { ProjectMembership } from "@tenzu/repository/project-membership/project-membership.model";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { NotFoundEntityError } from "@tenzu/repository/base/errors";
-import { ProjectRoleDetail, ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { StoryComment, StoryCommentRepositoryService } from "@tenzu/repository/story-comment";
-import {
-  ImportationStatus,
-  ProjectImportation,
-  ProjectImportationRepositoryService,
-} from "@tenzu/repository/importation";
+import { ProjectRoleDetail } from "@tenzu/repository/project-roles/project-roles.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
+import { StoryComment } from "@tenzu/repository/story-comment/story-comment.model";
+import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/story-comment-repository.service";
+import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectImportationErrorDialog } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
+
+export function applyStoryTagEvent(message: WSResponseEvent<unknown>) {
+  const storyTagRepositoryService = inject(StoryTagRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
+
+  const currentProject = projectRepositoryService.entityDetail();
+  const { storyTag } = storyTagEventContentSchema.parse(message.event.content);
+  if (!currentProject || currentProject.id !== storyTag.projectId) {
+    return;
+  }
+
+  switch (message.event.type) {
+    case StoryTagEventType.CreateStoryTag:
+      storyTagRepositoryService.setEntitySummary(storyTag);
+      break;
+    case StoryTagEventType.UpdateStoryTag: {
+      storyTagRepositoryService.updateEntitySummary(storyTag.id, storyTag);
+      break;
+    }
+    case StoryTagEventType.DeleteStoryTag: {
+      if (storyTagRepositoryService.entityMapSummary()[storyTag.id]) {
+        storyTagRepositoryService.deleteEntitySummary(storyTag.id);
+      }
+      storyRepositoryService.wsRemoveTagFromStories(storyTag.id);
+      break;
+    }
+  }
+}
+
+export function applyStoryTagAssignmentEvent(message: WSResponseEvent<unknown>) {
+  const storyRepositoryService = inject(StoryRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const currentProject = projectRepositoryService.entityDetail();
+  const { storyTagAssignment } = storyTagAssignmentEventContentSchema.parse(message.event.content);
+  if (!currentProject || currentProject.id !== storyTagAssignment.tag.projectId) {
+    return;
+  }
+
+  switch (message.event.type) {
+    case StoryTagAssignmentEventType.CreateStoryTagAssignment: {
+      storyRepositoryService.wsAddTag(storyTagAssignment.tag.id, storyTagAssignment.story.ref);
+      break;
+    }
+    case StoryTagAssignmentEventType.DeleteStoryTagAssignment: {
+      storyRepositoryService.wsRemoveTag(storyTagAssignment.tag.id, storyTagAssignment.story.ref);
+      break;
+    }
+  }
+}
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);
@@ -308,17 +370,17 @@ export async function applyWorkflowStatusEvent(message: WSResponseEvent<unknown>
 
   switch (message.event.type) {
     case WorkflowStatusEventType.CreateWorkflowStatus: {
-      const content = message.event.content as { workflowStatus: StatusDetail };
+      const content = message.event.content as { workflowStatus: WorkflowStatus };
       workflowService.wsAddStatus(content.workflowStatus);
       break;
     }
     case WorkflowStatusEventType.UpdateWorkflowStatus: {
-      const content = message.event.content as { workflowStatus: StatusDetail };
+      const content = message.event.content as { workflowStatus: WorkflowStatus };
       workflowService.wsUpdateStatus(content.workflowStatus);
       break;
     }
     case WorkflowStatusEventType.DeleteWorkflowStatus: {
-      const content = message.event.content as { workflowStatus: StatusDetail; targetStatus: StatusDetail };
+      const content = message.event.content as { workflowStatus: WorkflowStatus; targetStatus: WorkflowStatus };
       workflowService.wsRemoveStatus(content.workflowStatus.id);
       storyService.deleteStatusGroup(content.workflowStatus.id, content.targetStatus);
       break;
@@ -445,7 +507,7 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
         });
       }
       const currentProject = projectRepositoryService.entityDetail();
-      if (currentProject && currentProject.id === content.projectImportation.project.id) {
+      if (currentProject && currentProject.id === content.projectImportation.project?.id) {
         projectRepositoryService.updateEntityDetail({
           ...currentProject,
           importation: content.projectImportation,

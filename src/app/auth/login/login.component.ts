@@ -26,7 +26,7 @@ import { TranslocoDirective } from "@jsverse/transloco";
 import { MatLabel } from "@angular/material/form-field";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
-import { Credential } from "@tenzu/repository/auth";
+import { Credential } from "@tenzu/repository/auth/auth.model";
 import { MatDivider } from "@angular/material/divider";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { apply, form, FormField, FormRoot, required } from "@angular/forms/signals";

@@ -23,12 +23,12 @@ import { inject, Injectable } from "@angular/core";
 import { StoryAttachmentApiService } from "./story-attachment-api.service";
 import { StoryAttachment } from "./story-attachment.model";
 import { StoryAttachmentDetailStore, StoryAttachmentEntitiesSummaryStore } from "./story-attachment-entities.store";
-import { BaseRepositoryService } from "@tenzu/repository/base";
+import { BaseRepositoryService } from "../base/repository.service";
 import type * as StoryAttachmentApiServiceType from "./story-attachment-api.type";
-import * as StoryAttachmentApiType from "@tenzu/repository/story-attachment/story-attachment-api.type";
+import * as StoryAttachmentApiType from "../story-attachment/story-attachment-api.type";
 import { lastValueFrom } from "rxjs";
-import { QueryParams } from "@tenzu/repository/base/utils";
-import { FileValue } from "@tenzu/repository/base/misc.model";
+import { QueryParams } from "../base/utils";
+import { FileValue } from "../base/misc.model";
 
 @Injectable({
   providedIn: "root",

@@ -112,20 +112,18 @@
           }
         },
         "storybook": {
-          "builder": "@storybook/angular:start-storybook",
+          "builder": "@storybook/angular-vite:start-storybook",
           "options": {
             "configDir": ".storybook",
-            "browserTarget": "tenzu:build",
-            "compodoc": false,
+            "zoneless": true,
             "port": 6006
           }
         },
         "build-storybook": {
-          "builder": "@storybook/angular:build-storybook",
+          "builder": "@storybook/angular-vite:build-storybook",
           "options": {
             "configDir": ".storybook",
-            "browserTarget": "tenzu:build",
-            "compodoc": false,
+            "zoneless": true,
             "outputDir": "storybook-static"
           }
         }

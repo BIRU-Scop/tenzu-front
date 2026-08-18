@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,12 +20,18 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractApiService } from "../base";
-import { PublicWorkspacePendingInvitation, WorkspaceInvitation } from "./workspace-invitation.model";
+import { AbstractApiService } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/parse-with-debug";
+import {
+  PublicWorkspacePendingInvitation,
+  publicWorkspacePendingInvitationSchema,
+  WorkspaceInvitation,
+  workspaceInvitationSchema,
+} from "./workspace-invitation.model";
 import { Observable } from "rxjs";
-import { WorkspaceSummary } from "../workspace";
-import { CreateInvitations, InvitationsPayload } from "../membership";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { WorkspaceSummary } from "../workspace/workspace.model";
+import { CreateInvitations, createInvitationsSchema, InvitationsPayload } from "../membership/invitation.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 type ListWorkspaceInvitationParams = {
@@ -47,6 +53,8 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
   unknown
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
+  protected override summarySchema = workspaceInvitationSchema;
+  protected override detailSchema = workspaceInvitationSchema;
   protected override getBaseUrl(params: { workspaceId: WorkspaceSummary["id"] }) {
     return `${this.baseUrl}/${params.workspaceId}/invitations`;
   }
@@ -67,14 +75,14 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
 
   resend(params: PatchWorkspaceInvitationParams): Observable<WorkspaceInvitation> {
     return this.http
-      .post<BaseDataModel<WorkspaceInvitation>>(`${this.patchUrl(params)}/resend`, {})
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.patchUrl(params)}/resend`, {})
+      .pipe(map((dataObject) => parseWithDebug(workspaceInvitationSchema, dataObject.data)));
   }
 
   revoke(params: PatchWorkspaceInvitationParams): Observable<WorkspaceInvitation> {
     return this.http
-      .post<BaseDataModel<WorkspaceInvitation>>(`${this.patchUrl(params)}/revoke`, {})
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.patchUrl(params)}/revoke`, {})
+      .pipe(map((dataObject) => parseWithDebug(workspaceInvitationSchema, dataObject.data)));
   }
 
   override delete(): Observable<void> {
@@ -84,30 +92,30 @@ export class WorkspaceInvitationsApiService extends AbstractApiService<
     data: InvitationsPayload,
     params: { workspaceId: WorkspaceSummary["id"] },
   ): Observable<CreateInvitations> {
-    return this.http.post<CreateInvitations>(`${this.getBaseUrl(params)}`, data);
+    return this.http
+      .post<unknown>(`${this.getBaseUrl(params)}`, data)
+      .pipe(map((response) => parseWithDebug(createInvitationsSchema, response)));
   }
   denyForCurrentUser(params: { workspaceId: WorkspaceSummary["id"] }): Observable<WorkspaceInvitation> {
     return this.http
-      .post<BaseDataModel<WorkspaceInvitation>>(`${this.getBaseUrl(params)}/deny`, null)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.getBaseUrl(params)}/deny`, null)
+      .pipe(map((dataObject) => parseWithDebug(workspaceInvitationSchema, dataObject.data)));
   }
   getByToken(params: { token: string }): Observable<PublicWorkspacePendingInvitation> {
     return this.http
-      .get<BaseDataModel<PublicWorkspacePendingInvitation>>(`${this.baseUrl}/invitations/by_token/${params.token}`)
-      .pipe(map((dataObject) => dataObject.data));
+      .get<BaseDataModel<unknown>>(`${this.baseUrl}/invitations/by_token/${params.token}`)
+      .pipe(map((dataObject) => parseWithDebug(publicWorkspacePendingInvitationSchema, dataObject.data)));
   }
 
   acceptForCurrentUser(params: { workspaceId: WorkspaceSummary["id"] }): Observable<WorkspaceInvitation> {
     return this.http
-      .post<BaseDataModel<WorkspaceInvitation>>(`${this.getBaseUrl(params)}/accept`, null)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.getBaseUrl(params)}/accept`, null)
+      .pipe(map((dataObject) => parseWithDebug(workspaceInvitationSchema, dataObject.data)));
   }
 
   acceptByToken(params: { token: string }): Observable<WorkspaceInvitation> {
     return this.http
-      .post<
-        BaseDataModel<WorkspaceInvitation>
-      >(`${this.baseUrl}/invitations/by_token/${params.token}/accept`, params.token)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.baseUrl}/invitations/by_token/${params.token}/accept`, params.token)
+      .pipe(map((dataObject) => parseWithDebug(workspaceInvitationSchema, dataObject.data)));
   }
 }

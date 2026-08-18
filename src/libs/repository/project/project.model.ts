@@ -19,40 +19,34 @@
  *
  */
 
-import { UserRole } from "../membership";
-import { WorkflowNested } from "../workflow";
-import { FileValue } from "@tenzu/repository/base/misc.model";
-import { ProjectImportationNested } from "@tenzu/repository/importation";
+import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
+import { roleSchema } from "../membership/membership.model";
+import type { FileValue } from "../base/misc.model";
+import { projectImportationNestedSchema } from "../importation/importation.model";
+import { workflowNestedSchema } from "../workflow/workflow.model";
+import {
+  projectNestedSchema,
+  projectLinkNestedSchema,
+  type ProjectNested,
+  type ProjectLinkNested,
+} from "./project-nested.model";
 
-export type ProjectLogoBase = {
-  logo?: string;
-};
+export { projectNestedSchema, projectLinkNestedSchema };
+export type { ProjectNested, ProjectLinkNested };
 
-type _ProjectBaseNested = {
-  id: string;
-  workspaceId: string;
-  name: string;
-  slug: string;
-  landingPage: string;
-};
+export const projectSummarySchema = projectNestedSchema.extend({
+  userIsInvited: z.boolean(),
+});
 
-export type ProjectNested = ProjectLogoBase &
-  _ProjectBaseNested & {
-    description: string;
-    color: number;
-  };
+export const projectDetailSchema = projectSummarySchema.extend({
+  userRole: roleSchema.apply(optionalNullable),
+  workflows: z.array(workflowNestedSchema),
+  importation: projectImportationNestedSchema.apply(optionalNullable),
+});
 
-export type ProjectLinkNested = _ProjectBaseNested;
-
-export type ProjectSummary = ProjectNested & {
-  userIsInvited: boolean;
-};
-
-export type ProjectDetail = ProjectSummary &
-  UserRole & {
-    workflows: WorkflowNested[];
-    importation: ProjectImportationNested | null;
-  };
+export type ProjectSummary = z.infer<typeof projectSummarySchema>;
+export type ProjectDetail = z.infer<typeof projectDetailSchema>;
 
 export type CreateProjectPayload = Pick<ProjectNested, "name" | "workspaceId" | "color" | "description"> & {
   logo: FileValue;

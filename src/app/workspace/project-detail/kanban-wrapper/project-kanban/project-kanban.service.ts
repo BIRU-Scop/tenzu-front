@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,14 +20,15 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { StorySummary } from "@tenzu/repository/story";
-import { StatusSummary } from "@tenzu/repository/status";
+import { StorySummary } from "@tenzu/repository/story/story.model";
+import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
 import { Router } from "@angular/router";
-import { ProjectDetail, ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { Workflow } from "@tenzu/repository/workflow";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { Workflow } from "@tenzu/repository/workflow/workflow.model";
 
 /**
  * This service create a modal positioned relatively to its trigger button
@@ -42,7 +43,7 @@ export class ProjectKanbanService {
   storyService = inject(StoryRepositoryService);
   router = inject(Router);
 
-  public async createStatus(status: Pick<StatusSummary, "name" | "color">) {
+  public async createStatus(status: Pick<WorkflowStatusNested, "name" | "color">) {
     const selectedProject = this.projectService.entityDetail();
     if (selectedProject) {
       await this.workflowService.createStatus(status);
@@ -57,7 +58,7 @@ export class ProjectKanbanService {
     }
   }
 
-  public async editStatus(status: Pick<StatusSummary, "name" | "id">) {
+  public async editStatus(status: Pick<WorkflowStatusNested, "name" | "id">) {
     await this.workflowService.editStatus(status);
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,34 +19,42 @@
  *
  */
 
+import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
+
 export type Credential = {
   username: string;
   password: string;
 };
 
-export type Tokens = {
-  access: string | null;
-  refresh: string | null;
-  username: string | null;
-};
+export const tokensSchema = z.object({
+  access: z.string(),
+  refresh: z.string(),
+  username: z.string(),
+});
+export type Tokens = z.infer<typeof tokensSchema>;
 
-export type InvitationTokens = {
-  projectInvitationToken?: string;
-  workspaceInvitationToken?: string;
-  acceptProjectInvitation?: boolean;
-  acceptWorkspaceInvitation?: boolean;
-};
+export const invitationTokensSchema = z.object({
+  projectInvitationToken: z.string().apply(optionalNullable),
+  workspaceInvitationToken: z.string().apply(optionalNullable),
+  acceptProjectInvitation: z.boolean().apply(optionalNullable),
+  acceptWorkspaceInvitation: z.boolean().apply(optionalNullable),
+});
+export type InvitationTokens = z.infer<typeof invitationTokensSchema>;
 
-export type SocialProvider = {
-  id: string;
-  name: string;
-  client_id: string;
-};
-export type AuthConfig = {
-  socialaccount: {
-    providers: [SocialProvider];
-  };
-};
+export const socialProviderSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  clientId: z.string().apply(optionalNullable),
+});
+export type SocialProvider = z.infer<typeof socialProviderSchema>;
+
+export const authConfigSchema = z.object({
+  socialaccount: z.object({
+    providers: z.array(socialProviderSchema),
+  }),
+});
+export type AuthConfig = z.infer<typeof authConfigSchema>;
 
 export type ProviderRedirect = {
   url: string;
@@ -57,22 +65,27 @@ export type ProviderRedirect = {
   };
 };
 
-export type ProviderCallback = Partial<Tokens> &
-  InvitationTokens & {
-    error?:
-      | "unknown"
-      | "cancelled"
-      | "denied"
-      | "reauthentication_required"
-      | "signup_closed"
-      | "permission_denied"
-      | "unverified"
-      | "missing_terms_acceptance";
-    socialSessionKey?: string;
-    email?: string;
-    next?: string;
-    fromSignup: boolean;
-  };
+export const providerCallbackSchema = z.object({
+  ...tokensSchema.partial().shape,
+  ...invitationTokensSchema.shape,
+  error: z
+    .enum([
+      "unknown",
+      "cancelled",
+      "denied",
+      "reauthentication_required",
+      "signup_closed",
+      "permission_denied",
+      "unverified",
+      "missing_terms_acceptance",
+    ])
+    .apply(optionalNullable),
+  socialSessionKey: z.string().apply(optionalNullable),
+  email: z.email().apply(optionalNullable),
+  next: z.string().apply(optionalNullable),
+  fromSignup: z.boolean(),
+});
+export type ProviderCallback = z.infer<typeof providerCallbackSchema>;
 
 export type ProviderContinueSignupPayload = {
   socialSessionKey: string;

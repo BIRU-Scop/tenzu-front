@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,13 +22,13 @@
 import { inject, Injectable } from "@angular/core";
 import {
   Notification,
-  NotificationsService,
-  NotificationsStore,
   StoryAssignNotification,
   StoryUnassignNotification,
-} from "@tenzu/repository/notifications";
+} from "@tenzu/repository/notifications/notifications.model";
+import { NotificationsService } from "@tenzu/repository/notifications/notifications.service";
+import { NotificationsStore } from "@tenzu/repository/notifications/notifications.store";
 import { lastValueFrom } from "rxjs";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 
 @Injectable({
   providedIn: "root",

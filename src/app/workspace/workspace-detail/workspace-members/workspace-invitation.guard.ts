@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,9 +23,9 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { WorkspaceInvitationsApiService } from "@tenzu/repository/workspace-invitations/workspace-invitation-api-service";
-import { PublicWorkspacePendingInvitation } from "@tenzu/repository/workspace-invitations";
+import { PublicWorkspacePendingInvitation } from "@tenzu/repository/workspace-invitations/workspace-invitation.model";
 
 export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);

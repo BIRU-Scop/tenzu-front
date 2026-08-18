@@ -18,7 +18,7 @@ import { BlockNoteEditor, createCodeBlockSpec } from "@blocknote/core";
 import { codeBlockOptions } from "@blocknote/code-block";
 
 import { BlockNoteView } from "@blocknote/mantine";
-import { User } from "@tenzu/repository/user";
+import { User } from "@tenzu/repository/user/user.model";
 import { resolveFileUrl } from "@tenzu/shared/components/editor/utils";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
 

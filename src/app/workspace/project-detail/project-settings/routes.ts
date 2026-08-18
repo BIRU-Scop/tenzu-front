@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,7 +22,7 @@
 import { ActivatedRouteSnapshot, Router, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { inject } from "@angular/core";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { HttpErrorResponse } from "@angular/common/http";
 
 function getProjectRoleResolver(route: ActivatedRouteSnapshot) {
@@ -69,6 +69,11 @@ const routes: Routes = [
   {
     path: "list-roles",
     loadComponent: () => import("./role/list-roles/list-roles.component"),
+    providers: [provideTranslocoScope("project")],
+  },
+  {
+    path: "attributes",
+    loadComponent: () => import("./attributes/attributes.component"),
     providers: [provideTranslocoScope("project")],
   },
 ];

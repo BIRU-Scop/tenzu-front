@@ -35,8 +35,8 @@ import { DeleteStatusDialogComponent } from "./delete-status-dialog/delete-statu
 import { Validators } from "@angular/forms";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { StatusSummary } from "@tenzu/repository/status";
-import { ProjectDetail } from "@tenzu/repository/project";
+import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-more.component";
 
 @Component({
@@ -100,8 +100,8 @@ import { ButtonMoreComponent } from "@tenzu/shared/components/ui/button/button-m
 export class StatusCardComponent {
   protected readonly ProjectPermissions = ProjectPermissions;
 
-  name = input.required<StatusSummary["name"]>();
-  id = input.required<StatusSummary["id"]>();
+  name = input.required<WorkflowStatusNested["name"]>();
+  id = input.required<WorkflowStatusNested["id"]>();
   project = input.required<ProjectDetail>();
   isEmpty = input(false);
   config = input<{ showLeft: boolean; showRight: boolean }>({ showLeft: true, showRight: true });

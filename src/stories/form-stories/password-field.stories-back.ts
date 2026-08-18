@@ -40,7 +40,7 @@
 //  *
 //  */
 //
-// import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+// import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 //
 // import { PasswordFieldComponent } from "../../libs/shared/components/form/password-field/password-field.component";
 // import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";

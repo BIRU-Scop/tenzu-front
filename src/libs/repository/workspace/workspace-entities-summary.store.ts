@@ -21,9 +21,9 @@
 
 import { signalStore, withMethods } from "@ngrx/signals";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
-import { withEntityDetailStore, withEntityListFeature, withTreeShakableDevTools } from "../base";
-import { ProjectNested } from "@tenzu/repository/project";
-import { ProjectImportation } from "@tenzu/repository/importation";
+import { withEntityDetailStore, withEntityListFeature, withTreeShakableDevTools } from "../base/features";
+import { ProjectNested } from "../project/project.model";
+import { ProjectImportation } from "../importation/importation.model";
 
 export const WorkspaceEntitiesSummaryStore = signalStore(
   { providedIn: "root" },

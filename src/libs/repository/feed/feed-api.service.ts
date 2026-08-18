@@ -24,7 +24,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
 import { FeedItem, FeedItemReadState, parseFeedItems, parseFeedItemReadStates } from "./feed-item.model";
 

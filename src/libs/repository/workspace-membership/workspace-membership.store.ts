@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,10 +20,10 @@
  */
 
 import { signalStore, withComputed } from "@ngrx/signals";
-import { withEntityListFeature } from "@tenzu/repository/base/features";
-import { WorkspaceMembership } from "@tenzu/repository/workspace-membership/workspace-membership.model";
+import { withEntityListFeature } from "../base/features";
+import { WorkspaceMembership } from "../workspace-membership/workspace-membership.model";
 import { computed } from "@angular/core";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "../user/user.model";
 
 export const WorkspaceMembershipEntitiesStore = signalStore(
   { providedIn: "root" },

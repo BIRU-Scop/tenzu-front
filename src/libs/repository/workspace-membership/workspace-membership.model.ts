@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,19 +19,24 @@
  *
  */
 
-import { MembershipBase } from "../membership";
-import { ProjectNested } from "../project";
+import { z } from "zod/v4";
+import { membershipBaseSchema } from "../membership/membership.model";
+import type { WorkspaceSummary } from "../workspace/workspace.model";
+import type { ProjectNested } from "../project/project.model";
 
-export type WorkspaceMembershipNested = MembershipBase & {
-  workspaceId: string;
-};
+export const workspaceMembershipNestedSchema = membershipBaseSchema.extend({
+  workspaceId: z.string<WorkspaceSummary["id"]>(),
+});
+export type WorkspaceMembershipNested = z.infer<typeof workspaceMembershipNestedSchema>;
 
-export type WorkspaceMembership = WorkspaceMembershipNested & {
-  totalProjectsIsMember: number;
-};
+export const workspaceMembershipSchema = workspaceMembershipNestedSchema.extend({
+  totalProjectsIsMember: z.int(),
+});
+export type WorkspaceMembership = z.infer<typeof workspaceMembershipSchema>;
 
-export type WorkspaceMembershipDeleteInfo = {
-  isUniqueOwner: boolean;
-  memberOfProjects: ProjectNested["name"][];
-  uniqueOwnerOfProjects: ProjectNested["name"][];
-};
+export const workspaceMembershipDeleteInfoSchema = z.object({
+  isUniqueOwner: z.boolean(),
+  memberOfProjects: z.array(z.string<ProjectNested["name"]>()),
+  uniqueOwnerOfProjects: z.array(z.string<ProjectNested["name"]>()),
+});
+export type WorkspaceMembershipDeleteInfo = z.infer<typeof workspaceMembershipDeleteInfoSchema>;

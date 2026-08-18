@@ -19,12 +19,14 @@
  *
  */
 
-import { UserNested } from "../user";
-import { StoryNested } from "../story";
-import { ProjectLinkNested } from "../project";
-import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
-import { ProjectImportation } from "@tenzu/repository/importation";
-import { StoryCommentNested } from "@tenzu/repository/story-comment";
+import { z } from "zod/v4";
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
+import { userNestedSchema } from "../user/user.model";
+import { storyNestedSchema } from "../story/story.model";
+import { projectLinkNestedSchema } from "../project/project-nested.model";
+import { workspaceLinkNestedSchema } from "../workspace/workspace-nested.model";
+import { projectImportationSchema } from "../importation/importation.model";
+import { storyCommentNestedSchema } from "../story-comment/story-comment.model";
 
 export type NotificationType =
   | "stories.assign"
@@ -37,106 +39,135 @@ export type NotificationType =
   | "project_importation.action_needed"
   | "project_importation.warning.file_too_big";
 
-export type NotificationBase = {
-  id: string;
-  type: NotificationType;
-  createdBy: UserNested;
-  createdAt: string;
-  readAt: string;
-  content: string;
+const notificationCommonFields = {
+  id: z.string(),
+  createdBy: userNestedSchema,
+  createdAt: isoDatetime,
+  readAt: isoDatetime.apply(optionalNullable),
 };
 
-export type NotificationCount = {
-  total: number;
-  read: number;
-  unread: number;
-};
+export const notificationCountersSchema = z.object({
+  total: z.int(),
+  read: z.int(),
+  unread: z.int(),
+});
+export type NotificationCount = z.infer<typeof notificationCountersSchema>;
 
-export type StoryAssignNotification = NotificationBase & {
-  type: "stories.assign";
-  content: {
-    story: StoryNested;
-    project: ProjectLinkNested;
-    assignedBy: UserNested;
-    assignedTo: UserNested;
-  };
-};
-export type StoryUnassignNotification = NotificationBase & {
-  type: "stories.unassign";
-  content: {
-    story: StoryNested;
-    project: ProjectLinkNested;
-    unassignedBy: UserNested;
-    unassignedTo: UserNested;
-  };
-};
-export type StoryStatusChangeNotification = NotificationBase & {
-  type: "stories.status_change";
-  content: {
-    story: StoryNested;
-    project: ProjectLinkNested;
-    status: string;
-    changedBy: UserNested;
-  };
-};
-export type StoryDeleteNotification = NotificationBase & {
-  type: "stories.delete";
-  content: {
-    story: StoryNested;
-    project: ProjectLinkNested;
-    deletedBy: UserNested;
-  };
-};
-export type StoryWorkflowChangeNotification = NotificationBase & {
-  type: "stories.workflow_change";
-  content: {
-    story: StoryNested;
-    project: ProjectLinkNested;
-    changedBy: UserNested;
-    status: string;
-    workflow: string;
-  };
-};
-export type StoryCommentCreateNotification = NotificationBase & {
-  type: "story_comment.create";
-  content: {
-    project: ProjectLinkNested;
-    story: StoryNested;
-    commentedBy: UserNested;
-    comment: StoryCommentNested;
-  };
-};
-export type ProjectImportationFailNotification = NotificationBase & {
-  type: "project_importation.fail";
-  content: {
-    workspace: WorkspaceLinkNested;
-    projectImportation: ProjectImportation;
-  };
-};
-export type ProjectImportationActionNeededNotification = NotificationBase & {
-  type: "project_importation.action_needed";
-  content: {
-    workspace: WorkspaceLinkNested;
-    projectImportation: ProjectImportation;
-  };
-};
-export type ProjectImportationWarningFileNotification = NotificationBase & {
-  type: "project_importation.warning.file_too_big";
-  content: {
-    project: ProjectLinkNested;
-    projectImportation: ProjectImportation;
-    fileName: string;
-    fileSize: number;
-  };
-};
+export const storyAssignNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("stories.assign"),
+  content: z.object({
+    story: storyNestedSchema,
+    project: projectLinkNestedSchema,
+    assignedBy: userNestedSchema,
+    assignedTo: userNestedSchema,
+  }),
+});
+export type StoryAssignNotification = z.infer<typeof storyAssignNotificationSchema>;
 
-export type Notification =
-  | StoryAssignNotification
-  | StoryUnassignNotification
-  | StoryStatusChangeNotification
-  | StoryDeleteNotification
-  | StoryWorkflowChangeNotification
-  | StoryCommentCreateNotification
-  | ProjectImportationFailNotification
-  | ProjectImportationActionNeededNotification
-  | ProjectImportationWarningFileNotification;
+export const storyUnassignNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("stories.unassign"),
+  content: z.object({
+    story: storyNestedSchema,
+    project: projectLinkNestedSchema,
+    unassignedBy: userNestedSchema,
+    unassignedTo: userNestedSchema,
+  }),
+});
+export type StoryUnassignNotification = z.infer<typeof storyUnassignNotificationSchema>;
+
+export const storyStatusChangeNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("stories.status_change"),
+  content: z.object({
+    story: storyNestedSchema,
+    project: projectLinkNestedSchema,
+    status: z.string(),
+    changedBy: userNestedSchema,
+  }),
+});
+export type StoryStatusChangeNotification = z.infer<typeof storyStatusChangeNotificationSchema>;
+
+export const storyDeleteNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("stories.delete"),
+  content: z.object({
+    story: storyNestedSchema,
+    project: projectLinkNestedSchema,
+    deletedBy: userNestedSchema,
+  }),
+});
+export type StoryDeleteNotification = z.infer<typeof storyDeleteNotificationSchema>;
+
+export const storyWorkflowChangeNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("stories.workflow_change"),
+  content: z.object({
+    story: storyNestedSchema,
+    project: projectLinkNestedSchema,
+    changedBy: userNestedSchema,
+    status: z.string(),
+    workflow: z.string(),
+  }),
+});
+export type StoryWorkflowChangeNotification = z.infer<typeof storyWorkflowChangeNotificationSchema>;
+
+export const storyCommentCreateNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("story_comment.create"),
+  content: z.object({
+    project: projectLinkNestedSchema,
+    story: storyNestedSchema,
+    commentedBy: userNestedSchema,
+    comment: storyCommentNestedSchema,
+  }),
+});
+export type StoryCommentCreateNotification = z.infer<typeof storyCommentCreateNotificationSchema>;
+
+export const projectImportationFailNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("project_importation.fail"),
+  content: z.object({
+    workspace: workspaceLinkNestedSchema,
+    projectImportation: projectImportationSchema,
+  }),
+});
+export type ProjectImportationFailNotification = z.infer<typeof projectImportationFailNotificationSchema>;
+
+export const projectImportationActionNeededNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("project_importation.action_needed"),
+  content: z.object({
+    workspace: workspaceLinkNestedSchema,
+    projectImportation: projectImportationSchema,
+  }),
+});
+export type ProjectImportationActionNeededNotification = z.infer<
+  typeof projectImportationActionNeededNotificationSchema
+>;
+
+export const projectImportationWarningFileNotificationSchema = z.object({
+  ...notificationCommonFields,
+  type: z.literal("project_importation.warning.file_too_big"),
+  content: z.object({
+    project: projectLinkNestedSchema,
+    projectImportation: projectImportationSchema,
+    fileName: z.string(),
+    fileSize: z.number(),
+  }),
+});
+export type ProjectImportationWarningFileNotification = z.infer<typeof projectImportationWarningFileNotificationSchema>;
+
+export const notificationSchema = z.discriminatedUnion("type", [
+  storyAssignNotificationSchema,
+  storyUnassignNotificationSchema,
+  storyStatusChangeNotificationSchema,
+  storyDeleteNotificationSchema,
+  storyWorkflowChangeNotificationSchema,
+  storyCommentCreateNotificationSchema,
+  projectImportationFailNotificationSchema,
+  projectImportationActionNeededNotificationSchema,
+  projectImportationWarningFileNotificationSchema,
+]);
+export type Notification = z.infer<typeof notificationSchema>;

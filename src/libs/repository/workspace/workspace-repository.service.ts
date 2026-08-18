@@ -24,15 +24,15 @@ import { WorkspaceApiService } from "./workspace-api.service";
 import { WorkspaceDetailStore, WorkspaceEntitiesSummaryStore } from "./workspace-entities-summary.store";
 import { WsService } from "@tenzu/utils/services/ws";
 import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
-import { BaseRepositoryService } from "../base";
+import { BaseRepositoryService } from "../base/repository.service";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 import { QueryParams } from "../base/utils";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
-import { ProjectNested } from "@tenzu/repository/project";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
-import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { ProjectImportation } from "@tenzu/repository/importation";
+import { WorkspaceInvitationRepositoryService } from "../workspace-invitations/workspace-invitation-repository.service";
+import { ProjectNested } from "../project/project.model";
+import { WorkspaceRoleRepositoryService } from "../workspace-roles/workspace-role-repository.service";
+import { WorkspacePermissions } from "../permission/permission.model";
+import { WorkspaceMembershipRepositoryService } from "../workspace-membership/workspace-membership-repository.service";
+import { ProjectImportation } from "../importation/importation.model";
 
 @Injectable({
   providedIn: "root",

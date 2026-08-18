@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, StoryObj } from "@storybook/angular-vite";
 import { ProjectCardComponent } from "../../libs/shared/components/project-card/project-card.component";
 import { provideHttpClient } from "@angular/common/http";
 import { provideTransloco } from "@jsverse/transloco";

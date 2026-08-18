@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,15 +19,19 @@
  *
  */
 
-import { InvitationBase, PublicPendingInvitationBase } from "../membership";
-import { WorkspaceLinkNested } from "../workspace";
+import { z } from "zod/v4";
+import { invitationBaseSchema, publicPendingInvitationBaseSchema } from "../membership/invitation.model";
+import { workspaceLinkNestedSchema } from "../workspace/workspace-nested.model";
 
-export type PublicWorkspacePendingInvitation = PublicPendingInvitationBase & {
-  workspace: WorkspaceLinkNested;
-};
+export const publicWorkspacePendingInvitationSchema = publicPendingInvitationBaseSchema.extend({
+  workspace: workspaceLinkNestedSchema,
+});
+export type PublicWorkspacePendingInvitation = z.infer<typeof publicWorkspacePendingInvitationSchema>;
 
-export type WorkspaceInvitation = InvitationBase & {
-  workspace: WorkspaceLinkNested;
-};
+export const workspaceInvitationSchema = invitationBaseSchema.extend({
+  workspace: workspaceLinkNestedSchema,
+});
+export type WorkspaceInvitation = z.infer<typeof workspaceInvitationSchema>;
 
-export type WorkspaceInvitationNested = Pick<WorkspaceInvitation, "workspace" | "status">;
+export { workspaceInvitationNestedSchema } from "./workspace-invitation-nested.model";
+export type { WorkspaceInvitationNested } from "./workspace-invitation-nested.model";

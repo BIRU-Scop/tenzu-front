@@ -37,8 +37,10 @@ import { DescriptionFieldComponent } from "@tenzu/shared/components/form/descrip
 import { MatOption } from "@angular/material/core";
 import { MatSelect, MatSelectTrigger } from "@angular/material/select";
 import { Router } from "@angular/router";
-import { CreateProjectPayload, ProjectRepositoryService } from "@tenzu/repository/project";
-import { WorkspaceRepositoryService, WorkspaceSummary } from "@tenzu/repository/workspace";
+import { CreateProjectPayload } from "@tenzu/repository/project/project.model";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import {
   applyWhenValue,

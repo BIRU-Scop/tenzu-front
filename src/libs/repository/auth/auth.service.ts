@@ -23,22 +23,26 @@ import { inject, Injectable, Signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   AuthConfig,
+  authConfigSchema,
   Credential,
   ProviderCallback,
+  providerCallbackSchema,
   ProviderContinueSignupPayload,
   ProviderRedirect,
   SocialProvider,
   Tokens,
+  tokensSchema,
 } from "./auth.model";
+import { parseWithDebug } from "../base/parse-with-debug";
 import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
 import { NavigationExtras, Params, Router } from "@angular/router";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { WsService } from "@tenzu/utils/services/ws";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { ConfigAppService } from "../config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { ResetService } from "@tenzu/repository/base/reset.service";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
-import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
+import { ResetService } from "../base/reset.service";
+import { BaseDataModel } from "../base/misc.model";
+import { AuthConfigStore } from "../auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
@@ -63,10 +67,11 @@ export class AuthService {
 
   login(credentials: Credential): Observable<Tokens> {
     return this.http
-      .post<Tokens>(`${this.url}/token`, {
+      .post<unknown>(`${this.url}/token`, {
         ...credentials,
       })
       .pipe(
+        map((data) => parseWithDebug(tokensSchema, data)),
         tap((tokens) => {
           this.setToken(tokens);
           if (tokens.access) {
@@ -121,16 +126,19 @@ export class AuthService {
 
   refresh(tokens: Pick<Tokens, "refresh">): Observable<Tokens> {
     return this.http
-      .post<Tokens>(`${this.url}/token/refresh`, {
+      .post<unknown>(`${this.url}/token/refresh`, {
         refresh: tokens.refresh,
       })
-      .pipe(tap((value) => this.setToken(value)));
+      .pipe(
+        map((data) => parseWithDebug(tokensSchema, data)),
+        tap((value) => this.setToken(value)),
+      );
   }
 
   getToken(): Tokens {
     return {
-      access: localStorage.getItem("token"),
-      refresh: localStorage.getItem("refresh"),
+      access: localStorage.getItem("token") || "",
+      refresh: localStorage.getItem("refresh") || "",
       username: localStorage.getItem("username") || "",
     };
   }
@@ -184,15 +192,17 @@ export class AuthService {
     }
   }
 
-  private getConfig() {
-    return this.http.get<BaseDataModel<AuthConfig>>(`${this.url}/config`);
+  private getConfig(): Observable<AuthConfig> {
+    return this.http
+      .get<BaseDataModel<unknown>>(`${this.url}/config`)
+      .pipe(map((dataObject) => parseWithDebug(authConfigSchema, dataObject.data)));
   }
 
   async initConfig() {
     return await lastValueFrom(
       this.getConfig().pipe(
         tap((config) => debug("getConfig", "received", config)),
-        tap((config) => this.configStore.setProviders(config.data.socialaccount.providers)),
+        tap((config) => this.configStore.setProviders(config.socialaccount.providers)),
       ),
     );
   }
@@ -210,7 +220,9 @@ export class AuthService {
     };
   }
 
-  continueSignup(payload: ProviderContinueSignupPayload) {
-    return this.http.post<ProviderCallback>(`${this.url}/provider/continue_signup`, payload);
+  continueSignup(payload: ProviderContinueSignupPayload): Observable<ProviderCallback> {
+    return this.http
+      .post<unknown>(`${this.url}/provider/continue_signup`, payload)
+      .pipe(map((data) => parseWithDebug(providerCallbackSchema, data)));
   }
 }

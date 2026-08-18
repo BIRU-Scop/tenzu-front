@@ -20,7 +20,7 @@
  */
 
 import { Component, computed, input } from "@angular/core";
-import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership";
+import { InvitationBase, InvitationStatus } from "@tenzu/repository/membership/invitation.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { TranslocoDatePipe } from "@jsverse/transloco-locale";
 import { ChipComponent } from "@tenzu/shared/components/ui/chip/chip.component";

@@ -28,7 +28,7 @@ import { lastValueFrom } from "rxjs";
 import { inject, Signal } from "@angular/core";
 import { NotFoundEntityError } from "./errors";
 import { DataObject, JsonObject } from "./misc.model";
-import { ResetService } from "@tenzu/repository/base/reset.service";
+import { ResetService } from "../base/reset.service";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function storeWithEntityListFeature<EntitySummary extends JsonObject>() {

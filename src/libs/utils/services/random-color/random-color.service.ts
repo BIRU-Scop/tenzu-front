@@ -20,7 +20,9 @@
  */
 
 import { Injectable } from "@angular/core";
-const MAX_COLOR = 8;
+import { TAG_COLOR_COUNT } from "@tenzu/repository/story-tag/story-tag.model";
+
+const MAX_COLOR = TAG_COLOR_COUNT;
 const MIN_COLOR = 1;
 
 @Injectable({

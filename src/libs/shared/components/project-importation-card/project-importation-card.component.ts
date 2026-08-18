@@ -23,12 +23,9 @@ import { Component, computed, inject, input, inputBinding, signal } from "@angul
 import { AvatarComponent } from "../avatar/avatar.component";
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import {
-  ImportationStatus,
-  ProjectImportation,
-  ProjectImportationRepositoryService,
-} from "@tenzu/repository/importation";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressBar } from "@angular/material/progress-bar";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -40,13 +37,15 @@ import { MatDialog } from "@angular/material/dialog";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
-import { Role } from "@tenzu/repository/membership";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { AsyncPipe } from "@angular/common";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 import { RouterLink } from "@angular/router";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
+import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
+import { ConfirmDirective } from "@tenzu/directives/confirm";
 
 @Component({
   selector: "app-project-importation-card",
@@ -64,11 +63,13 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
     GetBase64FromImageUrlPipe,
     RouterLink,
     ProjectLandingPageUrl,
+    ButtonCancelComponent,
+    ConfirmDirective,
   ],
   template: `
     @let _color = color();
     @let _importation = projectImportation();
-    @let _landingPage = _importation.project | projectLandingPageUrl;
+    @let _landingPage = _importation.project ? (_importation.project | projectLandingPageUrl) : false;
     @let _name = _importation.project?.name || "Lorem Ipsum";
     @let _description = _importation.project?.description || "Lorem Ipsum dolor sit amet";
     <mat-card
@@ -101,6 +102,13 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
                 ></mat-progress-bar>
                 <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
               </div>
+              <app-button-cancel
+                class="mt-2"
+                level="tertiary"
+                [iconName]="undefined"
+                appConfirm
+                (popupConfirm)="deleteImportation(_importation.id, workspaceId())"
+              />
             </div>
           }
         </div>
@@ -150,6 +158,7 @@ export class ProjectImportationCardComponent {
   readonly projectImportationRepositoryService = inject(ProjectImportationRepositoryService);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);
   readonly translocoService = inject(TranslocoService);
+  readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
 
   workspaceId = input.required<WorkspaceSummary["id"]>();
   projectImportation = input.required<ProjectImportation>();
@@ -159,7 +168,7 @@ export class ProjectImportationCardComponent {
     if (projectImportation.project) {
       return projectImportation.project.color;
     }
-    const firstLetterCode = projectImportation.sourceName.codePointAt(0);
+    const firstLetterCode = projectImportation.sourceName?.codePointAt(0);
     return RandomColorService.castToColor(firstLetterCode || 0);
   });
 
@@ -173,6 +182,10 @@ export class ProjectImportationCardComponent {
       minWidth: 850,
       data: data,
     });
+  }
+
+  async deleteImportation(projectImportationId: ProjectImportation["id"], workspaceId: WorkspaceSummary["id"]) {
+    await this.importationRepositoryService.deleteRequest({ projectImportationId, workspaceId });
   }
 
   public async openInviteDialog() {

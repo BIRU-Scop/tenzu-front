@@ -21,10 +21,18 @@
 
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AbstractApiService, makeFormData } from "../base";
-import { CreateProjectPayload, ProjectDetail, ProjectSummary, UpdateProjectPayload } from "./project.model";
+import { AbstractApiService, makeFormData } from "../base/abstract-api-services";
+import { parseWithDebug } from "../base/parse-with-debug";
+import {
+  CreateProjectPayload,
+  projectDetailSchema,
+  ProjectDetail,
+  projectSummarySchema,
+  ProjectSummary,
+  UpdateProjectPayload,
+} from "./project.model";
 import type * as ProjectApiServiceType from "./project-api.type";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -42,6 +50,9 @@ export class ProjectApiService extends AbstractApiService<
   CreateProjectPayload
 > {
   baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override summarySchema = projectSummarySchema;
+  protected override detailSchema = projectDetailSchema;
+
   protected override getBaseUrl(params: ProjectApiServiceType.ListEntitiesSummaryParams) {
     return `${this.configAppService.apiUrl()}/workspaces/${params.workspaceId}/projects`;
   }
@@ -68,7 +79,7 @@ export class ProjectApiService extends AbstractApiService<
   ): Observable<ProjectDetail> {
     const data = makeFormData<Partial<UpdateProjectPayload>>(item);
     return this.http
-      .patch<BaseDataModel<ProjectDetail>>(this.patchUrl(params), data)
-      .pipe(map((dataObject) => dataObject.data));
+      .patch<BaseDataModel<unknown>>(this.patchUrl(params), data)
+      .pipe(map((dataObject) => parseWithDebug(projectDetailSchema, dataObject.data)));
   }
 }

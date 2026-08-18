@@ -22,13 +22,16 @@
 import { Component, inject, Signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
-import { WorkspaceMembership, WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
+import { WorkspaceMembership } from "@tenzu/repository/workspace-membership/workspace-membership.model";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
 import { MatTableModule } from "@angular/material/table";
-import { UserNested, UserStore } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { MembershipRoleComponent } from "@tenzu/shared/components/memberships/membership-role.component";
-import { WorkspaceDetail, WorkspaceRepositoryService } from "@tenzu/repository/workspace";
-import { Role } from "@tenzu/repository/membership";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
+import { WorkspaceDetail } from "@tenzu/repository/workspace/workspace.model";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles/workspace-role-repository.service";
 import { LowerCasePipe } from "@angular/common";
 import { MembershipActionsComponent } from "@tenzu/shared/components/memberships/membership-actions.component";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
@@ -38,7 +41,7 @@ import { NotFoundEntityError } from "@tenzu/repository/base/errors";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { DeleteWorkspaceMembershipDialogComponent } from "./delete-workspace-membership-dialog.component";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 
 @Component({
   selector: "app-workspace-members",

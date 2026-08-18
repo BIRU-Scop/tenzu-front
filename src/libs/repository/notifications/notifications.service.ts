@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,9 +22,11 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-import { Notification, NotificationCount } from "./notifications.model";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { Notification, notificationSchema, NotificationCount, notificationCountersSchema } from "./notifications.model";
+import { ConfigAppService } from "../config-app/config-app.service";
+import { BaseDataModel } from "../base/misc.model";
+import { parseWithDebug } from "../base/parse-with-debug";
+import { z } from "zod/v4";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 
@@ -39,22 +41,24 @@ export class NotificationsService {
 
   list(): Observable<Notification[]> {
     return this.http
-      .get<BaseDataModel<Notification[]>>(`${this.notificationsUrl}`)
-      .pipe(map((dataObject) => dataObject.data));
+      .get<BaseDataModel<unknown>>(`${this.notificationsUrl}`)
+      .pipe(map((dataObject) => parseWithDebug(z.array(notificationSchema), dataObject.data)));
   }
 
   readAll() {
     return this.http
-      .post<BaseDataModel<Notification[]>>(`${this.notificationsUrl}/read`, {})
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.notificationsUrl}/read`, {})
+      .pipe(map((dataObject) => parseWithDebug(z.array(notificationSchema), dataObject.data)));
   }
   count(): Observable<NotificationCount> {
-    return this.http.get<NotificationCount>(`${this.notificationsUrl}/count`);
+    return this.http
+      .get<unknown>(`${this.notificationsUrl}/count`)
+      .pipe(map((data) => parseWithDebug(notificationCountersSchema, data)));
   }
 
   read(notificationId: string): Observable<Notification> {
     return this.http
-      .post<BaseDataModel<Notification>>(`${this.notificationsUrl}/${notificationId}/read`, null)
-      .pipe(map((dataObject) => dataObject.data));
+      .post<BaseDataModel<unknown>>(`${this.notificationsUrl}/${notificationId}/read`, null)
+      .pipe(map((dataObject) => parseWithDebug(notificationSchema, dataObject.data)));
   }
 }

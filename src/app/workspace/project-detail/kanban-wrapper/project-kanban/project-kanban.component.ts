@@ -20,8 +20,8 @@
  */
 
 import { Component, computed, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
-import { StorySummary } from "@tenzu/repository/story";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
+import { StorySummary } from "@tenzu/repository/story/story.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StatusCardComponent } from "./status-card/status-card.component";
 import {
@@ -32,8 +32,9 @@ import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/rel
 import { ProjectKanbanService } from "./project-kanban.service";
 import { StoryCardComponent } from "./story-card/story-card.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
-import { StatusSummary } from "@tenzu/repository/status";
-import { Step, Workflow, WorkflowRepositoryService } from "@tenzu/repository/workflow";
+import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
+import { Step, Workflow } from "@tenzu/repository/workflow/workflow.model";
+import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { Validators } from "@angular/forms";
 import { ProjectKanbanSkeletonComponent } from "../../project-kanban-skeleton/project-kanban-skeleton.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
@@ -51,7 +52,7 @@ import { getStoryDetailUrl, getWorkflowUrl } from "@tenzu/utils/functions/urls";
 import { Location } from "@angular/common";
 import { HasPermissionDirective, PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
 import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
@@ -136,14 +137,14 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                 actualEntity: project,
               });
             <ul
-              class="grid grid-flow-col gap-8 kanban-viewport"
+              class="grid grid-flow-col gap-5 kanban-viewport"
               *transloco="let t; prefix: 'workflow'"
               cdkDropListGroup
             >
               @for (status of statuses; track status.id) {
                 @let storiesRef = storyRepositoryService.groupedByStatus()[status.id];
 
-                <li class="group w-64 flex flex-col pb-2">
+                <li class="group w-[280px] flex flex-col pb-2">
                   <app-status-card
                     (movedLeft)="moveStatus($index, Step.LEFT)"
                     (movedRight)="moveStatus($index, Step.RIGHT)"
@@ -154,7 +155,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                     [project]="project"
                   />
 
-                  <cdk-virtual-scroll-viewport [itemSize]="114" class="virtual-scroll">
+                  <cdk-virtual-scroll-viewport [itemSize]="146" class="virtual-scroll">
                     <ul
                       [id]="status.id"
                       class="stories-list flex flex-col items-center mat-bg-surface-container"
@@ -168,7 +169,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                         cdkDrag
                         [cdkDragData]="[storySummaryEntityMap[storyRef], idx]"
                         [attr.data-drag-index]="idx"
-                        class="w-60 h-[102px] my-[6px] "
+                        class="w-[260px] h-[134px] my-[6px] "
                         *cdkVirtualFor="
                           let storyRef of storiesRef;
                           templateCacheSize: 0;
@@ -179,7 +180,11 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
                         [class.cursor-progress]="hasModifyPermission && isLoading"
                       >
                         @let story = storySummaryEntityMap[storyRef];
-                        <app-story-card class="w-56 min" [story]="story" [hasModifyPermission]="hasModifyPermission" />
+                        <app-story-card
+                          class="block w-full h-full"
+                          [story]="story"
+                          [hasModifyPermission]="hasModifyPermission"
+                        />
                       </li>
                     </ul>
                   </cdk-virtual-scroll-viewport>
@@ -207,7 +212,7 @@ import { RandomColorService } from "@tenzu/utils/services/random-color/random-co
               >
                 <app-button-add
                   (click)="openCreateStatus($event)"
-                  class="whitespace-nowrap w-64"
+                  class="whitespace-nowrap w-[280px]"
                   [translocoKey]="'workflow.add_status'"
                 />
               </li>
@@ -344,7 +349,10 @@ export class ProjectKanbanComponent {
     });
   }
 
-  async drop(event: CdkDragDrop<StatusSummary, StatusSummary, [StorySummary, number]>, workflow: Workflow) {
+  async drop(
+    event: CdkDragDrop<WorkflowStatusNested, WorkflowStatusNested, [StorySummary, number]>,
+    workflow: Workflow,
+  ) {
     // we can't use event.indexes directly because of incompatibility between drag-drop and virtual-scroll
     // so we use workarounds
     const [, index] = event.item.data;

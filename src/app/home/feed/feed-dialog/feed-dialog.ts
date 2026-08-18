@@ -25,7 +25,8 @@ import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { FeedItemCardComponent } from "../feed-item-card/feed-item-card.component";
-import { FeedItem, FeedRepositoryService } from "@tenzu/repository/feed";
+import { FeedItem } from "@tenzu/repository/feed/feed-item.model";
+import { FeedRepositoryService } from "@tenzu/repository/feed/feed-repository.service";
 import { TypedDialog } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 

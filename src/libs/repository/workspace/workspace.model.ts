@@ -19,36 +19,27 @@
  *
  */
 
-import { ProjectNested } from "../project";
-import { UserRole } from "../membership";
-import { ProjectImportation } from "@tenzu/repository/importation";
+import { z } from "zod/v4";
+import { userRoleSchema } from "../membership/membership.model";
+import { projectNestedSchema } from "../project/project-nested.model";
+import { projectImportationSchema } from "../importation/importation.model";
+import { workspaceNestedSchema } from "./workspace-nested.model";
 
-type _WorkspaceBaseNested = {
-  id: string;
-  name: string;
-  slug: string;
-};
+export { workspaceLinkNestedSchema, workspaceNestedSchema } from "./workspace-nested.model";
+export type { WorkspaceLinkNested, WorkspaceNested } from "./workspace-nested.model";
 
-export type WorkspaceLinkNested = _WorkspaceBaseNested;
+export const workspaceSummarySchema = workspaceNestedSchema.extend({
+  userMemberProjects: z.array(projectNestedSchema),
+  userInvitedProjects: z.array(projectNestedSchema),
+  userImportedProjects: z.array(projectImportationSchema),
+  userIsInvited: z.boolean(),
+  userIsMember: z.boolean(),
+  userCanCreateProjects: z.boolean(),
+});
+export type WorkspaceSummary = z.infer<typeof workspaceSummarySchema>;
 
-export type WorkspaceNested = _WorkspaceBaseNested & {
-  color: number;
-};
-
-type _WorkspaceListProjectsSummary = {
-  userMemberProjects: ProjectNested[];
-  userInvitedProjects: ProjectNested[];
-  userImportedProjects: ProjectImportation[];
-};
-
-export type WorkspaceSummary = WorkspaceNested &
-  _WorkspaceListProjectsSummary & {
-    userIsInvited: boolean;
-    userIsMember: boolean;
-    userCanCreateProjects: boolean;
-  };
-
-export type WorkspaceDetail = WorkspaceSummary &
-  UserRole & {
-    totalProjects: number;
-  };
+export const workspaceDetailSchema = workspaceSummarySchema.extend({
+  ...userRoleSchema.shape,
+  totalProjects: z.int(),
+});
+export type WorkspaceDetail = z.infer<typeof workspaceDetailSchema>;

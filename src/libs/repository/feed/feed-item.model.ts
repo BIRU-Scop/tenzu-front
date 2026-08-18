@@ -20,27 +20,22 @@
  */
 
 import { z } from "zod/v4";
-
-const optionalDate = z.iso
-  .datetime({ offset: true })
-  .nullable()
-  .transform((value) => value ?? undefined)
-  .optional();
+import { isoDatetime, optionalNullable } from "../base/schema-utils";
 
 const feedItemBase = {
   id: z.string(),
   title: z.string(),
   content: z.string(),
-  publicationDate: z.iso.datetime({ offset: true }),
-  expirationDate: optionalDate,
-  readAt: optionalDate,
+  publicationDate: isoDatetime,
+  expirationDate: isoDatetime.apply(optionalNullable),
+  readAt: isoDatetime.apply(optionalNullable),
 };
 
 const callToActionFeedItemSchema = z.object({
   ...feedItemBase,
   type: z.literal("call_to_action"),
   actionTitle: z.string().min(1),
-  actionUrl: z.url({ protocol: /^https?$/ }),
+  actionUrl: z.httpUrl(),
 });
 
 const passiveFeedItemSchema = z
@@ -48,7 +43,7 @@ const passiveFeedItemSchema = z
     ...feedItemBase,
     type: z.enum(["maintenance", "release"]),
     actionTitle: z.string(),
-    actionUrl: z.literal("").or(z.url({ protocol: /^https?$/ })),
+    actionUrl: z.literal("").or(z.httpUrl()),
   })
   .refine((item) => item.actionTitle.length > 0 === item.actionUrl.length > 0, {
     error: "actionTitle and actionUrl must be both set or both empty",
@@ -59,7 +54,7 @@ const feedItemSchema = z.discriminatedUnion("type", [callToActionFeedItemSchema,
 
 const feedItemReadStateSchema = z.object({
   id: z.string(),
-  readAt: optionalDate,
+  readAt: isoDatetime,
 });
 
 export type FeedItem = z.infer<typeof feedItemSchema>;

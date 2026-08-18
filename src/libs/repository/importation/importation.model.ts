@@ -19,9 +19,12 @@
  *
  */
 
-import { FileValue } from "@tenzu/repository/base/misc.model";
-import { InvitationBase } from "@tenzu/repository/membership";
-import { ProjectNested } from "@tenzu/repository/project";
+import { z } from "zod/v4";
+import { optionalNullable } from "../base/schema-utils";
+import type { FileValue } from "../base/misc.model";
+import { projectNestedSchema } from "../project/project-nested.model";
+import { invitationBaseSchema } from "../membership/invitation.model";
+import { Role } from "../membership/membership.model";
 
 export enum ProjectImportationType {
   TENZU = "TZ",
@@ -42,34 +45,39 @@ export enum ImportationStatus {
   FAILURE = "F",
 }
 
-export type ProjectImportationData = {
-  errorCode?: ImportationError;
-  progressPercentage?: number;
-};
+export const projectImportationDataSchema = z.object({
+  errorCode: z.enum(ImportationError).optional(),
+  progressPercentage: z.int().optional(),
+});
+export type ProjectImportationData = z.infer<typeof projectImportationDataSchema>;
 
-export type ProjectImportationPendingInvitationNested = {
-  email: string;
-  roleId: string;
-};
+export const projectImportationPendingInvitationNestedSchema = z.object({
+  email: z.email(),
+  roleId: z.string<Role["id"]>(),
+});
+export type ProjectImportationPendingInvitationNested = z.infer<typeof projectImportationPendingInvitationNestedSchema>;
 
-export type ProjectImportationNested = {
-  id: string;
-  status: ImportationStatus;
-  pendingInvites: ProjectImportationPendingInvitationNested[];
-};
+export const projectImportationNestedSchema = z.object({
+  id: z.string(),
+  status: z.enum(ImportationStatus),
+  pendingInvites: z.array(projectImportationPendingInvitationNestedSchema),
+});
+export type ProjectImportationNested = z.infer<typeof projectImportationNestedSchema>;
 
-export type ProjectImportation = ProjectImportationNested & {
-  extraData: ProjectImportationData;
-  sourceName: string;
-  project: ProjectNested;
-};
+export const projectImportationSchema = projectImportationNestedSchema.extend({
+  extraData: projectImportationDataSchema,
+  sourceName: z.string(),
+  project: projectNestedSchema.apply(optionalNullable),
+});
+export type ProjectImportation = z.infer<typeof projectImportationSchema>;
 
 export type CreateProjectImportationPayload = {
   source: FileValue;
   originType: ProjectImportationType;
 };
 
-export type InvitedProjectImportation = {
-  invitations: InvitationBase[];
-  projectImportation: ProjectImportation;
-};
+export const invitedProjectImportationSchema = z.object({
+  invitations: z.array(invitationBaseSchema),
+  projectImportation: projectImportationSchema,
+});
+export type InvitedProjectImportation = z.infer<typeof invitedProjectImportationSchema>;
