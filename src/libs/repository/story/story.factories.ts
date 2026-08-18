@@ -19,9 +19,10 @@
  *
  */
 
-import { StoryAssign, StoryDetail, StoryNested, StorySummary } from "../story/story.model";
+import { StoryAssign, StoryDetail, StoryNested, StorySummary, StoryTagAssign } from "../story/story.model";
 import { makeUserNested } from "../user/user.factories";
 import { makeStatusSummary } from "../status/status.factories";
+import { makeStoryTagWithCount } from "../story-tag/story-tag.factories";
 
 export function makeStoryNested(overrides: Partial<StoryNested> = {}): StoryNested {
   return {
@@ -39,6 +40,7 @@ export function makeStorySummary(overrides: Partial<StorySummary> = {}): StorySu
     version: 1,
     statusId: "status-1",
     assigneeIds: [],
+    tagIds: [],
     ...overrides,
   };
 }
@@ -70,6 +72,14 @@ export function makeStoryDetail(overrides: Partial<StoryDetail> = {}): StoryDeta
 export function makeStoryAssign(overrides: Partial<StoryAssign> = {}): StoryAssign {
   return {
     user: makeUserNested(),
+    story: makeStoryNested(),
+    ...overrides,
+  };
+}
+
+export function makeStoryTagAssign(overrides: Partial<StoryTagAssign> = {}): StoryTagAssign {
+  return {
+    tag: makeStoryTagWithCount(),
     story: makeStoryNested(),
     ...overrides,
   };

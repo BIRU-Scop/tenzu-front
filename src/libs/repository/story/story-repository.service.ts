@@ -24,6 +24,8 @@ import { StoryApiService } from "./story-api.service";
 import { lastValueFrom } from "rxjs";
 import type * as StoryApiServiceType from "./story-api.type";
 import { StorySummary, StoryAssign, StoryCreatePayload, StoryDetail, StoryReorderPayloadEvent } from "./story.model";
+import type { StoryTag } from "../story-tag/story-tag.model";
+import { StoryTagEntitiesSummaryStore } from "../story-tag/story-tag-entities.store";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { WorkflowStatusNested } from "../status/status.model";
@@ -50,6 +52,8 @@ export class StoryRepositoryService extends BaseRepositoryService<
   protected apiService = inject(StoryApiService);
   protected entitiesSummaryStore = inject(StoryEntitiesSummaryStore);
   protected entityDetailStore = inject(StoryDetailStore);
+  // The tag STORE (not the tag repository service, since it injects this repository service also and that would cause a DI cycle).
+  private storyTagEntitiesSummaryStore = inject(StoryTagEntitiesSummaryStore);
   override getEntityIdFn = (story: StorySummary) => story.ref;
   groupedByStatus = this.entitiesSummaryStore.groupedByStatus;
   isLoading = signal(false);
@@ -134,6 +138,36 @@ export class StoryRepositoryService extends BaseRepositoryService<
   wsRemoveAssign(ref: StorySummary["ref"], userId: UserNested["id"]) {
     this.entitiesSummaryStore.removeAssign(ref, userId);
     this.entityDetailStore.removeAssign(ref, userId);
+  }
+
+  async createTagAssign(
+    tagId: StoryTag["id"],
+    params: { projectId: StoryDetail["projectId"]; ref: StorySummary["ref"] },
+  ) {
+    const storyTagAssign = await lastValueFrom(this.apiService.createTagAssignment(tagId, params));
+    this.wsAddTag(storyTagAssign.tag.id, params.ref);
+    this.storyTagEntitiesSummaryStore.setEntity(storyTagAssign.tag);
+    return storyTagAssign;
+  }
+  async deleteTagAssign(
+    tagId: StoryTag["id"],
+    params: { projectId: StoryDetail["projectId"]; ref: StorySummary["ref"] },
+  ) {
+    await lastValueFrom(this.apiService.deleteTagAssignment({ projectId: params.projectId, ref: params.ref, tagId }));
+    this.wsRemoveTag(tagId, params.ref);
+    this.storyTagEntitiesSummaryStore.decrementStoryCount(tagId);
+  }
+  wsAddTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
+    this.entitiesSummaryStore.addTag(tagId, ref);
+    this.entityDetailStore.addTag(tagId, ref);
+  }
+  wsRemoveTag(tagId: StoryTag["id"], ref: StorySummary["ref"]) {
+    this.entitiesSummaryStore.removeTag(tagId, ref);
+    this.entityDetailStore.removeTag(tagId, ref);
+  }
+  wsRemoveTagFromStories(tagId: StoryTag["id"]) {
+    this.entitiesSummaryStore.removeTagFromStories(tagId);
+    this.entityDetailStore.removeTagFromStories(tagId);
   }
   wsReorderStoryByEvent(reorder: StoryReorderPayloadEvent) {
     try {

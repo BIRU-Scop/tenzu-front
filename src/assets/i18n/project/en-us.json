@@ -51,7 +51,6 @@
         "confirm": "Reassign",
         "project_role_select_title": "Roles"
       },
-
       "role": {
         "label": "Role",
         "no_member_permissions": "to give a role permission you must set a member permission",
@@ -111,6 +110,38 @@
       "not_editable": "Not editable",
       "editable": "Editable",
       "create_role": "Create role"
+    },
+    "attributes": {
+      "title": "Attributes",
+      "tags": {
+        "empty_message": "No tags yet; create one to categorize the stories of this project.",
+        "add": "Tag",
+        "dialog": {
+          "title_create": "Create a tag",
+          "title_edit": "Edit the tag",
+          "name_label": "Name",
+          "choose_color": "Choose a color",
+          "create": "Create Tag",
+          "save": "Save",
+          "errors": {
+            "unique": "A tag with this name already exists.",
+            "required": "The name is required.",
+            "max_length": "50 characters maximum.",
+            "invalid_characters": "The name contains invalid characters."
+          }
+        },
+        "title": "Tags",
+        "related_stories": "{count, plural, one {# related story} other {# related stories}}",
+        "edit_aria": "Edit the tag {{label}}",
+        "delete_aria": "Delete the tag {{label}}",
+        "delete_confirm_used": "Are you sure you want to delete the tag \"{{label}}\"? It is used by {count, plural, one {# story} other {# stories}} and will be removed from all of them.",
+        "delete_confirm_unused": "The tag \"{{label}}\" is not used by any story. Are you sure you want to delete it?",
+        "errors": {
+          "conflict": "A tag named \"{{label}}\" already exists; it may have just been created by someone else.",
+          "max_reached": "This project has reached its maximum number of tags.",
+          "gone": "This tag no longer exists; it was just deleted."
+        }
+      }
     }
   },
   "members": {

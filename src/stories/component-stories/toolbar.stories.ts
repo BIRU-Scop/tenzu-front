@@ -49,7 +49,7 @@ import { withTransloco } from "../storybook-providers";
   template: `
     <div class="flex flex-col gap-12">
       <section class="flex flex-col gap-4">
-        <h1>Default — logo, notifications & avatar</h1>
+        <h1>Default - logo, notifications & avatar</h1>
         <mat-toolbar role="banner" class="flex">
           <a class="h-6" href="#" aria-label="Go home">
             <mat-icon class="icon-full" svgIcon="logo-text" />

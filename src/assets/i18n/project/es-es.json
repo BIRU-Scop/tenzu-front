@@ -51,7 +51,6 @@
         "confirm": "Reasignar",
         "project_role_select_title": "Roles"
       },
-
       "role": {
         "label": "Rol",
         "no_member_permissions": "Para conceder un permiso de rol, debe establecer un permiso de miembro",
@@ -111,6 +110,38 @@
       "not_editable": "No editable",
       "editable": "Editable",
       "create_role": "Crear rol"
+    },
+    "attributes": {
+      "title": "Atributos",
+      "tags": {
+        "empty_message": "Aún no hay etiquetas; cree una para categorizar las historias de este proyecto.",
+        "add": "Etiqueta",
+        "dialog": {
+          "title_create": "Crear una etiqueta",
+          "title_edit": "Editar la etiqueta",
+          "name_label": "Nombre",
+          "choose_color": "Elige un color",
+          "create": "Crear etiqueta",
+          "save": "Guardar",
+          "errors": {
+            "unique": "Ya existe una etiqueta con este nombre.",
+            "required": "El nombre es obligatorio.",
+            "max_length": "50 caracteres como máximo.",
+            "invalid_characters": "El nombre contiene caracteres no válidos."
+          }
+        },
+        "title": "Etiquetas",
+        "related_stories": "{count, plural, one {# historia relacionada} other {# historias relacionadas}}",
+        "edit_aria": "Editar la etiqueta {{label}}",
+        "delete_aria": "Eliminar la etiqueta {{label}}",
+        "delete_confirm_used": "¿Seguro que quieres eliminar la etiqueta \"{{label}}\"? La usan {count, plural, one {# historia} other {# historias}} y se eliminará de todas ellas.",
+        "delete_confirm_unused": "La etiqueta \"{{label}}\" no la usa ninguna historia. ¿Seguro que quieres eliminarla?",
+        "errors": {
+          "conflict": "Ya existe una etiqueta \"{{label}}\"; puede que alguien la haya creado justo ahora.",
+          "max_reached": "Este proyecto ha alcanzado su número máximo de etiquetas.",
+          "gone": "Esta etiqueta ya no existe; acaba de ser eliminada."
+        }
+      }
     }
   },
   "members": {

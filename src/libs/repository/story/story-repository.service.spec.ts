@@ -27,15 +27,18 @@ import { StoryRepositoryService } from "./story-repository.service";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
 import { WorkflowStatusNested } from "../status/status.model";
-import { makeStoryAssign, makeStoryDetail, makeStoryNested, makeStorySummary } from "../story/story.factories";
+import {
+  makeStoryAssign,
+  makeStoryDetail,
+  makeStoryNested,
+  makeStorySummary,
+  makeStoryTagAssign,
+} from "../story/story.factories";
+import { makeStoryTagWithCount } from "../story-tag/story-tag.factories";
+import { StoryTagEntitiesSummaryStore } from "../story-tag/story-tag-entities.store";
 import { makeUserNested } from "../user/user.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 
-/**
- * Orchestration tests: only the HTTP boundary (StoryApiService) is mocked; the
- * real stores are used so we assert the actual state mutations the repository
- * triggers.
- */
 describe("StoryRepositoryService", () => {
   let service: StoryRepositoryService;
   let summaryStore: InstanceType<typeof StoryEntitiesSummaryStore>;
@@ -173,6 +176,45 @@ describe("StoryRepositoryService", () => {
       service.updateCommentsCount(1, 3);
 
       expect(detailStore.item()?.totalComments).toBe(5);
+    });
+  });
+
+  describe("tag assignment", () => {
+    it("createTagAssign adds the tagId to both stores", async () => {
+      summaryStore.setAllEntities([makeStorySummary({ ref: 1, tagIds: [] })]);
+      detailStore.set(makeStoryDetail({ ref: 1, tagIds: [] }));
+      api.createTagAssignment.mockReturnValue(
+        of(
+          makeStoryTagAssign({
+            tag: makeStoryTagWithCount({ id: "tag-1", storiesCount: 5 }),
+            story: makeStoryNested({ ref: 1 }),
+          }),
+        ),
+      );
+      const tagsStore = TestBed.inject(StoryTagEntitiesSummaryStore);
+      tagsStore.setAllEntities([makeStoryTagWithCount({ id: "tag-1", storiesCount: 0 })]);
+
+      await service.createTagAssign("tag-1", { projectId: "project-1", ref: 1 });
+
+      expect(summaryStore.entityMap()[1].tagIds).toEqual(["tag-1"]);
+      expect(detailStore.item()?.tagIds).toEqual(["tag-1"]);
+      expect(tagsStore.entityMap()["tag-1"].storiesCount).toBe(5);
+    });
+
+    it("deleteTagAssign removes the tagId from both stores and decrements the tag counter", async () => {
+      summaryStore.setAllEntities([makeStorySummary({ ref: 1, tagIds: ["tag-1", "tag-2"] })]);
+      detailStore.set(makeStoryDetail({ ref: 1, tagIds: ["tag-1", "tag-2"] }));
+      api.deleteTagAssignment.mockReturnValue(of(undefined));
+
+      const tagsStore = TestBed.inject(StoryTagEntitiesSummaryStore);
+      tagsStore.setAllEntities([makeStoryTagWithCount({ id: "tag-1", storiesCount: 2 })]);
+
+      await service.deleteTagAssign("tag-1", { projectId: "project-1", ref: 1 });
+
+      expect(api.deleteTagAssignment).toHaveBeenCalledWith({ projectId: "project-1", ref: 1, tagId: "tag-1" });
+      expect(summaryStore.entityMap()[1].tagIds).toEqual(["tag-2"]);
+      expect(detailStore.item()?.tagIds).toEqual(["tag-2"]);
+      expect(tagsStore.entityMap()["tag-1"].storiesCount).toBe(1);
     });
   });
 });

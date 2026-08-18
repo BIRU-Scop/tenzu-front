@@ -21,7 +21,14 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
-import { StoryAssign, StoryDetail, StoryReorderPayloadEvent } from "@tenzu/repository/story/story.model";
+import {
+  StoryAssign,
+  StoryDetail,
+  StoryReorderPayloadEvent,
+  storyTagAssignmentEventContentSchema,
+} from "@tenzu/repository/story/story.model";
+import { storyTagEventContentSchema } from "@tenzu/repository/story-tag/story-tag.model";
+import { StoryTagRepositoryService } from "@tenzu/repository/story-tag/story-tag-repository.service";
 import {
   NotificationEventType,
   ProjectEventType,
@@ -31,6 +38,8 @@ import {
   ProjectRoleEventType,
   StoryAssignmentEventType,
   StoryAttachmentEventType,
+  StoryTagAssignmentEventType,
+  StoryTagEventType,
   StoryCommentEventType,
   StoryEventType,
   UserEventType,
@@ -86,6 +95,56 @@ import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importa
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ProjectImportationErrorDialog } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
+
+export function applyStoryTagEvent(message: WSResponseEvent<unknown>) {
+  const storyTagRepositoryService = inject(StoryTagRepositoryService);
+  const storyRepositoryService = inject(StoryRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
+
+  const currentProject = projectRepositoryService.entityDetail();
+  const { storyTag } = storyTagEventContentSchema.parse(message.event.content);
+  if (!currentProject || currentProject.id !== storyTag.projectId) {
+    return;
+  }
+
+  switch (message.event.type) {
+    case StoryTagEventType.CreateStoryTag:
+      storyTagRepositoryService.setEntitySummary(storyTag);
+      break;
+    case StoryTagEventType.UpdateStoryTag: {
+      storyTagRepositoryService.updateEntitySummary(storyTag.id, storyTag);
+      break;
+    }
+    case StoryTagEventType.DeleteStoryTag: {
+      if (storyTagRepositoryService.entityMapSummary()[storyTag.id]) {
+        storyTagRepositoryService.deleteEntitySummary(storyTag.id);
+      }
+      storyRepositoryService.wsRemoveTagFromStories(storyTag.id);
+      break;
+    }
+  }
+}
+
+export function applyStoryTagAssignmentEvent(message: WSResponseEvent<unknown>) {
+  const storyRepositoryService = inject(StoryRepositoryService);
+  const projectRepositoryService = inject(ProjectRepositoryService);
+  const currentProject = projectRepositoryService.entityDetail();
+  const { storyTagAssignment } = storyTagAssignmentEventContentSchema.parse(message.event.content);
+  if (!currentProject || currentProject.id !== storyTagAssignment.tag.projectId) {
+    return;
+  }
+
+  switch (message.event.type) {
+    case StoryTagAssignmentEventType.CreateStoryTagAssignment: {
+      storyRepositoryService.wsAddTag(storyTagAssignment.tag.id, storyTagAssignment.story.ref);
+      break;
+    }
+    case StoryTagAssignmentEventType.DeleteStoryTagAssignment: {
+      storyRepositoryService.wsRemoveTag(storyTagAssignment.tag.id, storyTagAssignment.story.ref);
+      break;
+    }
+  }
+}
 
 export function applyStoryAssignmentEvent(message: WSResponseEvent<unknown>) {
   const storyService = inject(StoryRepositoryService);

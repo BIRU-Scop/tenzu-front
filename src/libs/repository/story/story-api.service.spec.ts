@@ -19,17 +19,6 @@
  *
  */
 
-/**
- * The API service is a thin layer over HttpClient, so we deliberately keep this
- * spec lean: we only assert the bits that carry actual *logic* and that a refactor
- * could silently break —
- *   - the URL shape of each distinct / custom endpoint (the contract components rely on),
- *   - the request body when the service reshapes it (e.g. `{ userId }`),
- *   - the unwrapping of the `{ data }` response envelope.
- * Plain passthroughs (e.g. method === "GET") are not re-asserted: that would just
- * restate the implementation. The real back/front contract is covered by E2E.
- */
-
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController } from "@angular/common/http/testing";

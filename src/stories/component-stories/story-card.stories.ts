@@ -27,6 +27,8 @@ import { provideTranslocoScope } from "@jsverse/transloco";
 import { JwtModule } from "@auth0/angular-jwt";
 import { StoryCardComponent } from "../../app/workspace/project-detail/kanban-wrapper/project-kanban/story-card/story-card.component";
 import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership/project-membership-entities.store";
+import { StoryTagEntitiesSummaryStore } from "@tenzu/repository/story-tag/story-tag-entities.store";
+import { makeStoryTagWithCount } from "@tenzu/repository/story-tag/story-tag.factories";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { withTransloco } from "../storybook-providers";
 import { withDevToolsStub } from "@angular-architects/ngrx-toolkit";
@@ -65,7 +67,7 @@ const members = [
   template: `
     <div class="flex flex-col gap-12">
       <section class="flex flex-col gap-4">
-        <h1>Default — title on 2 lines, two assignees</h1>
+        <h1>Default - title on 2 lines, two assignees</h1>
         <ul class="flex flex-row flex-wrap gap-4 items-start">
           <li class="w-60 h-[102px]">
             <app-story-card class="block w-56" [story]="twoLineStory" [hasModifyPermission]="true" />
@@ -89,13 +91,25 @@ const members = [
       </section>
 
       <section class="flex flex-col gap-4">
-        <h1>Assignees — variations</h1>
+        <h1>Assignees - variations</h1>
         <ul class="flex flex-row flex-wrap gap-4 items-start">
           <li class="w-60 h-[102px]">
             <app-story-card class="block w-56" [story]="oneAssigneeStory" [hasModifyPermission]="true" />
           </li>
           <li class="w-60 h-[102px]">
             <app-story-card class="block w-56" [story]="manyAssigneesStory" [hasModifyPermission]="true" />
+          </li>
+        </ul>
+      </section>
+
+      <section class="flex flex-col gap-4">
+        <h1>Tags - read-only chips, overflow badge</h1>
+        <ul class="flex flex-row flex-wrap gap-4 items-start">
+          <li class="w-60">
+            <app-story-card class="block w-56" [story]="taggedStory" [hasModifyPermission]="true" />
+          </li>
+          <li class="w-60">
+            <app-story-card class="block w-56" [story]="manyTagsStory" [hasModifyPermission]="true" />
           </li>
         </ul>
       </section>
@@ -122,13 +136,15 @@ const members = [
 })
 class StoryStoryCardStorybookComponent implements OnInit {
   private readonly membershipStore = inject(ProjectMembershipEntitiesStore);
+  private readonly tagsStore = inject(StoryTagEntitiesSummaryStore);
 
-  readonly shortStory = { ref: 12, title: "Short title", projectId: "p1", assigneeIds: ["u1"] };
+  readonly shortStory = { ref: 12, title: "Short title", projectId: "p1", assigneeIds: ["u1"], tagIds: [] };
   readonly twoLineStory = {
     ref: 235,
     title: "Card User story sur 2 lignes",
     projectId: "p1",
     assigneeIds: ["u1", "u2"],
+    tagIds: [],
   };
   readonly longStory = {
     ref: 999,
@@ -136,18 +152,46 @@ class StoryStoryCardStorybookComponent implements OnInit {
       "A very long story title that will be clamped to two visible lines and the rest gets truncated with an ellipsis",
     projectId: "p1",
     assigneeIds: ["u1", "u2"],
+    tagIds: [],
   };
-  readonly oneAssigneeStory = { ref: 42, title: "Single assignee story", projectId: "p1", assigneeIds: ["u1"] };
+  readonly oneAssigneeStory = {
+    ref: 42,
+    title: "Single assignee story",
+    projectId: "p1",
+    assigneeIds: ["u1"],
+    tagIds: [],
+  };
   readonly manyAssigneesStory = {
     ref: 88,
     title: "Many assignees story",
     projectId: "p1",
     assigneeIds: ["u1", "u2", "u3", "u4"],
+    tagIds: [],
   };
-  readonly noAssigneeStory = { ref: 7, title: "No assignees yet", projectId: "p1", assigneeIds: [] };
+  readonly noAssigneeStory = { ref: 7, title: "No assignees yet", projectId: "p1", assigneeIds: [], tagIds: [] };
+  readonly taggedStory = {
+    ref: 51,
+    title: "Two tags story",
+    projectId: "p1",
+    assigneeIds: ["u1"],
+    tagIds: ["tag-1", "tag-2"],
+  };
+  // 5 tags, MAX_VISIBLE_TAGS = 3 -> "+2" badge listing the hidden labels.
+  readonly manyTagsStory = {
+    ref: 52,
+    title: "Many tags story",
+    projectId: "p1",
+    assigneeIds: [],
+    tagIds: ["tag-1", "tag-2", "tag-3", "tag-4", "tag-5"],
+  };
 
   ngOnInit() {
     this.membershipStore.setAllEntities(members);
+    this.tagsStore.setAllEntities(
+      ["bug", "feature", "urgent", "backend", "design"].map((label, index) =>
+        makeStoryTagWithCount({ id: `tag-${index + 1}`, label, color: index + 1 }),
+      ),
+    );
   }
 }
 

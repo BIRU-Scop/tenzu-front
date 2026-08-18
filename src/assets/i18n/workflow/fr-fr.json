@@ -121,6 +121,7 @@
     "confirm_delete_story": "Es-tu sûr(e) de vouloir supprimer cette story ?",
     "confirm_delete_story_message": "Toutes les informations de la story seront définitivement supprimées. Il n'y a pas de retour en arrière possible.",
     "story_previous": "Story précédente",
-    "story_next": "Story suivante"
+    "story_next": "Story suivante",
+    "tags": "Tags"
   }
 }

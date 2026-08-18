@@ -29,7 +29,10 @@ import {
   StoryDetail,
   storyDetailSchema,
   StoryReorderPayload,
+  StoryTagAssign,
+  storyTagAssignmentSchema,
 } from "./story.model";
+import { type StoryTag } from "../story-tag/story-tag.model";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import { UserNested } from "../user/user.model";
@@ -93,5 +96,19 @@ export class StoryApiService extends AbstractApiService<
   }
   deleteAssignee(params: StoryApiServiceType.BaseParams & { userId: UserNested["id"] }) {
     return this.http.delete<void>(`${this.baseStoryAssignmentUrl(params)}/${params.userId}`);
+  }
+
+  public baseStoryTagAssignmentUrl(params: StoryApiServiceType.BaseParams) {
+    return `${this.getEntityBaseUrl(params)}/tags`;
+  }
+
+  createTagAssignment(tagId: StoryTag["id"], params: StoryApiServiceType.BaseParams): Observable<StoryTagAssign> {
+    return this.http
+      .post<BaseDataModel<unknown>>(`${this.baseStoryTagAssignmentUrl(params)}`, { tagId })
+      .pipe(map((dataObject) => parseWithDebug(storyTagAssignmentSchema, dataObject.data)));
+  }
+
+  deleteTagAssignment(params: StoryApiServiceType.BaseParams & { tagId: StoryTag["id"] }): Observable<void> {
+    return this.http.delete<void>(`${this.baseStoryTagAssignmentUrl(params)}/${params.tagId}`);
   }
 }

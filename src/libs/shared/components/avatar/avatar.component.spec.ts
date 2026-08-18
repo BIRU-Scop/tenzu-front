@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -35,6 +35,17 @@ describe("AvatarComponent", () => {
     fixture = TestBed.createComponent(AvatarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it("outlined mode paints text and border with the background tone", () => {
+    fixture.componentRef.setInput("mode", "outlined");
+    fixture.componentRef.setInput("color", 3);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.style.color).toBe("var(--color-3-background)");
+    expect(host.style.borderColor).toBe("var(--color-3-background)");
+    expect(host.style.backgroundColor).toBe("transparent");
   });
 
   it("input Norma Fisher -> ouput N F", () => {

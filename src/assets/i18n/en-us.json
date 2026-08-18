@@ -179,6 +179,16 @@
         "admin": "can invite/remove (except owner) members, appoint/unassign  any role other than owner, edit project info, edit dynamic roles and see all project's content",
         "readonly_member": "can see the project content: kanbans, stories and comments"
       }
+    },
+    "color_picker": {
+      "color_name": "Color {{index}}"
+    },
+    "story_tags": {
+      "input_label": "Add a tag",
+      "no_tags": "No tags in this project; they are created in Settings → Tags.",
+      "tag_added": "Tag {{label}} added.",
+      "tag_removed": "Tag {{label}} removed.",
+      "tag_gone": "This tag no longer exists; it was just deleted."
     }
   },
   "avatar": {
