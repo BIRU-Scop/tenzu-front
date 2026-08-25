@@ -67,10 +67,11 @@ export class ProjectImportationInputComponent {
   async onFileSelected(file: FileValue) {
     if (file) {
       try {
-        await this.importationRepositoryService.createRequest(
-          { originType: ProjectImportationType.TAIGA, source: file },
-          { workspaceId: this.workspaceId() },
-        );
+        await this.importationRepositoryService.uploadRequest({
+          originType: ProjectImportationType.TAIGA,
+          file,
+          workspaceId: this.workspaceId(),
+        });
         this.submitted.emit();
       } catch (errorResponse) {
         if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 422) {

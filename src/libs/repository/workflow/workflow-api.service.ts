@@ -46,7 +46,7 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
   protected override getBaseUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
     return `${this.baseUrl}/${params.projectId}/workflows`;
   }
-  protected override createUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
+  public override createUrl(params: WorkflowApiServiceType.CreateEntityDetailParams): string {
     return super.createUrl(params);
   }
 

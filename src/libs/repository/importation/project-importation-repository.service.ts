@@ -22,7 +22,12 @@
 import { inject, Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectImportationApiService } from "./project-importation-api.service";
-import { CreateProjectImportationPayload, ProjectImportation, ProjectImportationNested } from "./importation.model";
+import {
+  CreateProjectImportationPayload,
+  ProjectImportation,
+  ProjectImportationNested,
+  ProjectImportationType,
+} from "./importation.model";
 import { WorkspaceSummary } from "../workspace/workspace.model";
 import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
 import { ProjectImportationEntitiesStore } from "../importation/project-importation.store";
@@ -36,6 +41,8 @@ import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { Router } from "@angular/router";
+import * as tus from "tus-js-client";
+import { tokenGetter } from "../../../app/app.config";
 
 @Injectable({
   providedIn: "root",
@@ -72,6 +79,54 @@ export class ProjectImportationRepositoryService {
 
     this.addEntitySummary({ ...params, projectImportation: importation });
     return importation;
+  }
+  async uploadRequest(params: {
+    originType: ProjectImportationType;
+    file: File | Blob;
+    workspaceId: WorkspaceSummary["id"];
+  }) {
+    const token = tokenGetter();
+    // Create a new tus upload
+    const upload = new tus.Upload(params.file, {
+      endpoint: this.importationsApiService.createUrl({
+        workspaceId: params.workspaceId,
+      }),
+      chunkSize: 52428800,
+      uploadDataDuringCreation: true,
+      removeFingerprintOnSuccess: true,
+      retryDelays: [50, 100],
+      headers: { Authorization: `Bearer ${token}` },
+      metadata: {
+        filename: "name" in params.file ? params.file.name : "",
+        filetype: params.file.type,
+        originType: params.originType,
+      },
+      onError: function (error) {
+        console.log("TUS FAILED", "Failed because: " + error);
+      },
+      onProgress: function (bytesSent, bytesTotal) {
+        const percentage = ((bytesSent / bytesTotal) * 100).toFixed(2);
+        console.log("TUS PROGRESS", bytesSent, bytesTotal, percentage + "%");
+      },
+      onChunkComplete: function (chunkSize, bytesAccepted, bytesTotal) {
+        const percentage = ((bytesAccepted / bytesTotal) * 100).toFixed(2);
+        console.log("TUS CHUNK", bytesAccepted, bytesTotal, percentage + "%");
+      },
+      onSuccess: function () {
+        console.log("TUS SUCCESS", "Download %s from %s", "name" in upload.file ? upload.file.name : "", upload.url);
+      },
+    });
+
+    // Check if there are any previous uploads to continue.
+    upload.findPreviousUploads().then(function (previousUploads) {
+      // Found previous uploads so we select the first one.
+      if (previousUploads.length) {
+        upload.resumeFromPreviousUpload(previousUploads[0]);
+      }
+
+      // Start the upload
+      upload.start();
+    });
   }
 
   async listRequest(params: { workspaceId: WorkspaceSummary["id"] }) {

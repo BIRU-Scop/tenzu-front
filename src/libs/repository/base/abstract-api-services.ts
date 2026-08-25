@@ -68,7 +68,7 @@ export abstract class AbstractApiServiceDetail<
     return this.getEntityBaseUrl(params);
   }
 
-  protected createUrl(params?: CreateParams): string {
+  public createUrl(params?: CreateParams): string {
     return this.getBaseUrl(params);
   }
 
