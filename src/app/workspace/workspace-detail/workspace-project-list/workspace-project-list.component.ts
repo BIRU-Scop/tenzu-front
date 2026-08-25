@@ -53,6 +53,7 @@ import { ProjectImportationRepositoryService } from "@tenzu/repository/importati
   ],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     @let workspace = workspaceService.entityDetail();
+    @let importations = projectImportationService.entities();
     <div class="flex flex-row justify-between">
       <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
       @if (workspace && workspace.userCanCreateProjects) {
@@ -85,23 +86,25 @@ import { ProjectImportationRepositoryService } from "@tenzu/repository/importati
           />
         }
       } @empty {
-        @if (workspace) {
-          @if (workspace.userCanCreateProjects) {
-            <app-project-card [workspaceId]="workspace.id" />
+        @if (!importations.length) {
+          @if (workspace) {
+            @if (workspace.userCanCreateProjects) {
+              <app-project-card [workspaceId]="workspace.id" />
+            } @else {
+              <app-project-card
+                [workspaceId]="workspace.id"
+                [name]="'Lorem Ipsum'"
+                [color]="3"
+                [description]="'Lorem Ipsum dolor sit amet'"
+                [disabled]="true"
+              />
+            }
           } @else {
-            <app-project-card
-              [workspaceId]="workspace.id"
-              [name]="'Lorem Ipsum'"
-              [color]="3"
-              [description]="'Lorem Ipsum dolor sit amet'"
-              [disabled]="true"
-            />
-          }
-        } @else {
-          @for (skeleton of Array(6); track $index) {
-            <li>
-              <app-card-skeleton />
-            </li>
+            @for (skeleton of Array(6); track $index) {
+              <li>
+                <app-card-skeleton />
+              </li>
+            }
           }
         }
       }
