@@ -31,7 +31,7 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { ConfigModel, ConfigSchema } from "@tenzu/repository/config-app/config.model";
 import { EnvironmentConfig } from "../../../environments/environment-type";
 import { environment } from "../../../environments/environment";
-import { tokenGetter } from "../../../app/app.config";
+import { tokenGetter } from "@tenzu/utils/functions/token";
 import enTranslations from "../../../assets/i18n/en-us.json";
 import projectEnTranslations from "../../../assets/i18n/project/en-us.json";
 

@@ -42,7 +42,7 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { Router } from "@angular/router";
 import * as tus from "tus-js-client";
-import { tokenGetter } from "../../../app/app.config";
+import { tokenGetter } from "@tenzu/utils/functions/token";
 
 @Injectable({
   providedIn: "root",

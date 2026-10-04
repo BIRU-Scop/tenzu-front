@@ -78,14 +78,16 @@ export class ProjectInvitationRepositoryService {
   }
 
   async acceptProjectInvitation(params: { workspaceId: WorkspaceSummary["id"]; project: ProjectNested }) {
-    await this.acceptInvitationForCurrentUser(params.project.id);
+    const projet = await this.acceptInvitationForCurrentUser(params.project.id);
     this.workspaceService.removeUserInvitedProjects({ workspaceId: params.workspaceId, projectId: params.project.id });
     this.workspaceService.addUserMemberProjects(params);
+    return projet;
   }
 
   async denyProjectInvitation(params: { workspaceId: WorkspaceSummary["id"]; projectId: ProjectNested["id"] }) {
-    await this.denyInvitationForCurrentUser(params.projectId);
+    const projet = await this.denyInvitationForCurrentUser(params.projectId);
     this.workspaceService.removeUserInvitedProjects(params);
+    return projet;
   }
 
   async revokeProjectInvitation(invitationId: ProjectInvitation["id"]) {

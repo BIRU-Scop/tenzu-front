@@ -20,34 +20,31 @@
  */
 
 import { Component, input, output } from "@angular/core";
-import { AvatarComponent } from "../avatar/avatar.component";
-import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
+import { CardComponent, CardHeaderActionDirective } from "@tenzu/shared/components/ui/card/card.component";
 
 @Component({
   selector: "app-action-card",
-  imports: [AvatarComponent, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, ButtonComponent],
+  imports: [CardComponent, CardHeaderActionDirective, ButtonComponent],
   template: `
-    <mat-card appearance="outlined" class="min-h-[120px] w-[200px] mat-bg-surface-container-high">
-      <mat-card-header class="items-center">
-        <app-avatar mode="filled-square" mat-card-avatar [name]="name()" [color]="color()" />
-        <mat-card-title class="!contents min-h-[40px] ">
-          {{ name() }}
-        </mat-card-title>
-        <app-button
-          class="ml-auto"
-          [translocoKey]="cancelLabel()"
-          [iconOnly]="true"
-          level="error"
-          (click)="canceled.emit()"
-          iconName="block"
-        />
-      </mat-card-header>
-      <mat-card-content class="flex-1"> </mat-card-content>
-      <mat-card-actions class="mx-auto">
-        <app-button [translocoKey]="submitLabel()" level="primary" (click)="submitted.emit()" iconName="check" />
-      </mat-card-actions>
-    </mat-card>
+    <app-card [name]="name()" [color]="color()">
+      <app-button
+        appCardHeaderAction
+        class="ml-auto"
+        [translocoKey]="cancelLabel()"
+        [iconOnly]="true"
+        level="error"
+        (click)="canceled.emit()"
+        iconName="block"
+      />
+      <app-button
+        class="mt-auto self-center whitespace-nowrap"
+        [translocoKey]="submitLabel()"
+        level="primary"
+        (click)="submitted.emit()"
+        iconName="check"
+      />
+    </app-card>
   `,
   styles: ``,
 })

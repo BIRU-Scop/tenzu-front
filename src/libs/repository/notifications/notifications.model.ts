@@ -127,6 +127,7 @@ export type StoryCommentCreateNotification = z.infer<typeof storyCommentCreateNo
 
 export const projectImportationFailNotificationSchema = z.object({
   ...notificationCommonFields,
+  createdBy: userNestedSchema.nullable(),
   type: z.literal("project_importation.fail"),
   content: z.object({
     workspace: workspaceLinkNestedSchema,
@@ -137,6 +138,7 @@ export type ProjectImportationFailNotification = z.infer<typeof projectImportati
 
 export const projectImportationActionNeededNotificationSchema = z.object({
   ...notificationCommonFields,
+  createdBy: userNestedSchema.nullable(),
   type: z.literal("project_importation.action_needed"),
   content: z.object({
     workspace: workspaceLinkNestedSchema,
@@ -149,6 +151,7 @@ export type ProjectImportationActionNeededNotification = z.infer<
 
 export const projectImportationWarningFileNotificationSchema = z.object({
   ...notificationCommonFields,
+  createdBy: userNestedSchema.nullable(),
   type: z.literal("project_importation.warning.file_too_big"),
   content: z.object({
     project: projectLinkNestedSchema,
