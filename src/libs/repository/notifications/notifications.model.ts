@@ -28,17 +28,6 @@ import { workspaceLinkNestedSchema } from "../workspace/workspace-nested.model";
 import { projectImportationSchema } from "../importation/importation.model";
 import { storyCommentNestedSchema } from "../story-comment/story-comment.model";
 
-export type NotificationType =
-  | "stories.assign"
-  | "stories.unassign"
-  | "story_comment.create"
-  | "stories.status_change"
-  | "stories.workflow_change"
-  | "stories.delete"
-  | "project_importation.fail"
-  | "project_importation.action_needed"
-  | "project_importation.warning.file_too_big";
-
 const notificationCommonFields = {
   id: z.string(),
   createdBy: userNestedSchema,
@@ -162,6 +151,21 @@ export const projectImportationWarningFileNotificationSchema = z.object({
 });
 export type ProjectImportationWarningFileNotification = z.infer<typeof projectImportationWarningFileNotificationSchema>;
 
+export const ProjectImportationWarningStoryTagsNumberNotificationSchema = z.object({
+  ...notificationCommonFields,
+  createdBy: userNestedSchema.nullable(),
+  type: z.literal("project_importation.warning.too_many_story_tags"),
+  content: z.object({
+    project: projectLinkNestedSchema,
+    projectImportation: projectImportationSchema,
+    storyTagsNumber: z.number(),
+    maxNumber: z.number(),
+  }),
+});
+export type ProjectImportationWarningStoryTagsNumberNotification = z.infer<
+  typeof ProjectImportationWarningStoryTagsNumberNotificationSchema
+>;
+
 export const notificationSchema = z.discriminatedUnion("type", [
   storyAssignNotificationSchema,
   storyUnassignNotificationSchema,
@@ -172,5 +176,6 @@ export const notificationSchema = z.discriminatedUnion("type", [
   projectImportationFailNotificationSchema,
   projectImportationActionNeededNotificationSchema,
   projectImportationWarningFileNotificationSchema,
+  ProjectImportationWarningStoryTagsNumberNotificationSchema,
 ]);
 export type Notification = z.infer<typeof notificationSchema>;

@@ -74,7 +74,8 @@
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status in the  <span class='text-on-background'>{{workflow}}</span> kanban",
       "project_importation.fail": "The import of the file {{fileName}} has failed",
       "project_importation.action_needed": "The import of the file {{fileName}} require your attention.",
-      "project_importation.warning.file_too_big": "During the import of {{fileName}}, the file {{errorFileName}} couldn't be imported because it is too big ({{errorFileSize}} > {{maxFileSize}})"
+      "project_importation.warning.file_too_big": "During the import of {{fileName}}, the file {{errorFileName}} couldn't be imported because it is too big ({{errorFileSize}} > {{maxFileSize}})",
+      "project_importation.warning.too_many_story_tags": "The import of {{fileName}} contained more story tags ({{storyTagsNumber}}) than the maxinum amount allowed per project ({{maxNumber}}). We advise you to reduce the number of existing tags"
     }
   },
   "component": {
