@@ -35,8 +35,8 @@ import {
 import { makeProjectImportation } from "@tenzu/repository/importation/importation.factories";
 import { makeProjectNested } from "@tenzu/repository/project/project.factories";
 import { TusUploadCardComponent } from "@tenzu/shared/components/tus-upload-card/tus-upload-card.component";
-import { makeTusUpload } from "@tenzu/repository/importation/tus-upload.factories";
-import { TusUpload } from "@tenzu/repository/importation/tus-upload.model";
+import { makeTusUploadState } from "@tenzu/repository/importation/tus-upload.factories";
+import { TusUploadState } from "@tenzu/repository/importation/tus-upload.model";
 import { withTransloco } from "../storybook-providers";
 import { MEGABYTE } from "@tenzu/pipes/humanize-file-size";
 
@@ -46,7 +46,8 @@ const project = makeProjectNested({
   color: 2,
 });
 
-const upload = (overrides: Partial<TusUpload>): TusUpload => makeTusUpload({ fileSize: 100, ...overrides });
+const upload = (overrides: Partial<TusUploadState>): TusUploadState =>
+  makeTusUploadState({ fileSize: 100, ...overrides });
 
 @Component({
   selector: "app-project-importation-card-storybook",
@@ -57,16 +58,16 @@ const upload = (overrides: Partial<TusUpload>): TusUpload => makeTusUpload({ fil
       <section class="flex flex-col gap-4">
         <h1>Upload cards - every status</h1>
         <div class="flex flex-row flex-wrap gap-4 items-start">
-          @for (tusUpload of tusUploads; track tusUpload.id) {
+          @for (tusUploadState of tusUploadStates; track tusUploadState.id) {
             <app-tus-upload-card
-              [tusUpload]="tusUpload"
-              (paused)="record(tusUpload, 'paused')"
-              (resumed)="record(tusUpload, 'resumed')"
-              (canceled)="record(tusUpload, 'canceled')"
-              (retried)="record(tusUpload, 'retried')"
-              (closed)="record(tusUpload, 'closed')"
-              (detailsOpened)="record(tusUpload, 'detailsOpened')"
-              (resumedWith)="record(tusUpload, 'resumedWith')"
+              [tusUploadState]="tusUploadState"
+              (paused)="record(tusUploadState, 'paused')"
+              (resumed)="record(tusUploadState, 'resumed')"
+              (canceled)="record(tusUploadState, 'canceled')"
+              (retried)="record(tusUploadState, 'retried')"
+              (closed)="record(tusUploadState, 'closed')"
+              (detailsOpened)="record(tusUploadState, 'detailsOpened')"
+              (resumedWith)="record(tusUploadState, 'resumedWith')"
             />
           }
         </div>
@@ -76,7 +77,7 @@ const upload = (overrides: Partial<TusUpload>): TusUpload => makeTusUpload({ fil
       <section class="flex flex-col gap-4">
         <h1>Upload cards next to the importation card that replaces them</h1>
         <div class="flex flex-row flex-wrap gap-4 items-start">
-          <app-tus-upload-card [tusUpload]="tusUploads[1]" />
+          <app-tus-upload-card [tusUploadState]="tusUploadStates[1]" />
           <app-project-importation-card [workspaceId]="workspaceId" [projectImportation]="pending" />
           <app-project-importation-card [workspaceId]="workspaceId" [projectImportation]="ongoingWithProgress" />
         </div>
@@ -173,12 +174,12 @@ class StoryProjectImportationCardStorybookComponent {
   readonly project = project;
   readonly lastOutput = signal("none yet");
 
-  record(tusUpload: TusUpload, output: string): void {
-    this.lastOutput.set(`${output} on ${tusUpload.fileName}`);
+  record(tusUploadState: TusUploadState, output: string): void {
+    this.lastOutput.set(`${output} on ${tusUploadState.fileName}`);
   }
 
   // `bytesSent` reads as a percentage: every story upload is 100 bytes long.
-  readonly tusUploads: TusUpload[] = [
+  readonly tusUploadStates: TusUploadState[] = [
     upload({ id: "u-uploading-start", fileName: "backup.json", status: "uploading", bytesSent: 0 }),
     upload({ id: "u-uploading", fileName: "backup.json", status: "uploading", bytesSent: 42 }),
     upload({

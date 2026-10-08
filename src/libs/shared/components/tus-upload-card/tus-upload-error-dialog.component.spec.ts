@@ -25,24 +25,26 @@ import { inputBinding, signal } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { translation } from "@tenzu/utils/testing/translation";
-import { makeTusUpload } from "@tenzu/repository/importation/tus-upload.factories";
+import { makeTusUploadState } from "@tenzu/repository/importation/tus-upload.factories";
 import { TusUploadErrorDialog } from "./tus-upload-error-dialog.component";
 
 describe(TusUploadErrorDialog.name, () => {
   let fixture: ComponentFixture<TusUploadErrorDialog>;
-  const tusUpload = signal(makeTusUpload());
+  const tusUploadState = signal(makeTusUploadState());
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TusUploadErrorDialog],
       providers: [testingProviders, { provide: MatDialogRef, useValue: {} }],
     }).compileComponents();
-    fixture = TestBed.createComponent(TusUploadErrorDialog, { bindings: [inputBinding("tusUpload", tusUpload)] });
+    fixture = TestBed.createComponent(TusUploadErrorDialog, {
+      bindings: [inputBinding("tusUploadState", tusUploadState)],
+    });
   });
 
   it("renders the file name, the cause and the full message", () => {
-    tusUpload.set(
-      makeTusUpload({
+    tusUploadState.set(
+      makeTusUploadState({
         fileName: "backup.json",
         status: "rejected",
         errorKey: "project.new_project.upload.status.file_refused",

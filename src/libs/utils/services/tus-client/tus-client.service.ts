@@ -67,7 +67,7 @@ export class TusClientService {
   private readonly userStore = inject(UserStore);
 
   create(file: File, options: TusClientCreateOptions): TusClientUpload {
-    const tusUpload = new this.tusUploadClass(file, {
+    const tusUploadState = new this.tusUploadClass(file, {
       endpoint: options.endpoint,
       uploadUrl: options.tusUploadId ? `${this.configAppService.apiUrl()}/upload/${options.tusUploadId}` : undefined,
       uploadDataDuringCreation: false,
@@ -107,9 +107,9 @@ export class TusClientService {
       },
     });
     return {
-      start: () => tusUpload.start(),
-      pause: () => tusUpload.abort(false),
-      cancel: () => tusUpload.abort(true),
+      start: () => tusUploadState.start(),
+      pause: () => tusUploadState.abort(false),
+      cancel: () => tusUploadState.abort(true),
     };
   }
 }

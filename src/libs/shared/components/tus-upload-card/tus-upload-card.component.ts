@@ -27,7 +27,7 @@ import { DateFormatOptions, TranslocoDatePipe } from "@jsverse/transloco-locale"
 import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
-import { TusUpload } from "@tenzu/repository/importation/tus-upload.model";
+import { TusUploadState } from "@tenzu/repository/importation/tus-upload.model";
 import {
   CardBackdropActionsDirective,
   CardBackdropContentDirective,
@@ -64,34 +64,34 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
     ButtonComponent,
     ConfirmDirective,
   ],
-  host: { role: "group", "[attr.aria-label]": "tusUpload().fileName" },
+  host: { role: "group", "[attr.aria-label]": "tusUploadState().fileName" },
   template: `
-    @let _tusUpload = tusUpload();
-    @let _translocoValue = { fileName: _tusUpload.fileName };
+    @let _tusUploadState = tusUploadState();
+    @let _translocoValue = { fileName: _tusUploadState.fileName };
     <app-card
-      [name]="_tusUpload.fileName"
+      [name]="_tusUploadState.fileName"
       [color]="color()"
       description="Lorem Ipsum dolor sit amet"
       [backdrop]="true"
       *transloco="let t"
     >
-      <div appCardBackdropHeader [matTooltip]="_tusUpload.fileName">
+      <div appCardBackdropHeader [matTooltip]="_tusUploadState.fileName">
         <p appCardBackdropTitle [attr.role]="failure() ? 'alert' : 'status'">{{ t(labelKey()) }}</p>
-        @if (_tusUpload.status === "interrupted") {
+        @if (_tusUploadState.status === "interrupted") {
           <p appCardBackdropSubtitle>
             {{
               t("project.new_project.upload.interrupted_hint", {
-                fileName: _tusUpload.fileName,
-                fileSize: _tusUpload.fileSize | humanizeFileSize,
+                fileName: _tusUploadState.fileName,
+                fileSize: _tusUploadState.fileSize | humanizeFileSize,
               })
             }}
           </p>
         }
-        @if (_tusUpload.status === "paused") {
+        @if (_tusUploadState.status === "paused") {
           <p appCardBackdropSubtitle>
             {{
               t("project.new_project.upload.deadline", {
-                date: _tusUpload.expiresAt | translocoDate: deadlineFormat,
+                date: _tusUploadState.expiresAt | translocoDate: deadlineFormat,
               })
             }}
           </p>
@@ -105,26 +105,26 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
           [attr.aria-label]="t('project.new_project.upload.progress_label', _translocoValue)"
         />
         <div class="size-8 shrink-0">
-          @if (pausable() || _tusUpload.status === "paused") {
+          @if (pausable() || _tusUploadState.status === "paused") {
             <app-button
               level="tertiary"
               [iconOnly]="true"
               [iconNoBackground]="true"
-              [iconName]="_tusUpload.status === 'paused' ? 'resume' : 'pause'"
+              [iconName]="_tusUploadState.status === 'paused' ? 'resume' : 'pause'"
               [translocoKey]="
-                _tusUpload.status === 'paused'
+                _tusUploadState.status === 'paused'
                   ? 'project.new_project.upload.actions.resume'
                   : 'project.new_project.upload.actions.pause'
               "
               [translocoValue]="_translocoValue"
-              (click)="_tusUpload.status === 'paused' ? resumed.emit() : paused.emit()"
+              (click)="_tusUploadState.status === 'paused' ? resumed.emit() : paused.emit()"
             />
           }
         </div>
       </div>
       <div appCardBackdropActions>
-        @if (_tusUpload.status === "rejected") {
-          @if (_tusUpload.errorMessage) {
+        @if (_tusUploadState.status === "rejected") {
+          @if (_tusUploadState.errorMessage) {
             <app-button
               level="warning"
               iconName="details"
@@ -134,7 +134,7 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
           }
           <app-button-close level="tertiary" (click)="closed.emit()" />
         } @else {
-          @if (_tusUpload.status === "interrupted") {
+          @if (_tusUploadState.status === "interrupted") {
             <app-file-input
               allowedFormats=".json"
               level="primary"
@@ -142,7 +142,7 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
               (selectFile)="onFileSelected($event)"
             />
           }
-          @if (_tusUpload.status === "failed") {
+          @if (_tusUploadState.status === "failed") {
             <app-button
               level="primary"
               iconName="replay"
@@ -152,11 +152,11 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
           }
           <app-button-cancel
             level="error"
-            [disabled]="_tusUpload.status === 'canceling'"
+            [disabled]="_tusUploadState.status === 'canceling'"
             appConfirm
             [data]="{
               message: t('project.new_project.upload.confirm_cancel', {
-                fileName: _tusUpload.fileName,
+                fileName: _tusUploadState.fileName,
                 percentage: percentage(),
               }),
               actionButtonContent: 'project.new_project.upload.actions.confirm_cancel',
@@ -171,17 +171,17 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
 })
 export class TusUploadCardComponent {
   readonly deadlineFormat = DEADLINE_FORMAT;
-  tusUpload = input.required<TusUpload>();
+  tusUploadState = input.required<TusUploadState>();
   percentage = computed(() => {
-    const { bytesSent, fileSize } = this.tusUpload();
+    const { bytesSent, fileSize } = this.tusUploadState();
     return fileSize ? Math.round((bytesSent / fileSize) * 100) : 0;
   });
-  color = computed(() => RandomColorService.castToColor(this.tusUpload().fileName.codePointAt(0) ?? 0));
-  pausable = computed(() => ["uploading", "retrying"].includes(this.tusUpload().status));
-  failure = computed(() => ["failed", "rejected"].includes(this.tusUpload().status));
+  color = computed(() => RandomColorService.castToColor(this.tusUploadState().fileName.codePointAt(0) ?? 0));
+  pausable = computed(() => ["uploading", "retrying"].includes(this.tusUploadState().status));
+  failure = computed(() => ["failed", "rejected"].includes(this.tusUploadState().status));
 
   labelKey = computed(() => {
-    const { status, errorKey } = this.tusUpload();
+    const { status, errorKey } = this.tusUploadState();
     return errorKey ?? `project.new_project.upload.status.${status}`;
   });
 

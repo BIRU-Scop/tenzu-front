@@ -22,28 +22,28 @@
 import { Component, input } from "@angular/core";
 import { MatDialogClose, MatDialogContent, MatDialogTitle } from "@angular/material/dialog";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { TusUpload } from "@tenzu/repository/importation/tus-upload.model";
+import { TusUploadState } from "@tenzu/repository/importation/tus-upload.model";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
 
 @Component({
   selector: "app-tus-upload-error-dialog",
   imports: [MatDialogTitle, MatDialogContent, MatDialogClose, TranslocoDirective, ButtonCloseComponent],
   template: `
-    @let _tusUpload = tusUpload();
+    @let _tusUploadState = tusUploadState();
     <div class="p-6 flex flex-col gap-2" *transloco="let t">
       <app-button-close mat-dialog-close class="absolute top-2 end-2" [iconOnly]="true" />
       <h2 id="aria-label" mat-dialog-title>
-        {{ t("project.new_project.upload.details_title", { fileName: _tusUpload.fileName }) }}
+        {{ t("project.new_project.upload.details_title", { fileName: _tusUploadState.fileName }) }}
       </h2>
       <mat-dialog-content class="flex flex-col gap-2">
-        @if (_tusUpload.errorKey) {
-          <p class="mat-title-small">{{ t(_tusUpload.errorKey) }}</p>
+        @if (_tusUploadState.errorKey) {
+          <p class="mat-title-small">{{ t(_tusUploadState.errorKey) }}</p>
         }
-        <p class="whitespace-pre-wrap">{{ _tusUpload.errorMessage }}</p>
+        <p class="whitespace-pre-wrap">{{ _tusUploadState.errorMessage }}</p>
       </mat-dialog-content>
     </div>
   `,
 })
 export class TusUploadErrorDialog {
-  tusUpload = input.required<TusUpload>();
+  tusUploadState = input.required<TusUploadState>();
 }

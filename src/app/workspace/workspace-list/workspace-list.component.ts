@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -66,22 +66,25 @@ import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-in
       @if (workpaces.length > 0) {
         <div class="flex flex-col gap-4">
           @for (workspace of workpaces; track workspace.id) {
-            <app-workspace-card
-              class="mt-4"
-              [workspace]="workspace"
-              (submitted)="acceptWorkspaceInvitation(workspace)"
-              (canceled)="denyWorkspaceInvitation(workspace)"
-            />
-            <app-project-card-list
-              class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
-              [workspace]="workspace"
-            />
+            <div #workspaceSection tabindex="-1" class="contents">
+              <app-workspace-card
+                class="mt-4"
+                [workspace]="workspace"
+                (submitted)="acceptWorkspaceInvitation(workspace)"
+                (canceled)="denyWorkspaceInvitation(workspace)"
+              />
+              <app-project-card-list
+                class="flex flex-row flex-wrap gap-4"
+                [workspace]="workspace"
+                [focusFallback]="workspaceSection"
+              />
+            </div>
           }
         </div>
       } @else {
         <div class="flex flex-col gap-8">
           <app-workspace-skeleton />
-          <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
+          <div class="flex flex-row flex-wrap gap-4 mt-4">
             @for (skeleton of skeletons; track $index) {
               <app-card-skeleton />
             }

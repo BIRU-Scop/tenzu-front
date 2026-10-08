@@ -40,8 +40,8 @@ import {
   buttonFilterByText,
   getEnabledButtonNames,
 } from "@tenzu/utils/testing/button-harness";
-import { makeTusUpload } from "@tenzu/repository/importation/tus-upload.factories";
-import { TusUpload } from "@tenzu/repository/importation/tus-upload.model";
+import { makeTusUploadState } from "@tenzu/repository/importation/tus-upload.factories";
+import { TusUploadState } from "@tenzu/repository/importation/tus-upload.model";
 import { DEADLINE_FORMAT, TusUploadCardComponent } from "./tus-upload-card.component";
 import { TranslocoLocaleService } from "@jsverse/transloco-locale";
 import { MEGABYTE } from "@tenzu/pipes/humanize-file-size";
@@ -51,7 +51,7 @@ describe(TusUploadCardComponent.name, () => {
   let loader: HarnessLoader;
   let documentRootLoader: HarnessLoader;
   // The bound input
-  const tusUpload = signal(makeTusUpload());
+  const tusUploadState = signal(makeTusUploadState());
   const outputs = {
     paused: vi.fn(),
     resumed: vi.fn(),
@@ -70,7 +70,7 @@ describe(TusUploadCardComponent.name, () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TusUploadCardComponent, {
       bindings: [
-        inputBinding("tusUpload", tusUpload),
+        inputBinding("tusUploadState", tusUploadState),
         ...Object.entries(outputs).map(([name, handler]) => outputBinding(name, handler)),
       ],
     });
@@ -78,8 +78,8 @@ describe(TusUploadCardComponent.name, () => {
     documentRootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
   });
 
-  const setCardWith = (upload: TusUpload): Promise<MatCardHarness> => {
-    tusUpload.set(upload);
+  const setCardWith = (upload: TusUploadState): Promise<MatCardHarness> => {
+    tusUploadState.set(upload);
     return loader.getHarness(MatCardHarness);
   };
 
@@ -87,7 +87,7 @@ describe(TusUploadCardComponent.name, () => {
     TestBed.inject(TranslocoLocaleService).localizeDate(new Date(expiresAt), undefined, DEADLINE_FORMAT);
 
   it("renders the file name as the aria-label of the card", async () => {
-    await setCardWith(makeTusUpload({ fileName: "backup.json" }));
+    await setCardWith(makeTusUploadState({ fileName: "backup.json" }));
 
     const host = fixture.nativeElement as HTMLElement;
     expect(host.getAttribute("role")).toBe("group");
@@ -95,7 +95,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the file name as a tooltip", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json" }));
 
     const tooltip = await card.getHarness(MatTooltipHarness);
     await tooltip.show();
@@ -104,7 +104,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the uploading state with pause and cancel", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "uploading" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "uploading" }));
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.uploading"));
     expect(await getEnabledButtonNames(card)).toEqual([
@@ -114,13 +114,13 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the progress as the percentage of the bytes sent", async () => {
-    const card = await setCardWith(makeTusUpload({ bytesSent: 50, fileSize: 200 }));
+    const card = await setCardWith(makeTusUploadState({ bytesSent: 50, fileSize: 200 }));
 
     expect(await (await card.getHarness(MatProgressBarHarness)).getValue()).toBe(25);
   });
 
   it("renders the status text in the element with role status", async () => {
-    await setCardWith(makeTusUpload({ status: "uploading" }));
+    await setCardWith(makeTusUploadState({ status: "uploading" }));
 
     expect(getByRole(fixture.nativeElement, "status").textContent).toContain(
       translation("project.new_project.upload.status.uploading"),
@@ -128,7 +128,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the file name as the aria-label of the progress bar", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json" }));
 
     const progressBar = await (await card.getHarness(MatProgressBarHarness)).host();
     expect(await progressBar.getAttribute("aria-label")).toBe(
@@ -137,7 +137,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the paused state with resume and cancel", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "paused" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "paused" }));
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.paused"));
     expect(await getEnabledButtonNames(card)).toEqual([
@@ -147,7 +147,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the resume deadline of a paused upload", async () => {
-    const card = await setCardWith(makeTusUpload({ status: "paused", expiresAt: "2026-10-05T14:30:00.000Z" }));
+    const card = await setCardWith(makeTusUploadState({ status: "paused", expiresAt: "2026-10-05T14:30:00.000Z" }));
 
     expect(await card.getText()).toContain(`Resume possible until ${deadline("2026-10-05T14:30:00.000Z")}`);
   });
@@ -156,20 +156,20 @@ describe(TusUploadCardComponent.name, () => {
   // change. With the deadline inside, each state change (pause, resume, retry...) would read "Upload paused,
   // Resume possible until Oct 5, 2026, 2:30 PM" in full.
   it("renders the deadline outside the element with role status", async () => {
-    await setCardWith(makeTusUpload({ status: "paused", expiresAt: "2026-10-05T14:30:00.000Z" }));
+    await setCardWith(makeTusUploadState({ status: "paused", expiresAt: "2026-10-05T14:30:00.000Z" }));
 
     expect(getByRole(fixture.nativeElement, "status").textContent).not.toContain(deadline("2026-10-05T14:30:00.000Z"));
   });
 
   it("keeps the selection on the main button, regardless of the state", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "uploading" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "uploading" }));
     const pauseButton = await card.getHarness(
       buttonFilterByAriaLabel(translation("project.new_project.upload.actions.pause", { fileName: "backup.json" })),
     );
     await pauseButton.focus();
     const focusedWhileUploading = document.activeElement;
 
-    await setCardWith(makeTusUpload({ fileName: "backup.json", status: "paused" }));
+    await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "paused" }));
 
     const resumeButton = await card.getHarness(
       buttonFilterByAriaLabel(translation("project.new_project.upload.actions.resume", { fileName: "backup.json" })),
@@ -180,7 +180,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the retrying state with pause and cancel", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "retrying" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "retrying" }));
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.retrying"));
     expect(await getEnabledButtonNames(card)).toEqual([
@@ -190,14 +190,14 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("renders the resuming state with cancel", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "resuming" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "resuming" }));
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.resuming"));
     expect(await getEnabledButtonNames(card)).toEqual([translation("commons.cancel")]);
   });
 
   it("renders the canceling state with no button", async () => {
-    const card = await setCardWith(makeTusUpload({ status: "canceling" }));
+    const card = await setCardWith(makeTusUploadState({ status: "canceling" }));
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.canceling"));
     expect(await getEnabledButtonNames(card)).toEqual([]);
@@ -205,7 +205,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("renders the failed state with retry and cancel", async () => {
     const card = await setCardWith(
-      makeTusUpload({ status: "failed", errorKey: "project.new_project.upload.status.server_not_responding" }),
+      makeTusUploadState({ status: "failed", errorKey: "project.new_project.upload.status.server_not_responding" }),
     );
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.server_not_responding"));
@@ -217,7 +217,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("renders the rejected state with details and close on file refused", async () => {
     const card = await setCardWith(
-      makeTusUpload({
+      makeTusUploadState({
         fileName: "backup.json",
         status: "rejected",
         errorKey: "project.new_project.upload.status.file_refused",
@@ -234,7 +234,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("renders the rejected state with close on forbidden", async () => {
     const card = await setCardWith(
-      makeTusUpload({ status: "rejected", errorKey: "project.new_project.upload.status.forbidden" }),
+      makeTusUploadState({ status: "rejected", errorKey: "project.new_project.upload.status.forbidden" }),
     );
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.forbidden"));
@@ -244,7 +244,9 @@ describe(TusUploadCardComponent.name, () => {
   it.each(["failed", "rejected"] as const)(
     "renders the cause of a %s upload in the element with role alert",
     async (status) => {
-      await setCardWith(makeTusUpload({ status, errorKey: "project.new_project.upload.status.server_not_responding" }));
+      await setCardWith(
+        makeTusUploadState({ status, errorKey: "project.new_project.upload.status.server_not_responding" }),
+      );
 
       expect(getByRole(fixture.nativeElement, "alert").textContent).toContain(
         translation("project.new_project.upload.status.server_not_responding"),
@@ -254,7 +256,7 @@ describe(TusUploadCardComponent.name, () => {
   );
 
   it("renders the interrupted state with choose file and cancel", async () => {
-    const card = await setCardWith(makeTusUpload({ status: "interrupted" }));
+    const card = await setCardWith(makeTusUploadState({ status: "interrupted" }));
 
     expect(await card.getText()).toContain(translation("project.new_project.upload.status.interrupted"));
     expect(await getEnabledButtonNames(card)).toEqual([
@@ -265,14 +267,14 @@ describe(TusUploadCardComponent.name, () => {
 
   it("renders the interrupted hint with the file name and size", async () => {
     const card = await setCardWith(
-      makeTusUpload({ status: "interrupted", fileName: "backup.json", fileSize: 12 * MEGABYTE }),
+      makeTusUploadState({ status: "interrupted", fileName: "backup.json", fileSize: 12 * MEGABYTE }),
     );
 
     expect(await card.getText()).toContain("Select backup.json (12 MB) again to resume.");
   });
 
   it("emits paused", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "uploading" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "uploading" }));
 
     await (
       await card.getHarness(
@@ -284,7 +286,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("emits resumed", async () => {
-    const card = await setCardWith(makeTusUpload({ fileName: "backup.json", status: "paused" }));
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "paused" }));
 
     await (
       await card.getHarness(
@@ -298,7 +300,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("emits canceled after confirmation", async () => {
     const card = await setCardWith(
-      makeTusUpload({ fileName: "backup.json", status: "uploading", bytesSent: 50, fileSize: 200 }),
+      makeTusUploadState({ fileName: "backup.json", status: "uploading", bytesSent: 50, fileSize: 200 }),
     );
     await (await card.getHarness(buttonFilterByText(translation("commons.cancel")))).click();
 
@@ -311,7 +313,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("emits closed without confirmation", async () => {
     const card = await setCardWith(
-      makeTusUpload({ status: "rejected", errorKey: "project.new_project.upload.status.forbidden" }),
+      makeTusUploadState({ status: "rejected", errorKey: "project.new_project.upload.status.forbidden" }),
     );
 
     await (await card.getHarness(buttonFilterByText(translation("commons.close")))).click();
@@ -322,7 +324,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("emits retried", async () => {
     const card = await setCardWith(
-      makeTusUpload({ status: "failed", errorKey: "project.new_project.upload.status.server_not_responding" }),
+      makeTusUploadState({ status: "failed", errorKey: "project.new_project.upload.status.server_not_responding" }),
     );
 
     await (await card.getHarness(buttonFilterByText(translation("project.new_project.upload.actions.retry")))).click();
@@ -332,7 +334,7 @@ describe(TusUploadCardComponent.name, () => {
 
   it("emits detailsOpened", async () => {
     const card = await setCardWith(
-      makeTusUpload({
+      makeTusUploadState({
         status: "rejected",
         errorKey: "project.new_project.upload.status.file_refused",
         errorMessage: "Suspicious file, try to shorten the file name",
@@ -347,7 +349,7 @@ describe(TusUploadCardComponent.name, () => {
   });
 
   it("emits resumedWith with the selected file", async () => {
-    await setCardWith(makeTusUpload({ status: "interrupted" }));
+    await setCardWith(makeTusUploadState({ status: "interrupted" }));
     const selected = new File(["{}"], "backup.json", { type: "application/json" });
 
     const fileInput: FileInputComponent = fixture.debugElement.query(
