@@ -60,6 +60,26 @@ app-card {
         min-height: 3lh;
       }
     }
+
+
+    .app-card-backdrop {
+      backdrop-filter: blur(4px);
+      border-radius: var(--mat-sys-corner-small);
+
+      // Smaller buttons than the app's: two of them share a 240 px card.
+      @include mat.button-overrides((
+        filled-container-height: 28px,
+        outlined-container-height: 28px,
+        filled-horizontal-padding: 8px,
+        outlined-horizontal-padding: 8px,
+        filled-icon-offset: 0,
+        outlined-icon-offset: 0,
+        filled-label-text-size: var(--mat-sys-label-medium-size),
+        outlined-label-text-size: var(--mat-sys-label-medium-size),
+        filled-label-text-weight: var(--mat-sys-label-medium-weight),
+        outlined-label-text-weight: var(--mat-sys-label-medium-weight),
+      ));
+    }
   }
 }
 

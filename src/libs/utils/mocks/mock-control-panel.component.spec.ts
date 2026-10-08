@@ -22,6 +22,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed";
+import { getByRole } from "@tenzu/utils/testing/aria-role";
 import { MatSlideToggleHarness } from "@angular/material/slide-toggle/testing";
 import { MockControlPanelComponent } from "./mock-control-panel.component";
 import { HarnessLoader } from "@angular/cdk/testing";
@@ -110,7 +111,7 @@ describe(MockControlPanelComponent.name, () => {
 
     expect(store.isDomainMocked("stories")).toBeTruthy();
 
-    const dialog = document.querySelector("[role='dialog']")!;
+    const dialog = getByRole(document, "dialog");
 
     expect(dialog.querySelectorAll("[data-testid='mockRowPending']")).toHaveLength(1);
     const badge = await rootLoader.getHarness(MatBadgeHarness.with({ text: "!" }));

@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
@@ -34,7 +34,11 @@ import {
 } from "@tenzu/repository/importation/importation.model";
 import { makeProjectImportation } from "@tenzu/repository/importation/importation.factories";
 import { makeProjectNested } from "@tenzu/repository/project/project.factories";
+import { TusUploadCardComponent } from "@tenzu/shared/components/tus-upload-card/tus-upload-card.component";
+import { makeTusUpload } from "@tenzu/repository/importation/tus-upload.factories";
+import { TusUpload } from "@tenzu/repository/importation/tus-upload.model";
 import { withTransloco } from "../storybook-providers";
+import { MEGABYTE } from "@tenzu/pipes/humanize-file-size";
 
 const project = makeProjectNested({
   name: "Project 1",
@@ -42,12 +46,42 @@ const project = makeProjectNested({
   color: 2,
 });
 
+const upload = (overrides: Partial<TusUpload>): TusUpload => makeTusUpload({ fileSize: 100, ...overrides });
+
 @Component({
   selector: "app-project-importation-card-storybook",
   standalone: true,
-  imports: [ProjectImportationCardComponent, ProjectCardComponent, ActionCardComponent],
+  imports: [ProjectImportationCardComponent, ProjectCardComponent, ActionCardComponent, TusUploadCardComponent],
   template: `
     <div class="flex flex-col gap-12">
+      <section class="flex flex-col gap-4">
+        <h1>Upload cards - every status</h1>
+        <div class="flex flex-row flex-wrap gap-4 items-start">
+          @for (tusUpload of tusUploads; track tusUpload.id) {
+            <app-tus-upload-card
+              [tusUpload]="tusUpload"
+              (paused)="record(tusUpload, 'paused')"
+              (resumed)="record(tusUpload, 'resumed')"
+              (canceled)="record(tusUpload, 'canceled')"
+              (retried)="record(tusUpload, 'retried')"
+              (closed)="record(tusUpload, 'closed')"
+              (detailsOpened)="record(tusUpload, 'detailsOpened')"
+              (resumedWith)="record(tusUpload, 'resumedWith')"
+            />
+          }
+        </div>
+        <p class="mat-body-small">Last output: {{ lastOutput() }}</p>
+      </section>
+
+      <section class="flex flex-col gap-4">
+        <h1>Upload cards next to the importation card that replaces them</h1>
+        <div class="flex flex-row flex-wrap gap-4 items-start">
+          <app-tus-upload-card [tusUpload]="tusUploads[1]" />
+          <app-project-importation-card [workspaceId]="workspaceId" [projectImportation]="pending" />
+          <app-project-importation-card [workspaceId]="workspaceId" [projectImportation]="ongoingWithProgress" />
+        </div>
+      </section>
+
       <section class="flex flex-col gap-4">
         <h1>Ongoing - indeterminate, then determinate progress</h1>
         <div class="flex flex-row flex-wrap gap-4 items-start">
@@ -137,6 +171,63 @@ const project = makeProjectNested({
 class StoryProjectImportationCardStorybookComponent {
   readonly workspaceId = "workspace-1";
   readonly project = project;
+  readonly lastOutput = signal("none yet");
+
+  record(tusUpload: TusUpload, output: string): void {
+    this.lastOutput.set(`${output} on ${tusUpload.fileName}`);
+  }
+
+  // `bytesSent` reads as a percentage: every story upload is 100 bytes long.
+  readonly tusUploads: TusUpload[] = [
+    upload({ id: "u-uploading-start", fileName: "backup.json", status: "uploading", bytesSent: 0 }),
+    upload({ id: "u-uploading", fileName: "backup.json", status: "uploading", bytesSent: 42 }),
+    upload({
+      id: "u-uploading-end",
+      fileName: "a-very-long-file-name-that-overflows-the-card.json",
+      status: "uploading",
+      bytesSent: 99,
+    }),
+    upload({ id: "u-retrying", fileName: "backup.json", status: "retrying", bytesSent: 42 }),
+    upload({ id: "u-paused", fileName: "backup.json", status: "paused", bytesSent: 42 }),
+    upload({ id: "u-resuming", fileName: "backup.json", status: "resuming", bytesSent: 42 }),
+    upload({ id: "u-canceling", fileName: "backup.json", status: "canceling", bytesSent: 42 }),
+    upload({
+      id: "u-interrupted",
+      fileName: "backup.json",
+      status: "interrupted",
+      fileSize: 12 * MEGABYTE,
+      bytesSent: 5 * MEGABYTE,
+    }),
+    upload({
+      id: "u-failed-server",
+      fileName: "backup.json",
+      status: "failed",
+      bytesSent: 42,
+      errorKey: "project.new_project.upload.status.server_not_responding",
+    }),
+    upload({
+      id: "u-failed-session",
+      fileName: "backup.json",
+      status: "failed",
+      bytesSent: 42,
+      errorKey: "project.new_project.upload.status.session_expired",
+    }),
+    upload({
+      id: "u-rejected-forbidden",
+      fileName: "backup.json",
+      status: "rejected",
+      bytesSent: 42,
+      errorKey: "project.new_project.upload.status.forbidden",
+    }),
+    upload({
+      id: "u-rejected-invalid",
+      fileName: "backup.json",
+      status: "rejected",
+      bytesSent: 100,
+      errorKey: "project.new_project.upload.status.file_refused",
+      errorMessage: "Suspicious file, try to shorten the file name",
+    }),
+  ];
 
   readonly pending: ProjectImportation = makeProjectImportation({
     id: "importation-pending",

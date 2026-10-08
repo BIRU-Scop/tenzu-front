@@ -20,16 +20,15 @@
  */
 
 import { Component, inject, input, output } from "@angular/core";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 import { ProjectImportationType } from "@tenzu/repository/importation/importation.model";
-import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
+import { TusUploadRepositoryService } from "@tenzu/repository/importation/tus-upload-repository.service";
 import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
-import { HttpErrorResponse } from "@angular/common/http";
 import { debug } from "@tenzu/utils/functions/logging";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { getLocError } from "@tenzu/utils/functions/errors";
 import { IconName } from "@tenzu/shared/components/ui/ui.types";
 
 @Component({
@@ -43,6 +42,7 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
         [translocoUploadKey]="translocoUploadKey()"
         (selectFile)="onFileSelected($event)"
       />
+      <p class="mat-body-small">{{ t("project.new_project.upload.keep_tab_open") }}</p>
       @if (displayDoc()) {
         <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small">{{
           t("project.new_project.import.taiga_doc")
@@ -56,8 +56,10 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
   },
 })
 export class ProjectImportationInputComponent {
-  readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
+  readonly tusUploadRepositoryService = inject(TusUploadRepositoryService);
   readonly notificationService = inject(NotificationService);
+  readonly liveAnnouncer = inject(LiveAnnouncer);
+  readonly translocoService = inject(TranslocoService);
   workspaceId = input.required<WorkspaceSummary["id"]>();
   submitted = output<void>();
   iconName = input<IconName | undefined>("upload");
@@ -65,28 +67,28 @@ export class ProjectImportationInputComponent {
   displayDoc = input(true);
 
   async onFileSelected(file: FileValue) {
-    if (file) {
+    if (file instanceof File) {
       try {
-        await this.importationRepositoryService.uploadRequest({
-          originType: ProjectImportationType.TAIGA,
+        await this.tusUploadRepositoryService.start({
           file,
           workspaceId: this.workspaceId(),
+          originType: ProjectImportationType.TAIGA,
         });
         this.submitted.emit();
-      } catch (errorResponse) {
-        if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 422) {
-          debug("error-422", "projectImportation", errorResponse);
-          const errorDetail = getLocError(errorResponse, "source");
-          if (errorDetail) {
-            this.notificationService.error({
-              title: "project.new_project.import.errors.422",
-              translocoTitle: true,
-              translocoTitleParams: { error: errorDetail },
-            });
-            return;
-          }
-        }
-        throw errorResponse;
+        this.liveAnnouncer
+          .announce(
+            this.translocoService.translate("project.new_project.upload.notifications.started", {
+              fileName: file.name,
+            }),
+          )
+          .then();
+      } catch (error) {
+        debug("tus-upload", `creation of ${file.name} failed`, error);
+        this.notificationService.error({
+          title: "project.new_project.upload.notifications.failed",
+          translocoTitle: true,
+          translocoTitleParams: { fileName: file.name },
+        });
       }
     }
   }

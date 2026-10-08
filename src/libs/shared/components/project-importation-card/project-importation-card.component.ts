@@ -30,7 +30,10 @@ import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url
 import { ButtonCancelComponent } from "@tenzu/shared/components/ui/button/button-cancel.component";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import {
-  CardBackdropDirective,
+  CardBackdropActionsDirective,
+  CardBackdropContentDirective,
+  CardBackdropHeaderDirective,
+  CardBackdropTitleDirective,
   CardComponent,
   CardHeaderActionDirective,
 } from "@tenzu/shared/components/ui/card/card.component";
@@ -46,7 +49,10 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
   selector: "app-project-importation-card",
   imports: [
     CardComponent,
-    CardBackdropDirective,
+    CardBackdropHeaderDirective,
+    CardBackdropTitleDirective,
+    CardBackdropContentDirective,
+    CardBackdropActionsDirective,
     CardHeaderActionDirective,
     TranslocoDirective,
     MatIcon,
@@ -72,37 +78,39 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
       [backdrop]="!actionNeeded()"
       *transloco="let t"
     >
-      <ng-container appCardBackdrop>
-        @if (_importation.status === ImportationStatus.FAILURE) {
-          <div class="flex flex-row p-0.5">
-            <mat-icon class="text-error pr-3 self-center" aria-hidden="true">warning</mat-icon>
-            <p class="mat-body-medium text-error align-middle">{{ t("project.new_project.import.failed") }}</p>
-          </div>
-          <app-button
-            level="error"
-            translocoKey="project.new_project.import.failed_details"
-            (click)="openImportationError({ projectImportation, workspaceId })"
-          />
-        } @else {
-          <div class="flex flex-col w-full">
-            <p>{{ t("project.new_project.import.ongoing") }}</p>
-            <div class="flex flex-row items-center gap-3 px-3 justify-stretch">
-              <mat-progress-bar
-                [mode]="_importation.extraData.progressPercentage ? 'determinate' : 'indeterminate'"
-                [value]="_importation.extraData.progressPercentage"
-              />
-              <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
+      @let _failed = _importation.status === ImportationStatus.FAILURE;
+      <div appCardBackdropHeader>
+        @if (!_failed) {
+          <p appCardBackdropTitle>{{ t("project.new_project.import.ongoing") }}</p>
+        }
+      </div>
+      <div appCardBackdropContent class="gap-3 justify-center">
+        @if (_failed) {
+          <div class="flex flex-col items-center gap-2">
+            <div class="flex flex-row items-center gap-3">
+              <mat-icon class="text-error" aria-hidden="true">warning</mat-icon>
+              <p class="mat-title-small text-error">{{ t("project.new_project.import.failed") }}</p>
             </div>
-            <app-button-cancel
-              class="mt-2"
-              level="tertiary"
-              [iconName]="undefined"
-              appConfirm
-              (popupConfirm)="deleteImportation.emit(_importation.id)"
+            <app-button
+              level="error"
+              translocoKey="project.new_project.import.failed_details"
+              (click)="openImportationError({ projectImportation, workspaceId })"
             />
           </div>
+        } @else {
+          <mat-progress-bar
+            class="grow"
+            [mode]="_importation.extraData.progressPercentage ? 'determinate' : 'indeterminate'"
+            [value]="_importation.extraData.progressPercentage"
+          />
+          <span>{{ _importation.extraData.progressPercentage || 0 }}%</span>
         }
-      </ng-container>
+      </div>
+      <div appCardBackdropActions>
+        @if (!_failed) {
+          <app-button-cancel level="error" appConfirm (popupConfirm)="deleteImportation.emit(_importation.id)" />
+        }
+      </div>
       @if (actionNeeded()) {
         <app-button
           appCardHeaderAction
@@ -113,7 +121,7 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
           class="ms-auto"
           iconSize="sm"
           (click)="openInviteDialog.emit()"
-        ></app-button>
+        />
       }
     </app-card>
   `,

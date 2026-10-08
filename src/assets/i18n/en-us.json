@@ -204,6 +204,7 @@
     "projects": "Projects",
     "workspace": "Workspace",
     "cancel": "Cancel",
+    "pause": "Pause",
     "close": "Close",
     "save": "Save",
     "delete": "Delete",
