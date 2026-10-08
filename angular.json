@@ -108,7 +108,8 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "buildTarget": "::development",
-            "browsers": ["chromiumHeadless"]
+            "browsers": ["chromiumHeadless"],
+            "runnerConfig": "vitest-base.config.ts"
           }
         },
         "storybook": {

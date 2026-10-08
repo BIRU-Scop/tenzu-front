@@ -15,6 +15,7 @@
     "importHelpers": true,
     "jsx": "react",
     "target": "ES2022",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "module": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": false,
