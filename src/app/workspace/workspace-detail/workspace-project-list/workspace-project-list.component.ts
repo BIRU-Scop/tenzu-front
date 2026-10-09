@@ -43,7 +43,7 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
     @let workspace = workspaceSummary();
     <div class="flex flex-row justify-between">
-      <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
+      <h1 #listHeading class="mat-headline-medium" tabindex="-1">{{ t("workspace.list_projects.title") }}</h1>
       @if (workspace && workspace.userCanCreateProjects) {
         <app-button-add
           [level]="'tertiary'"
@@ -56,6 +56,7 @@ import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
       <app-project-card-list
         class="flex flex-row flex-wrap gap-4"
         [workspace]="workspace"
+        [focusFallback]="listHeading"
         (acceptProjectInvitation)="acceptProjectInvitation($event)"
         (denyProjectInvitation)="denyProjectInvitation($event)"
       />
