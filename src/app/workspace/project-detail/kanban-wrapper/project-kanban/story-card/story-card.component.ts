@@ -62,7 +62,7 @@ const MAX_VISIBLE_TAGS = 3;
           <div class="flex flex-row items-center gap-1">
             <mat-chip-set class="story-card-tags min-w-0 overflow-hidden">
               @for (tag of visibleTags(); track tag.id) {
-                <app-story-tag-chip [tag]="tag" />
+                <app-story-tag-chip [tag]="tag" [interactive]="false" />
               }
             </mat-chip-set>
             @if (hiddenTags().length > 0) {

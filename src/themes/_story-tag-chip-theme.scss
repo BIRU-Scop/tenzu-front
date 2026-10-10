@@ -24,14 +24,40 @@
 @mixin tokens-overrides() {
   app-story-tag-chip {
     @include mat.chips-overrides((
-      container-height: 16px,
+      container-height: 20px,
+      container-shape-radius: var(--mat-sys-corner-extra-small),
       label-text-size: 0.7rem,
       label-text-line-height: 1rem,
     ));
+
+    mat-chip {
+      @include mat.chips-overrides((
+        hover-state-layer-opacity: 0,
+      ));
+    }
   }
 
-  .story-card-tags .mdc-evolution-chip-set__chips {
-    flex-wrap: nowrap;
-    overflow: hidden;
+  .mat-mdc-tooltip[class*="tag-color-"] {
+    @include mat.tooltip-overrides((
+      container-color: var(--tag-background),
+      supporting-text-color: var(--tag-on-background),
+    ));
+  }
+
+  .story-card-tags {
+    .mdc-evolution-chip-set__chips {
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+
+    app-story-tag-chip {
+      display: flex;
+      min-width: 0;
+      max-width: calc(100% / 3);
+    }
+
+    .mat-mdc-chip {
+      min-width: 0;
+    }
   }
 }
