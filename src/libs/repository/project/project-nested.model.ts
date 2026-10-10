@@ -25,7 +25,7 @@ import { isoDatetime, optionalNullable } from "../base/schema-utils";
 export const projectLinkNestedSchema = z.object({
   id: z.string(),
   workspaceId: z.string(),
-  name: z.string(),
+  name: z.string().min(1).max(80),
   slug: z.string(),
   landingPage: z.string(),
 });

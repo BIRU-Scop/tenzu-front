@@ -19,11 +19,12 @@
  *
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { TestBed } from "@angular/core/testing";
 import { ZodError } from "zod/v4";
 
-import { applyStoryTagAssignmentEvent, applyStoryTagEvent } from "./apply-event.function";
+import { applyProjectImportationEvent, applyStoryTagAssignmentEvent, applyStoryTagEvent } from "./apply-event.function";
 import { WSResponseEvent } from "../ws.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { makeProjectDetail } from "@tenzu/repository/project/project.factories";
@@ -32,6 +33,8 @@ import { makeStoryTagWithCount } from "@tenzu/repository/story-tag/story-tag.fac
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "@tenzu/repository/story/story-entities.store";
 import { makeStoryDetail, makeStoryNested, makeStorySummary } from "@tenzu/repository/story/story.factories";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
+import { mockService } from "@tenzu/utils/testing/mocks";
+import { makeProjectImportation } from "@tenzu/repository/importation/importation.factories";
 
 const PROJECT_ID = "project-1";
 
@@ -139,5 +142,34 @@ describe("applyStoryTagAssignmentEvent", () => {
 
     expect(storiesStore.entityMap()[1].tagIds).toEqual([]);
     expect(storyDetailStore.item()?.tagIds).toEqual([]);
+  });
+});
+
+describe("applyProjectImportationEvent", () => {
+  const liveAnnouncerMock = mockService(LiveAnnouncer);
+
+  beforeEach(() => {
+    vi.resetAllMocks();
+    liveAnnouncerMock.announce.mockResolvedValue(undefined);
+    TestBed.configureTestingModule({
+      providers: [testingProviders, { provide: LiveAnnouncer, useValue: liveAnnouncerMock }],
+    });
+  });
+
+  const dispatchImportationEvent = (message: WSResponseEvent<unknown>) =>
+    TestBed.runInInjectionContext(() => applyProjectImportationEvent(message));
+
+  it("announces the switch to import", async () => {
+    await dispatchImportationEvent(
+      makeEvent(
+        "projectimportations.create",
+        { projectImportation: makeProjectImportation({ sourceName: "backup.json" }), workspaceId: "workspace-1" },
+        "workspaces.workspace-1",
+      ),
+    );
+
+    expect(liveAnnouncerMock.announce).toHaveBeenCalledExactlyOnceWith(
+      "Upload of backup.json finished, import in progress",
+    );
   });
 });

@@ -21,6 +21,8 @@
 
 import { WSResponseEvent } from "../ws.model";
 import { inject } from "@angular/core";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
+import { TranslocoService } from "@jsverse/transloco";
 import {
   StoryAssign,
   StoryDetail,
@@ -451,6 +453,8 @@ export function applyStoryCommentEvent(message: WSResponseEvent<unknown>) {
 
 export async function applyProjectImportationEvent(message: WSResponseEvent<unknown>) {
   const importationRepositoryService = inject(ProjectImportationRepositoryService);
+  const liveAnnouncer = inject(LiveAnnouncer);
+  const translocoService = inject(TranslocoService);
   const dialog = inject(MatDialog);
   const notificationService = inject(NotificationService);
   const workspaceRepositoryService = inject(WorkspaceRepositoryService);
@@ -521,6 +525,11 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
         workspaceId: WorkspaceSummary["id"];
       };
       importationRepositoryService.addEntitySummary(content);
+      await liveAnnouncer.announce(
+        translocoService.translate("project.new_project.upload.notifications.finished", {
+          fileName: content.projectImportation.sourceName,
+        }),
+      );
     }
   }
 }

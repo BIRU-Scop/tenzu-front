@@ -74,7 +74,8 @@
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>",
       "project_importation.fail": "L'importation du fichier {{fileName}} a échouée",
       "project_importation.action_needed": "L'importation du fichier {{fileName}} nécessite une action.",
-      "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})"
+      "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})",
+      "project_importation.warning.too_many_story_tags": "L'importation de {{fileName}} contient plus de tag de story ({{storyTagsNumber}}) que le nombre maximum permis par projet ({{maxNumber}}). Nous te conseillons de réduire le nombre de tags existants"
     }
   },
   "component": {
@@ -203,6 +204,7 @@
     "projects": "Projets",
     "workspace": "Espace de travail",
     "cancel": "Annuler",
+    "pause": "Mettre en pause",
     "close": "Fermer",
     "save": "Enregistrer",
     "delete": "Supprimer",

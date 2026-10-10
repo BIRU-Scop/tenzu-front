@@ -240,6 +240,25 @@ export class NotificationUnitComponent {
           },
         };
       }
+      case "project_importation.warning.too_many_story_tags": {
+        return {
+          link: {
+            url: this.projectLandingPageUrl.transform(notification.content.project),
+            label: this.translocoService.translate("project.general_title.named_project", {
+              name: notification.content.project.name,
+            }),
+          },
+          ...{
+            user: undefined,
+            translateKey: translateKey,
+            params: {
+              fileName: notification.content.projectImportation.sourceName,
+              storyTagsNumber: notification.content.storyTagsNumber.toString(),
+              maxNumber: notification.content.maxNumber.toString(),
+            },
+          },
+        };
+      }
     }
   }
 }

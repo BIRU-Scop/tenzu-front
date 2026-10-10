@@ -19,16 +19,13 @@
  *
  */
 
-import { AfterViewInit, Component, inject } from "@angular/core";
-import { ProjectSummary } from "@tenzu/repository/project/project.model";
+import { AfterViewInit, Component, computed, inject } from "@angular/core";
+import { ProjectNested } from "@tenzu/repository/project/project.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
-import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
-import { ActionCardComponent } from "@tenzu/shared/components/action-card";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import {
@@ -36,25 +33,17 @@ import {
   ProjectCreateDialogData,
 } from "@tenzu/shared/components/project-create-dialog/project-create-dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
-import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
+import { ProjectCardListComponent } from "@tenzu/shared/components/project-card-list/project-card-list.component";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 
 @Component({
   selector: "app-workspace-project-list",
-  imports: [
-    ProjectCardComponent,
-    TranslocoDirective,
-    CardSkeletonComponent,
-    ActionCardComponent,
-    ButtonAddComponent,
-    ProjectLandingPageUrl,
-    ProjectImportationCardComponent,
-  ],
+  imports: [TranslocoDirective, CardSkeletonComponent, ButtonAddComponent, ProjectCardListComponent],
   template: ` <div class="flex flex-col gap-y-8 w-full" *transloco="let t">
-    @let workspace = workspaceService.entityDetail();
+    @let workspace = workspaceSummary();
     <div class="flex flex-row justify-between">
-      <h1 class="mat-headline-medium ">{{ t("workspace.list_projects.title") }}</h1>
+      <h1 #listHeading class="mat-headline-medium" tabindex="-1">{{ t("workspace.list_projects.title") }}</h1>
       @if (workspace && workspace.userCanCreateProjects) {
         <app-button-add
           [level]="'tertiary'"
@@ -63,81 +52,70 @@ import { ProjectImportationRepositoryService } from "@tenzu/repository/importati
         />
       }
     </div>
-    <div class="flex flex-row flex-wrap gap-4">
-      @for (project of projectService.entitiesSummary(); track project.id) {
-        @if (project.userIsInvited) {
-          <app-action-card
-            [name]="project.name"
-            [color]="project.color"
-            [cancelLabel]="'component.invitation.deny'"
-            [submitLabel]="'component.invitation.accept'"
-            (submitted)="acceptProjectInvitation(project)"
-            (canceled)="denyProjectInvitation(project)"
-          />
-        } @else {
-          <app-project-card
-            [name]="project.name"
-            [color]="project.color"
-            [logo]="project.logo"
-            [workspaceId]="project.workspaceId"
-            [description]="project.description ? project.description : null"
-            [landingPage]="project | projectLandingPageUrl"
-          />
+    @if (workspace) {
+      <app-project-card-list
+        class="flex flex-row flex-wrap gap-4"
+        [workspace]="workspace"
+        [focusFallback]="listHeading"
+        (acceptProjectInvitation)="acceptProjectInvitation($event)"
+        (denyProjectInvitation)="denyProjectInvitation($event)"
+      />
+    } @else {
+      <div class="flex flex-row flex-wrap gap-4">
+        @for (skeleton of Array(6); track $index) {
+          <li>
+            <app-card-skeleton />
+          </li>
         }
-      } @empty {
-        @if (workspace) {
-          @if (workspace.userCanCreateProjects) {
-            <app-project-card [workspaceId]="workspace.id" />
-          } @else {
-            <app-project-card
-              [workspaceId]="workspace.id"
-              [name]="'Lorem Ipsum'"
-              [color]="3"
-              [description]="'Lorem Ipsum dolor sit amet'"
-              [disabled]="true"
-            />
-          }
-        } @else {
-          @for (skeleton of Array(6); track $index) {
-            <li>
-              <app-card-skeleton />
-            </li>
-          }
-        }
-      }
-      @if (workspace) {
-        @for (projectImportation of projectImportationService.entities(); track projectImportation.id) {
-          <app-project-importation-card [workspaceId]="workspace.id" [projectImportation]="projectImportation" />
-        }
-      }
-    </div>
+      </div>
+    }
   </div>`,
   styles: ``,
 })
 export default class WorkspaceProjectListComponent implements AfterViewInit {
-  readonly workspaceService = inject(WorkspaceRepositoryService);
-  readonly projectService = inject(ProjectRepositoryService);
-  readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
-  readonly projectImportationService = inject(ProjectImportationRepositoryService);
+  readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
+  readonly projectRepositoryService = inject(ProjectRepositoryService);
+  readonly projectImportationRepositoryService = inject(ProjectImportationRepositoryService);
+
   readonly breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
+  workspaceSummary = computed<WorkspaceSummary | null>(() => {
+    const workspace = this.workspaceRepositoryService.entityDetail();
+    const userInvitedProjects = this.projectRepositoryService
+      .entitiesSummary()
+      .filter((project) => project.userIsInvited);
+    const userMemberProjects = this.projectRepositoryService
+      .entitiesSummary()
+      .filter((project) => !project.userIsInvited);
+    const userImportedProjects = this.projectImportationRepositoryService.entities();
+    return workspace
+      ? {
+          ...workspace,
+          userInvitedProjects: [...(userInvitedProjects || [])],
+          userMemberProjects: [...(userMemberProjects || [])],
+          userImportedProjects: [...userImportedProjects],
+        }
+      : null;
+  });
 
   ngAfterViewInit(): void {
     this.breadcrumbStore.setPathComponent("workspaceProjectList");
   }
 
-  async acceptProjectInvitation(project: ProjectSummary) {
-    const updatedInvitation = await this.projectInvitationService.acceptInvitationForCurrentUser(project.id);
-    if (updatedInvitation) {
-      project.userIsInvited = false;
-      this.projectService.updateEntitySummary(project.id, project);
+  async acceptProjectInvitation(project: ProjectNested) {
+    const _project = this.projectRepositoryService.entityMapSummary()[project.id];
+    if (_project) {
+      this.projectRepositoryService.updateEntitySummary(project.id, {
+        ...project,
+        userIsInvited: false,
+      });
     }
   }
 
-  async denyProjectInvitation(project: ProjectSummary) {
-    const updatedInvitation = await this.projectInvitationService.denyInvitationForCurrentUser(project.id);
-    if (updatedInvitation) {
-      this.projectService.deleteEntitySummary(project.id);
+  async denyProjectInvitation(project: ProjectNested) {
+    const _project = this.projectRepositoryService.entityMapSummary()[project.id];
+    if (_project) {
+      this.projectRepositoryService.deleteEntitySummary(_project.id);
     }
   }
 

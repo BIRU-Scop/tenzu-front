@@ -23,6 +23,7 @@ import { beforeEach, describe, expect, it, Mocked } from "vitest";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed";
 import { MatButtonHarness } from "@angular/material/button/testing";
+import { buttonFilterByAriaLabel } from "@tenzu/utils/testing/button-harness";
 import { MatDialogHarness } from "@angular/material/dialog/testing";
 import { MatInputHarness } from "@angular/material/input/testing";
 import { provideTranslocoScope } from "@jsverse/transloco";
@@ -159,7 +160,7 @@ describe(ListTagsComponent.name, () => {
 
     const element = fixture.nativeElement as HTMLElement;
     const loader = TestbedHarnessEnvironment.loader(fixture);
-    const editButton = await loader.getHarness(MatButtonHarness.with({ selector: '[aria-label="Edit the tag bug"]' }));
+    const editButton = await loader.getHarness(buttonFilterByAriaLabel("Edit the tag bug"));
     await editButton.click();
 
     const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
@@ -184,9 +185,7 @@ describe(ListTagsComponent.name, () => {
     fixture.detectChanges();
 
     const loader = TestbedHarnessEnvironment.loader(fixture);
-    const deleteButton = await loader.getHarness(
-      MatButtonHarness.with({ selector: '[aria-label="Delete the tag bug"]' }),
-    );
+    const deleteButton = await loader.getHarness(buttonFilterByAriaLabel("Delete the tag bug"));
     await deleteButton.click();
     const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
     const confirmButton = await rootLoader.getHarness(MatButtonHarness.with({ text: /Delete/ }));
@@ -208,9 +207,7 @@ describe(ListTagsComponent.name, () => {
 
     const element = fixture.nativeElement as HTMLElement;
     const loader = TestbedHarnessEnvironment.loader(fixture);
-    const deleteButton = await loader.getHarness(
-      MatButtonHarness.with({ selector: '[aria-label="Delete the tag bug"]' }),
-    );
+    const deleteButton = await loader.getHarness(buttonFilterByAriaLabel("Delete the tag bug"));
     await deleteButton.click();
 
     const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);

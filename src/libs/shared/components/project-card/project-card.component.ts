@@ -20,12 +20,8 @@
  */
 
 import { Component, inject, input } from "@angular/core";
-import { AvatarComponent } from "../avatar/avatar.component";
-import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { RouterLink } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
-import { AsyncPipe } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import {
   ProjectCreateDialog,
@@ -35,74 +31,41 @@ import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
 import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { ProjectSummary } from "@tenzu/repository/project/project.model";
-import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
+import { CardBackdropDirective, CardComponent } from "@tenzu/shared/components/ui/card/card.component";
 
 @Component({
   selector: "app-project-card",
-  imports: [
-    AvatarComponent,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    TranslocoDirective,
-    RouterLink,
-    MatIcon,
-    ButtonAddComponent,
-    AsyncPipe,
-    GetBase64FromImageUrlPipe,
-  ],
+  imports: [CardComponent, CardBackdropDirective, TranslocoDirective, MatIcon, ButtonAddComponent],
   template: `
-    @let _landingPage = landingPage();
     @let _name = name();
     @let _color = color();
     @let _description = description();
     @let _workspaceId = workspaceId();
-    @let _disabled = disabled();
-    <mat-card appearance="outlined" class="min-h-[120px] w-[200px] mat-bg-surface-container-high" *transloco="let t">
-      @if (_disabled) {
-        <div class="z-50 h-full w-full backdrop-blur-sm rounded-lg flex items-center justify-center absolute">
-          <mat-icon class="text-tertiary">lock</mat-icon>
-        </div>
-      }
-      @if (_name) {
-        <mat-card-header [aria-hidden]="_disabled">
-          <app-avatar
-            mat-card-avatar
-            mode="filled-square"
-            [name]="_name"
-            [color]="_color"
-            [imageData]="logo() | getBase64FromImageUrl: 'small' | async"
+    @if (!_name && !_description && !_color) {
+      <app-card *transloco="let t">
+        <span class="pb-2 pl-2">{{ t("component.project_card.create_first_project") }}</span>
+        @if (_workspaceId) {
+          <app-button-add
+            class="ml-2"
+            [iconOnly]="true"
+            [level]="'tertiary'"
+            [translocoKey]="'commons.project'"
+            (click)="openCreateProject(_workspaceId)"
           />
-          <mat-card-title class="!contents min-h-[40px]">
-            @if (_landingPage) {
-              <a [routerLink]="_landingPage">{{ _name }}</a>
-            } @else {
-              {{ _name }}
-            }
-          </mat-card-title>
-        </mat-card-header>
-      }
-      <mat-card-content [aria-hidden]="_disabled">
-        <div class="pt-2 pl-2 flex flex-col gap-1 ">
-          @if (!_name && !_description && !_color) {
-            <span class="pb-2">{{ t("component.project_card.create_first_project") }}</span>
-            @if (_workspaceId) {
-              <app-button-add
-                [iconOnly]="true"
-                [level]="'tertiary'"
-                [translocoKey]="'commons.project'"
-                (click)="openCreateProject(_workspaceId)"
-              />
-            }
-          } @else {
-            <p>
-              {{ _description }}
-            </p>
-          }
-        </div>
-      </mat-card-content>
-    </mat-card>
+        }
+      </app-card>
+    } @else {
+      <app-card
+        [name]="_name"
+        [color]="_color"
+        [logo]="logo()"
+        [landingPage]="landingPage()"
+        [description]="_description"
+        [backdrop]="disabled()"
+      >
+        <mat-icon appCardBackdrop class="text-tertiary">lock</mat-icon>
+      </app-card>
+    }
   `,
   styles: ``,
 })
