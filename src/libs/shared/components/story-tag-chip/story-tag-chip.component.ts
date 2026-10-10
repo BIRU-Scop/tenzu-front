@@ -19,13 +19,15 @@
  *
  */
 
-import { Component, computed, input, output } from "@angular/core";
-import { MatChipRemove, MatChipRow } from "@angular/material/chips";
+import { afterRenderEffect, Component, computed, ElementRef, input, output, signal, viewChild } from "@angular/core";
+import { MatChip, MatChipRemove, MatChipRow } from "@angular/material/chips";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { StoryTag, TAG_COLOR_COUNT } from "@tenzu/repository/story-tag/story-tag.model";
 import { MatIconButton } from "@angular/material/button";
+
+export const TOOLTIP_SHOW_DELAY = 500;
 
 const TAG_COLOR_CLASSES: Record<StoryTag["color"], string> = Object.fromEntries(
   Array.from({ length: TAG_COLOR_COUNT }, (_, index) => [index + 1, `tag-color-${index + 1}`]),
@@ -33,7 +35,7 @@ const TAG_COLOR_CLASSES: Record<StoryTag["color"], string> = Object.fromEntries(
 
 @Component({
   selector: "app-story-tag-chip",
-  imports: [MatChipRemove, MatIcon, MatTooltip, TranslocoDirective, MatChipRow, MatIconButton],
+  imports: [MatChip, MatChipRemove, MatIcon, MatTooltip, TranslocoDirective, MatChipRow, MatIconButton],
   template: `
     <ng-container *transloco="let t">
       @let _tag = tag();
@@ -42,6 +44,17 @@ const TAG_COLOR_CLASSES: Record<StoryTag["color"], string> = Object.fromEntries(
           <div aria-hidden="true" class="inline-block bg-[var(--tag-background)] size-9 mat-corner-xs"></div>
           <div>{{ _tag.label }}</div>
         </div>
+      } @else if (!interactive()) {
+        <mat-chip
+          #chip
+          [class]="colorClass()"
+          [matTooltip]="_tag.label"
+          [matTooltipDisabled]="!truncated()"
+          [matTooltipShowDelay]="tooltipShowDelay"
+          [matTooltipClass]="colorClass()"
+        >
+          {{ _tag.label }}
+        </mat-chip>
       } @else {
         @let removeLabel = t("chip.remove_action", { label: _tag.label });
         <mat-chip-row [class]="colorClass()" (removed)="removed.emit()">
@@ -67,6 +80,24 @@ export class StoryTagChipComponent {
   removable = input(false);
   removed = output<void>();
   noChip = input(false);
+  interactive = input(true);
 
   protected colorClass = computed(() => TAG_COLOR_CLASSES[this.tag().color]);
+  protected truncated = signal(false);
+  protected readonly tooltipShowDelay = TOOLTIP_SHOW_DELAY;
+  private chip = viewChild("chip", { read: ElementRef });
+
+  constructor() {
+    afterRenderEffect((onCleanup) => {
+      const label: HTMLElement | null =
+        this.chip()?.nativeElement.querySelector(".mdc-evolution-chip__text-label") ?? null;
+      if (!label) {
+        this.truncated.set(false);
+        return;
+      }
+      const resizeObserver = new ResizeObserver(() => this.truncated.set(label.scrollWidth > label.clientWidth));
+      resizeObserver.observe(label);
+      onCleanup(() => resizeObserver.disconnect());
+    });
+  }
 }
