@@ -66,7 +66,7 @@ export class StoryApiService extends AbstractApiService<
     return `${this.baseUrl}/workflows/${params.workflowId}/stories`;
   }
 
-  protected override createUrl(params: StoryApiServiceType.CreateEntityDetailParams): string {
+  public override createUrl(params: StoryApiServiceType.CreateEntityDetailParams): string {
     return this.listUrl(params);
   }
 

@@ -20,7 +20,7 @@
  */
 
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
-import { Component, importProvidersFrom, inject, OnInit, provideEnvironmentInitializer } from "@angular/core";
+import { Component, importProvidersFrom, inject, OnInit } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
@@ -29,9 +29,7 @@ import { StoryCardComponent } from "../../app/workspace/project-detail/kanban-wr
 import { ProjectMembershipEntitiesStore } from "@tenzu/repository/project-membership/project-membership-entities.store";
 import { StoryTagEntitiesSummaryStore } from "@tenzu/repository/story-tag/story-tag-entities.store";
 import { makeStoryTagWithCount } from "@tenzu/repository/story-tag/story-tag.factories";
-import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { withTransloco } from "../storybook-providers";
-import { withDevToolsStub } from "@angular-architects/ngrx-toolkit";
+import { withConfigApp, withTransloco } from "../storybook-providers";
 
 const members = [
   {
@@ -202,6 +200,7 @@ const meta: Meta<StoryStoryCardStorybookComponent> = {
   title: "Components/StoryCard",
   decorators: [
     withTransloco,
+    withConfigApp,
     moduleMetadata({}),
     applicationConfig({
       providers: [
@@ -213,21 +212,6 @@ const meta: Meta<StoryStoryCardStorybookComponent> = {
             config: { tokenGetter: () => null, allowedDomains: ["localhost"] },
           }),
         ),
-        provideEnvironmentInitializer(() => {
-          inject(ConfigAppService).config.set({
-            env: "dev",
-            storeWithDevTools: withDevToolsStub,
-            debug: false,
-            wsUrl: "ws://localhost",
-            api: { scheme: "http", baseDomain: "localhost", suffixDomain: "api", prefix: "v1" },
-            maxUploadFileSize: 100 * 1024 * 1024,
-            avatars: { maxUploadFileSize: 500 * 1024, allowedFormats: [".jpg", ".png", ".gif", ".webp"] },
-            legal: null,
-            security: { password: { minLength: 8, numberDiversityDifference: 3, lengthSecureThreshold: 12 } },
-            sentry: {},
-            appVersion: "0.0.0-storybook",
-          });
-        }),
       ],
     }),
   ],

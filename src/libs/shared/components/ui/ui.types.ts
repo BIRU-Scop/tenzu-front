@@ -38,7 +38,11 @@ export type IconName =
   | "attach_file"
   | "more_vert"
   | "favorite"
-  | "warning";
+  | "details"
+  | "warning"
+  | "pause"
+  | "resume"
+  | "replay";
 export type IconSize = "icon-sm" | "icon-md" | "icon-lg" | "icon-xl";
 export type ButtonIconSize = "sm" | "md" | "lg" | "xl";
 export type LevelType = "plain" | "primary" | "secondary" | "tertiary" | "warning" | "error" | "success";

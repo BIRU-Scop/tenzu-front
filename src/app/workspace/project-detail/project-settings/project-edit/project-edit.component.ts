@@ -166,13 +166,6 @@ export default class ProjectEditComponent {
           number: 80,
         }),
     });
-
-    maxLength(schemaPath.description, 200, {
-      message: () =>
-        this.translocoService.translate("form_errors.max_length", {
-          number: 200,
-        }),
-    });
   });
 
   async submit(project: ProjectDetail, event: Event) {

@@ -74,7 +74,8 @@
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> ha movido la historia al estado <span class='text-on-background'>{{status}}</span> en el kanban  <span class='text-on-background'>{{workflow}}</span>",
       "project_importation.fail": "No se ha podido importar el archivo {{fileName}}",
       "project_importation.action_needed": "La importación del archivo {{fileName}} requiere una acción.",
-      "project_importation.warning.file_too_big": "Al importar {{fileName}}, no se ha podido importar el archivo {{errorFileName}} porque es demasiado grande ({{errorFileSize}} > {{maxFileSize}})"
+      "project_importation.warning.file_too_big": "Al importar {{fileName}}, no se ha podido importar el archivo {{errorFileName}} porque es demasiado grande ({{errorFileSize}} > {{maxFileSize}})",
+      "project_importation.warning.too_many_story_tags": "La importación de {{fileName}} contenía más etiquetas de historia ({{storyTagsNumber}}) que el número máximo permitido por proyecto ({{maxNumber}}). Te recomendamos que reduzcas el número de etiquetas existentes"
     }
   },
   "component": {
@@ -203,6 +204,7 @@
     "projects": "Proyectos",
     "workspace": "Espacio de trabajo",
     "cancel": "Cancelar",
+    "pause": "Pausar",
     "close": "Cerrar",
     "save": "Guardar",
     "delete": "Eliminar",

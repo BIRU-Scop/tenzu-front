@@ -19,7 +19,7 @@
     "import": {
       "taiga": "Importer un projet depuis Taiga",
       "taiga_doc": "Comment importer depuis Taiga ?",
-      "ongoing": "Transfert en cours…",
+      "ongoing": "Import en cours…",
       "action_needed": "Une action est requise",
       "invite_description_modal": "Tu peux inviter les utilisateurs de ton projet importé et ils seront automatiquement réassignés à leur place une fois l'invitation acceptée.",
       "invite_warning": "Les utilisateurs du projet importé n'ont pas été réinvités sur Tenzu.",
@@ -32,6 +32,43 @@
         "file_validation_failed": "L'importation de {{fileName}} a échoué car le format n'est pas correct.",
         "server_error_while_processing": "L'importation de {{fileName}} a échoué en raison d'une erreur serveur.<br/><b>Veuillez contacter l'équipe Tenzu</b> en fournissant votre fichier d'importation ainsi que tout détail utile sur votre configuration qui nous permettront de corriger le problème.",
         "unknown": "L'importation de {{fileName}} a échoué en raison d'une erreur inconnue."
+      }
+    },
+    "upload": {
+      "status": {
+        "uploading": "Envoi en cours…",
+        "retrying": "Connexion perdue, nouvel essai…",
+        "paused": "Envoi en pause",
+        "resuming": "Reprise…",
+        "canceling": "Annulation…",
+        "interrupted": "Fichier introuvable",
+        "server_not_responding": "Le serveur ne répond pas",
+        "session_expired": "Session expirée",
+        "forbidden": "Import non autorisé",
+        "file_refused": "Fichier refusé"
+      },
+      "deadline": "Reprise possible jusqu'au {{date}}",
+      "interrupted_hint": "Sélectionnez à nouveau {{fileName}} ({{fileSize}}) pour reprendre.",
+      "progress_label": "Progression de l'envoi de {{fileName}}",
+      "actions": {
+        "pause": "Mettre en pause l'envoi de {{fileName}}",
+        "resume": "Reprendre l'envoi de {{fileName}}",
+        "retry": "Réessayer",
+        "confirm_cancel": "Annuler l'envoi",
+        "choose_file": "Choisir le fichier",
+        "details": "Détails"
+      },
+      "confirm_cancel": "Annuler l'envoi de {{fileName}} ? Les {{percentage}} % déjà envoyés seront perdus.",
+      "keep_tab_open": "L'envoi continue tant qu'un onglet Tenzu reste ouvert.",
+      "details_title": "Envoi de {{fileName}}",
+      "notifications": {
+        "started": "Envoi de {{fileName}} démarré",
+        "finished": "Envoi de {{fileName}} terminé, import en cours",
+        "failed": "L'envoi de {{fileName}} a échoué",
+        "interrupted": "L'envoi de {{fileName}} est interrompu, le fichier n'est plus lisible",
+        "resumed": "Reprise de l'envoi de {{fileName}}",
+        "expired": "L'envoi de {{fileName}} a expiré. Importez à nouveau le fichier depuis « Nouveau projet ».",
+        "file_mismatch": "Ce fichier ne correspond pas à {{fileName}} (nom, taille et date de modification doivent être identiques)"
       }
     }
   },

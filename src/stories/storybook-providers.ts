@@ -20,12 +20,14 @@
  */
 
 import { applicationConfig } from "@storybook/angular-vite";
-import { ErrorHandler, isDevMode } from "@angular/core";
+import { ErrorHandler, inject, isDevMode, provideEnvironmentInitializer } from "@angular/core";
 import { provideTransloco } from "@jsverse/transloco";
 import { TranslocoHttpLoaderService } from "@tenzu/utils/services/transloco-http-loader/transloco-http-loader.service";
 import { provideTranslocoMessageformat } from "@jsverse/transloco-messageformat";
 import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 import * as Sentry from "@sentry/angular";
+import { withDevToolsStub } from "@angular-architects/ngrx-toolkit";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 
 export const withTransloco = applicationConfig({
   providers: [
@@ -41,5 +43,26 @@ export const withTransloco = applicationConfig({
     provideTranslocoMessageformat(),
     provideTranslocoLocale(),
     { provide: ErrorHandler, useValue: Sentry.createErrorHandler() },
+  ],
+});
+
+// For stories whose component injects api services: they read the api url from ConfigAppService on creation.
+export const withConfigApp = applicationConfig({
+  providers: [
+    provideEnvironmentInitializer(() => {
+      inject(ConfigAppService).config.set({
+        env: "dev",
+        storeWithDevTools: withDevToolsStub,
+        debug: false,
+        wsUrl: "ws://localhost",
+        api: { scheme: "http", baseDomain: "localhost", suffixDomain: "api", prefix: "v1" },
+        maxUploadFileSize: 100 * 1024 * 1024,
+        avatars: { maxUploadFileSize: 500 * 1024, allowedFormats: [".jpg", ".png", ".gif", ".webp"] },
+        legal: null,
+        security: { password: { minLength: 8, numberDiversityDifference: 3, lengthSecureThreshold: 12 } },
+        sentry: {},
+        appVersion: "0.0.0-storybook",
+      });
+    }),
   ],
 });

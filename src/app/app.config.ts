@@ -55,13 +55,11 @@ import { lastValueFrom } from "rxjs";
 import { mockInterceptor } from "@tenzu/utils/mocks/mock.interceptor";
 import { DomainMockStore } from "@tenzu/utils/mocks/mock-state";
 import { MockControlPanelComponent } from "@tenzu/utils/mocks/mock-control-panel.component";
+import { tokenGetter } from "@tenzu/utils/functions/token";
 
 export type Plugin = object;
 
 export const PLUGINS_TOKEN = new InjectionToken<(Plugin | null)[]>("PLUGINS_TOKEN");
-export function tokenGetter() {
-  return localStorage.getItem("token");
-}
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,13 +21,16 @@
 
 import { Pipe, PipeTransform } from "@angular/core";
 
+const KILOBYTE = 1024;
+export const MEGABYTE = KILOBYTE * KILOBYTE;
+
 @Pipe({ name: "humanizeFileSize", standalone: true })
 export class FileSizePipe implements PipeTransform {
   transform(bytes: number): string {
     if (isNaN(bytes) || bytes === 0) return "0 Bytes";
 
     const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
+    const i = Math.floor(Math.log(bytes) / Math.log(KILOBYTE));
+    return `${parseFloat((bytes / Math.pow(KILOBYTE, i)).toFixed(2))} ${sizes[i]}`;
   }
 }
