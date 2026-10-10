@@ -94,7 +94,9 @@ import { StoryTagDialogComponent } from "./story-tag-dialog.component";
           </div>
         </div>
       } @else {
-        <p class="text-on-surface-variant">{{ t("project.settings.attributes.tags.empty_message") }}</p>
+        <p class="text-on-surface-variant mat-font-body-md">
+          {{ t("project.settings.attributes.tags.empty_message") }}
+        </p>
       }
     </div>
   `,

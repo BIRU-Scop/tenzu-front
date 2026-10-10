@@ -58,6 +58,13 @@ const LONG_LABEL_TAG: StoryTag = {
             }
           </mat-chip-set>
 
+          <h1>non-interactive tag chips - {{ scheme }}</h1>
+          <mat-chip-set class="flex flex-row flex-wrap items-center gap-2">
+            @for (tag of tags; track tag.id) {
+              <app-story-tag-chip [tag]="tag" [interactive]="false" />
+            }
+          </mat-chip-set>
+
           <h1>removable tag chips - {{ scheme }}</h1>
           <mat-chip-set class="flex flex-row flex-wrap items-center gap-2">
             @for (tag of removableTags(); track tag.id) {

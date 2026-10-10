@@ -53,6 +53,7 @@ describe(StoryCardComponent.name, () => {
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelectorAll("app-story-tag-chip")).toHaveLength(2);
     expect(element.querySelector("button.mat-mdc-chip-remove")).toBeNull();
+    expect(element.querySelector("mat-chip-row")).toBeNull();
   });
 
   it("renders overflow as an accessible +N badge", () => {
