@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import { StoryComment, commentSchema } from "./story-comment.model";
@@ -29,9 +29,7 @@ import { makeOptions, QueryParams } from "../base/utils";
 import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryCommentApiService extends AbstractApiService<
   StoryComment,
   StoryComment,

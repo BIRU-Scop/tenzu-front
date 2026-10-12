@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { isoDatetime, optionalNullable } from "../base/schema-utils";
 import { userNestedSchema } from "../user/user.model";
 import type { User } from "../user/user.model";

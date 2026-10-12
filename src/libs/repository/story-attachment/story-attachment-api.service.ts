@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import { StoryAttachment, storyAttachmentSchema } from "./story-attachment.model";
@@ -29,9 +29,7 @@ import { Observable } from "rxjs";
 import { BaseDataModel, FileValue } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryAttachmentApiService extends AbstractApiService<
   StoryAttachment,
   StoryAttachment,

@@ -19,13 +19,11 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { FeedApiService } from "./feed-api.service";
 import { FeedStore } from "./feed.store";
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class FeedRepositoryService {
   private readonly api = inject(FeedApiService);
   private readonly store = inject(FeedStore);

@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { WorkspaceApiService } from "./workspace-api.service";
 import { WorkspaceDetailStore, WorkspaceEntitiesSummaryStore } from "./workspace-entities-summary.store";
 import { WsService } from "@tenzu/utils/services/ws";
@@ -34,9 +34,7 @@ import { WorkspacePermissions } from "../permission/permission.model";
 import { WorkspaceMembershipRepositoryService } from "../workspace-membership/workspace-membership-repository.service";
 import { ProjectImportation } from "../importation/importation.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceRepositoryService extends BaseRepositoryService<
   WorkspaceSummary,
   WorkspaceDetail,

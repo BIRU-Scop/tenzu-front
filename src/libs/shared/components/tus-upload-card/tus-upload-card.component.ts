@@ -42,7 +42,17 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 
-export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeStyle: "short" };
+export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "short", timeStyle: "short" };
+
+const SHORT_FILE_NAME_LENGTH = 24;
+
+function shortenMiddle(name: string, length: number): string {
+  if (name.length <= length) {
+    return name;
+  }
+  const endLength = Math.floor((length - 1) / 2);
+  return `${name.slice(0, length - 1 - endLength)}…${name.slice(-endLength)}`;
+}
 
 @Component({
   selector: "app-tus-upload-card",
@@ -81,11 +91,13 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
           <p appCardBackdropSubtitle>
             {{
               t("project.new_project.upload.interrupted_hint", {
-                fileName: _tusUploadState.fileName,
+                fileName: shortFileName(),
                 fileSize: _tusUploadState.fileSize | humanizeFileSize,
               })
             }}
           </p>
+        } @else {
+          <p appCardBackdropSubtitle class="truncate w-full">{{ _tusUploadState.fileName }}</p>
         }
         @if (_tusUploadState.status === "paused") {
           <p appCardBackdropSubtitle>
@@ -172,6 +184,8 @@ export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "medium", timeSty
 export class TusUploadCardComponent {
   readonly deadlineFormat = DEADLINE_FORMAT;
   tusUploadState = input.required<TusUploadState>();
+  shortFileName = computed(() => shortenMiddle(this.tusUploadState().fileName, SHORT_FILE_NAME_LENGTH));
+
   percentage = computed(() => {
     const { bytesSent, fileSize } = this.tusUploadState();
     return fileSize ? Math.round((bytesSent / fileSize) * 100) : 0;

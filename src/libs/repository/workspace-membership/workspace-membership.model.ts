@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { membershipBaseSchema } from "../membership/membership.model";
 import type { WorkspaceSummary } from "../workspace/workspace.model";
 import type { ProjectNested } from "../project/project.model";

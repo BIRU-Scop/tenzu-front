@@ -19,7 +19,7 @@
  *
  */
 import type * as StoryApiServiceType from "./story-api.type";
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import {
   StorySummary,
   storySummarySchema,
@@ -40,9 +40,7 @@ import { Observable } from "rxjs";
 import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryApiService extends AbstractApiService<
   StorySummary,
   StoryDetail,

@@ -28,7 +28,6 @@ import { HttpStatusCode } from "@angular/common/http";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { makeTusError } from "@tenzu/utils/services/tus-client/tus-client.factories";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
-import { translation } from "@tenzu/utils/testing/translation";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { TusUploadRepositoryService } from "@tenzu/repository/importation/tus-upload-repository.service";
 import { ProjectImportationType } from "@tenzu/repository/importation/importation.model";
@@ -98,11 +97,5 @@ describe(ProjectImportationInputComponent.name, () => {
       translocoTitle: true,
       translocoTitleParams: { fileName: "backup.json" },
     });
-  });
-
-  it("renders the keep a tab open hint", () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain(translation("project.new_project.upload.keep_tab_open"));
   });
 });

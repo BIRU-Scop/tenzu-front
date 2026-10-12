@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { projectLinkNestedSchema } from "../project/project-nested.model";
 import { invitationStatusSchema } from "../membership/invitation-status.model";
 

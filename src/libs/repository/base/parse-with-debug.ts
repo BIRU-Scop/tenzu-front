@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { debug } from "@tenzu/utils/functions/logging";
 
 export function parseWithDebug<T>(schema: z.ZodType<T>, data: unknown): T {

@@ -19,16 +19,14 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { saveAs } from "file-saver-es";
 import { lastValueFrom } from "rxjs";
 import { makeOptions, QueryParams } from "@tenzu/repository/base/utils";
 import { FileValue } from "@tenzu/repository/base/misc.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class FileDownloaderService {
   http = inject(HttpClient);
 

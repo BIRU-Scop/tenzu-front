@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { ProjectSummary } from "../project/project.model";
 import { ProjectMembership, projectMembershipSchema } from "./project-membership.model";
@@ -34,9 +34,7 @@ export type PutProjectMembershipParams = unknown;
 export type PatchProjectMembershipParams = { membershipId: ProjectMembership["id"] };
 export type DeleteProjectMembershipParams = { membershipId: ProjectMembership["id"] };
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectMembershipApiService extends AbstractApiService<
   ProjectMembership,
   ProjectMembership,

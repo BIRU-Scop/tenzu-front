@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { Observable } from "rxjs";
 import { AbstractApiService, makeFormData } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
@@ -35,9 +35,7 @@ import type * as ProjectApiServiceType from "./project-api.type";
 import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectApiService extends AbstractApiService<
   ProjectSummary,
   ProjectDetail,

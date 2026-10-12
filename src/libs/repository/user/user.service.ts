@@ -19,8 +19,8 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
-import { z } from "zod/v4";
+import { inject, Service } from "@angular/core";
+import * as z from "zod/v4";
 import {
   CreateUserPayload,
   SendVerifyUserValidator,
@@ -41,9 +41,7 @@ import { parseWithDebug } from "../base/parse-with-debug";
 import { map } from "rxjs/operators";
 import { NotificationService } from "@tenzu/utils/services/notification";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class UserService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);

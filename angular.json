@@ -109,7 +109,12 @@
           "options": {
             "buildTarget": "::development",
             "browsers": ["chromiumHeadless"],
-            "runnerConfig": "vitest-base.config.ts"
+            "runnerConfig": "vitest-base.config.mts"
+          },
+          "configurations": {
+            "cross-browser": {
+              "browsers": ["chromiumHeadless", "firefoxHeadless"]
+            }
           }
         },
         "storybook": {

@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { WorkflowStatusNested, WorkflowStatus } from "../status/status.model";
 import { lastValueFrom } from "rxjs";
 import { WorkflowApiService } from "./workflow-api.service";
@@ -29,9 +29,7 @@ import { WorkflowDetailStore } from "./workflow-entities.store";
 import { BaseRepositoryDetailService } from "../base/repository.service";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkflowRepositoryService extends BaseRepositoryDetailService<
   Workflow,
   WorkflowApiServiceType.GetEntityDetailParams,

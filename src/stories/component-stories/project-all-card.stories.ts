@@ -190,11 +190,24 @@ class StoryProjectImportationCardStorybookComponent {
     }),
     upload({ id: "u-retrying", fileName: "backup.json", status: "retrying", bytesSent: 42 }),
     upload({ id: "u-paused", fileName: "backup.json", status: "paused", bytesSent: 42 }),
+    upload({
+      id: "u-paused-long-name",
+      fileName: "project-test-3bda3039-62c0-4d89-a094-d0191c35b1bf.json",
+      status: "paused",
+      bytesSent: 42,
+    }),
     upload({ id: "u-resuming", fileName: "backup.json", status: "resuming", bytesSent: 42 }),
     upload({ id: "u-canceling", fileName: "backup.json", status: "canceling", bytesSent: 42 }),
     upload({
       id: "u-interrupted",
       fileName: "backup.json",
+      status: "interrupted",
+      fileSize: 12 * MEGABYTE,
+      bytesSent: 5 * MEGABYTE,
+    }),
+    upload({
+      id: "u-interrupted-long-name",
+      fileName: "project-test-3bda3039-62c0-4d89-a094-d0191c35b1bf.json",
       status: "interrupted",
       fileSize: 12 * MEGABYTE,
       bytesSent: 5 * MEGABYTE,
@@ -221,7 +234,7 @@ class StoryProjectImportationCardStorybookComponent {
       errorKey: "project.new_project.upload.status.forbidden",
     }),
     upload({
-      id: "u-rejected-invalid",
+      id: "u-rejected-file-refused",
       fileName: "backup.json",
       status: "rejected",
       bytesSent: 100,

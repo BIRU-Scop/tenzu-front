@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { roleSchema } from "../membership/membership.model";
 
 export const workspaceRoleSchema = roleSchema.extend({

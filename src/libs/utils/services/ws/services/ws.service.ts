@@ -23,10 +23,10 @@ import {
   DestroyRef,
   EnvironmentInjector,
   inject,
-  Injectable,
   isDevMode,
   runInInjectionContext,
   signal,
+  Service,
 } from "@angular/core";
 
 import {
@@ -80,9 +80,7 @@ import { AuthService } from "@tenzu/repository/auth/auth.service";
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WsService {
   loggedSubject = new BehaviorSubject(false);
   logged$ = this.loggedSubject.asObservable();

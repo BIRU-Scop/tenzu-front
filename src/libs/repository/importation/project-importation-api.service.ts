@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import {
@@ -34,9 +34,7 @@ import { map } from "rxjs/operators";
 import type * as ProjectImportationApiServiceType from "./importation-api.type";
 import { InvitationsPayload } from "../membership/invitation.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectImportationApiService extends AbstractApiService<
   ProjectImportation,
   ProjectImportation,

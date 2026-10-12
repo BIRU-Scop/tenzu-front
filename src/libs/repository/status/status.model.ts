@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { workflowNestedSchema } from "../workflow/workflow-nested.model";
 
 export const workflowStatusNestedSchema = z.object({

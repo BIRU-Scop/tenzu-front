@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { ProjectRolesApiService } from "./project-roles-api.service";
 import { ProjectRolesDetailStore, ProjectRolesEntitiesSummaryStore } from "./project-roles-entities.store";
 import { BaseRepositoryService } from "../base/repository.service";
@@ -27,9 +27,7 @@ import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 import { ProjectRoleDetail, ProjectRoleSummary } from "./project-roles.model";
 import { NotFoundEntityError } from "../base/errors";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectRoleRepositoryService extends BaseRepositoryService<
   ProjectRoleSummary,
   ProjectRoleDetail,
