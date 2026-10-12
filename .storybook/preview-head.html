@@ -1,6 +1,15 @@
 <!doctype html>
 <html>
   <head>
+    <!-- for BlockNote -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport && !viewport.content.includes("interactive-widget")) {
+          viewport.content += ", interactive-widget=resizes-content";
+        }
+      });
+    </script>
     <style>
       .docs-story {
         background-color: var(--mat-sys-background);
