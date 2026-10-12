@@ -59,7 +59,6 @@
         "details": "Détails"
       },
       "confirm_cancel": "Annuler l'envoi de {{fileName}} ? Les {{percentage}} % déjà envoyés seront perdus.",
-      "keep_tab_open": "L'envoi continue tant qu'un onglet Tenzu reste ouvert.",
       "details_title": "Envoi de {{fileName}}",
       "notifications": {
         "started": "Envoi de {{fileName}} démarré",

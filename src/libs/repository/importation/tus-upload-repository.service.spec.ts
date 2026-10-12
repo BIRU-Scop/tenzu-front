@@ -363,6 +363,15 @@ describe(TusUploadRepositoryService.name, () => {
     expectRemoved(tusUploadState);
   });
 
+  it("cancel removes an interrupted upload from the store and the storage", async () => {
+    const tusUploadState = await restoreInterrupted();
+
+    await tusUploadRepositoryService.cancel(tusUploadState.id);
+
+    expectRemoved(tusUploadState);
+    expect(tusUploadChannelMock.sendCommand).not.toHaveBeenCalled();
+  });
+
   it("close removes the upload from the store and the storage after a 403", async () => {
     const tusUploadState = await startUpload();
     trigger.onError(makeTusError(HttpStatusCode.Forbidden));

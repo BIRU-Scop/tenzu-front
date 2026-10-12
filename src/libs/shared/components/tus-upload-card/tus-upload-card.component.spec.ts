@@ -94,6 +94,12 @@ describe(TusUploadCardComponent.name, () => {
     expect(host.getAttribute("aria-label")).toBe("backup.json");
   });
 
+  it("renders the file name as a subtitle", async () => {
+    const card = await setCardWith(makeTusUploadState({ fileName: "backup.json", status: "uploading" }));
+
+    expect(await card.getText()).toContain("backup.json");
+  });
+
   it("renders the file name as a tooltip", async () => {
     const card = await setCardWith(makeTusUploadState({ fileName: "backup.json" }));
 
@@ -149,7 +155,9 @@ describe(TusUploadCardComponent.name, () => {
   it("renders the resume deadline of a paused upload", async () => {
     const card = await setCardWith(makeTusUploadState({ status: "paused", expiresAt: "2026-10-05T14:30:00.000Z" }));
 
-    expect(await card.getText()).toContain(`Resume possible until ${deadline("2026-10-05T14:30:00.000Z")}`);
+    expect(await card.getText()).toContain(
+      translation("project.new_project.upload.deadline", { date: deadline("2026-10-05T14:30:00.000Z") }),
+    );
   });
 
   // The `role="status"` element is an `aria-live="polite"` region: a screen reader reads its content on every
@@ -271,6 +279,18 @@ describe(TusUploadCardComponent.name, () => {
     );
 
     expect(await card.getText()).toContain("Select backup.json (12 MB) again to resume.");
+  });
+
+  it("renders the interrupted hint with a long file name shortened in the middle", async () => {
+    const card = await setCardWith(
+      makeTusUploadState({
+        status: "interrupted",
+        fileName: "project-test-3bda3039-62c0-4d89-a094-d0191c35b1bf.json",
+        fileSize: 12 * MEGABYTE,
+      }),
+    );
+
+    expect(await card.getText()).toContain("Select project-test…35b1bf.json (12 MB) again to resume.");
   });
 
   it("emits paused", async () => {

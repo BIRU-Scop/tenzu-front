@@ -196,6 +196,10 @@ export class TusUploadRepositoryService {
   async cancel(id: string): Promise<void> {
     const tusClientUpload = this.tusClientUploads.get(id);
     if (!tusClientUpload) {
+      if (this.entityMap()[id]?.status === "interrupted") {
+        this.remove(id);
+        return;
+      }
       this.tusUploadChannel.sendCommand("cancel", id);
       return;
     }
