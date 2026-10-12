@@ -19,16 +19,14 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { KanbanWrapperStore, StoryDisplayMode } from "./kanban-wrapper.store";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/story-comment-repository.service";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class KanbanWrapperService {
   private kanbanWrapperStore = inject(KanbanWrapperStore);
   storyDisplayMode = this.kanbanWrapperStore.storyDisplayMode;

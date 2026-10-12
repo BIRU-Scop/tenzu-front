@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { MatSnackBar, MatSnackBarConfig } from "@angular/material/snack-bar";
 import {
   NotificationMessage,
@@ -31,9 +31,7 @@ import {
 } from "./notification-message.model";
 import { NotificationComponent } from "./notification.component";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class NotificationService {
   snackBar = inject(MatSnackBar);
   open(message: NotificationMessage, config?: MatSnackBarConfig) {

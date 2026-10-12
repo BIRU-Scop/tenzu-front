@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceMembershipApiService } from "./workspace-membership-api-service";
 import { WorkspaceMembership } from "./workspace-membership.model";
@@ -29,9 +29,7 @@ import { UserNested } from "../user/user.model";
 import { ResetService } from "../base/reset.service";
 import { WorkspaceSummary } from "../workspace/workspace.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceMembershipRepositoryService {
   private workspaceMembershipApiService = inject(WorkspaceMembershipApiService);
   private workspaceMembershipStore = inject(WorkspaceMembershipEntitiesStore);

@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { StorySummary } from "@tenzu/repository/story/story.model";
 import { WorkflowStatusNested } from "@tenzu/repository/status/status.model";
 import { Router } from "@angular/router";
@@ -33,9 +33,7 @@ import { Workflow } from "@tenzu/repository/workflow/workflow.model";
 /**
  * This service create a modal positioned relatively to its trigger button
  */
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectKanbanService {
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);

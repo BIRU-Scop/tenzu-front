@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { Router } from "@angular/router";
@@ -29,9 +29,7 @@ import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/s
 import { EditorComponent } from "@tenzu/shared/components/editor";
 import { NotificationService } from "@tenzu/utils/services/notification";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryCommentFacade {
   storyRepositoryService = inject(StoryRepositoryService);
   storyCommentRepositoryService = inject(StoryCommentRepositoryService);

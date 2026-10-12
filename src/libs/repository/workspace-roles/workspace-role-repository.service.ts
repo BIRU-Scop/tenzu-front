@@ -19,16 +19,14 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { WorkspaceRolesApiService } from "./workspace-roles-api.service";
 import { ProjectRolesEntitiesSummaryStore, ProjectRolesDetailStore } from "./workspace-roles-entities.store";
 import { BaseRepositoryService } from "../base/repository.service";
 import type * as WorkspaceRolesApiServiceType from "./workspace-roles-api.type";
 import { WorkspaceRole } from "./workspace-roles.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceRoleRepositoryService extends BaseRepositoryService<
   WorkspaceRole,
   WorkspaceRole,

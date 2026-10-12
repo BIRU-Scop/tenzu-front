@@ -19,7 +19,7 @@
  *
  */
 import { z } from "zod/v4";
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 
 const defaultAvatarConfig = {
   maxUploadFileSize: 500 * 1024, //500 KB
@@ -89,7 +89,7 @@ export const ConfigSchema = z.object({
 
 export type ConfigModel = z.infer<typeof ConfigSchema>;
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class ConfigSchemaService {
   schema() {
     return ConfigSchema;

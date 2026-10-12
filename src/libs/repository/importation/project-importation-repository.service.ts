@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectImportationApiService } from "./project-importation-api.service";
 import { CreateProjectImportationPayload, ProjectImportation, ProjectImportationNested } from "./importation.model";
@@ -37,9 +37,7 @@ import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspac
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { Router } from "@angular/router";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectImportationRepositoryService {
   private importationsApiService = inject(ProjectImportationApiService);
   private projectImportationEntitiesStore = inject(ProjectImportationEntitiesStore);

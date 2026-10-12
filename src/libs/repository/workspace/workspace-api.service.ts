@@ -19,14 +19,12 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { WorkspaceDetail, workspaceDetailSchema, WorkspaceSummary, workspaceSummarySchema } from "./workspace.model";
 import { AbstractApiService } from "../base/abstract-api-services";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceApiService extends AbstractApiService<
   WorkspaceSummary,
   WorkspaceDetail,

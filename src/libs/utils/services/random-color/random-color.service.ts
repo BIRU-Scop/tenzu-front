@@ -19,15 +19,13 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { TAG_COLOR_COUNT } from "@tenzu/repository/story-tag/story-tag.model";
 
 const MAX_COLOR = TAG_COLOR_COUNT;
 const MIN_COLOR = 1;
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class RandomColorService {
   public static randomColorPicker(): number {
     return Math.floor(Math.random() * (MAX_COLOR + 1 - MIN_COLOR) + MIN_COLOR);

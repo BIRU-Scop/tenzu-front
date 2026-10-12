@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceInvitationEntitiesStore } from "./workspace-invitation.store";
 import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-service";
@@ -32,9 +32,7 @@ import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
 import { getEntityIdSelector } from "../base/features";
 import { ResetService } from "../base/reset.service";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceInvitationRepositoryService {
   private workspaceInvitationsApiService = inject(WorkspaceInvitationsApiService);
   private workspaceInvitationEntitiesStore = inject(WorkspaceInvitationEntitiesStore);

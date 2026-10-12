@@ -19,7 +19,7 @@
  *
  */
 
-import { computed, inject, Injectable } from "@angular/core";
+import { computed, inject, Service } from "@angular/core";
 import { hasEntityRequiredPermission } from "../permission/permission.service";
 import { ProjectPermissions } from "../permission/permission.model";
 import * as ProjectApiServiceType from "./project-api.type";
@@ -40,9 +40,7 @@ import { NotFoundEntityError } from "../base/errors";
 // todo temporary way to handle workflows maximum before implementing user settings
 const MAX_WORKFLOWS = 8;
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectRepositoryService extends BaseRepositoryService<
   ProjectSummary,
   ProjectDetail,

@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { ProjectMembership } from "./project-membership.model";
 import { ProjectMembershipApiService } from "./project-membership-api.service";
 import { lastValueFrom } from "rxjs";
@@ -28,9 +28,7 @@ import { NotFoundEntityError } from "../base/errors";
 import { UserNested } from "../user/user.model";
 import { ResetService } from "../base/reset.service";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectMembershipRepositoryService {
   private projectMembershipApiService = inject(ProjectMembershipApiService);
   private projectMembershipStore = inject(ProjectMembershipEntitiesStore);

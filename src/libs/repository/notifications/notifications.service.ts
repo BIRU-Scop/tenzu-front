@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { Notification, notificationSchema, NotificationCount, notificationCountersSchema } from "./notifications.model";
@@ -30,9 +30,7 @@ import { z } from "zod/v4";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class NotificationsService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);

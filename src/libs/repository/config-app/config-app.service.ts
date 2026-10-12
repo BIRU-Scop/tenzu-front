@@ -19,7 +19,7 @@
  *
  */
 
-import { computed, inject, Injectable, signal } from "@angular/core";
+import { computed, inject, signal, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ConfigModel, ConfigSchemaService } from "./config.model";
 import { environment } from "../../../environments/environment";
@@ -27,9 +27,7 @@ import { EnvironmentConfig } from "../../../environments/environment-type";
 
 export const CORRELATION_ID = crypto.randomUUID();
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ConfigAppService {
   http = inject(HttpClient);
   configSchemaService = inject(ConfigSchemaService);

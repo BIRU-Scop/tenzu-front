@@ -3,6 +3,8 @@ ARG NODE_VERSION=26
 FROM node:${NODE_VERSION} AS dev-env
 WORKDIR /app
 COPY package*.json ./
+COPY scripts/install-chromium.mjs ./scripts/
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 RUN npm install --force
 COPY --chown=node:node . .
 

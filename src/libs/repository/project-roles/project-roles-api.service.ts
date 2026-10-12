@@ -19,15 +19,13 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { ProjectRoleDetail, ProjectRoleSummary, projectRoleSchema } from "./project-roles.model";
 import { AbstractApiService } from "../base/abstract-api-services";
 import type * as ProjectRolesApiServiceType from "./project-roles-api.type";
 import { Observable } from "rxjs";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectRolesApiService extends AbstractApiService<
   ProjectRoleSummary,
   ProjectRoleDetail,

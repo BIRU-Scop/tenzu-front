@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { StoryAttachmentApiService } from "./story-attachment-api.service";
 import { StoryAttachment } from "./story-attachment.model";
 import { StoryAttachmentDetailStore, StoryAttachmentEntitiesSummaryStore } from "./story-attachment-entities.store";
@@ -30,9 +30,7 @@ import { lastValueFrom } from "rxjs";
 import { QueryParams } from "../base/utils";
 import { FileValue } from "../base/misc.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryAttachmentRepositoryService extends BaseRepositoryService<
   StoryAttachment,
   StoryAttachment,

@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { ProjectInvitationsEntitiesSummaryStore } from "./project-invitations-entities.store";
 import { ProjectInvitationsApiService } from "./project-invitation-api.service";
@@ -33,9 +33,7 @@ import { EntityId } from "@ngrx/signals/entities";
 import { NotFoundEntityError } from "../base/errors";
 import { ResetService } from "../base/reset.service";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectInvitationRepositoryService {
   private projectInvitationsApiService = inject(ProjectInvitationsApiService);
   private projectInvitationEntitiesStore = inject(ProjectInvitationsEntitiesSummaryStore);

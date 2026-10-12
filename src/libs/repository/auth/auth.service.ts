@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable, Injector, Signal } from "@angular/core";
+import { inject, Injector, Signal, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   AuthConfig,
@@ -47,9 +47,7 @@ import { AuthConfigStore } from "../auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class AuthService {
   jwtHelperService = inject(JwtHelperService);
   configAppService = inject(ConfigAppService);

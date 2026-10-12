@@ -19,15 +19,13 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 
 export interface CanReset {
   resetAll(): void;
 }
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ResetService {
   registeredServices: CanReset[] = [];
 
