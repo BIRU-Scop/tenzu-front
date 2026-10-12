@@ -21,6 +21,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { User } from "@tenzu/repository/user/user.model";
 import { resolveFileUrl } from "@tenzu/shared/components/editor/utils";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
+import { withCollaboration } from "@blocknote/core/yjs";
 
 @Component({
   selector: "app-editor-collaboration-block",
@@ -89,22 +90,24 @@ export class EditorCollaborationComponent
         const userColorHex = getComputedStyle(document.body)
           .getPropertyValue(`--color-${user.color}-background`)
           .trim();
-        this.editor = BlockNoteEditor.create({
-          codeBlock,
-          resolveFileUrl: this.resolveFileUrl,
-          uploadFile: this.uploadFile(),
-          autofocus: focus,
-          collaboration: {
-            provider: wsProvider,
-            fragment: fragment,
-            user: {
-              name: user.fullName,
-              colorAvatar: user.color,
-              color: userColorHex,
-              id: user.id,
+        this.editor = BlockNoteEditor.create(
+          withCollaboration({
+            codeBlock,
+            resolveFileUrl: this.resolveFileUrl,
+            uploadFile: this.uploadFile(),
+            autofocus: focus,
+            collaboration: {
+              provider: wsProvider,
+              fragment: fragment,
+              user: {
+                name: user.fullName,
+                colorAvatar: user.color,
+                color: userColorHex,
+                id: user.id,
+              },
             },
-          },
-        });
+          }),
+        );
         this.editor.onChange((editor, { getChanges }) => {
           const changes = getChanges();
           for (const change of changes) {

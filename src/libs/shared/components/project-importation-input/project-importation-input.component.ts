@@ -42,7 +42,6 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
         [translocoUploadKey]="translocoUploadKey()"
         (selectFile)="onFileSelected($event)"
       />
-      <p class="mat-body-small">{{ t("project.new_project.upload.keep_tab_open") }}</p>
       @if (displayDoc()) {
         <a href="https://tenzu.net/docs/import" target="_blank" class="mat-body-small">{{
           t("project.new_project.import.taiga_doc")

@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import {
   Notification,
   StoryAssignNotification,
@@ -30,9 +30,7 @@ import { NotificationsStore } from "@tenzu/repository/notifications/notification
 import { lastValueFrom } from "rxjs";
 import { UserStore } from "@tenzu/repository/user/user.store";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class NotificationsComponentService {
   userStore = inject(UserStore);
   notificationsService = inject(NotificationsService);

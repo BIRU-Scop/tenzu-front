@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { WorkflowStatusNested, workflowStatusNestedSchema } from "../status/status.model";
 import { workflowNestedSchema } from "./workflow-nested.model";
 

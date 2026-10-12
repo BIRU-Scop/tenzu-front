@@ -96,7 +96,7 @@ import { StoryCommentRepositoryService } from "@tenzu/repository/story-comment/s
 import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importation/importation.model";
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectImportationErrorDialog } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
+import { projectImportationErrorDialogId } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.id";
 
 export function applyStoryTagEvent(message: WSResponseEvent<unknown>) {
   const storyTagRepositoryService = inject(StoryTagRepositoryService);
@@ -476,15 +476,7 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
         workspaceId: WorkspaceSummary["id"];
       };
       importationRepositoryService.deleteEntitySummary(content);
-      dialog.openDialogs
-        .filter(
-          (value) =>
-            value.componentInstance instanceof ProjectImportationErrorDialog &&
-            value.componentInstance.data.projectImportation().id === content.projectImportationId,
-        )
-        .forEach((dialog) => {
-          dialog.close();
-        });
+      dialog.getDialogById(projectImportationErrorDialogId(content.projectImportationId))?.close();
       break;
     }
     case ProjectImportationEventType.UpdateProjectImportation: {

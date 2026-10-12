@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable, signal } from "@angular/core";
+import { inject, signal, Service } from "@angular/core";
 import { StoryCommentApiService } from "./story-comment-api.service";
 import { StoryComment } from "./story-comment.model";
 import { StoryCommentDetailStore, StoryCommentEntitiesSummaryStore } from "./story-comment-entities.store";
@@ -31,9 +31,7 @@ import { NotFoundEntityError } from "../base/errors";
 import { EntityId } from "@ngrx/signals/entities";
 import { StorySummary } from "../story/story.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryCommentRepositoryService extends BaseRepositoryService<
   StoryComment,
   StoryComment,

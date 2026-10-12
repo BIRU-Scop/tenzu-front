@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 
 export function optionalNullable<Output>(schema: z.ZodType<Output>) {
   return schema

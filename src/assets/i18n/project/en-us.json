@@ -59,7 +59,6 @@
         "details": "Details"
       },
       "confirm_cancel": "Cancel the upload of {{fileName}}? The {{percentage}}% already sent will be lost.",
-      "keep_tab_open": "The upload continues as long as a Tenzu tab stays open.",
       "details_title": "Upload of {{fileName}}",
       "notifications": {
         "started": "Upload of {{fileName}} started",

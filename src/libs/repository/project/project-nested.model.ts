@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { isoDatetime, optionalNullable } from "../base/schema-utils";
 
 export const projectLinkNestedSchema = z.object({

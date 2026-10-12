@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { tokensSchema } from "../auth/auth.model";
 import type { InvitationTokens } from "../auth/auth.model";
 import { workspaceNestedSchema } from "../workspace/workspace-nested.model";

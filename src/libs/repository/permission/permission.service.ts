@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable, Injector, runInInjectionContext, Signal } from "@angular/core";
+import { inject, Injector, runInInjectionContext, Signal, Service } from "@angular/core";
 import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
 import { ProjectRepositoryService } from "../project/project-repository.service";
 import { toObservable } from "@angular/core/rxjs-interop";
@@ -95,9 +95,7 @@ export type RedirectIfNoPermissionServiceParams = RedirectIfNoPermissionParams &
   type: "workspace" | "project";
 };
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class PermissionService {
   workspaceService = inject(WorkspaceRepositoryService);
   projectService = inject(ProjectRepositoryService);

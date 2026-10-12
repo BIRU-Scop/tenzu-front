@@ -19,7 +19,7 @@
  *
  */
 
-import { computed, inject, Injectable, Signal } from "@angular/core";
+import { computed, inject, Signal, Service } from "@angular/core";
 import {
   AllProjectPermissionsByTheme,
   GroupPermissionKey,
@@ -36,8 +36,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 
 export type PermissionValuesFor<K extends GroupPermissionKey> =
-  | (typeof AllProjectPermissionsByTheme)[K]["permissions"][number]
-  | null; // For "none"/empty case
+  (typeof AllProjectPermissionsByTheme)[K]["permissions"][number] | null; // For "none"/empty case
 
 export type PermissionsFormValue = {
   [K in GroupPermissionKey]: PermissionValuesFor<K>;
@@ -63,9 +62,7 @@ export const EMPTY_ROLE_FORM_VALUE: FormValue = {
   comment: null,
 };
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class RoleFacade {
   readonly fb = inject(FormBuilder);
   readonly projectRoleRepositoryService = inject(ProjectRoleRepositoryService);

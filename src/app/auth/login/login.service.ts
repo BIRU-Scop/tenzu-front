@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 
 import { tap } from "rxjs";
 import { Router } from "@angular/router";
@@ -27,9 +27,7 @@ import { UserStore } from "@tenzu/repository/user/user.store";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { Credential } from "@tenzu/repository/auth/auth.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class LoginService {
   userStore = inject(UserStore);
   authService = inject(AuthService);

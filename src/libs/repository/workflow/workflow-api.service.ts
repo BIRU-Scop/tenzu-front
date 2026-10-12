@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { Workflow, workflowSchema, ReorderWorkflowStatusesPayload } from "./workflow.model";
 import { WorkflowStatusNested, workflowStatusNestedSchema } from "../status/status.model";
 import { AbstractApiServiceDetail } from "../base/abstract-api-services";
@@ -29,9 +29,7 @@ import { Observable } from "rxjs";
 import { BaseDataModel } from "../base/misc.model";
 import { map } from "rxjs/operators";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkflowApiService extends AbstractApiServiceDetail<
   Workflow,
   WorkflowApiServiceType.GetEntityDetailParams,
@@ -59,9 +57,9 @@ export class WorkflowApiService extends AbstractApiServiceDetail<
 
   getBySlug(params: { projectId: Workflow["projectId"]; workflowSlug: Workflow["slug"] }): Observable<Workflow> {
     return this.http
-      .get<
-        BaseDataModel<unknown>
-      >(`${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`)
+      .get<BaseDataModel<unknown>>(
+        `${this.configAppService.apiUrl()}/projects/${params.projectId}/workflows/by_slug/${params.workflowSlug}`,
+      )
       .pipe(map((dataObject) => parseWithDebug(workflowSchema, dataObject.data)));
   }
 

@@ -19,16 +19,14 @@
  *
  */
 
-import { effect, inject, Injectable, signal } from "@angular/core";
+import { effect, inject, signal, Service } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { FeedDialog } from "./feed-dialog/feed-dialog";
 import { FeedRepositoryService } from "@tenzu/repository/feed/feed-repository.service";
 import { TypedDialog, TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class FeedOrchestratorService {
   private readonly repository = inject(FeedRepositoryService);
   private readonly dialog = inject(TypedDialogService);

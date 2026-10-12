@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -28,9 +28,7 @@ import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
 import { FeedItem, FeedItemReadState, parseFeedItems, parseFeedItemReadStates } from "./feed-item.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class FeedApiService {
   private readonly http = inject(HttpClient);
   private readonly configAppService = inject(ConfigAppService);

@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import {
@@ -39,9 +39,7 @@ type ListWorkspaceInvitationParams = {
 };
 type PatchWorkspaceInvitationParams = { invitationId: WorkspaceInvitation["id"] };
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceInvitationsApiService extends AbstractApiService<
   WorkspaceInvitation,
   WorkspaceInvitation,

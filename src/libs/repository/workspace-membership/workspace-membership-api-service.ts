@@ -19,7 +19,7 @@
  *
  */
 
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { AbstractApiService } from "../base/abstract-api-services";
 import { parseWithDebug } from "../base/parse-with-debug";
 import { WorkspaceSummary } from "../workspace/workspace.model";
@@ -41,9 +41,7 @@ type PutWorkspaceMembershipParams = unknown;
 type PatchWorkspaceMembershipParams = { membershipId: WorkspaceMembership["id"] };
 type DeleteWorkspaceMembershipParams = { membershipId: WorkspaceMembership["id"] };
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceMembershipApiService extends AbstractApiService<
   WorkspaceMembership,
   WorkspaceMembership,

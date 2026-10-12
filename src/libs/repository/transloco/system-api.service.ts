@@ -20,18 +20,16 @@
  */
 
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { Language, languageSchema } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
 import { parseWithDebug } from "../base/parse-with-debug";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class SystemApiService {
   http = inject(HttpClient);
   translocoService = inject(TranslocoService);

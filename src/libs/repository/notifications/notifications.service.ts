@@ -19,20 +19,18 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { Notification, notificationSchema, NotificationCount, notificationCountersSchema } from "./notifications.model";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { BaseDataModel } from "../base/misc.model";
 import { parseWithDebug } from "../base/parse-with-debug";
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class NotificationsService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);

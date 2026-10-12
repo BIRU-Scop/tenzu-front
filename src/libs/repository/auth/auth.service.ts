@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable, Injector, Signal } from "@angular/core";
+import { inject, Signal, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   AuthConfig,
@@ -41,15 +41,12 @@ import { WsService } from "@tenzu/utils/services/ws";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ResetService } from "../base/reset.service";
-import { TusUploadRepositoryService } from "../importation/tus-upload-repository.service";
 import { BaseDataModel } from "../base/misc.model";
 import { AuthConfigStore } from "../auth/auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
 import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class AuthService {
   jwtHelperService = inject(JwtHelperService);
   configAppService = inject(ConfigAppService);
@@ -58,7 +55,6 @@ export class AuthService {
   http = inject(HttpClient);
   router = inject(Router);
   readonly resetService = inject(ResetService);
-  private readonly injector = inject(Injector);
   url = `${this.configAppService.apiUrl()}/auth`;
   autoLogoutSubscription: Subscription | null = null;
   protected configStore = inject(AuthConfigStore);
@@ -92,7 +88,6 @@ export class AuthService {
       this.autoLogoutSubscription = null;
     }
 
-    this.injector.get(TusUploadRepositoryService).stop().then();
     this.resetService.reset();
   }
 

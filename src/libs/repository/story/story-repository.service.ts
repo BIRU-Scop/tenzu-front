@@ -19,7 +19,7 @@
  *
  */
 
-import { inject, Injectable, signal } from "@angular/core";
+import { inject, signal, Service } from "@angular/core";
 import { StoryApiService } from "./story-api.service";
 import { lastValueFrom } from "rxjs";
 import type * as StoryApiServiceType from "./story-api.type";
@@ -35,9 +35,7 @@ import { EntityId } from "@ngrx/signals/entities";
 import { UserNested } from "../user/user.model";
 import { NotFoundEntityError } from "../base/errors";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryRepositoryService extends BaseRepositoryService<
   StorySummary,
   StoryDetail,
