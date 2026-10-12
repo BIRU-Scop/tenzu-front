@@ -34,6 +34,10 @@ import { StoryDetailStore, StoryEntitiesSummaryStore } from "@tenzu/repository/s
 import { makeStoryDetail, makeStoryNested, makeStorySummary } from "@tenzu/repository/story/story.factories";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { mockService } from "@tenzu/utils/testing/mocks";
+import { translation } from "@tenzu/utils/testing/translation";
+import { MatDialog } from "@angular/material/dialog";
+import { Component } from "@angular/core";
+import { projectImportationErrorDialogId } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.id";
 import { makeProjectImportation } from "@tenzu/repository/importation/importation.factories";
 
 const PROJECT_ID = "project-1";
@@ -169,7 +173,26 @@ describe("applyProjectImportationEvent", () => {
     );
 
     expect(liveAnnouncerMock.announce).toHaveBeenCalledExactlyOnceWith(
-      "Upload of backup.json finished, import in progress",
+      translation("project.new_project.upload.notifications.finished", { fileName: "backup.json" }),
     );
   });
+
+  it("closes the error dialog of a deleted importation", async () => {
+    const matDialog = TestBed.inject(MatDialog);
+    const id = projectImportationErrorDialogId("importation-1");
+    matDialog.open(DialogStub, { id });
+
+    await dispatchImportationEvent(
+      makeEvent(
+        "projectimportations.delete",
+        { projectImportationId: "importation-1", workspaceId: "workspace-1" },
+        "workspaces.workspace-1",
+      ),
+    );
+
+    await vi.waitFor(() => expect(matDialog.getDialogById(id)).toBeUndefined());
+  });
 });
+
+@Component({ template: "" })
+class DialogStub {}

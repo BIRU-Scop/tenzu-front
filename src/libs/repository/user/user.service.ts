@@ -20,7 +20,7 @@
  */
 
 import { inject, Service } from "@angular/core";
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import {
   CreateUserPayload,
   SendVerifyUserValidator,

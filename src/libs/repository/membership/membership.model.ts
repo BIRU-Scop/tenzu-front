@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { optionalNullable } from "../base/schema-utils";
 import { PermissionsBase, ProjectPermissions, WorkspacePermissions } from "../permission/permission.model";
 import { userNestedSchema } from "../user/user.model";

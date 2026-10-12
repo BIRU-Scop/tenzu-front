@@ -24,7 +24,7 @@ import { Service } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 
 import { AbstractApiService } from "./abstract-api-services";
 import { ConfigAppService } from "../config-app/config-app.service";

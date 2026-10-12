@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import type { AssertTrue, MutuallyAssignable } from "../base/type-assertions";
 
 /** Size of the tag color palette (`tag-color-1…N` classes in _colors.scss / _tag-colors.scss). */

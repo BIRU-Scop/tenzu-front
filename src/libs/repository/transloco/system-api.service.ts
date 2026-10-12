@@ -22,7 +22,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Service } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { Language, languageSchema } from "./language.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { ConfigAppService } from "../config-app/config-app.service";

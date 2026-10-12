@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { userRoleSchema } from "../membership/membership.model";
 import { projectNestedSchema } from "../project/project-nested.model";
 import { projectImportationSchema } from "../importation/importation.model";

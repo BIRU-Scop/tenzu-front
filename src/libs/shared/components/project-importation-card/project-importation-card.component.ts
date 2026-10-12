@@ -42,6 +42,7 @@ import {
   ProjectImportationErrorDialog,
   ProjectImportationErrorDialogData,
 } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.component";
+import { projectImportationErrorDialogId } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.id";
 import { MatDialog } from "@angular/material/dialog";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 
@@ -150,6 +151,7 @@ export class ProjectImportationCardComponent {
   openImportationError(data: ProjectImportationErrorDialogData) {
     this.dialog.open(ProjectImportationErrorDialog, {
       ...matDialogConfig,
+      id: projectImportationErrorDialogId(data.projectImportation().id),
       minWidth: 850,
       data: data,
     });

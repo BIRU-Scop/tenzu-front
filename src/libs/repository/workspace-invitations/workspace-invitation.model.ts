@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { invitationBaseSchema, publicPendingInvitationBaseSchema } from "../membership/invitation.model";
 import { workspaceLinkNestedSchema } from "../workspace/workspace-nested.model";
 

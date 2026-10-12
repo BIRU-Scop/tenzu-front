@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { isoDatetime } from "../base/schema-utils";
 import { ProjectImportationType } from "./importation.model";
 

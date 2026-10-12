@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { RE_SYMBOLS } from "@tenzu/utils/functions/strings";
-import { z } from "zod";
+import * as z from "zod/v4";
 import { ConfigModel } from "@tenzu/repository/config-app/config.model";
 
 export type PasswordSeverity = "none" | "weak" | "medium" | "strong";

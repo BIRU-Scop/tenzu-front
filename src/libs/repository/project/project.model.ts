@@ -19,7 +19,7 @@
  *
  */
 
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { optionalNullable } from "../base/schema-utils";
 import { roleSchema } from "../membership/membership.model";
 import type { FileValue } from "../base/misc.model";

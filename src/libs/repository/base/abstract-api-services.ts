@@ -24,7 +24,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { z } from "zod/v4";
+import * as z from "zod/v4";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { makeOptions, QueryParams } from "./utils";
 import { BaseDataModel, DataObject, JsonObject } from "./misc.model";
