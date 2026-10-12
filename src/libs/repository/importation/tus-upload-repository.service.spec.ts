@@ -43,6 +43,7 @@ import { TusUploadLock, TusUploadLockRelease } from "./tus-upload-lock.service";
 import { TusChannelCommandMessage, TusUploadChannel } from "./tus-upload-channel.service";
 import { makeTusUploadState } from "./tus-upload.factories";
 import { TusUploadRepositoryService } from "./tus-upload-repository.service";
+import { ResetService } from "../base/reset.service";
 
 describe(TusUploadRepositoryService.name, () => {
   let tusUploadRepositoryService: TusUploadRepositoryService;
@@ -787,17 +788,71 @@ describe(TusUploadRepositoryService.name, () => {
     expect(tusUploadRepositoryService.entityMap()[tusUploadState.id].status).toBe("interrupted");
   });
 
-  it("stop calls pause on the owned client uploads without deleting them", async () => {
+  it("the constructor registers the repository in ResetService", () => {
+    expect(TestBed.inject(ResetService).registeredServices).toContain(tusUploadRepositoryService);
+  });
+
+  it("beforeReset calls pause on the owned client uploads", async () => {
     await startUpload("first");
     await startUpload("second");
 
-    await tusUploadRepositoryService.stop();
+    tusUploadRepositoryService.beforeReset();
 
     const ownedUploads = tusClientServiceMock.create.mock.results.map(({ value }) => value as TusClientUpload);
     expect(ownedUploads).toHaveLength(2);
     for (const ownedUpload of ownedUploads) {
       expect(ownedUpload.pause).toHaveBeenCalledOnce();
     }
+  });
+
+  it("beforeReset writes the uploads as paused to the storage", async () => {
+    const tusUploadState = await startUpload();
+
+    tusUploadRepositoryService.beforeReset();
+
+    expect(tusUploadStorageMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, status: "paused" });
+  });
+
+  it("beforeReset releases the locks of the uploads", async () => {
+    const lockRelease = vi.fn(() => Promise.resolve());
+    tusUploadLockMock.waitForLock.mockResolvedValue(lockRelease);
+    await startUpload();
+
+    tusUploadRepositoryService.beforeReset();
+
+    await vi.waitFor(() => expect(lockRelease).toHaveBeenCalledOnce());
+  });
+
+  it("beforeReset publishes stop on the channel for the current user", async () => {
+    userStoreMock.myUser.set(makeUser({ id: "user-1" }));
+    await startUpload();
+
+    tusUploadRepositoryService.beforeReset();
+
+    expect(tusUploadChannelMock.publishStop).toHaveBeenCalledExactlyOnceWith("user-1");
+  });
+
+  it("beforeReset publishes nothing on the channel without a current user", () => {
+    userStoreMock.myUser.set({} as User);
+
+    tusUploadRepositoryService.beforeReset();
+
+    expect(tusUploadChannelMock.publishStop).not.toHaveBeenCalled();
+  });
+
+  it("beforeReset does not call delete on the storage", async () => {
+    await startUpload();
+
+    tusUploadRepositoryService.beforeReset();
+
     expect(tusUploadStorageMock.delete).not.toHaveBeenCalled();
+  });
+
+  it("resetAll empties the store", async () => {
+    await startUpload();
+
+    tusUploadRepositoryService.resetAll();
+
+    expect(tusUploadRepositoryService.entities()).toEqual([]);
   });
 });

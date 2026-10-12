@@ -41,12 +41,13 @@ import { TusUploadStorage } from "./tus-upload-storage.service";
 import { TusUploadStore } from "./tus-upload.store";
 import { TusUploadLock, TusUploadLockRelease } from "./tus-upload-lock.service";
 import { TusUploadChannel } from "./tus-upload-channel.service";
+import { CanReset, ResetService } from "../base/reset.service";
 
 const STATUS_KEY = "project.new_project.upload.status";
 const NOTIFICATION_KEY = "project.new_project.upload.notifications";
 
 @Service()
-export class TusUploadRepositoryService {
+export class TusUploadRepositoryService implements CanReset {
   private readonly tusUploadStore = inject(TusUploadStore);
   private readonly tusClientService = inject(TusClientService);
   private readonly projectImportationApiService = inject(ProjectImportationApiService);
@@ -55,6 +56,7 @@ export class TusUploadRepositoryService {
   private readonly notificationService = inject(NotificationService);
   private readonly tusUploadLock = inject(TusUploadLock);
   private readonly tusUploadChannel = inject(TusUploadChannel);
+  private readonly resetService = inject(ResetService);
   private readonly tusClientUploads = new Map<string, TusClientUpload>();
 
   private readonly lockReleases = new Map<string, Promise<TusUploadLockRelease>>();
@@ -63,6 +65,7 @@ export class TusUploadRepositoryService {
   readonly entityMap = this.tusUploadStore.entityMap;
 
   constructor() {
+    this.resetService.register(this);
     effect(() => {
       if (this.userStore.myUser().id) {
         untracked(async () => this.restore().then()).then();
@@ -352,9 +355,23 @@ export class TusUploadRepositoryService {
     };
   }
 
-  async stop(): Promise<void> {
-    await this.pauseOwned();
-    this.tusUploadChannel.publishStop(this.userStore.myUser().id);
+  beforeReset(): void {
+    const userId = this.userStore.myUser().id;
+    for (const [id, tusClientUpload] of this.tusClientUploads) {
+      tusClientUpload.pause().then();
+      this.tusUploadStorage
+        .update({ ...this.entityMap()[id], status: "paused" })
+        .catch((error) => debug("tus-upload", `update of ${id} failed`, error));
+      this.unlock(id);
+    }
+    this.tusClientUploads.clear();
+    if (userId) {
+      this.tusUploadChannel.publishStop(userId);
+    }
+  }
+
+  resetAll(): void {
+    this.tusUploadStore.setAllEntities([]);
   }
 
   private async pauseOwned(): Promise<void> {

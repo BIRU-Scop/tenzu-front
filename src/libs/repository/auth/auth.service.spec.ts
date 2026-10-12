@@ -29,7 +29,6 @@ import { ConfigAppService } from "../config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { ResetService } from "../base/reset.service";
-import { TusUploadRepositoryService } from "../importation/tus-upload-repository.service";
 
 describe(AuthService.name, () => {
   let service: AuthService;
@@ -116,28 +115,19 @@ describe(AuthService.name, () => {
   });
 });
 
-describe(AuthService.name + " (tus uploads)", () => {
-  const tusUploadRepositoryServiceMock = { stop: vi.fn() };
+describe(AuthService.name, () => {
   const resetServiceMock = mockService(ResetService);
 
   beforeEach(() => {
     vi.resetAllMocks();
-    tusUploadRepositoryServiceMock.stop.mockResolvedValue(undefined);
     TestBed.configureTestingModule({
-      providers: [
-        testingProviders,
-        { provide: TusUploadRepositoryService, useValue: tusUploadRepositoryServiceMock },
-        { provide: ResetService, useValue: resetServiceMock },
-      ],
+      providers: [testingProviders, { provide: ResetService, useValue: resetServiceMock }],
     });
   });
 
-  it("clear calls stop before reset", () => {
+  it("clear calls reset", () => {
     TestBed.inject(AuthService).clear();
 
-    expect(tusUploadRepositoryServiceMock.stop).toHaveBeenCalledOnce();
-    expect(tusUploadRepositoryServiceMock.stop.mock.invocationCallOrder[0]).toBeLessThan(
-      resetServiceMock.reset.mock.invocationCallOrder[0],
-    );
+    expect(resetServiceMock.reset).toHaveBeenCalledOnce();
   });
 });

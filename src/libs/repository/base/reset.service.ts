@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,6 +23,7 @@ import { Service } from "@angular/core";
 
 export interface CanReset {
   resetAll(): void;
+  beforeReset?(): void;
 }
 
 @Service()
@@ -34,6 +35,9 @@ export class ResetService {
   }
 
   reset() {
+    this.registeredServices.forEach((service) => {
+      service.beforeReset?.();
+    });
     this.registeredServices.forEach((service) => {
       service.resetAll();
     });
