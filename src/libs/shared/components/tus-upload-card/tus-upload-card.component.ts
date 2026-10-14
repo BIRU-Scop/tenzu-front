@@ -42,7 +42,7 @@ import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.compo
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 
-export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "short", timeStyle: "short" };
+export const DEADLINE_FORMAT: DateFormatOptions = { dateStyle: "short" };
 
 const SHORT_FILE_NAME_LENGTH = 24;
 

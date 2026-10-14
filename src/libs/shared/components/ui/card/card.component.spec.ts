@@ -21,9 +21,28 @@
 
 import { beforeEach, describe, expect, it } from "vitest";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { inputBinding, signal } from "@angular/core";
+import { Component, input, inputBinding, signal } from "@angular/core";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
-import { CardComponent } from "./card.component";
+import {
+  CardBackdropActionsDirective,
+  CardBackdropContentDirective,
+  CardBackdropHeaderDirective,
+  CardComponent,
+} from "./card.component";
+
+@Component({
+  imports: [CardComponent, CardBackdropHeaderDirective, CardBackdropContentDirective, CardBackdropActionsDirective],
+  template: `
+    <app-card name="backup.json" [backdrop]="true">
+      <div appCardBackdropHeader [style.height.px]="headerHeight()"></div>
+      <div appCardBackdropContent class="h-8"></div>
+      <div appCardBackdropActions><button type="button">Cancel</button></div>
+    </app-card>
+  `,
+})
+class BackdropHostComponent {
+  headerHeight = input.required<number>();
+}
 
 describe(CardComponent.name, () => {
   let fixture: ComponentFixture<CardComponent>;
@@ -55,6 +74,18 @@ describe(CardComponent.name, () => {
     fixture.detectChanges();
 
     expect(getHiddenFlags()).toEqual(["true", "true"]);
+  });
+
+  const cardHeight = (headerHeight: number): number => {
+    const hostFixture = TestBed.createComponent(BackdropHostComponent, {
+      bindings: [inputBinding("headerHeight", () => headerHeight)],
+    });
+    hostFixture.detectChanges();
+    return (hostFixture.nativeElement as HTMLElement).querySelector("mat-card")!.getBoundingClientRect().height;
+  };
+
+  it("keeps the card height when the backdrop header is taller than the actions", () => {
+    expect(cardHeight(64)).toBe(cardHeight(32));
   });
 
   it("sets aria-hidden to false on the header and the content when the backdrop is off", () => {

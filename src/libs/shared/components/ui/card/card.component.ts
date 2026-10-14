@@ -89,7 +89,7 @@ export class CardHeaderActionDirective {}
     >
       @if (_backdrop) {
         <div
-          class="app-card-backdrop z-50 [grid-area:1/1] grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr_auto_1fr] justify-items-center text-center px-3 pt-2 pb-2.5"
+          class="app-card-backdrop z-50 [grid-area:1/1] grid grid-cols-[minmax(0,1fr)] grid-rows-[auto_1fr_auto] justify-items-center text-center px-3 pt-2 pb-2.5"
         >
           <div class="self-start w-full">
             <ng-content select="[appCardBackdropHeader]"></ng-content>
