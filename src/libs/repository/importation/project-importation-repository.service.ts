@@ -194,10 +194,7 @@ export class ProjectImportationRepositoryService {
     }
 
     this.notificationService.success({
-      title: "notification.events.importation_success",
-      translocoTitleParams: {
-        fileName: handlePendingInvitesResponse.projectImportation.sourceName,
-      },
+      title: "notification.action.invitations_sent",
     });
   }
 }

@@ -28,7 +28,8 @@
     },
     "action": {
       "changes_saved": "Cambios guardados",
-      "created_success": "Crear éxito"
+      "created_success": "Crear éxito",
+      "invitations_sent": "Se han enviado las invitaciones"
     },
     "project": {
       "deleted": "El proyecto {{ name }} ha sido eliminado"

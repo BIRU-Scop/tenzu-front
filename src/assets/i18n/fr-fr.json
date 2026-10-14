@@ -28,7 +28,8 @@
     },
     "action": {
       "changes_saved": "Modifications enregistrées",
-      "created_success": "La création a réussi"
+      "created_success": "La création a réussi",
+      "invitations_sent": "Les invitations ont été envoyés"
     },
     "project": {
       "deleted": "Le projet {{ name }} a été supprimé."
