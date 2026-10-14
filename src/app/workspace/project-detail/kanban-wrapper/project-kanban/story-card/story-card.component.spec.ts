@@ -56,6 +56,16 @@ describe(StoryCardComponent.name, () => {
     expect(element.querySelector("mat-chip-row")).toBeNull();
   });
 
+  it("renders the label of a single tag at a non-zero width", () => {
+    tagsStore.setAllEntities([makeStoryTagWithCount({ id: "tag-1", label: "bug", color: 3 })]);
+    fixture.componentRef.setInput("story", makeStorySummary({ ref: 1, tagIds: ["tag-1"] }));
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const label = element.querySelector(".mdc-evolution-chip__text-label") as HTMLElement;
+    expect(label.getBoundingClientRect().width).toBeGreaterThan(0);
+  });
+
   it("renders overflow as an accessible +N badge", () => {
     tagsStore.setAllEntities(
       Array.from({ length: 6 }, (_, index) =>
