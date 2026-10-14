@@ -39,6 +39,7 @@ import { NgTemplateOutlet } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
 import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 import { MatBadge } from "@angular/material/badge";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-project-members",
@@ -127,6 +128,7 @@ export default class ProjectMembersComponent implements AfterViewInit {
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
+  readonly notificationService = inject(NotificationService);
   projectRepositoryService = inject(ProjectRepositoryService);
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
@@ -165,6 +167,9 @@ export default class ProjectMembersComponent implements AfterViewInit {
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
           await this.projectInvitationRepositoryService.createBulkInvitations(selectedProject, invitations);
+          this.notificationService.success({
+            title: "notification.action.invitations_sent",
+          });
           await this.router.navigate(["list-project-invitations"], { relativeTo: this.activatedRoute });
         }
       });

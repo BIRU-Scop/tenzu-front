@@ -481,6 +481,7 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
     }
     case ProjectImportationEventType.UpdateProjectImportation: {
       const content = message.event.content as {
+        previousStatus: ImportationStatus;
         projectImportation: ProjectImportation;
         workspaceId: WorkspaceSummary["id"];
       };
@@ -490,17 +491,27 @@ export async function applyProjectImportationEvent(message: WSResponseEvent<unkn
           workspaceId: content.workspaceId,
         });
 
-        notificationService.success({
-          title: "notification.events.importation_success",
-          translocoTitleParams: {
-            fileName: content.projectImportation.sourceName,
-          },
-        });
+        if (content.previousStatus !== ImportationStatus.ACTION_NEEDED) {
+          notificationService.success({
+            title: "notification.events.importation_success",
+            translocoTitleParams: {
+              fileName: content.projectImportation.sourceName,
+            },
+          });
+        }
       } else {
         importationRepositoryService.updateEntitySummary({
           projectImportation: content.projectImportation,
           workspaceId: content.workspaceId,
         });
+        if (content.projectImportation.status === ImportationStatus.ACTION_NEEDED) {
+          notificationService.success({
+            title: "notification.events.importation_success",
+            translocoTitleParams: {
+              fileName: content.projectImportation.sourceName,
+            },
+          });
+        }
       }
       const currentProject = projectRepositoryService.entityDetail();
       if (currentProject && currentProject.id === content.projectImportation.project?.id) {

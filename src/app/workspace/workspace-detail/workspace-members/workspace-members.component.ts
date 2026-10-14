@@ -38,6 +38,7 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
 import { MatIcon } from "@angular/material/icon";
 import { NgTemplateOutlet } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-workspace-members",
@@ -125,6 +126,7 @@ export default class WorkspaceMembersComponent implements AfterViewInit {
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
+  readonly notificationService = inject(NotificationService);
   readonly workspaceRepositoryService = inject(WorkspaceRepositoryService);
   workspaceInvitationRepositoryService = inject(WorkspaceInvitationRepositoryService);
   workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
@@ -163,6 +165,9 @@ export default class WorkspaceMembersComponent implements AfterViewInit {
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
           await this.workspaceInvitationRepositoryService.createBulkInvitations(selectedWorkspace, invitations);
+          this.notificationService.success({
+            title: "notification.action.invitations_sent",
+          });
           await this.router.navigate(["list-workspace-invitations"], { relativeTo: this.activatedRoute });
         }
       });

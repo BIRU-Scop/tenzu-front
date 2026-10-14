@@ -28,7 +28,8 @@
     },
     "action": {
       "changes_saved": "Changes saved",
-      "created_success": "Create success"
+      "created_success": "Create success",
+      "invitations_sent": "The invitations have been sent out"
     },
     "project": {
       "deleted": "The project {{ name }} has been deleted"
