@@ -82,6 +82,14 @@ import { TusUploadState } from "@tenzu/repository/importation/tus-upload.model";
         [landingPage]="project | projectLandingPageUrl"
       />
     }
+    @for (projectImportation of _workspace.userImportedProjects; track projectImportation.id) {
+      <app-project-importation-card
+        [workspaceId]="_workspace.id"
+        [projectImportation]="projectImportation"
+        (deleteImportation)="deleteImportation($event)"
+        (openInviteDialog)="openInviteDialog(projectImportation)"
+      />
+    }
     @for (tusUploadState of tusUploadStates(); track tusUploadState.id) {
       <app-tus-upload-card
         [tusUploadState]="tusUploadState"
@@ -93,14 +101,6 @@ import { TusUploadState } from "@tenzu/repository/importation/tus-upload.model";
         (closed)="tusUploadRepositoryService.close(tusUploadState.id)"
         (detailsOpened)="openUploadDetails(tusUploadState)"
         (resumedWith)="tusUploadRepositoryService.resumeWith(tusUploadState.id, $event)"
-      />
-    }
-    @for (projectImportation of _workspace.userImportedProjects; track projectImportation.id) {
-      <app-project-importation-card
-        [workspaceId]="_workspace.id"
-        [projectImportation]="projectImportation"
-        (deleteImportation)="deleteImportation($event)"
-        (openInviteDialog)="openInviteDialog(projectImportation)"
       />
     }
     @if (isEmpty()) {

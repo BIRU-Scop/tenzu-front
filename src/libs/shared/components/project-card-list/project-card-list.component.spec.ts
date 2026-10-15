@@ -97,7 +97,7 @@ describe(ProjectCardListComponent.name, () => {
       workspace: makeWorkspaceSummary({ id: "workspace-1", userImportedProjects: [makeProjectImportation()] }),
     });
 
-    expect(getCardTags()).toEqual(["app-tus-upload-card", "app-project-importation-card"]);
+    expect(getCardTags()).toEqual(["app-project-importation-card", "app-tus-upload-card"]);
   });
 
   it("renders no card for an upload of another workspace", () => {
