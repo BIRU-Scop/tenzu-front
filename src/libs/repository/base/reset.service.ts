@@ -19,19 +19,22 @@
  *
  */
 
-import { Service } from "@angular/core";
+import { ErrorHandler, inject, Service } from "@angular/core";
+import { debug } from "@tenzu/utils/functions/logging";
 
 export interface CanReset {
   resetAll(): void;
   beforeReset?(): void;
+  hasResidualState?(): boolean;
 }
 
 @Service()
 export class ResetService {
-  registeredServices: CanReset[] = [];
+  private readonly registeredServices = new Set<CanReset>();
+  private readonly errorHandler = inject(ErrorHandler);
 
   register(service: CanReset) {
-    this.registeredServices.push(service);
+    this.registeredServices.add(service);
   }
 
   reset() {
@@ -41,5 +44,16 @@ export class ResetService {
     this.registeredServices.forEach((service) => {
       service.resetAll();
     });
+    this.reportResidualState();
+  }
+
+  private reportResidualState() {
+    const leakingCount = [...this.registeredServices].filter((service) => service.hasResidualState?.() === true).length;
+    if (leakingCount === 0) {
+      return;
+    }
+    const error = new Error(`Session state survived the reset in ${leakingCount} registered service(s)`);
+    debug("reset", error.message, undefined, true);
+    this.errorHandler.handleError(error);
   }
 }
