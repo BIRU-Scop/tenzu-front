@@ -30,3 +30,9 @@ export function getByRole(root: ParentNode, role: string): HTMLElement {
   }
   return element;
 }
+
+export function getTextByRole(root: ParentNode, role: string): string {
+  const element = getByRole(root, role).cloneNode(true) as HTMLElement;
+  element.querySelectorAll('[aria-hidden="true"]').forEach((hidden) => hidden.remove());
+  return element.textContent?.trim() ?? "";
+}

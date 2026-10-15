@@ -22,10 +22,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { Component } from "@angular/core";
-import { getByRole, queryByRole } from "./aria-role";
+import { getByRole, getTextByRole, queryByRole } from "./aria-role";
 
 @Component({
-  template: `<p role="status">Upload in progress</p>`,
+  template: `<p role="status"><span aria-hidden="true">info</span> Upload in progress</p>`,
 })
 class StatusHostComponent {}
 
@@ -39,11 +39,15 @@ describe("aria role helpers", () => {
   });
 
   it("getByRole returns the element of that role", () => {
-    expect(getByRole(element, "status").textContent).toBe("Upload in progress");
+    expect(getByRole(element, "status").textContent).toBe("info Upload in progress");
   });
 
   it("getByRole throws when no element of that role is rendered", () => {
     expect(() => getByRole(element, "alert")).toThrow("no element with role alert rendered");
+  });
+
+  it("getTextByRole returns the text of the element of that role without its aria-hidden descendants", () => {
+    expect(getTextByRole(element, "status")).toBe("Upload in progress");
   });
 
   it("queryByRole returns null when no element of that role is rendered", () => {
