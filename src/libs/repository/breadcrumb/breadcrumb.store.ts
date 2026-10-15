@@ -19,7 +19,8 @@
  *
  */
 
-import { patchState, signalStore, withComputed, withMethods, withProps, withState } from "@ngrx/signals";
+import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
+import { ResetService } from "../base/reset.service";
 import { computed, inject } from "@angular/core";
 import { WorkspaceRepositoryService } from "../workspace/workspace-repository.service";
 import { StoryRepositoryService } from "../story/story-repository.service";
@@ -175,4 +176,9 @@ export const BreadcrumbStore = signalStore(
       );
     }),
   })),
+  withHooks({
+    onInit(store) {
+      inject(ResetService).register({ resetAll: () => store.reset() });
+    },
+  }),
 );

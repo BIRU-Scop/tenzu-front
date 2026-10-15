@@ -23,6 +23,7 @@ import { effect, inject, signal, Service } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { FeedDialog } from "./feed-dialog/feed-dialog";
 import { FeedRepositoryService } from "@tenzu/repository/feed/feed-repository.service";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 import { TypedDialog, TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 
@@ -38,6 +39,7 @@ export class FeedOrchestratorService {
   private openPending = false;
 
   constructor() {
+    inject(ResetService).register({ resetAll: () => this.resetAll() });
     effect(() => {
       const unreadCount = this.repository.unreadCount();
       const hasItems = this.repository.sortedEntities().length > 0;
@@ -48,6 +50,13 @@ export class FeedOrchestratorService {
         this.alreadyAutoOpened.set(true);
       }
     });
+  }
+
+  private resetAll(): void {
+    this.dialogRef?.close();
+    this.dialogRef = null;
+    this.openPending = false;
+    this.alreadyAutoOpened.set(false);
   }
 
   async init() {
