@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,17 +19,11 @@
  *
  */
 
-import { afterEach, describe, expect, it } from "vitest";
-import { tokenGetter } from "./token";
+import { Service } from "@angular/core";
 
-describe("tokenGetter", () => {
-  afterEach(() => {
-    localStorage.removeItem("token");
-  });
-
-  it("returns the stored access token", () => {
-    localStorage.setItem("token", "access-token");
-
-    expect(tokenGetter()).toBe("access-token");
-  });
-});
+@Service()
+export class CrossTabLockService {
+  async run<T>(name: string, work: () => Promise<T>): Promise<T> {
+    return navigator.locks.request(name, work) as Promise<T>;
+  }
+}
