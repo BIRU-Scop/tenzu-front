@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,6 +19,24 @@
  *
  */
 
-export function tokenGetter() {
-  return localStorage.getItem("token");
-}
+import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
+
+import { ExitReason } from "../session/session-machine";
+
+export type Exit = { reason: ExitReason; fromChannel: boolean };
+
+export const ExitReasonStore = signalStore(
+  { providedIn: "root" },
+  withState<{ exit: Exit | null }>({ exit: null }),
+  withMethods((store) => ({
+    remember(reason: ExitReason, fromChannel: boolean): void {
+      patchState(store, { exit: { reason, fromChannel } });
+    },
+
+    clear(): void {
+      patchState(store, { exit: null });
+    },
+  })),
+);
+
+export type ExitReasonStore = InstanceType<typeof ExitReasonStore>;
