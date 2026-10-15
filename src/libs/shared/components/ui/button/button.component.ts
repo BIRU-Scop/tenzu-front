@@ -26,15 +26,16 @@ import { MatIcon } from "@angular/material/icon";
 import { LevelType, IconName, ButtonType, ButtonIconSize, IconSize } from "../ui.types";
 import { ButtonInterface } from "./button.interface";
 import { MatTooltip } from "@angular/material/tooltip";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { JsonObject } from "@tenzu/repository/base/misc.model";
 
 @Component({
   selector: "app-button",
   host: {
     class: "inline-block",
-    "[style.pointer-events]": "disabled() ? 'none' : 'auto'",
+    "[style.pointer-events]": "disabled() || loading() ? 'none' : 'auto'",
   },
-  imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, MatTooltip],
+  imports: [MatButton, TranslocoDirective, MatIconButton, MatIcon, MatTooltip, MatProgressSpinner],
   template: `
     @let _translocoKey = translocoKey();
     @let _translocoValue = translocoValue();
@@ -49,10 +50,19 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
           [class.no-background]="iconNoBackground()"
           matIconButton
           [attr.aria-label]="t(_translocoKey, _translocoValue)"
-          [disabled]="disabled()"
+          [disabled]="disabled() || loading()"
+          [disabledInteractive]="loading()"
+          [showProgress]="loading()"
           [matTooltip]="t(_translocoKey, _translocoValue)"
+          (click)="onClick($event)"
         >
           <mat-icon aria-hidden="true">{{ _iconName }}</mat-icon>
+          <mat-progress-spinner
+            progressIndicator
+            mode="indeterminate"
+            [diameter]="16"
+            [attr.aria-label]="t('commons.loading')"
+          />
         </button>
       }
       @default {
@@ -62,12 +72,21 @@ import { JsonObject } from "@tenzu/repository/base/misc.model";
           [class]="level()"
           [matButton]="appearance()"
           [type]="type()"
-          [disabled]="disabled()"
+          [disabled]="disabled() || loading()"
+          [disabledInteractive]="loading()"
+          [showProgress]="loading()"
+          (click)="onClick($event)"
         >
           @if (_iconName) {
             <mat-icon aria-hidden="true">{{ _iconName }}</mat-icon>
           }
           {{ t(_translocoKey, _translocoValue) }}
+          <mat-progress-spinner
+            progressIndicator
+            mode="indeterminate"
+            [diameter]="16"
+            [attr.aria-label]="t('commons.loading')"
+          />
         </button>
       }
     }
@@ -122,6 +141,7 @@ export class ButtonComponent implements ButtonInterface {
   iconName = input<IconName | undefined>(undefined);
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);
+  loading = input<boolean>(false);
   iconSize = input<IconSize, ButtonIconSize>("icon-md", {
     transform: (value: ButtonIconSize): IconSize => {
       switch (value) {
@@ -138,4 +158,12 @@ export class ButtonComponent implements ButtonInterface {
       }
     },
   });
+
+  // disabledInteractive keeps the focus but lets a click through: the implicit form submission on Enter fires one
+  onClick(event: MouseEvent): void {
+    if (this.loading()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
 }

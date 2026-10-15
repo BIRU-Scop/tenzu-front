@@ -31,6 +31,7 @@ export interface ButtonInterface {
   type: InputSignal<ButtonType>;
   iconOnly: InputSignal<boolean>;
   disabled: InputSignal<boolean>;
+  loading: InputSignal<boolean>;
   level:
     | InputSignalWithTransform<
         | "primary-button"

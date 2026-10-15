@@ -44,5 +44,6 @@ export class ButtonDeleteComponent implements ButtonInterface {
   iconOnly = input<boolean>(false);
   iconNoBackground = input(false);
   disabled = input<boolean>(false);
+  loading = input<boolean>(false);
   iconSize = input<ButtonIconSize>("md");
 }

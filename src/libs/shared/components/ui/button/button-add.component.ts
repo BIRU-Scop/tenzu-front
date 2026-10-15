@@ -44,5 +44,6 @@ export class ButtonAddComponent implements ButtonInterface {
   iconNoBackground = input(false);
   iconOnly = input<boolean>(false);
   disabled = input<boolean>(false);
+  loading = input<boolean>(false);
   iconSize = input<ButtonIconSize>("md");
 }
