@@ -31,7 +31,7 @@ interface TenzuDatabase extends DBSchema {
 }
 
 @Service()
-export class TusUploadStorage {
+export class TusUploadStorageService {
   async save(tusUploadState: TusUploadState, file: File): Promise<void> {
     const parsedTusUploadState = tusUploadStateSchema.parse(tusUploadState);
     const database = await openDatabase();

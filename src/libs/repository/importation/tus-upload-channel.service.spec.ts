@@ -24,23 +24,23 @@ import { TestBed } from "@angular/core/testing";
 import { ErrorHandler } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { ZodError } from "zod/v4";
-import { TusUploadChannel } from "./tus-upload-channel.service";
+import { TusUploadChannelService } from "./tus-upload-channel.service";
 import { makeTusUploadState } from "./tus-upload.factories";
 import { TusUploadState } from "./tus-upload.model";
 
-describe(TusUploadChannel.name, () => {
-  let sender: TusUploadChannel;
-  let receiver: TusUploadChannel;
+describe(TusUploadChannelService.name, () => {
+  let sender: TusUploadChannelService;
+  let receiver: TusUploadChannelService;
   const errorHandlerMock = { handleError: vi.fn() };
 
   beforeEach(() => {
     vi.resetAllMocks();
     TestBed.configureTestingModule({ providers: [{ provide: ErrorHandler, useValue: errorHandlerMock }] });
-    sender = TestBed.inject(TusUploadChannel);
-    receiver = TestBed.runInInjectionContext(() => new TusUploadChannel());
+    sender = TestBed.inject(TusUploadChannelService);
+    receiver = TestBed.runInInjectionContext(() => new TusUploadChannelService());
   });
 
-  it("publishState emits the state on another channel's state$", async () => {
+  it("publishState on one TusUploadChannelService instance emits the state on state$ of another instance", async () => {
     const tusUploadState = makeTusUploadState({ id: "abc" });
     const received = firstValueFrom(receiver.state$);
 
@@ -49,7 +49,7 @@ describe(TusUploadChannel.name, () => {
     expect(await received).toEqual(tusUploadState);
   });
 
-  it("sendCommand emits the command on another channel's command$", async () => {
+  it("sendCommand on one TusUploadChannelService instance emits the command on command$ of another instance", async () => {
     const received = firstValueFrom(receiver.command$);
 
     sender.sendCommand("pause", "abc");
@@ -57,7 +57,7 @@ describe(TusUploadChannel.name, () => {
     expect(await received).toEqual({ type: "pause", id: "abc" });
   });
 
-  it("publishRemoved emits the id on another channel's removed$", async () => {
+  it("publishRemoved on one TusUploadChannelService instance emits the id on removed$ of another instance", async () => {
     const received = firstValueFrom(receiver.removed$);
 
     sender.publishRemoved("abc");

@@ -24,7 +24,7 @@ import { Service } from "@angular/core";
 export type TusUploadLockRelease = () => Promise<void>;
 
 @Service()
-export class TusUploadLock {
+export class TusUploadLockService {
   waitForLock(id: string): Promise<TusUploadLockRelease> {
     return this.request(id, false);
   }

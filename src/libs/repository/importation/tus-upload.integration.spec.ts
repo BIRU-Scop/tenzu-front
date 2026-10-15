@@ -29,17 +29,17 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { makeUser } from "@tenzu/repository/user/user.factories";
 import { TusUploadRepositoryService } from "./tus-upload-repository.service";
-import { TusUploadStorage } from "./tus-upload-storage.service";
+import { TusUploadStorageService } from "./tus-upload-storage.service";
 import { TusUploadStore } from "./tus-upload.store";
-import { TusUploadChannel } from "./tus-upload-channel.service";
-import { TusUploadLock } from "./tus-upload-lock.service";
+import { TusUploadChannelService } from "./tus-upload-channel.service";
+import { TusUploadLockService } from "./tus-upload-lock.service";
 import { ProjectImportationType } from "./importation.model";
 
 describe("TusUploadRepositoryService lock integration", () => {
   let owner: TusUploadRepositoryService;
   let mirror: TusUploadRepositoryService;
   const tusClientServiceMock = mockService(TusClientService);
-  const tusUploadStorageMock = mockService(TusUploadStorage);
+  const tusUploadStorageServiceMock = mockService(TusUploadStorageService);
   const userStoreMock = { myUser: signal(makeUser({ id: "user-1" })) };
   const file = new File(["{}"], "backup.json", { type: "application/json", lastModified: 1_700_000_000_000 });
   const makeTusClientUpload = (): TusClientUpload => ({
@@ -51,23 +51,23 @@ describe("TusUploadRepositoryService lock integration", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     tusClientServiceMock.create.mockImplementation(makeTusClientUpload);
-    tusUploadStorageMock.save.mockResolvedValue(undefined);
-    tusUploadStorageMock.update.mockResolvedValue(undefined);
-    tusUploadStorageMock.delete.mockResolvedValue(undefined);
-    tusUploadStorageMock.list.mockResolvedValue([]);
-    tusUploadStorageMock.deleteExpired.mockResolvedValue([]);
+    tusUploadStorageServiceMock.save.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.update.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.delete.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.list.mockResolvedValue([]);
+    tusUploadStorageServiceMock.deleteExpired.mockResolvedValue([]);
     TestBed.configureTestingModule({
       providers: [
         testingProviders,
         { provide: TusClientService, useValue: tusClientServiceMock },
-        { provide: TusUploadStorage, useValue: tusUploadStorageMock },
+        { provide: TusUploadStorageService, useValue: tusUploadStorageServiceMock },
         { provide: NotificationService, useValue: mockService(NotificationService) },
         { provide: UserStore, useValue: userStoreMock },
       ],
     });
     owner = TestBed.inject(TusUploadRepositoryService);
     mirror = createEnvironmentInjector(
-      [TusUploadRepositoryService, TusUploadStore, TusUploadChannel, TusUploadLock],
+      [TusUploadRepositoryService, TusUploadStore, TusUploadChannelService, TusUploadLockService],
       TestBed.inject(EnvironmentInjector),
     ).get(TusUploadRepositoryService);
   });
