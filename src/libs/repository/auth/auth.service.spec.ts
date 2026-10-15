@@ -23,12 +23,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
+import { ZodError } from "zod/v4";
 
 import { AuthService } from "./auth.service";
 import { ConfigAppService } from "../config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
-import { mockService } from "@tenzu/utils/testing/mocks";
-import { ResetService } from "../base/reset.service";
 
 describe(AuthService.name, () => {
   let service: AuthService;
@@ -36,21 +35,53 @@ describe(AuthService.name, () => {
   let BASE: string;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({ providers: [testingProviders] });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
     BASE = TestBed.inject(ConfigAppService).apiUrl();
     vi.spyOn(console, "debug").mockImplementation(() => undefined);
-    vi.spyOn(service.jwtHelperService, "getTokenExpirationDate").mockReturnValue(null);
-    vi.spyOn(service.wsService, "command").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     httpMock.verify();
     vi.restoreAllMocks();
+    localStorage.clear();
   });
 
-  it("login parses and emits the validated tokens", async () => {
+  it("refreshTokens posts the refresh to /auth/token/refresh", async () => {
+    const refreshed = lastValueFrom(service.refreshTokens("refresh-token-1"));
+
+    const request = httpMock.expectOne(`${BASE}/auth/token/refresh`);
+    expect(request.request.body).toEqual({ refresh: "refresh-token-1" });
+    request.flush({ access: "access-token-2", refresh: "refresh-token-2" });
+    await refreshed;
+  });
+
+  it("refreshTokens return the tokens parsed by rotatedTokensSchema", async () => {
+    const refreshed = lastValueFrom(service.refreshTokens("refresh-token-1"));
+    httpMock.expectOne(`${BASE}/auth/token/refresh`).flush({ access: "access-token-2", refresh: "refresh-token-2" });
+
+    expect(await refreshed).toEqual({ access: "access-token-2", refresh: "refresh-token-2" });
+  });
+
+  it("refreshTokens throws ZodError when the response does not match rotatedTokensSchema", async () => {
+    const refreshed = lastValueFrom(service.refreshTokens("refresh-token-1"));
+    httpMock.expectOne(`${BASE}/auth/token/refresh`).flush({ access: "access-token-2" });
+
+    await expect(refreshed).rejects.toBeInstanceOf(ZodError);
+  });
+
+  it("blacklistRefreshToken posts the refresh to /auth/blacklist", async () => {
+    const revoked = lastValueFrom(service.blacklistRefreshToken("refresh-token-1"));
+
+    const request = httpMock.expectOne(`${BASE}/auth/blacklist`);
+    expect(request.request.body).toEqual({ refresh: "refresh-token-1" });
+    request.flush({});
+    await revoked;
+  });
+
+  it("login return  the tokens parsed by tokensSchema", async () => {
     const tokens = { access: "access-token", refresh: "refresh-token", username: "1user" };
     const loginPromise = lastValueFrom(service.login({ username: "1user", password: "123123" }));
 
@@ -59,7 +90,7 @@ describe(AuthService.name, () => {
     expect(await loginPromise).toEqual(tokens);
   });
 
-  it("login throws on a non-conforming payload", async () => {
+  it("login throws ZodError when the response does not match tokensSchema", async () => {
     const raw = { access: 123, refresh: "refresh-token", username: "1user" };
     const loginPromise = lastValueFrom(service.login({ username: "1user", password: "123123" }));
 
@@ -68,7 +99,7 @@ describe(AuthService.name, () => {
     await expect(loginPromise).rejects.toThrow();
   });
 
-  it("initConfig parses the config and pushes the providers into the store", async () => {
+  it("initConfig sets providers to the providers of the parsed config", async () => {
     const provider = { id: "google", name: "Google", clientId: "client-123" };
     const initPromise = service.initConfig();
 
@@ -78,7 +109,7 @@ describe(AuthService.name, () => {
     expect(service.providers()).toEqual([provider]);
   });
 
-  it("continueSignup with conforming value", async () => {
+  it("continueSignup call the callback parsed by providerCallbackSchema", async () => {
     const callback = {
       fromSignup: true,
       access: "access-token",
@@ -100,34 +131,5 @@ describe(AuthService.name, () => {
     httpMock.expectOne(`${BASE}/auth/provider/continue_signup`).flush(callback);
 
     expect(await signupPromise).toEqual(callback);
-  });
-
-  it("refresh parses the tokens and stores them", async () => {
-    const tokens = { access: "new-access", refresh: "new-refresh", username: "1user" };
-    const setToken = vi.spyOn(service, "setToken");
-    const refreshPromise = lastValueFrom(service.refresh({ refresh: "old-refresh" }));
-
-    httpMock.expectOne(`${BASE}/auth/token/refresh`).flush(tokens);
-    const result = await refreshPromise;
-
-    expect(result).toEqual(tokens);
-    expect(setToken).toHaveBeenCalledWith(tokens);
-  });
-});
-
-describe(AuthService.name, () => {
-  const resetServiceMock = mockService(ResetService);
-
-  beforeEach(() => {
-    vi.resetAllMocks();
-    TestBed.configureTestingModule({
-      providers: [testingProviders, { provide: ResetService, useValue: resetServiceMock }],
-    });
-  });
-
-  it("clear calls reset", () => {
-    TestBed.inject(AuthService).clear();
-
-    expect(resetServiceMock.reset).toHaveBeenCalledOnce();
   });
 });
