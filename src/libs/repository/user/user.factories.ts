@@ -19,7 +19,8 @@
  *
  */
 
-import { User, UserNested } from "@tenzu/repository/user/user.model";
+import { User, UserNested, VerificationInfo } from "@tenzu/repository/user/user.model";
+import { makeTokens } from "@tenzu/repository/auth/auth.factories";
 
 export function makeUserNested(overrides: Partial<UserNested> = {}): UserNested {
   return {
@@ -36,6 +37,13 @@ export function makeUser(overrides: Partial<User> = {}): User {
   return {
     ...makeUserNested(),
     lang: "en",
+    ...overrides,
+  };
+}
+
+export function makeVerificationInfo(overrides: Partial<VerificationInfo> = {}): VerificationInfo {
+  return {
+    auth: makeTokens(),
     ...overrides,
   };
 }
