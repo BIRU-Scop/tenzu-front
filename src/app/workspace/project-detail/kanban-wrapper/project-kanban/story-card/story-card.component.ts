@@ -20,6 +20,7 @@
  */
 
 import { Component, computed, inject, input } from "@angular/core";
+import { NgTemplateOutlet } from "@angular/common";
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from "@angular/material/card";
 import { MatChipSet } from "@angular/material/chips";
 import { RouterLink } from "@angular/router";
@@ -46,6 +47,7 @@ const MAX_VISIBLE_TAGS = 3;
     MatChipSet,
     MatTooltip,
     StoryTagChipComponent,
+    NgTemplateOutlet,
   ],
   template: `
     @let _story = story();
@@ -60,10 +62,19 @@ const MAX_VISIBLE_TAGS = 3;
       @if (visibleTags().length > 0) {
         <mat-card-content class="!py-1">
           <div class="flex flex-row items-center gap-1">
-            <mat-chip-set class="story-card-tags flex-1 min-w-0 overflow-hidden">
-              @for (tag of visibleTags(); track tag.id) {
-                <app-story-tag-chip [tag]="tag" [interactive]="false" />
-              }
+            <mat-chip-set
+              class="story-card-tags flex-1 min-w-0 overflow-hidden"
+              [style.--tags-count]="visibleTags().length"
+            >
+              <ng-template #tagTail let-tags>
+                <app-story-tag-chip [tag]="tags[0]" [interactive]="false" [style.--tail-length]="tags.length - 1" />
+                @if (tags.length > 1) {
+                  <div class="story-card-tags-tail">
+                    <ng-container *ngTemplateOutlet="tagTail; context: { $implicit: tags.slice(1) }" />
+                  </div>
+                }
+              </ng-template>
+              <ng-container *ngTemplateOutlet="tagTail; context: { $implicit: visibleTags() }" />
             </mat-chip-set>
             @if (hiddenTags().length > 0) {
               <span

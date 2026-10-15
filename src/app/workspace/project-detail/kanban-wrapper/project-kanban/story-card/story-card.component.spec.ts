@@ -56,14 +56,43 @@ describe(StoryCardComponent.name, () => {
     expect(element.querySelector("mat-chip-row")).toBeNull();
   });
 
-  it("renders the label of a single tag at a non-zero width", () => {
-    tagsStore.setAllEntities([makeStoryTagWithCount({ id: "tag-1", label: "bug", color: 3 })]);
-    fixture.componentRef.setInput("story", makeStorySummary({ ref: 1, tagIds: ["tag-1"] }));
+  const SHORT = "a";
+  const LONG = "x".repeat(80);
+
+  const renderTags = (labels: string[]): string[] => {
+    tagsStore.setAllEntities(
+      labels.map((label, index) => makeStoryTagWithCount({ id: `tag-${index + 1}`, label, color: index + 1 })),
+    );
+    fixture.componentRef.setInput(
+      "story",
+      makeStorySummary({ ref: 1, tagIds: labels.map((_, index) => `tag-${index + 1}`) }),
+    );
+    const element = fixture.nativeElement as HTMLElement;
+    element.style.cssText = "display: block; width: 240px";
     fixture.detectChanges();
 
-    const element = fixture.nativeElement as HTMLElement;
-    const label = element.querySelector(".mdc-evolution-chip__text-label") as HTMLElement;
-    expect(label.getBoundingClientRect().width).toBeGreaterThan(0);
+    const chipsRectSize = (
+      element.querySelector(".mdc-evolution-chip-set__chips") as HTMLElement
+    ).getBoundingClientRect();
+    return Array.from(element.querySelectorAll("app-story-tag-chip")).map((host) => {
+      const label = host.querySelector(".mdc-evolution-chip__text-label") as HTMLElement;
+      if (label.scrollWidth <= label.clientWidth) {
+        return "fits";
+      }
+      const end = ((host.getBoundingClientRect().right - chipsRectSize.left) / chipsRectSize.width) * 100;
+      return `truncated at ${Math.round(end)}%`;
+    });
+  };
+
+  it.each([
+    { labels: [LONG], tags: ["truncated at 100%"] },
+    { labels: [LONG, LONG], tags: ["truncated at 50%", "truncated at 100%"] },
+    { labels: [SHORT, LONG], tags: ["fits", "truncated at 100%"] },
+    { labels: [LONG, LONG, LONG], tags: ["truncated at 33%", "truncated at 67%", "truncated at 100%"] },
+    { labels: [SHORT, LONG, LONG], tags: ["fits", "truncated at 67%", "truncated at 100%"] },
+    { labels: [LONG, SHORT, LONG], tags: ["truncated at 33%", "fits", "truncated at 100%"] },
+  ])("renders the tags $tags", ({ labels, tags }) => {
+    expect(renderTags(labels)).toEqual(tags);
   });
 
   it("renders overflow as an accessible +N badge", () => {
