@@ -21,7 +21,13 @@
 
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { EnvironmentProviders, importProvidersFrom, inject, provideEnvironmentInitializer } from "@angular/core";
+import {
+  EnvironmentProviders,
+  importProvidersFrom,
+  inject,
+  Injector,
+  provideEnvironmentInitializer,
+} from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
@@ -31,9 +37,12 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { ConfigModel, ConfigSchema } from "@tenzu/repository/config-app/config.model";
 import { EnvironmentConfig } from "../../../environments/environment-type";
 import { environment } from "../../../environments/environment";
-import { tokenGetter } from "@tenzu/utils/functions/token";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 import enTranslations from "../../../assets/i18n/en-us.json";
 import projectEnTranslations from "../../../assets/i18n/project/en-us.json";
+import settingsEnTranslations from "../../../assets/i18n/settings/en-us.json";
+import authEnTranslations from "../../../assets/i18n/auth/en-us.json";
+import resetPasswordEnTranslations from "../../../assets/i18n/resetPassword/en-us.json";
 
 export const TEST_CONFIG: EnvironmentConfig & ConfigModel = {
   ...environment,
@@ -59,7 +68,13 @@ export function provideTranslocoTesting(): EnvironmentProviders[] {
   return [
     importProvidersFrom(
       TranslocoTestingModule.forRoot({
-        langs: { en: enTranslations, "project/en": projectEnTranslations },
+        langs: {
+          en: enTranslations,
+          "project/en": projectEnTranslations,
+          "settings/en": settingsEnTranslations,
+          "auth/en": authEnTranslations,
+          "resetPassword/en": resetPasswordEnTranslations,
+        },
         translocoConfig: { availableLangs: ["en"], defaultLang: "en" },
         preloadLangs: true,
       }),
@@ -81,8 +96,9 @@ export const testingProviders = [
         provide: JWT_OPTIONS,
         useFactory: () => {
           const apiConfig = inject(ConfigAppService).configApi();
+          const injector = inject(Injector);
           return {
-            tokenGetter: tokenGetter,
+            tokenGetter: () => injector.get(TokenRepositoryService).tokens()?.access ?? null,
             allowedDomains: [apiConfig.baseDomain],
             headerName: "Authorization",
             authScheme: "Bearer ",
