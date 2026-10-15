@@ -22,7 +22,7 @@
 import { inject, InjectionToken, Service } from "@angular/core";
 import { HttpStatusCode } from "@angular/common/http";
 import * as tus from "tus-js-client";
-import { tokenGetter } from "@tenzu/utils/functions/token";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 import { MEGABYTE } from "@tenzu/pipes/humanize-file-size";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { UserStore } from "@tenzu/repository/user/user.store";
@@ -37,7 +37,10 @@ export const TUS_UPLOAD_CLASS = new InjectionToken<typeof tus.Upload>("TUS_UPLOA
 
 export const TUS_TOKEN_GETTER = new InjectionToken<() => string | null>("TUS_TOKEN_GETTER", {
   providedIn: "root",
-  factory: () => tokenGetter,
+  factory: () => {
+    const tokenRepositoryService = inject(TokenRepositoryService);
+    return () => tokenRepositoryService.tokens()?.access ?? null;
+  },
 });
 
 export type TusClientCreateOptions = {

@@ -28,6 +28,9 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { signal } from "@angular/core";
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { makeUser } from "@tenzu/repository/user/user.factories";
+import { makeTokens } from "@tenzu/repository/auth/auth.factories";
+import { Tokens } from "@tenzu/repository/auth/auth.model";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 import {
   InvalidUploadExpiresError,
   TUS_TOKEN_GETTER,
@@ -64,6 +67,28 @@ function makeOptions(overrides: Partial<TusClientCreateOptions> = {}): TusClient
     ...overrides,
   };
 }
+
+describe("TUS_TOKEN_GETTER", () => {
+  const tokenRepositoryServiceMock = { tokens: signal<Tokens | null>(null) };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [...testingProviders, { provide: TokenRepositoryService, useValue: tokenRepositoryServiceMock }],
+    });
+  });
+
+  it("TUS_TOKEN_GETTER returns the access token of TokenRepositoryService when step is held", () => {
+    tokenRepositoryServiceMock.tokens.set(makeTokens({ access: "access-token" }));
+
+    expect(TestBed.inject(TUS_TOKEN_GETTER)()).toBe("access-token");
+  });
+
+  it("TUS_TOKEN_GETTER returns null when step is empty", () => {
+    tokenRepositoryServiceMock.tokens.set(null);
+
+    expect(TestBed.inject(TUS_TOKEN_GETTER)()).toBeNull();
+  });
+});
 
 describe(TusClientService.name, () => {
   let tusClientService: TusClientService;
