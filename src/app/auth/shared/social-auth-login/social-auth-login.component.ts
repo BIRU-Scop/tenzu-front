@@ -19,8 +19,10 @@
  *
  */
 
-import { Component, inject, input, signal } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, computed, inject, input, signal } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { ActivatedRoute, Params } from "@angular/router";
+import { RememberedNextStore } from "@tenzu/repository/auth/stores/remembered-next.store";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { KeyValuePipe } from "@angular/common";
@@ -29,6 +31,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatDivider } from "@angular/material/divider";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { usableNext } from "@tenzu/utils/functions/urls";
 
 @Component({
   selector: "app-social-auth-login",
@@ -52,14 +55,13 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
         @if (isFirst) {
           <p class="mat-body-medium text-center">{{ t("auth.signup.alternatives") }}</p>
         }
-        @let providerRedirect =
-          authService.redirectToProviderBaseParams(provider.id, this.route.snapshot.queryParams, _signup);
+        @let providerRedirect = authService.redirectToProviderBaseParams(provider.id, queryParams(), _signup);
         <!-- ngNoForm is an undocumented property to force classic form behaviour instead of Angular's-->
-        <form ngNoForm class="flex flex-col" [action]="providerRedirect.url" method="post">
+        <form ngNoForm class="flex flex-col" [action]="providerRedirect.url" method="post" (submit)="rememberNext()">
           @for (fieldData of providerRedirect.body | keyvalue; track fieldData.key) {
             <input type="hidden" [name]="fieldData.key" [value]="fieldData.value" />
           }
-          @for (fieldData of this.route.snapshot.queryParams | keyvalue; track fieldData.key) {
+          @for (fieldData of forwardedParams() | keyvalue; track fieldData.key) {
             <input type="hidden" [name]="fieldData.key" [value]="fieldData.value" />
           }
           @if (configLegal) {
@@ -103,7 +105,22 @@ export default class SocialAuthLoginComponent {
   readonly route = inject(ActivatedRoute);
   readonly authService = inject(AuthService);
   readonly configAppService = inject(ConfigAppService);
+  private readonly rememberedNextStore = inject(RememberedNextStore);
 
   acceptTerms = signal(false);
   signup = input.required<boolean>();
+
+  readonly queryParams = toSignal(this.route.queryParams, { initialValue: {} as Params });
+  readonly forwardedParams = computed<Params>(() => {
+    const forwarded = { ...this.queryParams() };
+    delete forwarded["next"];
+    return forwarded;
+  });
+
+  rememberNext(): void {
+    const next = usableNext(this.queryParams()["next"] || "");
+    if (next) {
+      this.rememberedNextStore.remember(next, null);
+    }
+  }
 }

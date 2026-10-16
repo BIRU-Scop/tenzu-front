@@ -119,7 +119,10 @@ export default class LoginComponent {
     if (exit === null) {
       return null;
     }
-    return exit.reason === "logoutRequested" ? "from_another_tab" : exit.reason;
+    if (exit.reason !== "logoutRequested") {
+      return exit.reason;
+    }
+    return exit.fromChannel ? "from_another_tab" : null;
   });
 
   readonly authConfigStore = inject(AuthConfigStore);

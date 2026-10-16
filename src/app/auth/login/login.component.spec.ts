@@ -51,7 +51,7 @@ describe("LoginComponent", () => {
   let fixture: ComponentFixture<LoginComponent>;
   let exitReasonStore: ExitReasonStore;
   const loginServiceMock = mockService(LoginService);
-  const routeMock = { snapshot: { queryParamMap: convertToParamMap({}), queryParams: {} } };
+  const routeMock = { snapshot: { queryParamMap: convertToParamMap({}), queryParams: {} }, queryParams: of({}) };
 
   beforeEach(async () => {
     loginServiceMock.login.mockReset().mockReturnValue(of(makeTokens()));
@@ -108,7 +108,7 @@ describe("LoginComponent", () => {
     expect(getTextByRole(fixture.nativeElement, "alert")).toBe(translation("auth.login.exit_reason.from_another_tab"));
   });
 
-  it("the login page renders no element with role alert with the from_another_tab message for logoutRequested without fromChannel", async () => {
+  it("the login page renders no element with role alert for logoutRequested without fromChannel", async () => {
     exitReasonStore.remember("logoutRequested", false);
     await fixture.whenStable();
 
