@@ -149,7 +149,7 @@ export class WsService {
 
     this.ws$ = createSocket$.pipe(
       catchError((e) => {
-        debug("WS", "socket error", e);
+        debug("WS", "socket error", e, true);
         this.loggedSubject.next(false);
         return throwError(() => e);
       }),
