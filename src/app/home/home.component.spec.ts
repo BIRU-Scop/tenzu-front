@@ -37,6 +37,7 @@ import { HarnessLoader } from "@angular/cdk/testing";
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed";
 import { MatMenuHarness } from "@angular/material/menu/testing";
 import { MatBadgeHarness } from "@angular/material/badge/testing";
+import { translation } from "@tenzu/utils/testing/translation";
 
 describe("HomeComponent", () => {
   let fixture: ComponentFixture<HomeComponent>;
@@ -86,6 +87,12 @@ describe("HomeComponent", () => {
     const [news] = await menu.getItems({ text: /news/i });
     return news;
   }
+
+  it("renders the user menu trigger button with aria-label home.navigation.user_menu", async () => {
+    const trigger = await (await loader.getHarness(MatMenuHarness)).host();
+
+    expect(await trigger.getAttribute("aria-label")).toBe(translation("home.navigation.user_menu"));
+  });
 
   it("the logout menu item calls sessionLifecycleService.endSession with logoutRequested", async () => {
     const menu = await loader.getHarness(MatMenuHarness);

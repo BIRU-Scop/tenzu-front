@@ -93,13 +93,8 @@ import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
       <mat-divider class="h-1/2 !mx-2" [vertical]="true" />
       @let myUser = userStore.myUser();
 
-      <button>
-        <app-avatar
-          [matMenuTriggerFor]="userMenu"
-          [name]="myUser.fullName"
-          [color]="myUser.color"
-          mode="filled-circle"
-        />
+      <button type="button" [matMenuTriggerFor]="userMenu" [attr.aria-label]="t('user_menu')">
+        <app-avatar [name]="myUser.fullName" [color]="myUser.color" mode="filled-circle" />
       </button>
       <mat-menu #userMenu="matMenu">
         <div class="px-3 py-1.5">

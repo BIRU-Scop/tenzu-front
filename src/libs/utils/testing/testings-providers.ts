@@ -43,6 +43,7 @@ import projectEnTranslations from "../../../assets/i18n/project/en-us.json";
 import settingsEnTranslations from "../../../assets/i18n/settings/en-us.json";
 import authEnTranslations from "../../../assets/i18n/auth/en-us.json";
 import resetPasswordEnTranslations from "../../../assets/i18n/resetPassword/en-us.json";
+import homeEnTranslations from "../../../assets/i18n/home/en-us.json";
 
 export const TEST_CONFIG: EnvironmentConfig & ConfigModel = {
   ...environment,
@@ -74,6 +75,7 @@ export function provideTranslocoTesting(): EnvironmentProviders[] {
           "settings/en": settingsEnTranslations,
           "auth/en": authEnTranslations,
           "resetPassword/en": resetPasswordEnTranslations,
+          "home/en": homeEnTranslations,
         },
         translocoConfig: { availableLangs: ["en"], defaultLang: "en" },
         preloadLangs: true,
