@@ -19,47 +19,45 @@
  *
  */
 
-import { HttpErrorResponse } from "@angular/common/http";
+import { HttpErrorResponse, HttpStatusCode } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
-import { switchMap, throwError } from "rxjs";
-import { catchError, tap } from "rxjs/operators";
+import { map, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { VerificationInfo } from "@tenzu/repository/user/user.model";
 import { UserService } from "@tenzu/repository/user/user.service";
-import { UserStore } from "@tenzu/repository/user/user.store";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 
-export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+function invitationUrl(verification: VerificationInfo): string | null {
+  if (verification.workspaceInvitation) {
+    return `/workspace/${verification.workspaceInvitation.workspace.id}/projects`;
+  }
+  if (verification.projectInvitation) {
+    const { id, workspaceId } = verification.projectInvitation.project;
+    return `/workspace/${workspaceId}/project/${id}`;
+  }
+  return null;
+}
+
+export const verifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const userService = inject(UserService);
-  const userStore = inject(UserStore);
-  const authService = inject(AuthService);
+  const sessionLifecycleService = inject(SessionLifecycleService);
   const router = inject(Router);
 
-  const verifyParam = route.params["token"] as string;
+  const token = route.params["token"] as string;
 
-  return userService.verifyUser(verifyParam).pipe(
-    tap(async (verification: VerificationInfo) => {
-      authService.clear();
-      authService.setToken(verification.auth);
-      userStore.getMe(); // No need to return here, it's just a side effect
-    }),
-    switchMap((verification: VerificationInfo) => {
-      if (verification.workspaceInvitation) {
-        const workspaceId = verification.workspaceInvitation.workspace.id;
-        return router.navigateByUrl(`/workspace/${workspaceId}/projects`);
+  return userService.verifyUser(token).pipe(
+    map((verification: VerificationInfo) => {
+      if (sessionLifecycleService.step() === "loggedIn") {
+        sessionLifecycleService.endSession({ reason: "logoutRequested" });
       }
-      if (verification.projectInvitation) {
-        const projectId = verification.projectInvitation.project.id;
-        const workspaceId = verification.projectInvitation.project.workspaceId;
-        return router.navigateByUrl(`/workspace/${workspaceId}/project/${projectId}`);
-      }
-      return router.navigateByUrl("/");
+      sessionLifecycleService.sessionStarted(verification.auth, invitationUrl(verification));
+      return false;
     }),
     catchError((httpResponse: HttpErrorResponse) => {
-      if (httpResponse.status === 404) {
-        // Manage error case for 404
+      if (httpResponse.status === HttpStatusCode.NotFound) {
         void router.navigate(["/signup"]);
-      } else if (httpResponse.status === 400) {
+      } else if (httpResponse.status === HttpStatusCode.BadRequest) {
         void router.navigate(["/login"]);
       }
       return throwError(() => httpResponse);
