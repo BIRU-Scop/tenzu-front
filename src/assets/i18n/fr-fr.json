@@ -23,9 +23,6 @@
         "message": "Tu n'as pas l'autorisation de faire ça."
       }
     },
-    "login": {
-      "logout": "Tu es déconnecté"
-    },
     "action": {
       "changes_saved": "Modifications enregistrées",
       "created_success": "La création a réussi",
@@ -213,7 +210,8 @@
     "add": "Ajouter",
     "undo": "Annuler",
     "more": "Plus",
-    "select_option": "Sélectionne une option"
+    "select_option": "Sélectionne une option",
+    "loading": "Chargement…"
   },
   "general": {
     "identity": {

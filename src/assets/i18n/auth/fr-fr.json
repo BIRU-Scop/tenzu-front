@@ -9,6 +9,15 @@
     "errors": {
       "401": "Ton adresse e-mail, ton nom d'utilisateur ou ton mot de passe sont incorrects",
       "username_required": "Entre ton adresse e-mail ou ton nom d'utilisateur"
+    },
+    "exit_reason": {
+      "passwordChanged": "Ton mot de passe a été modifié, reconnecte-toi.",
+      "tokensCleared": "Tu as été déconnecté.",
+      "accountSwitched": "Un autre compte s'est connecté dans un autre onglet.",
+      "refreshRefused": "Ta session a expiré, reconnecte-toi.",
+      "refreshExpired": "Ta session a expiré, reconnecte-toi.",
+      "accountDeleted": "Ton compte a été supprimé.",
+      "from_another_tab": "Tu as été déconnecté depuis un autre onglet."
     }
   },
   "social": {

@@ -42,6 +42,7 @@
       "info_delete_workspace": "Esos espacios de trabajo se eliminarán, junto con los proyectos que contengan. Para evitarlo, puedes invitar a alguien a ser miembro de un espacio de trabajo.",
       "only_member_project": "Usted es el único miembro en algunos proyectos",
       "info_delete_project": "Esos proyectos serán eliminados. Para evitarlo, puedes invitar a alguien a ser miembro de un proyecto."
-    }
+    },
+    "deletion_failed": "No se pudo eliminar tu cuenta. Tu cuenta está intacta; inténtalo de nuevo o contacte con soporte."
   }
 }

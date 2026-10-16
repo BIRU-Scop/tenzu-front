@@ -9,6 +9,15 @@
     "errors": {
       "401": "Tu correo electrónico, nombre de usuario o contraseña son incorrectos",
       "username_required": "Introduce tu correo electrónico o nombre de usuario"
+    },
+    "exit_reason": {
+      "passwordChanged": "Tu contraseña ha cambiado, vuelva a iniciar sesión.",
+      "tokensCleared": "Te has desconectado.",
+      "accountSwitched": "Otra cuenta inició sesión desde otra pestaña.",
+      "refreshRefused": "Tu sesión ha expirado, vuelva a iniciar sesión.",
+      "refreshExpired": "Tu sesión ha expirado, vuelva a iniciar sesión.",
+      "accountDeleted": "Tu cuenta ha sido eliminada.",
+      "from_another_tab": "Te has desconectado desde otra pestaña."
     }
   },
   "social": {

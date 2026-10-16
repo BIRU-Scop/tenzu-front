@@ -23,9 +23,6 @@
         "message": "You don't have permission to do that."
       }
     },
-    "login": {
-      "logout": "You are signed out"
-    },
     "action": {
       "changes_saved": "Changes saved",
       "created_success": "Create success",
@@ -213,7 +210,8 @@
     "more": "More",
     "add": "Add",
     "undo": "Undo",
-    "select_option": "Select an option"
+    "select_option": "Select an option",
+    "loading": "Loading…"
   },
   "general": {
     "identity": {

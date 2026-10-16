@@ -23,9 +23,6 @@
         "message": "No tienes permiso para hacer eso."
       }
     },
-    "login": {
-      "logout": "Ha cerrado sesión."
-    },
     "action": {
       "changes_saved": "Cambios guardados",
       "created_success": "Crear éxito",
@@ -213,7 +210,8 @@
     "more": "Más",
     "add": "Añadir",
     "undo": "Deshacer",
-    "select_option": "Seleccione una opción"
+    "select_option": "Seleccione una opción",
+    "loading": "Cargando…"
   },
   "general": {
     "identity": {
