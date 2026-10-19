@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,14 +19,12 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { WorkspaceDetail, WorkspaceSummary } from "./workspace.model";
-import { AbstractApiService } from "../base";
+import { Service } from "@angular/core";
+import { WorkspaceDetail, workspaceDetailSchema, WorkspaceSummary, workspaceSummarySchema } from "./workspace.model";
+import { AbstractApiService } from "../base/abstract-api-services";
 import type * as WorkspaceApiServiceType from "./workspace-api.type";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceApiService extends AbstractApiService<
   WorkspaceSummary,
   WorkspaceDetail,
@@ -38,6 +36,8 @@ export class WorkspaceApiService extends AbstractApiService<
   WorkspaceApiServiceType.DeleteEntityDetailParams
 > {
   override baseUrl = `${this.configAppService.apiUrl()}/workspaces`;
+  protected override summarySchema = workspaceSummarySchema;
+  protected override detailSchema = workspaceDetailSchema;
 
   protected override getBaseUrl(): string {
     return this.baseUrl;

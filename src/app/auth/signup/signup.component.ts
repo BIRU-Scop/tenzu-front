@@ -27,13 +27,14 @@ import { MatInput } from "@angular/material/input";
 import { ActivatedRoute, Params, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
-import { CreateUserPayload, UserService } from "@tenzu/repository/user";
+import { CreateUserPayload } from "@tenzu/repository/user/user.model";
+import { UserService } from "@tenzu/repository/user/user.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { AuthConfigStore } from "@tenzu/repository/auth/auth-config.store";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { LanguageStore } from "@tenzu/repository/transloco";
+import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { apply, applyWhenValue, form, FormField, FormRoot, maxLength, required } from "@angular/forms/signals";
@@ -43,7 +44,9 @@ import {
   FormFooterComponent,
   FormFooterSecondaryActionDirective,
 } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { AuthService, InvitationTokens, trackFormValidationEffect } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { InvitationTokens } from "@tenzu/repository/auth/auth.model";
+import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 import SocialAuthLoginComponent from "../shared/social-auth-login/social-auth-login.component";
 import PendingVerificationComponent from "./pending-verification/pending-verification.component";
 import { toSignal } from "@angular/core/rxjs-interop";

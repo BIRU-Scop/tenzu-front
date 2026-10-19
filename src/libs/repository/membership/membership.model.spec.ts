@@ -1,0 +1,61 @@
+/*
+ * Copyright (C) 2026 BIRU
+ *
+ * This file is part of Tenzu.
+ *
+ * Tenzu is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact BIRU at ask@biru.sh
+ *
+ */
+
+import { describe, expect, it } from "vitest";
+
+import { membershipBaseSchema, roleSchema } from "@tenzu/repository/membership/membership.model";
+import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
+import {
+  createInvitationsSchema,
+  invitationBaseSchema,
+  publicPendingInvitationBaseSchema,
+} from "@tenzu/repository/membership/invitation.model";
+import {
+  makeCreateInvitations,
+  makeInvitationBase,
+  makeMembershipBase,
+  makePublicPendingInvitationBase,
+  makeRole,
+} from "./membership.factories";
+
+describe("membership schemas", () => {
+  it("accept their factory payloads", () => {
+    expect(() => roleSchema.parse(makeRole())).not.toThrow();
+    expect(() => membershipBaseSchema.parse(makeMembershipBase())).not.toThrow();
+    expect(() => invitationBaseSchema.parse(makeInvitationBase())).not.toThrow();
+    expect(() => createInvitationsSchema.parse(makeCreateInvitations())).not.toThrow();
+    expect(() => publicPendingInvitationBaseSchema.parse(makePublicPendingInvitationBase())).not.toThrow();
+  });
+
+  it("reject non-conforming payloads", () => {
+    expect(() => roleSchema.parse({ ...makeRole(), order: "high" })).toThrow();
+    expect(() => invitationBaseSchema.parse({ ...makeInvitationBase(), status: "unknown" })).toThrow();
+    expect(() => invitationBaseSchema.parse({ ...makeInvitationBase(), createdAt: "not-a-date" })).toThrow();
+    expect(() => membershipBaseSchema.parse({ ...makeMembershipBase(), user: { id: "user-1" } })).toThrow();
+  });
+
+  it("roleSchema strictly validates permission values", () => {
+    expect(() =>
+      roleSchema.parse({ ...makeRole(), permissions: [ProjectPermissions.VIEW_STORY, "is_member"] }),
+    ).not.toThrow();
+    expect(() => roleSchema.parse({ ...makeRole(), permissions: ["not_a_permission"] })).toThrow();
+  });
+});

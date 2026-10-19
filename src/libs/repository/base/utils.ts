@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -56,4 +56,17 @@ export function retryWhenErrors<T>(): MonoTypeOperatorFunction<T> {
       return timer(backoff);
     },
   });
+}
+export function prependIdIfAbsent<IdType>(ids: readonly IdType[], id: IdType): readonly IdType[] {
+  if (ids.includes(id)) {
+    return ids;
+  }
+  return [id, ...ids];
+}
+
+export function removeId<IdType>(ids: readonly IdType[], id: IdType): readonly IdType[] {
+  if (!ids.includes(id)) {
+    return ids;
+  }
+  return ids.filter((currentId) => currentId !== id);
 }

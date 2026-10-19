@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { CommonModule } from "@angular/common";
 import { withTransloco } from "../storybook-providers";
@@ -43,7 +43,7 @@ export const Compositions: Story = {
     props: args,
     template: `
   <div class="flex flex-col gap-8">
-    <h1>Outlined — sizes</h1>
+    <h1>Outlined - sizes</h1>
     <div class="flex flex-row flex-wrap gap-8 items-center">
       <app-avatar name="Gigi Gray" mode="outlined" size="sm" [color]="1" />
       <app-avatar name="Gigi Gray" mode="outlined" size="md" [color]="2" />
@@ -51,7 +51,7 @@ export const Compositions: Story = {
       <app-avatar name="Gigi Gray" mode="outlined" size="xl" [color]="4" />
     </div>
 
-    <h1>Outlined — wrapped in button</h1>
+    <h1>Outlined - wrapped in button</h1>
     <div class="flex flex-row flex-wrap gap-8 items-center">
       <button><app-avatar name="Gigi Gray" mode="outlined" size="sm" [color]="1" /></button>
       <button><app-avatar name="Gigi Gray" mode="outlined" size="md" [color]="2" /></button>
@@ -59,7 +59,7 @@ export const Compositions: Story = {
       <button><app-avatar name="Gigi Gray" mode="outlined" size="xl" [color]="4" /></button>
     </div>
 
-    <h1>Filled circle — sizes</h1>
+    <h1>Filled circle - sizes</h1>
     <div class="flex flex-row flex-wrap gap-8 items-center">
       <app-avatar name="Gigi Gray" mode="filled-circle" size="sm" [color]="4" />
       <app-avatar name="Gigi Gray" mode="filled-circle" size="md" [color]="5" />
@@ -67,7 +67,7 @@ export const Compositions: Story = {
       <app-avatar name="Gigi Gray" mode="filled-circle" size="xl" [color]="8" />
     </div>
 
-    <h1>Filled square — sizes</h1>
+    <h1>Filled square - sizes</h1>
     <div class="flex flex-row flex-wrap gap-8 items-center">
       <app-avatar name="Gigi Gray" mode="filled-square" size="sm" [color]="4" />
       <app-avatar name="Gigi Gray" mode="filled-square" size="md" [color]="5" />

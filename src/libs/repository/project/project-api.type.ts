@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -20,7 +20,7 @@
  */
 
 import { ProjectDetail } from "./project.model";
-import { WorkspaceSummary } from "../workspace";
+import { WorkspaceSummary } from "../workspace/workspace.model";
 
 export type BaseParams = { projectId: ProjectDetail["id"] };
 export type ListEntitiesSummaryParams = { workspaceId: WorkspaceSummary["id"] };

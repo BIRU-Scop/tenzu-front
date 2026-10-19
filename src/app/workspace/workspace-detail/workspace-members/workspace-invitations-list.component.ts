@@ -22,7 +22,8 @@
 import { Component, inject, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
-import { WorkspaceInvitation, WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspaceInvitation } from "@tenzu/repository/workspace-invitations/workspace-invitation.model";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations/workspace-invitation-repository.service";
 import { WorkspacePermissions } from "@tenzu/repository/permission/permission.model";
 import { PermissionOrRedirectDirective } from "@tenzu/directives/permission.directive";
 import { InvitationStatusComponent } from "@tenzu/shared/components/invitations/invitation-status.component";

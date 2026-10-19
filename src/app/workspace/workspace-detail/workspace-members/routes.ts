@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,7 +23,7 @@ import { ActivatedRouteSnapshot, Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { debug } from "@tenzu/utils/functions/logging";
 import { inject } from "@angular/core";
-import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations";
+import { WorkspaceInvitationRepositoryService } from "@tenzu/repository/workspace-invitations/workspace-invitation-repository.service";
 
 export function workspaceListInvitationsResolver(route: ActivatedRouteSnapshot) {
   debug("workspaceListInvitationsResolver", "start");

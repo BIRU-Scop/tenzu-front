@@ -20,7 +20,8 @@
  */
 
 import { Component, inject, input, inputBinding, signal } from "@angular/core";
-import { ProjectImportationNested, ProjectImportationRepositoryService } from "@tenzu/repository/importation";
+import { ProjectImportationNested } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatIcon } from "@angular/material/icon";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { ButtonCloseComponent } from "@tenzu/shared/components/ui/button/button-close.component";
@@ -28,12 +29,12 @@ import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectSummary } from "@tenzu/repository/project";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { ProjectSummary } from "@tenzu/repository/project/project.model";
 
 @Component({
   selector: "app-project-invitations-list-importation-warning",

@@ -28,7 +28,8 @@
     },
     "action": {
       "changes_saved": "Modifications enregistrées",
-      "created_success": "La création a réussi"
+      "created_success": "La création a réussi",
+      "invitations_sent": "Les invitations ont été envoyés"
     },
     "project": {
       "deleted": "Le projet {{ name }} a été supprimé."
@@ -74,7 +75,8 @@
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> à déplacé la story dans le statut <span class='text-on-background'>{{status}}</span> du kanban <span class='text-on-background'>{{workflow}}</span>",
       "project_importation.fail": "L'importation du fichier {{fileName}} a échouée",
       "project_importation.action_needed": "L'importation du fichier {{fileName}} nécessite une action.",
-      "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})"
+      "project_importation.warning.file_too_big": "Lors de l'importation de {{fileName}}, le fichier {{errorFileName}} n'a pas pu être importé car il est trop volumineux ({{errorFileSize}} > {{maxFileSize}})",
+      "project_importation.warning.too_many_story_tags": "L'importation de {{fileName}} contient plus de tag de story ({{storyTagsNumber}}) que le nombre maximum permis par projet ({{maxNumber}}). Nous te conseillons de réduire le nombre de tags existants"
     }
   },
   "component": {
@@ -179,6 +181,16 @@
         "admin": "peut inviter/supprimer des membres (sauf les owners), attribuer/retirer tout rôle autre que celui d'owner, modifier les informations du projet, modifier les rôles dynamiques et consulter tout le contenu du projet.",
         "readonly_member": "peut voir le contenu du projet : kanbans, story et commentaires."
       }
+    },
+    "color_picker": {
+      "color_name": "Couleur {{index}}"
+    },
+    "story_tags": {
+      "input_label": "Ajouter un tag",
+      "no_tags": "Aucun tag dans ce projet; ils se créent dans Réglages → Tags.",
+      "tag_added": "Tag {{label}} ajouté.",
+      "tag_removed": "Tag {{label}} retiré.",
+      "tag_gone": "Ce tag n'existe plus; il vient d'être supprimé."
     }
   },
   "avatar": {
@@ -193,6 +205,7 @@
     "projects": "Projets",
     "workspace": "Espace de travail",
     "cancel": "Annuler",
+    "pause": "Mettre en pause",
     "close": "Fermer",
     "save": "Enregistrer",
     "delete": "Supprimer",

@@ -20,7 +20,7 @@
  */
 
 import { Pipe, PipeTransform } from "@angular/core";
-import { StoryNested } from "@tenzu/repository/story";
+import { StoryNested } from "@tenzu/repository/story/story.model";
 
 @Pipe({
   name: "storyName",

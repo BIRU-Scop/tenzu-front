@@ -28,7 +28,8 @@
     },
     "action": {
       "changes_saved": "Cambios guardados",
-      "created_success": "Crear éxito"
+      "created_success": "Crear éxito",
+      "invitations_sent": "Se han enviado las invitaciones"
     },
     "project": {
       "deleted": "El proyecto {{ name }} ha sido eliminado"
@@ -74,7 +75,8 @@
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> ha movido la historia al estado <span class='text-on-background'>{{status}}</span> en el kanban  <span class='text-on-background'>{{workflow}}</span>",
       "project_importation.fail": "No se ha podido importar el archivo {{fileName}}",
       "project_importation.action_needed": "La importación del archivo {{fileName}} requiere una acción.",
-      "project_importation.warning.file_too_big": "Al importar {{fileName}}, no se ha podido importar el archivo {{errorFileName}} porque es demasiado grande ({{errorFileSize}} > {{maxFileSize}})"
+      "project_importation.warning.file_too_big": "Al importar {{fileName}}, no se ha podido importar el archivo {{errorFileName}} porque es demasiado grande ({{errorFileSize}} > {{maxFileSize}})",
+      "project_importation.warning.too_many_story_tags": "La importación de {{fileName}} contenía más etiquetas de historia ({{storyTagsNumber}}) que el número máximo permitido por proyecto ({{maxNumber}}). Te recomendamos que reduzcas el número de etiquetas existentes"
     }
   },
   "component": {
@@ -179,6 +181,16 @@
         "admin": "puede invitar/remover (excepto owner) miembros, designar/desasignar cualquier rol que no sea owner, editar información del proyecto, editar roles dinámicos y ver todo el contenido del proyecto",
         "readonly_member": "puede ver el contenido del proyecto: kanbans, historias y comentarios"
       }
+    },
+    "color_picker": {
+      "color_name": "Color {{index}}"
+    },
+    "story_tags": {
+      "input_label": "Añadir una etiqueta",
+      "no_tags": "No hay etiquetas en este proyecto; se crean en Configuración → Etiquetas.",
+      "tag_added": "Etiqueta {{label}} añadida.",
+      "tag_removed": "Etiqueta {{label}} eliminada.",
+      "tag_gone": "Esta etiqueta ya no existe; acaba de ser eliminada."
     }
   },
   "avatar": {
@@ -193,6 +205,7 @@
     "projects": "Proyectos",
     "workspace": "Espacio de trabajo",
     "cancel": "Cancelar",
+    "pause": "Pausar",
     "close": "Cerrar",
     "save": "Guardar",
     "delete": "Eliminar",

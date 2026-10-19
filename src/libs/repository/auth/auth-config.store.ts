@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,7 +21,7 @@
 
 import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
 import { setAllEntities, withEntities } from "@ngrx/signals/entities";
-import { SocialProvider } from "@tenzu/repository/auth";
+import { SocialProvider } from "./auth.model";
 
 export const AuthConfigStore = signalStore(
   { providedIn: "root" },

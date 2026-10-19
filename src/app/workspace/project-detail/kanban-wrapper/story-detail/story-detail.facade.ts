@@ -19,16 +19,14 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { inject, Service } from "@angular/core";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { Router } from "@angular/router";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
 import { StoryRepositoryService } from "@tenzu/repository/story/story-repository.service";
-import { StoryDetail } from "@tenzu/repository/story";
+import { StoryDetail } from "@tenzu/repository/story/story.model";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class StoryDetailFacade {
   projectRepositoryService = inject(ProjectRepositoryService);
   workflowRepositoryService = inject(WorkflowRepositoryService);

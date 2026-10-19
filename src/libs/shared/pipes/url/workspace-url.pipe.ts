@@ -20,7 +20,7 @@
  */
 
 import { Pipe, PipeTransform } from "@angular/core";
-import { WorkspaceLinkNested } from "@tenzu/repository/workspace";
+import { WorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.model";
 
 @Pipe({
   name: "workspaceUrl",

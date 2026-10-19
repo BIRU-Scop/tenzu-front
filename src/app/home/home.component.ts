@@ -27,8 +27,8 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { UserStore } from "@tenzu/repository/user";
-import { AuthService } from "@tenzu/repository/auth";
+import { UserStore } from "@tenzu/repository/user/user.store";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { darkModeOn$ } from "@tenzu/utils/observables";
@@ -40,7 +40,7 @@ import { NotificationsComponentService } from "./notifications/notifications-com
 import { MatDivider } from "@angular/material/divider";
 import { EnvBannerComponent } from "@tenzu/shared/components/env-banner/env-banner.component";
 import { NgEventBus } from "ng-event-bus";
-import { ToolBarStore } from "@tenzu/repository/toolbar";
+import { ToolBarStore } from "@tenzu/repository/toolbar/toolBarStore";
 import { PLUGINS_TOKEN } from "../app.config";
 import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
 

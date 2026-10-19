@@ -44,7 +44,7 @@ import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from "@an
 import { JWT_OPTIONS, JwtModule } from "@auth0/angular-jwt";
 import { PRECONNECT_CHECK_BLOCKLIST } from "@angular/common";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { LanguageStore } from "@tenzu/repository/transloco";
+import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { httpInterceptor } from "@tenzu/utils/interceptors";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { WsService } from "@tenzu/utils/services/ws";
@@ -55,13 +55,11 @@ import { lastValueFrom } from "rxjs";
 import { mockInterceptor } from "@tenzu/utils/mocks/mock.interceptor";
 import { DomainMockStore } from "@tenzu/utils/mocks/mock-state";
 import { MockControlPanelComponent } from "@tenzu/utils/mocks/mock-control-panel.component";
+import { tokenGetter } from "@tenzu/utils/functions/token";
 
 export type Plugin = object;
 
 export const PLUGINS_TOKEN = new InjectionToken<(Plugin | null)[]>("PLUGINS_TOKEN");
-export function tokenGetter() {
-  return localStorage.getItem("token");
-}
 
 export const appConfig: ApplicationConfig = {
   providers: [

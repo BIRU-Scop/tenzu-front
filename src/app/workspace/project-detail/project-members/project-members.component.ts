@@ -20,25 +20,26 @@
  */
 
 import { AfterViewInit, Component, computed, inject, inputBinding, signal } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { InvitePeopleDialogComponent } from "@tenzu/shared/components/invitations/invite-people-dialog/invite-people-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { MatIcon } from "@angular/material/icon";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
-import { Role } from "@tenzu/repository/membership";
+import { Role } from "@tenzu/repository/membership/membership.model";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
-import { ImportationStatus } from "@tenzu/repository/importation";
+import { ImportationStatus } from "@tenzu/repository/importation/importation.model";
 import { MatBadge } from "@angular/material/badge";
+import { NotificationService } from "@tenzu/utils/services/notification";
 
 @Component({
   selector: "app-project-members",
@@ -127,6 +128,7 @@ export default class ProjectMembersComponent implements AfterViewInit {
 
   breadcrumbStore = inject(BreadcrumbStore);
   readonly dialog = inject(MatDialog);
+  readonly notificationService = inject(NotificationService);
   projectRepositoryService = inject(ProjectRepositoryService);
   projectInvitationRepositoryService = inject(ProjectInvitationRepositoryService);
   projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
@@ -165,6 +167,9 @@ export default class ProjectMembersComponent implements AfterViewInit {
       dialogRef.afterClosed().subscribe(async (invitations: { email: string; roleId: Role["id"] }[] | undefined) => {
         if (invitations?.length) {
           await this.projectInvitationRepositoryService.createBulkInvitations(selectedProject, invitations);
+          this.notificationService.success({
+            title: "notification.action.invitations_sent",
+          });
           await this.router.navigate(["list-project-invitations"], { relativeTo: this.activatedRoute });
         }
       });

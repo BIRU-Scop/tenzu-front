@@ -28,7 +28,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { MatDivider } from "@angular/material/divider";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { AsyncPipe, NgComponentOutlet, TitleCasePipe, UpperCasePipe } from "@angular/common";
-import { SideNavStore } from "@tenzu/repository/sidenav";
+import { SideNavStore } from "@tenzu/repository/sidenav/sideNavStore";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { SidenavListWorkflowComponent } from "../../../../app/workspace/project-detail/sidenav-list-workflow/sidenav-list-workflow.component";
 import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";

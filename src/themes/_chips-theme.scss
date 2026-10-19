@@ -84,7 +84,7 @@
       hover-state-layer-opacity: 40%,
     ));
   }
-  .mat-mdc-chip.cdk-focused {
+  .mat-mdc-chip.cdk-keyboard-focused {
     @apply outline outline-outline outline-offset-2;
   }
   @include mat.chips-overrides((

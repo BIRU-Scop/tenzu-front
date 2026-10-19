@@ -20,7 +20,7 @@
  */
 
 import { Component, input, output, Signal } from "@angular/core";
-import { MembershipBase, Role } from "@tenzu/repository/membership";
+import { MembershipBase, Role } from "@tenzu/repository/membership/membership.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ConfirmDirective } from "@tenzu/directives/confirm";
 import { ButtonDeleteComponent } from "@tenzu/shared/components/ui/button/button-delete.component";

@@ -23,7 +23,7 @@ import { Component, inject, input, output } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { MatDivider } from "@angular/material/divider";
 import {
   ProjectCreateDialog,

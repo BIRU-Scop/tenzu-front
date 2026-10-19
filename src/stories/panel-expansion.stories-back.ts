@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { CommonModule } from "@angular/common";
 import {
@@ -28,7 +28,6 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
 } from "@angular/material/expansion";
-import { provideAnimations } from "@angular/platform-browser/animations";
 
 type Story = StoryObj<MatExpansionPanel>;
 
@@ -46,7 +45,7 @@ const meta: Meta<MatExpansionPanel> = {
       ],
     }),
     applicationConfig({
-      providers: [provideAnimations()],
+      providers: [],
     }),
   ],
 };

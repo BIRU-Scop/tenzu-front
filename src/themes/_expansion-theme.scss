@@ -21,45 +21,20 @@
 
 @use '@angular/material' as mat;
 
-html {
-  //.mat-expansion-panel {
-  //  border-style: solid;
-  //  border-width: 1px;
-  //  border-bottom-width: 2px;
-  //  border-color:  var(--mat-sys-outline);
-  //  &:not([class*=mat-elevation-z]) {
-  //    box-shadow: var(--mat-sys-level1);
-  //  }
-  //  &:focus-within {
-  //    outline: var(--mat-sys-primary) solid 4px;
-  //    border-color:  var(--mat-sys-outline);
-  //  }
-  //  &:hover {
-  //    border-color:  var(--mat-sys-primary);
-  //  }
-  //}
-  //.mdc-dialog__content {
-  //  .mat-expansion-panel:first-child {
-  //    margin-top: 4px;
-  //  }
-  //}
-}
-
 @mixin tokens-overrides() {
-  //@include mat.expansion-overrides((
-  //  container-shape: var(--mat-sys-corner-medium),
-  //  header-hover-state-layer-color: transparent,
-  //  header-focus-state-layer-color: transparent,
-  //  header-text-color: var(--mat-sys-on-background),
-  //  container-text-color:  var(--mat-sys-on-background),
-  //  header-description-color: var(--mat-sys-on-surface),
-  //  header-indicator-color: var(--mat-sys-on-surface-variant),
-  //  header-text-size: var(--mat-sys-body-large-size),
-  //  header-text-weight: var(--mat-sys-body-large-weight),
-  //  header-text-line-height: var(--mat-sys-body-large-line-height),
-  //  container-text-size: var(--mat-sys-body-medium-size),
-  //  container-text-weight: var(--mat-sys-body-medium-weight),
-  //  container-text-line-height: var(--mat-sys-body-medium-line-height),
-  //  container-background-color: var(--mat-sys-surface),
-  //));
+  .flat-expansion {
+    .mat-expansion-panel-header,
+    .mat-expansion-panel-body {
+      border-bottom: 1px solid var(--mat-divider-color);
+    }
+    .mat-expansion-panel-header {
+      margin-bottom: 16px;
+    }
+
+    @include mat.expansion-overrides((
+      container-shape: 0,
+      container-elevation-shadow: 0,
+      container-background-color: var(--background-color),
+    ));
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,10 +23,10 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectInvitationsApiService } from "@tenzu/repository/project-invitations/project-invitation-api.service";
-import { PublicProjectPendingInvitation } from "@tenzu/repository/project-invitations";
+import { PublicProjectPendingInvitation } from "@tenzu/repository/project-invitations/project-invitation.model";
 
 export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);

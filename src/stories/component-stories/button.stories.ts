@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { CommonModule } from "@angular/common";
 import { withTransloco } from "../storybook-providers";

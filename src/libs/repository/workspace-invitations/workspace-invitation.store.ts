@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -22,7 +22,7 @@
 import { patchState, signalStore, withMethods } from "@ngrx/signals";
 import { withEntityListFeature } from "../base/features";
 import { WorkspaceInvitation } from "./workspace-invitation.model";
-import { sortInvitation } from "@tenzu/repository/membership";
+import { sortInvitation } from "../membership/invitation.model";
 import { setAllEntities } from "@ngrx/signals/entities";
 
 export const WorkspaceInvitationEntitiesStore = signalStore(

@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 import { Component } from "@angular/core";
 import { withTransloco } from "../storybook-providers";
 import { StatusSkeletonComponent } from "../../app/workspace/project-detail/project-kanban-skeleton/status-skeleton/status-skeleton.component";

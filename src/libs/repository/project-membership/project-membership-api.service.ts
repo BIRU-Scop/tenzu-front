@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,10 +19,10 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { AbstractApiService } from "../base";
-import { ProjectSummary } from "../project";
-import { ProjectMembership } from "./project-membership.model";
+import { Service } from "@angular/core";
+import { AbstractApiService } from "../base/abstract-api-services";
+import { ProjectSummary } from "../project/project.model";
+import { ProjectMembership, projectMembershipSchema } from "./project-membership.model";
 import { Observable } from "rxjs";
 
 export type ListProjectMembershipParams = {
@@ -34,9 +34,7 @@ export type PutProjectMembershipParams = unknown;
 export type PatchProjectMembershipParams = { membershipId: ProjectMembership["id"] };
 export type DeleteProjectMembershipParams = { membershipId: ProjectMembership["id"] };
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class ProjectMembershipApiService extends AbstractApiService<
   ProjectMembership,
   ProjectMembership,
@@ -48,6 +46,8 @@ export class ProjectMembershipApiService extends AbstractApiService<
   DeleteProjectMembershipParams
 > {
   protected override baseUrl = `${this.configAppService.apiUrl()}/projects`;
+  protected override summarySchema = projectMembershipSchema;
+  protected override detailSchema = projectMembershipSchema;
   protected override getBaseUrl(params: { projectId: ProjectSummary["id"] }) {
     return `${this.baseUrl}/${params.projectId}/memberships`;
   }

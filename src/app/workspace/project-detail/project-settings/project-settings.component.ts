@@ -20,16 +20,16 @@
  */
 
 import { AfterViewInit, Component, inject } from "@angular/core";
-import { BreadcrumbStore } from "@tenzu/repository/breadcrumb";
+import { BreadcrumbStore } from "@tenzu/repository/breadcrumb/breadcrumb.store";
 import { ReactiveFormsModule } from "@angular/forms";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { ProjectPermissions } from "@tenzu/repository/permission/permission.model";
 import { HasPermissionDirective } from "@tenzu/directives/permission.directive";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { MatIcon } from "@angular/material/icon";
-import { MemberPermission } from "@tenzu/repository/membership";
+import { MemberPermission } from "@tenzu/repository/membership/membership.model";
 
 @Component({
   selector: "app-project-settings",
@@ -91,6 +91,12 @@ export default class ProjectSettingsComponent implements AfterViewInit {
       labelKey: "project.settings.roles.title",
       permission: ProjectPermissions.CREATE_MODIFY_DELETE_ROLE,
       iconName: "assignment_ind",
+    },
+    {
+      path: "./attributes",
+      labelKey: "project.settings.attributes.title",
+      permission: ProjectPermissions.MODIFY_PROJECT,
+      iconName: "label",
     },
   ];
   breadcrumbStore = inject(BreadcrumbStore);

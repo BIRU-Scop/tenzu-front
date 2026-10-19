@@ -31,7 +31,7 @@
     container-height: 36px,
     container-vertical-padding: 8px,
 
-    // --- Color — General ---
+    // --- Color - General ---
     error-text-color:                                     var(--mat-sys-error),
     leading-icon-color:                                   var(--mat-sys-on-surface-variant),
     trailing-icon-color:                                  var(--mat-sys-on-surface-variant),
@@ -47,13 +47,13 @@
     disabled-select-arrow-color:                          color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent),
     select-disabled-option-text-color:                    color-mix(in srgb, var(--mat-sys-neutral10) 38%, transparent),
 
-    // --- Color — Error trailing icons ---
+    // --- Color - Error trailing icons ---
     error-trailing-icon-color:                            var(--mat-sys-error),
     error-hover-trailing-icon-color:                      var(--mat-sys-on-error-container),
     error-focus-trailing-icon-color:                      var(--mat-sys-error),
 
 
-    // --- Color — Outlined variant ---
+    // --- Color - Outlined variant ---
     outlined-outline-color:                               var(--mat-sys-on-surface-variant),
     outlined-hover-outline-color:                         var(--mat-sys-on-surface),
     outlined-focus-outline-color:                         var(--mat-sys-on-surface-variant),
@@ -74,21 +74,21 @@
     outlined-error-focus-label-text-color:                var(--mat-sys-error),
     outlined-error-hover-label-text-color:                var(--mat-sys-on-error-container),
 
-    //// --- Typography — Container text ---
+    //// --- Typography - Container text ---
     container-text-font:                                  var(--mat-sys-body-large-font),
     container-text-line-height:                           var(--mat-sys-body-large-line-height),
     container-text-size:                                  var(--mat-sys-body-medium-size),
     container-text-tracking:                              var(--mat-sys-body-large-tracking),
     container-text-weight:                                var(--mat-sys-body-large-weight),
 
-    //// --- Typography — Subscript (hint / error text) ---
+    //// --- Typography - Subscript (hint / error text) ---
     subscript-text-font:                                  var(--mat-sys-body-small-font),
     subscript-text-line-height:                           var(--mat-sys-body-small-line-height),
     subscript-text-size:                                  var(--mat-sys-body-small-size),
     subscript-text-tracking:                              var(--mat-sys-body-small-tracking),
     subscript-text-weight:                                var(--mat-sys-body-small-weight),
 
-    // --- Typography — Labels ---
+    // --- Typography - Labels ---
     outlined-label-text-font:                             var(--mat-sys-body-large-font),
     outlined-label-text-size:                             var(--mat-sys-body-medium-size),
     outlined-label-text-tracking:                         var(--mat-sys-body-large-tracking),
@@ -97,7 +97,7 @@
   ));
 
 
-  // No token exists for error leading icon — CSS override required
+  // No token exists for error leading icon - CSS override required
   .mdc-text-field--invalid:not(.mdc-text-field--disabled) .mat-mdc-form-field-icon-prefix {
     color: var(--mat-sys-error);
   }

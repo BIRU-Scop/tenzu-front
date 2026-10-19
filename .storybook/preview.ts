@@ -1,6 +1,8 @@
-import { applicationConfig, componentWrapperDecorator, moduleMetadata, Preview } from "@storybook/angular";
+import { applicationConfig, componentWrapperDecorator, moduleMetadata, Preview } from "@storybook/angular-vite";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { MatIconRegistryConfig } from "./mat-icon-registry-config";
+
+import "../src/styles.scss";
 
 const preview: Preview = {
   parameters: {

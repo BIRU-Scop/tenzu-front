@@ -28,7 +28,8 @@
     },
     "action": {
       "changes_saved": "Changes saved",
-      "created_success": "Create success"
+      "created_success": "Create success",
+      "invitations_sent": "The invitations have been sent out"
     },
     "project": {
       "deleted": "The project {{ name }} has been deleted"
@@ -74,7 +75,8 @@
       "stories.workflow_change": "<span class='text-on-background'>{{fullName}}</span> moved the story to <span class='text-on-background'>{{status}}</span> status in the  <span class='text-on-background'>{{workflow}}</span> kanban",
       "project_importation.fail": "The import of the file {{fileName}} has failed",
       "project_importation.action_needed": "The import of the file {{fileName}} require your attention.",
-      "project_importation.warning.file_too_big": "During the import of {{fileName}}, the file {{errorFileName}} couldn't be imported because it is too big ({{errorFileSize}} > {{maxFileSize}})"
+      "project_importation.warning.file_too_big": "During the import of {{fileName}}, the file {{errorFileName}} couldn't be imported because it is too big ({{errorFileSize}} > {{maxFileSize}})",
+      "project_importation.warning.too_many_story_tags": "The import of {{fileName}} contained more story tags ({{storyTagsNumber}}) than the maxinum amount allowed per project ({{maxNumber}}). We advise you to reduce the number of existing tags"
     }
   },
   "component": {
@@ -179,6 +181,16 @@
         "admin": "can invite/remove (except owner) members, appoint/unassign  any role other than owner, edit project info, edit dynamic roles and see all project's content",
         "readonly_member": "can see the project content: kanbans, stories and comments"
       }
+    },
+    "color_picker": {
+      "color_name": "Color {{index}}"
+    },
+    "story_tags": {
+      "input_label": "Add a tag",
+      "no_tags": "No tags in this project; they are created in Settings → Tags.",
+      "tag_added": "Tag {{label}} added.",
+      "tag_removed": "Tag {{label}} removed.",
+      "tag_gone": "This tag no longer exists; it was just deleted."
     }
   },
   "avatar": {
@@ -193,6 +205,7 @@
     "projects": "Projects",
     "workspace": "Workspace",
     "cancel": "Cancel",
+    "pause": "Pause",
     "close": "Close",
     "save": "Save",
     "delete": "Delete",

@@ -20,15 +20,15 @@
  */
 
 import { Component, inject, input, output } from "@angular/core";
-import { TranslocoDirective } from "@jsverse/transloco";
+import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { FileInputComponent } from "@tenzu/shared/components/file-input/file-input.component";
 import { FileValue } from "@tenzu/repository/base/misc.model";
-import { ProjectImportationRepositoryService, ProjectImportationType } from "@tenzu/repository/importation";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { HttpErrorResponse } from "@angular/common/http";
+import { ProjectImportationType } from "@tenzu/repository/importation/importation.model";
+import { TusUploadRepositoryService } from "@tenzu/repository/importation/tus-upload-repository.service";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
 import { debug } from "@tenzu/utils/functions/logging";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { getLocError } from "@tenzu/utils/functions/errors";
 import { IconName } from "@tenzu/shared/components/ui/ui.types";
 
 @Component({
@@ -55,8 +55,10 @@ import { IconName } from "@tenzu/shared/components/ui/ui.types";
   },
 })
 export class ProjectImportationInputComponent {
-  readonly importationRepositoryService = inject(ProjectImportationRepositoryService);
+  readonly tusUploadRepositoryService = inject(TusUploadRepositoryService);
   readonly notificationService = inject(NotificationService);
+  readonly liveAnnouncer = inject(LiveAnnouncer);
+  readonly translocoService = inject(TranslocoService);
   workspaceId = input.required<WorkspaceSummary["id"]>();
   submitted = output<void>();
   iconName = input<IconName | undefined>("upload");
@@ -64,27 +66,28 @@ export class ProjectImportationInputComponent {
   displayDoc = input(true);
 
   async onFileSelected(file: FileValue) {
-    if (file) {
+    if (file instanceof File) {
       try {
-        await this.importationRepositoryService.createRequest(
-          { originType: ProjectImportationType.TAIGA, source: file },
-          { workspaceId: this.workspaceId() },
-        );
+        await this.tusUploadRepositoryService.start({
+          file,
+          workspaceId: this.workspaceId(),
+          originType: ProjectImportationType.TAIGA,
+        });
         this.submitted.emit();
-      } catch (errorResponse) {
-        if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 422) {
-          debug("error-422", "projectImportation", errorResponse);
-          const errorDetail = getLocError(errorResponse, "source");
-          if (errorDetail) {
-            this.notificationService.error({
-              title: "project.new_project.import.errors.422",
-              translocoTitle: true,
-              translocoTitleParams: { error: errorDetail },
-            });
-            return;
-          }
-        }
-        throw errorResponse;
+        this.liveAnnouncer
+          .announce(
+            this.translocoService.translate("project.new_project.upload.notifications.started", {
+              fileName: file.name,
+            }),
+          )
+          .then();
+      } catch (error) {
+        debug("tus-upload", `creation of ${file.name} failed`, error);
+        this.notificationService.error({
+          title: "project.new_project.upload.notifications.failed",
+          translocoTitle: true,
+          translocoTitleParams: { fileName: file.name },
+        });
       }
     }
   }

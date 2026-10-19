@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatChipListbox, MatChipSet } from "@angular/material/chips";
 import { withTransloco } from "../storybook-providers";

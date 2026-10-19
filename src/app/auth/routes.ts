@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -23,7 +23,7 @@ import { Routes } from "@angular/router";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { debug } from "@tenzu/utils/functions/logging";
 import { inject } from "@angular/core";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 
 export function authConfigResolver() {
   debug("authConfigResolver", "start");

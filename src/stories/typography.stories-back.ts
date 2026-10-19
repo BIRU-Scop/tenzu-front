@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatButton } from "@angular/material/button";
 import { CommonModule } from "@angular/common";

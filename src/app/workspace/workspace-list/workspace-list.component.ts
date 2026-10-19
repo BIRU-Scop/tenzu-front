@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -29,33 +29,26 @@ import {
   NameDialogData,
 } from "@tenzu/shared/components/enter-name-dialog/enter-name-dialog.component";
 import { Validators } from "@angular/forms";
-import { ProjectNested, ProjectRepositoryService } from "@tenzu/repository/project";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { WorkspaceCardComponent } from "./workspace-card/workspace-card.component";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { ProjectCardComponent } from "@tenzu/shared/components/project-card";
 import { WorkspaceSkeletonComponent } from "./workspace-skeleton/workspace-skeleton.component";
 import { CardSkeletonComponent } from "@tenzu/shared/components/skeletons/card-skeleton";
-import { ActionCardComponent } from "@tenzu/shared/components/action-card";
-import { WorkspaceSummary } from "@tenzu/repository/workspace";
-import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations";
-import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
-import { ProjectImportationCardComponent } from "@tenzu/shared/components/project-importation-card";
+import { WorkspaceSummary } from "@tenzu/repository/workspace/workspace.model";
+import { ProjectCardListComponent } from "@tenzu/shared/components/project-card-list/project-card-list.component";
 import { RandomColorService } from "@tenzu/utils/services/random-color/random-color.service";
 import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-add.component";
+import { ProjectInvitationRepositoryService } from "@tenzu/repository/project-invitations/project-invitation-repository.service";
 
 @Component({
   selector: "app-workspace-list",
   imports: [
     WorkspaceCardComponent,
     TranslocoDirective,
-    ProjectCardComponent,
     WorkspaceSkeletonComponent,
     CardSkeletonComponent,
-    ActionCardComponent,
-    ProjectLandingPageUrl,
-    ProjectImportationCardComponent,
+    ProjectCardListComponent,
     ButtonAddComponent,
   ],
   template: `
@@ -73,60 +66,25 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
       @if (workpaces.length > 0) {
         <div class="flex flex-col gap-4">
           @for (workspace of workpaces; track workspace.id) {
-            <app-workspace-card
-              class="mt-4"
-              [workspace]="workspace"
-              (submitted)="acceptWorkspaceInvitation(workspace)"
-              (canceled)="denyWorkspaceInvitation(workspace)"
-            />
-            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              @for (project of workspace.userInvitedProjects; track project.id) {
-                <app-action-card
-                  [name]="project.name"
-                  [color]="project.color"
-                  [cancelLabel]="'component.invitation.deny'"
-                  [submitLabel]="'component.invitation.accept'"
-                  (submitted)="acceptProjectInvitation(workspace, project)"
-                  (canceled)="denyProjectInvitation(workspace, project)"
-                />
-              }
-              @for (project of workspace.userMemberProjects; track project.id) {
-                <app-project-card
-                  [workspaceId]="workspace.id"
-                  [name]="project.name"
-                  [color]="project.color"
-                  [logo]="project.logo"
-                  [description]="project.description ? project.description : null"
-                  [landingPage]="project | projectLandingPageUrl"
-                />
-              }
-              @for (projectImportation of workspace.userImportedProjects; track projectImportation.id) {
-                <app-project-importation-card [workspaceId]="workspace.id" [projectImportation]="projectImportation" />
-              }
-              @if (
-                (!workspace.userMemberProjects || workspace.userMemberProjects.length === 0) &&
-                (!workspace.userInvitedProjects || workspace.userInvitedProjects.length === 0) &&
-                (!workspace.userImportedProjects || workspace.userImportedProjects.length === 0)
-              ) {
-                @if (workspace.userCanCreateProjects) {
-                  <app-project-card [workspaceId]="workspace.id" />
-                } @else {
-                  <app-project-card
-                    [workspaceId]="workspace.id"
-                    [name]="'Lorem Ipsum'"
-                    [color]="3"
-                    [description]="'Lorem Ipsum dolor sit amet'"
-                    [disabled]="true"
-                  />
-                }
-              }
+            <div #workspaceSection tabindex="-1" class="contents">
+              <app-workspace-card
+                class="mt-4"
+                [workspace]="workspace"
+                (submitted)="acceptWorkspaceInvitation(workspace)"
+                (canceled)="denyWorkspaceInvitation(workspace)"
+              />
+              <app-project-card-list
+                class="flex flex-row flex-wrap gap-4"
+                [workspace]="workspace"
+                [focusFallback]="workspaceSection"
+              />
             </div>
           }
         </div>
       } @else {
         <div class="flex flex-col gap-8">
           <app-workspace-skeleton />
-          <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
+          <div class="flex flex-row flex-wrap gap-4 mt-4">
             @for (skeleton of skeletons; track $index) {
               <app-card-skeleton />
             }
@@ -138,9 +96,8 @@ import { ButtonAddComponent } from "@tenzu/shared/components/ui/button/button-ad
   styles: ``,
 })
 export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
-  readonly workspaceService = inject(WorkspaceRepositoryService);
-  readonly projectService = inject(ProjectRepositoryService);
   readonly projectInvitationService = inject(ProjectInvitationRepositoryService);
+  readonly workspaceService = inject(WorkspaceRepositoryService);
   readonly relativeDialog = inject(RelativeDialogService);
   readonly dialog = inject(MatDialog);
   readonly skeletons = Array(6);
@@ -218,13 +175,5 @@ export class WorkspaceListComponent implements AfterViewInit, OnDestroy {
 
   async denyWorkspaceInvitation(workspace: WorkspaceSummary) {
     await this.workspaceService.denyInvitationWorkspace({ workspaceId: workspace.id });
-  }
-
-  async acceptProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
-    await this.projectInvitationService.acceptProjectInvitation({ workspaceId: workspace.id, project: project });
-  }
-
-  async denyProjectInvitation(workspace: WorkspaceSummary, project: ProjectNested) {
-    await this.projectInvitationService.denyProjectInvitation({ workspaceId: workspace.id, projectId: project.id });
   }
 }

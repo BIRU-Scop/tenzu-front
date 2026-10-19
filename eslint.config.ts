@@ -21,6 +21,13 @@ export default defineConfig(
     processor: angular.processInlineTemplates,
     rules: {
       curly: ["error", "all"],
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "ImportDeclaration[source.value=/^zod(\\/v4)?$/] ImportSpecifier[imported.name='z']",
+          message: 'Import zod as a namespace: import * as z from "zod/v4".',
+        },
+      ],
       "@angular-eslint/directive-selector": [
         "error",
         {

@@ -21,15 +21,15 @@
 
 import { Component, computed, effect, inject, input, output, signal } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MembershipBase, Role } from "@tenzu/repository/membership";
+import { MembershipBase, Role } from "@tenzu/repository/membership/membership.model";
 import { RoleSelectorFieldComponent } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.component";
-import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership";
-import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
 import { PermissionsBase } from "@tenzu/repository/permission/permission.model";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
-import { WorkspaceDetail } from "@tenzu/repository/workspace";
-import { ProjectDetail } from "@tenzu/repository/project";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceDetail } from "@tenzu/repository/workspace/workspace.model";
+import { ProjectDetail } from "@tenzu/repository/project/project.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { apply, disabled, form, FormField, required } from "@angular/forms/signals";
 import { roleSelectorFieldSchema } from "@tenzu/shared/components/form/role-selector-field/role-selector-field.schema";

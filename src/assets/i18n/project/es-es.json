@@ -19,7 +19,7 @@
     "import": {
       "taiga": "Importar proyecto desde Taiga",
       "taiga_doc": "¿Cómo importar desde Taiga?",
-      "ongoing": "Transferencia en curso…",
+      "ongoing": "Importación en curso…",
       "action_needed": "Se requiere una acción",
       "invite_description_modal": "Puedes invitar a los usuarios de tu proyecto importado y, una vez aceptada la invitación, se les reasignará automáticamente su puesto.",
       "invite_warning": "Los usuarios del proyecto importado no han sido invitados de nuevo a Tenzu.",
@@ -32,6 +32,42 @@
         "file_validation_failed": "La importación de {{fileName}} ha fallado porque el formato no es correcto.",
         "server_error_while_processing": "La importación de {{fileName}} ha fallado debido a un error del servidor.<br/><b>Póngase en contacto con el equipo de Tenzu</b> y facilítenos su archivo de importación, así como cualquier dato relevante sobre su configuración que nos permita solucionar el problema.",
         "unknown": "La importación de {{fileName}} ha fallado debido a un error desconocido."
+      }
+    },
+    "upload": {
+      "status": {
+        "uploading": "Envío en curso…",
+        "retrying": "Conexión perdida, reintentando…",
+        "paused": "Envío en pausa",
+        "resuming": "Reanudando…",
+        "canceling": "Cancelando…",
+        "interrupted": "Archivo no encontrado",
+        "server_not_responding": "El servidor no responde",
+        "session_expired": "Sesión caducada",
+        "forbidden": "Importación no permitida",
+        "file_refused": "Archivo rechazado"
+      },
+      "deadline": "Reanudación posible hasta el {{date}}",
+      "interrupted_hint": "Selecciona de nuevo {{fileName}} ({{fileSize}}) para reanudar.",
+      "progress_label": "Progreso del envío de {{fileName}}",
+      "actions": {
+        "pause": "Pausar el envío de {{fileName}}",
+        "resume": "Reanudar el envío de {{fileName}}",
+        "retry": "Reintentar",
+        "confirm_cancel": "Cancelar el envío",
+        "choose_file": "Elegir archivo",
+        "details": "Detalles"
+      },
+      "confirm_cancel": "¿Cancelar el envío de {{fileName}}? Se perderá el {{percentage}} % ya enviado.",
+      "details_title": "Envío de {{fileName}}",
+      "notifications": {
+        "started": "Envío de {{fileName}} iniciado",
+        "finished": "Envío de {{fileName}} terminado, importación en curso",
+        "failed": "El envío de {{fileName}} ha fallado",
+        "interrupted": "El envío de {{fileName}} está interrumpido, el archivo ya no se puede leer",
+        "resumed": "Reanudando el envío de {{fileName}}",
+        "expired": "El envío de {{fileName}} ha caducado. Importa el archivo de nuevo desde \"Nuevo proyecto\".",
+        "file_mismatch": "Este archivo no coincide con {{fileName}} (nombre, tamaño y fecha de modificación deben ser idénticos)"
       }
     }
   },
@@ -51,7 +87,6 @@
         "confirm": "Reasignar",
         "project_role_select_title": "Roles"
       },
-
       "role": {
         "label": "Rol",
         "no_member_permissions": "Para conceder un permiso de rol, debe establecer un permiso de miembro",
@@ -111,6 +146,38 @@
       "not_editable": "No editable",
       "editable": "Editable",
       "create_role": "Crear rol"
+    },
+    "attributes": {
+      "title": "Atributos",
+      "tags": {
+        "empty_message": "Aún no hay etiquetas; cree una para categorizar las historias de este proyecto.",
+        "add": "Etiqueta",
+        "dialog": {
+          "title_create": "Crear una etiqueta",
+          "title_edit": "Editar la etiqueta",
+          "name_label": "Nombre",
+          "choose_color": "Elige un color",
+          "create": "Crear etiqueta",
+          "save": "Guardar",
+          "errors": {
+            "unique": "Ya existe una etiqueta con este nombre.",
+            "required": "El nombre es obligatorio.",
+            "max_length": "50 caracteres como máximo.",
+            "invalid_characters": "El nombre contiene caracteres no válidos."
+          }
+        },
+        "title": "Etiquetas",
+        "related_stories": "{count, plural, one {# historia relacionada} other {# historias relacionadas}}",
+        "edit_aria": "Editar la etiqueta {{label}}",
+        "delete_aria": "Eliminar la etiqueta {{label}}",
+        "delete_confirm_used": "¿Seguro que quieres eliminar la etiqueta \"{{label}}\"? La usan {count, plural, one {# historia} other {# historias}} y se eliminará de todas ellas.",
+        "delete_confirm_unused": "La etiqueta \"{{label}}\" no la usa ninguna historia. ¿Seguro que quieres eliminarla?",
+        "errors": {
+          "conflict": "Ya existe una etiqueta \"{{label}}\"; puede que alguien la haya creado justo ahora.",
+          "max_reached": "Este proyecto ha alcanzado su número máximo de etiquetas.",
+          "gone": "Esta etiqueta ya no existe; acaba de ser eliminada."
+        }
+      }
     }
   },
   "members": {

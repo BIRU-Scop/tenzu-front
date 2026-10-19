@@ -23,7 +23,7 @@ import { Component, effect, inject } from "@angular/core";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatInput, MatLabel } from "@angular/material/input";
-import { WorkspaceRepositoryService } from "@tenzu/repository/workspace";
+import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
 import { Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatError, MatFormField } from "@angular/material/form-field";

@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 import { Component } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
 import { provideRouter } from "@angular/router";
@@ -33,7 +33,7 @@ import { withTransloco } from "../storybook-providers";
   template: `
     <div class="flex flex-col gap-12">
       <section class="flex flex-col gap-4">
-        <h1>Default — name, description & link</h1>
+        <h1>Default - name, description & link</h1>
         <div class="flex flex-row flex-wrap gap-4 items-start">
           <app-project-card
             workspaceId="ws-1"
@@ -101,7 +101,7 @@ import { withTransloco } from "../storybook-providers";
       </section>
 
       <section class="flex flex-col gap-4">
-        <h1>Empty state — create first project</h1>
+        <h1>Empty state - create first project</h1>
         <div class="flex flex-row flex-wrap gap-4">
           <app-project-card workspaceId="ws-1" />
         </div>

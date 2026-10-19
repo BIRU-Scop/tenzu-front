@@ -111,13 +111,16 @@ export class AvatarComponent {
   });
   computeColor = computed(() => {
     const color = this.color();
+    if (this.mode() === "outlined") {
+      return `var(--color-${color}-background)`;
+    }
     return `var(--color-${color}-color)`;
   });
   computedBorderColor = computed(() => {
     const color = this.color();
     const mode = this.mode();
     if (mode === "outlined") {
-      return `var(--color-${color}-color)`;
+      return `var(--color-${color}-background)`;
     } else {
       return `var(--color-${color}-border)`;
     }

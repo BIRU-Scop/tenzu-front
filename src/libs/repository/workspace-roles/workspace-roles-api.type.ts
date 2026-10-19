@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,9 +19,9 @@
  *
  */
 
-import { WorkspaceRoleSummary } from "./workspace-roles.model";
+import { WorkspaceRole } from "./workspace-roles.model";
 
-export type BaseParams = { workspaceId: WorkspaceRoleSummary["id"] };
+export type BaseParams = { workspaceId: WorkspaceRole["id"] };
 export type ListEntitiesSummaryParams = BaseParams;
 export type CreateEntityDetailParams = undefined;
 export type GetEntityDetailParams = unknown;

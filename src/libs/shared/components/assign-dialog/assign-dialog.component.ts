@@ -30,7 +30,8 @@ import { MatDivider } from "@angular/material/divider";
 import { startWith, tap } from "rxjs";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { UserNested, UserStore } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { AvatarListComponent } from "@tenzu/shared/components/avatar/avatar-list/avatar-list.component";
 import { NotificationService } from "@tenzu/utils/services/notification";
 

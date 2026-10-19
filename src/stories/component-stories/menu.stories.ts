@@ -19,7 +19,7 @@
  *
  */
 
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 import { Component } from "@angular/core";
 import { MatButton } from "@angular/material/button";
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";

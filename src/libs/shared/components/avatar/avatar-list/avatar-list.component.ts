@@ -22,7 +22,8 @@
 import { Component, computed, inject, input } from "@angular/core";
 import { MatTooltip } from "@angular/material/tooltip";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
-import { UserNested, UserStore } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
+import { UserStore } from "@tenzu/repository/user/user.store";
 
 @Component({
   selector: "app-avatar-list",

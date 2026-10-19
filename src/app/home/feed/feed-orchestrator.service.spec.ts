@@ -26,7 +26,7 @@ import { MatDialogRef } from "@angular/material/dialog";
 import { FeedOrchestratorService } from "./feed-orchestrator.service";
 import { FeedDialog } from "./feed-dialog/feed-dialog";
 import { TypedDialogService } from "@tenzu/utils/services/typed-dialog-service/typed-dialog.service";
-import { makeFeedItem } from "@tenzu/utils/testing/factories";
+import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { FeedStore } from "@tenzu/repository/feed/feed.store";
 import { FeedApiService } from "@tenzu/repository/feed/feed-api.service";

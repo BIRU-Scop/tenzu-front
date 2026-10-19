@@ -39,6 +39,7 @@
 @mixin theme-overrides($palette) {
   color: get-color($palette, neutral, on-background);
   background-color: get-color($palette, neutral, background);
+  --background-color: #{get-color($palette, neutral, background)};
   --mat-sys-success: #{get-color($palette, success, success)};
   --mat-sys-on-success: #{get-color($palette, success, on-success)};
   --mat-sys-success-container: #{get-color($palette, success, success-container)};

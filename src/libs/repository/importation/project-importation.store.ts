@@ -21,7 +21,7 @@
 
 import { signalStore } from "@ngrx/signals";
 import { withEntityListFeature } from "../base/features";
-import { ProjectImportation } from "@tenzu/repository/importation/importation.model";
+import { ProjectImportation } from "../importation/importation.model";
 
 export const ProjectImportationEntitiesStore = signalStore(
   { providedIn: "root" },

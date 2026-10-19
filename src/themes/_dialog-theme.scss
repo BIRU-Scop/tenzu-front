@@ -58,4 +58,13 @@
   .mat-mdc-dialog-content:first-child {
     padding-top: 24px;
   }
+
+  // An outlined field's floating label rises a few px above the field box; after
+  // a headline the content has no top padding, so a leading form field would get
+  // its label clipped by the content's overflow. Give it just enough headroom.
+  // The class is doubled because Material ships the very same selector with
+  // padding-top: 0, injected after this stylesheet.
+  .mat-mdc-dialog-title + .mat-mdc-dialog-content.mat-mdc-dialog-content {
+    padding-top: 8px;
+  }
 }

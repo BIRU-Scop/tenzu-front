@@ -19,7 +19,7 @@
     "import": {
       "taiga": "Importer un projet depuis Taiga",
       "taiga_doc": "Comment importer depuis Taiga ?",
-      "ongoing": "Transfert en cours…",
+      "ongoing": "Import en cours…",
       "action_needed": "Une action est requise",
       "invite_description_modal": "Tu peux inviter les utilisateurs de ton projet importé et ils seront automatiquement réassignés à leur place une fois l'invitation acceptée.",
       "invite_warning": "Les utilisateurs du projet importé n'ont pas été réinvités sur Tenzu.",
@@ -32,6 +32,42 @@
         "file_validation_failed": "L'importation de {{fileName}} a échoué car le format n'est pas correct.",
         "server_error_while_processing": "L'importation de {{fileName}} a échoué en raison d'une erreur serveur.<br/><b>Veuillez contacter l'équipe Tenzu</b> en fournissant votre fichier d'importation ainsi que tout détail utile sur votre configuration qui nous permettront de corriger le problème.",
         "unknown": "L'importation de {{fileName}} a échoué en raison d'une erreur inconnue."
+      }
+    },
+    "upload": {
+      "status": {
+        "uploading": "Envoi en cours…",
+        "retrying": "Connexion perdue, nouvel essai…",
+        "paused": "Envoi en pause",
+        "resuming": "Reprise…",
+        "canceling": "Annulation…",
+        "interrupted": "Fichier introuvable",
+        "server_not_responding": "Le serveur ne répond pas",
+        "session_expired": "Session expirée",
+        "forbidden": "Import non autorisé",
+        "file_refused": "Fichier refusé"
+      },
+      "deadline": "Reprise possible jusqu'au {{date}}",
+      "interrupted_hint": "Sélectionnez à nouveau {{fileName}} ({{fileSize}}) pour reprendre.",
+      "progress_label": "Progression de l'envoi de {{fileName}}",
+      "actions": {
+        "pause": "Mettre en pause l'envoi de {{fileName}}",
+        "resume": "Reprendre l'envoi de {{fileName}}",
+        "retry": "Réessayer",
+        "confirm_cancel": "Annuler l'envoi",
+        "choose_file": "Choisir le fichier",
+        "details": "Détails"
+      },
+      "confirm_cancel": "Annuler l'envoi de {{fileName}} ? Les {{percentage}} % déjà envoyés seront perdus.",
+      "details_title": "Envoi de {{fileName}}",
+      "notifications": {
+        "started": "Envoi de {{fileName}} démarré",
+        "finished": "Envoi de {{fileName}} terminé, import en cours",
+        "failed": "L'envoi de {{fileName}} a échoué",
+        "interrupted": "L'envoi de {{fileName}} est interrompu, le fichier n'est plus lisible",
+        "resumed": "Reprise de l'envoi de {{fileName}}",
+        "expired": "L'envoi de {{fileName}} a expiré. Importez à nouveau le fichier depuis « Nouveau projet ».",
+        "file_mismatch": "Ce fichier ne correspond pas à {{fileName}} (nom, taille et date de modification doivent être identiques)"
       }
     }
   },
@@ -51,7 +87,6 @@
         "confirm": "Réaffecter",
         "project_role_select_title": "Rôles"
       },
-
       "role": {
         "label": "Rôle",
         "no_member_permissions": "pour attribuer une permission sur les rôles, tu dois définir une permission sur les membres au préalable",
@@ -111,6 +146,38 @@
       "not_editable": "Non modifiable",
       "editable": "Modifiable",
       "create_role": "Créer un rôle"
+    },
+    "attributes": {
+      "title": "Attributs",
+      "tags": {
+        "empty_message": "Aucun tag pour l'instant; créez-en un pour catégoriser les stories de ce projet.",
+        "add": "Tag",
+        "dialog": {
+          "title_create": "Créer un tag",
+          "title_edit": "Modifier le tag",
+          "name_label": "Nom",
+          "choose_color": "Choisissez une couleur",
+          "create": "Créer le tag",
+          "save": "Enregistrer",
+          "errors": {
+            "unique": "Un tag porte déjà ce nom.",
+            "required": "Le nom est requis.",
+            "max_length": "50 caractères maximum.",
+            "invalid_characters": "Le nom contient des caractères invalides."
+          }
+        },
+        "title": "Tags",
+        "related_stories": "{count, plural, one {# story liée} other {# stories liées}}",
+        "edit_aria": "Modifier le tag {{label}}",
+        "delete_aria": "Supprimer le tag {{label}}",
+        "delete_confirm_used": "Voulez-vous vraiment supprimer le tag « {{label}} » ? Il est utilisé par {count, plural, one {# story} other {# stories}} et en sera retiré automatiquement.",
+        "delete_confirm_unused": "Le tag « {{label}} » n'est utilisé par aucune story. Voulez-vous vraiment le supprimer ?",
+        "errors": {
+          "conflict": "Un tag « {{label}} » existe déjà; il vient peut-être d'être créé par quelqu'un d'autre.",
+          "max_reached": "Ce projet a atteint son nombre maximal de tags.",
+          "gone": "Ce tag n'existe plus; il vient d'être supprimé."
+        }
+      }
     }
   },
   "members": {

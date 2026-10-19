@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -24,8 +24,10 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { switchMap, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
-import { UserService, UserStore, VerificationInfo } from "@tenzu/repository/user";
-import { AuthService } from "@tenzu/repository/auth";
+import { VerificationInfo } from "@tenzu/repository/user/user.model";
+import { UserService } from "@tenzu/repository/user/user.service";
+import { UserStore } from "@tenzu/repository/user/user.store";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 
 export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const userService = inject(UserService);
@@ -46,9 +48,9 @@ export const VerifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =
         const workspaceId = verification.workspaceInvitation.workspace.id;
         return router.navigateByUrl(`/workspace/${workspaceId}/projects`);
       }
-      if (verification.projectInvitationToken) {
-        const projectId = verification.projectInvitationToken.project.id;
-        const workspaceId = verification.projectInvitationToken.project.workspaceId;
+      if (verification.projectInvitation) {
+        const projectId = verification.projectInvitation.project.id;
+        const workspaceId = verification.projectInvitation.project.workspaceId;
         return router.navigateByUrl(`/workspace/${workspaceId}/project/${projectId}`);
       }
       return router.navigateByUrl("/");

@@ -23,8 +23,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { StoryDetailStore, StoryEntitiesSummaryStore } from "./story-entities.store";
 import { StoryReorderPayloadEvent } from "./story.model";
-import { StatusSummary } from "../status";
-import { makeStoryAssign, makeStoryDetail, makeStorySummary, makeUserNested } from "@tenzu/utils/testing/factories";
+import { WorkflowStatusNested } from "../status/status.model";
+import { makeStoryAssign, makeStoryDetail, makeStorySummary } from "../story/story.factories";
+import { makeUserNested } from "../user/user.factories";
 
 describe("StoryEntitiesSummaryStore", () => {
   let store: InstanceType<typeof StoryEntitiesSummaryStore>;
@@ -74,6 +75,10 @@ describe("StoryEntitiesSummaryStore", () => {
 
       expect(store.entityMap()[1].assigneeIds).toEqual(["user-a"]);
     });
+
+    it("ignores a story missing from the summary store", () => {
+      expect(() => store.addAssign(makeStoryAssign({ user: makeUserNested({ id: "user-b" }) }), 404)).not.toThrow();
+    });
   });
 
   describe("removeAssign", () => {
@@ -84,6 +89,26 @@ describe("StoryEntitiesSummaryStore", () => {
 
       expect(store.entityMap()[1].assigneeIds).toEqual(["user-b"]);
     });
+
+    it("ignores a story missing from the summary store", () => {
+      expect(() => store.removeAssign(404, "user-a")).not.toThrow();
+    });
+  });
+
+  describe("removeTagFromStories", () => {
+    it("purges the tag from every story referencing it", () => {
+      store.addEntities([
+        makeStorySummary({ ref: 1, tagIds: ["tag-x", "tag-keep"] }),
+        makeStorySummary({ ref: 2, tagIds: ["tag-keep"] }),
+        makeStorySummary({ ref: 3, tagIds: ["tag-x"] }),
+      ]);
+
+      store.removeTagFromStories("tag-x");
+
+      expect(store.entityMap()[1].tagIds).toEqual(["tag-keep"]);
+      expect(store.entityMap()[2].tagIds).toEqual(["tag-keep"]);
+      expect(store.entityMap()[3].tagIds).toEqual([]);
+    });
   });
 
   describe("deleteStatusGroup", () => {
@@ -92,7 +117,7 @@ describe("StoryEntitiesSummaryStore", () => {
         makeStorySummary({ ref: 1, statusId: "old" }),
         makeStorySummary({ ref: 2, statusId: "keep" }),
       ]);
-      const newStatus = { id: "new" } as StatusSummary;
+      const newStatus = { id: "new" } as WorkflowStatusNested;
 
       store.deleteStatusGroup("old", newStatus);
 
@@ -112,7 +137,7 @@ describe("StoryEntitiesSummaryStore", () => {
       const event: StoryReorderPayloadEvent = {
         statusId: "done",
         stories: [1],
-        status: { id: "done" } as StatusSummary,
+        status: { id: "done" } as WorkflowStatusNested,
       };
       store.reorderStoryByEvent(event);
 
@@ -130,7 +155,7 @@ describe("StoryEntitiesSummaryStore", () => {
         statusId: "todo",
         stories: [1],
         reorder: { place: "after", ref: 3 },
-        status: { id: "todo" } as StatusSummary,
+        status: { id: "todo" } as WorkflowStatusNested,
       };
       store.reorderStoryByEvent(event);
 
@@ -144,6 +169,16 @@ describe("StoryDetailStore", () => {
 
   beforeEach(() => {
     store = TestBed.inject(StoryDetailStore);
+  });
+
+  describe("removeTagFromStories", () => {
+    it("purges the tag from the opened story", () => {
+      store.set(makeStoryDetail({ ref: 5, tagIds: ["tag-x", "tag-keep"] }));
+
+      store.removeTagFromStories("tag-x");
+
+      expect(store.item()?.tagIds).toEqual(["tag-keep"]);
+    });
   });
 
   describe("updateCommentsCount", () => {

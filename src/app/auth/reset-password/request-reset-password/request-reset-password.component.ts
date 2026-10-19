@@ -25,7 +25,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { apply, FormField, form, FormRoot } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { MatDivider } from "@angular/material/divider";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { emailSchema } from "@tenzu/shared/components/form/email-field/schema";

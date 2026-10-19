@@ -23,10 +23,10 @@ import {
   DestroyRef,
   EnvironmentInjector,
   inject,
-  Injectable,
   isDevMode,
   runInInjectionContext,
   signal,
+  Service,
 } from "@angular/core";
 
 import {
@@ -64,6 +64,8 @@ import {
   applyStoryAttachmentEvent,
   applyStoryCommentEvent,
   applyStoryEvent,
+  applyStoryTagAssignmentEvent,
+  applyStoryTagEvent,
   applyUserEvent,
   applyWorkflowEvent,
   applyWorkflowStatusEvent,
@@ -73,14 +75,12 @@ import {
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { AuthService } from "@tenzu/repository/auth";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WsService {
   loggedSubject = new BehaviorSubject(false);
   logged$ = this.loggedSubject.asObservable();
@@ -149,7 +149,7 @@ export class WsService {
 
     this.ws$ = createSocket$.pipe(
       catchError((e) => {
-        debug("WS", "socket error", e);
+        debug("WS", "socket error", e, true);
         this.loggedSubject.next(false);
         return throwError(() => e);
       }),
@@ -396,6 +396,14 @@ export class WsService {
         }
         case FamilyEventType.StoryAssignment: {
           applyStoryAssignmentEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryTag: {
+          applyStoryTagEvent(message);
+          break;
+        }
+        case FamilyEventType.StoryTagAssignment: {
+          applyStoryTagAssignmentEvent(message);
           break;
         }
         case FamilyEventType.StoryAttachment: {

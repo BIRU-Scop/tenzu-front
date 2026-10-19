@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,22 +19,20 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 import { WorkspaceInvitationEntitiesStore } from "./workspace-invitation.store";
 import { WorkspaceInvitationsApiService } from "./workspace-invitation-api-service";
-import { WorkspaceDetail, WorkspaceSummary } from "../workspace";
-import { InvitationsPayload } from "../membership";
+import { WorkspaceDetail, WorkspaceSummary } from "../workspace/workspace.model";
+import { InvitationsPayload } from "../membership/invitation.model";
 import { map } from "rxjs/operators";
 import { WorkspaceInvitation } from "./workspace-invitation.model";
-import { NotFoundEntityError } from "@tenzu/repository/base/errors";
+import { NotFoundEntityError } from "../base/errors";
 import { EntityId, SelectEntityId } from "@ngrx/signals/entities";
-import { getEntityIdSelector } from "@tenzu/repository/base";
-import { ResetService } from "@tenzu/repository/base/reset.service";
+import { getEntityIdSelector } from "../base/features";
+import { ResetService } from "../base/reset.service";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkspaceInvitationRepositoryService {
   private workspaceInvitationsApiService = inject(WorkspaceInvitationsApiService);
   private workspaceInvitationEntitiesStore = inject(WorkspaceInvitationEntitiesStore);

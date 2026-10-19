@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"],
+    "lib": ["ES2025"],
+    "module": "preserve",
+    "moduleResolution": "bundler"
+  },
+  "include": ["**/*.ts", "**/*.mts"]
+}

@@ -24,7 +24,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { apply, form, FormField, FormRoot, required, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
-import { UserStore } from "@tenzu/repository/user";
+import { UserStore } from "@tenzu/repository/user/user.store";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatIcon } from "@angular/material/icon";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";

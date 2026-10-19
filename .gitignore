@@ -269,3 +269,7 @@ GEMINI.md
 .windsurf/
 skills-lock.json
 *storybook.log
+
+# Vitest browser-mode artifacts (failure screenshots, attachments)
+__screenshots__/
+.vitest-attachments/

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,19 +19,17 @@
  *
  */
 
-import { inject, Injectable } from "@angular/core";
-import { StatusSummary, StatusDetail } from "../status";
+import { inject, Service } from "@angular/core";
+import { WorkflowStatusNested, WorkflowStatus } from "../status/status.model";
 import { lastValueFrom } from "rxjs";
 import { WorkflowApiService } from "./workflow-api.service";
 import { Workflow } from "./workflow.model";
-import { ProjectRepositoryService } from "../project";
+import { ProjectRepositoryService } from "../project/project-repository.service";
 import { WorkflowDetailStore } from "./workflow-entities.store";
-import { BaseRepositoryDetailService } from "../base";
+import { BaseRepositoryDetailService } from "../base/repository.service";
 import type * as WorkflowApiServiceType from "./workflow-api.type";
 
-@Injectable({
-  providedIn: "root",
-})
+@Service()
 export class WorkflowRepositoryService extends BaseRepositoryDetailService<
   Workflow,
   WorkflowApiServiceType.GetEntityDetailParams,
@@ -80,7 +78,7 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     return undefined;
   }
 
-  async createStatus(status: Pick<StatusSummary, "name" | "color">) {
+  async createStatus(status: Pick<WorkflowStatusNested, "name" | "color">) {
     const selectedWorkflow = this.entityDetailStore.item();
     if (selectedWorkflow) {
       const newStatus = await lastValueFrom(this.apiService.createStatus(selectedWorkflow.id, status));
@@ -90,7 +88,7 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     return undefined;
   }
 
-  async editStatus(status: Pick<StatusSummary, "name" | "id">) {
+  async editStatus(status: Pick<WorkflowStatusNested, "name" | "id">) {
     const editedStatus = await lastValueFrom(this.apiService.editStatus(status));
     this.entityDetailStore.updateStatus(editedStatus);
     return editedStatus;
@@ -107,11 +105,11 @@ export class WorkflowRepositoryService extends BaseRepositoryDetailService<
     await lastValueFrom(this.apiService.reorderStatus(workflowId, payload));
   }
 
-  wsAddStatus(status: StatusDetail) {
+  wsAddStatus(status: WorkflowStatus) {
     this.entityDetailStore.addStatus(status);
   }
 
-  wsUpdateStatus(status: StatusDetail) {
+  wsUpdateStatus(status: WorkflowStatus) {
     this.entityDetailStore.updateStatus(status);
   }
 

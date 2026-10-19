@@ -38,8 +38,8 @@ import { MatSelect } from "@angular/material/select";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { filter, take } from "rxjs";
 import { WorkflowRepositoryService } from "@tenzu/repository/workflow/workflow-repository.service";
-import { ProjectRepositoryService } from "@tenzu/repository/project";
-import { Workflow } from "@tenzu/repository/workflow";
+import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
+import { Workflow } from "@tenzu/repository/workflow/workflow.model";
 
 export type DialogData = {
   workflowName: Workflow["name"];

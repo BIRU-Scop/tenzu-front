@@ -21,7 +21,8 @@
 
 import { describe, expect, it } from "vitest";
 import { StoryUrlPipe } from "./story-url.pipe";
-import { makeProjectLinkNested, makeStoryNested } from "@tenzu/utils/testing/factories";
+import { makeProjectLinkNested } from "@tenzu/repository/project/project.factories";
+import { makeStoryNested } from "@tenzu/repository/story/story.factories";
 
 describe("StoryUrlPipe", () => {
   const pipe = new StoryUrlPipe();

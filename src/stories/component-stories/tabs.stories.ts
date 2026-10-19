@@ -19,7 +19,7 @@
  *
  */
 
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, moduleMetadata, StoryObj } from "@storybook/angular-vite";
 
 import { MatTabLink, MatTabNav, MatTabNavPanel } from "@angular/material/tabs";
 import { MatIcon } from "@angular/material/icon";

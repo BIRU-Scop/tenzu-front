@@ -19,7 +19,7 @@
  *
  */
 
-import { Directive, inject, Injectable } from "@angular/core";
+import { Directive, inject, Service } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
 import { ComponentType } from "@angular/cdk/overlay";
 import { Observable, ReplaySubject } from "rxjs";
@@ -31,7 +31,7 @@ export abstract class TypedDialog<DialogData, DialogResult> {
   protected dialogRef: MatDialogRef<TypedDialog<DialogData, DialogResult>, DialogResult> = inject(MatDialogRef);
 }
 
-@Injectable({ providedIn: "root" })
+@Service()
 export class TypedDialogService {
   protected dialog = inject(MatDialog);
 

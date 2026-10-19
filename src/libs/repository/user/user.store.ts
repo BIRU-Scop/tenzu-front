@@ -27,7 +27,7 @@ import { tapResponse } from "@ngrx/operators";
 import { UserService } from "./user.service";
 import { UpdateUserPayload, User } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
-import { AuthService } from "../auth";
+import { AuthService } from "../auth/auth.service";
 import { debug } from "@tenzu/utils/functions/logging";
 
 export const UserStore = signalStore(

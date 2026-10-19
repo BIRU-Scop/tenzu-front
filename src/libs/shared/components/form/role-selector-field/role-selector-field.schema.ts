@@ -21,9 +21,9 @@
 
 import { disabled, schema } from "@angular/forms/signals";
 import { computed, inject } from "@angular/core";
-import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles";
-import { Role } from "@tenzu/repository/membership";
-import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles";
+import { WorkspaceRoleRepositoryService } from "@tenzu/repository/workspace-roles/workspace-role-repository.service";
+import { Role } from "@tenzu/repository/membership/membership.model";
+import { ProjectRoleRepositoryService } from "@tenzu/repository/project-roles/project-role-repository.service";
 import { ItemType } from "@tenzu/repository/base/misc.model";
 
 export const roleSelectorFieldSchema = (userRole: () => Role | undefined, itemType: () => ItemType) => {

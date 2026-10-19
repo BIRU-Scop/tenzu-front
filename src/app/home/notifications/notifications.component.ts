@@ -22,14 +22,14 @@
 import { Component, computed, inject, input, OnInit, output, signal } from "@angular/core";
 
 import { NotificationsComponentService } from "./notifications-component.service";
-import { Notification } from "@tenzu/repository/notifications";
+import { Notification } from "@tenzu/repository/notifications/notifications.model";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { MatTooltip } from "@angular/material/tooltip";
 import { TranslocoDirective, TranslocoService } from "@jsverse/transloco";
 import { RouterLink } from "@angular/router";
 import { SafeHtmlPipe } from "@tenzu/pipes/safe-html.pipe";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { UserNested } from "@tenzu/repository/user";
+import { UserNested } from "@tenzu/repository/user/user.model";
 import { MatDialogContent } from "@angular/material/dialog";
 import { MatDivider } from "@angular/material/divider";
 import { MatBadge } from "@angular/material/badge";
@@ -236,6 +236,25 @@ export class NotificationUnitComponent {
               errorFileName: notification.content.fileName,
               errorFileSize: this.fileSizePipe.transform(notification.content.fileSize),
               maxFileSize: this.fileSizePipe.transform(this.configAppService.config().maxUploadFileSize || 0),
+            },
+          },
+        };
+      }
+      case "project_importation.warning.too_many_story_tags": {
+        return {
+          link: {
+            url: this.projectLandingPageUrl.transform(notification.content.project),
+            label: this.translocoService.translate("project.general_title.named_project", {
+              name: notification.content.project.name,
+            }),
+          },
+          ...{
+            user: undefined,
+            translateKey: translateKey,
+            params: {
+              fileName: notification.content.projectImportation.sourceName,
+              storyTagsNumber: notification.content.storyTagsNumber.toString(),
+              maxNumber: notification.content.maxNumber.toString(),
             },
           },
         };
