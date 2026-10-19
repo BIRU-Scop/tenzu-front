@@ -21,14 +21,15 @@
 
 import { isDevMode } from "@angular/core";
 
-export function debug(type: string, message: string, data?: unknown): void {
+export function debug(type: string, message: string, data?: unknown, isError = false): void {
   const runtimeDebug =
     typeof window !== "undefined" &&
     (((window as { __TENZU_DEBUG__?: boolean }).__TENZU_DEBUG__ ?? false) ||
       window.localStorage?.getItem("tenzu.debug") === "1");
   if (isDevMode() || runtimeDebug) {
     const date = new Date();
-    console.debug(
+    const logFunc = isError ? console.error : console.debug;
+    logFunc(
       `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()})  [${type}] ${message}`,
       data || "",
     );
