@@ -187,7 +187,7 @@
     },
     "story_tags": {
       "input_label": "Añadir una etiqueta",
-      "no_tags": "No hay etiquetas en este proyecto; se crean en Configuración → Etiquetas.",
+      "no_tags": "No hay etiquetas en este proyecto; se crean en Configuraciónes → Atributos.",
       "tag_added": "Etiqueta {{label}} añadida.",
       "tag_removed": "Etiqueta {{label}} eliminada.",
       "tag_gone": "Esta etiqueta ya no existe; acaba de ser eliminada."

@@ -187,7 +187,7 @@
     },
     "story_tags": {
       "input_label": "Add a tag",
-      "no_tags": "No tags in this project; they are created in Settings → Tags.",
+      "no_tags": "No tags in this project; they are created in Settings → Attributes.",
       "tag_added": "Tag {{label}} added.",
       "tag_removed": "Tag {{label}} removed.",
       "tag_gone": "This tag no longer exists; it was just deleted."

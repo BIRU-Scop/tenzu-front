@@ -187,7 +187,7 @@
     },
     "story_tags": {
       "input_label": "Ajouter un tag",
-      "no_tags": "Aucun tag dans ce projet; ils se créent dans Réglages → Tags.",
+      "no_tags": "Aucun tag dans ce projet; ils se créent dans Paramètres → Attributs.",
       "tag_added": "Tag {{label}} ajouté.",
       "tag_removed": "Tag {{label}} retiré.",
       "tag_gone": "Ce tag n'existe plus; il vient d'être supprimé."
