@@ -7,10 +7,6 @@
     "save": "Save changes",
     "delete": "Delete"
   },
-  "logo": {
-    "upload": "Upload project avatar",
-    "delete": "Delete the image"
-  },
   "new_project": {
     "title": "New Project",
     "create_project": "Create project",

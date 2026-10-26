@@ -27,11 +27,13 @@ import { projectNestedSchema, projectLinkNestedSchema } from "../project/project
 import { projectInvitationNestedSchema } from "../project-invitations/project-invitation-nested.model";
 import { workspaceInvitationNestedSchema } from "../workspace-invitations/workspace-invitation-nested.model";
 import { optionalNullable } from "../base/schema-utils";
+import { fileValueSchema } from "../base/misc.model";
+import type { FileValue } from "../base/misc.model";
 
 export const userNestedSchema = z.object({
   id: z.string(),
   username: z.string(),
-  fullName: z.string(),
+  fullName: z.string().max(256),
   color: z.int(),
   email: z.email(),
   avatar: z.string().apply(optionalNullable),
@@ -76,5 +78,14 @@ export type CreateUserPayload = Pick<User, "fullName"> &
 export type UpdateUserPayload = Partial<
   Pick<User, "fullName" | "lang"> & {
     password: string;
+    avatar?: FileValue;
   }
 >;
+
+export const USER_FULL_NAME_MAX_LENGTH = 50;
+
+export const updateUserProfilePayloadSchema = userSchema.pick({ fullName: true, lang: true }).extend({
+  fullName: z.string().min(1).max(USER_FULL_NAME_MAX_LENGTH),
+  avatar: fileValueSchema.optional(),
+});
+export type UpdateUserProfilePayload = z.infer<typeof updateUserProfilePayloadSchema>;

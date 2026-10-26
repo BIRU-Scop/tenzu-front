@@ -192,7 +192,9 @@
   },
   "avatar": {
     "max_size": "La taille de l'image ne doit pas dépasser {{size}}",
-    "allowed_format": "Formats autorisés : {{formats}}"
+    "allowed_format": "Formats autorisés : {{formats}}",
+    "upload": "Téléverser l'avatar",
+    "delete": "Supprimer l'image"
   },
   "chip": {
     "remove_action": "Supprimer {{label}}"
