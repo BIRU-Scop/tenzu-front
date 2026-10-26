@@ -19,7 +19,7 @@
  *
  */
 
-import { beforeEach, describe, expect, it, Mocked } from "vitest";
+import { beforeEach, describe, expect, it, Mocked, vi } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { of, Subject } from "rxjs";
 import { MatDialogRef } from "@angular/material/dialog";
@@ -30,6 +30,7 @@ import { makeFeedItem } from "@tenzu/repository/feed/feed.factories";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { FeedStore } from "@tenzu/repository/feed/feed.store";
 import { FeedApiService } from "@tenzu/repository/feed/feed-api.service";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 
 describe("FeedOrchestratorService", () => {
   let orchestrator: FeedOrchestratorService;
@@ -108,5 +109,20 @@ describe("FeedOrchestratorService", () => {
 
     expect(store.sortedEntities()).toHaveLength(1);
     expect(dialog.openWhenIdle).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes its dialog and reset the auto-open when the session is reset", () => {
+    const dialogRef = { afterClosed: () => afterClosed$, close: vi.fn() } as unknown as MatDialogRef<FeedDialog, void>;
+    dialog.openWhenIdle.mockReturnValue(of(dialogRef));
+    store.setAllEntities([makeFeedItem({ id: "m1" })]);
+    TestBed.tick();
+
+    TestBed.inject(ResetService).reset();
+    store.setAllEntities([makeFeedItem({ id: "m2" })]);
+    TestBed.tick();
+
+    expect(dialogRef.close).toHaveBeenCalled();
+
+    expect(dialog.openWhenIdle).toHaveBeenCalledTimes(2);
   });
 });

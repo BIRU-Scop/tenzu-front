@@ -19,7 +19,7 @@
  *
  */
 
-import { beforeEach, describe, expect, it, Mocked } from "vitest";
+import { beforeEach, describe, expect, it, Mocked, vi } from "vitest";
 import { signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgEventBus } from "ng-event-bus";
@@ -30,20 +30,27 @@ import { UserStore } from "@tenzu/repository/user/user.store";
 import { RelativeDialogService } from "@tenzu/utils/services/relative-dialog/relative-dialog.service";
 import { PLUGINS_TOKEN } from "../app.config";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
+import { SessionStep } from "@tenzu/repository/auth/session/session-machine";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { HarnessLoader } from "@angular/cdk/testing";
 import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed";
 import { MatMenuHarness } from "@angular/material/menu/testing";
 import { MatBadgeHarness } from "@angular/material/badge/testing";
+import { translation } from "@tenzu/utils/testing/translation";
 
 describe("HomeComponent", () => {
   let fixture: ComponentFixture<HomeComponent>;
   let feedOrchestrator: Mocked<FeedOrchestratorService>;
   const unreadCount = signal(0);
+  const stepMock = signal<SessionStep>("loggedIn");
+  const sessionLifecycleServiceMock = { step: stepMock, endSession: vi.fn() };
   let loader: HarnessLoader;
 
   beforeEach(async () => {
     unreadCount.set(0);
+    stepMock.set("loggedIn");
+    sessionLifecycleServiceMock.endSession.mockReset();
 
     feedOrchestrator = Object.assign(mockService(FeedOrchestratorService), { unreadCount });
     feedOrchestrator.init.mockResolvedValue([]);
@@ -65,6 +72,7 @@ describe("HomeComponent", () => {
         { provide: RelativeDialogService, useValue: {} },
         { provide: NgEventBus, useValue: {} },
         { provide: PLUGINS_TOKEN, useValue: [] },
+        { provide: SessionLifecycleService, useValue: sessionLifecycleServiceMock },
       ],
     }).compileComponents();
 
@@ -79,6 +87,31 @@ describe("HomeComponent", () => {
     const [news] = await menu.getItems({ text: /news/i });
     return news;
   }
+
+  it("renders the user menu trigger button with aria-label home.navigation.user_menu", async () => {
+    const trigger = await (await loader.getHarness(MatMenuHarness)).host();
+
+    expect(await trigger.getAttribute("aria-label")).toBe(translation("home.navigation.user_menu"));
+  });
+
+  it("the logout menu item calls sessionLifecycleService.endSession with logoutRequested", async () => {
+    const menu = await loader.getHarness(MatMenuHarness);
+    await menu.open();
+    const [logout] = await menu.getItems({ text: /logout/i });
+
+    await logout.click();
+
+    expect(sessionLifecycleServiceMock.endSession).toHaveBeenCalledWith({ reason: "logoutRequested" });
+  });
+
+  it("the logout menu item has aria-disabled true while sessionLifecycleService.step is tearingDown", async () => {
+    stepMock.set("tearingDown");
+    const menu = await loader.getHarness(MatMenuHarness);
+    await menu.open();
+    const [logout] = await menu.getItems({ text: /logout/i });
+
+    expect(await (await logout.host()).getAttribute("aria-disabled")).toBe("true");
+  });
 
   it("opens the feed modal on click on the Announcements item", async () => {
     const news = await getNewsMenuItem();

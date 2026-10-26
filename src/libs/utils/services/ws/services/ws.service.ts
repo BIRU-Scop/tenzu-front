@@ -34,6 +34,7 @@ import {
   defer,
   EMPTY,
   exhaustMap,
+  from,
   interval,
   Observable,
   of,
@@ -75,7 +76,8 @@ import {
 } from "./apply-event.function";
 import { debug } from "@tenzu/utils/functions/logging";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 
 const MAX_RETRY = 10;
 const RETRY_TIME = 10000;
@@ -184,16 +186,12 @@ export class WsService {
     this.loggedSubject.next(false);
 
     return runInInjectionContext(this.environmentInjector, () => {
-      const authService = inject(AuthService);
+      const tokenRepositoryService = inject(TokenRepositoryService);
 
-      return authService.isLoginOk().pipe(
-        switchMap((ok) => {
-          if (!ok) {
+      return from(tokenRepositoryService.getAccessToken()).pipe(
+        switchMap((token: string | null) => {
+          if (token === null) {
             // No valid tokens -> do not attempt WS signin
-            return EMPTY;
-          }
-          const token = authService.getToken().access || "";
-          if (!token) {
             return EMPTY;
           }
 
@@ -259,8 +257,8 @@ export class WsService {
         break;
       }
       case "error": {
-        // Ignore "not-signed-in" error when attempting to sign out while already signed out
-        if (message.action.command === "signout" && message.content.detail === "not-signed-in") {
+        const isSignOutCommand = message.action.command === "signout" || message.action.command === "signout_local";
+        if (isSignOutCommand && message.content.detail === "not-signed-in") {
           break;
         }
         if (message.action.command === "signin") {
@@ -286,81 +284,69 @@ export class WsService {
     this.signinRecoveryOngoing = true;
 
     runInInjectionContext(this.environmentInjector, () => {
-      const authService = inject(AuthService);
+      const tokenRepositoryService = inject(TokenRepositoryService);
 
-      const refreshToken = authService.getToken().refresh;
-      if (!refreshToken) {
+      if (tokenRepositoryService.tokens() === null) {
         this.signinRecoveryOngoing = false;
         return;
       }
 
-      authService
-        .refresh({ refresh: refreshToken })
-        .pipe(
-          take(1),
-          tap(() => {
-            const newAccess = authService.getToken().access || "";
-            if (newAccess) {
-              this.command({ command: "signin", token: newAccess });
-            }
-          }),
-          catchError((e) => {
-            // If refresh fails, let AuthService handle the global state (autoLogout) / navigation.
-            debug("WS", "refresh failed during signin recovery", e);
-            return of(null);
-          }),
-          tap(() => {
-            this.signinRecoveryOngoing = false;
-          }),
-        )
-        .subscribe();
+      tokenRepositoryService
+        .rotate()
+        .then((tokens) => this.command({ command: "signin", token: tokens.access }))
+        .catch((e) => debug("WS", "refresh failed during signin recovery", e, true))
+        .finally(() => {
+          this.signinRecoveryOngoing = false;
+        });
     });
   }
 
+  private isLoggedIn(): boolean {
+    return runInInjectionContext(this.environmentInjector, () => inject(SessionLifecycleService).step() === "loggedIn");
+  }
+
   async manageSubscription(message: WSResponseActionSuccess) {
+    if (message.action.command === "signin") {
+      this.loggedSubject.next(true);
+      return;
+    }
+    if (message.action.command === "signout") {
+      debug("WS", "signout action ignored", message);
+      return;
+    }
+    if (!this.isLoggedIn()) {
+      debug("WS", "action ignored outside a live session", message.action.command);
+      return;
+    }
     switch (message.action.command) {
-      case "signin": {
-        this.loggedSubject.next(true);
-        break;
-      }
-      case "signout": {
-        await this.signoutFromServer();
-        break;
-      }
       case "subscribe_to_workspace_events": {
-        this.channelSubscribed.update((value) => {
-          if (!value.channelWorkspaces.includes(message.content.channel)) {
-            value.channelWorkspaces = [...value.channelWorkspaces, message.content.channel];
-          }
-          return value;
-        });
+        this.channelSubscribed.update((value) =>
+          value.channelWorkspaces.includes(message.content.channel)
+            ? value
+            : { ...value, channelWorkspaces: [...value.channelWorkspaces, message.content.channel] },
+        );
         break;
       }
       case "subscribe_to_project_events": {
-        this.channelSubscribed.update((value) => {
-          if (!value.channelProjects.includes(message.content.channel)) {
-            value.channelProjects = [...value.channelProjects, message.content.channel];
-          }
-          return value;
-        });
+        this.channelSubscribed.update((value) =>
+          value.channelProjects.includes(message.content.channel)
+            ? value
+            : { ...value, channelProjects: [...value.channelProjects, message.content.channel] },
+        );
         break;
       }
       case "unsubscribe_from_project_events": {
-        this.channelSubscribed.update((value) => {
-          value.channelProjects = value.channelProjects.filter(
-            (channelProject) => channelProject !== message.content.channel,
-          );
-          return value;
-        });
+        this.channelSubscribed.update((value) => ({
+          ...value,
+          channelProjects: value.channelProjects.filter((channel) => channel !== message.content.channel),
+        }));
         break;
       }
       case "unsubscribe_from_workspace_events": {
-        this.channelSubscribed.update((value) => {
-          value.channelWorkspaces = value.channelWorkspaces.filter(
-            (channelWorkspace) => channelWorkspace !== message.content.channel,
-          );
-          return value;
-        });
+        this.channelSubscribed.update((value) => ({
+          ...value,
+          channelWorkspaces: value.channelWorkspaces.filter((channel) => channel !== message.content.channel),
+        }));
         break;
       }
       case "ping": {
@@ -375,6 +361,10 @@ export class WsService {
 
   async dispatchEvent(message: WSResponseEvent<unknown>) {
     if (message.event.correlationId === this.configAppService.correlationId) {
+      return;
+    }
+    if (!this.isLoggedIn()) {
+      debug("WS", "event ignored outside a live session", message.event.type);
       return;
     }
     debug("WS", `from the channel ${message.channel} received the event ${message.event.type}`, message);
@@ -467,7 +457,7 @@ export class WsService {
     debug("WS", `sent the command ${command.command}`, command);
     if (command.command === "signin") {
       subject.next(command);
-    } else if (command.command === "signout") {
+    } else if (command.command === "signout" || command.command === "signout_local") {
       subject.next(command);
       this.signoutFromLocal();
     } else {
@@ -481,11 +471,7 @@ export class WsService {
               if (subscriptions.channelProjects.length === 0 && subscriptions.channelWorkspaces.length === 0) {
                 return of(null);
               }
-              this.channelSubscribed.update((value) => {
-                value.channelProjects = [];
-                value.channelWorkspaces = [];
-                return value;
-              });
+              this.channelSubscribed.set({ channelProjects: [], channelWorkspaces: [] });
               subject.next(command);
               return of(null);
             }
@@ -513,13 +499,6 @@ export class WsService {
     this.channelSubscribed.set({ channelWorkspaces: [], channelProjects: [] });
     this.previouslyInWorkspace = null;
     this.stopHeartbeat();
-  }
-  async signoutFromServer() {
-    this.signoutFromLocal();
-    await runInInjectionContext(this.environmentInjector, async () => {
-      const authService = inject(AuthService);
-      authService.applyLogout();
-    });
   }
 
   startHeartbeat() {

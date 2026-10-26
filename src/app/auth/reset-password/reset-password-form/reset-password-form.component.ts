@@ -25,9 +25,8 @@ import { apply, form, FormRoot, required, validate } from "@angular/forms/signal
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@tenzu/repository/user/user.service";
-import { UserStore } from "@tenzu/repository/user/user.store";
 import { HttpErrorResponse } from "@angular/common/http";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
@@ -72,9 +71,8 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
 })
 export default class ResetPasswordFormComponent {
   userService = inject(UserService);
-  userStore = inject(UserStore);
   notificationService = inject(NotificationService);
-  authService = inject(AuthService);
+  sessionLifecycleService = inject(SessionLifecycleService);
   router = inject(Router);
   route = inject(ActivatedRoute);
 
@@ -103,9 +101,7 @@ export default class ResetPasswordFormComponent {
           if (this.token) {
             try {
               const value = await lastValueFrom(this.userService.resetPassword(this.token, values.newPassword));
-              this.authService.setToken(value);
-              this.userStore.getMe();
-              this.router.navigateByUrl("/").then();
+              this.sessionLifecycleService.sessionStarted(value);
             } catch (err) {
               this.router.navigateByUrl("/reset-password").then();
               if (err instanceof HttpErrorResponse) {
@@ -114,7 +110,7 @@ export default class ResetPasswordFormComponent {
                   translocoTitle: true,
                 });
               }
-              this.token_expired.set(true);
+              this.isTokenExpired.set(true);
             }
           }
         },
@@ -123,7 +119,7 @@ export default class ResetPasswordFormComponent {
   );
 
   token: string | null = "";
-  token_expired = model(false);
+  isTokenExpired = model(false);
 
   constructor() {
     this.route.paramMap.subscribe((value) => {
@@ -136,10 +132,10 @@ export default class ResetPasswordFormComponent {
               title: "resetPassword.token_error." + err.error.error.detail,
               translocoTitle: true,
             });
-            this.token_expired.set(true);
+            this.isTokenExpired.set(true);
           },
           next: (value1) => {
-            this.token_expired.set(!value1);
+            this.isTokenExpired.set(!value1);
           },
         });
       }

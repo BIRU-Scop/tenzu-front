@@ -3,6 +3,7 @@
     "go_home": "Retour à l'accueil",
     "settings": "Paramètres",
     "logout": "Se déconnecter",
-    "news": "Actualités"
+    "news": "Actualités",
+    "user_menu": "Menu utilisateur"
   }
 }

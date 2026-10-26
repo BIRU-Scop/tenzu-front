@@ -20,7 +20,9 @@
  */
 
 import { computed } from "@angular/core";
-import { patchState, signalStore, withComputed, withMethods } from "@ngrx/signals";
+import { inject } from "@angular/core";
+import { patchState, signalStore, withComputed, withHooks, withMethods } from "@ngrx/signals";
+import { ResetService } from "../base/reset.service";
 import { updateEntity } from "@ngrx/signals/entities";
 import { withEntityListFeature, withTreeShakableDevTools } from "../base/features";
 import { FeedItem, FeedItemReadState } from "./feed-item.model";
@@ -50,4 +52,9 @@ export const FeedStore = signalStore(
       );
     },
   })),
+  withHooks({
+    onInit(store) {
+      inject(ResetService).register({ resetAll: () => store.reset() });
+    },
+  }),
 );

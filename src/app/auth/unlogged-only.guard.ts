@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -21,25 +21,10 @@
 
 import { CanActivateFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
-import { catchError, of, switchMap } from "rxjs";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 
-export const unloggedOnlyGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+export const unloggedOnlyGuard: CanActivateFn = async () => {
+  const tokenRepositoryService = inject(TokenRepositoryService);
   const router = inject(Router);
-
-  return authService.isLoginOk().pipe(
-    switchMap((logged) => {
-      if (logged) {
-        const urlTree = router.parseUrl("/");
-        return of(urlTree);
-      } else {
-        return of(true);
-      }
-    }),
-    catchError(() => {
-      authService.logout();
-      return of(false);
-    }),
-  );
+  return (await tokenRepositoryService.getAccessToken()) === null ? true : router.parseUrl("/");
 };

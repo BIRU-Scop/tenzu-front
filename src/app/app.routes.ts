@@ -23,7 +23,7 @@ import { ActivatedRouteSnapshot, BaseRouteReuseStrategy, Routes } from "@angular
 import { loginGuard } from "./auth/login/login.guard";
 import { provideTranslocoScope } from "@jsverse/transloco";
 import { WorkspaceInvitationGuard } from "./workspace/workspace-detail/workspace-members/workspace-invitation.guard";
-import { VerifyEmailGuard } from "./auth/signup/verify-email.guard";
+import { verifyEmailGuard } from "./auth/signup/verify-email.guard";
 import { ProjectInvitationGuard } from "./workspace/project-detail/project-members/project-invitation.guard";
 import { unloggedOnlyGuard } from "./auth/unlogged-only.guard";
 import { providePluginsTransloco } from "./providers-plugins";
@@ -95,7 +95,7 @@ export const routes: Routes = [
   {
     path: "signup/verify/:token",
     children: [],
-    canActivate: [VerifyEmailGuard],
+    canActivate: [verifyEmailGuard],
   },
   {
     path: "",

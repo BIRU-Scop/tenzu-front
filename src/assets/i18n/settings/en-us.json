@@ -42,6 +42,7 @@
       "info_delete_workspace": "Those workspaces will be deleted, along with the projects within it. To prevent this, you can invite somebody to be a workspace member.",
       "only_member_project": "You are the only member in some projects",
       "info_delete_project": "Those projects will be deleted. To prevent this, you can invite somebody to be a project member."
-    }
+    },
+    "deletion_failed": "Your account could not be deleted. Your account is intact; try again or contact support."
   }
 }

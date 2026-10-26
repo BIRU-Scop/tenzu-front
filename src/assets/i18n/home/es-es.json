@@ -3,6 +3,7 @@
     "go_home": "Ir a inicio",
     "settings": "Configuraciones",
     "logout": "Cerrar sesión",
-    "news": "Actualidades"
+    "news": "Actualidades",
+    "user_menu": "Menú de usuario"
   }
 }

@@ -37,10 +37,10 @@ import { makeUser } from "@tenzu/repository/user/user.factories";
 import { User } from "@tenzu/repository/user/user.model";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectImportationType } from "./importation.model";
-import { TusUploadStorage } from "./tus-upload-storage.service";
+import { TusUploadStorageService } from "./tus-upload-storage.service";
 import { TusUploadState } from "./tus-upload.model";
-import { TusUploadLock, TusUploadLockRelease } from "./tus-upload-lock.service";
-import { TusChannelCommandMessage, TusUploadChannel } from "./tus-upload-channel.service";
+import { TusUploadLockService, TusUploadLockRelease } from "./tus-upload-lock.service";
+import { TusChannelCommandMessage, TusUploadChannelService } from "./tus-upload-channel.service";
 import { makeTusUploadState } from "./tus-upload.factories";
 import { TusUploadRepositoryService } from "./tus-upload-repository.service";
 import { ResetService } from "../base/reset.service";
@@ -48,10 +48,10 @@ import { ResetService } from "../base/reset.service";
 describe(TusUploadRepositoryService.name, () => {
   let tusUploadRepositoryService: TusUploadRepositoryService;
   const tusClientServiceMock = mockService(TusClientService);
-  const tusUploadStorageMock = mockService(TusUploadStorage);
+  const tusUploadStorageServiceMock = mockService(TusUploadStorageService);
   const notificationServiceMock = mockService(NotificationService);
-  const tusUploadLockMock = mockService(TusUploadLock);
-  const tusUploadChannelMock = {
+  const tusUploadLockServiceMock = mockService(TusUploadLockService);
+  const tusUploadChannelServiceMock = {
     state$: new Subject<TusUploadState>(),
     command$: new Subject<TusChannelCommandMessage>(),
     stop$: new Subject<string>(),
@@ -123,22 +123,22 @@ describe(TusUploadRepositoryService.name, () => {
       fileType: file.type,
       fileLastModified: file.lastModified,
     });
-    tusUploadStorageMock.list.mockResolvedValue([tusUploadState]);
-    tusUploadStorageMock.readFile.mockResolvedValue(null);
+    tusUploadStorageServiceMock.list.mockResolvedValue([tusUploadState]);
+    tusUploadStorageServiceMock.readFile.mockResolvedValue(null);
     await tusUploadRepositoryService.restore();
     return tusUploadRepositoryService.entityMap()[tusUploadState.id];
   };
 
   const receiveStateFromOwner = async (): Promise<TusUploadState> => {
     const tusUploadState = makeTusUploadState({ id: "mirror", userId: "user-1" });
-    tusUploadChannelMock.state$.next(tusUploadState);
+    tusUploadChannelServiceMock.state$.next(tusUploadState);
     await vi.waitFor(() => expect(tusUploadRepositoryService.entityMap()["mirror"]).toEqual(tusUploadState));
     return tusUploadState;
   };
 
   const expectRemoved = (tusUploadState: TusUploadState) => {
     expect(tusUploadRepositoryService.entityMap()[tusUploadState.id]).toBeUndefined();
-    expect(tusUploadStorageMock.delete).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
+    expect(tusUploadStorageServiceMock.delete).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
   };
 
   afterEach(() => {
@@ -148,24 +148,24 @@ describe(TusUploadRepositoryService.name, () => {
   beforeEach(() => {
     vi.resetAllMocks();
     tusClientServiceMock.create.mockImplementation(makeTusClientUpload);
-    tusUploadStorageMock.delete.mockResolvedValue(undefined);
-    tusUploadStorageMock.save.mockResolvedValue(undefined);
-    tusUploadStorageMock.update.mockResolvedValue(undefined);
-    tusUploadStorageMock.deleteFile.mockResolvedValue(undefined);
-    tusUploadStorageMock.list.mockResolvedValue([]);
-    tusUploadStorageMock.readFile.mockResolvedValue(null);
-    tusUploadStorageMock.deleteExpired.mockResolvedValue([]);
-    tusUploadLockMock.waitForLock.mockResolvedValue(vi.fn(() => Promise.resolve()));
-    tusUploadLockMock.takeLockIfFree.mockResolvedValue(vi.fn(() => Promise.resolve()));
+    tusUploadStorageServiceMock.delete.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.save.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.update.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.deleteFile.mockResolvedValue(undefined);
+    tusUploadStorageServiceMock.list.mockResolvedValue([]);
+    tusUploadStorageServiceMock.readFile.mockResolvedValue(null);
+    tusUploadStorageServiceMock.deleteExpired.mockResolvedValue([]);
+    tusUploadLockServiceMock.waitForLock.mockResolvedValue(vi.fn(() => Promise.resolve()));
+    tusUploadLockServiceMock.takeLockIfFree.mockResolvedValue(vi.fn(() => Promise.resolve()));
     userStoreMock.myUser.set(makeUser({ id: "user-1" }));
     TestBed.configureTestingModule({
       providers: [
         ...testingProviders,
         { provide: TusClientService, useValue: tusClientServiceMock },
-        { provide: TusUploadStorage, useValue: tusUploadStorageMock },
+        { provide: TusUploadStorageService, useValue: tusUploadStorageServiceMock },
         { provide: NotificationService, useValue: notificationServiceMock },
-        { provide: TusUploadLock, useValue: tusUploadLockMock },
-        { provide: TusUploadChannel, useValue: tusUploadChannelMock },
+        { provide: TusUploadLockService, useValue: tusUploadLockServiceMock },
+        { provide: TusUploadChannelService, useValue: tusUploadChannelServiceMock },
         { provide: UserStore, useValue: userStoreMock },
       ],
     });
@@ -213,18 +213,18 @@ describe(TusUploadRepositoryService.name, () => {
   it("start saves the upload state and the file to the storage", async () => {
     const tusUploadState = await startUpload();
 
-    expect(tusUploadStorageMock.save).toHaveBeenCalledExactlyOnceWith(tusUploadState, file);
+    expect(tusUploadStorageServiceMock.save).toHaveBeenCalledExactlyOnceWith(tusUploadState, file);
   });
 
   it("start calls waitForLock with the upload id", async () => {
     const tusUploadState = await startUpload();
-    expect(tusUploadLockMock.waitForLock).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
+    expect(tusUploadLockServiceMock.waitForLock).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
   });
 
   it("start call publishState with the tusUploadState", async () => {
     const tusUploadState = await startUpload();
 
-    expect(tusUploadChannelMock.publishState).toHaveBeenCalledExactlyOnceWith(tusUploadState);
+    expect(tusUploadChannelServiceMock.publishState).toHaveBeenCalledExactlyOnceWith(tusUploadState);
   });
 
   it("start throws the error reported by onError", async () => {
@@ -266,7 +266,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     trigger.onProgress(42);
 
-    expect(tusUploadStorageMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, bytesSent: 42 });
+    expect(tusUploadStorageServiceMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, bytesSent: 42 });
   });
 
   it("onProgress call publishState with the updated tusUploadState", async () => {
@@ -274,7 +274,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     trigger.onProgress(42);
 
-    expect(tusUploadChannelMock.publishState).toHaveBeenLastCalledWith({ ...tusUploadState, bytesSent: 42 });
+    expect(tusUploadChannelServiceMock.publishState).toHaveBeenLastCalledWith({ ...tusUploadState, bytesSent: 42 });
   });
 
   it("pause calls pause on the client upload", async () => {
@@ -298,7 +298,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     await tusUploadRepositoryService.pause(tusUploadState.id);
 
-    expect(tusUploadStorageMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, status: "paused" });
+    expect(tusUploadStorageServiceMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, status: "paused" });
   });
 
   it("pause calls pause on the client upload while retrying", async () => {
@@ -370,7 +370,7 @@ describe(TusUploadRepositoryService.name, () => {
     await tusUploadRepositoryService.cancel(tusUploadState.id);
 
     expectRemoved(tusUploadState);
-    expect(tusUploadChannelMock.sendCommand).not.toHaveBeenCalled();
+    expect(tusUploadChannelServiceMock.sendCommand).not.toHaveBeenCalled();
   });
 
   it("close removes the upload from the store and the storage after a 403", async () => {
@@ -427,7 +427,7 @@ describe(TusUploadRepositoryService.name, () => {
 
       await tusUploadRepositoryService[command](tusUploadState.id);
 
-      expect(tusUploadChannelMock.sendCommand).toHaveBeenCalledExactlyOnceWith(command, tusUploadState.id);
+      expect(tusUploadChannelServiceMock.sendCommand).toHaveBeenCalledExactlyOnceWith(command, tusUploadState.id);
     },
   );
 
@@ -445,17 +445,17 @@ describe(TusUploadRepositoryService.name, () => {
   it("a pause command from the channel calls pause on the owned client upload", async () => {
     const tusUploadState = await startUpload();
 
-    tusUploadChannelMock.command$.next({ type: "pause", id: tusUploadState.id });
+    tusUploadChannelServiceMock.command$.next({ type: "pause", id: tusUploadState.id });
 
     await vi.waitFor(() => expect(tusClientUpload().pause).toHaveBeenCalledOnce());
-    expect(tusUploadChannelMock.sendCommand).not.toHaveBeenCalled();
+    expect(tusUploadChannelServiceMock.sendCommand).not.toHaveBeenCalled();
   });
 
   it("a command from the channel is ignored for an upload of another user", async () => {
     const tusUploadState = await startUpload();
     userStoreMock.myUser.set(makeUser({ id: "user-2" }));
 
-    tusUploadChannelMock.command$.next({ type: "cancel", id: tusUploadState.id });
+    tusUploadChannelServiceMock.command$.next({ type: "cancel", id: tusUploadState.id });
     await afterChannelHandlers();
 
     expect(tusClientUpload().cancel).not.toHaveBeenCalled();
@@ -464,15 +464,15 @@ describe(TusUploadRepositoryService.name, () => {
   it("a state message from the channel updates the mirrored upload without writing storage", async () => {
     const tusUploadState = makeTusUploadState({ id: "mirror", userId: "user-1", bytesSent: 42 });
 
-    tusUploadChannelMock.state$.next(tusUploadState);
+    tusUploadChannelServiceMock.state$.next(tusUploadState);
 
     await vi.waitFor(() => expect(tusUploadRepositoryService.entityMap()["mirror"]).toEqual(tusUploadState));
-    expect(tusUploadStorageMock.update).not.toHaveBeenCalled();
-    expect(tusUploadStorageMock.save).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.update).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.save).not.toHaveBeenCalled();
   });
 
   it("a state message of another user is ignored", async () => {
-    tusUploadChannelMock.state$.next(makeTusUploadState({ id: "of-other", userId: "user-2" }));
+    tusUploadChannelServiceMock.state$.next(makeTusUploadState({ id: "of-other", userId: "user-2" }));
     await afterChannelHandlers();
 
     expect(tusUploadRepositoryService.entityMap()["of-other"]).toBeUndefined();
@@ -484,30 +484,30 @@ describe(TusUploadRepositoryService.name, () => {
 
     tusUploadRepositoryService.close(tusUploadState.id);
 
-    expect(tusUploadChannelMock.publishRemoved).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
+    expect(tusUploadChannelServiceMock.publishRemoved).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
   });
 
   it("a removed message from the channel removes the mirrored upload from the store only", async () => {
     const tusUploadState = await receiveStateFromOwner();
 
-    tusUploadChannelMock.removed$.next(tusUploadState.id);
+    tusUploadChannelServiceMock.removed$.next(tusUploadState.id);
 
     await vi.waitFor(() => expect(tusUploadRepositoryService.entityMap()[tusUploadState.id]).toBeUndefined());
-    expect(tusUploadStorageMock.delete).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.delete).not.toHaveBeenCalled();
   });
 
   it("a stop message from the channel calls pause on the owned client uploads of that user", async () => {
     await startUpload("first");
     await startUpload("second");
 
-    tusUploadChannelMock.stop$.next("user-1");
+    tusUploadChannelServiceMock.stop$.next("user-1");
 
     const ownedUploads = tusClientServiceMock.create.mock.results.map(({ value }) => value as TusClientUpload);
     for (const ownedUpload of ownedUploads) {
       await vi.waitFor(() => expect(ownedUpload.pause).toHaveBeenCalledOnce());
     }
-    expect(tusUploadStorageMock.delete).not.toHaveBeenCalled();
-    expect(tusUploadChannelMock.publishStop).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.delete).not.toHaveBeenCalled();
+    expect(tusUploadChannelServiceMock.publishStop).not.toHaveBeenCalled();
   });
 
   it("onRetry sets the status to retrying in the store until the next progress", async () => {
@@ -581,8 +581,8 @@ describe(TusUploadRepositoryService.name, () => {
 
     trigger.onError(makeTusError(HttpStatusCode.Forbidden));
 
-    expect(tusUploadStorageMock.deleteFile).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
-    expect(tusUploadStorageMock.delete).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.deleteFile).toHaveBeenCalledExactlyOnceWith(tusUploadState.id);
+    expect(tusUploadStorageServiceMock.delete).not.toHaveBeenCalled();
   });
 
   it("onError removes the upload from the store and the storage with a notification on 404", async () => {
@@ -619,35 +619,35 @@ describe(TusUploadRepositoryService.name, () => {
   it("restore runs when the current user becomes known", async () => {
     userStoreMock.myUser.set({} as User);
     TestBed.tick();
-    expect(tusUploadStorageMock.list).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.list).not.toHaveBeenCalled();
 
     userStoreMock.myUser.set(makeUser({ id: "u1" }));
     TestBed.tick();
-    await vi.waitFor(() => expect(tusUploadStorageMock.list).toHaveBeenCalledExactlyOnceWith("u1"));
+    await vi.waitFor(() => expect(tusUploadStorageServiceMock.list).toHaveBeenCalledExactlyOnceWith("u1"));
   });
 
   it("restore loads the uploads of the current user", async () => {
     userStoreMock.myUser.set(makeUser({ id: "u1" }));
-    tusUploadStorageMock.list.mockResolvedValue([
+    tusUploadStorageServiceMock.list.mockResolvedValue([
       makeTusUploadState({ id: "first", userId: "u1" }),
       makeTusUploadState({ id: "second", userId: "u1" }),
     ]);
 
     await tusUploadRepositoryService.restore();
 
-    expect(tusUploadStorageMock.list).toHaveBeenCalledExactlyOnceWith("u1");
+    expect(tusUploadStorageServiceMock.list).toHaveBeenCalledExactlyOnceWith("u1");
     expect(tusUploadRepositoryService.entities().map(({ id }) => id)).toEqual(["first", "second"]);
   });
 
   it("restore restores an upload only once its lock is granted", async () => {
     const tusUploadState = makeTusUploadState({ id: "abc", userId: "user-1", status: "uploading" });
-    tusUploadStorageMock.list.mockResolvedValue([tusUploadState]);
-    tusUploadStorageMock.readFile.mockResolvedValue(file);
+    tusUploadStorageServiceMock.list.mockResolvedValue([tusUploadState]);
+    tusUploadStorageServiceMock.readFile.mockResolvedValue(file);
     const grant = Promise.withResolvers<TusUploadLockRelease>();
-    tusUploadLockMock.waitForLock.mockReturnValue(grant.promise);
+    tusUploadLockServiceMock.waitForLock.mockReturnValue(grant.promise);
 
     const restored = tusUploadRepositoryService.restore();
-    await vi.waitFor(() => expect(tusUploadLockMock.waitForLock).toHaveBeenCalledExactlyOnceWith("abc"));
+    await vi.waitFor(() => expect(tusUploadLockServiceMock.waitForLock).toHaveBeenCalledExactlyOnceWith("abc"));
     expect(tusClientServiceMock.create).not.toHaveBeenCalled();
 
     grant.resolve(vi.fn(() => Promise.resolve()));
@@ -663,8 +663,8 @@ describe(TusUploadRepositoryService.name, () => {
       fileName: "backup.json",
       status: "uploading",
     });
-    tusUploadStorageMock.list.mockResolvedValue([tusUploadState]);
-    tusUploadStorageMock.readFile.mockResolvedValue(file);
+    tusUploadStorageServiceMock.list.mockResolvedValue([tusUploadState]);
+    tusUploadStorageServiceMock.readFile.mockResolvedValue(file);
 
     await tusUploadRepositoryService.restore();
 
@@ -677,8 +677,8 @@ describe(TusUploadRepositoryService.name, () => {
 
   it("restore keeps a paused upload paused", async () => {
     const tusUploadState = makeTusUploadState({ id: "abc", userId: "user-1", status: "paused" });
-    tusUploadStorageMock.list.mockResolvedValue([tusUploadState]);
-    tusUploadStorageMock.readFile.mockResolvedValue(file);
+    tusUploadStorageServiceMock.list.mockResolvedValue([tusUploadState]);
+    tusUploadStorageServiceMock.readFile.mockResolvedValue(file);
 
     await tusUploadRepositoryService.restore();
 
@@ -694,35 +694,38 @@ describe(TusUploadRepositoryService.name, () => {
       fileName: "backup.json",
       status: "uploading",
     });
-    tusUploadStorageMock.list.mockResolvedValue([tusUploadState]);
-    tusUploadStorageMock.readFile.mockResolvedValue(null);
+    tusUploadStorageServiceMock.list.mockResolvedValue([tusUploadState]);
+    tusUploadStorageServiceMock.readFile.mockResolvedValue(null);
 
     await tusUploadRepositoryService.restore();
 
     expect(tusUploadRepositoryService.entityMap()["abc"].status).toBe("interrupted");
-    expect(tusUploadStorageMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, status: "interrupted" });
+    expect(tusUploadStorageServiceMock.update).toHaveBeenCalledExactlyOnceWith({
+      ...tusUploadState,
+      status: "interrupted",
+    });
   });
 
   it("restore deletes the expired uploads", async () => {
     vi.useFakeTimers({ now: new Date("2026-10-06T00:00:00.000Z") });
-    tusUploadStorageMock.deleteExpired.mockResolvedValue([
+    tusUploadStorageServiceMock.deleteExpired.mockResolvedValue([
       makeTusUploadState({ id: "expired-of-user", userId: "user-1" }),
       makeTusUploadState({ id: "expired-of-other", userId: "user-2" }),
     ]);
 
     await tusUploadRepositoryService.restore();
 
-    expect(tusUploadStorageMock.deleteExpired).toHaveBeenCalledExactlyOnceWith("2026-10-06T00:00:00.000Z");
+    expect(tusUploadStorageServiceMock.deleteExpired).toHaveBeenCalledExactlyOnceWith("2026-10-06T00:00:00.000Z");
 
-    expect(tusUploadStorageMock.deleteExpired.mock.invocationCallOrder[0]).toBeLessThan(
-      tusUploadStorageMock.list.mock.invocationCallOrder[0],
+    expect(tusUploadStorageServiceMock.deleteExpired.mock.invocationCallOrder[0]).toBeLessThan(
+      tusUploadStorageServiceMock.list.mock.invocationCallOrder[0],
     );
     expect(tusUploadRepositoryService.entities()).toEqual([]);
   });
 
   it("restore notifies one expiration per expired upload of the current user", async () => {
     userStoreMock.myUser.set(makeUser({ id: "u1" }));
-    tusUploadStorageMock.deleteExpired.mockResolvedValue([
+    tusUploadStorageServiceMock.deleteExpired.mockResolvedValue([
       makeTusUploadState({ id: "first-of-u1", userId: "u1", fileName: "first.json" }),
       makeTusUploadState({ id: "second-of-u1", userId: "u1", fileName: "second.json" }),
       makeTusUploadState({ id: "of-u2", userId: "u2", fileName: "other.json" }),
@@ -756,7 +759,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     await tusUploadRepositoryService.resumeWith(tusUploadState.id, file);
 
-    expect(tusUploadStorageMock.save).toHaveBeenCalledExactlyOnceWith(
+    expect(tusUploadStorageServiceMock.save).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ id: tusUploadState.id, status: "resuming" }),
       file,
     );
@@ -770,7 +773,7 @@ describe(TusUploadRepositoryService.name, () => {
 
   it("resumeWith resumes the upload even when the file cannot be stored", async () => {
     const tusUploadState = await restoreInterrupted();
-    tusUploadStorageMock.save.mockRejectedValue(new DOMException("quota", "QuotaExceededError"));
+    tusUploadStorageServiceMock.save.mockRejectedValue(new DOMException("quota", "QuotaExceededError"));
 
     await tusUploadRepositoryService.resumeWith(tusUploadState.id, file);
 
@@ -780,7 +783,7 @@ describe(TusUploadRepositoryService.name, () => {
 
   it("resumeWith does nothing when the lock is held", async () => {
     const tusUploadState = await restoreInterrupted();
-    tusUploadLockMock.takeLockIfFree.mockResolvedValue(null);
+    tusUploadLockServiceMock.takeLockIfFree.mockResolvedValue(null);
 
     await tusUploadRepositoryService.resumeWith(tusUploadState.id, file);
 
@@ -788,8 +791,12 @@ describe(TusUploadRepositoryService.name, () => {
     expect(tusUploadRepositoryService.entityMap()[tusUploadState.id].status).toBe("interrupted");
   });
 
-  it("the constructor registers the repository in ResetService", () => {
-    expect(TestBed.inject(ResetService).registeredServices).toContain(tusUploadRepositoryService);
+  it("ResetService.reset calls pause on the owned client uploads", async () => {
+    await startUpload();
+
+    TestBed.inject(ResetService).reset();
+
+    expect(tusClientUpload().pause).toHaveBeenCalledOnce();
   });
 
   it("beforeReset calls pause on the owned client uploads", async () => {
@@ -810,12 +817,12 @@ describe(TusUploadRepositoryService.name, () => {
 
     tusUploadRepositoryService.beforeReset();
 
-    expect(tusUploadStorageMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, status: "paused" });
+    expect(tusUploadStorageServiceMock.update).toHaveBeenCalledExactlyOnceWith({ ...tusUploadState, status: "paused" });
   });
 
   it("beforeReset releases the locks of the uploads", async () => {
     const lockRelease = vi.fn(() => Promise.resolve());
-    tusUploadLockMock.waitForLock.mockResolvedValue(lockRelease);
+    tusUploadLockServiceMock.waitForLock.mockResolvedValue(lockRelease);
     await startUpload();
 
     tusUploadRepositoryService.beforeReset();
@@ -829,7 +836,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     tusUploadRepositoryService.beforeReset();
 
-    expect(tusUploadChannelMock.publishStop).toHaveBeenCalledExactlyOnceWith("user-1");
+    expect(tusUploadChannelServiceMock.publishStop).toHaveBeenCalledExactlyOnceWith("user-1");
   });
 
   it("beforeReset publishes nothing on the channel without a current user", () => {
@@ -837,7 +844,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     tusUploadRepositoryService.beforeReset();
 
-    expect(tusUploadChannelMock.publishStop).not.toHaveBeenCalled();
+    expect(tusUploadChannelServiceMock.publishStop).not.toHaveBeenCalled();
   });
 
   it("beforeReset does not call delete on the storage", async () => {
@@ -845,7 +852,7 @@ describe(TusUploadRepositoryService.name, () => {
 
     tusUploadRepositoryService.beforeReset();
 
-    expect(tusUploadStorageMock.delete).not.toHaveBeenCalled();
+    expect(tusUploadStorageServiceMock.delete).not.toHaveBeenCalled();
   });
 
   it("resetAll empties the store", async () => {

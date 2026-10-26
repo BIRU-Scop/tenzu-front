@@ -32,7 +32,7 @@ import {
 export type TusChannelCommandMessage = { type: TusChannelCommand; id: string };
 
 @Service()
-export class TusUploadChannel {
+export class TusUploadChannelService {
   private readonly errorHandler = inject(ErrorHandler);
   private readonly channel = new BroadcastChannel("tusUploads");
   private readonly messages = new Subject<TusChannelMessage>();

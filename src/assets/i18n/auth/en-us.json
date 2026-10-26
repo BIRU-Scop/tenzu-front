@@ -9,6 +9,15 @@
     "errors": {
       "401": "Your email, username or password are incorrect",
       "username_required": "Enter your email or username"
+    },
+    "exit_reason": {
+      "passwordChanged": "Your password was changed, please sign in again.",
+      "tokensCleared": "You were signed out.",
+      "accountSwitched": "Another account signed in from another tab.",
+      "refreshRefused": "Your session has expired, please sign in again.",
+      "refreshExpired": "Your session has expired, please sign in again.",
+      "accountDeleted": "Your account has been deleted.",
+      "from_another_tab": "You were signed out from another tab."
     }
   },
   "social": {

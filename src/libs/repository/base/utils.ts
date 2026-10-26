@@ -22,6 +22,7 @@
 import { HttpParams } from "@angular/common/http";
 import { MonoTypeOperatorFunction, throwError, timer } from "rxjs";
 import { retry } from "rxjs/operators";
+export const RETRY_COUNT = 3;
 
 export type QueryParams = Record<string, string | number | (string | number)[] | boolean | null>;
 export const makeOptions = (params: QueryParams) => {
@@ -46,7 +47,7 @@ export const makeOptions = (params: QueryParams) => {
 
 export function retryWhenErrors<T>(): MonoTypeOperatorFunction<T> {
   return retry({
-    count: 3,
+    count: RETRY_COUNT,
     delay: (error, retryCount) => {
       const status = error?.status;
       if (!(status === 0 || status === 429 || status === 424 || (status >= 500 && status < 600))) {

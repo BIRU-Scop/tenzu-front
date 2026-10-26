@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,8 +19,10 @@
  *
  */
 
-import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { setAllEntities, updateEntity, upsertEntities, withEntities } from "@ngrx/signals/entities";
+import { inject } from "@angular/core";
+import { patchState, signalStore, withHooks, withMethods, withState } from "@ngrx/signals";
+import { ResetService } from "../base/reset.service";
+import { removeAllEntities, setAllEntities, updateEntity, upsertEntities, withEntities } from "@ngrx/signals/entities";
 import { Notification, NotificationCount } from "./notifications.model";
 
 export const NotificationsStore = signalStore(
@@ -28,6 +30,9 @@ export const NotificationsStore = signalStore(
   withEntities<Notification>(),
   withState<{ count: NotificationCount }>({ count: { total: 0, read: 0, unread: 0 } }),
   withMethods((store) => ({
+    reset() {
+      patchState(store, removeAllEntities(), { count: { total: 0, read: 0, unread: 0 } });
+    },
     setNotifications(notifications: Notification[]) {
       patchState(store, setAllEntities(notifications));
     },
@@ -52,4 +57,9 @@ export const NotificationsStore = signalStore(
       patchState(store, updateEntity({ id: notificationId, changes: { readAt: new Date().toISOString() } }));
     },
   })),
+  withHooks({
+    onInit(store) {
+      inject(ResetService).register({ resetAll: () => store.reset() });
+    },
+  }),
 );

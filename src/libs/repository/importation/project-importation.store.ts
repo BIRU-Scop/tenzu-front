@@ -19,11 +19,18 @@
  *
  */
 
-import { signalStore } from "@ngrx/signals";
+import { inject } from "@angular/core";
+import { signalStore, withHooks } from "@ngrx/signals";
+import { ResetService } from "../base/reset.service";
 import { withEntityListFeature } from "../base/features";
 import { ProjectImportation } from "../importation/importation.model";
 
 export const ProjectImportationEntitiesStore = signalStore(
   { providedIn: "root" },
   withEntityListFeature<ProjectImportation>(),
+  withHooks({
+    onInit(store) {
+      inject(ResetService).register({ resetAll: () => store.reset() });
+    },
+  }),
 );

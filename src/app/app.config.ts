@@ -28,6 +28,7 @@ import {
   importProvidersFrom,
   inject,
   InjectionToken,
+  Injector,
   isDevMode,
   provideAppInitializer,
   provideEnvironmentInitializer,
@@ -48,6 +49,9 @@ import { LanguageStore } from "@tenzu/repository/transloco/language.store";
 import { httpInterceptor } from "@tenzu/utils/interceptors";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { WsService } from "@tenzu/utils/services/ws";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
+import { provideDocumentLang } from "./document-lang.initializer";
 import { provideTranslocoLocale } from "@jsverse/transloco-locale";
 import { providePlugins } from "./providers-plugins";
 import { environment } from "../environments/environment";
@@ -55,12 +59,10 @@ import { lastValueFrom } from "rxjs";
 import { mockInterceptor } from "@tenzu/utils/mocks/mock.interceptor";
 import { DomainMockStore } from "@tenzu/utils/mocks/mock-state";
 import { MockControlPanelComponent } from "@tenzu/utils/mocks/mock-control-panel.component";
-import { tokenGetter } from "@tenzu/utils/functions/token";
 
 export type Plugin = object;
 
 export const PLUGINS_TOKEN = new InjectionToken<(Plugin | null)[]>("PLUGINS_TOKEN");
-
 export const appConfig: ApplicationConfig = {
   providers: [
     {
@@ -69,11 +71,14 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
     ...providePlugins(),
+    provideDocumentLang(),
     provideAppInitializer(async () => {
       const configAppService = inject(ConfigAppService);
       const languageStore = inject(LanguageStore);
       const wsService = inject(WsService);
+      const injector = inject(Injector);
       await configAppService.loadAppConfig();
+      injector.get(SessionLifecycleService);
       if (configAppService.config().sentry.dsn) {
         Sentry.init({
           dsn: configAppService.config().sentry.dsn,
@@ -106,8 +111,12 @@ export const appConfig: ApplicationConfig = {
           useFactory: () => {
             const configAppService = inject(ConfigAppService);
             const apiConfig = configAppService.configApi();
+            const injector = inject(Injector);
+            if (!apiConfig) {
+              throw new Error("ApiConfig is not loaded check the order");
+            }
             return {
-              tokenGetter: tokenGetter,
+              tokenGetter: () => injector.get(TokenRepositoryService).tokens()?.access ?? null,
               allowedDomains: [apiConfig.baseDomain],
               headerName: "Authorization",
               authScheme: "Bearer ",

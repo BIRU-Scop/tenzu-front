@@ -37,10 +37,10 @@ import { WorkspaceSummary } from "../workspace/workspace.model";
 import { ProjectImportationType } from "./importation.model";
 import { ProjectImportationApiService } from "./project-importation-api.service";
 import { TusUploadState } from "./tus-upload.model";
-import { TusUploadStorage } from "./tus-upload-storage.service";
+import { TusUploadStorageService } from "./tus-upload-storage.service";
 import { TusUploadStore } from "./tus-upload.store";
-import { TusUploadLock, TusUploadLockRelease } from "./tus-upload-lock.service";
-import { TusUploadChannel } from "./tus-upload-channel.service";
+import { TusUploadLockService, TusUploadLockRelease } from "./tus-upload-lock.service";
+import { TusUploadChannelService } from "./tus-upload-channel.service";
 import { CanReset, ResetService } from "../base/reset.service";
 
 const STATUS_KEY = "project.new_project.upload.status";
@@ -52,10 +52,10 @@ export class TusUploadRepositoryService implements CanReset {
   private readonly tusClientService = inject(TusClientService);
   private readonly projectImportationApiService = inject(ProjectImportationApiService);
   private readonly userStore = inject(UserStore);
-  private readonly tusUploadStorage = inject(TusUploadStorage);
+  private readonly tusUploadStorageService = inject(TusUploadStorageService);
   private readonly notificationService = inject(NotificationService);
-  private readonly tusUploadLock = inject(TusUploadLock);
-  private readonly tusUploadChannel = inject(TusUploadChannel);
+  private readonly tusUploadLockService = inject(TusUploadLockService);
+  private readonly tusUploadChannelService = inject(TusUploadChannelService);
   private readonly resetService = inject(ResetService);
   private readonly tusClientUploads = new Map<string, TusClientUpload>();
 
@@ -72,25 +72,25 @@ export class TusUploadRepositoryService implements CanReset {
       }
     });
 
-    this.tusUploadChannel.state$.pipe(takeUntilDestroyed()).subscribe((tusUploadState) => {
+    this.tusUploadChannelService.state$.pipe(takeUntilDestroyed()).subscribe((tusUploadState) => {
       if (tusUploadState.userId === this.userStore.myUser().id) {
         this.tusUploadStore.setEntity(tusUploadState);
       }
     });
 
-    this.tusUploadChannel.removed$.pipe(takeUntilDestroyed()).subscribe((id) => {
+    this.tusUploadChannelService.removed$.pipe(takeUntilDestroyed()).subscribe((id) => {
       if (!this.tusClientUploads.has(id) && this.entityMap()[id]) {
         this.tusUploadStore.deleteEntity(id);
       }
     });
 
-    this.tusUploadChannel.stop$.pipe(takeUntilDestroyed()).subscribe((userId) => {
+    this.tusUploadChannelService.stop$.pipe(takeUntilDestroyed()).subscribe((userId) => {
       if (userId === this.userStore.myUser().id) {
         this.pauseOwned().then();
       }
     });
 
-    this.tusUploadChannel.command$.pipe(takeUntilDestroyed()).subscribe(({ type, id }) => {
+    this.tusUploadChannelService.command$.pipe(takeUntilDestroyed()).subscribe(({ type, id }) => {
       if (this.tusClientUploads.has(id) && this.entityMap()[id]?.userId === this.userStore.myUser().id) {
         this[type](id)?.then();
       }
@@ -133,8 +133,8 @@ export class TusUploadRepositoryService implements CanReset {
           this.tusClientUploads.set(id, tusClientUpload);
           this.lock(id).then();
           this.tusUploadStore.addEntity(tusUploadState);
-          this.tusUploadChannel.publishState(tusUploadState);
-          this.tusUploadStorage
+          this.tusUploadChannelService.publishState(tusUploadState);
+          this.tusUploadStorageService
             .save(tusUploadState, params.file)
             .catch((error) => debug("tus-upload", `save of ${id} failed`, error));
           resolve();
@@ -149,21 +149,23 @@ export class TusUploadRepositoryService implements CanReset {
 
   private persist(id: string): void {
     const tusUploadState = this.entityMap()[id];
-    this.tusUploadChannel.publishState(tusUploadState);
-    this.tusUploadStorage.update(tusUploadState).catch((error) => debug("tus-upload", `update of ${id} failed`, error));
+    this.tusUploadChannelService.publishState(tusUploadState);
+    this.tusUploadStorageService
+      .update(tusUploadState)
+      .catch((error) => debug("tus-upload", `update of ${id} failed`, error));
   }
 
   private remove(id: string): void {
     this.tusClientUploads.delete(id);
     this.unlock(id);
     this.tusUploadStore.deleteEntity(id);
-    this.tusUploadChannel.publishRemoved(id);
-    this.tusUploadStorage.delete(id).then();
+    this.tusUploadChannelService.publishRemoved(id);
+    this.tusUploadStorageService.delete(id).then();
   }
   private lock(id: string): Promise<TusUploadLockRelease> {
     let lockRelease = this.lockReleases.get(id);
     if (!lockRelease) {
-      lockRelease = this.tusUploadLock.waitForLock(id);
+      lockRelease = this.tusUploadLockService.waitForLock(id);
       this.lockReleases.set(id, lockRelease);
     }
     return lockRelease;
@@ -178,7 +180,7 @@ export class TusUploadRepositoryService implements CanReset {
   async pause(id: string): Promise<void> {
     const tusClientUpload = this.tusClientUploads.get(id);
     if (!tusClientUpload) {
-      this.tusUploadChannel.sendCommand("pause", id);
+      this.tusUploadChannelService.sendCommand("pause", id);
       return;
     }
     await tusClientUpload.pause();
@@ -189,7 +191,7 @@ export class TusUploadRepositoryService implements CanReset {
   resume(id: string): void {
     const tusClientUpload = this.tusClientUploads.get(id);
     if (!tusClientUpload) {
-      this.tusUploadChannel.sendCommand("resume", id);
+      this.tusUploadChannelService.sendCommand("resume", id);
       return;
     }
     this.tusUploadStore.updateEntity(id, { status: "resuming" });
@@ -203,7 +205,7 @@ export class TusUploadRepositoryService implements CanReset {
         this.remove(id);
         return;
       }
-      this.tusUploadChannel.sendCommand("cancel", id);
+      this.tusUploadChannelService.sendCommand("cancel", id);
       return;
     }
     this.tusUploadStore.updateEntity(id, { status: "canceling" });
@@ -218,7 +220,7 @@ export class TusUploadRepositoryService implements CanReset {
   retry(id: string): void {
     const tusClientUpload = this.tusClientUploads.get(id);
     if (!tusClientUpload) {
-      this.tusUploadChannel.sendCommand("retry", id);
+      this.tusUploadChannelService.sendCommand("retry", id);
       return;
     }
     this.tusUploadStore.updateEntity(id, { status: "resuming", errorKey: undefined, errorMessage: undefined });
@@ -240,13 +242,13 @@ export class TusUploadRepositoryService implements CanReset {
       return;
     }
 
-    const lockRelease = await this.tusUploadLock.takeLockIfFree(id);
+    const lockRelease = await this.tusUploadLockService.takeLockIfFree(id);
     if (!lockRelease) {
       return;
     }
     this.lockReleases.set(id, Promise.resolve(lockRelease));
     this.tusUploadStore.updateEntity(id, { status: "resuming" });
-    await this.tusUploadStorage
+    await this.tusUploadStorageService
       .save(this.entityMap()[id], file)
       .catch((error) => debug("tus-upload", `save of ${id} failed`, error));
     this.createClientUpload(tusUploadState, file).start();
@@ -254,7 +256,7 @@ export class TusUploadRepositoryService implements CanReset {
 
   async restore(): Promise<void> {
     const userId = this.userStore.myUser().id;
-    const expired = await this.tusUploadStorage.deleteExpired(new Date().toISOString());
+    const expired = await this.tusUploadStorageService.deleteExpired(new Date().toISOString());
     for (const tusUploadState of expired.filter((tusUploadState) => tusUploadState.userId === userId)) {
       this.notificationService.error({
         title: `${NOTIFICATION_KEY}.expired`,
@@ -262,7 +264,7 @@ export class TusUploadRepositoryService implements CanReset {
         translocoTitleParams: { fileName: tusUploadState.fileName },
       });
     }
-    const tusUploadStates = await this.tusUploadStorage.list(userId);
+    const tusUploadStates = await this.tusUploadStorageService.list(userId);
 
     this.tusUploadStore.setEntities(tusUploadStates);
 
@@ -277,7 +279,7 @@ export class TusUploadRepositoryService implements CanReset {
   }
 
   private async restoreUpload(tusUploadState: TusUploadState): Promise<void> {
-    const file = await this.tusUploadStorage.readFile(tusUploadState.id);
+    const file = await this.tusUploadStorageService.readFile(tusUploadState.id);
     if (!file) {
       this.interrupt(tusUploadState);
       return;
@@ -346,7 +348,7 @@ export class TusUploadRepositoryService implements CanReset {
         this.tusUploadStore.updateEntity(id, failureState);
         this.persist(id);
         if (failureState.status === "rejected") {
-          this.tusUploadStorage
+          this.tusUploadStorageService
             .deleteFile(id)
             .catch((deleteError) => debug("tus-upload", `deleteFile of ${id} failed`, deleteError));
         }
@@ -359,14 +361,14 @@ export class TusUploadRepositoryService implements CanReset {
     const userId = this.userStore.myUser().id;
     for (const [id, tusClientUpload] of this.tusClientUploads) {
       tusClientUpload.pause().then();
-      this.tusUploadStorage
+      this.tusUploadStorageService
         .update({ ...this.entityMap()[id], status: "paused" })
         .catch((error) => debug("tus-upload", `update of ${id} failed`, error));
       this.unlock(id);
     }
     this.tusClientUploads.clear();
     if (userId) {
-      this.tusUploadChannel.publishStop(userId);
+      this.tusUploadChannelService.publishStop(userId);
     }
   }
 

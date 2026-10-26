@@ -19,7 +19,7 @@
  *
  */
 
-import { Component, inject, model } from "@angular/core";
+import { Component, inject, model, signal } from "@angular/core";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatCheckbox } from "@angular/material/checkbox";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
@@ -54,8 +54,11 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
             }
           </div>
         </mat-checkbox>
+        @if (hasDeletionFailed()) {
+          <p role="alert" class="mat-body-medium mat-text-error">{{ t("deletion_failed") }}</p>
+        }
         <app-form-footer [secondaryAction]="false">
-          <app-button-delete translocoKey="settings.delete.delete_account" type="submit" />
+          <app-button-delete translocoKey="settings.delete.delete_account" type="submit" [loading]="isDeleting()" />
         </app-form-footer>
       </form>
     </div>
@@ -68,6 +71,7 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
 })
 export class DeleteComponent {
   readonly submit = model(false);
+  readonly hasDeletionFailed = signal(false);
 
   userStore = inject(UserStore);
   userService = inject(UserService);
@@ -77,6 +81,20 @@ export class DeleteComponent {
     consent: [false, Validators.required],
   });
   router = inject(Router);
+
+  readonly isDeleting = signal(false);
+
+  private async deleteAccount(): Promise<void> {
+    this.hasDeletionFailed.set(false);
+    this.isDeleting.set(true);
+    try {
+      await this.userStore.deleteUser();
+    } catch {
+      this.hasDeletionFailed.set(true);
+    } finally {
+      this.isDeleting.set(false);
+    }
+  }
 
   confirmDialog(): void {
     this.submit.set(true);
@@ -97,11 +115,11 @@ export class DeleteComponent {
           });
           dialogRef.afterClosed().subscribe((result) => {
             if (result) {
-              this.userStore.deleteUser();
+              this.deleteAccount();
             }
           });
         } else {
-          this.userStore.deleteUser();
+          this.deleteAccount();
         }
       });
     }

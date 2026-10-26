@@ -24,7 +24,13 @@ import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { TestBed } from "@angular/core/testing";
 import { ZodError } from "zod/v4";
 
-import { applyProjectImportationEvent, applyStoryTagAssignmentEvent, applyStoryTagEvent } from "./apply-event.function";
+import {
+  applyProjectImportationEvent,
+  applyStoryTagAssignmentEvent,
+  applyStoryTagEvent,
+  applyUserEvent,
+} from "./apply-event.function";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { WSResponseEvent } from "../ws.model";
 import { ProjectRepositoryService } from "@tenzu/repository/project/project-repository.service";
 import { makeProjectDetail } from "@tenzu/repository/project/project.factories";
@@ -149,6 +155,21 @@ describe("applyStoryTagAssignmentEvent", () => {
   });
 });
 
+describe("applyUserEvent", () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [testingProviders] });
+  });
+
+  it("applyUserEvent calls sessionLifecycleService.endSession with accountDeleted on a users.delete event", async () => {
+    const endSession = vi
+      .spyOn(TestBed.inject(SessionLifecycleService), "endSession")
+      .mockImplementation(() => undefined);
+
+    await TestBed.runInInjectionContext(() => applyUserEvent(makeEvent("users.delete", {}, "users.user-1")));
+
+    expect(endSession).toHaveBeenCalledWith({ reason: "accountDeleted" });
+  });
+});
 describe("applyProjectImportationEvent", () => {
   const liveAnnouncerMock = mockService(LiveAnnouncer);
 

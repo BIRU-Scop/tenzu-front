@@ -19,20 +19,39 @@
  *
  */
 
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TestBed } from "@angular/core/testing";
+import { lastValueFrom, of } from "rxjs";
+import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
+import { makeTokens } from "@tenzu/repository/auth/auth.factories";
 
 import { LoginService } from "./login.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 
 describe("LoginService", () => {
-  let service: LoginService;
+  let loginService: LoginService;
+  const tokens = makeTokens({ username: "alice" });
 
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [...testingProviders] });
-    service = TestBed.inject(LoginService);
+    loginService = TestBed.inject(LoginService);
+    vi.spyOn(TestBed.inject(AuthService), "login").mockReturnValue(of(tokens));
+    vi.spyOn(TestBed.inject(SessionLifecycleService), "sessionStarted").mockImplementation(() => undefined);
   });
 
-  it("should be created", () => {
-    expect(service).toBeTruthy();
+  it("login calls sessionLifecycleService.sessionStarted with the tokens and next when next is usable", async () => {
+    await lastValueFrom(loginService.login({ username: "alice", password: "123123" }, "/workspace/1/projects"));
+
+    expect(TestBed.inject(SessionLifecycleService).sessionStarted).toHaveBeenCalledExactlyOnceWith(
+      tokens,
+      "/workspace/1/projects",
+    );
+  });
+
+  it("login calls sessionLifecycleService.sessionStarted with the tokens and null when next is not usable", async () => {
+    await lastValueFrom(loginService.login({ username: "alice", password: "123123" }, "//bad.url.site"));
+
+    expect(TestBed.inject(SessionLifecycleService).sessionStarted).toHaveBeenCalledExactlyOnceWith(tokens, null);
   });
 });

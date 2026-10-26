@@ -19,6 +19,7 @@
     "typecheck:scripts": "tsc --noEmit -p scripts/tsconfig.json",
     "openapi:check": "tsx scripts/openapi-check/openapi-check.mts",
     "e2e:ui": "npx playwright test",
+    "typecheck:e2e": "tsc -p tsconfig.e2e.json",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "transloco:optimize": "transloco-optimize dist/tenzu/browser/assets/i18n",
@@ -26,7 +27,8 @@
     "build:production": "ng build --configuration production && npm run transloco:optimize",
     "serve-prod-local": "npx http-server dist/tenzu/browser -p 4200",
     "storybook": "ng run tenzu:storybook",
-    "build-storybook": "ng run tenzu:build-storybook"
+    "build-storybook": "ng run tenzu:build-storybook",
+    "check:design-doc": "node scripts/check-design-doc.mjs"
   },
   "private": true,
   "dependencies": {
@@ -78,9 +80,11 @@
     "@angular/cli": "^22.2.2",
     "@angular/compiler-cli": "^22.2.2",
     "@apidevtools/json-schema-ref-parser": "^15.5.0",
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
     "@jsverse/transloco-optimize": "^8.4.0",
     "@ngrx/eslint-plugin": "^21.1.1",
+    "@playwright/test": "^1.62.1",
     "@sentry/cli": "^3.5.1",
     "@storybook/addon-a11y": "^10.6.1",
     "@storybook/addon-docs": "^10.6.1",

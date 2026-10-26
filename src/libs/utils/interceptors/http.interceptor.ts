@@ -19,20 +19,17 @@
  *
  */
 
-import { HttpErrorResponse, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { HttpErrorResponse, HttpHandlerFn, HttpRequest, HttpStatusCode } from "@angular/common/http";
 import { inject } from "@angular/core";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
-import { catchError, EMPTY, switchMap, throwError } from "rxjs";
+import { catchError, EMPTY, from, switchMap, throwError } from "rxjs";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { JwtHelperService } from "@auth0/angular-jwt";
 import { retryWhenErrors } from "@tenzu/repository/base/utils";
 import { getLocError } from "@tenzu/utils/functions/errors";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 
 export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
-  const authService = inject(AuthService);
-  const tokens = authService.getToken();
-  const jwtHelperService = inject(JwtHelperService);
+  const tokenRepositoryService = inject(TokenRepositoryService);
   const notificationService = inject(NotificationService);
   const configAppService = inject(ConfigAppService);
   request = request.clone({
@@ -40,21 +37,19 @@ export function httpInterceptor(request: HttpRequest<unknown>, next: HttpHandler
       "correlation-id": configAppService.correlationId,
     },
   });
+  const isAuthEndpoint = request.url.startsWith(`${configAppService.apiUrl()}/auth/`);
 
   return next(request).pipe(
     retryWhenErrors(),
     catchError((error) => {
-      if (error instanceof HttpErrorResponse && !request.url.includes("auth") && error.status === 401) {
-        if (tokens.refresh && !jwtHelperService.isTokenExpired(tokens.refresh)) {
-          return authService.refresh(tokens).pipe(
-            switchMap(() => {
-              return next(request);
-            }),
+      if (error instanceof HttpErrorResponse && !isAuthEndpoint && error.status === HttpStatusCode.Unauthorized) {
+        if (tokenRepositoryService.hasUsableRefresh()) {
+          return from(tokenRepositoryService.rotate()).pipe(
+            switchMap(() => next(request)),
+            catchError(() => throwError(() => error)),
           );
-        } else {
-          authService.autoLogout();
-          return EMPTY;
         }
+        return EMPTY;
       } else if (error instanceof HttpErrorResponse) {
         switch (error.status) {
           // @ts-expect-error FALLS THROUGH

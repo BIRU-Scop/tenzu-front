@@ -22,27 +22,21 @@
 import { inject, Service } from "@angular/core";
 
 import { tap } from "rxjs";
-import { Router } from "@angular/router";
-import { UserStore } from "@tenzu/repository/user/user.store";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
 import { Credential } from "@tenzu/repository/auth/auth.model";
+import { usableNext } from "@tenzu/utils/functions/urls";
 
 @Service()
 export class LoginService {
-  userStore = inject(UserStore);
+  sessionLifecycleService = inject(SessionLifecycleService);
   authService = inject(AuthService);
-  router = inject(Router);
-
-  checkPassword(credential: Credential) {
-    this.authService.clear();
-    return this.authService.login(credential);
-  }
 
   login(credential: Credential, next: string) {
-    this.authService.clear();
     return this.authService.login(credential).pipe(
-      tap(() => this.userStore.getMe()),
-      tap(() => this.router.navigateByUrl(next)),
+      tap((tokens) => {
+        this.sessionLifecycleService.sessionStarted(tokens, usableNext(next));
+      }),
     );
   }
 }

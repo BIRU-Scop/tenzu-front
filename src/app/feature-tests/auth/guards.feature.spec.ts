@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 BIRU
+ * Copyright (C) 2024-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,6 +19,24 @@
  *
  */
 
-export function tokenGetter() {
-  return localStorage.getItem("token");
-}
+import { describe, expect, it } from "vitest";
+
+import { loggedInSession, sessionHarness } from "./session-harness";
+
+describe("guards", () => {
+  it("navigating to /workspace/w1 without tokens redirects to /login?next=%2Fworkspace%2Fw1", async () => {
+    const { router } = await sessionHarness({ url: "/" });
+
+    await router.navigateByUrl("/workspace/w1");
+
+    expect(router.url).toBe("/login?next=%2Fworkspace%2Fw1");
+  });
+
+  it("navigating to /login with a Logged-in session redirects to /", async () => {
+    const { router } = await loggedInSession();
+
+    await router.navigateByUrl("/login");
+
+    expect(router.url).toBe("/");
+  });
+});

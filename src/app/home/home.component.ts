@@ -28,7 +28,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { UserStore } from "@tenzu/repository/user/user.store";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { UserCardComponent } from "@tenzu/shared/components/user-card";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { darkModeOn$ } from "@tenzu/utils/observables";
@@ -93,13 +93,8 @@ import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
       <mat-divider class="h-1/2 !mx-2" [vertical]="true" />
       @let myUser = userStore.myUser();
 
-      <button>
-        <app-avatar
-          [matMenuTriggerFor]="userMenu"
-          [name]="myUser.fullName"
-          [color]="myUser.color"
-          mode="filled-circle"
-        />
+      <button type="button" [matMenuTriggerFor]="userMenu" [attr.aria-label]="t('user_menu')">
+        <app-avatar [name]="myUser.fullName" [color]="myUser.color" mode="filled-circle" />
       </button>
       <mat-menu #userMenu="matMenu">
         <div class="px-3 py-1.5">
@@ -118,7 +113,11 @@ import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
           >
           <span>{{ t("news") }}</span>
         </button>
-        <button mat-menu-item (click)="logout()">
+        <button
+          mat-menu-item
+          (click)="logout()"
+          [attr.aria-disabled]="sessionLifecycleService.step() === 'tearingDown' ? 'true' : null"
+        >
           <mat-icon>logout</mat-icon>
           <span>{{ t("logout") }}</span>
         </button>
@@ -133,7 +132,7 @@ import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
 export default class HomeComponent implements AfterViewInit {
   readonly eventBus = inject(NgEventBus);
   userStore = inject(UserStore);
-  authService = inject(AuthService);
+  sessionLifecycleService = inject(SessionLifecycleService);
   iconRegistry = inject(MatIconRegistry);
   sanitizer = inject(DomSanitizer);
   darkModeOn = toSignal(darkModeOn$);
@@ -156,7 +155,7 @@ export default class HomeComponent implements AfterViewInit {
   }
 
   logout() {
-    this.authService.userLogout();
+    this.sessionLifecycleService.endSession({ reason: "logoutRequested" });
   }
   openNotificationDialog(even: MouseEvent) {
     this.relativeDialog.open(NotificationsComponent, even?.target, {

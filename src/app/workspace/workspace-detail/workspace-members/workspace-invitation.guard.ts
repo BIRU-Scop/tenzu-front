@@ -21,14 +21,18 @@
 
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
-import { of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { from, map, Observable, of } from "rxjs";
+import { catchError, switchMap } from "rxjs/operators";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 import { WorkspaceInvitationsApiService } from "@tenzu/repository/workspace-invitations/workspace-invitation-api-service";
 import { PublicWorkspacePendingInvitation } from "@tenzu/repository/workspace-invitations/workspace-invitation.model";
 
+function isLoggedIn(tokenRepositoryService: TokenRepositoryService): Observable<boolean> {
+  return from(tokenRepositoryService.getAccessToken()).pipe(map((access) => access !== null));
+}
+
 export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const authService = inject(AuthService);
+  const tokenRepositoryService = inject(TokenRepositoryService);
   const workspaceInvitationsApiService = inject(WorkspaceInvitationsApiService);
   const router = inject(Router);
 
@@ -36,7 +40,7 @@ export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSna
 
   return workspaceInvitationsApiService.getByToken({ token }).pipe(
     switchMap((invitation: PublicWorkspacePendingInvitation) =>
-      authService.isLoginOk().pipe(
+      isLoggedIn(tokenRepositoryService).pipe(
         switchMap((logged) => {
           if (logged) {
             return workspaceInvitationsApiService.acceptByToken({ token }).pipe(
@@ -65,7 +69,9 @@ export const WorkspaceInvitationGuard: CanActivateFn = (route: ActivatedRouteSna
     ),
     catchError(() => {
       // Handle error when getting invitation details fails
-      return authService.isLoginOk().pipe(map((logged) => (logged ? router.parseUrl("/") : router.parseUrl("/login"))));
+      return isLoggedIn(tokenRepositoryService).pipe(
+        map((logged) => (logged ? router.parseUrl("/") : router.parseUrl("/login"))),
+      );
     }),
   );
 };

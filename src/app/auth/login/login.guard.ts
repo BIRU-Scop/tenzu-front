@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2026 BIRU
+ * Copyright (C) 2025-2026 BIRU
  *
  * This file is part of Tenzu.
  *
@@ -19,23 +19,17 @@
  *
  */
 
-import { CanActivateFn } from "@angular/router";
+import { CanActivateFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
-import { catchError, of, tap } from "rxjs";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { usableNext } from "@tenzu/utils/functions/urls";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 
-export const loginGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-
-  return authService.isLoginOk().pipe(
-    tap((value) => {
-      if (!value) {
-        authService.logout();
-      }
-    }),
-    catchError(() => {
-      authService.logout();
-      return of(false);
-    }),
-  );
+export const loginGuard: CanActivateFn = async (route, state) => {
+  const tokenRepositoryService = inject(TokenRepositoryService);
+  const router = inject(Router);
+  if ((await tokenRepositoryService.getAccessToken()) !== null) {
+    return true;
+  }
+  const next = usableNext(state.url);
+  return router.createUrlTree(["/login"], next ? { queryParams: { next } } : {});
 };

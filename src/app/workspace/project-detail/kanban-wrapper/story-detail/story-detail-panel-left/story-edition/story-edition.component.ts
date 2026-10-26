@@ -41,7 +41,7 @@ import { ProjectDetail } from "@tenzu/repository/project/project.model";
 import { StoryDetail } from "@tenzu/repository/story/story.model";
 import { form, FormField, readonly, submit } from "@angular/forms/signals";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 import { StoryDetailFacade } from "../../story-detail.facade";
 import { StoryAttachmentRepositoryService } from "@tenzu/repository/story-attachment/story-attachment-repository.service";
 import { hasEntityRequiredPermission } from "@tenzu/repository/permission/permission.service";
@@ -119,7 +119,7 @@ export class StoryEditionComponent {
 
   notificationService = inject(NotificationService);
   configAppService = inject(ConfigAppService);
-  authService = inject(AuthService);
+  tokenRepositoryService = inject(TokenRepositoryService);
   storyDetailFacade = inject(StoryDetailFacade);
   storyAttachmentRepositoryService = inject(StoryAttachmentRepositoryService);
   dialog = inject(MatDialog);
@@ -143,7 +143,7 @@ export class StoryEditionComponent {
     return new WsDocProvider({
       serverUrl: `${this.configAppService.wsUrl()}/collaboration`,
       roomName: `${projectId}/${storyRef}`,
-      wsOpts: { params: { token: this.authService.getToken().access || "" } },
+      wsOpts: { params: { token: this.tokenRepositoryService.tokens()?.access ?? "" } },
     });
   });
   onlineUsers = computed(() => this.wsDocProvider().onlineUsers());

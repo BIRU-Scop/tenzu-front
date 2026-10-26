@@ -34,6 +34,9 @@ export const tokensSchema = z.object({
 });
 export type Tokens = z.infer<typeof tokensSchema>;
 
+export const rotatedTokensSchema = tokensSchema.omit({ username: true });
+export type RotatedTokens = z.infer<typeof rotatedTokensSchema>;
+
 export const invitationTokensSchema = z.object({
   projectInvitationToken: z.string().apply(optionalNullable),
   workspaceInvitationToken: z.string().apply(optionalNullable),

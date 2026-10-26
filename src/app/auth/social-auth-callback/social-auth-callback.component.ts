@@ -24,6 +24,7 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import * as Sentry from "@sentry/angular";
 import { debug } from "@tenzu/utils/functions/logging";
 import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { ProviderCallback, Tokens } from "@tenzu/repository/auth/auth.model";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { MatButton } from "@angular/material/button";
@@ -39,6 +40,8 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
 import { applyWhenValue, FormField, form, required, FormRoot } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
+import { RememberedNextStore } from "@tenzu/repository/auth/stores/remembered-next.store";
+import { usableNext } from "@tenzu/utils/functions/urls";
 @Component({
   selector: "app-social-auth-callback",
   standalone: true,
@@ -122,6 +125,8 @@ export default class SocialAuthCallbackComponent {
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
   readonly authService = inject(AuthService);
+  readonly sessionLifecycleService = inject(SessionLifecycleService);
+  private readonly rememberedNextStore = inject(RememberedNextStore);
   readonly configAppService = inject(ConfigAppService);
   readonly notificationService = inject(NotificationService);
   readonly userService = inject(UserService);
@@ -156,9 +161,9 @@ export default class SocialAuthCallbackComponent {
               if (!this.tryAuthenticate(callback)) {
                 this.callback.set({ ...this.callback(), ...callback });
               }
-            } catch (err) {
-              if (err instanceof HttpErrorResponse) {
-                this.notificationService.error({ title: err.error.detail, translocoTitle: false });
+            } catch (error) {
+              if (error instanceof HttpErrorResponse) {
+                this.notificationService.error({ title: error.error.detail, translocoTitle: false });
               }
             }
           }
@@ -169,8 +174,9 @@ export default class SocialAuthCallbackComponent {
 
   tryAuthenticate(callback: ProviderCallback) {
     if (callback.access && callback.refresh) {
-      this.authService.setToken(callback as Tokens);
-      this.router.navigateByUrl(callback.next || "/").then();
+      const tokens = callback as Tokens;
+      const next = this.rememberedNextStore.take(tokens.username) ?? usableNext(callback.next ?? "");
+      this.sessionLifecycleService.sessionStarted(tokens, next);
       return true;
     }
     return false;

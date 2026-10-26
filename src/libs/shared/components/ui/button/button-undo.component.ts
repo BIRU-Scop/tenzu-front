@@ -43,6 +43,7 @@ export class ButtonUndoComponent implements ButtonInterface {
   iconOnly = input<boolean>(false);
   iconNoBackground = input(false);
   disabled = input<boolean>(false);
+  loading = input<boolean>(false);
   type = input<ButtonType>("button");
   iconSize = input<ButtonIconSize>("md");
 }

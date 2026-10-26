@@ -19,7 +19,7 @@
  *
  */
 
-import { Component, inject, signal } from "@angular/core";
+import { Component, inject, signal, computed } from "@angular/core";
 import { MatError, MatFormField, MatInput } from "@angular/material/input";
 import { LoginService } from "./login.service";
 import { TranslocoDirective } from "@jsverse/transloco";
@@ -28,6 +28,8 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { Credential } from "@tenzu/repository/auth/auth.model";
 import { MatDivider } from "@angular/material/divider";
+import { MatIcon } from "@angular/material/icon";
+import { ExitReasonStore } from "@tenzu/repository/auth/stores/exit-reason.store";
 import { ButtonComponent } from "@tenzu/shared/components/ui/button/button.component";
 import { apply, form, FormField, FormRoot, required } from "@angular/forms/signals";
 import { lastValueFrom } from "rxjs";
@@ -46,6 +48,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
     RouterLink,
     MatError,
     MatDivider,
+    MatIcon,
     FormField,
     ButtonComponent,
     PasswordFieldComponent,
@@ -57,8 +60,17 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
   },
   template: `
     <ng-container *transloco="let t">
-      <h1 class="mat-font-headline-md text-center">{{ t("auth.login.title") }}</h1>
-      <form [formRoot]="loginForm" class="flex flex-col gap-2">
+      <h1 class="mat-font-headline-md text-center" tabindex="-1">{{ t("auth.login.title") }}</h1>
+      @if (exitReasonKey(); as exitReasonKey) {
+        <p
+          role="alert"
+          class="mat-body-medium mat-bg-secondary-container mat-corner-medium flex items-center gap-2 p-3"
+        >
+          <mat-icon aria-hidden="true">info</mat-icon>
+          {{ t("auth.login.exit_reason." + exitReasonKey) }}
+        </p>
+      }
+      <form [formRoot]="loginForm" class="flex flex-col gap-2" (submit)="dismissExitReason()">
         <mat-form-field>
           <mat-label>
             {{ t("auth.login.email_or_username") }}
@@ -99,8 +111,20 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
   styles: ``,
 })
 export default class LoginComponent {
-  service = inject(LoginService);
+  loginService = inject(LoginService);
   route = inject(ActivatedRoute);
+  private readonly exitReasonStore = inject(ExitReasonStore);
+  readonly exitReasonKey = computed(() => {
+    const exit = this.exitReasonStore.exit();
+    if (exit === null) {
+      return null;
+    }
+    if (exit.reason !== "logoutRequested") {
+      return exit.reason;
+    }
+    return exit.fromChannel ? "from_another_tab" : null;
+  });
+
   readonly authConfigStore = inject(AuthConfigStore);
   credentials = signal<Credential>({
     username: "",
@@ -120,7 +144,7 @@ export default class LoginComponent {
             next = "/";
           }
           try {
-            await lastValueFrom(this.service.login(form().value(), next));
+            await lastValueFrom(this.loginService.login(form().value(), next));
           } catch {
             this.authConfigStore.setFormHasError(true);
             return [
@@ -137,5 +161,9 @@ export default class LoginComponent {
   constructor() {
     // Track form validation state to trigger logo animation when errors occur
     trackFormValidationEffect(this.loginForm);
+  }
+
+  dismissExitReason(): void {
+    this.exitReasonStore.clear();
   }
 }

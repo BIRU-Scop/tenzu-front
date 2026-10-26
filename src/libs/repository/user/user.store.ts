@@ -20,14 +20,15 @@
  */
 
 import { patchState, signalStore, withHooks, withMethods, withState } from "@ngrx/signals";
-import { inject } from "@angular/core";
+import { effect, inject } from "@angular/core";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { lastValueFrom, of, pipe, switchMap } from "rxjs";
+import { lastValueFrom, pipe, switchMap } from "rxjs";
 import { tapResponse } from "@ngrx/operators";
 import { UserService } from "./user.service";
 import { UpdateUserPayload, User } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
-import { AuthService } from "../auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
+import { ResetService } from "@tenzu/repository/base/reset.service";
 import { debug } from "@tenzu/utils/functions/logging";
 
 export const UserStore = signalStore(
@@ -40,29 +41,24 @@ export const UserStore = signalStore(
       store,
       userService = inject(UserService),
       translocoService = inject(TranslocoService),
-      authService = inject(AuthService),
+      sessionLifecycleService = inject(SessionLifecycleService),
     ) => ({
       getMe: rxMethod<void>(
         pipe(
-          switchMap(() => {
-            if (localStorage.getItem("token")) {
-              return userService.getMyUser().pipe(
-                tapResponse({
-                  next: (myUser) => {
-                    patchState(store, { myUser });
-                    if (myUser.lang) {
-                      translocoService.setActiveLang(myUser.lang);
-                    }
-                    localStorage.setItem("user", JSON.stringify(myUser));
-                    debug("user", "get user end");
-                  },
-                  error: console.error,
-                }),
-              );
-            } else {
-              return of(null);
-            }
-          }),
+          switchMap(() =>
+            userService.getMyUser().pipe(
+              tapResponse({
+                next: (myUser) => {
+                  patchState(store, { myUser });
+                  if (myUser.lang) {
+                    translocoService.setActiveLang(myUser.lang);
+                  }
+                  debug("user", "get user end");
+                },
+                error: console.error,
+              }),
+            ),
+          ),
         ),
       ),
       async patchMe(value: UpdateUserPayload) {
@@ -74,11 +70,11 @@ export const UserStore = signalStore(
       },
       async changePassword(password: UpdateUserPayload["password"]) {
         await lastValueFrom(userService.patchMyUser({ password }));
-        return authService.userLogout();
+        sessionLifecycleService.endSession({ reason: "passwordChanged" });
       },
       async deleteUser() {
-        userService.deleteUser().subscribe();
-        return authService.userLogout();
+        await lastValueFrom(userService.deleteUser());
+        sessionLifecycleService.endSession({ reason: "accountDeleted" });
       },
       requestResetPassword(email: string) {
         return lastValueFrom(userService.requestResetPassword(email));
@@ -89,9 +85,14 @@ export const UserStore = signalStore(
     }),
   ),
   withHooks({
-    onInit({ getMe }) {
-      debug("user", "get user start");
-      getMe();
+    onInit(store) {
+      inject(ResetService).register({ resetAll: () => store.resetMe() });
+      const sessionLifecycleService = inject(SessionLifecycleService);
+      effect(() => {
+        if (sessionLifecycleService.step() === "loggedIn") {
+          store.getMe();
+        }
+      });
     },
   }),
 );

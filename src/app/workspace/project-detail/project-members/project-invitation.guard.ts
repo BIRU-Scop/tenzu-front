@@ -21,15 +21,19 @@
 
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
-import { of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { from, map, Observable, of } from "rxjs";
+import { catchError, switchMap } from "rxjs/operators";
+import { TokenRepositoryService } from "@tenzu/repository/auth/token/token-repository.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ProjectInvitationsApiService } from "@tenzu/repository/project-invitations/project-invitation-api.service";
 import { PublicProjectPendingInvitation } from "@tenzu/repository/project-invitations/project-invitation.model";
 
+function isLoggedIn(tokenRepositoryService: TokenRepositoryService): Observable<boolean> {
+  return from(tokenRepositoryService.getAccessToken()).pipe(map((access) => access !== null));
+}
+
 export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const authService = inject(AuthService);
+  const tokenRepositoryService = inject(TokenRepositoryService);
   const projectInvitationApiService = inject(ProjectInvitationsApiService);
   const notificationService = inject(NotificationService);
   const router = inject(Router);
@@ -38,7 +42,7 @@ export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnaps
 
   return projectInvitationApiService.getByToken({ token }).pipe(
     switchMap((invitation: PublicProjectPendingInvitation) =>
-      authService.isLoginOk().pipe(
+      isLoggedIn(tokenRepositoryService).pipe(
         switchMap((logged) => {
           if (logged) {
             return projectInvitationApiService.acceptByToken({ token }).pipe(
@@ -74,7 +78,9 @@ export const ProjectInvitationGuard: CanActivateFn = (route: ActivatedRouteSnaps
     ),
     catchError(() => {
       // Handle error when getting invitation details fails
-      return authService.isLoginOk().pipe(map((logged) => (logged ? router.parseUrl("/") : router.parseUrl("/login"))));
+      return isLoggedIn(tokenRepositoryService).pipe(
+        map((logged) => (logged ? router.parseUrl("/") : router.parseUrl("/login"))),
+      );
     }),
   );
 };

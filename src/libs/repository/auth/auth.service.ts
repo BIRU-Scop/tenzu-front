@@ -21,6 +21,7 @@
 
 import { inject, Signal, Service } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { Params } from "@angular/router";
 import {
   AuthConfig,
   authConfigSchema,
@@ -30,37 +31,37 @@ import {
   ProviderContinueSignupPayload,
   ProviderRedirect,
   SocialProvider,
+  RotatedTokens,
+  rotatedTokensSchema,
   Tokens,
   tokensSchema,
 } from "./auth.model";
-import { parseWithDebug } from "../base/parse-with-debug";
-import { catchError, lastValueFrom, map, Observable, of, Subscription, take, tap, timer } from "rxjs";
-import { NavigationExtras, Params, Router } from "@angular/router";
-import { JwtHelperService } from "@auth0/angular-jwt";
-import { WsService } from "@tenzu/utils/services/ws";
-import { ConfigAppService } from "../config-app/config-app.service";
-import { NotificationService } from "@tenzu/utils/services/notification";
-import { ResetService } from "../base/reset.service";
-import { BaseDataModel } from "../base/misc.model";
-import { AuthConfigStore } from "../auth/auth-config.store";
+import { parseWithDebug } from "@tenzu/repository/base/parse-with-debug";
+import { lastValueFrom, map, Observable, tap } from "rxjs";
+import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { BaseDataModel } from "@tenzu/repository/base/misc.model";
+import { AuthConfigStore } from "./auth-config.store";
 import { debug } from "@tenzu/utils/functions/logging";
-import { HOMEPAGE_URL } from "@tenzu/utils/functions/urls";
 
 @Service()
 export class AuthService {
-  jwtHelperService = inject(JwtHelperService);
   configAppService = inject(ConfigAppService);
-  wsService = inject(WsService);
-  notificationService = inject(NotificationService);
   http = inject(HttpClient);
-  router = inject(Router);
-  readonly resetService = inject(ResetService);
   url = `${this.configAppService.apiUrl()}/auth`;
-  autoLogoutSubscription: Subscription | null = null;
   protected configStore = inject(AuthConfigStore);
 
   get providers(): Signal<SocialProvider[]> {
     return this.configStore.entities;
+  }
+
+  refreshTokens(refresh: string): Observable<RotatedTokens> {
+    return this.http
+      .post<unknown>(`${this.url}/token/refresh`, { refresh })
+      .pipe(map((data) => parseWithDebug(rotatedTokensSchema, data)));
+  }
+
+  blacklistRefreshToken(refresh: string): Observable<void> {
+    return this.http.post<Record<string, never>>(`${this.url}/blacklist`, { refresh }).pipe(map(() => undefined));
   }
 
   login(credentials: Credential): Observable<Tokens> {
@@ -68,127 +69,7 @@ export class AuthService {
       .post<unknown>(`${this.url}/token`, {
         ...credentials,
       })
-      .pipe(
-        map((data) => parseWithDebug(tokensSchema, data)),
-        tap((tokens) => {
-          this.setToken(tokens);
-          if (tokens.access) {
-            this.wsService.command({ command: "signin", token: tokens.access });
-          }
-        }),
-      );
-  }
-
-  clear() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("refresh");
-    localStorage.removeItem("username");
-    if (this.autoLogoutSubscription) {
-      this.autoLogoutSubscription.unsubscribe();
-      this.autoLogoutSubscription = null;
-    }
-
-    this.resetService.reset();
-  }
-
-  autoLogout() {
-    this.logout();
-    this.notificationService.error({ title: "notification.login.logout" });
-  }
-  userLogout() {
-    const tokens = this.getToken();
-    if (tokens.refresh) {
-      // tokens could be empty in case of concurrent autologout or manual clear of localstorage
-      this.http
-        .post<Record<string, never>>(`${this.url}/blacklist`, {
-          refresh: tokens.refresh,
-        })
-        .pipe(catchError(() => of(false))) // if blacklist fail, ignore silently for now
-        .subscribe();
-    }
-    this.logout();
-  }
-  logout() {
-    this.wsService.command({ command: "signout" });
-    this.applyLogout();
-  }
-  applyLogout() {
-    this.clear();
-    const navigationExtras: NavigationExtras =
-      this.router.url === HOMEPAGE_URL
-        ? {}
-        : {
-            queryParams: { next: this.router.url },
-          };
-    this.router.navigate(["/login"], navigationExtras).then();
-  }
-
-  refresh(tokens: Pick<Tokens, "refresh">): Observable<Tokens> {
-    return this.http
-      .post<unknown>(`${this.url}/token/refresh`, {
-        refresh: tokens.refresh,
-      })
-      .pipe(
-        map((data) => parseWithDebug(tokensSchema, data)),
-        tap((value) => this.setToken(value)),
-      );
-  }
-
-  getToken(): Tokens {
-    return {
-      access: localStorage.getItem("token") || "",
-      refresh: localStorage.getItem("refresh") || "",
-      username: localStorage.getItem("username") || "",
-    };
-  }
-
-  setToken(tokens: Tokens) {
-    if (tokens.access) {
-      localStorage.setItem("token", tokens.access);
-    }
-    if (tokens.refresh) {
-      localStorage.setItem("refresh", tokens.refresh);
-    }
-    if (tokens.username) {
-      localStorage.setItem("username", tokens.username);
-    }
-    this.setupAutoLogout(tokens);
-  }
-
-  setupAutoLogout(tokens: Tokens) {
-    if (this.autoLogoutSubscription) {
-      this.autoLogoutSubscription.unsubscribe();
-      this.autoLogoutSubscription = null;
-    }
-    if (tokens.refresh) {
-      const expirationDate = this.jwtHelperService.getTokenExpirationDate(tokens.refresh);
-      if (expirationDate) {
-        this.autoLogoutSubscription = timer(expirationDate)
-          .pipe(
-            take(1),
-            tap(() => {
-              this.autoLogout();
-            }),
-          )
-          .subscribe();
-      }
-    }
-  }
-  isLoginOk() {
-    const tokens = this.getToken();
-    if (tokens && tokens.refresh && !this.jwtHelperService.isTokenExpired(tokens.refresh)) {
-      if (this.jwtHelperService.isTokenExpired(tokens.access)) {
-        return this.refresh(tokens).pipe(
-          map(() => true),
-          catchError(() => of(false)),
-        );
-      } else {
-        this.setupAutoLogout(tokens);
-        return of(true);
-      }
-    } else {
-      return of(false);
-    }
+      .pipe(map((data) => parseWithDebug(tokensSchema, data)));
   }
 
   private getConfig(): Observable<AuthConfig> {

@@ -22,6 +22,7 @@
 export type CommandActionType =
   | "signin"
   | "signout"
+  | "signout_local"
   | "subscribe_to_project_events"
   | "unsubscribe_from_project_events"
   | "unsubscribe_all_except_user_channel"
@@ -39,6 +40,10 @@ export type SignInAction = CommandBase & {
 
 export type SignOutAction = CommandBase & {
   command: "signout";
+};
+
+export type SignOutLocalAction = CommandBase & {
+  command: "signout_local";
 };
 export type SubscribeToProjectEventsAction = CommandBase & {
   command: "subscribe_to_project_events";
@@ -66,6 +71,7 @@ export type PingActions = CommandBase & {
 export type Command =
   | SignInAction
   | SignOutAction
+  | SignOutLocalAction
   | PingActions
   | SubscribeToProjectEventsAction
   | UnsubscribeFromProjectEventsAction

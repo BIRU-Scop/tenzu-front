@@ -26,6 +26,7 @@ import { WorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.model
 import { Role } from "@tenzu/repository/membership/membership.model";
 
 export const HOMEPAGE_URL = "/";
+export const LOGIN_URL = "/login";
 
 type ProjectLink = Pick<ProjectLinkNested, "workspaceId" | "id">;
 type WorkspaceLink = Pick<WorkspaceLinkNested, "id">;
@@ -67,4 +68,29 @@ export function getWorkspaceRootUrl(workspace: WorkspaceLink) {
 
 export function getWorkspaceMembersRootUrl(workspace: WorkspaceLink) {
   return `${getWorkspaceRootUrl(workspace)}/members`;
+}
+
+const AUTH_ROUTE_PREFIXES = [
+  "/login",
+  "/signup",
+  "/reset-password",
+  "/social-auth-callback",
+  "/accept-project-invitation",
+  "/accept-workspace-invitation",
+];
+
+export function usableNext(candidate: string): string | null {
+  const url = candidate.trim();
+  if (!url.startsWith("/") || url.startsWith("//") || url.startsWith("/\\")) {
+    return null;
+  }
+  if (url === HOMEPAGE_URL) {
+    return null;
+  }
+  if (
+    AUTH_ROUTE_PREFIXES.some((prefix) => url === prefix || url.startsWith(`${prefix}/`) || url.startsWith(`${prefix}?`))
+  ) {
+    return null;
+  }
+  return url;
 }

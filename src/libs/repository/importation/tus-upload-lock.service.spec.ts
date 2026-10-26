@@ -20,13 +20,13 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
-import { TusUploadLock } from "./tus-upload-lock.service";
+import { TusUploadLockService } from "./tus-upload-lock.service";
 
-describe(TusUploadLock.name, () => {
-  let tusUploadLock: TusUploadLock;
+describe(TusUploadLockService.name, () => {
+  let tusUploadLockService: TusUploadLockService;
 
   beforeEach(() => {
-    tusUploadLock = new TusUploadLock();
+    tusUploadLockService = new TusUploadLockService();
   });
 
   const heldNames = async (): Promise<string[]> =>
@@ -37,23 +37,23 @@ describe(TusUploadLock.name, () => {
   it("waitForLock holds a free lock", async () => {
     expect(await heldNames()).not.toContain("tus-upload:free");
 
-    await tusUploadLock.waitForLock("free");
+    await tusUploadLockService.waitForLock("free");
 
     expect(await heldNames()).toContain("tus-upload:free");
   });
 
   it("lockRelease releases the lock", async () => {
-    const lockRelease = await tusUploadLock.waitForLock("released");
+    const lockRelease = await tusUploadLockService.waitForLock("released");
     await lockRelease();
     expect(await heldNames()).not.toContain("tus-upload:released");
   });
 
   it("waitForLock waits until the holder releases", async () => {
     // the owner
-    const holderLockRelease = await tusUploadLock.waitForLock("shared");
+    const holderLockRelease = await tusUploadLockService.waitForLock("shared");
     let isMirrorGranted = false;
     // waits for the lock; `then` runs once the lock is acquired
-    const mirror = tusUploadLock.waitForLock("shared").then(() => (isMirrorGranted = true));
+    const mirror = tusUploadLockService.waitForLock("shared").then(() => (isMirrorGranted = true));
 
     expect(await pendingNames()).toContain("tus-upload:shared");
     // the mirror does not have the lock
@@ -67,15 +67,15 @@ describe(TusUploadLock.name, () => {
   });
 
   it("takeLockIfFree returns null when the lock is held", async () => {
-    await tusUploadLock.waitForLock("held");
+    await tusUploadLockService.waitForLock("held");
 
-    expect(await tusUploadLock.takeLockIfFree("held")).toBeNull();
+    expect(await tusUploadLockService.takeLockIfFree("held")).toBeNull();
   });
 
   it("takeLockIfFree holds a free lock", async () => {
     expect(await heldNames()).not.toContain("tus-upload:free-to-try");
 
-    await tusUploadLock.takeLockIfFree("free-to-try");
+    await tusUploadLockService.takeLockIfFree("free-to-try");
 
     expect(await heldNames()).toContain("tus-upload:free-to-try");
   });

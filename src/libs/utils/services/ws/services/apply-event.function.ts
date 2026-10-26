@@ -59,7 +59,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { UserNested } from "@tenzu/repository/user/user.model";
 import { WorkflowStatus } from "@tenzu/repository/status/status.model";
-import { AuthService } from "@tenzu/repository/auth/auth.service";
+import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { Notification } from "@tenzu/repository/notifications/notifications.model";
 import { NotificationsStore } from "@tenzu/repository/notifications/notifications.store";
 import { WorkspaceRepositoryService } from "@tenzu/repository/workspace/workspace-repository.service";
@@ -688,10 +688,10 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
 }
 
 export async function applyUserEvent(message: WSResponseEvent<unknown>) {
-  const authService = inject(AuthService);
+  const sessionLifecycleService = inject(SessionLifecycleService);
   switch (message.event.type) {
     case UserEventType.DeleteUser: {
-      authService.logout();
+      sessionLifecycleService.endSession({ reason: "accountDeleted" });
     }
   }
 }

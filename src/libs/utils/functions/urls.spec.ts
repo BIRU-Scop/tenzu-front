@@ -30,16 +30,13 @@ import {
   getWorkspaceMembersRootUrl,
   getWorkspaceRootUrl,
   HOMEPAGE_URL,
+  usableNext,
 } from "./urls";
 
 const project = { id: "p1", workspaceId: "w1", landingPage: "kanban" };
 const workspace = { id: "w1" };
 
 describe("url helpers", () => {
-  it("exposes the homepage url", () => {
-    expect(HOMEPAGE_URL).toBe("/");
-  });
-
   it("builds the project root url", () => {
     expect(getProjectRootUrl(project)).toBe("/workspace/w1/project/p1");
   });
@@ -64,5 +61,31 @@ describe("url helpers", () => {
   it("builds workspace urls", () => {
     expect(getWorkspaceRootUrl(workspace)).toBe("/workspace/w1");
     expect(getWorkspaceMembersRootUrl(workspace)).toBe("/workspace/w1/members");
+  });
+
+  describe("usableNext", () => {
+    it("keeps an in-app url", () => {
+      expect(usableNext("/workspace/w1/project/p1")).toBe("/workspace/w1/project/p1");
+    });
+
+    it("drops the homepage, which is where an empty next already lands", () => {
+      expect(usableNext(HOMEPAGE_URL)).toBeNull();
+    });
+
+    it("drops auth routes", () => {
+      expect(usableNext("")).toBeNull();
+      expect(usableNext("/login")).toBeNull();
+      expect(usableNext("/login?next=/workspace")).toBeNull();
+      expect(usableNext("/signup")).toBeNull();
+      expect(usableNext("/reset-password/token-1")).toBeNull();
+      expect(usableNext("/accept-project-invitation/token-1")).toBeNull();
+    });
+
+    it("drops anything that could leave the origin", () => {
+      expect(usableNext("//bad.site.com")).toBeNull();
+      expect(usableNext("/\\bad.site.com")).toBeNull();
+      expect(usableNext("https://bad.site.com")).toBeNull();
+      expect(usableNext("  //bad.site.com")).toBeNull();
+    });
   });
 });

@@ -38,7 +38,15 @@ export class ConfigAppService {
     return `${this.configApi().scheme}://${this.configApi().baseDomain}/${this.configApi().suffixDomain}/${this.configApi().prefix}`;
   });
   wsUrl = computed(() => this.config().wsUrl);
-  readonly correlationId = CORRELATION_ID;
+  private currentCorrelationId = CORRELATION_ID;
+
+  get correlationId(): string {
+    return this.currentCorrelationId;
+  }
+
+  regenerateCorrelationId(): void {
+    this.currentCorrelationId = crypto.randomUUID();
+  }
 
   async loadAppConfig() {
     await fetch("/assets/configs/config.json")
