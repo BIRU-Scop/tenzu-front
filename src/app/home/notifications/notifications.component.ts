@@ -40,12 +40,23 @@ import { WorkspaceUrlPipe } from "@tenzu/pipes/url/workspace-url.pipe";
 import { ProjectLandingPageUrl } from "@tenzu/pipes/url/project-landing-page-url.pipe";
 import { FileSizePipe } from "@tenzu/pipes/humanize-file-size";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-notification-unit",
   standalone: true,
 
-  imports: [AvatarComponent, MatTooltip, TranslocoDirective, RouterLink, SafeHtmlPipe, MatBadge],
+  imports: [
+    AvatarComponent,
+    MatTooltip,
+    TranslocoDirective,
+    RouterLink,
+    SafeHtmlPipe,
+    MatBadge,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
+  ],
   providers: [StoryNamePipe, StoryUrlPipe, ProjectLandingPageUrl, WorkspaceUrlPipe, FileSizePipe],
   template: `
     @let notif = notification();
@@ -63,6 +74,7 @@ import { ConfigAppService } from "@tenzu/repository/config-app/config-app.servic
           [name]="context.user.fullName"
           [matTooltip]="context.user.fullName"
           [color]="context.user.color"
+          [imageData]="context.user.avatar | getBase64FromImageUrl: 'small' | async"
           [mode]="'filled-circle'"
         />
       }

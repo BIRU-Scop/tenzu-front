@@ -90,6 +90,7 @@ type AssignDialogData = {
                       [fullName]="member.fullName"
                       [subtext]="member.username"
                       [color]="member.color"
+                      [avatarImage]="member.avatar"
                       [textToHighlight]="searchInput.value"
                       [isSelf]="myUser.id === member.id"
                     ></app-user-card>

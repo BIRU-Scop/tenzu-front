@@ -24,14 +24,22 @@ import { MatTooltip } from "@angular/material/tooltip";
 import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { UserNested } from "@tenzu/repository/user/user.model";
 import { UserStore } from "@tenzu/repository/user/user.store";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-avatar-list",
-  imports: [MatTooltip, AvatarComponent],
+  imports: [MatTooltip, AvatarComponent, AsyncPipe, GetBase64FromImageUrlPipe],
   template: `
     <div class="flex flex-row gap-1">
       @for (user of filteredUsernames().slice(0, userOverflowThreshold()); track user.fullName) {
-        <app-avatar [matTooltip]="user.fullName" [name]="user.fullName" mode="filled-circle" [color]="user.color" />
+        <app-avatar
+          [matTooltip]="user.fullName"
+          [name]="user.fullName"
+          mode="filled-circle"
+          [color]="user.color"
+          [imageData]="user.avatar | getBase64FromImageUrl: 'small' | async"
+        />
       }
       @if (filteredUsernames().length > userOverflowThreshold()) {
         @let hiddenNamesCount = filteredUsernames().length - userOverflowThreshold();

@@ -23,14 +23,21 @@ import { Component, computed, inject, input, SecurityContext } from "@angular/co
 import { AvatarComponent } from "../avatar/avatar.component";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { DomSanitizer } from "@angular/platform-browser";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-user-card",
-  imports: [AvatarComponent, TranslocoDirective],
+  imports: [AvatarComponent, TranslocoDirective, AsyncPipe, GetBase64FromImageUrlPipe],
   template: ` <div class="flex flex-row gap-2 items-center" *transloco="let t; prefix: 'component.user_card'">
     @let _fullname = fullName();
     @let _avatarname = avatarName();
-    <app-avatar mode="filled-circle" [name]="_avatarname === null ? _fullname : _avatarname" [color]="color()" />
+    <app-avatar
+      mode="filled-circle"
+      [name]="_avatarname === null ? _fullname : _avatarname"
+      [color]="color()"
+      [imageData]="avatarImage() | getBase64FromImageUrl: 'small' | async"
+    />
     <div class="flex flex-col min-h-9 justify-center">
       @if (_fullname) {
         <div class="flex flex-row gap-1">
@@ -58,6 +65,7 @@ export class UserCardComponent {
   subtext = input<string | null>("");
   textToHighlight = input("");
   color = input(0);
+  avatarImage = input<string | undefined>();
   isSelf = input(false);
 
   highlightedFullName = computed(() => this.highlightString(this.fullName()) || "");

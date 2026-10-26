@@ -34,6 +34,7 @@ export const userNestedSchema = z.object({
   fullName: z.string(),
   color: z.int(),
   email: z.email(),
+  avatar: z.string().apply(optionalNullable),
 });
 export type UserNested = z.infer<typeof userNestedSchema>;
 

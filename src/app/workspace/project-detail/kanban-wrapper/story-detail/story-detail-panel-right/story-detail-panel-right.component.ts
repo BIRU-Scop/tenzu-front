@@ -65,6 +65,7 @@ import { ProjectPermissions } from "@tenzu/repository/permission/permission.mode
             [avatarName]="_story.createdBy?.fullName || ''"
             [subtext]="_story.createdAt | date: 'short'"
             [color]="_story.createdBy?.color || 0"
+            [avatarImage]="_story.createdBy?.avatar"
           />
         </div>
         <app-story-status [storyDetail]="_story" [hasModifyPermission]="hasModifyPermission()" />

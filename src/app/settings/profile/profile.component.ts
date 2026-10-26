@@ -31,7 +31,8 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
-import { TitleCasePipe } from "@angular/common";
+import { AsyncPipe, TitleCasePipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-profile",
@@ -47,14 +48,18 @@ import { TitleCasePipe } from "@angular/common";
     ButtonSaveComponent,
     FormFooterComponent,
     TitleCasePipe,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
+    @let user = userStore.myUser();
     <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
       <h1 class="mat-headline-medium">{{ t("settings.profile.title") }}</h1>
       <app-avatar
-        [name]="form.value.fullName || userStore.myUser().fullName"
+        [name]="form.value.fullName || user.fullName"
         mode="filled-circle"
-        [color]="userStore.myUser().color"
+        [color]="user.color"
+        [imageData]="user.avatar | getBase64FromImageUrl: 'small' | async"
         size="xl"
       ></app-avatar>
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
