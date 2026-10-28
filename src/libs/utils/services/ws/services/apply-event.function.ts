@@ -57,7 +57,11 @@ import { ProjectRepositoryService } from "@tenzu/repository/project/project-repo
 import { ReorderWorkflowStatusesPayload, Workflow, WorkflowNested } from "@tenzu/repository/workflow/workflow.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "@tenzu/utils/services/notification";
-import { UserNested } from "@tenzu/repository/user/user.model";
+import {
+  deleteUserEventContentSchema,
+  updateUserEventContentSchema,
+  UserNested,
+} from "@tenzu/repository/user/user.model";
 import { WorkflowStatus } from "@tenzu/repository/status/status.model";
 import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { Notification } from "@tenzu/repository/notifications/notifications.model";
@@ -97,6 +101,7 @@ import { ImportationStatus, ProjectImportation } from "@tenzu/repository/importa
 import { ProjectImportationRepositoryService } from "@tenzu/repository/importation/project-importation-repository.service";
 import { MatDialog } from "@angular/material/dialog";
 import { projectImportationErrorDialogId } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.id";
+import { UserStore } from "@tenzu/repository/user/user.store";
 
 export function applyStoryTagEvent(message: WSResponseEvent<unknown>) {
   const storyTagRepositoryService = inject(StoryTagRepositoryService);
@@ -689,9 +694,35 @@ export async function applyWorkspaceEvent(message: WSResponseEvent<unknown>) {
 
 export async function applyUserEvent(message: WSResponseEvent<unknown>) {
   const sessionLifecycleService = inject(SessionLifecycleService);
+  const userStore = inject(UserStore);
+  const workspaceMembershipRepositoryService = inject(WorkspaceMembershipRepositoryService);
+  const projectMembershipRepositoryService = inject(ProjectMembershipRepositoryService);
   switch (message.event.type) {
     case UserEventType.DeleteUser: {
-      sessionLifecycleService.endSession({ reason: "accountDeleted" });
+      const { userId } = deleteUserEventContentSchema.parse(message.event.content);
+      if (userStore.myUser().id === userId) {
+        sessionLifecycleService.endSession({ reason: "accountDeleted" });
+      }
+      break;
+    }
+    case UserEventType.UpdateUser: {
+      const { user } = updateUserEventContentSchema.parse(message.event.content);
+      if (userStore.myUser().id === user.id) {
+        await userStore.patchMe(user);
+      }
+      const workspaceMembership = workspaceMembershipRepositoryService
+        .entities()
+        .find((membership) => membership.user.id === user.id);
+      if (workspaceMembership) {
+        workspaceMembershipRepositoryService.updateEntitySummary(workspaceMembership.id, { user });
+      }
+      const projectMembership = projectMembershipRepositoryService
+        .entities()
+        .find((membership) => membership.user.id === user.id);
+      if (projectMembership) {
+        projectMembershipRepositoryService.updateEntitySummary(projectMembership.id, { user });
+      }
+      break;
     }
   }
 }

@@ -33,7 +33,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
 import { MatIcon } from "@angular/material/icon";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { SendVerifyUserValidator } from "@tenzu/repository/user/user.model";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import PendingVerificationComponent from "../signup/pending-verification/pending-verification.component";
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
@@ -129,7 +129,7 @@ export default class SocialAuthCallbackComponent {
   private readonly rememberedNextStore = inject(RememberedNextStore);
   readonly configAppService = inject(ConfigAppService);
   readonly notificationService = inject(NotificationService);
-  readonly userService = inject(UserService);
+  readonly userService = inject(UserApiService);
 
   callback = signal<ProviderCallback | undefined>(undefined);
   callbackForm = form(

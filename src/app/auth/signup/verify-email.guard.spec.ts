@@ -27,7 +27,7 @@ import { HttpErrorResponse, HttpStatusCode } from "@angular/common/http";
 import { lastValueFrom, Observable, of, throwError } from "rxjs";
 
 import { verifyEmailGuard } from "./verify-email.guard";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { makeVerificationInfo } from "@tenzu/repository/user/user.factories";
 import { makeProjectLinkNested } from "@tenzu/repository/project/project.factories";
 import { makeWorkspaceLinkNested } from "@tenzu/repository/workspace/workspace.factories";
@@ -38,7 +38,7 @@ import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { mockService } from "@tenzu/utils/testing/mocks";
 
 describe("verifyEmailGuard", () => {
-  const userServiceMock = mockService(UserService);
+  const userServiceMock = mockService(UserApiService);
   const stepMock = signal<SessionStep>("loggedOut");
   const sessionLifecycleServiceMock = { step: stepMock, endSession: vi.fn(), sessionStarted: vi.fn() };
   let router: Router;
@@ -49,7 +49,7 @@ describe("verifyEmailGuard", () => {
     TestBed.configureTestingModule({
       providers: [
         testingProviders,
-        { provide: UserService, useValue: userServiceMock },
+        { provide: UserApiService, useValue: userServiceMock },
         { provide: SessionLifecycleService, useValue: sessionLifecycleServiceMock },
       ],
     });

@@ -24,7 +24,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { apply, form, FormRoot, required, validate } from "@angular/forms/signals";
 import { TranslocoDirective } from "@jsverse/transloco";
 import { ActivatedRoute, Router } from "@angular/router";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -70,7 +70,7 @@ import { trackFormValidationEffect } from "@tenzu/repository/auth/utils";
   styles: ``,
 })
 export default class ResetPasswordFormComponent {
-  userService = inject(UserService);
+  userService = inject(UserApiService);
   notificationService = inject(NotificationService);
   sessionLifecycleService = inject(SessionLifecycleService);
   router = inject(Router);

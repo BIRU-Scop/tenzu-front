@@ -25,7 +25,7 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { map, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { VerificationInfo } from "@tenzu/repository/user/user.model";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 
 function invitationUrl(verification: VerificationInfo): string | null {
@@ -40,7 +40,7 @@ function invitationUrl(verification: VerificationInfo): string | null {
 }
 
 export const verifyEmailGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const userService = inject(UserService);
+  const userService = inject(UserApiService);
   const sessionLifecycleService = inject(SessionLifecycleService);
   const router = inject(Router);
 

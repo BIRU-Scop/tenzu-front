@@ -109,6 +109,7 @@ export enum WorkspaceEventType {
 
 export enum UserEventType {
   DeleteUser = "users.delete",
+  UpdateUser = "users.update",
 }
 export enum NotificationEventType {
   CreateNotification = "notifications.create",

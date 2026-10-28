@@ -43,7 +43,7 @@ import { NotificationService } from "@tenzu/utils/services/notification";
 import { makeFormData } from "@tenzu/repository/base/abstract-api-services";
 
 @Service()
-export class UserService {
+export class UserApiService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
   notificationService = inject(NotificationService);

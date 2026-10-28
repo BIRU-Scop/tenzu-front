@@ -45,6 +45,14 @@ export const userSchema = userNestedSchema.extend({
 });
 export type User = z.infer<typeof userSchema>;
 
+export const deleteUserEventContentSchema = z.object({
+  userId: userSchema.shape.id,
+});
+
+export const updateUserEventContentSchema = z.object({
+  user: userSchema,
+});
+
 export const verificationInfoSchema = z.object({
   auth: tokensSchema,
   workspaceInvitation: workspaceInvitationNestedSchema.apply(optionalNullable),
