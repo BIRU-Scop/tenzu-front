@@ -58,7 +58,12 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
           <p role="alert" class="mat-body-medium mat-text-error">{{ t("deletion_failed") }}</p>
         }
         <app-form-footer [secondaryAction]="false">
-          <app-button-delete translocoKey="settings.delete.delete_account" type="submit" [loading]="isDeleting()" />
+          <app-button-delete
+            translocoKey="settings.delete.delete_account"
+            type="submit"
+            [disabled]="!form.dirty || form.invalid"
+            [loading]="isDeleting()"
+          />
         </app-form-footer>
       </form>
     </div>
