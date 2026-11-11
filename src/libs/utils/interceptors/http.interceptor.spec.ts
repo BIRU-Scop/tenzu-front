@@ -22,7 +22,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TestBed } from "@angular/core/testing";
 import { makeTokens } from "@tenzu/repository/auth/auth.factories";
-import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptors } from "@angular/common/http";
+import { HttpClient, provideHttpClient, withInterceptors } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 
@@ -34,6 +34,7 @@ import { callsTo } from "@tenzu/utils/testing/http";
 import { mockService } from "@tenzu/utils/testing/mocks";
 import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { HttpStatusCode } from "@angular/common/http";
+import { RETRY_COUNT } from "@tenzu/repository/base/utils";
 
 describe("httpInterceptor", () => {
   let http: HttpClient;
@@ -62,7 +63,7 @@ describe("httpInterceptor", () => {
   });
 
   const unauthorized = { status: HttpStatusCode.Unauthorized, statusText: "Unauthorized" };
-  const serverError = new HttpErrorResponse({ status: HttpStatusCode.InternalServerError });
+  const serverError = { status: HttpStatusCode.InternalServerError, statusText: "Server Error" };
   const rotated = { access: "access-token-2", refresh: "refresh-token-2", username: "1user" };
 
   it("an Unauthorized response on a url outside /auth/ calls tokenRepositoryService.rotate once", async () => {
@@ -144,7 +145,9 @@ describe("httpInterceptor", () => {
 
     const call = lastValueFrom(http.get(`${BASE}/stories/1`));
     httpMock.expectOne(`${BASE}/stories/1`).flush(null, unauthorized);
-    (await callsTo(httpMock, `${BASE}/auth/token/refresh`))[0].flush(null, serverError);
+    for (let attempt = 0; attempt < 1 + RETRY_COUNT; attempt++) {
+      (await callsTo(httpMock, `${BASE}/auth/token/refresh`))[0].flush(null, serverError);
+    }
 
     await expect(call).rejects.toMatchObject({ status: HttpStatusCode.Unauthorized, url: `${BASE}/stories/1` });
   });
