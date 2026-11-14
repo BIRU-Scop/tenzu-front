@@ -72,6 +72,7 @@ import { filter } from "rxjs/operators";
           [fullName]="_comment.createdBy?.fullName || t('workflow.detail_story.former_user')"
           [avatarName]="_comment.createdBy?.fullName || ''"
           [color]="_comment.createdBy?.color || 0"
+          [avatarImage]="_comment.createdBy?.avatar"
         />
         <span class="mat-label-medium text-on-surface-variant">
           {{ _comment.createdAt | date: "short" }}

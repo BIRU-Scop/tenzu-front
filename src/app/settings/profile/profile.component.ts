@@ -19,67 +19,88 @@
  *
  */
 
-import { Component, inject } from "@angular/core";
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
+import { Component, inject, linkedSignal } from "@angular/core";
+import { MatError, MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { TranslocoDirective } from "@jsverse/transloco";
-import { toObservable } from "@angular/core/rxjs-interop";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { LanguageStore } from "@tenzu/repository/transloco/language.store";
-import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { ButtonSaveComponent } from "@tenzu/shared/components/ui/button/button-save.component";
 import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/form-footer.component";
 import { TitleCasePipe } from "@angular/common";
+import { UserAvatarInputComponent } from "@tenzu/shared/components/user-avatar-input/user-avatar-input.component";
+import {
+  form,
+  FormField,
+  FormRoot,
+  StandardSchemaValidationError,
+  validateStandardSchema,
+  ValidationError,
+} from "@angular/forms/signals";
+import {
+  UpdateUserProfilePayload,
+  updateUserProfilePayloadSchema,
+  USER_FULL_NAME_MAX_LENGTH,
+} from "@tenzu/repository/user/user.model";
 
 @Component({
   selector: "app-profile",
   imports: [
-    AvatarComponent,
-    ReactiveFormsModule,
     MatInput,
     TranslocoDirective,
     MatFormField,
     MatLabel,
+    MatError,
     MatSelect,
     MatOption,
     ButtonSaveComponent,
     FormFooterComponent,
     TitleCasePipe,
+    UserAvatarInputComponent,
+    FormRoot,
+    FormField,
   ],
   template: `
+    @let user = userStore.myUser();
     <div class="max-w-2xl flex flex-col gap-y-8 mx-auto" *transloco="let t">
       <h1 class="mat-headline-medium">{{ t("settings.profile.title") }}</h1>
-      <app-avatar
-        [name]="form.value.fullName || userStore.myUser().fullName"
-        mode="filled-circle"
-        [color]="userStore.myUser().color"
-        size="xl"
-      ></app-avatar>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-y-5">
+      <form [formRoot]="userForm" class="flex flex-col gap-y-5">
+        <app-user-avatar-input
+          [(userModel)]="userModel"
+          [color]="user.color"
+          [userAvatar]="userModel().avatar"
+          [userAvatarUrl]="user.avatar"
+          (changed)="onAvatarChange()"
+        />
         <mat-form-field>
           <mat-label>{{ t("general.identity.fullname") }}</mat-label>
-          <input formControlName="fullName" matInput autocomplete data-testid="fullName-input" type="text" />
+          <input [formField]="userForm.fullName" matInput autocomplete data-testid="fullName-input" type="text" />
+          @for (error of userForm.fullName().errors(); track error.kind) {
+            <mat-error>{{ t(fullNameErrorKey(error), { length: fullNameMaxLength }) }}</mat-error>
+          }
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ t("general.identity.username") }}</mat-label>
-          <input formControlName="username" matInput autocomplete data-testid="userName-input" type="text" />
+          <input [value]="user.username" matInput disabled data-testid="userName-input" type="text" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ t("general.identity.email") }}</mat-label>
-          <input formControlName="email" matInput autocomplete data-testid="email-input" type="text" />
+          <input [value]="user.email" matInput disabled data-testid="email-input" type="text" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ t("general.identity.lang") }}</mat-label>
-          <mat-select formControlName="lang" data-testid="lang-select">
+          <mat-select [formField]="userForm.lang" data-testid="lang-select">
             @for (language of languageStore.entities(); track language.code) {
               <mat-option [value]="language.code">{{ language.name | titlecase }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
         <app-form-footer [secondaryAction]="false">
-          <app-button-save data-testid="saveProfileSettings-button" [disabled]="!form.dirty || form.invalid" />
+          <app-button-save
+            data-testid="saveProfileSettings-button"
+            [disabled]="!userForm().dirty() || userForm().invalid()"
+          />
         </app-form-footer>
       </form>
     </div>
@@ -93,36 +114,46 @@ export class ProfileComponent {
   userStore = inject(UserStore);
   languageStore = inject(LanguageStore);
   notificationService = inject(NotificationService);
-  fb = inject(NonNullableFormBuilder);
-  form = this.fb.group({
-    fullName: ["", Validators.required],
-    username: ["", Validators.required],
-    lang: ["", Validators.required],
-    email: ["", Validators.required],
-  });
 
-  constructor() {
-    toObservable(this.userStore.myUser).subscribe((values) => {
-      this.form.patchValue({
-        fullName: values.fullName,
-        username: values.username,
-        lang: values.lang,
-        email: values.email,
-      });
-      this.form.controls.email.disable();
-      this.form.controls.username.disable();
-      this.form.markAsPristine();
-    });
+  protected readonly fullNameMaxLength = USER_FULL_NAME_MAX_LENGTH;
+
+  userModel = linkedSignal<UpdateUserProfilePayload>(() => {
+    const user = this.userStore.myUser();
+    return { fullName: user.fullName, lang: user.lang, avatar: undefined };
+  });
+  userForm = form(
+    this.userModel,
+    (schemaPath) => {
+      validateStandardSchema(schemaPath, updateUserProfilePayloadSchema);
+    },
+    {
+      submission: {
+        action: async (form) => {
+          await this.userStore.patchMeRequest(updateUserProfilePayloadSchema.parse(form().value()));
+          this.notificationService.success({
+            title: "settings.profile.changes_saved",
+            translocoTitle: true,
+          });
+          form().reset(form().value());
+        },
+      },
+    },
+  );
+
+  protected fullNameErrorKey(error: ValidationError): string {
+    if (error instanceof StandardSchemaValidationError) {
+      const code = (error.issue as { code?: string }).code;
+      if (code === "too_small") {
+        return "form_errors.required";
+      }
+      if (code === "too_big") {
+        return "form_errors.max_length";
+      }
+    }
+    return error.message ?? "";
   }
 
-  submit(): void {
-    this.form.reset(this.form.getRawValue());
-    if (this.form.valid) {
-      this.userStore.patchMe(this.form.getRawValue());
-      this.notificationService.success({
-        title: "settings.profile.changes_saved",
-        translocoTitle: true,
-      });
-    }
+  protected onAvatarChange() {
+    this.userForm().markAsDirty();
   }
 }

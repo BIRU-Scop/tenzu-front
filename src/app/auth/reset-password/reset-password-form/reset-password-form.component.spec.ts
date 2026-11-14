@@ -27,7 +27,7 @@ import { submit } from "@angular/forms/signals";
 import { BehaviorSubject, of, throwError } from "rxjs";
 
 import ResetPasswordFormComponent from "./reset-password-form.component";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
 import { makeTokens } from "@tenzu/repository/auth/auth.factories";
 import { NotificationService } from "@tenzu/utils/services/notification";
@@ -37,7 +37,7 @@ import { mockService } from "@tenzu/utils/testing/mocks";
 describe("ResetPasswordFormComponent", () => {
   let fixture: ComponentFixture<ResetPasswordFormComponent>;
   let router: Router;
-  const userServiceMock = mockService(UserService);
+  const userServiceMock = mockService(UserApiService);
   const sessionLifecycleServiceMock = { sessionStarted: vi.fn() };
   let paramMap: BehaviorSubject<ParamMap>;
   const tokens = makeTokens({ username: "1user" });
@@ -50,7 +50,7 @@ describe("ResetPasswordFormComponent", () => {
     TestBed.configureTestingModule({
       providers: [
         testingProviders,
-        { provide: UserService, useValue: userServiceMock },
+        { provide: UserApiService, useValue: userServiceMock },
         { provide: SessionLifecycleService, useValue: sessionLifecycleServiceMock },
         { provide: NotificationService, useValue: mockService(NotificationService) },
         { provide: ActivatedRoute, useValue: { paramMap } },

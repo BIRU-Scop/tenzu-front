@@ -45,6 +45,12 @@ import { MatDialog } from "@angular/material/dialog";
 import { Component } from "@angular/core";
 import { projectImportationErrorDialogId } from "@tenzu/shared/components/project-importation-error-dialog/project-importation-error-dialog.id";
 import { makeProjectImportation } from "@tenzu/repository/importation/importation.factories";
+import { UserStore } from "@tenzu/repository/user/user.store";
+import { makeUser } from "@tenzu/repository/user/user.factories";
+import { WorkspaceMembershipRepositoryService } from "@tenzu/repository/workspace-membership/workspace-membership-repository.service";
+import { makeWorkspaceMembership } from "@tenzu/repository/workspace-membership/workspace-membership.factories";
+import { ProjectMembershipRepositoryService } from "@tenzu/repository/project-membership/project-membership-repository.service";
+import { makeProjectMembership } from "@tenzu/repository/project-membership/project-membership.factories";
 
 const PROJECT_ID = "project-1";
 
@@ -156,18 +162,72 @@ describe("applyStoryTagAssignmentEvent", () => {
 });
 
 describe("applyUserEvent", () => {
-  beforeEach(() => {
+  let userStore: InstanceType<typeof UserStore>;
+  let endSession: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
     TestBed.configureTestingModule({ providers: [testingProviders] });
+    userStore = TestBed.inject(UserStore);
+    await userStore.patchMe(makeUser({ id: "user-1", fullName: "John Doe" }));
+    endSession = vi.spyOn(TestBed.inject(SessionLifecycleService), "endSession").mockImplementation(() => undefined);
   });
 
+  const dispatchUserEvent = (message: WSResponseEvent<unknown>) =>
+    TestBed.runInInjectionContext(() => applyUserEvent(message));
+
   it("applyUserEvent calls sessionLifecycleService.endSession with accountDeleted on a users.delete event", async () => {
-    const endSession = vi
-      .spyOn(TestBed.inject(SessionLifecycleService), "endSession")
-      .mockImplementation(() => undefined);
+    await dispatchUserEvent(makeEvent("users.delete", { userId: "user-1" }, "users.user-1"));
 
-    await TestBed.runInInjectionContext(() => applyUserEvent(makeEvent("users.delete", {}, "users.user-1")));
+    expect(endSession).toHaveBeenCalledExactlyOnceWith({ reason: "accountDeleted" });
+  });
 
-    expect(endSession).toHaveBeenCalledWith({ reason: "accountDeleted" });
+  it("ignores users.delete of another user", async () => {
+    await dispatchUserEvent(makeEvent("users.delete", { userId: "user-2" }, "users.user-1"));
+
+    expect(endSession).not.toHaveBeenCalled();
+  });
+
+  it("applies users.update of the current user to the user store", async () => {
+    await dispatchUserEvent(
+      makeEvent("users.update", { user: makeUser({ id: "user-1", fullName: "Jane Doe" }) }, "users.user-1"),
+    );
+
+    expect(userStore.myUser()).toEqual(makeUser({ id: "user-1", fullName: "Jane Doe" }));
+  });
+
+  it("ignores users.update if user.id is not the current user.id", async () => {
+    await dispatchUserEvent(
+      makeEvent("users.update", { user: makeUser({ id: "user-2", fullName: "Jane Doe" }) }, "users.user-1"),
+    );
+
+    expect(userStore.myUser()).toEqual(makeUser({ id: "user-1", fullName: "John Doe" }));
+  });
+
+  it("applies users.update to the workspace and project memberships of the user", async () => {
+    const workspaceMembershipRepositoryService = TestBed.inject(WorkspaceMembershipRepositoryService);
+    const projectMembershipRepositoryService = TestBed.inject(ProjectMembershipRepositoryService);
+    const user = makeUser({ id: "user-2", fullName: "Jane Doe" });
+    workspaceMembershipRepositoryService.addEntitySummary(
+      makeWorkspaceMembership({ id: "workspace-membership-1", user: makeUser({ id: "user-2" }) }),
+    );
+    projectMembershipRepositoryService.addEntitySummary(
+      makeProjectMembership({ id: "project-membership-1", user: makeUser({ id: "user-2" }) }),
+    );
+
+    await dispatchUserEvent(makeEvent("users.update", { user }, "users.user-1"));
+
+    expect(workspaceMembershipRepositoryService.entityMap()["workspace-membership-1"].user).toEqual(user);
+    expect(projectMembershipRepositoryService.entityMap()["project-membership-1"].user).toEqual(user);
+  });
+
+  it("rejects a non-conforming users.update payload and leaves the user store unchanged", async () => {
+    const user = { ...userStore.myUser() };
+    await expect(
+      dispatchUserEvent(
+        makeEvent("users.update", { user: { ...makeUser({ id: "user-1" }), color: "red" } }, "users.user-1"),
+      ),
+    ).rejects.toThrow(ZodError);
+    expect(userStore.myUser()).toEqual(user);
   });
 });
 describe("applyProjectImportationEvent", () => {

@@ -45,8 +45,8 @@ import { FileValue } from "@tenzu/repository/base/misc.model";
           [maxUploadFileSize]="maxUploadFileSize"
           [iconName]="avatar ? 'edit' : 'upload'"
           [showDelete]="!!avatar"
-          translocoUploadKey="project.logo.upload"
-          translocoDeleteKey="project.logo.delete"
+          translocoUploadKey="avatar.upload"
+          translocoDeleteKey="avatar.delete"
           (selectFile)="onFileSelected($event)"
         />
         <p class="mat-body-small text-on-surface-variant">

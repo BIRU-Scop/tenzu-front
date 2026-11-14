@@ -28,7 +28,7 @@ import { ActivatedRoute, Params, RouterLink } from "@angular/router";
 import { EmailFieldComponent } from "@tenzu/shared/components/form/email-field";
 import { PasswordFieldComponent, passwordSchema } from "@tenzu/shared/components/form/password-field";
 import { CreateUserPayload } from "@tenzu/repository/user/user.model";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { NotificationService } from "@tenzu/utils/services/notification";
 import { MatDivider } from "@angular/material/divider";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
@@ -173,7 +173,7 @@ import { getLocError } from "@tenzu/utils/functions/errors";
   styles: ``,
 })
 export default class SignupComponent {
-  userService = inject(UserService);
+  userService = inject(UserApiService);
   notificationService = inject(NotificationService);
   languageStore = inject(LanguageStore);
   configAppService = inject(ConfigAppService);

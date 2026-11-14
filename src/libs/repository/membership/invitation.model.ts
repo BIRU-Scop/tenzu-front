@@ -21,7 +21,6 @@
 
 import * as z from "zod/v4";
 import { isoDatetime, optionalNullable } from "../base/schema-utils";
-import { userNestedSchema } from "../user/user.model";
 import { InvitationStatus } from "./invitation-status.model";
 import type { Role } from "./membership.model";
 
@@ -30,7 +29,6 @@ export { InvitationStatus } from "./invitation-status.model";
 export const invitationBaseSchema = z.object({
   id: z.string(),
   status: z.enum(InvitationStatus),
-  user: userNestedSchema.apply(optionalNullable),
   roleId: z.string<Role["id"]>(),
   email: z.email(),
   resentAt: isoDatetime.apply(optionalNullable),
@@ -64,13 +62,7 @@ export function sortInvitation(a: InvitationBase, b: InvitationBase) {
     if (a.status === InvitationStatus.PENDING) return -1;
     if (b.status === InvitationStatus.PENDING) return 1;
   }
-  if (a.user?.fullName === b.user?.fullName) {
-    if (a.email < b.email) return -1;
-    if (b.email < a.email) return 1;
-    return 0;
-  }
-  if (b.user?.fullName === undefined) return -1;
-  if (a.user?.fullName === undefined) return 1;
-  if (a.user.fullName < b.user.fullName) return -1;
-  return 1;
+  if (a.email < b.email) return -1;
+  if (b.email < a.email) return 1;
+  return 0;
 }

@@ -19,6 +19,8 @@
  *
  */
 
+import * as z from "zod/v4";
+
 type Primitive = string | number | boolean | null | undefined;
 
 // Use an interface instead of a type to enable for recursion
@@ -30,7 +32,8 @@ type JsonArray = Array<JsonValue>;
 
 type JsonValue = Primitive | JsonObject | JsonArray;
 
-export type FileValue = File | Blob | "";
+export const fileValueSchema = z.union([z.instanceof(File), z.instanceof(Blob), z.literal("")]);
+export type FileValue = z.infer<typeof fileValueSchema>;
 
 export type DataObject = Record<string, JsonValue | undefined | FileValue>;
 

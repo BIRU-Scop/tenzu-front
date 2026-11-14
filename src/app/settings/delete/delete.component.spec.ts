@@ -25,7 +25,7 @@ import { of } from "rxjs";
 
 import { DeleteComponent } from "./delete.component";
 import { UserStore } from "@tenzu/repository/user/user.store";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { translation } from "@tenzu/utils/testing/translation";
 import { getByRole, queryByRole } from "@tenzu/utils/testing/aria-role";
@@ -41,7 +41,7 @@ describe("DeleteComponent", () => {
       imports: [DeleteComponent],
       providers: [...testingProviders],
     }).compileComponents();
-    vi.spyOn(TestBed.inject(UserService), "getDeleteInfo").mockReturnValue(
+    vi.spyOn(TestBed.inject(UserApiService), "getDeleteInfo").mockReturnValue(
       of({
         onlyOwnerCollectiveWorkspaces: [],
         onlyOwnerCollectiveProjects: [],

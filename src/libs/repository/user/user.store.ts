@@ -24,7 +24,7 @@ import { effect, inject } from "@angular/core";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { lastValueFrom, pipe, switchMap } from "rxjs";
 import { tapResponse } from "@ngrx/operators";
-import { UserService } from "./user.service";
+import { UserApiService } from "./user-api.service";
 import { UpdateUserPayload, User } from "./user.model";
 import { TranslocoService } from "@jsverse/transloco";
 import { SessionLifecycleService } from "@tenzu/repository/auth/session/session-lifecycle.service";
@@ -39,20 +39,17 @@ export const UserStore = signalStore(
   withMethods(
     (
       store,
-      userService = inject(UserService),
+      userApiService = inject(UserApiService),
       translocoService = inject(TranslocoService),
       sessionLifecycleService = inject(SessionLifecycleService),
-    ) => ({
-      getMe: rxMethod<void>(
+    ) => {
+      const getMe = rxMethod<void>(
         pipe(
           switchMap(() =>
-            userService.getMyUser().pipe(
+            userApiService.getMyUser().pipe(
               tapResponse({
                 next: (myUser) => {
-                  patchState(store, { myUser });
-                  if (myUser.lang) {
-                    translocoService.setActiveLang(myUser.lang);
-                  }
+                  patchMe(myUser);
                   debug("user", "get user end");
                 },
                 error: console.error,
@@ -60,29 +57,33 @@ export const UserStore = signalStore(
             ),
           ),
         ),
-      ),
-      async patchMe(value: UpdateUserPayload) {
-        const myUser = await lastValueFrom(userService.patchMyUser(value));
+      );
+      const patchMe = async (myUser: User) => {
         if (myUser.lang) {
           translocoService.setActiveLang(myUser.lang);
         }
         patchState(store, { myUser });
-      },
-      async changePassword(password: UpdateUserPayload["password"]) {
-        await lastValueFrom(userService.patchMyUser({ password }));
+      };
+      const patchMeRequest = async (value: UpdateUserPayload) => {
+        const myUser = await lastValueFrom(userApiService.patchMyUser(value));
+        await patchMe(myUser);
+      };
+      const changePassword = async (password: UpdateUserPayload["password"]) => {
+        await lastValueFrom(userApiService.patchMyUser({ password }));
         sessionLifecycleService.endSession({ reason: "passwordChanged" });
-      },
-      async deleteUser() {
-        await lastValueFrom(userService.deleteUser());
+      };
+      const deleteUser = async () => {
+        await lastValueFrom(userApiService.deleteUser());
         sessionLifecycleService.endSession({ reason: "accountDeleted" });
-      },
-      requestResetPassword(email: string) {
-        return lastValueFrom(userService.requestResetPassword(email));
-      },
-      resetMe() {
+      };
+      const requestResetPassword = (email: string) => {
+        return lastValueFrom(userApiService.requestResetPassword(email));
+      };
+      const resetMe = () => {
         patchState(store, { myUser: {} as User });
-      },
-    }),
+      };
+      return { getMe, patchMe, patchMeRequest, changePassword, deleteUser, requestResetPassword, resetMe };
+    },
   ),
   withHooks({
     onInit(store) {

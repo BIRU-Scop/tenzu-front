@@ -73,6 +73,7 @@ import { Router } from "@angular/router";
                       [fullName]="membership.user.fullName"
                       [subtext]="membership.user.username"
                       [color]="membership.user.color"
+                      [avatarImage]="membership.user.avatar"
                       [isSelf]="myUser.id === membership.user.id"
                     />
                   </div>

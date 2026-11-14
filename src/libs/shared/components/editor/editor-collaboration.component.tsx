@@ -102,6 +102,7 @@ export class EditorCollaborationComponent
               user: {
                 name: user.fullName,
                 colorAvatar: user.color,
+                avatarUrl: user.avatar,
                 color: userColorHex,
                 id: user.id,
               },

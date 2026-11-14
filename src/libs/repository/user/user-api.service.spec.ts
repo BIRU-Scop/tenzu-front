@@ -24,21 +24,21 @@ import { TestBed } from "@angular/core/testing";
 import { HttpTestingController } from "@angular/common/http/testing";
 import { lastValueFrom } from "rxjs";
 
-import { UserService } from "./user.service";
+import { UserApiService } from "./user-api.service";
 import { ConfigAppService } from "@tenzu/repository/config-app/config-app.service";
 import { testingProviders } from "@tenzu/utils/testing/testings-providers";
 import { makeUser } from "@tenzu/repository/user/user.factories";
 import { makeProjectLinkNested, makeProjectNested } from "@tenzu/repository/project/project.factories";
 import { makeWorkspaceLinkNested, makeWorkspaceNested } from "@tenzu/repository/workspace/workspace.factories";
 
-describe(UserService.name, () => {
-  let service: UserService;
+describe(UserApiService.name, () => {
+  let service: UserApiService;
   let httpMock: HttpTestingController;
   let BASE: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [testingProviders] });
-    service = TestBed.inject(UserService);
+    service = TestBed.inject(UserApiService);
     httpMock = TestBed.inject(HttpTestingController);
     BASE = TestBed.inject(ConfigAppService).apiUrl();
     vi.spyOn(console, "debug").mockImplementation(() => undefined);

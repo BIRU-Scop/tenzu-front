@@ -54,7 +54,6 @@ export function makeInvitationBase(overrides: Partial<InvitationBase> = {}): Inv
   return {
     id: "invitation-1",
     status: InvitationStatus.PENDING,
-    user: makeUserNested(),
     roleId: "role-1",
     email: "invitee@example.com",
     createdAt: "2026-01-01T00:00:00.000Z",

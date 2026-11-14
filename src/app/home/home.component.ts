@@ -43,6 +43,8 @@ import { NgEventBus } from "ng-event-bus";
 import { ToolBarStore } from "@tenzu/repository/toolbar/toolBarStore";
 import { PLUGINS_TOKEN } from "../app.config";
 import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-home",
@@ -63,6 +65,8 @@ import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
     MatDivider,
     EnvBannerComponent,
     MatButton,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
     <mat-toolbar role="banner" class="flex shrink-0" *transloco="let t; prefix: 'home.navigation'">
@@ -94,11 +98,21 @@ import { FeedOrchestratorService } from "./feed/feed-orchestrator.service";
       @let myUser = userStore.myUser();
 
       <button type="button" [matMenuTriggerFor]="userMenu" [attr.aria-label]="t('user_menu')">
-        <app-avatar [name]="myUser.fullName" [color]="myUser.color" mode="filled-circle" />
+        <app-avatar
+          [name]="myUser.fullName"
+          [color]="myUser.color"
+          [imageData]="myUser.avatar | getBase64FromImageUrl: 'small' | async"
+          mode="filled-circle"
+        />
       </button>
       <mat-menu #userMenu="matMenu">
         <div class="px-3 py-1.5">
-          <app-user-card [subtext]="myUser.email" [fullName]="myUser.fullName" [color]="myUser.color" />
+          <app-user-card
+            [subtext]="myUser.email"
+            [fullName]="myUser.fullName"
+            [color]="myUser.color"
+            [avatarImage]="myUser.avatar"
+          />
         </div>
         <button mat-menu-item [routerLink]="'settings'" [attr.aria-label]="t('settings')">
           <mat-icon>settings</mat-icon>

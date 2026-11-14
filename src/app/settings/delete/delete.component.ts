@@ -25,7 +25,7 @@ import { MatCheckbox } from "@angular/material/checkbox";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog.component";
 import { matDialogConfig } from "@tenzu/utils/mat-config";
 import { MatDialog } from "@angular/material/dialog";
-import { UserService } from "@tenzu/repository/user/user.service";
+import { UserApiService } from "@tenzu/repository/user/user-api.service";
 import { UserStore } from "@tenzu/repository/user/user.store";
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatError } from "@angular/material/form-field";
@@ -58,7 +58,12 @@ import { FormFooterComponent } from "@tenzu/shared/components/ui/form-footer/for
           <p role="alert" class="mat-body-medium mat-text-error">{{ t("deletion_failed") }}</p>
         }
         <app-form-footer [secondaryAction]="false">
-          <app-button-delete translocoKey="settings.delete.delete_account" type="submit" [loading]="isDeleting()" />
+          <app-button-delete
+            translocoKey="settings.delete.delete_account"
+            type="submit"
+            [disabled]="!form.dirty || form.invalid"
+            [loading]="isDeleting()"
+          />
         </app-form-footer>
       </form>
     </div>
@@ -74,11 +79,11 @@ export class DeleteComponent {
   readonly hasDeletionFailed = signal(false);
 
   userStore = inject(UserStore);
-  userService = inject(UserService);
+  userService = inject(UserApiService);
   readonly dialog = inject(MatDialog);
   fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
-    consent: [false, Validators.required],
+    consent: [false, Validators.requiredTrue],
   });
   router = inject(Router);
 

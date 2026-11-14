@@ -53,6 +53,8 @@ import { AvatarComponent } from "@tenzu/shared/components/avatar";
 import { WsDocProvider } from "@tenzu/utils/doc-provider";
 import { ConfirmPopupComponent, ConfirmPopupData } from "@tenzu/directives/confirm";
 import { MatDialog } from "@angular/material/dialog";
+import { AsyncPipe } from "@angular/common";
+import { GetBase64FromImageUrlPipe } from "@tenzu/pipes/get-base64-from-image-url.pipe";
 
 @Component({
   selector: "app-story-edition",
@@ -66,6 +68,8 @@ import { MatDialog } from "@angular/material/dialog";
     TranslocoDirective,
     FormField,
     AvatarComponent,
+    AsyncPipe,
+    GetBase64FromImageUrlPipe,
   ],
   template: `
     @let _user = user();
@@ -73,7 +77,12 @@ import { MatDialog } from "@angular/material/dialog";
     <div class="flex flex-row gap-2 mb-2 min-h-8 justify-end">
       @if (onlineUsers().length > 1) {
         @for (user of onlineUsers(); track user.id) {
-          <app-avatar [name]="user.name" [color]="user.colorAvatar" mode="filled-circle" />
+          <app-avatar
+            [name]="user.name"
+            [color]="user.colorAvatar"
+            [imageData]="user.avatarUrl | getBase64FromImageUrl: 'small' | async"
+            mode="filled-circle"
+          />
         }
       }
     </div>

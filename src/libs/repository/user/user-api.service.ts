@@ -40,9 +40,10 @@ import { BaseDataModel } from "../base/misc.model";
 import { parseWithDebug } from "../base/parse-with-debug";
 import { map } from "rxjs/operators";
 import { NotificationService } from "@tenzu/utils/services/notification";
+import { makeFormData } from "@tenzu/repository/base/abstract-api-services";
 
 @Service()
-export class UserService {
+export class UserApiService {
   http = inject(HttpClient);
   configAppService = inject(ConfigAppService);
   notificationService = inject(NotificationService);
@@ -57,8 +58,9 @@ export class UserService {
   }
 
   patchMyUser(item: UpdateUserPayload): Observable<User> {
+    const data = makeFormData<Partial<UpdateUserPayload>>(item);
     return this.http
-      .put<BaseDataModel<unknown>>(`${this.myUserUrl}`, item)
+      .put<BaseDataModel<unknown>>(`${this.myUserUrl}`, data)
       .pipe(map((dataObject) => parseWithDebug(userSchema, dataObject.data)));
   }
 
